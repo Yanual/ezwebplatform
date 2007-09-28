@@ -1,0 +1,17 @@
+.column {
+  width: 100%;
+  height: 100%;
+}
+
+#mainTable {
+  width: 99%;
+  height: 100%;
+}
+
+.equalColumn {
+  width: 33%;
+}
+
+.borderedModule {
+  border: 1px solid #000000;
+}
