@@ -1,76 +1,81 @@
-// EZWEB CONSTANTS
-var gadgetRepository = "/gadget/tiempo/";
-var allGadgets = "";
 
-// TEMPLATE CONSTANTS
+function XHtml(code) {
+	var _code = code;
+	this.getCode = function(){ return _code; }
+	this.setCode = function(code){ _code = code; }
+}
 
+function Template() {
+	var _slots = new Array();
+	var _events = new Array();
+	var _userPrefs = new Array();
+	var _stateVars = new Array();
 
-//***********************************
-// PERSISTENT CLASSES 
-//***********************************
+	this.setSlots = function(slots) { _slots = slots; }
+	this.getSlots = function() { return _slots; }
+	this.addSlot = function(slot) { _slots.push(slot); }
+	this.removeSlot = function(slot) { _slots = _slots.without(slot); }
+	
+	this.setEvents = function(events) { _events = events; }
+	this.getEvents = function() { return _events; }
+	this.addEvents = function(event) { _events.push(event); }
+	this.removeEvents = function(event) { _events = _events.without(event); }
+	
+	this.setUserPrefs = function(userPrefs) { _userPrefs = userPrefs; }
+	this.getUserPrefs = function() { return _userPrefs; }
+	this.addUserPrefs = function(userPref) { _userPrefs.push(userPref); }
+	this.removeUserPrefs = function(userPref) { _userPrefs = _userPrefs.without(userPref); }
+	
+	this.setStateVars = function(stateVars) { _stateVars = stateVars; }
+	this.getStateVars = function() { return _stateVars; }
+	this.addStateVars = function(stateVar) { _stateVars.push(stateVar); }
+	this.removeStateVars = function(stateVar) { _stateVars = _stateVars.without(stateVar); }
+}
 
-var PersistenceUtils = Class.create():
+function Tag(value) {
+	var _value = value;
+	
+	this.setValue = function(value) { _value = value; }
+	this.getValue = function() { return _value; }
+}
 
-PersistenceUtils.prototype = {
-  initialize:function(uri) {
-    this.uri=uri;
-  },
-  loadServerData: function(uri) {  },
-};
+function Gadget(vendor, name, version, template, xhtml) {
+	var _vendor = vendor;
+	var _name = name;
+	var _version = version;
+	var _template = template;
+	var _xhtml = xhtml;
+	
+	this.setVendor = function(vendor) { _vendor = vendor; }
+	this.getVendor = function() { return _vendor; }
+	this.setName = function(name) { _name = name; }
+	this.getName = function() { return _name; }
+	this.setVersion = function(version) { _version = version; }
+	this.getVersion = function() { return _version; }
+	this.setTemplate = function(template) { _template = template; }
+	this.getTemplate = function() { return _template; }
+	this.setXHtml = function(xhtml) { _xhtml = xhtml; }
+	this.getXHtml = function() { return _xhtml; }
+}
 
-var XHtml = Class.create();
-
-XHtml.prototype = {
-  initialize:function(uri) {
-    this.uri=uri;
-	this.xhtml=PersistanceUtils.prototype.loadServerData(this.uri);
-  },
-};
-
-var XHtml = Class.create();
-
-Template.prototype = {
-  initialize:function(uri) {
-    this.uri=uri;
-	this.template=PersistanceUtils.prototype.loadServerData(this.uri);
-  },
-};
-
-//***********************************
-// DINAMIC CLASSES
-//***********************************
-
-var Gadget = Class.create();
-   
-Gadget.prototype = {
-  initialize:function(uri, id, templates, xhtmls) {
-    this.uri=uri;
-	this.id=id;
-	this._processTemplates(templates);
-	this._processXHtmls(xhtmls);
-  },
-  // PRIVATE
-  _processTemplates() {},
-  _processXHtmls() {
-   this.code=_getCode();
-  },
-  _getCode() {},
-  // PUBLIC
-  getCodeReference() { return this.code; },
-};
-
-var GadgetCollection = Class.create();
-   
-GadgetCollection.prototype = {
-  initialize:function() {
-    this.gadgets=new Array();
-  },
-  // PUBLIC
-  add(gadget) { this.gadgets.insert(gadget); },
-};
-   
-// Run
-var gadget = new Gadget();
-var gadgets = new GadgetCollection();
-
-gadgets.add(gadget);
+function IGadget(gadget, top, left)
+{
+	var _gadget = gadget;
+	var _top = top;
+	var _left = left;
+	
+	this.setGadget = function(gadget) { _gadget = gadget; }
+	this.getGadget = function() { return _gadget; }
+	this.setTop = function(top) { _top = top; }
+	this.getTop = function() { return _top; }
+	this.setLeft = function(left) { _left = left; }
+	this.getLeft = function() { return _left; }
+	
+	this.allocate = function(top, left) {}
+	this.getId = function() {}
+	this.droptTo = function(top, left) {}
+	this.reload = function() {}
+	this.minimize = function() {}
+	this.maximize = function() {}
+	this.bindUIEvents = function() {}
+}
