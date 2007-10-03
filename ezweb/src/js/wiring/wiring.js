@@ -1,92 +1,48 @@
 /**
  * @author rnogal
  */
-<script src = "/lib/js/prototype.js" type = "text/javascript"></script>
+var WiringFactory = function () {
 
+	// *********************************
+	// SINGLETON INSTANCE
+	// *********************************
+	var instance = null;
 
-var Wiring = Class.create()
+	function Wiring () {
+		var iGadgetList = new Hash();
+		var inOutList = new Hash();
 
-Wiring.prototype = {
-	// this method initialize the object.
-	initialize: function(){
-			this.iGadgetList = new Hash();
-			this.inOutList = new Hash();
-			this.InList = new Hash();
-			this.outList = new Hash();
-			this. himself = this;
-			alert("Creado");
-	},
-	
-	getInstance: function (){
-		// This methed garantize the singleton pattern
-		if (this.himself == undefined){
-			this.himself = this;
-			alert("Voy a crear");
-			return new Wiring();
-		}else{
-			alert("Existe ya")
-			return this;
-		}
-	},
-	
-	addInstance: function (id, template){
-		// this method is used for adding an instance of a Gadget
-				
-	},
-	
-	removeInstance: function(id){
-		// this method is used for removing an instance of a Gadget
-	},
-	
-	registerEvent: function(id, event){
-		// this method is used for creating a variable of an Event
-	},
-	
-	sendEvent: function(id, event, value){
-		// this method is used for sending an event.
-	},
-	
-	registerSlot: function(id, slot){
-		// this method is used for creating a variable of a Slot	
-	},
-	
-	connectSlot: function(id, slot, channel){
-		// this method is used for connecting a slot to the channel		
 		
-	},
-	
-	disconnectSlot: function(id, slot, channel){
-		// this method is used for connecting a slot from the specified channel
-	},
-	
-	connectEvent: function(id, event, channel){
-		// this method is used for connecting an event to the channel		
-	},
-	
-	disconnectEvent: function(id, event, channel){
-		// this method is used for disconnecting an event from the specified channel
-	},
-	
-	createChannel: function(name){
-		// this method is used for creating a channel
-	},
-
-	removeChannel: function(name){
-		// this method is used for deleting an existing channel
-	},
-	
-	viewValue: function(name){
-		// this method is used for showing the actual value of a channel
-	},
-	
-	connectChannel: function(channelIn, channelOut){
-		// this method is used for coneccting two channels. We specify
-		// both extremes of the connection
-		
-	},
-	
-	disconnectChannel: function(channelIn, channelOut){
-		// this method is used for disconeccting two channels. We specify
-		// both extremes of the connection
+		// ****************
+		// PUBLIC METHODS
+		// ****************
+		Wiring.prototype.addInstance = function (iGadgetId, template) {return iGadgetId + template} 
+		Wiring.prototype.removeInstance = function (iGadgetId) {}
+		Wiring.prototype.createChannel = function (channelName){}
+		Wiring.prototype.removeChannel = function (channelName){}
+		Wiring.prototype.viewValue = function (channelName){}
+		Wiring.prototype.sendEvent = function (iGadgetId, event, value) {} // asynchronous
+		Wiring.prototype.addChannelInput = function (idGadgetId, inputName, channelName) {}
+		Wiring.prototype.addChannelInput = function (inputName, channelName) {}
+		Wiring.prototype.addChannelOutput = function (idGadgetId, outputName, channelName) {}
+		Wiring.prototype.addChannelOutput = function (outputName, channelName) {}
+		Wiring.prototype.removeChannelInput = function (idGadgetId, inputName, channelName) {}
+		Wiring.prototype.removeChannelInput = function (inputName, channelName) {}
+		Wiring.prototype.removeChannelOutput = function (idGadgetId, outputName, channelName) {}
+		Wiring.prototype.removeChannelOutput = function (outputName, channelName) {}
 	}
- }
+	
+	// *********************************
+	// SINGLETON GET INSTANCE
+	// *********************************
+	return new function() {
+    	this.getInstance = function() {
+    		if (instance == null) {
+        		instance = new Wiring();
+            	instance.constructor = null;
+         	}
+         	return instance;
+       	}
+	}
+	
+}();
