@@ -63,8 +63,8 @@ var VarManagerFactory = function () {
 		// ****************
 		VarManager.prototype.writeSlot = function (iGadgetId, slotName, value) {} 
 		VarManager.prototype.registerVariable = function (iGadgetId, variableName) {}
-		VarManager.prototype.getVariable = function (variable){}
-		VarManager.prototype.setVariable = function (variable, value){}
+		VarManager.prototype.getVariable = function (iGadgetId, variableName){}
+		VarManager.prototype.setVariable = function (iGadgetId, variableName, value){}
 	}
 	
 		
