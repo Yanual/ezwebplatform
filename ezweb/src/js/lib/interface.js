@@ -2,19 +2,19 @@
  * @author luismarcos.ayllon
  */
 
-var Wiring = (function () {
+var WiringFactory = function () {
 
 	// *********************************
 	// SINGLETON INSTANCE
 	// *********************************
 	var instance = null;
 
-	function WiringPrivateConstructor () {
+	function Wiring () {
 		
 		// ****************
 		// PUBLIC METHODS
 		// ****************
-		Wiring.prototype.addInstance = function (iGadgetId, template) {} 
+		Wiring.prototype.addInstance = function (iGadgetId, template) {return iGadgetId + template} 
 		Wiring.prototype.removeInstance = function (iGadgetId) {}
 		Wiring.prototype.createChannel = function (channelName){}
 		Wiring.prototype.removeChannel = function (channelName){}
@@ -36,23 +36,23 @@ var Wiring = (function () {
 	return new function() {
     	this.getInstance = function() {
     		if (instance == null) {
-        		instance = new WiringPrivateConstructor();
+        		instance = new Wiring();
             	instance.constructor = null;
          	}
          	return instance;
        	}
 	}
 	
-})
+}();
 
-var VarManager = (function () {
+var VarManagerFactory = function () {
 
 	// *********************************
 	// SINGLETON INSTANCE
 	// *********************************
 	var instance = null;
 
-	function VarManagerPrivateConstructor () {
+	function VarManager () {
 		
 		// *********************************
 		// PRIVATE VARIABLES AND FUNCTIONS
@@ -61,12 +61,13 @@ var VarManager = (function () {
 		// ****************
 		// PUBLIC METHODS 
 		// ****************
-
-		VarManager.prototype.writeSlot = function (iGadgetId, slot, value) {} 
-		VarManager.prototype.registerVariable = function (iGadgetId, variable) {}
+		VarManager.prototype.writeSlot = function (iGadgetId, slotName, value) {} 
+		VarManager.prototype.registerVariable = function (iGadgetId, variableName) {}
 		VarManager.prototype.getVariable = function (variable){}
 		VarManager.prototype.setVariable = function (variable, value){}
 	}
+	
+		
 	
 	// *********************************
 	// SINGLETON GET INSTANCE
@@ -74,24 +75,24 @@ var VarManager = (function () {
 	return new function() {
     	this.getInstance = function() {
     		if (instance == null) {
-        		instance = new VarManagerPrivateConstructor();
+        		instance = new VarManager();
             	instance.constructor = null;
          	}
          	return instance;
        	}
 	}
 	
-})
+}();
 
 
-var PersitenceEngine = (function () {
+var PersitenceEngineFactory = function () {
 
 	// *********************************
 	// SINGLETON INSTANCE
 	// *********************************
 	var instance = null;
 
-	function PersitenceEnginePrivateConstructor () {
+	function PersitenceEngine () {
 		
 		// ****************
 		// PUBLIC METHODS 
@@ -108,23 +109,23 @@ var PersitenceEngine = (function () {
 	return new function() {
     	this.getInstance = function() {
     		if (instance == null) {
-        		instance = new PersitenceEnginePrivateConstructor();
+        		instance = new PersitenceEngine();
             	instance.constructor = null;
          	}
          	return instance;
        	}
 	}
 	
-})
+}();
 
-var OpManager = (function () {
+var OpManagerFactory = function () {
 
 	// *********************************
 	// SINGLETON INSTANCE
 	// *********************************
 	var instance = null;
 
-	function OpManagerPrivateConstructor () {
+	function OpManager () {
 		
 		// ****************
 		// PUBLIC METHODS 
@@ -139,23 +140,23 @@ var OpManager = (function () {
 	return new function() {
     	this.getInstance = function() {
     		if (instance == null) {
-        		instance = new OpManagerPrivateConstructor();
+        		instance = new OpManager();
             	instance.constructor = null;
          	}
          	return instance;
        	}
 	}
 	
-})
+}();
 
-var Showcase = (function () {
+var ShowcaseFactory = function () {
 
 	// *********************************
 	// SINGLETON INSTANCE
 	// *********************************
 	var instance = null;
 
-	function ShowcasePrivateConstructor () {
+	function Showcase () {
 		
 		// ****************
 		// PUBLIC METHODS
@@ -174,24 +175,24 @@ var Showcase = (function () {
 	return new function() {
     	this.getInstance = function() {
     		if (instance == null) {
-        		instance = new ShowcasePrivateConstructor();
+        		instance = new Showcase();
             	instance.constructor = null;
          	}
          	return instance;
        	}
 	}
 	
-})
+}();
 
 
-var Dragboard  = (function () {
+var DragboardFactory  = function () {
 
 	// *********************************
 	// SINGLETON INSTANCE
 	// *********************************
 	var instance = null;
 
-	function DragboardPrivateConstructor () {
+	function Dragboard () {
 		
 		// ****************
 		// PUBLIC METHODS
@@ -209,11 +210,11 @@ var Dragboard  = (function () {
 	return new function() {
     	this.getInstance = function() {
     		if (instance == null) {
-        		instance = new DragboardPrivateConstructor();
+        		instance = new Dragboard();
             	instance.constructor = null;
          	}
          	return instance;
        	}
 	}
 	
-})
+}();
