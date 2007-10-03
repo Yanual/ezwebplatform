@@ -58,8 +58,7 @@ function Gadget(vendor, name, version, template, xhtml) {
 	this.getXHtml = function() { return _xhtml; }
 }
 
-function IGadget(gadget, top, left)
-{
+function IGadget(gadget, top, left){
 	var _gadget = gadget;
 	var _top = top;
 	var _left = left;
@@ -79,3 +78,21 @@ function IGadget(gadget, top, left)
 	this.maximize = function() {}
 	this.bindUIEvents = function() {}
 }
+
+function Variable(value){
+	this._value = value;
+	
+	this.getValue = function() { return this._value; }
+}
+
+function WriteOnlyVariable(value){
+	this.base = Variable;
+	this.base(value);
+	
+	this.setValue = function(value) { this._value = value; }
+}
+
+WriteOnlyVariable.prototype = new Variable;
+
+
+
