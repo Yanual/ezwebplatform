@@ -13,8 +13,8 @@ var PersistenceEngineFactory = function () {
 		PersitenceEngine.prototype.send_get = function (url, successHandler, errorHandler) { 
 			new Ajax.Request(url, {
 				method: 'get',
-				onSuccess: successHandler(),
-				onError: errorHandler()
+				onSuccess: successHandler,
+				onError: errorHandler
 			});
 		} 
 		
