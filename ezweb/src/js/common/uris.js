@@ -1,4 +1,4 @@
-function URIConstants {
+function URIConstants () {
 
 }
 
