@@ -14,7 +14,7 @@ var WiringFactory = function () {
 		// ****************
 		// PUBLIC METHODS
 		// ****************
-		Wiring.prototype.addInstance = function (iGadgetId, template) {return iGadgetId + template} 
+		Wiring.prototype.addInstance = function (iGadgetId, template) {} 
 		Wiring.prototype.removeInstance = function (iGadgetId) {}
 		Wiring.prototype.createChannel = function (channelName){}
 		Wiring.prototype.removeChannel = function (channelName){}
