@@ -97,10 +97,10 @@ var PersitenceEngineFactory = function () {
 		// ****************
 		// PUBLIC METHODS 
 		// ****************
-		PersitenceEngine.prototype.send_get = function (url) {} 
-		PersitenceEngine.prototype.send_post = function (url, value) {}
-		PersitenceEngine.prototype.send_delete = function (url){}
-		PersitenceEngine.prototype.send_update = function (url, value){}
+		PersitenceEngine.prototype.send_get = function (url, asynHandler) {} 
+		PersitenceEngine.prototype.send_post = function (url, value, asynHandler) {}
+		PersitenceEngine.prototype.send_delete = function (url, asynHandler){}
+		PersitenceEngine.prototype.send_update = function (url, value, asynHandler){}
 	}
 	
 	// *********************************
