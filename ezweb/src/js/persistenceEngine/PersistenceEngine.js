@@ -1,4 +1,4 @@
-var PersitenceEngineFactory = function () {
+var PersistenceEngineFactory = function () {
 
 	// *********************************
 	// SINGLETON INSTANCE
@@ -13,8 +13,8 @@ var PersitenceEngineFactory = function () {
 		PersitenceEngine.prototype.send_get = function (url, context, successHandler, errorHandler) { 
 			new Ajax.Request(url, {
 				method: 'get',
-				onSuccess: context[callbackHandler],
-				onError: context[onError]
+				onSuccess: context[successHandler],
+				onError: context[errorHandler]
 			});
 		} 
 		
