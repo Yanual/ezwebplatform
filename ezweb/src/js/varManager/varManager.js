@@ -20,6 +20,13 @@ var VarManagerFactory = function () {
 			// Procesamiento
 		}
 		
+		onError = function () {
+			// JSON-coded iGadget-variable mapping
+			write ('onError');
+			
+			// Procesamiento
+		}
+		
 		// *********************************
 		// PRIVATE VARIABLES AND FUNCTIONS
 		// *********************************
