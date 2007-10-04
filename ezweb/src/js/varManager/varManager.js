@@ -20,7 +20,7 @@ var VarManagerFactory = function () {
 			// Procesamiento
 		}
 		
-		onError = function () {
+		onError = function (transport) {
 			// JSON-coded iGadget-variable mapping
 			write ('onError');
 			
@@ -43,7 +43,8 @@ var VarManagerFactory = function () {
 		var iGadgets = [];
 		
 		// Getting IGadgets from PersistenceEngine. Asyncrhonous call!
-		persistenceEngine.send_get(URIConstants.prototype.IGADGETS_VARIABLES, loadIGadgets.bind(this), loadIGadgets.bind(this));
+		//persistenceEngine.send_get(URIConstants.prototype.IGADGETS_VARIABLES, this.loadIGadgets.bind(this), this.loadIGadgets.bind(this));
+		persistenceEngine.send_get('igadgets.json', loadIGadgets.bind(this), loadIGadgets.bind(this));
 		
 		// ****************
 		// PUBLIC METHODS 
