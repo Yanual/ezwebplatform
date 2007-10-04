@@ -36,7 +36,7 @@ var VarManagerFactory = function () {
 		var iGadgets = [];
 		
 		// Getting IGadgets from PersistenceEngine. Asyncrhonous call!
-		persistenceEngine.send_get(URIConstants.prototype.IGADGETS_VARIABLES, this, loadIGadgets, loadIGadgets);
+		persistenceEngine.send_get(URIConstants.prototype.IGADGETS_VARIABLES, loadIGadgets.bind(this), loadIGadgets.bind(this));
 		
 		// ****************
 		// PUBLIC METHODS 
