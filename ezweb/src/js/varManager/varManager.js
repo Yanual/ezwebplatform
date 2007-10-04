@@ -17,12 +17,14 @@ var VarManagerFactory = function () {
 			var response = transport.responseText;
 			var provisionalIGadgetList = eval ("(" + response + ")");
 			
+			alert(response);
+			
 			// Procesamiento
 		}
 		
 		onError = function (transport) {
 			// JSON-coded iGadget-variable mapping
-			write ('onError');
+			alert("error VarManager GET");
 			
 			// Procesamiento
 		}
