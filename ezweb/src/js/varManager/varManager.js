@@ -10,19 +10,41 @@ var VarManagerFactory = function () {
 		// *********************************
 		// PRIVATE VARIABLES AND FUNCTIONS
 		// *********************************
-	    var igadgets = [];
+		
+		var persistenceEngine = PersistenceEngineFactory.getInstance();
 		var wiring = WiringFactory.getInstance();
+		var iGadgets = [];
+		
+		// Getting IGadgets from PersistenceEngine. Asyncrhonous call!
+		persistenceEngine.send_get(URIConstants.prototype.IGADGETS_VARIABLES, loadInstances.bind(this));
 		
 		var findVariable = function (iGadgetId, name) {
-			var variables = igadgets[iGadgetId];
+			var variables = iGadgets[iGadgetId];
 			var variable = variables[variableName];
 		
 			return variable;
 		}
 	
 		// ****************
+		// CALLBACK METHODS 
+		// ****************
+		
+		// Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
+		this.loadInstances = function (transport) {
+			// JSON-coded iGadget-variable mapping
+			var response = transport.responseText;
+			
+			var provisionalIGadgetList = eval ("(" + response + ")");
+			
+			// Procesamiento
+			
+			
+		}
+		
+		// ****************
 		// PUBLIC METHODS 
 		// ****************
+		
 		VarManager.prototype.writeSlot = function (iGadgetId, slotName, value) {
 			var variable = findVariable(iGadgetId, variableName);
 			
