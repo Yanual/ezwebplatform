@@ -1,4 +1,4 @@
-# Django settings for ezweb project.
+# Django settings for persistenceEngine project.
 from os import path
 
 DEBUG = True
@@ -13,8 +13,8 @@ ADMINS = (
 MANAGERS = ADMINS
 
 DATABASE_ENGINE = 'postgresql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = 'ezweb'             # Or path to database file if using sqlite3.
-DATABASE_USER = 'ezweb'             # Not used with sqlite3.
+DATABASE_NAME = 'persistenceEngine'             # Or path to database file if using sqlite3.
+DATABASE_USER = 'persistenceEngine'             # Not used with sqlite3.
 DATABASE_PASSWORD = ''         # Not used with sqlite3.
 DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
@@ -68,7 +68,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.doc.XViewMiddleware',
 )
 
-ROOT_URLCONF = 'ezweb.urls'
+ROOT_URLCONF = 'persistenceEngine.urls'
 
 TEMPLATE_DIRS = (
     path.join(BASEDIR, 'templates'),
@@ -80,9 +80,9 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
-    'ezweb.dragboard',
+    'persistenceEngine.user',
 )
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-AUTH_PROFILE_MODULE = 'dragboard.UserProfile'
+AUTH_PROFILE_MODULE = 'user.UserProfile'
