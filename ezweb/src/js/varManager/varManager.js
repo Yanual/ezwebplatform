@@ -16,7 +16,7 @@ var VarManagerFactory = function () {
 		var iGadgets = [];
 		
 		// Getting IGadgets from PersistenceEngine. Asyncrhonous call!
-		persistenceEngine.send_get(URIConstants.prototype.IGADGETS_VARIABLES, loadInstances.bind(this));
+		persistenceEngine.send_get(URIConstants.prototype.IGADGETS_VARIABLES, loadIGadgets.bind(this));
 		
 		var findVariable = function (iGadgetId, name) {
 			var variables = iGadgets[iGadgetId];
@@ -30,7 +30,7 @@ var VarManagerFactory = function () {
 		// ****************
 		
 		// Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
-		this.loadInstances = function (transport) {
+		this.loadIGadgets = function (transport) {
 			// JSON-coded iGadget-variable mapping
 			var response = transport.responseText;
 			
