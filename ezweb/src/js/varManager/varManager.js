@@ -6,17 +6,23 @@ var VarManagerFactory = function () {
 	var instance = null;
 
 	function VarManager () {
+	
+		// ****************
+		// CALLBACK METHODS 
+		// ****************
+		
+		// Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
+		loadIGadgets = function (transport) {
+			// JSON-coded iGadget-variable mapping
+			var response = transport.responseText;
+			var provisionalIGadgetList = eval ("(" + response + ")");
+			
+			// Procesamiento
+		}
 		
 		// *********************************
 		// PRIVATE VARIABLES AND FUNCTIONS
 		// *********************************
-		
-		var persistenceEngine = PersistenceEngineFactory.getInstance();
-		var wiring = WiringFactory.getInstance();
-		var iGadgets = [];
-		
-		// Getting IGadgets from PersistenceEngine. Asyncrhonous call!
-		persistenceEngine.send_get(URIConstants.prototype.IGADGETS_VARIABLES, loadIGadgets.bind(this));
 		
 		var findVariable = function (iGadgetId, name) {
 			var variables = iGadgets[iGadgetId];
@@ -24,22 +30,13 @@ var VarManagerFactory = function () {
 		
 			return variable;
 		}
-	
-		// ****************
-		// CALLBACK METHODS 
-		// ****************
 		
-		// Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
-		this.loadIGadgets = function (transport) {
-			// JSON-coded iGadget-variable mapping
-			var response = transport.responseText;
-			
-			var provisionalIGadgetList = eval ("(" + response + ")");
-			
-			// Procesamiento
-			
-			
-		}
+		var persistenceEngine = PersistenceEngineFactory.getInstance();
+		var wiring = WiringFactory.getInstance();
+		var iGadgets = [];
+		
+		// Getting IGadgets from PersistenceEngine. Asyncrhonous call!
+		persistenceEngine.send_get(URIConstants.prototype.IGADGETS_VARIABLES, this, loadIGadgets, loadIGadgets);
 		
 		// ****************
 		// PUBLIC METHODS 
