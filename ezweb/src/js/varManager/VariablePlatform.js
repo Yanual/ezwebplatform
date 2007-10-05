@@ -45,7 +45,7 @@ Variable.prototype.PROPERTY = "PROPERTY"
 // RVARIABLE (Derivated class) <<PLATFORM>>
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function RVariable(iGadget_, name_, aspect, value_) {
+function RVariable(iGadget_, name_, aspect_, value_) {
 	Variable.prototype.Variable.call(this, iGadget_, name_, aspect_, value_);
   
 	var handler = null;

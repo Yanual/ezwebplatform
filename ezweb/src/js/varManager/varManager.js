@@ -15,11 +15,39 @@ var VarManagerFactory = function () {
 		loadIGadgets = function (transport) {
 			// JSON-coded iGadget-variable mapping
 			var response = transport.responseText;
-			var provisionalIGadgetList = eval ("(" + response + ")");
+			var tempList = eval ('(' + response + ')');
 			
-			document.write(response);
+			// Constructing the structure
+			tempList = tempList.igadgets;
 			
-			// Procesamiento
+			var objVars = [];
+			var id = -1;
+			var rawVars = null;
+			var rawVar = null;
+			
+			for (i = 0; i<tempList.length; i++) {
+				id = tempList[i].id;
+				rawVars = tempList[i].variables;
+				
+				for (j = 0; j<rawVars.length; j++) {
+					rawVar = rawVars[j];
+					
+					switch (rawVar.aspect) {
+						case Variable.prototype.PROPERTY:
+						case Variable.prototype.EVENT:
+							objVars[rawVar.name] = new RWVariable(id, rawVar.name, rawVar.aspect, rawVar.value);
+							break;
+						case Variable.prototype.SLOT:
+						case Variable.prototype.USER_PREF:
+							objVars[rawVar.name] = new RVariable(id, rawVar.name, rawVar.aspect, rawVar.value);
+							break;
+					}
+				}
+				
+				iGadgets[id] = objVars;
+			}
+			
+			alert(iGadgets);
 		}
 		
 		onError = function (transport) {
