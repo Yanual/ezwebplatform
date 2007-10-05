@@ -1,1 +1,28 @@
-{"igadgets":[{"id":"id_igadget1","variables":[{"name":"var1","aspect":"SLOT","value":"valor1"},{"name":"var2","aspect":"EVENT","value":"valor2"}]},{"id":"id_igadget2","variables":[{"name":"var1","aspect":"USER_PREF","value":"valor1"},{"name":"var2","aspect":"PROPERTY","value":"valor2"}]},{"id":"id_igadget1","variables":[{"name":"var1","aspect":"SLOT","value":"valor1"},{"name":"var2","aspect":"USER_PREF","value":"valor2"}]}]}
+{
+ "igadgets":[
+  {"id": "id_igadget1",
+  "variables":[
+   {"name":"var1",
+   "aspect":"SLOT",
+   "value":"valor1"},
+   {"name":"var2",
+   "aspect":"EVENT",
+   "value":"valor2"}]},
+  {"id":"id_igadget2",
+  "variables":[
+   {"name":"var1",
+    "aspect":"USER_PREF",
+	"value":"valor1"},
+   {"name":"var2",
+    "aspect":"PROPERTY",
+	"value":"valor2"}]},
+  {"id":"id_igadget3",
+   "variables":[
+   {"name":"var1",
+    "aspect":"SLOT",
+	"value":"valor1"},
+   {"name":"var2",
+    "aspect":"USER_PREF",
+	"value":"valor2"}]}
+  ]
+}
