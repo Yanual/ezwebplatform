@@ -17,7 +17,7 @@ var VarManagerFactory = function () {
 			var response = transport.responseText;
 			var provisionalIGadgetList = eval ("(" + response + ")");
 			
-			alert(response);
+			document.write(response);
 			
 			// Procesamiento
 		}
