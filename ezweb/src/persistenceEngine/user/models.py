@@ -7,6 +7,7 @@ from django.contrib.contenttypes import generic
 
 
 class UserProfile(models.Model):
+
     class Admin:
         pass
 

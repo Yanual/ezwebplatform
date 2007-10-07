@@ -6,9 +6,11 @@ urlpatterns = patterns('',
 
     # EzWeb
     (r'^$', 'views.index'),
-    (r'^wiring/', include('wiring.urls')),
-    (r'^catalog/', include('catalog.urls')),
-    (r'^dragboard/', include('dragboard.urls')),
+    (r'^user/(?P<user_id>\d+)/$', include('user.urls')),
+
+    # Gadgets
+    (r'^gadget(s)?/(.*)', include('gadget.urls')),
+
 
     # Django contrib
     (r'^logout/$', 'django.contrib.auth.views.logout'),
