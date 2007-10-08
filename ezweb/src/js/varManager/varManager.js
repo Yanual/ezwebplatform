@@ -47,7 +47,8 @@ var VarManagerFactory = function () {
 				iGadgets[id] = objVars;
 			}
 			
-			alert(iGadgets);
+			loaded = true;
+			opManager.continueLoading (Modules.prototype.VAR_MANAGER);
 		}
 		
 		onError = function (transport) {
@@ -68,8 +69,10 @@ var VarManagerFactory = function () {
 			return variable;
 		}
 		
+		var loaded = false;
 		var persistenceEngine = PersistenceEngineFactory.getInstance();
-		var wiring = WiringFactory.getInstance();
+		var opManager = OpManagerFactory.getInstance();
+		var wiring = null;
 		var iGadgets = [];
 		
 		// Getting IGadgets from PersistenceEngine. Asyncrhonous call!
@@ -81,18 +84,27 @@ var VarManagerFactory = function () {
 		// ****************
 		
 		VarManager.prototype.writeSlot = function (iGadgetId, slotName, value) {
+			if (! loaded)
+				return;
+			
 			var variable = findVariable(iGadgetId, variableName);
 			
 			variable.writeSlot(value);
 		} 
 		
 		VarManager.prototype.registerVariable = function (iGadgetId, variableName, handler) {
+			if (! loaded)
+				return;
+				
 			var variable = findVariable(iGadgetId, variableName);
 			
 			variable.setHandler(handler);
 		}
 		
 		VarManager.prototype.getVariable = function (iGadgetId, variableName) {
+			if (! loaded)
+				return;
+				
 			var variable = findVariable(iGadgetId, variableName);
 			
 			// Error control
@@ -101,12 +113,21 @@ var VarManagerFactory = function () {
 		}
 		
 		VarManager.prototype.setVariable = function (iGadgetId, variableName, value) {
+			if (! loaded)
+				return;
+				
+			if (wiring == null)
+				wiring = WiringFactory.getInstance();
+			
 			var variable = findVariable(iGadgetId, variableName);
 			
 			return variable.set(value, wiring);
 		}
 		
 		VarManager.prototype.addInstance = function (iGadgetId, template) {
+			if (! loaded)
+				return;
+				
 			var templateVariables = template.getVariables();
 			
 			igadgets[iGadgetId] = templateVariables;
