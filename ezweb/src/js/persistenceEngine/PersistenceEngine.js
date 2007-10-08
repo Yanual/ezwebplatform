@@ -18,9 +18,32 @@ var PersistenceEngineFactory = function () {
 			});
 		} 
 		
-		PersitenceEngine.prototype.send_post = function (url, value, context, successHandler, errorHandler) {}
-		PersitenceEngine.prototype.send_delete = function (url, context, successHandler, errorHandler){}
-		PersitenceEngine.prototype.send_update = function (url, value, context, successHandler, errorHandler){}
+		PersitenceEngine.prototype.send_post = function (url, value, context, successHandler, errorHandler) {
+			new Ajax.Request(url, {
+				method: 'post',
+				parameters: 'param=' + value,
+				onSuccess: successHandler.bind(context),
+				onError: errorHandler.bind(context)
+			});
+		}
+		
+		PersitenceEngine.prototype.send_delete = function (url, context, successHandler, errorHandler){
+			new Ajax.Request(url, {
+				method: 'delete',
+				onSuccess: successHandler.bind(context),
+				onError: errorHandler.bind(context)
+			});
+		}
+		
+		PersitenceEngine.prototype.send_update = function (url, value, context, successHandler, errorHandler){
+			new Ajax.Request(url, {
+				method: 'put',
+				parameters: 'param=' + value,
+				onSuccess: successHandler.bind(context),
+				onError: errorHandler.bind(context)
+			});
+		}
+		
 	}
 	
 	// *********************************
@@ -30,7 +53,6 @@ var PersistenceEngineFactory = function () {
     	this.getInstance = function() {
     		if (instance == null) {
         		instance = new PersitenceEngine();
-            	instance.constructor = null;
          	}
          	return instance;
        	}
