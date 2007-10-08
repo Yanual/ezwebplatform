@@ -1,6 +1,6 @@
 <script src="prototype.js" type="text/javascript"></script>
 <script src="json.js" type="text/javascript"></script>
-<script src="ezweb.js" type="text/javascript"></script>
+<script src="Template.js" type="text/javascript"></script>
 <script>
 /*template = new Template();
 template.addSlot("Prueba1");
@@ -12,14 +12,14 @@ variable = new ReadWriteVariable(15);
 alert(variable.getValue());
 variable.setValue(13);
 alert(variable.getValue());*/
-xhtml1 = new XHtml('Éste es mi código 1');
+/*xhtml1 = new XHtml('Éste es mi código 1');
 xhtml2 = new XHtml('Éste es mi código 2');
 xhtml3 = new XHtml('Éste es mi código 3');
 
 template1 = new Template();
-template1.addSlot('Primer Slot 1');
-template1.addSlot('Segundo Slot 1');
-template1.addEvent('Primer Event 1');
+template1.addSlot(new Variable("valorcito1"));
+template1.addSlot(new Variable("valorcito2"));
+template1.addEvent(new Variable("valorcito1"));
 template1.addEvent('Segundo Event 1');
 template1.addUserPref('Primer UserPref 1');
 template1.addUserPref('Segundo UserPref 1');
@@ -37,7 +37,7 @@ template2.addStateVar('Primer StateVar 2');
 template2.addStateVar('Segundo StateVar 2');
 
 template3 = new Template();
-template3.addSlot('Primer Slot 3');
+template3.addSlot(new Variable("valorcito"));
 template3.addSlot('Segundo Slot 3');
 template3.addEvent('Primer Event 3');
 template3.addEvent('Segundo Event 3');
@@ -54,6 +54,15 @@ showcase = new Showcase();
 showcase.addPrueba(gadget1);
 showcase.addPrueba(new Gadget('vendor2', 'name2', 'version2', new Array(), template2, xhtml2));
 showcase.addPrueba(new Gadget('vendor3', 'name3', 'version3', new Array(), template3, xhtml3));
-showcase.save();
-
+*/
+//showcase.save();
+function duh(){
+	var elemento = $('texto');
+	var template = new Template();
+	elemento.innerHTML = template.variables.toJSONString();
+	elemento.style.color = 'blue';
+}
+//showcase.toJSON
 </script>
+<button onclick='duh();' id='boton'>clic</button>
+<div id='texto'>Juanjo</div>
