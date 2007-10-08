@@ -10,16 +10,16 @@
 <script language="JavaScript" src="varManager/varManager.js"></script>
 
 <script language="JavaScript" src="opManager/OpManager.js"></script>
-<script language="JavaScript" src="showcase/showcase.js"></script>
 <script language="JavaScript" src="wiring/wiring.js"></script>
 <script language="JavaScript" src="gadgetModel/Template.js"></script>
+<script language="JavaScript" src="gadgetModel/XHtml.js"></script>
 <script>
 
-var template = new Template('prueba');
+var xhtml = new XHtml('code.string');
 
 function duh(){
 	var elemento = $('texto');
-	elemento.innerHTML = template.getVariables(123).toJSONString();
+	elemento.innerHTML = xhtml.getCode();
 	elemento.style.color = 'blue';
 }
 

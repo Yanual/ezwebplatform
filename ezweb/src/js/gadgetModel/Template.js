@@ -36,8 +36,8 @@ function Template(uri_) {
 //      TEMPLATESTATE (State Object)
 //////////////////////////////////////////////
 
-function TemplateState(uri_)
-{	
+function TemplateState(uri_) {
+		
 	// ******************
 	//  CALLBACK METHODS 
 	// ******************
@@ -71,6 +71,6 @@ function TemplateState(uri_)
 	var persistenceEngine = PersistenceEngineFactory.getInstance();
 	
 	// Getting Variables from PersistenceEngine. Asyncrhonous call!
-	// persistenceEngine.send_get(uri_, loadTemplate.bind(this), loadTemplate.bind(this));
+	// persistenceEngine.send_get(uri_, loadTemplate.bind(this), onError.bind(this));
 	persistenceEngine.send_get('template.json', this, loadTemplate, onError);
 }
