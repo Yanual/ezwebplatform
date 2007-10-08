@@ -4,6 +4,7 @@
 <script language="JavaScript" src="lib/prototype.js"></script>
 
 <script language="JavaScript" src="common/uris.js"></script>
+<script language="JavaScript" src="common/modules.js"></script>
 <script language="JavaScript" src="persistenceEngine/PersistenceEngine.js"></script>
 
 <script language="JavaScript" src="varManager/VariableGadget.js"></script>
@@ -16,9 +17,8 @@
 
 <!-- Initialization code -->
 <script language="JavaScript">
-	var persistenceEngine = PersistenceEngineFactory.getInstance();
-	var varManager = VarManagerFactory.getInstance();
-
+	var opManager = OpManagerFactory.getInstance();
+	opManager.loadEnviroment();
 </script>
 
 </head>
