@@ -80,9 +80,11 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
-    'persistenceEngine.user',
+    'persistenceEngine.gadget',
+    'persistenceEngine.igadget',
+    'persistenceEngine.connectable',
 )
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-AUTH_PROFILE_MODULE = 'user.UserProfile'
+# AUTH_PROFILE_MODULE = 'user.UserProfile'

@@ -6,19 +6,22 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 
 
-class UserProfile(models.Model):
+#class UserProfile(models.Model):
 
-    class Admin:
-        pass
+#    class Admin:
+#        pass
 
 
 class Gadget(models.Model):
     uri = models.CharField(_('URI'), maxlength=500)
     title = models.CharField(_('Title'), maxlength=250)
+    slug_title = models.SlugField(_('Slug title'), maxlength=250)
     # cached_xml = models.TextField(_('Cached XML'), null=True, blank=True, editable=True)
     content = models.TextField(_('Content'), null=True, blank=True, editable=True)
+    template = models.TextField(_('Template'), null=True, blank=True, editable=True)
     last_update = models.DateTimeField(_('Last update'))
     author = models.CharField(_('Author'), maxlength=250)
+    vendor = models.CharField(_('Vendor'), maxlength=250)
     web = models.TextField(_('Website'), maxlength=500, null=True, blank=True)
     description = models.CharField(_('Description'), maxlength=250)
     version = models.CharField(_('Version'), maxlength=150)
