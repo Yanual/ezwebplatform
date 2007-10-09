@@ -78,7 +78,7 @@ class Gadget(models.Model):
     
     author = models.CharField(_('Author'), maxlength=250)
     web = models.URLField(_('Web'))
-    
+   
     description = models.CharField(_('Description'), maxlength=250)
     tags = models.CharField(_('Tags'), maxlength=250)
     
