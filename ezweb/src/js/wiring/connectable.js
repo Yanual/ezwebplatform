@@ -4,47 +4,51 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function Connectable(name){
 	// Private attributes
-	this.id;
-	this.type;
-	this.value;
+   this.id;
+   this.type;
+   this.value;
    this.name=name;
 }
 // Public methods 
 
 Connectable.prototype.getId = function(){
-	return this.id;
+   return this.id;
 }
 	
 Connectable.prototype.setId = function(value){
-	this.id=value;
+   this.id=value;
 }
 	
 Connectable.prototype.getType = function(){
-	return this.type;
+   return this.type;
 }
 	
 Connectable.prototype.setType = function(value){
-	this.type=value;
+   this.type=value;
 }
 	
 Connectable.prototype.getValue = function(){
-	return this.value;
+   return this.value;
 }
-	
+
 Connectable.prototype.setValue = function(value){
-	this.value=value;
+   this.value=value;
+}
+
+Connectable.prototype.getName = function(){
+   return this.name;
 }
 
 Connectable.prototype.clear = function(value){
-	null; //
+   null; //
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // This class represents every object which may be placed in the middle of a connection between a In object and Out object //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function Out(name){
-	Connectable.call(this,name);
-	var inputHash = [];
+   Connectable.call(this,name);
+   this.inputHash = [];
 }
 Out.prototype = new Connectable();
 
@@ -52,8 +56,8 @@ Out.prototype = new Connectable();
 // This class represents every object which may initialize one transmission through the wiring module //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 function In(name){
-	Connectable.call(this,name);
-	this.outputHash = [];
+   Connectable.call(this,name);
+   this.outputHash = [];
 }
 In.prototype = new Connectable();
 
@@ -61,7 +65,7 @@ In.prototype = new Connectable();
 // This class represents every object which may transmit some data //
 /////////////////////////////////////////////////////////////////////
 function InOut(name){
-	Connectable.call(this,name);
+   Connectable.call(this,name);
    this.inputHash = [];
    this.outputHash = [];
 }
@@ -71,7 +75,7 @@ InOut.prototype = new Connectable();
 // This class represents a iGadget variable which may produce some data //
 //////////////////////////////////////////////////////////////////////////
 function Event(name){
-	In.call(this,name);
+   In.call(this,name);
 }
 Event.prototype = new In();
 
@@ -79,7 +83,7 @@ Event.prototype = new In();
 // This class represents a connectable whose only purpose is to redistribute the data produced by an In object //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function Channel(name){
-	InOut.call(this,name);
+   InOut.call(this,name);
 }
 InOut.prototype = new InOut();
 
@@ -87,6 +91,6 @@ InOut.prototype = new InOut();
 // This class representents a iGadget variable which may receive some data //
 /////////////////////////////////////////////////////////////////////////////
 function Slot(name){
-	Out.call(this,name);
+   Out.call(this,name);
 }
 Slot.prototype = new Out();
