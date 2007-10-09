@@ -122,10 +122,10 @@ var ShowcaseFactory = function () {
 				bufferTable.append('<tr><td align="center"><input type="button" value="add"></td></tr></table>');
 				bufferTable.append('</td>\n');
 				
-				if (i == keys.length-1){
+				if (i == (keys.length-1)) {
 					bufferTable.append('</tr>\n');
 					
-				} else if (i% Showcase.prototype.NUM_CELLS == 0){
+				} else if ((i!=0) && ((i% Showcase.prototype.NUM_CELLS) == 0)) {
 					bufferTable.append('</tr><tr>\n');
 				}
 			}

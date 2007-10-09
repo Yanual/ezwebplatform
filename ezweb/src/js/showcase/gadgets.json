@@ -1,18 +1,20 @@
 {
- "gadgets":[
-  {"vendor": "vendor_1",
+ "gadgets": [
+ {"vendor": "vendor_1",
   "name": "gadget_1",
   "version": "1",
   "tags":[
   {"value": "tag_1"}],
   "template": "/template",
-  "xhtml": "/xhtml"},
-  {"vendor": "vendor_1",
+  "xhtml": "/xhtml",
+  "image": "equis.gif"},
+ {"vendor": "vendor_1",
   "name": "gadget_2",
   "version": "2",
   "tags":[
   {"value": "tag_1"}],
   "template": "/template",
-  "xhtml": "/xhtml"}
-  ]
+   "xhtml": "/xhtml",
+   "image": "stick.gif"}
+   ]
 }
