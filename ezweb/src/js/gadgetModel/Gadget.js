@@ -3,12 +3,20 @@
 //                  GADGET                  //
 //////////////////////////////////////////////
 
-function Gadget(gadget_) {
+function Gadget(gadget_, url_) {
 	
 	// *******************
 	//  PRIVATE VARIABLES
 	// *******************
-	var state = new GadgetState(gadget_);
+
+	var state = null;
+	
+	if (url_ != null) {
+		_solitarGadget(url_);
+	}
+	else {
+		state = new GadgetState(gadget_);
+	}
 	
 	// ******************
 	//  PUBLIC FUNCTIONS
@@ -24,6 +32,37 @@ function Gadget(gadget_) {
 	Gadget.prototype.getVersion = function() { return state.getVersion(); }
 	Gadget.prototype.getTemplate = function() { return state.getTemplate(); }
 	Gadget.prototype.getXHtml = function() { return state.getXHtml(); }
+	
+	// *******************
+	//  PRIVATE FUNCTIONS
+	// *******************
+	
+	var _solicitarGadget = function(url_) {
+		
+		// ******************
+		//  CALLBACK METHODS 
+		// ******************
+	
+		// Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
+	
+		loadURI = function(transport) {
+			persistenceEngine.send_get(transport.responseText, this, loadGadget, onError);
+		}
+		
+		onError = function(transport) {
+			alert("Error Gadget GET");
+			// Process
+		}
+		
+		loadGadget = function(transport) {
+			var response = transport.responseText;
+			var objRes = eval ('(' + response + ')');
+			state = new GadgetState(objRes);
+		}
+		
+		var persistenceEngine = PersistenceEngineFactory.getInstance();
+		persistenceEngine.send_post(url_Server, url_, this, loadURI, onError);
+	}
 }
 
 //////////////////////////////////////////////
