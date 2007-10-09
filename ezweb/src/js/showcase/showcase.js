@@ -17,6 +17,7 @@ var ShowcaseFactory = function () {
 		var tempTemplateString = '';
 		var tempTemplate = null;
 		var loaded = false;
+		
 		var persistenceEngine = PersistenceEngineFactory.getInstance();
 		var opManager = OpManagerFactory.getInstance();
 		
@@ -146,7 +147,31 @@ var ShowcaseFactory = function () {
 		
 		Showcase.prototype.addInstance = function (gadgetId_) {}
 		
-		Showcase.prototype.repaint = function () {}
+		var MODULE_HTML_ID = "showcase" 
+		
+		Showcase.prototype.repaint = function () {
+			_gadget['1']='2';
+			_gadget['2']='2';
+			
+			var bufferTable = new StringBuffer();
+			bufferTable.append("<table border='1'>\n");
+			var keys = _gadgets.keys();
+			for (var i = 0; i<keys.length; i++) {
+				bufferTable.append("<tr>");
+				bufferTable.append("<td>row "); 
+				bufferTable.append(i);
+				bufferTable.append(", cell ");
+				bufferTable.append(i);
+				bufferTable.append("</td>\n");
+				bufferTable.append("</tr>\n");
+			}
+			bufferTable.append("</table>\n");
+
+			var mydiv = $(MODULE_HTML_ID);
+			mydiv.innerHTML = bufferTable.join();
+		
+			
+		}
 	}
 	
 	// *********************************
@@ -165,6 +190,4 @@ var ShowcaseFactory = function () {
 }();
 
 var myshowcase = ShowcaseFactory.getInstance();
-var id = myshowcase.addGadget("google.htm");
-alert (id);
-myshowcase.deleteGadget(id);
+myshowcase.repaint();

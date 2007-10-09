@@ -1,0 +1,18 @@
+{
+ "gadgets":[
+  {"vendor": "vendor_1",
+  "name": "gadget_1",
+  "version": "1",
+  "tags":[
+  {"value": "tag_1"}],
+  "template": "/template",
+  "xhtml": "/xhtml"},
+  {"vendor": "vendor_1",
+  "name": "gadget_2",
+  "version": "2",
+  "tags":[
+  {"value": "tag_1"}],
+  "template": "/template",
+  "xhtml": "/xhtml"}
+  ]
+}
