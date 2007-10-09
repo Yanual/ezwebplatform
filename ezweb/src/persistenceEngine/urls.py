@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.conf.urls.defaults import *
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
@@ -9,16 +10,16 @@ urlpatterns = patterns('',
 
     # EzWeb
     (r'^$', 'views.index'),
-    (r'^user/(?P<user_id>\d+)/$', include('user.urls')),
+    (r'^user/(?P<user_id>\d+)/', include('user.urls')),
 
     # Gadgets
-    (r'^gadget(s)?/(.*)', include('gadget.urls')),
+    (r'^gadget(s)?/', include('gadget.urls')),
 
     # IGadgets
-    (r'^igadget(s)?/(.*)', include('igadget.urls')),
+    (r'^igadget(s)?/', include('igadget.urls')),
 
     # Connectables
-    (r'^connectable(s)?/(.*)', include('connectable.urls')),
+    (r'^connectable(s)?/', include('connectable.urls')),
 
 
     # Django contrib

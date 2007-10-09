@@ -90,7 +90,7 @@ class Gadget(models.Model):
         pass
 
     def __unicode__(self):
-        return self.title
+        return self.name
 
     
 class Tag(models.Model):
