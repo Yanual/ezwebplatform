@@ -54,7 +54,12 @@
 		var elemento = $('texto');
 	
 		var gadget = new Gadget(gadget_json, null);
-		elemento.innerHTML = gadget.getXHtml().getCode();
+		var elementos = gadget.getXHtml().getElements();
+		for (i=0; i<elementos.length; i++)
+		{
+			alert(elementos[i].getId());
+		}
+		elemento.innerHTML = elementos[0].getEvent();
 		elemento.style.color = 'blue';
 	}
 

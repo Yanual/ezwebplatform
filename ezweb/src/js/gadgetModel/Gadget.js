@@ -22,16 +22,16 @@ function Gadget(gadget_, url_) {
 	//  PUBLIC FUNCTIONS
 	// ******************
 	
-	Gadget.prototype.setTags = function(tags_) { state.setTags(tags_); }
-	Gadget.prototype.getTags = function() { return state.getTags(); }
-	Gadget.prototype.addTag = function(tag_) { state.addTag(tag_); }
-	Gadget.prototype.removeTag = function(tag_) { state.removeTag(tag_) }
+	this.setTags = function(tags_) { state.setTags(tags_); }
+	this.getTags = function() { return state.getTags(); }
+	this.addTag = function(tag_) { state.addTag(tag_); }
+	this.removeTag = function(tag_) { state.removeTag(tag_) }
 	
-	Gadget.prototype.getVendor = function() { return state.getVendor(); }
-	Gadget.prototype.getName = function() { return state.getName(); }
-	Gadget.prototype.getVersion = function() { return state.getVersion(); }
-	Gadget.prototype.getTemplate = function() { return state.getTemplate(); }
-	Gadget.prototype.getXHtml = function() { return state.getXHtml(); }
+	this.getVendor = function() { return state.getVendor(); }
+	this.getName = function() { return state.getName(); }
+	this.getVersion = function() { return state.getVersion(); }
+	this.getTemplate = function() { return state.getTemplate(); }
+	this.getXHtml = function() { return state.getXHtml(); }
 	
 	// *******************
 	//  PRIVATE FUNCTIONS
@@ -101,14 +101,14 @@ function GadgetState(gadget_) {
 	//  PUBLIC FUNCTIONS
 	// ******************
 	
-	GadgetState.prototype.setTags = function(tags_) { tags = tags_; }
-	GadgetState.prototype.getTags = function() { return tags; }
-	GadgetState.prototype.addTag = function(tag_) { tags.push(tag_); }
-	GadgetState.prototype.removeTag = function(tag_) { tags = tags.without(tag_); }
+	this.setTags = function(tags_) { tags = tags_; }
+	this.getTags = function() { return tags; }
+	this.addTag = function(tag_) { tags.push(tag_); }
+	this.removeTag = function(tag_) { tags = tags.without(tag_); }
 	
-	GadgetState.prototype.getVendor = function() { return vendor; }
-	GadgetState.prototype.getName = function() { return name; }
-	GadgetState.prototype.getVersion = function() { return version; }
-	GadgetState.prototype.getTemplate = function() { return template; }
-	GadgetState.prototype.getXHtml = function() { return xhtml; }
+	this.getVendor = function() { return vendor; }
+	this.getName = function() { return name; }
+	this.getVersion = function() { return version; }
+	this.getTemplate = function() { return template; }
+	this.getXHtml = function() { return xhtml; }
 }

@@ -24,5 +24,21 @@
   			}
   		]
   	},
-  	"xhtml":"code.string"
+  	"xhtml":
+  	{
+		"uri":"uri_codigo",
+		"elements":
+	  	[
+	  		{
+	  			"id":"elemento1",
+	  			"event":"evento1",
+	  			"handler":"manejador1"
+	  		},
+	  		{
+	  			"id":"elemento2",
+	  			"event":"evento2",
+	  			"handler":"manejador2"
+	  		}
+	  	]
+	}
 }

@@ -16,15 +16,15 @@ function XHtml(xhtml_) {
 	
 	uri = xhtml_.uri;
 	for (i = 0; i<xhtml_.elements.length; i++) {
-		elements.push(new ElementsHtml(xhtml_.elements[i].id, xhtml_.elements[i].event, xhtml_.elements[i].handler));
+		elements.push(new ElementHtml(xhtml_.elements[i].id, xhtml_.elements[i].event, xhtml_.elements[i].handler));
 	}
 	
 	// ****************
 	//  PUBLIC METHODS
 	// ****************
 	
-	XHtml.prototype.getURICode = function() { return uri; }
-	XHtml.prototype.getElements = function() { return elements; }
+	this.getURICode = function() { return uri; }
+	this.getElements = function() { return elements; }
 }
 
 //////////////////////////////////////////////
@@ -45,7 +45,7 @@ function ElementHtml(id_, event_, handler_) {
 	//  PUBLIC METHODS
 	// ****************
 	
-	ElementHtml.prototype.getId = function() { return id; }
-	ElementHtml.prototype.getEvent = function() { return event; }
-	ElementHtml.prototype.getHandler = function() { return handler; }
+	this.getId = function() { return id; }
+	this.getEvent = function() { return event; }
+	this.getHandler = function() { return handler; }
 }

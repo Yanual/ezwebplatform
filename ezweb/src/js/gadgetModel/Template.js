@@ -15,7 +15,7 @@ function Template(template_) {
 	//  PUBLIC FUNCTIONS
 	// ******************
 
-    Template.prototype.getVariables = function (igadget_) {
+    this.getVariables = function (igadget_) {
         
 		// JSON-coded Template-Variables mapping	
 		// Constructing the structure 
