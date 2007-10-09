@@ -2,51 +2,50 @@
 //                  XHTML                   //
 //////////////////////////////////////////////
 
-function XHtml(uriCode_) {
+function XHtml(xhtml_) {
 	
-	// Falta implementar el caso en que en la creación de un gadget, se le pasa XHmlt un URL de Internet para que objetnga el código, en éste caso lo tendrá que guardar en el servidor y guardar su URI
-	var state = new XHtmlState(uriCode_);
+	// *******************
+	//  PRIVATE VARIABLES
+	// *******************
 	
-	XHtml.prototype.getCode = function(){ return state.getCode(); }
+	var uri = null;
+	var elements = [];
+	
+	// JSON-coded XHtml mapping
+	// Constructing the structure
+	
+	uri = xhtml_.uri;
+	for (i = 0; i<xhtml_.elements.length; i++) {
+		elements.push(new ElementsHtml(xhtml_.elements[i].id, xhtml_.elements[i].event, xhtml_.elements[i].handler));
+	}
+	
+	// ****************
+	//  PUBLIC METHODS
+	// ****************
+	
+	XHtml.prototype.getURICode = function() { return uri; }
+	XHtml.prototype.getElements = function() { return elements; }
 }
 
 //////////////////////////////////////////////
-//        XHTMLESTATE (State Object)
+//              ELEMENTHTML                 //
 //////////////////////////////////////////////
 
-function XHtmlState(uriCode_) {
-		
-	// ******************
-	//  CALLBACK METHODS 
-	// ******************
+function ElementHtml(id_, event_, handler_) {
 	
-	// Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
+	// *******************
+	//  PRIVATE VARIABLES
+	// *******************
+
+	var id = id_;
+	var event = event_;
+	var handler = handler_;
 	
-	loadCode = function (transport) {
-		code = transport.responseText;
-	}
-		
-	onError = function (transport) {
-		alert("Error XHtml GET");
-		// Process
-	}
+	// ****************
+	//  PUBLIC METHODS
+	// ****************
 	
-	// ******************
-	//  PUBLIC FUNCTIONS
-	// ******************
-	
-	XHtmlState.prototype.getCode = function () {
-		return code;
-	}
-	
-	// *********************************
-	//  PRIVATE VARIABLES AND FUNCTIONS
-	// *********************************
-	
-	var code;
-	var persistenceEngine = PersistenceEngineFactory.getInstance();
-	
-	// Getting Variables from PersistenceEngine. Asyncrhonous call!
-	// persistenceEngine.send_get(uriCode_, loadCode.bind(this), onError.bind(this));
-	persistenceEngine.send_get('code.string', this, loadCode, onError);
+	ElementHtml.prototype.getId = function() { return id; }
+	ElementHtml.prototype.getEvent = function() { return event; }
+	ElementHtml.prototype.getHandler = function() { return handler; }
 }

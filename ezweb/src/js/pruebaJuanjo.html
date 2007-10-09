@@ -48,13 +48,12 @@
 	var persistenceEngine = PersistenceEngineFactory.getInstance();
 	
 	// Getting Variables from PersistenceEngine. Asyncrhonous call!
-	// persistenceEngine.send_get(uriCode_, loadCode.bind(this), onError.bind(this));
 	persistenceEngine.send_get('gadget.json', this, loadGadget, onError);
 
 	duh  = function(){
 		var elemento = $('texto');
 	
-		var gadget = new Gadget(gadget_json);
+		var gadget = new Gadget(gadget_json, null);
 		elemento.innerHTML = gadget.getXHtml().getCode();
 		elemento.style.color = 'blue';
 	}

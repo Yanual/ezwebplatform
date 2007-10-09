@@ -46,6 +46,7 @@ function Gadget(gadget_, url_) {
 		// Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
 	
 		loadURI = function(transport) {
+			// Getting Gadget from PersistenceEngine. Asyncrhonous call!
 			persistenceEngine.send_get(transport.responseText, this, loadGadget, onError);
 		}
 		
@@ -61,6 +62,7 @@ function Gadget(gadget_, url_) {
 		}
 		
 		var persistenceEngine = PersistenceEngineFactory.getInstance();
+		// Post Gadget to PersistenceEngine. Asyncrhonous call!
 		persistenceEngine.send_post(url_Server, url_, this, loadURI, onError);
 	}
 }
