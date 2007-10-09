@@ -2,11 +2,20 @@
 <head id="head">
 <title>Prueba</title>
 <script language="JavaScript" src="http://www.prototypejs.org/assets/2007/6/20/prototype.js"></script>
+<script language="JavaScript" src="../common/util.js"></script>
 <script language="JavaScript" src="showcase.js"></script>
+<script language="JavaScript">
+	
+	function show (){
+		var myshowcase = ShowcaseFactory.getInstance();
+		myshowcase.repaint();
+	}
+	
+</script>
 
 </head>
 
-<body>
+<body onload="show()">
 
 <div id="showcase"></div>
 

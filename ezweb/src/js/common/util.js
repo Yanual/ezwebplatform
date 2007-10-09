@@ -11,5 +11,5 @@ StringBuffer.prototype.append = function append(string) {
 };
 
 StringBuffer.prototype.toString = function toString() {
-	return this.buffer.join(”");
+	return this.buffer.join("");
 };
