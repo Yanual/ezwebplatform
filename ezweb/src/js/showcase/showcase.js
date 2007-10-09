@@ -2,53 +2,7 @@
  * @author luismarcos.ayllon
  */
 
-function Tag(value_) {
-	var _value = value_;
-	
-	this.setValue = function(value_) { _value = value_; }
-	this.getValue = function() { return _value; }
-}
-
-function Template(uri_) {
-	var _uri = uri_;
-	
-	this.setValue = function(value_) { _value = value_; }
-	this.getValue = function() { return _value; }
-}
-
-function XHtml(uri_) {
-	var _uri = uri_;
-	
-	this.setValue = function(value_) { _value = value_; }
-	this.getValue = function() { return _value; }
-}
-
-function Gadget(vendor, name, version, tags, template, xhtml) {
-	var _vendor = vendor;
-	var _name = name;
-	var _version = version;
-	var _tags = tags;
-	var _template = template;
-	var _xhtml = xhtml;
-	
-	this.setTags = function(tags) { _tags = tags; }
-	this.getTags = function() { return _tags; }
-	this.addTag = function(tag) { _tags.push(tag); }
-	this.removeTag = function(tag) { _tags = _tags.without(tag); }
-	this.setVendor = function(vendor) { _vendor = vendor; }
-	this.getVendor = function() { return _vendor; }
-	this.setName = function(name) { _name = name; }
-	this.getName = function() { return _name; }
-	this.setVersion = function(version) { _version = version; }
-	this.getVersion = function() { return _version; }
-	this.setTemplate = function(template) { _template = template; }
-	this.getTemplate = function() { return _template; }
-	this.setXHtml = function(xhtml) { _xhtml = xhtml; }
-	this.getXHtml = function() { return _xhtml; }
-	
-	this.save = function() {
-	}
-
+// This module provides a set of gadgets which can be deployed into dragboard as gadget instances 
 var ShowcaseFactory = function () {
 
 	// *********************************
@@ -56,6 +10,9 @@ var ShowcaseFactory = function () {
 	// *********************************
 	var instance = null;
 
+	// *********************************
+	// CONSTRUCTOR
+	// *********************************
 	function Showcase () {
 		
 		// ******************
@@ -68,36 +25,13 @@ var ShowcaseFactory = function () {
 		// PRIVATE METHODS AND VARIABLES
 		// *******************************
 		var _gadgets = new Hash();
-		var loaded = false;
-		var persistenceEngine = PersistenceEngineFactory.getInstance();
-		var opManager = OpManagerFactory.getInstance();
+		var _loaded = false;
+		var _persistenceEngine = PersistenceEngineFactory.getInstance();
+		var _opManager = OpManagerFactory.getInstance();
 		
-		persistenceEngine.send_get('gadgets.json', this, loadGadgets, onError);
+		// Initial load from persitence system
+		_persistenceEngine.send_get('gadgets.json', this, loadGadgets, onError);
 
-		
-		// Load a gadget from persitence system
-		function addGadgetFromPersistence (gadget_){
-
-			// Load gadget tag list from persitence system
-			var tagList = [];
-			for (var j = 0; j<gadget_.tags.length; j++) {
-				tagList[j] = new Tag (gadget_.tags.value);
-			}
-			
-			// Load template variables from persitence system
-			var template = new Template (gadget_.template_uri);
-			
-			// Load gadget code from persitence system
-			var code = new XHtml (gadget_.code_uri);				
-			
-			// Insert gadget object
-			var id = gadget_.vendor + '_' + gadget_.name + '_' + gadget_.version;
-			var gadget = new Gadget (gadget_.vendor, gadget_.name, gadget_.version,	tagList, template, code);
-			_gadgets[gadgetId] = gadget;
-			return gadget;
-			 
-		}
-		
 		// ****************
 		// CALLBACK METHODS 
 		// ****************
@@ -105,55 +39,59 @@ var ShowcaseFactory = function () {
 		// Load gadgets from persistence system
 		loadGadgets = function (receivedData_) {
 			var response = receivedData_.responseText;
-			var gadgetTempList = eval ('(' + response + ')');
-			gadgetTempList = gadgetTempList.gadgets;
+			var jsonGadgetList = eval ('(' + response + ')');
+			jsonGadgetList = jsonGadgetList.gadgets;
 			
 			// Load all gadgets from persitence system
-			for (var i = 0; i<gadgetTempList.length; i++) {
-				addGadgetFromPersistence (gadgetTempList[i]);
+			for (var i = 0; i<jsonGadgetList.length; i++) {
+				var jsonGadget = jsonGadgetList[i];
+				var gadget = new Gadget (jsonGadget, null);
+				
+				// Insert gadget object in showcase object model
+				var gadgetId = gadget.getVendor() + '_' + gadget.getName() + '_' + gadget.getVersion();
+				_gadgets[gadgetId] = gadget;
 			}
 			
 			// Showcase loaded
-			loaded = true;
-			opManager.continueLoading (Modules.prototype.SHOWCASE);
-		}
-		
-		onError = function (receivedData_) {
-			alert("error showcase GET");
+			_loaded = true;
+			_opManager.continueLoading (Modules.prototype.SHOWCASE);
 		}
 		
 		// ****************
 		// PUBLIC METHODS
 		// ****************
 		Showcase.prototype.addGadget = function (url_) {
-			
+			var gadget = new Gadget (null, url_);
+				
+			// Insert gadget object in showcase object model
+			var gadgetId = gadget.getVendor() + '_' + gadget.getName() + '_' + gadget.getVersion();
+			_gadgets[gadgetId] = gadget;
 		} 
 		
-		Showcase.prototype.saveGadgetHandler = function () {}
-		
-		
 		Showcase.prototype.deleteGadget = function (gadgetId_) {
-			_gadgets.remove(gadgetId_);
-			var uri = URIConstants.prototype.GADGET.replace("<gadgetId", gadgetId_);
-			persistenceEngine.send_delete(uri, tempTemplate, this, doNothing, onError);
-			
+			var gadget = _gadgets.remove(gadgetId_);
+			gadget.remove();
 		}
 		
 		Showcase.prototype.updateGadget = function (gadgetId_, url_) {
-			
+			Showcase.prototype.remove(gadgetId_);
+			Showcase.prototype.addGadget(url_);
 		}
 		
 		Showcase.prototype.tagGadget = function (gadgetId_, tags_) {
-			
-			
+			for (var i = 0; i<tags_.length; i++) {
+				var tag = tags_[i];
+				_gadgets[gadgetId_].addTag(tag);
+			}
 		}
 		
-		Showcase.prototype.addInstance = function (gadgetId_) {}
+		Showcase.prototype.addInstance = function (gadgetId_) {
+			var gadget = _gadget[gadgetId_];
+			_opManager.addInstance (gadget);
+		}
 		
 		Showcase.prototype.repaint = function () {
-			_gadgets['1']='2';
-			_gadgets['2']='2';
-			
+
 			var bufferTable = new StringBuffer();
 			bufferTable.append("<table border='1'>\n");
 			var keys = _gadgets.keys();
