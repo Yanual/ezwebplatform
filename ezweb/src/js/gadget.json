@@ -1,0 +1,28 @@
+{
+	"vendor":"vendor1",
+  	"name":"nombre1",
+  	"version":"1.0",
+  	"tags":
+  	[
+  		"tag1",
+  		"tag2",
+  		"tag3"
+  	],
+  	"template":
+  	{
+  		"variables":
+  		[
+  			{
+  				"name":"var1",
+  				"aspect":"SLOT",
+  				"value":"valor1"
+  			},
+  			{
+  				"name":"var2",
+  				"aspect":"EVENT",
+  				"value":"valor2"
+  			}
+  		]
+  	},
+  	"xhtml":"code.string"
+}

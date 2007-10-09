@@ -1,53 +1,73 @@
-function Gadget(vendor, name, version, tags, template, xhtml) {
-	var _vendor = vendor;
-	var _name = name;
-	var _version = version;
-	var _tags = tags;
-	var _template = template;
-	var _xhtml = xhtml;
+
+//////////////////////////////////////////////
+//                  GADGET                  //
+//////////////////////////////////////////////
+
+function Gadget(gadget_) {
 	
-	this.setTags = function(tags) { _tags = tags; }
-	this.getTags = function() { return _tags; }
-	this.addTag = function(tag) { _tags.push(tag); }
-	this.removeTag = function(tag) { _tags = _tags.without(tag); }
-	this.setVendor = function(vendor) { _vendor = vendor; }
-	this.getVendor = function() { return _vendor; }
-	this.setName = function(name) { _name = name; }
-	this.getName = function() { return _name; }
-	this.setVersion = function(version) { _version = version; }
-	this.getVersion = function() { return _version; }
-	this.setTemplate = function(template) { _template = template; }
-	this.getTemplate = function() { return _template; }
-	this.setXHtml = function(xhtml) { _xhtml = xhtml; }
-	this.getXHtml = function() { return _xhtml; }
+	// *******************
+	//  PRIVATE VARIABLES
+	// *******************
+	var state = new GadgetState(gadget_);
 	
-	this.save = function() {
-		state = new GadgetState('/user/<user_id>/gadgets/' + _vendor + '/' + _name + '/' + _version, this)
-		state.save();
-	}
+	// ******************
+	//  PUBLIC FUNCTIONS
+	// ******************
+	
+	Gadget.prototype.setTags = function(tags_) { state.setTags(tags_); }
+	Gadget.prototype.getTags = function() { return state.getTags(); }
+	Gadget.prototype.addTag = function(tag_) { state.addTag(tag_); }
+	Gadget.prototype.removeTag = function(tag_) { state.removeTag(tag_) }
+	
+	Gadget.prototype.getVendor = function() { return state.getVendor(); }
+	Gadget.prototype.getName = function() { return state.getName(); }
+	Gadget.prototype.getVersion = function() { return state.getVersion(); }
+	Gadget.prototype.getTemplate = function() { return state.getTemplate(); }
+	Gadget.prototype.getXHtml = function() { return state.getXHtml(); }
 }
 
-function GadgetState(uri, gadget) {
-	this.vendor = gadget.getVendor();
-	this.name = gadget.getName();
-	this.version = gadget.getVersion();
-	this.uriTemplate = uri + '/template/json';
-	this.uriXhtml = uri + '/xhtml';
-	this.uriTags = new Array();
-	var _tags = gadget.getTags();
-	for (i=0; i<_tags.length; i++)
-	{
-		this.uriTags[i] = uri + '/tags/' + i;
+//////////////////////////////////////////////
+//       GADGETSTATE (State Object)         //
+//////////////////////////////////////////////
+
+function GadgetState(gadget_) {
+
+	// *******************
+	//  PRIVATE VARIABLES
+	// *******************
+	
+	var vendor = null;
+	var name = null;
+	var version = null;
+	var tags = [];
+	var template = null;
+	var xhtml = null;
+	
+	// JSON-coded Gadget mapping
+	// Constructing the structure
+	  
+	vendor = gadget_.vendor;
+	name = gadget_.name;
+	version = gadget_.version;
+	template = new Template(gadget_.template);
+	xhtml = new XHtml(gadget_.xhtml);
+	
+	for (i = 0; i<gadget_.tags.length; i++) {
+		tags.push(gadget_.tags[i]);
 	}
 	
-	this.save = function() {
-		persistence = new Persistence();
-		persistence.save(uri + '/json', this.toJSONString());
-		gadget.getXHtml().save(this.uriXhtml);
-		gadget.getTemplate().save(this.uriTemplate);
-		for (i=0; i<_tags.length; i++)
-		{
-			_tags[i].save(this.uriTags[i]);
-		}
-	}
+	// ******************
+	//  PUBLIC FUNCTIONS
+	// ******************
+	
+	GadgetState.prototype.setTags = function(tags_) { tags = tags_; }
+	GadgetState.prototype.getTags = function() { return tags; }
+	GadgetState.prototype.addTag = function(tag_) { tags.push(tag_); }
+	GadgetState.prototype.removeTag = function(tag_) { tags = tags.without(tag_); }
+	
+	GadgetState.prototype.getVendor = function() { return vendor; }
+	GadgetState.prototype.getName = function() { return name; }
+	GadgetState.prototype.getVersion = function() { return version; }
+	GadgetState.prototype.getTemplate = function() { return template; }
+	GadgetState.prototype.getXHtml = function() { return xhtml; }
 }

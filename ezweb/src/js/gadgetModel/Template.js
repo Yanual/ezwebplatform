@@ -1,17 +1,27 @@
 
 //////////////////////////////////////////////
-//               TEMPLATE
+//                 TEMPLATE                 //
 //////////////////////////////////////////////
 
-function Template(uri_) {
-    var state = new TemplateState(uri_);
+function Template(template_) {
+
+	// *******************
+	//  PRIVATE VARIABLES
+	// *******************
+
+   var variableList = template_.variables;
+
+	// ******************
+	//  PUBLIC FUNCTIONS
+	// ******************
 
     Template.prototype.getVariables = function (igadget_) {
-        // JSON-coded Template-variable mapping
-		
-		// Constructing the structure   
+        
+		// JSON-coded Template-Variables mapping	
+		// Constructing the structure 
+		 
 		var objVars = [];
-		var rawVars = state.getVariables();
+		var rawVars = variableList;
 		var rawVar = null;
 		for (i = 0; i<rawVars.length; i++) {
 			rawVar = rawVars[i];
@@ -30,47 +40,4 @@ function Template(uri_) {
 		}
         return objVars;
     }
-}
-
-//////////////////////////////////////////////
-//      TEMPLATESTATE (State Object)
-//////////////////////////////////////////////
-
-function TemplateState(uri_) {
-		
-	// ******************
-	//  CALLBACK METHODS 
-	// ******************
-	
-	// Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
-	
-	loadTemplate = function (transport) {
-		var response = transport.responseText;
-		variableList = eval ('(' + response + ')');
-		variableList = variableList.variables;
-	}
-		
-	onError = function (transport) {
-		alert("Error Template GET");
-		// Process
-	}
-	
-	// ******************
-	//  PUBLIC FUNCTIONS
-	// ******************
-	
-	TemplateState.prototype.getVariables = function () {
-		return variableList;
-	}
-	
-	// *********************************
-	//  PRIVATE VARIABLES AND FUNCTIONS
-	// *********************************
-
-	var variableList;
-	var persistenceEngine = PersistenceEngineFactory.getInstance();
-	
-	// Getting Variables from PersistenceEngine. Asyncrhonous call!
-	// persistenceEngine.send_get(uri_, loadTemplate.bind(this), onError.bind(this));
-	persistenceEngine.send_get('template.json', this, loadTemplate, onError);
 }
