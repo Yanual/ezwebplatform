@@ -14,15 +14,24 @@
     <h1>Pruebas ReST sobre el modelo de datos</h1>
     <h2>Gadget</h2>
     <ul>
-        <li>Listar gadgets: <a onclick="gadget_list_get();" href="#">GET sobre 'gadgets/'</a></li>
+        <li>Listar gadgets: <a onclick="do_get('/gadgets/');" href="#">
+            GET sobre '/gadgets/'</a></li>
+        <li>Obtener gadget: <a onclick="do_get('/gadget/vendor1/gadget1/v1/');" href="#">
+            GET sobre '/gadget/vendor1/gadget1/v1/'</a></li>
+        <li>Obtener código del gadget: <a onclick="do_get('/gadget/vendor1/gadget1/v1/code/');" href="#">
+            GET sobre '/gadget/vendor1/gadget1/v1/code/'</a></li>
+        <li>Obtener el template del gadget: <a onclick="do_get('/gadget/vendor1/gadget1/v1/template/');" href="#">
+            GET sobre '/gadget/vendor1/gadget1/v1/template/'</a></li>
+        <li>Obtener las tags del gadget: <a onclick="do_get('/gadget/vendor1/gadget1/v1/tags/');" href="#">
+            GET sobre '/gadget/vendor1/gadget1/v1/tags/'</a></li>
     </ul>
 
 
 
 <script language="javascript" type="text/javascript">
 
-function gadget_list_get() {
-    new Ajax.Request('/gadgets/', {
+function do_get(url) {
+    new Ajax.Request(url, {
         method: 'get',
         onSuccess: function (transport) {
             alert(transport.responseText);
