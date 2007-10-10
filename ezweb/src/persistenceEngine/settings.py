@@ -14,8 +14,8 @@ MANAGERS = ADMINS
 
 DATABASE_ENGINE = 'postgresql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
 DATABASE_NAME = 'persistenceEngine'             # Or path to database file if using sqlite3.
-DATABASE_USER = 'postgres'             # Not used with sqlite3.
-DATABASE_PASSWORD = 'postgres'         # Not used with sqlite3.
+DATABASE_USER = 'persistenceEngine'             # Not used with sqlite3.
+DATABASE_PASSWORD = 'persistenceEngine'         # Not used with sqlite3.
 DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
@@ -80,6 +80,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
+    'persistenceEngine.trial',
     'persistenceEngine.gadget',
     'persistenceEngine.igadget',
     'persistenceEngine.connectable',
@@ -87,4 +88,4 @@ INSTALLED_APPS = (
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-# AUTH_PROFILE_MODULE = 'user.UserProfile'
+AUTH_PROFILE_MODULE = 'user.UserProfile'

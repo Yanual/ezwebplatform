@@ -9,8 +9,8 @@ urlpatterns = patterns('',
     # (r'^site_media/(.*)$', 'ezweb.views.static.serve', {'document_root': path.expanduser('~/ezweb/media')}),
 
     # EzWeb
-    (r'^$', 'views.index'),
-    (r'^user/(?P<user_id>\d+)/', include('user.urls')),
+    (r'^$', include('trial.urls')),
+#    (r'^user/(?P<user_id>\d+)/', include('user.urls')),
 
     # Gadgets
     (r'^gadget(s)?/', include('gadget.urls')),

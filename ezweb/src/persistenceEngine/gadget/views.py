@@ -10,6 +10,7 @@ from django.template import RequestContext, Context
 from django.template.loader import get_template
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
 from django.utils import simplejson
 
 from django_restapi.resource import Resource
@@ -67,5 +68,4 @@ class GadgetTagsEntry(Resource):
             return HttpResponse(str(gadget.tags), mimetype='text/plain; charset=UTF-8')
         except Gadget.DoesNotExist:
             return HttpResponse('Not exists!')
-
 

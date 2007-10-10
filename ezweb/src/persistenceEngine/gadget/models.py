@@ -6,12 +6,6 @@ from django.contrib.auth.models import User
 #from django.contrib.contenttypes import generic
 
 
-#class UserProfile(models.Model):
-
-#    class Admin:
-#        pass
-
-
 class Template(models.Model):
     uri = models.CharField(_('URI'), maxlength=500)
     
