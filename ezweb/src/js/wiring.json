@@ -1,0 +1,136 @@
+{
+	"iGadgetList":
+	[
+		{	"id":"igadget1",
+			"list":
+			[
+				{	"aspect": "SLOT",					
+					"id":	"slot1",
+					"type": "type1",
+					"value": "value1",
+					"name": "nameSlot1"
+				},
+				{	"aspect": "SLOT",					
+					"id":	"slot2",
+					"type": "type2",
+					"value": "value2",
+					"name": "nameSlot2"
+				},
+				{	"aspect": "EVENT",					
+					"id":	"event1",
+					"type": "type1",
+					"value": "value1",
+					"name": "nameEvent1"
+				},
+				{	"aspect": "EVENT",					
+					"id":	"event2",
+					"type": "type2",
+					"value": "value2",
+					"name": "nameEvent2"
+				}
+			]
+		},
+		{	"id":"igadget2",
+			"list":
+			[
+				{	"aspect": "SLOT",					
+					"id":	"slot1",
+					"type": "type1",
+					"value": "value1",
+					"name": "nameSlot1"
+				},
+				{	"aspect": "SLOT",					
+					"id":	"slot2",
+					"type": "type2",
+					"value": "value2",
+					"name": "nameSlot2"
+				},
+				{	"aspect": "EVENT",					
+					"id":	"event1",
+					"type": "type1",
+					"value": "value1",
+					"name": "nameEvent1"
+				},
+				{	"aspect": "EVENT",					
+					"id":	"event2",
+					"type": "type2",
+					"value": "value2",
+					"name": "nameEvent2"
+				}
+			]
+		}
+	],
+	"inOutList":
+	[
+		{	"id":	"null",
+			"type": "type1",
+			"value": "value1",
+			"name": "nameChannel1"
+			"inputHash":
+			[
+				{	"id":"event1",
+					"name":"nameEvent1"
+				},
+				{	"id":"event2",
+					"name":"nameEvent2"
+				},
+				{	"id":"null",
+					"name":"nameChannel1"
+				},
+				{	"id":"null",
+					"name":"nameChannel2"
+				}
+			],
+			"outputHash":
+			[
+				{	"id":"slot1",
+					"name":"nameEvent1"
+				},
+				{	"id":"slot2",
+					"name":"nameSlot2"
+				},
+				{	"id":"null",
+					"name":"nameChannel1"
+				},
+				{	"id":"null",
+					"name":"nameChannel2"
+				}
+			]
+		},
+		{	"id":	"null",
+			"type": "type1",
+			"value": "value1",
+			"name": "nameChannel2"
+			"inputHash":
+			[
+				{	"id":"event1",
+					"name":"nameEvent1"
+				},
+				{	"id":"event2",
+					"name":"nameEvent2"
+				},
+				{	"id":"null",
+					"name":"nameChannel1"
+				},
+				{	"id":"null",
+					"name":"nameChannel2"
+				}
+			],
+			"outputHash":
+			[
+				{	"id":"slot1",
+					"name":"nameEvent1"
+				},
+				{	"id":"slot2",
+					"name":"nameSlot2"
+				},
+				{	"id":"null",
+					"name":"nameChannel1"
+				},
+				{	"id":"null",
+					"name":"nameChannel2"
+				}
+			]
+		}
+	]
+}
