@@ -30,8 +30,8 @@ from models import Gadget
 
 class GadgetCollection(Resource):
     def read(self, request):
-        gadgets = Gadget.objects.all()
-        return HttpResponse(str(gadgets), mimetype='text/plain; charset=UTF-8')
+        gadgets = list(Gadget.objects.all().values('id', 'name', 'vendor', 'version'))
+        return HttpResponse(simplejson.dumps(gadgets), mimetype='text/json; charset=UTF-8')
 
 
 class GadgetEntry(Resource):
@@ -46,8 +46,8 @@ class GadgetEntry(Resource):
 class GadgetTemplateEntry(Resource):
     def read(self, request, vendor, name, version):
         try:
-            gadget = Gadget.objects.get(vendor=vendor, name=name, version=version)
-            return HttpResponse(str(gadget.template), mimetype='text/plain; charset=UTF-8')
+            gadget_template = Gadget.objects.filter(vendor=vendor, name=name, version=version).values('template')[0]
+            return HttpResponse(simplejson.dumps(gadget_template), mimetype='text/json; charset=UTF-8')
         except Gadget.DoesNotExist:
             return HttpResponse('Not exists!')
 
@@ -55,8 +55,8 @@ class GadgetTemplateEntry(Resource):
 class GadgetCodeEntry(Resource):
     def read(self, request, vendor, name, version):
         try:
-            gadget = Gadget.objects.get(vendor=vendor, name=name, version=version)
-            return HttpResponse(str(gadget.xHTML), mimetype='text/plain; charset=UTF-8')
+            gadget_code = Gadget.objects.filter(vendor=vendor, name=name, version=version).values('xHTML')[0]
+            return HttpResponse(simplejson.dumps(gadget_code), mimetype='text/plain; charset=UTF-8')
         except Gadget.DoesNotExist:
             return HttpResponse('Not exists!')
 
@@ -64,8 +64,8 @@ class GadgetCodeEntry(Resource):
 class GadgetTagsEntry(Resource):
     def read(self, request, vendor, name, version):
         try:
-            gadget = Gadget.objects.get(vendor=vendor, name=name, version=version)
-            return HttpResponse(str(gadget.tags), mimetype='text/plain; charset=UTF-8')
+            gadget_tags = Gadget.objects.filter(vendor=vendor, name=name, version=version).values('tags')[0]
+            return HttpResponse(simplejson.dumps(gadget_tags), mimetype='text/plain; charset=UTF-8')
         except Gadget.DoesNotExist:
             return HttpResponse('Not exists!')
 

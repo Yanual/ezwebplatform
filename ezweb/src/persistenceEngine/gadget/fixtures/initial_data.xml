@@ -30,6 +30,21 @@
         <field to="auth.user" name="importer" rel="ManyToOneRel">1</field>
         <field type="DateTimeField" name="lastUpdate">2007-10-10 00:50:05</field>
     </object>
+    <object pk="4" model="gadget.gadget">
+        <field type="CharField" name="uri">http://foo.bar.org/gadget</field>
+        <field type="CharField" name="name">gadget3</field>
+        <field type="CharField" name="version">v1</field>
+        <field type="CharField" name="vendor">vendor3</field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">2</field>
+        <field to="gadget.xhtml" name="xHTML" rel="ManyToOneRel">2</field>
+        <field type="CharField" name="author">author3</field>
+        <field type="CharField" name="web">http://google.es</field>
+        <field type="CharField" name="description">desc3</field>
+        <field type="CharField" name="tags">tag31, tag32</field>
+        <field type="BooleanField" name="shared">False</field>
+        <field to="auth.user" name="importer" rel="ManyToOneRel">1</field>
+        <field type="DateTimeField" name="lastUpdate">2007-10-10 13:58:38</field>
+    </object>
     <object pk="1" model="gadget.template">
         <field type="CharField" name="uri">http://foo.bar.com/template</field>
     </object>
@@ -39,5 +54,9 @@
     <object pk="1" model="gadget.xhtml">
         <field type="CharField" name="uri">http://foo.bar.com/code</field>
         <field type="TextField" name="code">code1</field>
+    </object>
+    <object pk="2" model="gadget.xhtml">
+        <field type="CharField" name="uri">http://foo.bar.org</field>
+        <field type="TextField" name="code">code3</field>
     </object>
 </django-objects>
