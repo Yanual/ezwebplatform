@@ -5,12 +5,13 @@ from xml.dom.ext.reader import Sax2
 from xml.dom.ext import Print
 from StringIO import StringIO
 
-from django.shortcuts import get_object_or_404, render_to_response
+from django.shortcuts import get_object_or_404, get_list_or_404, render_to_response
 from django.template import RequestContext, Context
 from django.template.loader import get_template
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
+from django.core import serializers
 from django.utils import simplejson
 
 from django_restapi.resource import Resource
@@ -30,8 +31,11 @@ from models import Gadget
 
 class GadgetCollection(Resource):
     def read(self, request):
-        gadgets = list(Gadget.objects.all().values('id', 'name', 'vendor', 'version'))
-        return HttpResponse(simplejson.dumps(gadgets), mimetype='text/json; charset=UTF-8')
+        fields = None
+        gadgets = get_list_or_404(Gadget.objects.all())
+        data = serializers.serialize('python', gadgets, fields=fields, ensure_ascii=False) 
+        data_list = [d['fields'] for d in data]
+        return HttpResponse(simplejson.dumps(data_list, ensure_ascii=False), mimetype='text/json; charset=UTF-8')
 
 
 class GadgetEntry(Resource):
@@ -41,6 +45,10 @@ class GadgetEntry(Resource):
             return HttpResponse(str(gadget), mimetype='text/plain; charset=UTF-8')
         except Gadget.DoesNotExist:
             return HttpResponse('Not exists!')
+
+    def delete(self, request, vendor, name, version):
+        gadget = get_object_or_404(vendor=vendor, name=name, version=version)
+        gadget.delete()
 
 
 class GadgetTemplateEntry(Resource):
