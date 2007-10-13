@@ -18,6 +18,8 @@
             GET sobre '/gadgets/'</a></li>
         <li>Obtener gadget: <a onclick="do_get('/gadget/vendor1/gadget1/v1/');" href="#">
             GET sobre '/gadget/vendor1/gadget1/v1/'</a></li>
+        <li>Borrar gadget: <a onclick="do_delete('/gadget/vendor3/gadget3/v1/');" href="#">
+            DELETE sobre '/gadget/vendor3/gadget3/v1/'</a></li>
         <li>Obtener código del gadget: <a onclick="do_get('/gadget/vendor1/gadget1/v1/code/');" href="#">
             GET sobre '/gadget/vendor1/gadget1/v1/code/'</a></li>
         <li>Obtener el template del gadget: <a onclick="do_get('/gadget/vendor1/gadget1/v1/template/');" href="#">
@@ -37,7 +39,19 @@ function do_get(url) {
             alert(transport.responseText);
         },
         onError: function () {
-            alert('Fallo');
+            alert('Error');
+        }
+    });
+}
+
+function do_delete(url) {
+    new Ajax.Request(url, {
+        method: 'delete',
+        onSuccess: function (transport) {
+            alert('Deleted');
+        },
+        onError: function () {
+            alert('Error');
         }
     });
 }

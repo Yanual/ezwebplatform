@@ -31,49 +31,52 @@ from models import Gadget
 
 class GadgetCollection(Resource):
     def read(self, request):
-        fields = None
-        gadgets = get_list_or_404(Gadget.objects.all())
-        data = serializers.serialize('python', gadgets, fields=fields, ensure_ascii=False) 
-        data_list = [d['fields'] for d in data]
-        return HttpResponse(simplejson.dumps(data_list, ensure_ascii=False), mimetype='text/json; charset=UTF-8')
+        gadgets = get_list_or_404(Gadget)
+        gadgets_json = queryset_to_json_list(gadgets)
+        return HttpResponse(gadgets_json, mimetype='application/json; charset=UTF-8')
 
 
 class GadgetEntry(Resource):
     def read(self, request, vendor, name, version):
-        try:
-            gadget = Gadget.objects.get(vendor=vendor, name=name, version=version)
-            return HttpResponse(str(gadget), mimetype='text/plain; charset=UTF-8')
-        except Gadget.DoesNotExist:
-            return HttpResponse('Not exists!')
+        gadgets = get_list_or_404(Gadget, vendor=vendor, name=name, version=version)
+        gadget_json = queryset_to_json_object(gadgets)
+        return HttpResponse(gadget_json, mimetype='application/json; charset=UTF-8')
 
     def delete(self, request, vendor, name, version):
-        gadget = get_object_or_404(vendor=vendor, name=name, version=version)
+        gadget = get_object_or_404(Gadget, vendor=vendor, name=name, version=version)
         gadget.delete()
+        return HttpResponse('')
 
 
 class GadgetTemplateEntry(Resource):
     def read(self, request, vendor, name, version):
-        try:
-            gadget_template = Gadget.objects.filter(vendor=vendor, name=name, version=version).values('template')[0]
-            return HttpResponse(simplejson.dumps(gadget_template), mimetype='text/json; charset=UTF-8')
-        except Gadget.DoesNotExist:
-            return HttpResponse('Not exists!')
+        gadgets = get_list_or_404(Gadget, vendor=vendor, name=name, version=version)
+        gadget_json = queryset_to_json_object(gadgets, fields=('template'))
+        return HttpResponse(gadget_json, mimetype='application/json; charset=UTF-8')
 
 
 class GadgetCodeEntry(Resource):
     def read(self, request, vendor, name, version):
-        try:
-            gadget_code = Gadget.objects.filter(vendor=vendor, name=name, version=version).values('xHTML')[0]
-            return HttpResponse(simplejson.dumps(gadget_code), mimetype='text/plain; charset=UTF-8')
-        except Gadget.DoesNotExist:
-            return HttpResponse('Not exists!')
+        gadgets = get_list_or_404(Gadget, vendor=vendor, name=name, version=version)
+        gadget_json = queryset_to_json_object(gadgets, fields=('xHTML'))
+        return HttpResponse(gadget_json, mimetype='application/json; charset=UTF-8')
 
 
 class GadgetTagsEntry(Resource):
     def read(self, request, vendor, name, version):
-        try:
-            gadget_tags = Gadget.objects.filter(vendor=vendor, name=name, version=version).values('tags')[0]
-            return HttpResponse(simplejson.dumps(gadget_tags), mimetype='text/plain; charset=UTF-8')
-        except Gadget.DoesNotExist:
-            return HttpResponse('Not exists!')
+        gadgets = get_list_or_404(Gadget, vendor=vendor, name=name, version=version)
+        gadget_json = queryset_to_json_object(gadgets, fields=('tags'))
+        return HttpResponse(gadget_json, mimetype='application/json; charset=UTF-8')
+
+
+def queryset_to_json_list(queryset, fields=None):
+    data = serializers.serialize('python', queryset, fields=fields, ensure_ascii=False) 
+    data_list = [d['fields'] for d in data]
+    return simplejson.dumps(data_list, ensure_ascii=False)
+
+
+def queryset_to_json_object(queryset, fields=None):
+    data = serializers.serialize('python', queryset, fields=fields, ensure_ascii=False) 
+    data_object = data[0]['fields']
+    return simplejson.dumps(data_object, ensure_ascii=False)
 
