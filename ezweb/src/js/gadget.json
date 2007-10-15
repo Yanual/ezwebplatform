@@ -14,12 +14,12 @@
   		[
   			{
   				"name":"var1",
-  				"aspect":"SLOT",
+  				"aspect":"USER_PREF",
   				"value":"valor1"
   			},
   			{
   				"name":"var2",
-  				"aspect":"EVENT",
+  				"aspect":"USER_PREF",
   				"value":"valor2"
   			}
   		]
