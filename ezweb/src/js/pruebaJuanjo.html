@@ -22,38 +22,42 @@
 	
 	// Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
 	
-	loadGadget = function (transport) {
-		var response = transport.responseText;
-		gadget_json = eval ('(' + response + ')');
+	function Prueba(){
+		var gadget_json;
+			
+		loadGadget = function (transport) {
+			var response = transport.responseText;
+			gadget_json = eval ('(' + response + ')');
+		}
+		
+		onError = function (transport) {
+			alert("Error XHtml GET");
+			// Process
+		}	
+	
+		// ******************
+		//  PUBLIC FUNCTIONS
+		// ******************
+		
+		this.getGadget = function () {
+			return gadget_json;
+		}
 	}
 		
-	onError = function (transport) {
-		alert("Error XHtml GET");
-		// Process
-	}
-	
-	// ******************
-	//  PUBLIC FUNCTIONS
-	// ******************
-	
-	getGadget = function () {
-		return gadget_json;
-	}
-	
 	// *********************************
 	//  PRIVATE VARIABLES AND FUNCTIONS
 	// *********************************
-	
-	var gadget_json;
+			
+	var prueba = new Prueba();
 	var persistenceEngine = PersistenceEngineFactory.getInstance();
 	
 	// Getting Variables from PersistenceEngine. Asyncrhonous call!
-	persistenceEngine.send_get('gadget.json', this, loadGadget, onError);
+	persistenceEngine.send_get('gadget.json', prueba, loadGadget, onError);
 
 	duh  = function(){
 		var elemento = $('texto');
 	
-		var gadget = new Gadget(gadget_json, null);
+		var gadget = new Gadget(prueba.getGadget(), null);
 		var elementos = gadget.getXHtml().getElements();
 		for (i=0; i<elementos.length; i++)
 		{
