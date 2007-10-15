@@ -19,7 +19,7 @@ var ShowcaseFactory = function () {
 		// STATIC VARIABLES
 		// ******************
 		Showcase.prototype.MODULE_HTML_ID = 'showcase';
-		Showcase.prototype.NUM_CELLS = 3;
+		Showcase.prototype.NUM_CELLS = 1;
 		
 		// ****************
 		// CALLBACK METHODS 
@@ -64,6 +64,183 @@ var ShowcaseFactory = function () {
 		_persistenceEngine.send_get('gadgets.json', this, loadGadgets, onErrorCallback);
 		//_persistenceEngine.send_get('gadgets.json', this, function (data){alert (data.responseText)}, onErrorCallback);						
 
+		// Show only one gadget
+		function showGadget (gadgetId_){
+			var gadget = _gadgets[gadgetId_]
+			var buffer = new StringBuffer();
+			
+			buffer.append('<table>\n');
+			buffer.append('<tr>\n');
+			buffer.append('<td style="float: right;">\n');
+			
+			buffer.append('<a href="javascript:;" onClick="details(\'');
+			buffer.append(gadgetId_);
+			buffer.append('\');">details</a> / <a href="javascript:;" onClick="edit(\'');
+			buffer.append(gadgetId_);
+			buffer.append('\');">edit</a> / <a href="javascript:;" onClick="deleteGadget(\'');
+			buffer.append(gadgetId_);
+			buffer.append('\')">delete</a>\n');
+			
+			buffer.append('</td>\n');
+			buffer.append('</tr>\n');
+			buffer.append('<tr>\n');
+			buffer.append('<td>\n');
+
+			buffer.append('<div id="details_');
+			buffer.append(gadgetId_);
+			buffer.append('" style="display: none">\n');
+
+			buffer.append('<table>\n');
+			buffer.append('<tr>\n');
+			buffer.append('<td>\n');
+			
+			buffer.append('<label>Template</label>\n');
+			
+			buffer.append('</td>\n');
+			buffer.append('</tr>\n');
+			buffer.append('<tr>\n');
+			buffer.append('<td>\n');
+			
+			buffer.append('<input id="template_');
+			buffer.append(gadgetId_);
+			buffer.append('" type="text" readonly>\n');											
+			
+			buffer.append('</td>\n');
+			buffer.append('</tr>\n');
+			buffer.append('<tr>\n');
+			buffer.append('<td>\n');
+			
+			buffer.append('<label>XHTML</label>\n');
+			
+			buffer.append('</td>\n');
+			buffer.append('</tr>\n');
+			buffer.append('<tr>\n');
+			buffer.append('<td>\n');
+			
+			buffer.append('<input id="xhtml_');
+			buffer.append(gadgetId_);
+			buffer.append('" type="text" readonly>\n');			
+			
+			buffer.append('</td>\n');
+			buffer.append('</tr>\n');
+			buffer.append('</table>\n');
+
+			buffer.append('</div>\n');
+
+			buffer.append('</td>\n');
+			buffer.append('</tr>\n');
+			buffer.append('<tr>\n');
+			buffer.append('<td style="float: center;">\n');
+
+			buffer.append('<div id="edit_');
+			buffer.append(gadgetId_);
+			buffer.append('" style="display: none">\n');
+
+			buffer.append('<table>\n');
+			buffer.append('<tr>\n');
+			buffer.append('<td>\n');
+			
+			buffer.append('<label>Image URL</label>\n');
+			
+			buffer.append('</td>\n');
+			buffer.append('<td>\n');
+			
+			buffer.append('<input id="image_url_');
+			buffer.append(gadgetId_);
+			buffer.append('" type="text" maxlength="255" style="width: 400px;"/>\n');
+			
+			buffer.append('</td>\n');
+			buffer.append('</tr>\n');
+			buffer.append('<tr>\n');
+			buffer.append('<td>\n');
+			
+			buffer.append('<label>Tags</label>\n');
+			
+			buffer.append('</td>\n');
+			buffer.append('<td>\n');
+			
+			buffer.append('<input id="tags_');
+			buffer.append(gadgetId_);
+			buffer.append('" type="text" maxlength="255" style="width: 400px;"/>\n');
+			
+			buffer.append('</td>\n');
+			buffer.append('</tr>\n');
+			buffer.append('<tr>\n');	
+			buffer.append('<td>\n');
+			
+			buffer.append('<label> </label>\n');
+			
+			buffer.append('</td>\n');
+			buffer.append('<td>\n');
+			
+			buffer.append('<input type="button" style="font-weight: bold; float: left;" value="save" onClick="saveGadgetDetails(\'');
+			buffer.append(gadgetId_);
+			buffer.append('\')">\n');
+			buffer.append('<input type="button" style="margin-left: 10px; clear: none; float: left;" value="cancel" onClick="$(\'edit_');
+			buffer.append(gadgetId_);
+			buffer.append('\').style.display=\'none\'">\n');
+			
+			buffer.append('</td>\n');
+			buffer.append('</tr>\n');
+			
+			buffer.append('</table>\n');
+
+			buffer.append('</div>\n');
+
+			buffer.append('</td>\n');
+			buffer.append('</tr>\n');
+			buffer.append('</tr>\n');
+			buffer.append('<tr>\n');
+			buffer.append('<td align="left">\n');
+			
+			buffer.append('vendor: ');
+			buffer.append(gadget.getVendor()); 
+			buffer.append(' name: ');
+ 			buffer.append(gadget.getName());
+			buffer.append(' version: '); 
+			buffer.append(gadget.getVersion());
+			
+			buffer.append('</td>\n');
+			buffer.append('</tr>\n');
+			buffer.append('<tr>\n');
+			buffer.append('<td align="center">\n');
+			
+			buffer.append('<img id="image_');
+			buffer.append(gadgetId_);
+			buffer.append('" src="img/');
+			buffer.append(gadget.getImage());
+			buffer.append('" width="120" height="60" alt="Image cannot be shown">\n');
+			
+			buffer.append('</td>\n');
+			buffer.append('</tr>\n');
+			buffer.append('<tr>\n');
+			buffer.append('<td align="left">\n');
+			
+			buffer.append('tags: ');
+			
+			var tags = gadget.getTags();
+			for (var i = 0; i<tags.length; i++) {
+				var tag = tags[i];
+				buffer.append(tag.value);
+				if (i != (tags.length-1)){
+					buffer.append(', ');
+				}
+			}
+			
+			buffer.append('</td>\n');
+			buffer.append('</tr>\n');
+			buffer.append('<tr>\n');
+			buffer.append('<td align="center">\n');
+			
+			buffer.append('<input type="button" value="add">\n');
+			
+			buffer.append('</td>\n');
+			buffer.append('</tr>\n');
+			buffer.append('</table>\n');
+		
+			return buffer.toString();
+		}
+
 		// ****************
 		// PUBLIC METHODS
 		// ****************
@@ -106,70 +283,59 @@ var ShowcaseFactory = function () {
 		// Show gadgets in Showcase
 		Showcase.prototype.repaint = function () {
 			var bufferTable = new StringBuffer();
-			bufferTable.append('<table border="1">\n');
+			bufferTable.append('<table border="2">\n');
 			var keys = _gadgets.keys();
 			for (var i = 0; i<keys.length; i++) {
 				var gadgetId = keys[i]; 
-				var gadget = _gadgets[gadgetId]
 				
 				if (i==0){
 					bufferTable.append('<tr>\n');
 				} 
-				
-				bufferTable.append('<td><table><tr><td align="center"><img id="image_')
-				bufferTable.append(gadgetId);
-				bufferTable.append('" src="img/');
-				bufferTable.append(gadget.getImage());
-				bufferTable.append('" alt="Image cannot be shown"></td></tr>\n'); 
-				bufferTable.append('<td><input name="image_file_');
-				bufferTable.append(gadgetId)
-				bufferTable.append('" type="file" size="50"></td>');
-				bufferTable.append('<tr><td align="center"><input type="button" value="Change image" onClick="');
-				bufferTable.append('var s=ShowcaseFactory.getInstance();s.changeImageGadget("');
-				bufferTable.append(gadgetId);
-				bufferTable.append('", $("image_file_');
-				bufferTable.append(gadgetId);
-				bufferTable.append('").value);"></td></tr>\n');
-				bufferTable.append('<tr><td align="left">tags: ');
-				
-				var tags = gadget.getTags();
-				for (var j = 0; j<tags.length; j++) {
-					var tag = tags[j];
-					bufferTable.append(tag.value);
-				}
-				
-				bufferTable.append('</td></tr>');
-				bufferTable.append('<tr><td align="center"><input type="button" value="add"></td></tr></table>');
-				bufferTable.append('</td>\n');
-				
+
+				bufferTable.append('<td>');
+				bufferTable.append(showGadget(gadgetId));
+				bufferTable.append('</td>');
+								
 				if (i == (keys.length -1 )){
 					bufferTable.append('</tr>\n');
 					
-				} else if ((i!=0) && ((i% Showcase.prototype.NUM_CELLS) == 0)) {
+				} else if ((Showcase.prototype.NUM_CELLS == 1) || ((i!=0) && ((i% Showcase.prototype.NUM_CELLS) == 0))) {
 					bufferTable.append('</tr><tr>\n');
 				}
 			}
 			bufferTable.append('</table>\n');
 
 			var mydiv = $(Showcase.prototype.MODULE_HTML_ID);
-			var hola = bufferTable.toString();
 			mydiv.innerHTML = bufferTable.toString();
 			
 		}
 		
-		// Change the gadget properties (User Interface)
-		Showcase.prototype.changeGadgetProperties = function (gadgetId_, imageSrc_, tags_) {
+		// Set gadget properties (User Interface)
+		Showcase.prototype.setGadgetProperties = function (gadgetId_, imageSrc_, tags_) {
 			var gadget = _gadgets[gadgetId_];
 			gadget.setImage(imageSrc_);
 			gadget.setTags(tags_);
 		}
 		
-		// Get the gadget template and xhtml (User Interface)
-		Showcase.prototype.getGadgetDetails = function (gadgetId_) {
+		// Get gadget properties (User Interface)
+		Showcase.prototype.getGadgetProperties = function (gadgetId_) {
 			var gadget = _gadgets[gadgetId_];
 			var gadgetDetails = []; 
 			gadgetDetails[0] = gadget.getTemplate();
-			gadgetDetails[1] = gadget.getXHTML();
+			gadgetDetails[1] = gadget.getXHtml();
+			gadgetDetails[2] = gadget.getImage();
+			gadgetDetails[3] = new StringBuffer();
+			
+			var tags = gadget.getTags();
+			for (var i = 0; i<tags.length; i++) {
+				var tag = tags[i];
+				gadgetDetails[3].append(tag.value);
+				if (i != (tags.length-1)){
+					gadgetDetails[3].append(' ');
+				}
+			}
+			gadgetDetails[3] = gadgetDetails[3].toString();
+
 			return gadgetDetails;
 		}
 		
