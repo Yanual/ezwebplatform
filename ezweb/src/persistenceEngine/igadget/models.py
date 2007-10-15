@@ -1,6 +1,8 @@
 from django.db import models
 
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
 
 from persistenceEngine.gadget.models import Gadget, VariableDef
 
@@ -15,7 +17,7 @@ class Screen(models.Model):
         pass
 
     def __unicode__(self):
-        return self.uri + " " + self.aspect
+        return self.uri + " " + self.name
 
 class IGadget(models.Model):
     uri = models.CharField(_('URI'), maxlength=500)
@@ -27,7 +29,7 @@ class IGadget(models.Model):
         pass
 
     def __unicode__(self):
-        return self.name
+        return self.uri
 
 
 
@@ -36,14 +38,23 @@ class Variable(models.Model):
     
     varDef = models.ForeignKey(VariableDef)
     iGadget = models.ForeignKey(IGadget)
-    
-    # /////////////////////////////// jrosa, necesito que aqui se pueda guardar: una string, un integer, una fecha, etc.
-    # Me comentaste que algo se podia hacer :P A ver si resuelves ese jaleo
-    value = models.CharField(_('Value'), maxlength=30)
+    TYPES = (
+        ('N', _('Number')),
+        ('S', _('String')),
+        ('D', _('Date')),
+        ('B', _('Boolean')),
+    )
+    type = models.CharField(_('Type'), maxlength=1, choices=TYPES)
+    value = models.TextField(_('Value'))
 
     class Admin:
         pass
 
     def __unicode__(self):
         return self.uri + " " + self.value
-            
+
+    
+
+    class Admin:
+        pass
+

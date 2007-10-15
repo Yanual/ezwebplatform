@@ -2,8 +2,6 @@ from datetime import datetime, timedelta
 
 from django.db import models
 from django.contrib.auth.models import User
-#from django.contrib.contenttypes.models import ContentType
-#from django.contrib.contenttypes import generic
 
 
 class Template(models.Model):
@@ -81,7 +79,7 @@ class Gadget(models.Model):
     web = models.URLField(_('Web'))
    
     description = models.CharField(_('Description'), maxlength=250)
-    tags = models.ManyToManyField(Tag, verbose_name=_('Tag'))
+    tags = models.ManyToManyField(Tag, verbose_name=_('Tags'))
 
     
     shared = models.BooleanField(_('Shared'), default=False)
@@ -97,78 +95,3 @@ class Gadget(models.Model):
     def __unicode__(self):
         return self.name
 
-
-"""
-class Preference(models.Model):
-    user = models.ForeignKey(User, null=True, blank=True, verbose_name=_('User'))
-    gadget = models.ForeignKey(Gadget, null=True, blank=True, verbose_name=_('Gadget'))
-    data_type = models.ForeignKey(ContentType)
-    data_id = models.PositiveIntegerField()
-    data = generic.GenericForeignKey('data_type', 'data_id')
-
-    class Admin:
-        pass
-
-
-class TextType(models.Model):
-    text = models.TextField(_('Text'))
-    length = models.PositiveIntegerField(_('Length'))
-
-    class Admin:
-        pass
-
-    def __unicode__(self):
-        return self.text
-
-
-class NumberType(models.Model):
-    number = models.FloatField(_('Number'))
-
-    class Admin:
-        pass
-
-    def __unicode__(self):
-        return self.number
-
-
-class BooleanType(models.Model):
-    boolean = models.BooleanField(_('Booelan'))
-
-    class Admin:
-        pass
-
-    def __unicode__(self):
-        return str(self.boolean)
-
-
-class GeoType(models.Model):
-    latitude = models.DecimalField(_('Latitude'), max_digits=9, decimal_places=6)
-    longitude = models.DecimalField(_('Longitude'), max_digits=9, decimal_places=6)
-
-    class Admin:
-        pass
-
-    def __unicode__(self):
-        return "%f, %f" % (self.latitude, self.longitude)
-
-
-class ListType(models.Model):
-    length = models.PositiveIntegerField(_('Length'))
-
-    class Admin:
-        pass
-
-    def __unicode__(self):
-        return u'[ %s ]' % ', '.join( [ str(i) for i in self.listitemtype_set.all() ] )
-
-
-class ListItemType(models.Model):
-    list_type = models.ForeignKey(ListType, verbose_name=_('List'), edit_inline=models.TABULAR, min_num_in_admin=3)
-    item = models.CharField(_('Item'), maxlength=200, core=True)
-
-    class Admin:
-        pass
-
-    def __unicode__(self):
-        return self.item
-"""

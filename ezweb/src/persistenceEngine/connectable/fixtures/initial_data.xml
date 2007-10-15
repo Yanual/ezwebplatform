@@ -1,3 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <django-objects version="1.0">
+    <object pk="1" model="connectable.out">
+        <field type="CharField" name="uri">http://outs.com/out1</field>
+        <field type="CharField" name="name">salida1</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">1</field>
+    </object>
+    <object pk="entradasalida1" model="connectable.inout">
+        <field type="CharField" name="uri">http://inout.com/inout1</field>
+        <field type="CharField" name="value">Hola temporal</field>
+        <field to="connectable.in" name="inList" rel="ManyToManyRel"><object pk="1"></object></field>
+        <field to="connectable.out" name="outList" rel="ManyToManyRel"><object pk="1"></object></field>
+    </object>
+    <object pk="1" model="connectable.in">
+        <field type="CharField" name="uri">http://ins.com/in1</field>
+        <field type="CharField" name="name">entrada1</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">1</field>
+    </object>
 </django-objects>

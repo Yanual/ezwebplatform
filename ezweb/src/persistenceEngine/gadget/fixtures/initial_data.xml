@@ -1,49 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <django-objects version="1.0">
-    <object pk="2" model="gadget.gadget">
-        <field type="CharField" name="uri">http://foo.bar.com/gadget</field>
-        <field type="CharField" name="name">gadget1</field>
-        <field type="CharField" name="version">v1</field>
-        <field type="CharField" name="vendor">vendor1</field>
+    <object pk="1" model="gadget.variabledef">
+        <field type="CharField" name="uri">http://vardef.com/def1</field>
+        <field type="CharField" name="name">vardef1</field>
+        <field type="CharField" name="type">Integer</field>
+        <field type="CharField" name="aspect">aspect1</field>
+        <field type="CharField" name="friendCode">friencode1</field>
         <field to="gadget.template" name="template" rel="ManyToOneRel">1</field>
-        <field to="gadget.xhtml" name="xHTML" rel="ManyToOneRel">1</field>
-        <field type="CharField" name="author">author1</field>
-        <field type="CharField" name="web">http://foo.bar.com</field>
-        <field type="CharField" name="description">desc1</field>
-        <field type="CharField" name="tags">tag11, tag12</field>
-        <field type="BooleanField" name="shared">False</field>
-        <field to="auth.user" name="importer" rel="ManyToOneRel">1</field>
-        <field type="DateTimeField" name="lastUpdate">2007-10-10 00:48:10</field>
-    </object>
-    <object pk="3" model="gadget.gadget">
-        <field type="CharField" name="uri">http://foo.bar.es/gadget</field>
-        <field type="CharField" name="name">gadget2</field>
-        <field type="CharField" name="version">v2</field>
-        <field type="CharField" name="vendor">vendor2</field>
-        <field to="gadget.template" name="template" rel="ManyToOneRel">2</field>
-        <field to="gadget.xhtml" name="xHTML" rel="ManyToOneRel">1</field>
-        <field type="CharField" name="author">author2</field>
-        <field type="CharField" name="web">http://foo.bar.es</field>
-        <field type="CharField" name="description">desc2</field>
-        <field type="CharField" name="tags">tag21, tag22</field>
-        <field type="BooleanField" name="shared">False</field>
-        <field to="auth.user" name="importer" rel="ManyToOneRel">1</field>
-        <field type="DateTimeField" name="lastUpdate">2007-10-10 00:50:05</field>
     </object>
     <object pk="4" model="gadget.gadget">
         <field type="CharField" name="uri">http://foo.bar.org/gadget</field>
+        <field type="CharField" name="vendor">vendor3</field>
         <field type="CharField" name="name">gadget3</field>
         <field type="CharField" name="version">v1</field>
-        <field type="CharField" name="vendor">vendor3</field>
         <field to="gadget.template" name="template" rel="ManyToOneRel">2</field>
         <field to="gadget.xhtml" name="xHTML" rel="ManyToOneRel">2</field>
         <field type="CharField" name="author">author3</field>
         <field type="CharField" name="web">http://google.es</field>
         <field type="CharField" name="description">desc3</field>
-        <field type="CharField" name="tags">tag31, tag32</field>
         <field type="BooleanField" name="shared">False</field>
         <field to="auth.user" name="importer" rel="ManyToOneRel">1</field>
         <field type="DateTimeField" name="lastUpdate">2007-10-10 13:58:38</field>
+        <field to="gadget.tag" name="tags" rel="ManyToManyRel"><object pk="1"></object></field>
+    </object>
+    <object pk="3" model="gadget.gadget">
+        <field type="CharField" name="uri">http://foo.bar.es/gadget</field>
+        <field type="CharField" name="vendor">vendor2</field>
+        <field type="CharField" name="name">gadget2</field>
+        <field type="CharField" name="version">v2</field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">2</field>
+        <field to="gadget.xhtml" name="xHTML" rel="ManyToOneRel">1</field>
+        <field type="CharField" name="author">author2</field>
+        <field type="CharField" name="web">http://foo.bar.es</field>
+        <field type="CharField" name="description">desc2</field>
+        <field type="BooleanField" name="shared">False</field>
+        <field to="auth.user" name="importer" rel="ManyToOneRel">1</field>
+        <field type="DateTimeField" name="lastUpdate">2007-10-10 00:50:05</field>
+        <field to="gadget.tag" name="tags" rel="ManyToManyRel"><object pk="2"></object></field>
+    </object>
+    <object pk="2" model="gadget.gadget">
+        <field type="CharField" name="uri">http://foo.bar.com/gadget</field>
+        <field type="CharField" name="vendor">vendor1</field>
+        <field type="CharField" name="name">gadget1</field>
+        <field type="CharField" name="version">v1</field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">1</field>
+        <field to="gadget.xhtml" name="xHTML" rel="ManyToOneRel">1</field>
+        <field type="CharField" name="author">author1</field>
+        <field type="CharField" name="web">http://foo.bar.com</field>
+        <field type="CharField" name="description">desc1</field>
+        <field type="BooleanField" name="shared">False</field>
+        <field to="auth.user" name="importer" rel="ManyToOneRel">1</field>
+        <field type="DateTimeField" name="lastUpdate">2007-10-10 00:48:10</field>
+        <field to="gadget.tag" name="tags" rel="ManyToManyRel"><object pk="1"></object><object pk="2"></object></field>
+    </object>
+    <object pk="1" model="gadget.tag">
+        <field type="CharField" name="uri">http://tags.com/sport</field>
+        <field type="CharField" name="value">sport</field>
+    </object>
+    <object pk="2" model="gadget.tag">
+        <field type="CharField" name="uri">http://tags.com/funny</field>
+        <field type="CharField" name="value">funny</field>
     </object>
     <object pk="1" model="gadget.template">
         <field type="CharField" name="uri">http://foo.bar.com/template</field>
