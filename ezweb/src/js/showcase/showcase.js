@@ -85,8 +85,8 @@ var ShowcaseFactory = function () {
 		
 		// Update a Showcase gadget
 		Showcase.prototype.updateGadget = function (gadgetId_, url_) {
-			Showcase.prototype.remove(gadgetId_);
-			Showcase.prototype.addGadget(url_);
+			this.remove(gadgetId_);
+			this.addGadget(url_);
 		}
 		
 		// Add a tag to a Showcase gadget
@@ -116,13 +116,33 @@ var ShowcaseFactory = function () {
 					bufferTable.append('<tr>\n');
 				} 
 				
-				bufferTable.append('<td><table><tr><td align="center"><img src="img/');
+				bufferTable.append('<td><table><tr><td align="center"><img id="image_')
+				bufferTable.append(gadgetId);
+				bufferTable.append('" src="img/');
 				bufferTable.append(gadget.getImage());
-				bufferTable.append('" alt="Image cannot be shown"></td></tr>'); 
+				bufferTable.append('" alt="Image cannot be shown"></td></tr>\n'); 
+				bufferTable.append('<td><input name="image_file_');
+				bufferTable.append(gadgetId)
+				bufferTable.append('" type="file" size="50"></td>');
+				bufferTable.append('<tr><td align="center"><input type="button" value="Change image" onClick="');
+				bufferTable.append('var s=ShowcaseFactory.getInstance();s.changeImageGadget("');
+				bufferTable.append(gadgetId);
+				bufferTable.append('", $("image_file_');
+				bufferTable.append(gadgetId);
+				bufferTable.append('").value);"></td></tr>\n');
+				bufferTable.append('<tr><td align="left">tags: ');
+				
+				var tags = gadget.getTags();
+				for (var j = 0; j<tags.length; j++) {
+					var tag = tags[j];
+					bufferTable.append(tag.value);
+				}
+				
+				bufferTable.append('</td></tr>');
 				bufferTable.append('<tr><td align="center"><input type="button" value="add"></td></tr></table>');
 				bufferTable.append('</td>\n');
 				
-				if (i == (keys.length-1)) {
+				if (i == (keys.length -1 )){
 					bufferTable.append('</tr>\n');
 					
 				} else if ((i!=0) && ((i% Showcase.prototype.NUM_CELLS) == 0)) {
@@ -132,9 +152,27 @@ var ShowcaseFactory = function () {
 			bufferTable.append('</table>\n');
 
 			var mydiv = $(Showcase.prototype.MODULE_HTML_ID);
+			var hola = bufferTable.toString();
 			mydiv.innerHTML = bufferTable.toString();
 			
 		}
+		
+		// Change the gadget properties (User Interface)
+		Showcase.prototype.changeGadgetProperties = function (gadgetId_, imageSrc_, tags_) {
+			var gadget = _gadgets[gadgetId_];
+			gadget.setImage(imageSrc_);
+			gadget.setTags(tags_);
+		}
+		
+		// Get the gadget template and xhtml (User Interface)
+		Showcase.prototype.getGadgetDetails = function (gadgetId_) {
+			var gadget = _gadgets[gadgetId_];
+			var gadgetDetails = []; 
+			gadgetDetails[0] = gadget.getTemplate();
+			gadgetDetails[1] = gadget.getXHTML();
+			return gadgetDetails;
+		}
+		
 	}
 	
 	// *********************************
