@@ -31,12 +31,13 @@
 
 
 <script language="javascript" type="text/javascript">
-
+var txt;
 function do_get(url) {
     new Ajax.Request(url, {
         method: 'get',
         onSuccess: function (transport) {
             alert(transport.responseText);
+            txt = transport.responseText;
         },
         onError: function () {
             alert('Error');

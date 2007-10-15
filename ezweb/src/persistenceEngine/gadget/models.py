@@ -55,17 +55,24 @@ class UserEventsInfo(models.Model):
     def __unicode__(self):
         return self.uri
 
-        
+
+class Tag(models.Model):
+    uri = models.CharField(_('URI'), maxlength=500)
+    value = models.CharField(_('value'), maxlength=50)
+
+    class Admin:
+        pass
+
+    def __unicode__(self):
+        return self.uri  
+
+
 class Gadget(models.Model):
     uri = models.CharField(_('URI'), maxlength=500)
     
+    vendor = models.CharField(_('Vendor'), maxlength=250)
     name = models.CharField(_('Name'), maxlength=250)
     version = models.CharField(_('Version'), maxlength=150)
-    vendor = models.CharField(_('Vendor'), maxlength=250)
-    
-    # slug_title = models.SlugField(_('Slug title'), maxlength=250)
-    # cached_xml = models.TextField(_('Cached XML'), null=True, blank=True, editable=True)
-    # content = models.TextField(_('Content'), null=True, blank=True, editable=True)
     
     template = models.ForeignKey(Template)
     xHTML = models.ForeignKey(XHTML)
@@ -74,30 +81,21 @@ class Gadget(models.Model):
     web = models.URLField(_('Web'))
    
     description = models.CharField(_('Description'), maxlength=250)
- #   tags = models.CharField(_('Tags'), maxlength=250)
+    tags = models.ManyToManyField(Tag, verbose_name=_('Tag'))
+
     
     shared = models.BooleanField(_('Shared'), default=False)
     importer = models.ForeignKey(User, verbose_name=_('User'))
     lastUpdate = models.DateTimeField(_('Last update'))
+
+    class Meta:
+        unique_together = ('vendor', 'name', 'version')
 
     class Admin:
         pass
 
     def __unicode__(self):
         return self.name
-
-    
-class Tag(models.Model):
-    uri = models.CharField(_('URI'), maxlength=500)
-    value = models.CharField(_('value'), maxlength=50)
-    gadget = models.ForeignKey(Gadget)
-
-    class Admin:
-        pass
-
-    def __unicode__(self):
-        return self.uri  
-
 
 
 """
