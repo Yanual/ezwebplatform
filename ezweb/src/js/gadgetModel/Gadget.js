@@ -33,6 +33,10 @@ function Gadget(gadget_, url_) {
 	this.getTemplate = function() { return state.getTemplate(); }
 	this.getXHtml = function() { return state.getXHtml(); }
 	
+	this.getImage = function() { return state.getImage(); }
+	this.setImage = function(image_) { state.setImage(image_); }
+	
+	
 	// *******************
 	//  PRIVATE FUNCTIONS
 	// *******************
@@ -83,6 +87,7 @@ function GadgetState(gadget_) {
 	var tags = [];
 	var template = null;
 	var xhtml = null;
+	var image = null;
 	
 	// JSON-coded Gadget mapping
 	// Constructing the structure
@@ -92,6 +97,7 @@ function GadgetState(gadget_) {
 	version = gadget_.version;
 	template = new Template(gadget_.template);
 	xhtml = new XHtml(gadget_.xhtml);
+	image = gadget_.image;
 	
 	for (i = 0; i<gadget_.tags.length; i++) {
 		tags.push(gadget_.tags[i]);
@@ -111,4 +117,7 @@ function GadgetState(gadget_) {
 	this.getVersion = function() { return version; }
 	this.getTemplate = function() { return template; }
 	this.getXHtml = function() { return xhtml; }
+	
+	this.getImage = function() { return image; }
+	this.setImage = function(image_) { image = image_; }
 }
