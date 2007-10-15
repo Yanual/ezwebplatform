@@ -74,7 +74,7 @@ class Gadget(models.Model):
     web = models.URLField(_('Web'))
    
     description = models.CharField(_('Description'), maxlength=250)
-    tags = models.CharField(_('Tags'), maxlength=250)
+ #   tags = models.CharField(_('Tags'), maxlength=250)
     
     shared = models.BooleanField(_('Shared'), default=False)
     importer = models.ForeignKey(User, verbose_name=_('User'))
