@@ -26,39 +26,15 @@ from django_restapi.responder import *
 
 from models import *
 
-## Versión con el objeto Collection para cuando el modelo mapea 1:1 con el recurso
-#gadgets_resource = Collection(
-#    queryset = Gadget.objects.all(),
-#    permitted_methods = ('GET', ),
-#    expose_fields = ('id', 'vendor', 'name', 'title', 'version', 'uri'),
-#    responder = XMLResponder()
-#)
-
 
 class GadgetCollection(Resource):
     def read(self, request):
         gadgets = get_list_or_404(Gadget)
-        fields = None
-        data = serializers.serialize('python', gadgets, fields=fields, ensure_ascii=False)
+        data = serializers.serialize('python', gadgets, ensure_ascii=False)
         data_list = []
         for d in data:
-            data_fields = d['fields']
-
-            data_template = get_object_or_404(VariableDef.objects.all().values('aspect', 'name'), id=data_fields['template'])
-            data_fields['template'] = data_template
-
-            data_code = get_object_or_404(XHTML.objects.all().values('uri'), id=data_fields['xhtml'])
-            data_fields['xhtml'] = data_code
-            data_elements = get_list_or_404(UserEventsInfo.objects.all().values('uri', 'event', 'handler'))
-            data_fields['xhtml']['elements'] = data_elements
-
-            data_tags = get_list_or_404(Tag.objects.all().values('value'), gadget=get_object_or_404( \
-                        Gadget, vendor=data_fields['vendor'], name=data_fields['name'], version=data_fields['version']))
-            data_fields['tags'] = [d['value'] for d in data_tags]
-            
+            data_fields = _get_gadget_data(d['fields'])
             data_list.append(data_fields)
-#        gadgets_json = queryset_to_json_list(gadgets)
-#        return HttpResponse(gadgets_json, mimetype='application/json; charset=UTF-8')
         return HttpResponse(json_encode(data_list), mimetype='application/json; charset=UTF-8')
 
     def create(self, request):
@@ -66,27 +42,10 @@ class GadgetCollection(Resource):
 
 class GadgetEntry(Resource):
     def read(self, request, vendor, name, version):
-        gadgets = get_list_or_404(Gadget.objects.select_related(), vendor=vendor, name=name, version=version)
-        fields = None
-        data = serializers.serialize('python', gadgets, fields=fields, ensure_ascii=False)
-        data_list = []
-        d = data[0]
-        data_fields = d['fields']
-
-        data_template = get_object_or_404(VariableDef.objects.all().values('aspect', 'name'), id=data_fields['template'])
-        data_fields['template'] = data_template
-
-        data_code = get_object_or_404(XHTML.objects.all().values('uri'), id=data_fields['xhtml'])
-        data_fields['xhtml'] = data_code
-        data_elements = get_list_or_404(UserEventsInfo.objects.all().values('uri', 'event', 'handler'))
-        data_fields['xhtml']['elements'] = data_elements
-
-        data_tags = get_list_or_404(Tag.objects.all().values('value'), gadget=get_object_or_404( \
-                    Gadget, vendor=data_fields['vendor'], name=data_fields['name'], version=data_fields['version']))
-        data_fields['tags'] = [d['value'] for d in data_tags]
-
-        data_list.append(data_fields)
-        return HttpResponse(json_encode(data_list), mimetype='application/json; charset=UTF-8')
+        gadgets = get_list_or_404(Gadget, vendor=vendor, name=name, version=version)
+        data = serializers.serialize('python', gadgets, ensure_ascii=False)
+        data_fields = _get_gadget_data(data[0]['fields'])
+        return HttpResponse(json_encode(data_fields), mimetype='application/json; charset=UTF-8')
 
     def update(self, request, vendor, name, version):
         gadget = get_object_or_404(Gadget, vendor=vendor, name=name, version=version)
@@ -118,6 +77,21 @@ class GadgetTagsEntry(Resource):
         gadget = get_object_or_404(Gadget, vendor=vendor, name=name, version=version)
         tags = get_list_or_404(Tag, gadget=gadget)
         return HttpResponse(json_encode(tags), mimetype='application/json; charset=UTF-8')
+
+
+def _get_gadget_data(data_fields):
+    data_template = get_object_or_404(VariableDef.objects.all().values('aspect', 'name'), id=data_fields['template'])
+    data_fields['template'] = data_template
+
+    data_code = get_object_or_404(XHTML.objects.all().values('uri'), id=data_fields['xhtml'])
+    data_fields['xhtml'] = data_code
+    data_elements = get_list_or_404(UserEventsInfo.objects.all().values('uri', 'event', 'handler'))
+    data_fields['xhtml']['elements'] = data_elements
+
+    data_tags = get_list_or_404(Tag.objects.all().values('value'), gadget=get_object_or_404( \
+                Gadget, vendor=data_fields['vendor'], name=data_fields['name'], version=data_fields['version']))
+    data_fields['tags'] = [d['value'] for d in data_tags]
+    return data_fields
 
 
 def queryset_to_json_list(queryset, fields=None):
