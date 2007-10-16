@@ -33,7 +33,7 @@ class VariableDef(models.Model):
         ('PROP', _('Property')),
     )
     aspect = models.CharField(_('Aspect'), max_length=4, choices=ASPECTS)
-    friend_code = models.CharField(_('FriendCode'), max_length=30)
+    friend_code = models.CharField(_('Friend code'), max_length=30)
     template = models.ForeignKey(Template)
 
     class Admin:
@@ -70,7 +70,7 @@ class UserEventsInfo(models.Model):
 
 class Tag(models.Model):
     uri = models.CharField(_('URI'), max_length=500)
-    value = models.CharField(_('value'), max_length=50)
+    value = models.CharField(_('Value'), max_length=50)
 
     class Admin:
         pass

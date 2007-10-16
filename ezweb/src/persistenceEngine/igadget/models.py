@@ -7,11 +7,11 @@ from django.contrib.contenttypes import generic
 from persistenceEngine.gadget.models import Gadget, VariableDef
 
 class Screen(models.Model):
-    uri = models.CharField(_('URI'), maxlength=500)
+    uri = models.CharField(_('URI'), max_length=500)
 
     user = models.ForeignKey(User, verbose_name=_('User'))
     
-    name = models.CharField(_('Name'), maxlength=30)
+    name = models.CharField(_('Name'), max_length=30)
 
     class Admin:
         pass
@@ -20,7 +20,7 @@ class Screen(models.Model):
         return self.uri + " " + self.name
 
 class IGadget(models.Model):
-    uri = models.CharField(_('URI'), maxlength=500)
+    uri = models.CharField(_('URI'), max_length=500)
         
     gadget = models.ForeignKey(Gadget)
     screen = models.ForeignKey(Screen)
@@ -34,10 +34,10 @@ class IGadget(models.Model):
 
 
 class Variable(models.Model):
-    uri = models.CharField(_('URI'), maxlength=500)
+    uri = models.CharField(_('URI'), max_length=500)
     
-    varDef = models.ForeignKey(VariableDef)
-    iGadget = models.ForeignKey(IGadget)
+    vardef = models.ForeignKey(VariableDef)
+    igadget = models.ForeignKey(IGadget)
     value = models.TextField(_('Value'))
 
     class Admin:

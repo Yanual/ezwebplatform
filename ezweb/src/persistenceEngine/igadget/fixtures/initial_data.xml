@@ -1,30 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
 <django-objects version="1.0">
-    <object pk="1" model="igadget.variable">
-        <field type="CharField" name="uri">http://vars.com/var1</field>
-        <field to="gadget.variabledef" name="varDef" rel="ManyToOneRel">1</field>
-        <field to="igadget.igadget" name="iGadget" rel="ManyToOneRel">1</field>
-        <field type="CharField" name="type">S</field>
-        <field type="TextField" name="value">Hola</field>
-    </object>
-    <object pk="4" model="igadget.screen">
-        <field type="CharField" name="uri">http://screen.com/screen1</field>
-        <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
-        <field type="CharField" name="name">screen1</field>
-    </object>
-    <object pk="2" model="igadget.screen">
-        <field type="CharField" name="uri">http://screen.com/screen2</field>
-        <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
-        <field type="CharField" name="name">screen2</field>
-    </object>
-    <object pk="2" model="igadget.igadget">
-        <field type="CharField" name="uri">http://igadgets.com/igadget1</field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">2</field>
-        <field to="igadget.screen" name="screen" rel="ManyToOneRel">4</field>
-    </object>
-    <object pk="1" model="igadget.igadget">
-        <field type="CharField" name="uri">http://igadgets.com/igadget2</field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">4</field>
-        <field to="igadget.screen" name="screen" rel="ManyToOneRel">2</field>
-    </object>
 </django-objects>
