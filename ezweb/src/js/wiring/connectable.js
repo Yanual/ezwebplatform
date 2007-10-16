@@ -87,6 +87,10 @@ Out.prototype.clear = function(){
    }
 }
 
+Out.prototype.toJSON = function(){
+   return "{\"aspect\":\"SLOT\",\"id\":\""+this.id+"\",\"type\":\""+this.type+"\",\"value\":\""+this.value+"\",\"name\":\""+this.name+"\"}";
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 // This class represents every object which may initialize one transmission through the wiring module //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -139,6 +143,10 @@ In.prototype.setValue = function(value){
         this.outputHash[i].setValue(value);
       }
    }
+}
+
+In.prototype.toJSON = function(){
+   return "{\"aspect\":\"EVENT\",\"id\":\""+this.id+"\",\"type\":\""+this.type+"\",\"value\":\""+this.value+"\",\"name\":\""+this.name+"\"}";
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -354,16 +362,16 @@ InOut.prototype.clear = function(){
 }
 
 InOut.prototype.connections = function(){
-   var result = [];
+   var result = new Object();
    result["input"] = [];
    result["output"] = [];
-   var connection = [];
    for (i in this.inputHash){
       if (this.inputHash[i] instanceof Array){
          for (j in this.inputHash[i]){
             if (this.inputHash[i][j] instanceof Connectable){
-               connection["id"] = inputHash[i][j].getId();
-               connection["name"] = inputHash[i][j].getName();
+               var connection = new Object();
+               connection["id"] = this.inputHash[i][j].getId();
+               connection["name"] = this.inputHash[i][j].getName();
                result["input"].push(connection);
             }
          }
@@ -373,8 +381,9 @@ InOut.prototype.connections = function(){
       if (this.outputHash[i] instanceof Array){
          for (j in this.outputHash[i]){
             if (this.outputHash[i][j] instanceof Connectable){
-               connection["id"] = outputHash[i][j].getId();
-               connection["name"] = outputHash[i][j].getName();
+               var connection = new Object();
+               connection["id"] = this.outputHash[i][j].getId();
+               connection["name"] = this.outputHash[i][j].getName();
                result["output"].push(connection);
             }
          }
@@ -382,8 +391,29 @@ InOut.prototype.connections = function(){
    }
 }
 
-InOut.prototype.connections = function(){
-   var result = [];
+InOut.prototype.toJSON = function(){
+   var result = "{\"id\":\""+this.id+"\",\"type\":\""+this.type+"\",\"value\":\""+this.value+"\",\"name\":\""+this.name+"\",\"inputHash\":[";
+   for (i in this.inputHash){
+      if (this.inputHash[i] instanceof Array){
+         for (j in this.inputHash[i]){
+            if (this.inputHash[i][j] instanceof Connectable){
+               result+="{\"id\":\""+this.inputHash[i][j].getId()+"\",\"name\":"+this.inputHash[i][j].getName()+"\"}";
+            }
+         }
+      }
+   }
+   result+="],\"outputHash\":[";
+   for (i in this.outputHash){
+      if (this.outputHash[i] instanceof Array){
+         for (j in this.outputHash[i]){
+            if (this.outputHash[i][j] instanceof Connectable){
+               result+="{\"id\":\""+this.outputHash[i][j].getId()+"\",\"name\":\""+this.outputHash[i][j].getName()+"\"}";
+            }
+         }
+      }
+   }
+   result+="]}";
+   return result;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -406,6 +436,6 @@ Channel.prototype = new InOut();
 // This class representents a iGadget variable which may receive some data //
 /////////////////////////////////////////////////////////////////////////////
 function Slot(id,name){
-   Out.call(this,name);
+   Out.call(this,id,name);
 }
 Slot.prototype = new Out();
