@@ -355,6 +355,35 @@ InOut.prototype.clear = function(){
 
 InOut.prototype.connections = function(){
    var result = [];
+   result["input"] = [];
+   result["output"] = [];
+   var connection = [];
+   for (i in this.inputHash){
+      if (this.inputHash[i] instanceof Array){
+         for (j in this.inputHash[i]){
+            if (this.inputHash[i][j] instanceof Connectable){
+               connection["id"] = inputHash[i][j].getId();
+               connection["name"] = inputHash[i][j].getName();
+               result["input"].push(connection);
+            }
+         }
+      }
+   }
+   for (i in this.outputHash){
+      if (this.outputHash[i] instanceof Array){
+         for (j in this.outputHash[i]){
+            if (this.outputHash[i][j] instanceof Connectable){
+               connection["id"] = outputHash[i][j].getId();
+               connection["name"] = outputHash[i][j].getName();
+               result["output"].push(connection);
+            }
+         }
+      }
+   }
+}
+
+InOut.prototype.connections = function(){
+   var result = [];
 }
 
 //////////////////////////////////////////////////////////////////////////
