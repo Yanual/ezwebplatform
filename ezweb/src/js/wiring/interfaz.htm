@@ -4,21 +4,154 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 		<title>Untitled Document</title>
 		<link rel="stylesheet" type="text/css" href="./style.css">
+		<script src = "./connectable.js" type = text/javascript></script>
+		<script src = "./wiring.js" type = text/javascript></script>
+		<script src = "../lib/prototype.js" type = text/javascript></script>
+
 	</head>
+	
 	<body>
 		<div class = "left">
+			<script>
+				var w = WiringFactory.getInstance();
+				var event = new Hash({name:"var1", aspect:"EVENT"}) 
+				var slot = new Hash({name:"var2", aspect:"SLOT"})
+
+				var conect = new Array()
+				conect.push(event)
+				conect.push(slot)
+	
+				function anadirCanal(object){
+					var selector = $("selectCanal");
+					var itemize =  $("canales");
+					selector.innerHTML += "<option id='"+object+"' value = "+object+" >"+object+"</option>"
+					itemize.innerHTML += "<option id='"+object+"' value = "+object+" >"+object+"</option>"
+					w.createChannel(object);
+				}
+				
+				function borrarCanal(object){
+					var selector = $("selectCanal");
+					w.removeChannel(object);
+					alert(object)
+					var hijo = $(object);
+					selector.removeChild(hijo);
+				}
+				
+				function anadeGadget(object){
+					var selector = $("gadgets");
+					selector.innerHTML += "<option id='"+object+"' value = "+object+" >"+object+"</option>"
+					w.addInstance(object, conect);
+				}
 			
+			</script>
+			
+			<input id = "creaCanal" type = text value = "nombre del canal...">
+			<input type=button 
+				   value= "crear_canal" 
+				   onclick = "anadirCanal($F($('creaCanal')))"
+				   
+			<input type=button 
+				   value= "borrar_canal" 
+				   onclick = "borrarCanal($('selectCanal').value)">
+			<input type=button 
+				   value= "valor_canal" 
+				   onclick = "$('valor').value = w.viewValue($('selectCanal').value)">
+			<input id = "crearInstancia" type=text value="id del gadget...">
+			<input type=button 
+				   value= "crear_instancia" 
+				   onclick = "anadeGadget($F($('crearInstancia')))">
+			<input id = "borrarInstancia" type = text value = "id del gadget...">
+			<input type=button 
+				   value= "borrar_instancia" 
+				   onclick = "w.removeInstance($F($('borrarInstancia')))">
+		<br>
+			<input type=button 
+				   value= "estado pizarra" 
+				   onclick = "alert(Object.toJSON(w))">
+
+		<br>
+		<br>
+			<input id = "input1" type = text value = "id canal input...">
+			<input id = "channel1" type = text value = "id canal...">
+			<input type = button 
+				   value= "conecta canal a otro" 
+				   onclick = "w.addChannelInput($F($('input1')), $F($('channel1')))">
+		<br>	
+		<br>
+			<input id = "input2"  type = text value = "id canal...">
+			<input id = "gadget2" type = text value = "id gadget...">
+			<input id = "event2"  type = text value = "name event...">
+			<input type = button 
+				   value = "conecta input a canal" 
+				   onclick = "w.addChannelInput($F($('gadget2')),$F($('event2')), $F($('input2')))">
+
+		<br>
+		<br>
+			<input id = "output3" type = text value = "id canal output...">
+			<input id = "channel3" type = text value = "id canal...">
+			<input type = button 
+				   value= "conecta canal a otro" 
+				   onclick = "w.addChannelOutput($F($('output3')), $F($('channel3')))">
+		<br>
+		<br>
+			<input id = "input4"  type = text value = "id canal...">
+			<input id = "gadget4" type = text value = "id gadget...">
+			<input id = "slot4"  type = text value = "name slot...">
+			<input type = button 
+				   value= "conecta output a canal" 
+				   onclick = "w.addChannelOutput($F($('gadget4')),$F($('slot4')), $F($('input4')))">
+		<br>
+		<br>
+		<br>
+		<br>
+			<input id = "input5" type = text value = "id canal input...">
+			<input id = "channel5" type = text value = "id canal...">
+			<input type = button 
+				   value= "Desconectar canales" 
+				   onclick = "w.removeChannelInput($F($('input5')), $F($('channel5')))">
+		<br>	
+		<br>
+			<input id = "input6"  type = text value = "id canal...">
+			<input id = "gadget6" type = text value = "id gadget...">
+			<input id = "event6"  type = text value = "name event...">
+			<input type = button 
+				   value = "Desconecta input a canal" 
+				   onclick = "w.removeChannelInput($F($('gadget6')),$F($('event6')), $F($('input6')))">
+
+		<br>
+		<br>
+			<input id = "output7" type = text value = "id canal output...">
+			<input id = "channel7" type = text value = "id canal...">
+			<input type = button 
+				   value= "conecta canal a otro" 
+				   onclick = "w.removeChannelOutput($F($('output7')), $F($('channel7')))">
+		<br>
+		<br>
+			<input id = "input8"  type = text value = "id canal...">
+			<input id = "gadget8" type = text value = "id gadget...">
+			<input id = "slot8"  type = text value = "name slot...">
+			<input type = button 
+				   value= "conecta output a canal" 
+				   onclick = "w.removeChannelOutput($F($('gadget8')),$F($('slot8')), $F($('input8')))">
+		<br>
+		<br>
+		<br>
+		<br>
+			<input id = "gadget9" type = text value = "id gadget...">
+			<input id = "event9"  type = text value = "name event...">
+			<input id = "value9"  type = text value = "value...">
+			<input type = button 
+				   value= "send event" 
+				   onclick = "w.sendEvent($F($('gadget9')),$F($('event9')), $F($('value9')))">
+					
 		</div>
 		<div class = "container">
 			<fieldset id = "one">
 				<div id = "selector">
 					<em>Seleccione un canal:</em>
-					<select>
+					<select id = "selectCanal">
 						<option value = "" selected>----</option>
-						<option value = "channel1">Canal 1</option>
-						<option value = "channel2">Canal 2</option>
-						<option value = "channel3">Canal 3</option>
-						<option value = "channel4">Canal 4</option>
+				
 					</select>
 				</div>
 		
@@ -68,21 +201,13 @@
 			<fieldset id = "two">
 				<div id = "selector">
 					<em>Seleccione un item:</em>
-					<select>
+					<select id = "itemizer">
 						<option value = "" selected>----</option>
-						<optgroup>
+						<optgroup id="canales">
 							<option value = "" disabled>Canales</option>
-							<option value = "channel1">Canal 1</option>
-							<option value = "channel2">Canal 2</option>
-							<option value = "channel3">Canal 3</option>
-							<option value = "channel4">Canal 4</option>
-						</optgroup>
-						<optgroup>
+							</optgroup>
+						<optgroup id ="gadgets">
 							<option value = "" disabled>Gadgets</option>
-							<option value = "gadget1">Gadget 1</option>
-							<option value = "gadget2">Gadget 2</option>
-							<option value = "gadget3">Gadget 3</option>
-							<option value = "gadget4">Gadget 4</option>
 						</optgroup>
 					</select>
 				</div>
