@@ -5,8 +5,10 @@ from django.contrib.auth.models import User
 
 
 class Template(models.Model):
-    uri = models.CharField(_('URI'), maxlength=500)
-    
+    uri = models.CharField(_('URI'), max_length=500)
+    description = models.CharField(_('Description'), max_length=250)
+    image = models.CharField(max_length=500)
+
     class Admin:
         pass
 
@@ -15,11 +17,23 @@ class Template(models.Model):
 
 
 class VariableDef(models.Model):
-    uri = models.CharField(_('URI'), maxlength=500)
-    name = models.CharField(_('Name'), maxlength=30)
-    type = models.CharField(_('Type'), maxlength=20)
-    aspect = models.CharField(_('Aspect'), maxlength=20)
-    friendCode = models.CharField(_('FriendCode'), maxlength=30)
+    uri = models.CharField(_('URI'), max_length=500)
+    name = models.CharField(_('Name'), max_length=30)
+    TYPES = (
+        ('N', _('Number')),
+        ('S', _('String')),
+        ('D', _('Date')),
+        ('B', _('Boolean')),
+    )
+    type = models.CharField(_('Type'), max_length=1, choices=TYPES)
+    ASPECTS = (
+        ('SLOT', _('Slot')),
+        ('EVEN', _('Event')),
+        ('PREF', _('Preference')),
+        ('PROP', _('Property')),
+    )
+    aspect = models.CharField(_('Aspect'), max_length=4, choices=ASPECTS)
+    friend_code = models.CharField(_('FriendCode'), max_length=30)
     template = models.ForeignKey(Template)
 
     class Admin:
@@ -30,7 +44,7 @@ class VariableDef(models.Model):
     
       
 class XHTML(models.Model):
-    uri = models.CharField(_('URI'), maxlength=500)
+    uri = models.CharField(_('URI'), max_length=500)
     code = models.TextField(_('Code'))
 
     class Admin:
@@ -41,11 +55,11 @@ class XHTML(models.Model):
 
 
 class UserEventsInfo(models.Model):
-    uri = models.CharField(_('URI'), maxlength=500)
-    event = models.CharField(_('Event'), maxlength=20)
-    handler = models.CharField(_('Handler'), maxlength=50)
-    htmlElement = models.CharField(_('HtmlElement'), maxlength=20)
-    xHTML = models.ForeignKey(XHTML)
+    uri = models.CharField(_('URI'), max_length=500)
+    event = models.CharField(_('Event'), max_length=20)
+    handler = models.CharField(_('Handler'), max_length=50)
+    html_element = models.CharField(_('HtmlElement'), max_length=20)
+    xhtml = models.ForeignKey(XHTML)
 
     class Admin:
         pass
@@ -55,8 +69,8 @@ class UserEventsInfo(models.Model):
 
 
 class Tag(models.Model):
-    uri = models.CharField(_('URI'), maxlength=500)
-    value = models.CharField(_('value'), maxlength=50)
+    uri = models.CharField(_('URI'), max_length=500)
+    value = models.CharField(_('value'), max_length=50)
 
     class Admin:
         pass
@@ -66,25 +80,24 @@ class Tag(models.Model):
 
 
 class Gadget(models.Model):
-    uri = models.CharField(_('URI'), maxlength=500)
+    uri = models.CharField(_('URI'), max_length=500)
     
-    vendor = models.CharField(_('Vendor'), maxlength=250)
-    name = models.CharField(_('Name'), maxlength=250)
-    version = models.CharField(_('Version'), maxlength=150)
+    vendor = models.CharField(_('Vendor'), max_length=250)
+    name = models.CharField(_('Name'), max_length=250)
+    version = models.CharField(_('Version'), max_length=150)
     
     template = models.ForeignKey(Template)
-    xHTML = models.ForeignKey(XHTML)
+    xhtml = models.ForeignKey(XHTML)
     
-    author = models.CharField(_('Author'), maxlength=250)
+    author = models.CharField(_('Author'), max_length=250)
     web = models.URLField(_('Web'))
    
-    description = models.CharField(_('Description'), maxlength=250)
+    description = models.CharField(_('Description'), max_length=250)
     tags = models.ManyToManyField(Tag, verbose_name=_('Tags'))
-
     
     shared = models.BooleanField(_('Shared'), default=False)
     importer = models.ForeignKey(User, verbose_name=_('User'))
-    lastUpdate = models.DateTimeField(_('Last update'))
+    last_update = models.DateTimeField(_('Last update'))
 
     class Meta:
         unique_together = ('vendor', 'name', 'version')

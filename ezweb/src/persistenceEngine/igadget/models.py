@@ -38,13 +38,6 @@ class Variable(models.Model):
     
     varDef = models.ForeignKey(VariableDef)
     iGadget = models.ForeignKey(IGadget)
-    TYPES = (
-        ('N', _('Number')),
-        ('S', _('String')),
-        ('D', _('Date')),
-        ('B', _('Boolean')),
-    )
-    type = models.CharField(_('Type'), maxlength=1, choices=TYPES)
     value = models.TextField(_('Value'))
 
     class Admin:

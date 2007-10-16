@@ -45,8 +45,8 @@ class GadgetCollection(Resource):
             data_fields = d['fields']
             data_template = get_object_or_404(Template, id=data_fields['template'])
             data_fields['template'] = data_template
-            data_code = get_object_or_404(XHTML, id=data_fields['xHTML'])
-            data_fields['xHTML'] = data_code
+            data_code = get_object_or_404(XHTML, id=data_fields['xhtml'])
+            data_fields['xhtml'] = data_code
             data_tags = get_list_or_404(Tag, gadget=get_object_or_404( \
                         Gadget, vendor=data_fields['vendor'], name=data_fields['name'], version=data_fields['version']))
             data_fields['tags'] = data_tags
@@ -55,6 +55,8 @@ class GadgetCollection(Resource):
 #        return HttpResponse(gadgets_json, mimetype='application/json; charset=UTF-8')
         return HttpResponse(json_encode(data_list), mimetype='application/json; charset=UTF-8')
 
+    def create(self, request):
+        pass
 
 class GadgetEntry(Resource):
     def read(self, request, vendor, name, version):
@@ -65,10 +67,10 @@ class GadgetEntry(Resource):
         d = data[0]
         data_fields = d['fields']
         data_template = get_object_or_404(Template, id=data_fields['template'])
-        data_fields['template'] = data_template
-        data_code = get_object_or_404(XHTML, id=data_fields['xHTML'])
-        data_fields['xHTML'] = data_code
-        data_tags = get_list_or_404(Tag, gadget=get_object_or_404( \
+        data_fields['template'] = data_template.uri
+        data_code = get_object_or_404(XHTML, id=data_fields['xhtml'])
+        data_fields['xhtml'] = data_code.code
+        data_tags = get_list_or_404(Tag.objects.all(), gadget=get_object_or_404( \
                     Gadget, vendor=data_fields['vendor'], name=data_fields['name'], version=data_fields['version']))
         data_fields['tags'] = data_tags
         data_list.append(data_fields)
