@@ -1,10 +1,10 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-// This is the class with the common properties of every connectable object of the wiring module //
+// This is the class has the common properties of every connectable object of the wiring module //
 // The other connectable classes from the wiring module will inherit from this class             //
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-function Connectable(name){
+function Connectable(id,name){
    // Private attributes
-   this.id = null;
+   this.id = id;
    this.type = null;
    this.value = null;
    this.name = name;
@@ -42,46 +42,12 @@ Connectable.prototype.getName = function(){
 Connectable.prototype.clear = function(value){
    null; // It will be overriden in the other classes
 }
-////////////////////////////////////////////////////////////////////////////////
-// This class is an abstract class from whom the other state classes inhertit //
-////////////////////////////////////////////////////////////////////////////////
-function ConnectableState(){
-   // Private attributes
-   this.id = null;
-   this.type = null;
-   this.value = null;
-   this.name = name;
-}
-
-ConnectableState.prototype.setId = function(value){
-   this.id=value;
-}
-
-ConnectableState.prototype.setType = function(value){
-   this.type=value;
-}
-
-ConnectableState.prototype.setValue = function(value){
-   this.value=value;
-}
-
-ConnectableState.prototype.setName = function(name){
-   this.name=name;
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////
-// This class stores the internal state needed to reconstruct the Out object an its relations //
-////////////////////////////////////////////////////////////////////////////////////////////////
-function OutState(){
-   ConnectableState.call(this);
-   this.inputHash() = [];
-}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // This class represents every object which may be placed in the middle of a connection between a In object and Out object //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function Out(name){
-   Connectable.call(this,name);
+function Out(id,name){
+   Connectable.call(this,id,name);
    this.inputHash = [];
 }
 Out.prototype = new Connectable();
@@ -115,23 +81,17 @@ Out.prototype.setValue = function(value){
 
 Out.prototype.clear = function(){
    for (i in this.inputHash){
-      this.inputHash[i].removeOutput(this);
+      if (this.inputHash[i] instanceof InOut){
+         this.inputHash[i].removeOutput(this);
+      }
    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////
-// This class stores the internal state needed to reconstruct the IN object an its relations //
-////////////////////////////////////////////////////////////////////////////////////////////////
-function InState(){
-   ConnectableState.call(this);
-   this.inputHash() = [];
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 // This class represents every object which may initialize one transmission through the wiring module //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-function In(name){
-   Connectable.call(this,name);
+function In(id,name){
+   Connectable.call(this,id,name);
    this.outputHash = [];
 }
 In.prototype = new Connectable();
@@ -181,24 +141,15 @@ In.prototype.setValue = function(value){
    }
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////
-// This class stores the internal state needed to reconstruct the Out object an its relations //
-////////////////////////////////////////////////////////////////////////////////////////////////
-function InOutState(){
-   ConnectableState.call(this);
-   this.inputHash() = [];
-   this.outputHash() = [];
-}
-
 /////////////////////////////////////////////////////////////////////
 // This class represents every object which may transmit some data //
 /////////////////////////////////////////////////////////////////////
-function InOut(name){
-   Connectable.call(this,name);
+function InOut(id,name){
+   Connectable.call(this,id,name);
    this.inputHash = [];
    this.outputHash = [];
    this.inputCounter = 0;
-   this.outputcounter = 0;
+   this.outputCounter = 0;
 }
 InOut.prototype = new Connectable();
 
@@ -206,7 +157,9 @@ InOut.prototype.setTypeForward = function(type){
    this.type = type;
    if (this.outputHash["channels"] instanceof Array) {
       for (i in this.outputHash["channels"]) {
-         this.outputHash["channels"][i].setTypeForward(this.type);
+         if (this.outputHash["channels"][i] instanceof InOut){
+            this.outputHash["channels"][i].setTypeForward(this.type);
+         }
       }
    }
 }
@@ -215,7 +168,9 @@ InOut.prototype.setTypeBack = function(type){
    this.type = type;
    if (this.inputHash["channels"] instanceof Array) {
       for (i in this.inputHash["channels"]) {
-         this.inputHash["channels"][i].setTypeBack(this.type);
+         if (this.inputHash["channels"][i] instanceof InOut){
+            this.inputHash["channels"][i].setTypeBack(this.type);
+         }
       }
    }
 }
@@ -233,9 +188,11 @@ InOut.prototype.addOutput = function(output){
             return 0;
          } else if (this.type == null){
             this.setTypeBack(output.getType());
+            this.outputCounter++;
             this.outputHash[output.getId()][output.getName()] = output;
             return 0;
          } else if (output.getType() == null){ // in the final version this case should not happen
+            this.outputCounter++;
             this.outputHash[output.getId()][output.getName()] = output;
             return 0;
          } else {
@@ -244,23 +201,25 @@ InOut.prototype.addOutput = function(output){
       } else {
          return 1; // warning: the output is already connected
       }
-   } else if ((output instanceof InOut) && (this.name != output.getName())){ //for avoiding loops with himself
+   } else if ((output instanceof InOut) && (this.name != output.getName())){ //for avoiding loops with itself
       if (!(this.outputHash["channels"] instanceof Array)) {
          this.outputHash["channels"] =[];
       }
       if (!(this.outputHash["channels"][output.getName()] instanceof InOut)){ // it may be changed when the filters were defined
          if (this.type == output.getType()){ // the checking of the types may be changed when the filters were included
             output.setValue(this.value);
+            this.outputCounter++;
             this.outputHash["channels"][output.getName()] = output;
             return 0;
          } else if (output.getType() == null){
             output.setTypeForward(this.type);
             output.setValue(this.value);
+            this.outputCounter++;
             this.outputHash["channels"][output.getName()] = output;
             return 0;
          } else if (this.type == null){
             this.setTypeBack(output.getType());
-            this.outputHash[output.getName()] = output;
+            this.outputHash["channels"][output.getName()] = output;
             return 0;
          } else {
             return -2; // error: the types are incompatible
@@ -296,7 +255,7 @@ InOut.prototype.removeOutput = function(output){
             this.outputHash["channels"][output.getName()] = null;
             if (--this.outputCounter == 0 && this.inputCounter == 0) {
                this.type = null;
-			   }
+            }
             return 0;
          }
       } else {
@@ -314,6 +273,7 @@ InOut.prototype.addInput = function(input){
       }
       if (!(this.inputHash[input.getId()][input.getName()] instanceof In)) {
          this.inputHash[input.getId()][input.getName()] = input;
+         this.inputCounter++;
          return 0;
       } else {
          return 1; // warning: the input is already connected
@@ -324,6 +284,7 @@ InOut.prototype.addInput = function(input){
       }
       if (!(this.inputHash["channels"][input.getName()] instanceof InOut)){ // it may be changed when the filters were defined
          this.inputHash["channels"][input.getName()] = input;
+         this.inputCounter++;
          return 0;
       } else {
          return 1; // warning: the input is already connected or it would create a loop
@@ -342,7 +303,7 @@ InOut.prototype.removeInput = function(input){
             this.inputHash[input.getId()][input.getName()] = null;
             if (this.outputCounter == 0 && --this.inputCounter == 0) {
                this.type = null;
-			   }
+            }
             return 0;
          }
       } else {
@@ -356,7 +317,7 @@ InOut.prototype.removeInput = function(input){
             this.inputHash["channels"][input.getName()] = null;
             if (this.outputCounter == 0 && --this.inputCounter == 0) {
                this.type = null;
-			   }
+            }
             return 0;
          }
       } else {
@@ -372,40 +333,50 @@ InOut.prototype.setValue = function(value){
    for (i in this.outputHash){
       if (this.outputHash[i] instanceof Array){
          for (j in this.outputHash[i]){
-            this.outputHash[i][j].setValue(value);
+            if (this.outputHash[i][j] instanceof Connectable){
+               this.outputHash[i][j].setValue(value);
+            }
          }
       }
    }
 }
 
 InOut.prototype.clear = function(){
-   for (i in this.outputHash){
-      for (j in this.outputHash[i]){
-         this.outputHash[i][j].removeOutput(this);
+   for (i in this.inputHash){
+      if (this.inputHash[i] instanceof Array){
+         for (j in this.inputHash[i]){
+            if (this.inputHash[i][j] instanceof Connectable){
+               this.inputHash[i][j].removeOutput(this);
+            }
+         }
       }
    }
+}
+
+InOut.prototype.connections = function(){
+   var result = [];
 }
 
 //////////////////////////////////////////////////////////////////////////
 // This class represents a iGadget variable which may produce some data //
 //////////////////////////////////////////////////////////////////////////
-function Event(name){
-   In.call(this,name);
+function Event(id,name){
+   In.call(this,id,name);
 }
 Event.prototype = new In();
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // This class represents a connectable whose only purpose is to redistribute the data produced by an In object //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function Channel(name){
-   InOut.call(this,name);
+function Channel(id,name){
+   InOut.call(this,id,name);
 }
-InOut.prototype = new InOut();
+Channel.prototype = new InOut();
 
 /////////////////////////////////////////////////////////////////////////////
 // This class representents a iGadget variable which may receive some data //
 /////////////////////////////////////////////////////////////////////////////
-function Slot(name){
+function Slot(id,name){
    Out.call(this,name);
 }
 Slot.prototype = new Out();

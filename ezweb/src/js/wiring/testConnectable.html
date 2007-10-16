@@ -1,26 +1,27 @@
 <HTML>
 <HEAD>
    <TITLE>Prueba Clases</TITLE>
+   <SCRIPT src="json.js" type="text/javascript"></SCRIPT>
    <SCRIPT src="connectable.js" type="text/javascript"></SCRIPT>
 </HEAD>
 <BODY>
    You must reload the page before clicking any button to restart common objects. In other case the results can be wrong.
    <H1>Unity tests for the classes which inherit from Connectable</H1>
    <SCRIPT>
-      var canal1 = new InOut("canal1");
-      var canal2 = new InOut("canal2");
-      var canal3 = new InOut("canal3");
-      var canal4 = new InOut("canal4");
-      var canal5 = new InOut("canal5");
-      var canal6 = new InOut("canal6");
-      var slot1 = new Out("slot1");
-      var slot2 = new Out("slot2");
-      var slot3 = new Out("slot3");
-      var slot4 = new Out("slot4");
-      var event1 = new Event("event1");
-      var event2 = new Event("event2");
-      var event3 = new Event("event3");
-      var event4 = new Event("event4");
+      var canal1 = new InOut(null,"canal1");
+      var canal2 = new InOut(null,"canal2");
+      var canal3 = new InOut(null,"canal3");
+      var canal4 = new InOut(null,"canal4");
+      var canal5 = new InOut(null,"canal5");
+      var canal6 = new InOut(null,"canal6");
+      var slot1 = new Out(1,"slot1");
+      var slot2 = new Out(1,"slot2");
+      var slot3 = new Out(2,"slot3");
+      var slot4 = new Out(2,"slot4");
+      var event1 = new Event(1,"event1");
+      var event2 = new Event(1,"event2");
+      var event3 = new Event(2,"event3");
+      var event4 = new Event(2,"event4");
    </SCRIPT>
 
    <H2>Tests for the class Out</H2>
@@ -255,14 +256,14 @@
          var pInOutSetValue7 = (canal3.getValue() == "test4");
          var pInOutSetValue8 = (slot1.getValue() == "test4");
          var pInOutSetValue9 = (slot2.getValue() == "test4");
+         event1.addOutput(canal1);
+         event1.setValue("test5");
+         var pInOutSetValue10 = (slot2.getValue() == "test5" && slot1.getValue() == "test5");
 
-
-         event1
-
-         if ( pInOutSetValue1 && pInOutSetValue2 && pInOutSetValue3 && pInOutSetValue4 && pInOutSetValue5  && pInOutSetValue6 && pInOutSetValue7 && pInOutSetValue8 && pInOutSetValue9) {
+         if ( pInOutSetValue1 && pInOutSetValue2 && pInOutSetValue3 && pInOutSetValue4 && pInOutSetValue5  && pInOutSetValue6 && pInOutSetValue7 && pInOutSetValue8 && pInOutSetValue9 && pInOutSetValue10) {
             alert("InOut.setValue works properly");
          } else {
-            alert("InOut.setValue failed!\n Results: " + pInOutSetValue1+","+pInOutSetValue2+","+pInOutSetValue3+","+pInOutSetValue4+","+pInOutSetValue5+","+pInOutSetValue6+","+pInOutSetValue7+","+pInOutSetValue8+","+pInOutSetValue9)
+            alert("InOut.setValue failed!\n Results: " + pInOutSetValue1+","+pInOutSetValue2+","+pInOutSetValue3+","+pInOutSetValue4+","+pInOutSetValue5+","+pInOutSetValue6+","+pInOutSetValue7+","+pInOutSetValue8+","+pInOutSetValue9+","+pInOutSetValue10)
          }
       }
 
