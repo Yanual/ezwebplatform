@@ -80,11 +80,14 @@ class GadgetTagsEntry(Resource):
 
 
 def _get_gadget_data(data_fields):
-    data_template = get_object_or_404(VariableDef.objects.all().values('aspect', 'name'), id=data_fields['template'])
+    data_image = get_object_or_404(Template, id=data_fields['template'])
+    data_fields['image'] = data_image.image
+
+    data_template = get_list_or_404(VariableDef.objects.all().values('aspect', 'name'), id=data_fields['template'])
     data_fields['template'] = data_template
 
     data_code = get_object_or_404(XHTML.objects.all().values('uri'), id=data_fields['xhtml'])
-    data_elements = get_list_or_404(UserEventsInfo.objects.all().values('uri', 'event', 'handler'), \
+    data_elements = get_list_or_404(UserEventsInfo.objects.all().values('uri', 'event', 'handler', 'html_element'), \
                 xhtml=data_fields['xhtml'])
     data_fields['xhtml'] = data_code
     data_fields['xhtml']['elements'] = data_elements
