@@ -16,7 +16,7 @@ function XHtml(xhtml_) {
 	
 	uri = xhtml_.uri;
 	for (i = 0; i<xhtml_.elements.length; i++) {
-		elements.push(new ElementHtml(xhtml_.elements[i].id, xhtml_.elements[i].event, xhtml_.elements[i].handler));
+		elements.push(new ElementHtml(xhtml_.elements[i].html_element, xhtml_.elements[i].event, xhtml_.elements[i].handler));
 	}
 	
 	// ****************
