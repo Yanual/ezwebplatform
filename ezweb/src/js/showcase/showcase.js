@@ -29,7 +29,6 @@ var ShowcaseFactory = function () {
 		loadGadgets = function (receivedData_) {
 			var response = receivedData_.responseText;
 			var jsonGadgetList = eval ('(' + response + ')');
-			jsonGadgetList = jsonGadgetList.gadgets;
 		
 			// Load all gadgets from persitence system
 			for (var i = 0; i<jsonGadgetList.length; i++) {
@@ -61,8 +60,8 @@ var ShowcaseFactory = function () {
 		var _persistenceEngine = PersistenceEngineFactory.getInstance();			
 		
 		// Initial load from persitence system
-		_persistenceEngine.send_get('gadgets.json', this, loadGadgets, onErrorCallback);
-		//_persistenceEngine.send_get('gadgets.json', this, function (data){alert (data.responseText)}, onErrorCallback);						
+		_persistenceEngine.send_get('http://europa.ls.fi.upm.es:8000/gadgets', this, loadGadgets, onErrorCallback);
+						
 
 		// Show only one gadget
 		function showGadget (gadgetId_){
@@ -207,7 +206,7 @@ var ShowcaseFactory = function () {
 			
 			buffer.append('<img id="image_');
 			buffer.append(gadgetId_);
-			buffer.append('" src="img/');
+			buffer.append('" src="');
 			buffer.append(gadget.getImage());
 			buffer.append('" width="120" height="60" alt="Image cannot be shown">\n');
 			
@@ -221,7 +220,7 @@ var ShowcaseFactory = function () {
 			var tags = gadget.getTags();
 			for (var i = 0; i<tags.length; i++) {
 				var tag = tags[i];
-				buffer.append(tag.value);
+				buffer.append(tag);
 				if (i != (tags.length-1)){
 					buffer.append(', ');
 				}
@@ -258,6 +257,7 @@ var ShowcaseFactory = function () {
 		Showcase.prototype.deleteGadget = function (gadgetId_) {
 			var gadget = _gadgets.remove(gadgetId_);
 			gadget.remove();
+			this.repaint();
 		}
 		
 		// Update a Showcase gadget
@@ -329,7 +329,7 @@ var ShowcaseFactory = function () {
 			var tags = gadget.getTags();
 			for (var i = 0; i<tags.length; i++) {
 				var tag = tags[i];
-				gadgetDetails[3].append(tag.value);
+				gadgetDetails[3].append(tag);
 				if (i != (tags.length-1)){
 					gadgetDetails[3].append(' ');
 				}
