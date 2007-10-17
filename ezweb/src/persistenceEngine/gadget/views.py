@@ -68,7 +68,7 @@ class GadgetTemplateEntry(Resource):
 class GadgetCodeEntry(Resource):
     def read(self, request, vendor, name, version):
         gadget = get_object_or_404(Gadget, vendor=vendor, name=name, version=version)
-        code = get_object_or_404(gadget.xHTML, id=gadget.xHTML.id)
+        code = get_object_or_404(gadget.xhtml, id=gadget.xhtml.id)
         return HttpResponse(json_encode(code), mimetype='application/json; charset=UTF-8')
 
 
