@@ -84,13 +84,15 @@ def _get_gadget_data(data_fields):
     data_fields['template'] = data_template
 
     data_code = get_object_or_404(XHTML.objects.all().values('uri'), id=data_fields['xhtml'])
+    data_elements = get_list_or_404(UserEventsInfo.objects.all().values('uri', 'event', 'handler'), \
+                xhtml=data_fields['xhtml'])
     data_fields['xhtml'] = data_code
-    data_elements = get_list_or_404(UserEventsInfo.objects.all().values('uri', 'event', 'handler'))
     data_fields['xhtml']['elements'] = data_elements
 
     data_tags = get_list_or_404(Tag.objects.all().values('value'), gadget=get_object_or_404( \
                 Gadget, vendor=data_fields['vendor'], name=data_fields['name'], version=data_fields['version']))
     data_fields['tags'] = [d['value'] for d in data_tags]
+    
     return data_fields
 
 
