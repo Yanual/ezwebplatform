@@ -106,7 +106,7 @@ RWVariable.prototype = new Variable;
 // PUBLIC METHODS TO BE INHERITANCED
 //////////////////////////////////////////////
 
-RWVariable.prototype.set = function (value, wiring) {  
+RWVariable.prototype.set = function (value_, wiring) {  
   // Error control needed here!!!!!!!!
 	switch (aspect){
 		case Variable.prototype.PROPERTY:
@@ -114,9 +114,12 @@ RWVariable.prototype.set = function (value, wiring) {
 		break;
 		case Variable.prototype.EVENT:
 		// PersistentEngine.guardar
-		wiring.sendEvent(iGadgetId, name, value);
+			if (value != value_){
+				wiring.sendEvent(iGadgetId, name, value_);
+			}
 		break;
 	}
+	value = value_;
 }  
 
 //////////////////////////////////////////////
