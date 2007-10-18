@@ -5,18 +5,13 @@ from xml.dom.ext.reader import Sax2
 from xml.dom.ext import Print
 from StringIO import StringIO
 
-from django.shortcuts import get_object_or_404, get_list_or_404, render_to_response
-from django.template import RequestContext, Context
-from django.template.loader import get_template
-from django.http import Http404, HttpResponse, HttpResponseRedirect
-from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, get_list_or_404
+from django.http import Http404, HttpResponse
 from django.core import serializers
 from django.utils import simplejson
 
 import types
 from django.db import models
-from django.utils import simplejson as json
 from django.core.serializers.json import DateTimeAwareJSONEncoder
 from decimal import *
 
@@ -34,7 +29,7 @@ class GadgetCollection(Resource):
         data = serializers.serialize('python', gadgets, ensure_ascii=False)
         data_list = []
         for d in data:
-            data_fields = _get_gadget_data(d['fields'])
+            data_fields = _get_gadget_data(d)
             data_list.append(data_fields)
         return HttpResponse(json_encode(data_list), mimetype='application/json; charset=UTF-8')
 
@@ -47,7 +42,7 @@ class GadgetEntry(Resource):
         user_authentication(user_id)
         gadgets = get_list_or_404(Gadget, vendor=vendor, name=name, version=version)
         data = serializers.serialize('python', gadgets, ensure_ascii=False)
-        data_fields = _get_gadget_data(data[0]['fields'])
+        data_fields = _get_gadget_data(data[0])
         return HttpResponse(json_encode(data_fields), mimetype='application/json; charset=UTF-8')
 
     def update(self, request, user_id, vendor, name, version):
@@ -92,7 +87,9 @@ def user_authentication(user_id):
     if not user.is_authenticated():
         raise Http404
 
-def _get_gadget_data(data_fields):
+def _get_gadget_data(data):
+    data_fields = data['fields']
+
     data_image = get_object_or_404(Template, id=data_fields['template'])
     data_fields['image'] = data_image.image
 
@@ -175,6 +172,6 @@ def json_encode(data, ensure_ascii=False):
     
     ret = _any(data)
     
-    return json.dumps(ret, cls=DateTimeAwareJSONEncoder, ensure_ascii=ensure_ascii)
+    return simplejson.dumps(ret, cls=DateTimeAwareJSONEncoder, ensure_ascii=ensure_ascii)
 
 

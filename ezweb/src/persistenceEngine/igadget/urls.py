@@ -1,14 +1,15 @@
+# -*- coding: utf-8 -*-
 from django.conf.urls.defaults import *
-from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
-from django_restapi.resource import Resource
+from django_restapi.model_resource import Collection
+from django_restapi.responder import *
+
+from persistenceEngine.igadget.views import *
 
 urlpatterns = patterns('igadget.views',
 
     # IGadgets
-    (r'^$', 'igadget.get_list'),
-    (r'^(?P<vendor>\d+)/(?P<slug_name>\d+)/(?P<version>\d+)/$', 'igadgets.get_igadget'),
-    (r'^(?P<vendor>\d+)/(?P<slug_name>\d+)/(?P<version>\d+)/var/(?P<variable>\d+)/$', 'igadgets.get_variable'),
-    (r'^(?P<vendor>\d+)/(?P<slug_name>\d+)/(?P<version>\d+)/var/(?P<variable>\d+)/edit/$', 'igadgets.edit_variable'),
+    (r'^$', IGadgetCollection(permitted_methods=('GET', ))),
+    (r'^(?P<vendor>[-ÑñáéíóúÁÉÍÓÚ\w]+)/(?P<name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/(?P<version>[-ÑñáéíóúÁÉÍÓÚ\w]+)/(screen/(?P<screen>\d+)/)?$',
+        IGadgetEntry(permitted_methods=('GET', 'DELETE'))),
 
 )

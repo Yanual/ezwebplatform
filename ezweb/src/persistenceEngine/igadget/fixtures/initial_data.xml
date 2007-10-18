@@ -1,3 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <django-objects version="1.0">
+    <object pk="1" model="igadget.variable">
+        <field type="CharField" name="uri">http://variables.com/var1</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">1</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">1</field>
+        <field type="TextField" name="value">Mi variable</field>
+    </object>
+    <object pk="1" model="igadget.screen">
+        <field type="CharField" name="uri">http://screen.com/screen1</field>
+        <field type="CharField" name="name">Pantalla 1</field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
+    </object>
+    <object pk="1" model="igadget.igadget">
+        <field type="CharField" name="uri">http://igadgets.com/igadget1</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">1</field>
+        <field to="igadget.screen" name="screen" rel="ManyToOneRel">1</field>
+    </object>
 </django-objects>
