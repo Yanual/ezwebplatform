@@ -7,6 +7,7 @@ from django_restapi.resource import Resource
 urlpatterns = patterns('',
     # Static content
     # (r'^site_media/(.*)$', 'ezweb.views.static.serve', {'document_root': path.expanduser('~/ezweb/media')}),
+    (r'^ezweb/(.*)$', 'django.views.static.serve', {'document_root': path.join('opt', 'ezweb', 'src', 'js')}),
 
     # EzWeb
     (r'^$', include('trial.urls')),
