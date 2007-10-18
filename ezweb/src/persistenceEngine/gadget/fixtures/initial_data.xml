@@ -41,7 +41,7 @@
     <object pk="1" model="gadget.template">
         <field type="CharField" name="uri">http://gadgets.com/gadget1/template1</field>
         <field type="CharField" name="description">Descripción 1</field>
-        <field type="CharField" name="image">http://gadgets.com/gadget1/screenshot.jpg</field>
+        <field type="CharField" name="image">http://europa.ls.fi.upm.es/~lmayllon/ezweb/img/buzon_pequeo.jpg</field>
     </object>
     <object pk="1" model="gadget.xhtml">
         <field type="CharField" name="uri">http://gadgets.com/gadget1/xhtml</field>

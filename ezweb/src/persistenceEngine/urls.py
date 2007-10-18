@@ -12,16 +12,17 @@ urlpatterns = patterns('',
 
     # EzWeb
     (r'^$', include('trial.urls')),
+    (r'^user/(?P<user_id>\d+)/$', include('trial.urls')),
 #    (r'^user/(?P<user_id>\d+)/', include('user.urls')),
 
     # Gadgets
-    (r'^gadget(s)?/', include('gadget.urls')),
+    (r'^user/(?P<user_id>\d+)/gadget(s)?/', include('gadget.urls')),
 
     # IGadgets
-    (r'^igadget(s)?/', include('igadget.urls')),
+    (r'^user/(?P<user_id>\d+)/igadget(s)?/', include('igadget.urls')),
 
     # Connectables
-    (r'^connectable(s)?/', include('connectable.urls')),
+    (r'^user/(?P<user_id>\d+)/connectable(s)?/', include('connectable.urls')),
 
 
     # Django contrib
