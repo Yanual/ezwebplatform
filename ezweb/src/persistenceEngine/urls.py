@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from os import path
 from django.conf.urls.defaults import *
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
