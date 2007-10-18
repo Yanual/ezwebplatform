@@ -61,6 +61,7 @@ var ShowcaseFactory = function () {
 		
 		// Initial load from persitence system
 		_persistenceEngine.send_get('http://europa.ls.fi.upm.es:8000/gadgets', this, loadGadgets, onErrorCallback);
+//		_persistenceEngine.send_get('gadgets.json', this, loadGadgets, onErrorCallback);
 						
 
 		// Show only one gadget
@@ -72,9 +73,12 @@ var ShowcaseFactory = function () {
 			buffer.append('<tr>\n');
 			buffer.append('<td style="float: right;">\n');
 			
-			buffer.append('<a href="javascript:;" onClick="details(\'');
-			buffer.append(gadgetId_);
-			buffer.append('\');">details</a> / <a href="javascript:;" onClick="edit(\'');
+//			buffer.append('<a href="javascript:;" onClick="details(\'');
+//			buffer.append(gadgetId_);
+//			buffer.append('\');">details</a> / <a href="javascript:;" onClick="edit(\'');
+
+			buffer.append('<a href="javascript:;">details</a> / <a href="javascript:;" onClick="edit(\'');
+			
 			buffer.append(gadgetId_);
 			buffer.append('\');">edit</a> / <a href="javascript:;" onClick="deleteGadget(\'');
 			buffer.append(gadgetId_);
@@ -256,7 +260,7 @@ var ShowcaseFactory = function () {
 		// Remove a Showcase gadget
 		Showcase.prototype.deleteGadget = function (gadgetId_) {
 			var gadget = _gadgets.remove(gadgetId_);
-			gadget.remove();
+			//gadget.remove();
 			this.repaint();
 		}
 		
