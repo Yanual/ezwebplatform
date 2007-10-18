@@ -60,8 +60,8 @@ var ShowcaseFactory = function () {
 		var _persistenceEngine = PersistenceEngineFactory.getInstance();			
 		
 		// Initial load from persitence system
-		_persistenceEngine.send_get('http://europa.ls.fi.upm.es:8000/gadgets', this, loadGadgets, onErrorCallback);
-//		_persistenceEngine.send_get('gadgets.json', this, loadGadgets, onErrorCallback);
+		_persistenceEngine.send_get('http://europa.ls.fi.upm.es:8000/user/1/gadgets', this, loadGadgets, onErrorCallback);
+		_persistenceEngine.send_get('gadgets.json', this, loadGadgets, onErrorCallback);
 						
 
 		// Show only one gadget
@@ -176,12 +176,11 @@ var ShowcaseFactory = function () {
 			buffer.append('</td>\n');
 			buffer.append('<td>\n');
 			
-			buffer.append('<input type="button" style="font-weight: bold; float: left;" value="save" onClick="saveGadgetDetails(\'');
+			buffer.append('<a href="javascript:;" onClick="saveGadgetDetails(\'');
 			buffer.append(gadgetId_);
-			buffer.append('\')">\n');
-			buffer.append('<input type="button" style="margin-left: 10px; clear: none; float: left;" value="cancel" onClick="$(\'edit_');
+			buffer.append('\')"a>save</a> / <a href="javascript:;" onClick="$(\'edit_');
 			buffer.append(gadgetId_);
-			buffer.append('\').style.display=\'none\'">\n');
+			buffer.append('\').style.display=\'none\'">cancel</a>\n');
 			
 			buffer.append('</td>\n');
 			buffer.append('</tr>\n');
@@ -235,7 +234,7 @@ var ShowcaseFactory = function () {
 			buffer.append('<tr>\n');
 			buffer.append('<td align="center">\n');
 			
-			buffer.append('<input type="button" value="add">\n');
+			buffer.append('<a href="javascript:;">add</a>\n');
 			
 			buffer.append('</td>\n');
 			buffer.append('</tr>\n');
