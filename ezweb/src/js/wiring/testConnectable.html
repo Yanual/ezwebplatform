@@ -1,7 +1,6 @@
 <HTML>
 <HEAD>
    <TITLE>Prueba Clases</TITLE>
-   <SCRIPT src="json.js" type="text/javascript"></SCRIPT>
    <SCRIPT src="connectable.js" type="text/javascript"></SCRIPT>
 </HEAD>
 <BODY>
@@ -65,27 +64,35 @@
 
       function pOutClear(){
          canal1.addOutput(slot1);
-            slot1.addInput(canal1);
-            canal2.addOutput(slot1);
-            slot1.addInput(canal2);
-            canal2.addOutput(slot1);
-            slot1.clear();
-            var pOutClear1 = canal1.addOutput(slot1); // ok
-            var pOutClear2 = canal2.addOutput(slot1); // ok
-            var pOutClear3 = canal2.addOutput(slot1); // warning 1
+         slot1.addInput(canal1);
+         canal2.addOutput(slot1);
+         slot1.addInput(canal2);
+         canal2.addOutput(slot1);
+         slot1.clear();
+         var pOutClear1 = canal1.addOutput(slot1); // ok
+         var pOutClear2 = canal2.addOutput(slot1); // ok
+         var pOutClear3 = canal2.addOutput(slot1); // warning 1
 
-            if (pOutClear1 == 0 && pOutClear2 == 0 && pOutClear3 == 1) {
-               alert("Out.clear works properly");
-            } else {
-               alert("Out.clear failed!\n Results: "+pOutClear1+","+pOutClear2+","+pOutClear3);
-            }
+         if (pOutClear1 == 0 && pOutClear2 == 0 && pOutClear3 == 1) {
+            alert("Out.clear works properly");
+         } else {
+            alert("Out.clear failed!\n Results: "+pOutClear1+","+pOutClear2+","+pOutClear3);
+         }
       }
+
+      function pOutToJSON(){
+         slot1.setType("type1");
+         slot1.setValue("value1");
+         alert(slot1.toJSON());
+      }
+
    </SCRIPT>
    <FORM>
       <INPUT id="bOutPruebaAddInput" type="button" value="Test addInput" onClick="pOutAddInput()"/>
       <INPUT id="bOutPruebaRemoveInput" type="button" value="Test removeOutput" onClick="pOutRemoveInput()"/>
       <INPUT id="bOutPruebaSetValue" type="button" value="Test setValue" onClick="pOutSetValue()"/>
       <INPUT id="bOutPruebaClear" type="button" value="Test clear" onClick="pOutClear()"/>
+      <INPUT id="bOutPruebaToJson" type="button" value="Test toJSON" onClick="pOutToJSON()"/>
    </FORM>
 
    <H2>Tests for the class In</H2>
@@ -152,11 +159,18 @@
          }
       }
 
+      function pInToJSON(){
+         event1.setType("type1");
+         event1.setValue("value1");
+         alert(event1.toJSON());
+      }
+
    </SCRIPT>
    <FORM>
       <INPUT id="bInPruebaAddOutput" type="button" value="Test addOutput" onClick="pInAddOutput()"/>
       <INPUT id="bInPruebaRemoveOutput" type="button" value="Test removeOutput" onClick="pInRemoveOutput()"/>
       <INPUT id="bInPruebaSetValue" type="button" value="Test setValue" onClick="pInSetValue()"/>
+      <INPUT id="bInPruebaToJson" type="button" value="Test toJSON" onClick="pInToJSON()"/>
    </FORM>
 </BODY>
 
@@ -164,28 +178,40 @@
    <SCRIPT>
 
       function pInOutAddOutput(){
-         canal1.setType("type1");
-         canal1.setValue("value1");
-         canal2.setType("type2");
-         var pInOutAddOutput1 = canal1.addOutput(canal1); // error -1
-         var pInOutAddOutput2 = canal1.addOutput(slot1); // ok
-         var pInOutAddOutput3 = canal1.addOutput(event1); //  error -1
-         var pInOutAddOutput4 = canal1.addOutput(canal2); // error -2
-         var pInOutAddOutput5 = canal1.addOutput(slot1); // warning 1
-         var pInOutAddOutput6 = canal3.addOutput(canal4); // ok
-         var pInOutAddOutput7 = canal3.addOutput(slot2); //ok
-         var pInOutAddOutput8 = canal1.addOutput(canal3); // ok
-         var pInOutAddOutput9 = (canal4.getType() == "type1" && canal4.getValue() == "value1" && slot2.getValue()) // true
-         var pInOutAddOutput10 = canal5.addOutput(canal6); // ok
-         canal6.addInput(canal5); // ok
-         canal6.addInput(slot3); //ok
-         var pInOutAddOutput11 = canal6.addOutput(canal1); //ok
-         var pInOutAddOutput12 = (canal5.getType() == "type1") // true 
-         if (pInOutAddOutput1 == -1 && pInOutAddOutput2 == 0 && pInOutAddOutput3 == -1 && pInOutAddOutput4 == -2 && pInOutAddOutput5 == 1 && pInOutAddOutput6 == 0 && pInOutAddOutput7 == 0 && pInOutAddOutput8 == 0 && pInOutAddOutput9 && pInOutAddOutput10 == 0 && pInOutAddOutput11 == 0 && pInOutAddOutput12){
-            alert("InOut.addOutput works properly");
-         }else{
-            alert("InOut.addOutput failed!\n Results: "+ pInOutAddOutput1+","+pInOutAddOutput2+","+pInOutAddOutput3+","+pInOutAddOutput4+","+pInOutAddOutput5+","+pInOutAddOutput6+","+pInOutAddOutput7+","+pInOutAddOutput8+","+pInOutAddOutput9+","+pInOutAddOutput10+","+pInOutAddOutput11+","+pInOutAddOutput12);
+          canal1.setType("type1");
+          canal1.setValue("value1");
+          canal2.setType("type2");
+          var pInOutAddOutput1 = canal1.addOutput(canal1); // warning 2
+          var pInOutAddOutput2 = canal1.addOutput(slot1); // ok
+          var pInOutAddOutput3 = canal1.addOutput(event1); //  error -1
+          var pInOutAddOutput4 = canal1.addOutput(canal2); // error -2
+          var pInOutAddOutput5 = canal1.addOutput(slot1); // warning 1
+          var pInOutAddOutput6 = canal3.addOutput(canal4); // ok
+          var pInOutAddOutput7 = canal3.addOutput(slot2); //ok
+          var pInOutAddOutput8 = canal1.addOutput(canal3); // ok
+          var pInOutAddOutput9 = (canal4.getType() == "type1" && canal4.getValue() == "value1" && slot2.getValue()=="value1") // true
+          var pInOutAddOutput10 = canal5.addOutput(canal6); // ok
+          canal6.addInput(canal5); // ok
+          canal6.addInput(slot3); //ok
+          var pInOutAddOutput11 = canal6.addOutput(canal1); //ok
+          var pInOutAddOutput12 = (canal5.getType() == "type1") // true
+          if (pInOutAddOutput1 == 2 && pInOutAddOutput2 == 0 && pInOutAddOutput3 == -1 && pInOutAddOutput4 == -2 && pInOutAddOutput5 == 1 && pInOutAddOutput6 == 0 && pInOutAddOutput7 == 0 && pInOutAddOutput8 == 0 && pInOutAddOutput9 && pInOutAddOutput10 == 0 && pInOutAddOutput11 == 0 && pInOutAddOutput12){
+             alert("InOut.addOutput works properly");
+          }else{
+             alert("InOut.addOutput failed!\n Results: "+ pInOutAddOutput1+","+pInOutAddOutput2+","+pInOutAddOutput3+","+pInOutAddOutput4+","+pInOutAddOutput5+","+pInOutAddOutput6+","+pInOutAddOutput7+","+pInOutAddOutput8+","+pInOutAddOutput9+","+pInOutAddOutput10+","+pInOutAddOutput11+","+pInOutAddOutput12);
          }
+//          canal1.setValue("value1");
+//          canal1.addOutput(canal2);
+//          canal2.addInput(canal1);
+//          canal1.addOutput(canal3);
+//          canal3.addInput(canal1);
+//          canal3.addOutput(canal4);
+//          canal4.addInput(canal3);
+//          canal3.addOutput(canal5);
+//          canal5.addInput(canal3);
+//          event1.setValue("value2");
+//          event1.addOutput(canal1);
+//          canal1.addInput(event1);
       }
 
       function pInOutRemoveOutput(){
@@ -207,15 +233,15 @@
       }
 
       function pInOutAddInput(){
-         var pInOutAddInput1 = canal1.addInput(canal1); // error -1
-         var pInOutAddInput2 = canal1.addInput(slot1); // ok
-         var pInOutAddInput3 = canal1.addInput(event1); //  error -1
-         var pInOutAddInput4 = canal1.addInput(canal2); //ok
+         var pInOutAddInput1 = canal1.addInput(canal1); // warning 2
+         var pInOutAddInput2 = canal1.addInput(slot1); // error -1
+         var pInOutAddInput3 = canal1.addInput(event1); // ok
+         var pInOutAddInput4 = canal1.addInput(canal2); // ok
          var pInOutAddInput5 = canal1.addInput(canal2); // warning 1
-         if (pInOutAddInput1 == -1 && pInOutAddInput2 == -1 && pInOutAddInput3 == 0 && pInOutAddInput4 == 0 && pInOutAddInput5 == 1){
+         if (pInOutAddInput1 == 2 && pInOutAddInput2 == -1 && pInOutAddInput3 == 0 && pInOutAddInput4 == 0 && pInOutAddInput5 == 1){
             alert("InOut.addInput works properly");
          }else{
-            alert("InOut.addInput failed!\n Results: " + pInOutRemoveInput1+","+pInOutRemoveInput2+","+pInOutRemoveInput3+","+pInOutRemoveInput4+","+pInOutRemoveInput5);
+            alert("InOut.addInput failed!\n Results: " + pInOutAddInput1+","+pInOutAddInput2+","+pInOutAddInput3+","+pInOutAddInput4+","+pInOutAddInput5);
          }
       }
 
@@ -251,11 +277,15 @@
          canal1.addOutput(canal3);
          canal1.addOutput(slot2);
          canal2.addOutput(canal3);
+		 alert(canal1.serialize())
+		 alert(canal2.serialize())
+		 alert(canal3.serialize())
+		 alert(canal3.outputCounter)
          canal1.setValue("test4");
-         var pInOutSetValue6 = (canal2.getValue() == "test4");
-         var pInOutSetValue7 = (canal3.getValue() == "test4");
-         var pInOutSetValue8 = (slot1.getValue() == "test4");
-         var pInOutSetValue9 = (slot2.getValue() == "test4");
+         var pInOutSetValue6 = (canal2.getValue() == "test4");alert(canal2.getValue())
+         var pInOutSetValue7 = (canal3.getValue() == "test4");alert(canal3.getValue())
+         var pInOutSetValue8 = (slot1.getValue() == "test4");alert(slot1.getValue())
+         var pInOutSetValue9 = (slot2.getValue() == "test4");alert(slot2.getValue())
          event1.addOutput(canal1);
          event1.setValue("test5");
          var pInOutSetValue10 = (slot2.getValue() == "test5" && slot1.getValue() == "test5");
@@ -293,6 +323,27 @@
             alert("Out.clear failed!\n Results: "+pInOutClear1+","+pInOutClear2+","+pInOutClear3+","+pInOutClear4+","+pInOutClear5+","+pInOutClear6);
          }
       }
+
+      function pInOutSerialize(){
+         canal1.addInput(event1);
+         canal1.addInput(event2);
+         canal1.addInput(canal2);
+         canal1.addInput(canal3);
+         event1.addOutput(canal1);
+         event2.addOutput(canal1);
+         canal2.addOutput(canal1);
+         canal3.addOutput(canal1);
+         canal1.addOutput(slot1);
+         canal1.addOutput(slot2);
+         canal1.addOutput(canal4);
+         canal1.addOutput(canal5);
+         slot1.addInput(canal1);
+         slot2.addInput(canal1);
+         canal4.addInput(canal1);
+         canal5.addInput(canal1);
+         alert(canal1.serialize());
+      }
+
    </SCRIPT>
    <FORM>
       <INPUT id="bInOutPruebaAddOutput" type="button" value="Test addOutput" onClick="pInOutAddOutput()"/>
@@ -300,7 +351,8 @@
       <INPUT id="bInOutPruebaAddInput" type="button" value="Test addInput" onClick="pInOutAddInput()"/>
       <INPUT id="bInOutPruebaRemoveInput" type="button" value="Test removeInput" onClick="pInOutRemoveInput()"/>
       <INPUT id="bInPruebaSetValue" type="button" value="Test setValue" onClick="pInOutSetValue()"/>
-      <INPUT id="bIntPruebaClear" type="button" value="Test clear" onClick="pInOutClear()"/>
+      <INPUT id="bInOutPruebaClear" type="button" value="Test clear" onClick="pInOutClear()"/>
+      <INPUT id="bInOutPruebaSerialize" type="button" value="Test serialize" onClick="pInOutSerialize()"/>
    </FORM>
 </BODY>
 </HTML>

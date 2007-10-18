@@ -1,12 +1,12 @@
-///////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////
 // This is the class has the common properties of every connectable object of the wiring module //
-// The other connectable classes from the wiring module will inherit from this class             //
-///////////////////////////////////////////////////////////////////////////////////////////////////
+// The other connectable classes from the wiring module will inherit from this class            //
+//////////////////////////////////////////////////////////////////////////////////////////////////
 function Connectable(id,name){
    // Private attributes
    this.id = id;
    this.type = null;
-   this.value = null;
+   this.value = name;
    this.name = name;
 }
 // Public methods 
@@ -76,6 +76,7 @@ Out.prototype.removeInput = function(input){
 
 Out.prototype.setValue = function(value){
    this.value=value;
+   alert("El slot " + this.name+ " tiene valor " + this.value);
    // here goes the calling to the method writeSlot of the VarManager
 }
 
@@ -87,7 +88,7 @@ Out.prototype.clear = function(){
    }
 }
 
-Out.prototype.toJSON = function(){
+Out.prototype.toJson = function(){
    return "{\"aspect\":\"SLOT\",\"id\":\""+this.id+"\",\"type\":\""+this.type+"\",\"value\":\""+this.value+"\",\"name\":\""+this.name+"\"}";
 }
 
@@ -104,13 +105,13 @@ In.prototype.addOutput = function(output){
    if (output instanceof InOut){
       if (!(this.outputHash[output.getName()] instanceof InOut)){
          if (this.type == output.getType()){ // the checking of the types may be changed when the filters were included
-            output.setValue(this.value);
             this.outputHash[output.getName()] = output;
+            output.setValue(this.value);
             return 0;
          } else if (output.getType() == null){
-            output.setTypeForward(this.type);
             output.setValue(this.value);
             this.outputHash[output.getName()] = output;
+            output.setTypeForward(this.type);
             return 0;
          } else if (this.type == null){ // this should not happen y the final version
             this.type = output.getType();
@@ -138,14 +139,16 @@ In.prototype.removeOutput = function(output){
 
 In.prototype.setValue = function(value){
    this.value = value;
+   var changes ="{\"idEvent\":\""+this.id;
    for (i in this.outputHash){
       if (this.outputHash[i] instanceof InOut){
         this.outputHash[i].setValue(value);
       }
    }
+   return changes + "]}"
 }
 
-In.prototype.toJSON = function(){
+In.prototype.toJson = function(){
    return "{\"aspect\":\"EVENT\",\"id\":\""+this.id+"\",\"type\":\""+this.type+"\",\"value\":\""+this.value+"\",\"name\":\""+this.name+"\"}";
 }
 
@@ -154,8 +157,8 @@ In.prototype.toJSON = function(){
 /////////////////////////////////////////////////////////////////////
 function InOut(id,name){
    Connectable.call(this,id,name);
-   this.inputHash = [];
-   this.outputHash = [];
+   this.inputList = [];
+   this.outputList = [];
    this.inputCounter = 0;
    this.outputCounter = 0;
 }
@@ -163,17 +166,30 @@ InOut.prototype = new Connectable();
 
 InOut.prototype.setTypeForward = function(type){
    this.type = type;
-   if (this.outputHash["channels"] instanceof Array) {
+   for (i=1;i<=this.outputCounter;i++){
+      if (this.outputList[i] instanceof InOut){
+         this.outputList[i].setTypeForward(type);
+      }
+   }
+}
+/*   if (this.outputHash["channels"] instanceof Array) {
       for (i in this.outputHash["channels"]) {
          if (this.outputHash["channels"][i] instanceof InOut){
             this.outputHash["channels"][i].setTypeForward(this.type);
          }
       }
    }
-}
+}*/
 
 InOut.prototype.setTypeBack = function(type){
    this.type = type;
+   for (i=1;i<=this.inputCounter;i++){
+      if (this.inputList[i] instanceof InOut){
+         this.inputList[i].setTypeBack(type);
+      }
+   }
+}
+/*   this.type = type;
    if (this.inputHash["channels"] instanceof Array) {
       for (i in this.inputHash["channels"]) {
          if (this.inputHash["channels"][i] instanceof InOut){
@@ -181,187 +197,171 @@ InOut.prototype.setTypeBack = function(type){
          }
       }
    }
-}
+}*/
 
 InOut.prototype.addOutput = function(output){
-   if (output instanceof Out){
-      if (!(this.outputHash[output.getId()] instanceof Array)) {
-         this.outputHash[output.getId()] =[];
-      }
-      if (!(this.outputHash[output.getId()][output.getName()] instanceof Out)) {
-         if (this.type == output.getType()){ // the checking of the types may be changed when the filters were included
-            output.setValue(this.value);
-            this.outputCounter++;
-            this.outputHash[output.getId()][output.getName()] = output;
-            return 0;
-         } else if (this.type == null){
-            this.setTypeBack(output.getType());
-            this.outputCounter++;
-            this.outputHash[output.getId()][output.getName()] = output;
-            return 0;
-         } else if (output.getType() == null){ // in the final version this case should not happen
-            this.outputCounter++;
-            this.outputHash[output.getId()][output.getName()] = output;
-            return 0;
+   if (!(output instanceof In)){
+      if (output.getId() != this.id || output.getName() != this.name){ // for avoiding loops with itself
+         var i = 1;
+         var located = 0;
+         while (i<=this.outputCounter && located == 0){
+            if (this.outputList[i].getId() == output.getId() && this.outputList[i].getName() == output.getName()){
+               located = 1; // warning: the output is already connected
+            }
+            i++;
+         }
+         if (located != 1){
+            if (this.type == output.getType()){ // the checking of the types may be changed when the filters were included
+               this.outputCounter++;//alert("[normal]En el canal "+this.name+" inserto la salida "+output.getName()+" en la posicion "+this.outputCounter)
+               this.outputList[this.outputCounter]=output;
+               output.setValue(this.value);
+               return 0;
+            } else if (output.getType() == null){
+               output.setValue(this.value);
+               this.outputCounter++;//alert("[salida null]En el canal "+this.name+" inserto la salida "+output.getName()+" en la posicion "+this.outputCounter)
+               this.outputList[this.outputCounter]=output;
+               if (output instanceof InOut){
+                  output.setTypeForward(this.type);
+               }
+               return 0;
+            } else if (this.type == null){ // in the final version this case should not happen
+               this.setTypeBack(output.getType());
+               this.outputCounter++;//alert("[entrada null]En el canal "+this.name+" inserto la salida "+output.getName()+" en la posicion "+this.outputCounter)
+               this.outputList[this.outputCounter]=output;
+               return 0;
+            } else {
+               return -2; // error: the types are incompatible
+            }
          } else {
-            return -2; // error: the types are incompatible
+            return 1; // warning: the input is already connected
          }
       } else {
-         return 1; // warning: the output is already connected
+         return 2; // warning: the output would create a loop with itself
       }
-   } else if ((output instanceof InOut) && (this.name != output.getName())){ //for avoiding loops with itself
-      if (!(this.outputHash["channels"] instanceof Array)) {
-         this.outputHash["channels"] =[];
-      }
-      if (!(this.outputHash["channels"][output.getName()] instanceof InOut)){ // it may be changed when the filters were defined
-         if (this.type == output.getType()){ // the checking of the types may be changed when the filters were included
-            output.setValue(this.value);
-            this.outputCounter++;
-            this.outputHash["channels"][output.getName()] = output;
-            return 0;
-         } else if (output.getType() == null){
-            output.setTypeForward(this.type);
-            output.setValue(this.value);
-            this.outputCounter++;
-            this.outputHash["channels"][output.getName()] = output;
-            return 0;
-         } else if (this.type == null){
-            this.setTypeBack(output.getType());
-            this.outputHash["channels"][output.getName()] = output;
-            return 0;
-         } else {
-            return -2; // error: the types are incompatible
-         }
-      } else {
-         return 1; // warning: the output is already connected or it would create a loop
-      }
-   } else {
-      return -1; // error: the output is a In object
+   }else {
+      return -1; // error: the output is an Out object
    }
 }
 
 InOut.prototype.removeOutput = function(output){
-   if (output instanceof Out){
-      if (this.outputHash[output.getId()] instanceof Array) {
-         if (!(this.outputHash[output.getId()][output.getName()] instanceof Out)) {
-            return 1; // warning: the output does not exist
-         } else {
-            this.outputHash[output.getId()][output.getName()] = null;
-            if (--this.outputCounter == 0 && this.inputCounter == 0) {
-               this.type = null;
-            }
-            return 0;
+   if (!(output instanceof In)){
+      var i = 1;
+      var located = 0;
+      while (i<=this.outputCounter && located == 0){
+         if (this.outputList[i].getId() == output.getId() && this.outputList[i].getName() == output.getName()){
+            located = i; // warning: the output is already connected
          }
+         i++;
+      }
+      if (located != 0){
+         this.outputList.splice(located,1);
+         if (--this.outputCounter == 0 && this.inputCounter == 0) {
+            this.type = null;
+            this.value = null;
+         }
+         return 0;
       } else {
          return 1; // warning: the output does not exist
       }
-   } else if (output instanceof InOut) { 
-      if (this.outputHash["channels"] instanceof Array) {
-         if (!(this.outputHash["channels"][output.getName()] instanceof InOut)){ // it may be changed when the filters were defined
-            return 1; // warning: the output does not exist
-         } else {
-            this.outputHash["channels"][output.getName()] = null;
-            if (--this.outputCounter == 0 && this.inputCounter == 0) {
-               this.type = null;
-            }
-            return 0;
-         }
-      } else {
-         return 1; // warning: the output does not exist
-      }
-   } else {
-      return -1; // error: the output is a In object
+   }else {
+      return -1; // error: the output is an In object
    }
 }
 
 InOut.prototype.addInput = function(input){
-   if (input instanceof In){
-      if (!(this.inputHash[input.getId()] instanceof Array)) {
-         this.inputHash[input.getId()] =[];
-      }
-      if (!(this.inputHash[input.getId()][input.getName()] instanceof In)) {
-         this.inputHash[input.getId()][input.getName()] = input;
-         this.inputCounter++;
-         return 0;
+   if (!(input instanceof Out)){
+      if (input.getId() != this.id || input.getName() != this.name){ // for avoiding loops with itself
+         var i = 1;
+         var located = 0;
+         while (i<=this.inputCounter && located == 0){
+            if (this.inputList[i].getId() == input.getId() && this.inputList[i].getName() == input.getName()){
+               located = 1; // warning: the input is already connected
+            }
+            i++;
+         }
+         if (located != 1){
+            this.inputList[++this.inputCounter]=input;
+            return 0;
+         } else {
+            return 1; // warning: the input is already connected
+         }
       } else {
-         return 1; // warning: the input is already connected
+         return 2; // warning: the input would create a loop with itself
       }
-   } else if ((input instanceof InOut) && (this.name != input.getName())){ //for avoiding loops with himself
-      if (!(this.inputHash["channels"] instanceof Array)) {
-         this.inputHash["channels"] =[];
-      }
-      if (!(this.inputHash["channels"][input.getName()] instanceof InOut)){ // it may be changed when the filters were defined
-         this.inputHash["channels"][input.getName()] = input;
-         this.inputCounter++;
-         return 0;
-      } else {
-         return 1; // warning: the input is already connected or it would create a loop
-      }
-   } else {
-      return -1; // error: the input is a In object
+   }else {
+      return -1; // error: the input is an Out object
    }
 }
 
 InOut.prototype.removeInput = function(input){
-   if (input instanceof In){
-      if (this.inputHash[input.getId()] instanceof Array) {
-         if (!(this.inputHash[input.getId()][input.getName()] instanceof In)) {
-            return 1; // warning: the input does not exist
-         } else {
-            this.inputHash[input.getId()][input.getName()] = null;
-            if (this.outputCounter == 0 && --this.inputCounter == 0) {
-               this.type = null;
-            }
-            return 0;
+   if (!(input instanceof Out)){
+      var i = 1;
+      var located = 0;
+      while (i<=this.inputCounter && located == 0){
+         if (this.inputList[i].getId() == input.getId() && this.inputList[i].getName() == input.getName()){
+            located = i; // warning: the input is already connected
          }
+         i++;
+      }
+      if (located != 0){
+         this.inputList.splice(located,1);
+         if (this.outputCounter == 0 && --this.inputCounter == 0) {
+            this.type = null;
+            this.value = null;
+         }
+         return 0;
       } else {
          return 1; // warning: the input does not exist
       }
-   } else if (input instanceof InOut) { 
-      if (this.inputHash["channels"] instanceof Array) {
-         if (!(this.inputHash["channels"][input.getName()] instanceof InOut)){ // it may be changed when the filters were defined
-            return 1; // warning: the input does not exist
-         } else {
-            this.inputHash["channels"][input.getName()] = null;
-            if (this.outputCounter == 0 && --this.inputCounter == 0) {
-               this.type = null;
-            }
-            return 0;
-         }
-      } else {
-         return 1; // warning: the input does not exist
-      }
-   } else {
-      return -1; // error: the output is a In object
+   }else {
+      return -1; // error: the input is an Out object
    }
 }
 
 InOut.prototype.setValue = function(value){
-   this.value = value;
-   for (i in this.outputHash){
-      if (this.outputHash[i] instanceof Array){
-         for (j in this.outputHash[i]){
-            if (this.outputHash[i][j] instanceof Connectable){
-               this.outputHash[i][j].setValue(value);
-            }
-         }
+   this.value = value;//alert("entro en :"+this.name)
+   //for (i=1;i<=this.outputCounter;i++){
+   var i =1;
+   while(i<=this.outputList.length){ // this is temporal, somehow a for loop does not work
+      if (this.outputList[i] instanceof Connectable){
+         this.outputList[i].setValue(value);
       }
+      i++;
    }
 }
 
 InOut.prototype.clear = function(){
-   for (i in this.inputHash){
-      if (this.inputHash[i] instanceof Array){
-         for (j in this.inputHash[i]){
-            if (this.inputHash[i][j] instanceof Connectable){
-               this.inputHash[i][j].removeOutput(this);
-            }
-         }
+   for (i=1;i<=this.inputCounter;i++){
+      if (this.inputList[i] instanceof Connectable){
+         this.inputList[i].removeOutput(this);
       }
    }
 }
 
 InOut.prototype.connections = function(){
+   var result = new Object();
+   result["input"] = [];
+   result["output"] = [];
+   for (i=1;i<=this.inputCounter;i++){
+      if (this.inputList[i] instanceof Connectable){
+         var connection = new Object();
+         connection["id"] = this.inputList[i].getId();
+         connection["name"] = this.inputList[i].getName();
+         result["input"].push(connection);
+      }
+   }
+   for (i=1;i<=this.outputCounter;i++){
+      if (this.outputList[i] instanceof Connectable){
+         var connection = new Object();
+         connection["id"] = this.outputList[i].getId();
+         connection["name"] = this.outputList[i].getName();
+         result["output"].push(connection);
+      }
+   }
+   return result;
+}
+
+/*InOut.prototype.connections = function(){
    var result = new Object();
    result["input"] = [];
    result["output"] = [];
@@ -389,15 +389,35 @@ InOut.prototype.connections = function(){
          }
       }
    }
+   return result;
+}*/
+
+InOut.prototype.serialize = function(){
+   var result = "{\"id\":\""+this.id+"\",\"type\":\""+this.type+"\",\"value\":\""+this.value+"\",\"name\":\""+this.name+"\",\"inputList\":[";
+   if (this.inputCounter != 0){
+      for (i=1;i<=this.inputCounter-1;i++){
+         result+="{\"id\":\""+this.inputList[i].getId()+"\",\"name\":\""+this.inputList[i].getName()+"\"},";
+      }
+      result+="{\"id\":\""+this.inputList[this.inputCounter].getId()+"\",\"name\":\""+this.inputList[this.inputCounter].getName()+"\"}";
+   }
+   result+="],\"outputList\":[";
+   if (this.outputList.length != 0){
+      for (i=1;i<=(this.outputCounter-1);i++){
+         result+="{\"id\":\""+this.outputList[i].getId()+"\",\"name\":\""+this.outputList[i].getName()+"\"},";
+      }
+      result+="{\"id\":\""+this.outputList[this.outputCounter].getId()+"\",\"name\":\""+this.outputList[this.outputCounter].getName()+"\"}";
+   }
+   result+="]}";
+   return result;
 }
 
-InOut.prototype.toJSON = function(){
+/*InOut.prototype.toJSON = function(){
    var result = "{\"id\":\""+this.id+"\",\"type\":\""+this.type+"\",\"value\":\""+this.value+"\",\"name\":\""+this.name+"\",\"inputHash\":[";
    for (i in this.inputHash){
       if (this.inputHash[i] instanceof Array){
          for (j in this.inputHash[i]){
             if (this.inputHash[i][j] instanceof Connectable){
-               result+="{\"id\":\""+this.inputHash[i][j].getId()+"\",\"name\":"+this.inputHash[i][j].getName()+"\"}";
+               result+="{\"id\":\""+this.inputHash[i][j].getId()+"\",\"name\":\""+this.inputHash[i][j].getName()+"\"}";
             }
          }
       }
@@ -414,7 +434,467 @@ InOut.prototype.toJSON = function(){
    }
    result+="]}";
    return result;
+}*/
+
+//////////////////////////////////////////////////////////////////////////
+// This class represents a iGadget variable which may produce some data //
+//////////////////////////////////////////////////////////////////////////
+function Event(id,name){
+   In.call(this,id,name);
 }
+Event.prototype = new In();
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// This class represents a connectable whose only purpose is to redistribute the data produced by an In object //
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function Channel(id,name){
+   InOut.call(this,id,name);
+}
+Channel.prototype = new InOut();
+
+/////////////////////////////////////////////////////////////////////////////
+// This class representents a iGadget variable which may receive some data //
+/////////////////////////////////////////////////////////////////////////////
+function Slot(id,name){
+   Out.call(this,id,name);
+}
+Slot.prototype = new Out();//////////////////////////////////////////////////////////////////////////////////////////////////
+// This is the class has the common properties of every connectable object of the wiring module //
+// The other connectable classes from the wiring module will inherit from this class            //
+//////////////////////////////////////////////////////////////////////////////////////////////////
+function Connectable(id,name){
+   // Private attributes
+   this.id = id;
+   this.type = null;
+   this.value = name;
+   this.name = name;
+}
+// Public methods 
+
+Connectable.prototype.getId = function(){
+   return this.id;
+}
+
+Connectable.prototype.setId = function(value){
+   this.id=value;
+}
+
+Connectable.prototype.getType = function(){
+   return this.type;
+}
+
+Connectable.prototype.setType = function(value){
+   this.type=value;
+}
+
+Connectable.prototype.getValue = function(){
+   return this.value;
+}
+
+Connectable.prototype.setValue = function(value){
+   this.value=value;
+}
+
+Connectable.prototype.getName = function(){
+   return this.name;
+}
+
+Connectable.prototype.clear = function(value){
+   null; // It will be overriden in the other classes
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// This class represents every object which may be placed in the middle of a connection between a In object and Out object //
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function Out(id,name){
+   Connectable.call(this,id,name);
+   this.inputHash = [];
+}
+Out.prototype = new Connectable();
+
+Out.prototype.addInput = function(input){
+   if (input instanceof InOut){
+      if (!(this.inputHash[input.getName()] instanceof Connectable)){
+         this.inputHash[input.getName()] = input;
+         return 0;
+      }
+      return 1; // warning: the input is already connected
+   }
+   return -1; // error: the input is not a InOut object
+}
+
+Out.prototype.removeInput = function(input){
+   if (input instanceof InOut){
+      if (this.inputHash[input.getName()] instanceof Connectable){
+         this.inputHash[input.getName()] = null;
+         return 0;
+      }
+      return 1; // warning: the input does not exist
+   }
+   return -1; // error: the input is not a InOut object
+}
+
+Out.prototype.setValue = function(value){
+   this.value=value;
+   alert("El slot " + this.name+ " tiene valor " + this.value);
+   // here goes the calling to the method writeSlot of the VarManager
+}
+
+Out.prototype.clear = function(){
+   for (i in this.inputHash){
+      if (this.inputHash[i] instanceof InOut){
+         this.inputHash[i].removeOutput(this);
+      }
+   }
+}
+
+Out.prototype.toJson = function(){
+   return "{\"aspect\":\"SLOT\",\"id\":\""+this.id+"\",\"type\":\""+this.type+"\",\"value\":\""+this.value+"\",\"name\":\""+this.name+"\"}";
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+// This class represents every object which may initialize one transmission through the wiring module //
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+function In(id,name){
+   Connectable.call(this,id,name);
+   this.outputHash = [];
+}
+In.prototype = new Connectable();
+
+In.prototype.addOutput = function(output){
+   if (output instanceof InOut){
+      if (!(this.outputHash[output.getName()] instanceof InOut)){
+         if (this.type == output.getType()){ // the checking of the types may be changed when the filters were included
+            this.outputHash[output.getName()] = output;
+            output.setValue(this.value);
+            return 0;
+         } else if (output.getType() == null){
+            output.setValue(this.value);
+            this.outputHash[output.getName()] = output;
+            output.setTypeForward(this.type);
+            return 0;
+         } else if (this.type == null){ // this should not happen y the final version
+            this.type = output.getType();
+            this.outputHash[output.getName()] = output;
+            return 0;
+         } else {
+            return -2; // error: the types are incompatible
+         }
+      }
+      return 1; // warning: the input is already connected
+   }
+   return -1; // error: the input is not a InOut object
+}
+
+In.prototype.removeOutput = function(output){
+   if (output instanceof InOut){
+      if (this.outputHash[output.getName()] instanceof InOut){
+         this.outputHash[output.getName()] = null;
+         return 0;
+      }
+      return 1; // warning: the input does not exist
+   }
+   return -1; // error: the input is not a InOut object
+}
+
+In.prototype.setValue = function(value){
+   this.value = value;
+   var changes ="{\"idEvent\":\""+this.id;
+   for (i in this.outputHash){
+      if (this.outputHash[i] instanceof InOut){
+        this.outputHash[i].setValue(value);
+      }
+   }
+   return changes + "]}"
+}
+
+In.prototype.toJson = function(){
+   return "{\"aspect\":\"EVENT\",\"id\":\""+this.id+"\",\"type\":\""+this.type+"\",\"value\":\""+this.value+"\",\"name\":\""+this.name+"\"}";
+}
+
+/////////////////////////////////////////////////////////////////////
+// This class represents every object which may transmit some data //
+/////////////////////////////////////////////////////////////////////
+function InOut(id,name){
+   Connectable.call(this,id,name);
+   this.inputList = [];
+   this.outputList = [];
+   this.inputCounter = 0;
+   this.outputCounter = 0;
+}
+InOut.prototype = new Connectable();
+
+InOut.prototype.setTypeForward = function(type){
+   this.type = type;
+   for (i=1;i<=this.outputCounter;i++){
+      if (this.outputList[i] instanceof InOut){
+         this.outputList[i].setTypeForward(type);
+      }
+   }
+}
+/*   if (this.outputHash["channels"] instanceof Array) {
+      for (i in this.outputHash["channels"]) {
+         if (this.outputHash["channels"][i] instanceof InOut){
+            this.outputHash["channels"][i].setTypeForward(this.type);
+         }
+      }
+   }
+}*/
+
+InOut.prototype.setTypeBack = function(type){
+   this.type = type;
+   for (i=1;i<=this.inputCounter;i++){
+      if (this.inputList[i] instanceof InOut){
+         this.inputList[i].setTypeBack(type);
+      }
+   }
+}
+/*   this.type = type;
+   if (this.inputHash["channels"] instanceof Array) {
+      for (i in this.inputHash["channels"]) {
+         if (this.inputHash["channels"][i] instanceof InOut){
+            this.inputHash["channels"][i].setTypeBack(this.type);
+         }
+      }
+   }
+}*/
+
+InOut.prototype.addOutput = function(output){
+   if (!(output instanceof In)){
+      if (output.getId() != this.id || output.getName() != this.name){ // for avoiding loops with itself
+         var i = 1;
+         var located = 0;
+         while (i<=this.outputCounter && located == 0){
+            if (this.outputList[i].getId() == output.getId() && this.outputList[i].getName() == output.getName()){
+               located = 1; // warning: the output is already connected
+            }
+            i++;
+         }
+         if (located != 1){
+            if (this.type == output.getType()){ // the checking of the types may be changed when the filters were included
+               this.outputCounter++;//alert("[normal]En el canal "+this.name+" inserto la salida "+output.getName()+" en la posicion "+this.outputCounter)
+               this.outputList[this.outputCounter]=output;
+               output.setValue(this.value);
+               return 0;
+            } else if (output.getType() == null){
+               output.setValue(this.value);
+               this.outputCounter++;//alert("[salida null]En el canal "+this.name+" inserto la salida "+output.getName()+" en la posicion "+this.outputCounter)
+               this.outputList[this.outputCounter]=output;
+               if (output instanceof InOut){
+                  output.setTypeForward(this.type);
+               }
+               return 0;
+            } else if (this.type == null){ // in the final version this case should not happen
+               this.setTypeBack(output.getType());
+               this.outputCounter++;//alert("[entrada null]En el canal "+this.name+" inserto la salida "+output.getName()+" en la posicion "+this.outputCounter)
+               this.outputList[this.outputCounter]=output;
+               return 0;
+            } else {
+               return -2; // error: the types are incompatible
+            }
+         } else {
+            return 1; // warning: the input is already connected
+         }
+      } else {
+         return 2; // warning: the output would create a loop with itself
+      }
+   }else {
+      return -1; // error: the output is an Out object
+   }
+}
+
+InOut.prototype.removeOutput = function(output){
+   if (!(output instanceof In)){
+      var i = 1;
+      var located = 0;
+      while (i<=this.outputCounter && located == 0){
+         if (this.outputList[i].getId() == output.getId() && this.outputList[i].getName() == output.getName()){
+            located = i; // warning: the output is already connected
+         }
+         i++;
+      }
+      if (located != 0){
+         this.outputList.splice(located,1);
+         if (--this.outputCounter == 0 && this.inputCounter == 0) {
+            this.type = null;
+            this.value = null;
+         }
+         return 0;
+      } else {
+         return 1; // warning: the output does not exist
+      }
+   }else {
+      return -1; // error: the output is an In object
+   }
+}
+
+InOut.prototype.addInput = function(input){
+   if (!(input instanceof Out)){
+      if (input.getId() != this.id || input.getName() != this.name){ // for avoiding loops with itself
+         var i = 1;
+         var located = 0;
+         while (i<=this.inputCounter && located == 0){
+            if (this.inputList[i].getId() == input.getId() && this.inputList[i].getName() == input.getName()){
+               located = 1; // warning: the input is already connected
+            }
+            i++;
+         }
+         if (located != 1){
+            this.inputList[++this.inputCounter]=input;
+            return 0;
+         } else {
+            return 1; // warning: the input is already connected
+         }
+      } else {
+         return 2; // warning: the input would create a loop with itself
+      }
+   }else {
+      return -1; // error: the input is an Out object
+   }
+}
+
+InOut.prototype.removeInput = function(input){
+   if (!(input instanceof Out)){
+      var i = 1;
+      var located = 0;
+      while (i<=this.inputCounter && located == 0){
+         if (this.inputList[i].getId() == input.getId() && this.inputList[i].getName() == input.getName()){
+            located = i; // warning: the input is already connected
+         }
+         i++;
+      }
+      if (located != 0){
+         this.inputList.splice(located,1);
+         if (this.outputCounter == 0 && --this.inputCounter == 0) {
+            this.type = null;
+            this.value = null;
+         }
+         return 0;
+      } else {
+         return 1; // warning: the input does not exist
+      }
+   }else {
+      return -1; // error: the input is an Out object
+   }
+}
+
+InOut.prototype.setValue = function(value){
+   this.value = value;//alert("entro en :"+this.name)
+   //for (i=1;i<=this.outputCounter;i++){
+   var i =1;
+   while(i<=this.outputList.length){ // this is temporal, somehow a for loop does not work
+      if (this.outputList[i] instanceof Connectable){
+         this.outputList[i].setValue(value);
+      }
+      i++;
+   }
+}
+
+InOut.prototype.clear = function(){
+   for (i=1;i<=this.inputCounter;i++){
+      if (this.inputList[i] instanceof Connectable){
+         this.inputList[i].removeOutput(this);
+      }
+   }
+}
+
+InOut.prototype.connections = function(){
+   var result = new Object();
+   result["input"] = [];
+   result["output"] = [];
+   for (i=1;i<=this.inputCounter;i++){
+      if (this.inputList[i] instanceof Connectable){
+         var connection = new Object();
+         connection["id"] = this.inputList[i].getId();
+         connection["name"] = this.inputList[i].getName();
+         result["input"].push(connection);
+      }
+   }
+   for (i=1;i<=this.outputCounter;i++){
+      if (this.outputList[i] instanceof Connectable){
+         var connection = new Object();
+         connection["id"] = this.outputList[i].getId();
+         connection["name"] = this.outputList[i].getName();
+         result["output"].push(connection);
+      }
+   }
+   return result;
+}
+
+/*InOut.prototype.connections = function(){
+   var result = new Object();
+   result["input"] = [];
+   result["output"] = [];
+   for (i in this.inputHash){
+      if (this.inputHash[i] instanceof Array){
+         for (j in this.inputHash[i]){
+            if (this.inputHash[i][j] instanceof Connectable){
+               var connection = new Object();
+               connection["id"] = this.inputHash[i][j].getId();
+               connection["name"] = this.inputHash[i][j].getName();
+               result["input"].push(connection);
+            }
+         }
+      }
+   }
+   for (i in this.outputHash){
+      if (this.outputHash[i] instanceof Array){
+         for (j in this.outputHash[i]){
+            if (this.outputHash[i][j] instanceof Connectable){
+               var connection = new Object();
+               connection["id"] = this.outputHash[i][j].getId();
+               connection["name"] = this.outputHash[i][j].getName();
+               result["output"].push(connection);
+            }
+         }
+      }
+   }
+   return result;
+}*/
+
+InOut.prototype.serialize = function(){
+   var result = "{\"id\":\""+this.id+"\",\"type\":\""+this.type+"\",\"value\":\""+this.value+"\",\"name\":\""+this.name+"\",\"inputList\":[";
+   if (this.inputCounter != 0){
+      for (i=1;i<=this.inputCounter-1;i++){
+         result+="{\"id\":\""+this.inputList[i].getId()+"\",\"name\":\""+this.inputList[i].getName()+"\"},";
+      }
+      result+="{\"id\":\""+this.inputList[this.inputCounter].getId()+"\",\"name\":\""+this.inputList[this.inputCounter].getName()+"\"}";
+   }
+   result+="],\"outputList\":[";
+   if (this.outputList.length != 0){
+      for (i=1;i<=(this.outputCounter-1);i++){
+         result+="{\"id\":\""+this.outputList[i].getId()+"\",\"name\":\""+this.outputList[i].getName()+"\"},";
+      }
+      result+="{\"id\":\""+this.outputList[this.outputCounter].getId()+"\",\"name\":\""+this.outputList[this.outputCounter].getName()+"\"}";
+   }
+   result+="]}";
+   return result;
+}
+
+/*InOut.prototype.toJSON = function(){
+   var result = "{\"id\":\""+this.id+"\",\"type\":\""+this.type+"\",\"value\":\""+this.value+"\",\"name\":\""+this.name+"\",\"inputHash\":[";
+   for (i in this.inputHash){
+      if (this.inputHash[i] instanceof Array){
+         for (j in this.inputHash[i]){
+            if (this.inputHash[i][j] instanceof Connectable){
+               result+="{\"id\":\""+this.inputHash[i][j].getId()+"\",\"name\":\""+this.inputHash[i][j].getName()+"\"}";
+            }
+         }
+      }
+   }
+   result+="],\"outputHash\":[";
+   for (i in this.outputHash){
+      if (this.outputHash[i] instanceof Array){
+         for (j in this.outputHash[i]){
+            if (this.outputHash[i][j] instanceof Connectable){
+               result+="{\"id\":\""+this.outputHash[i][j].getId()+"\",\"name\":\""+this.outputHash[i][j].getName()+"\"}";
+            }
+         }
+      }
+   }
+   result+="]}";
+   return result;
+}*/
 
 //////////////////////////////////////////////////////////////////////////
 // This class represents a iGadget variable which may produce some data //

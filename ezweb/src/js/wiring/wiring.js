@@ -3,7 +3,7 @@
  */
 
 <script src = "./connectable.js" type = "text/javascript"></script>;
-<script src = "../lib/prototype.js" type = "text/javascript"></script>;
+<script src = "./prototype.js" type = "text/javascript"></script>;
 
 var WiringFactory = function () {
 
@@ -104,7 +104,25 @@ var WiringFactory = function () {
 		// ****************
 		// this method is used in the first version for painting the connections for the user.
 		Wiring.prototype.connections = function (channel) {
-			return inOutList["channel"].ref.connections();
+			var channel = inOutList[channel].ref;
+			var connections = channel.connections();
+			return connections;
+		}
+
+		Wiring.prototype.gadgetConnections = function (gadgetId) {
+			var list = [];
+			if (iGadgetList[gadgetId] != undefined){
+				for (var i = 0;i < iGadgetList[gadgetId].list.length ;i++){
+					var item = new Object();
+					item.name = iGadgetList[gadgetId].list[i].name;
+					item.aspect = iGadgetList[gadgetId].list[i].aspect;
+					list.push(item);
+				}
+				return list;
+			}
+			else{
+				return null;			
+			}
 		}
 
 		Wiring.prototype.addInstance = function (iGadgetId, template) {
@@ -199,7 +217,7 @@ var WiringFactory = function () {
 				// The selected channel exists
 				channel.ref.clear();
 				inOutList.remove(channelName);
-//				alert("Channel deleted")
+				alert("Channel deleted")
 				return 0;
 			}
 			else {
@@ -287,9 +305,11 @@ var WiringFactory = function () {
 	
 //					alert("added channel to channel")
 					
+					alert("salida: " + input.getName()+"; entrada: "+ channel.getName());
 					input.addOutput(channel);
-//					alert("added output")
+					//alert("Input es: "+input.toJSON());
 					channel.addInput(input);
+					//alert("Output es: "+channel.toJSON());
 //					alert("valor propagado a "+ channel.getName()+ " es "+channel.getValue());
 					return 1;
 				}						
@@ -329,8 +349,8 @@ var WiringFactory = function () {
 				if ((channel != undefined) && (output != undefined)){
 					// Both channels exist.
 					
-					channel.ref.addInput(output.ref);
-					output.ref.addOutput(channel.ref);
+					output.ref.addInput(channel.ref);
+					channel.ref.addOutput(output.ref);
 //					alert("valor en el canal final " + output.ref.getValue());
 					return 1;
 				}	
@@ -411,8 +431,8 @@ var WiringFactory = function () {
 				if ((channel != undefined) && (output != undefined)){
 					// Both channels exist.
 					
-					output.ref.removeOutput(channel.ref);
-					channel.ref.removeInput(output.ref);
+					output.ref.removeInput(channel.ref);
+					channel.ref.removeOutput(output.ref);
 					return 1;
 				}		
 			}

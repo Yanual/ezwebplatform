@@ -6,7 +6,7 @@
 		<link rel="stylesheet" type="text/css" href="./style.css">
 		<script src = "./connectable.js" type = text/javascript></script>
 		<script src = "./wiring.js" type = text/javascript></script>
-		<script src = "../lib/prototype.js" type = text/javascript></script>
+		<script src = "./prototype.js" type = text/javascript></script>
 
 	</head>
 	
@@ -16,31 +16,115 @@
 				var w = WiringFactory.getInstance();
 				var event = new Hash({name:"var1", aspect:"EVENT"}) 
 				var slot = new Hash({name:"var2", aspect:"SLOT"})
-
+				var slot2 = new Hash({name:"var3", aspect:"SLOT"})
+				
 				var conect = new Array()
 				conect.push(event)
 				conect.push(slot)
+				conect.push(slot2)
 	
 				function anadirCanal(object){
-					var selector = $("selectCanal");
-					var itemize =  $("canales");
-					selector.innerHTML += "<option id='"+object+"' value = "+object+" >"+object+"</option>"
-					itemize.innerHTML += "<option id='"+object+"' value = "+object+" >"+object+"</option>"
-					w.createChannel(object);
+					var result = null;
+					
+					if (!(result = w.createChannel(object))){	
+						var selector = $("selectCanal");
+						var itemize =  $("canales");
+						
+						var element = document.createElement("option");
+						element.setAttribute("id", object)
+						var text = document.createTextNode(object);
+						element.appendChild(text);
+						selector.appendChild(element);
+	
+						var element = document.createElement("option");
+						var text = document.createTextNode(object);
+						element.setAttribute("id", object)
+						element.appendChild(text);
+						itemize.appendChild(element);
+					}
 				}
 				
 				function borrarCanal(object){
 					var selector = $("selectCanal");
-					w.removeChannel(object);
-					alert(object)
+					var itemize =  $("canales");
+					//the first id is from the channel list	
 					var hijo = $(object);
 					selector.removeChild(hijo);
+					// the new identifier is from the item list
+					hijo = $(object);
+					itemize.removeChild(hijo);
+					w.removeChannel(object);
 				}
 				
 				function anadeGadget(object){
 					var selector = $("gadgets");
-					selector.innerHTML += "<option id='"+object+"' value = "+object+" >"+object+"</option>"
+					
+					var element = document.createElement("option");
+					element.setAttribute("id", object)
+					var text = document.createTextNode(object);
+					element.appendChild(text);
+					selector.appendChild(element);
+
 					w.addInstance(object, conect);
+				}
+				
+		
+				////////////////////////
+				function renewChannel(channel){
+					if (channel != ""){
+						var connections = w.connections(channel);
+						var inputs = connections["input"];
+						var outputs = connections["output"];
+						var slots = $("slotsConnection")
+						var events = $("eventsConnection")
+						
+						$("valor").value = w.viewValue(channel);
+						slots.innerHTML = "";
+						events.innerHTML = "";
+						
+						for (var i = 0; i < inputs.length; i++){
+							if (inputs[i].id == null){
+								events.innerHTML += "<tr><td></td><td>" + inputs[i].name + "</td></tr>"
+							}
+							else{
+								events.innerHTML += "<tr><td></td><td>" + inputs[i].id + "::" + inputs[i].name + "</td></tr>"
+							}
+						}
+						for (var j = 0; j < outputs.length; j++){
+							if (outputs[j].id == null){
+								slots.innerHTML += "<tr><td></td><td>" + outputs[j].name + "</td></tr>"
+							}
+							else{
+								slots.innerHTML += "<tr><td></td><td>" + outputs[j].id + "::" + outputs[j].name + "</td></tr>"
+							}
+						}
+					}
+				}
+
+				function renewItem(object){
+					if (Object != ""){
+						var connections = w.gadgetConnections(object);
+	
+						var slots = $("slots")
+						var events = $("events")
+						
+						slots.innerHTML = "";
+						events.innerHTML = "";
+						if (connections){
+							for (var i = 0; i < connections.length; i++){
+								if (connections[i].aspect == "SLOT"){
+									slots.innerHTML += "<tr><td></td><td>" + connections[i].name + "</td></tr>"
+								}
+								else{
+									events.innerHTML += "<tr><td></td><td>" + connections[i].name + "</td></tr>"
+								}
+							}
+						}
+						else{
+							slots.innerHTML += "<tr><td></td><td> slot </td></tr>"
+							events.innerHTML += "<tr><td></td><td> event </td></tr>"		
+						}
+					}
 				}
 			
 			</script>
@@ -53,9 +137,6 @@
 			<input type=button 
 				   value= "borrar_canal" 
 				   onclick = "borrarCanal($('selectCanal').value)">
-			<input type=button 
-				   value= "valor_canal" 
-				   onclick = "$('valor').value = w.viewValue($('selectCanal').value)">
 			<input id = "crearInstancia" type=text value="id del gadget...">
 			<input type=button 
 				   value= "crear_instancia" 
@@ -65,13 +146,10 @@
 				   value= "borrar_instancia" 
 				   onclick = "w.removeInstance($F($('borrarInstancia')))">
 		<br>
-			<input type=button 
-				   value= "estado pizarra" 
-				   onclick = "alert(Object.toJSON(w))">
 
 		<br>
 		<br>
-			<input id = "input1" type = text value = "id canal input...">
+			<input id = "input1" type = text value = "id canal input...">a
 			<input id = "channel1" type = text value = "id canal...">
 			<input type = button 
 				   value= "conecta canal a otro" 
@@ -87,7 +165,7 @@
 
 		<br>
 		<br>
-			<input id = "output3" type = text value = "id canal output...">
+			<input id = "output3" type = text value = "id canal output...">a
 			<input id = "channel3" type = text value = "id canal...">
 			<input type = button 
 				   value= "conecta canal a otro" 
@@ -149,7 +227,7 @@
 			<fieldset id = "one">
 				<div id = "selector">
 					<em>Seleccione un canal:</em>
-					<select id = "selectCanal">
+					<select id = "selectCanal"  onChange = "renewChannel($F($('selectCanal')))">
 						<option value = "" selected>----</option>
 				
 					</select>
@@ -164,7 +242,7 @@
 						<tr><td> </td><td>Event connection</td></tr>
 					</table>
 				    <div class = "contents">
-        				<table class = "bodier">
+        				<table class = "bodier" id = "eventsConnection">
 				          <tr>
 				            <td></td>
 				            <td>Gadget1::event1</td>
@@ -186,10 +264,10 @@
 						<tr><td> </td><td>Slot connection</td></tr>
 					</table>
 				    <div class = "contents">
-        				<table class = "bodier">
-				          <tr>
+        				<table class = "bodier" id = "slotsConnection">
+						  <tr>
 				            <td></td>
-				            <td>Gadget2::slot3</td>
+				            <td>Gadget1::slot1</td>
 				          </tr>
 				    
 				        </table>
@@ -201,7 +279,7 @@
 			<fieldset id = "two">
 				<div id = "selector">
 					<em>Seleccione un item:</em>
-					<select id = "itemizer">
+					<select id = "itemizer"  onChange = "renewItem($F($('itemizer')))">
 						<option value = "" selected>----</option>
 						<optgroup id="canales">
 							<option value = "" disabled>Canales</option>
@@ -216,7 +294,7 @@
 						<tr><td> </td><td>Event connection</td></tr>
 					</table>
 				    <div class = "contents">
-        				<table class = "bodier">
+        				<table class = "bodier" id = "events">
 				          <tr>
 				          	<td><img  class = "imagen" src = "./cheacker.gif"></td>
 				            <td>event1</td>
@@ -237,7 +315,7 @@
 						<tr><td> </td><td>Slot connection</td></tr>
 					</table>
 				    <div class = "contents">
-        				<table class = "bodier">
+        				<table class = "bodier" id = "slots">
 				          <tr>
 				          	<td></td>
 				            <td>slot1</td>
