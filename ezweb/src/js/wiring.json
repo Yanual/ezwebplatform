@@ -100,7 +100,7 @@
 		{	"id":	"null",
 			"type": "type1",
 			"value": "value1",
-			"name": "nameChannel2"
+			"name": "nameChannel2",
 			"inputHash":
 			[
 				{	"id":"event1",
