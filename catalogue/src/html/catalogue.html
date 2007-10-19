@@ -5,6 +5,7 @@
 		<link rel="stylesheet" type="text/css" href="../css/catalogue.css" />
 		<script language="JavaScript" src="../js/lib/prototype.js"></script>
 		<script language="JavaScript" src="../js/persistenceEngine/PersistenceEngine.js"></script>
+		<script language="JavaScript" src="../js/resourceModel/UIUtils.js"></script>
 		<script language="JavaScript" src="../js/resourceModel/Catalogue.js"></script>
 		<script language="JavaScript" src="../js/resourceModel/Resource.js"></script>
 		<script>
@@ -23,7 +24,13 @@
 			<div id="resources" class="resources">
 			</div>
 			<div id="info_resource" class="info_resource">
-				Info
+				<b>Info</b><br/>
+				<table>
+					<tr>
+						<td>Vendor:</td>
+						<td><span id="vendor"/></td>
+					</tr>
+				</table>
 			</div>
 		</div>
 	</body>

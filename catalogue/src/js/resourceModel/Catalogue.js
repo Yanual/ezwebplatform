@@ -11,12 +11,19 @@ var CatalogueFactory  = function () {
 		//  PRIVATE VARIABLES AND FUNCTIONS
 		// *********************************
 		
-		var resources = [];
-
+		var resources = new Array();
+		var resourcesLength = 0;
 		
 		// ********************
 		//  PRIVILEGED METHODS
 		// ********************
+		
+		this.setResources = function(resources_) { resources = resources_; }
+		this.getResources = function() { return resources; }
+		this.addResource = function(resourceXML_, urlTemplate_) { 
+			resources["resource_" + resourcesLength] = new Resource("resource_" + resourcesLength, resourceXML_, urlTemplate_); 
+			resourcesLength++;
+		}
 		
 		this.loadCatalogue = function(urlCatalogue_) {
 		
@@ -36,8 +43,7 @@ var CatalogueFactory  = function () {
 				var resourcesXML = response.getElementsByTagName("resource");
 				for (i=(resourcesXML.length-1); i>=0; i--)
 				{
-					resources[i] = new Resource(resourcesXML[i]);
-					this.paintResource(resources[i],i);
+					this.addResource(resourcesXML[i], null);
 				}
 			}
 			
@@ -46,22 +52,6 @@ var CatalogueFactory  = function () {
 			// Get Resources from PersistenceEngine. Asyncrhonous call!
 			persistenceEngine.send_get(urlCatalogue_, this, loadResources, onError);
 		}
-		
-		this.paintResource = function(resource_,index_)
-		{
-			alert("Vendor: " +resource_.getVendor() + "\nName: " +resource_.getName() + "\nVersion: " +resource_.getVersion());
-			var newResource = document.createElement("div");
-			newResource.setAttribute("class", "resource");
-			newResource.setAttribute("id", "resource_"+index_);
-			newResource.innerHTML = "Gadget\nVendor: " + resource_.getVendor();
-			var resourcesHTML = document.getElementById("resources");
-			resourcesHTML.insertBefore(newResource, resourcesHTML.firstChild);
-		}
-		
-		this.setResources = function(resources_) { resources = resources_; }
-		this.getResources = function() { return resources; }
-		this.addResource = function(resource_) { resources.push(resource_); }
-		this.removeResource = function(tag_) { resources = resources.without(resource_); }			
 	}
 	
 	// ************************

@@ -3,20 +3,7 @@
 //                RESOURCE                  //
 //////////////////////////////////////////////
 
-function Resource(resourceXML_, urlTemplate_) {
-	
-	// *******************
-	//  PRIVATE VARIABLES
-	// *******************
-
-	var state = null;
-	
-	if (urlTemplate_ != null) {
-		_createResource(urlTemplate_);
-	}
-	else {
-		state = new ResourceState(resourceXML_);
-	}
+function Resource( id_, resourceXML_, urlTemplate_) {
 	
 	// ******************
 	//  PUBLIC FUNCTIONS
@@ -29,6 +16,19 @@ function Resource(resourceXML_, urlTemplate_) {
 	this.getUriImage = function() { return state.getUriImage(); }
 	this.getUriTemplate = function() { return state.getUriTemplate(); }
 	this.getUriWiki = function() { return state.getUriWiki(); }
+	
+	this.paint = function(){
+		alert("Vendor: " + state.getVendor() + "\nName: " + state.getVendor() + "\nVersion: " + state.getVersion());
+		var newResource = document.createElement("div");
+		newResource.setAttribute("class", "resource");
+		newResource.setAttribute("id", id);
+		newResource.setAttribute("onMouseOver", "seleccionarResource('" + id + "')");
+		newResource.setAttribute("onMouseOut", "deseleccionarResource('" + id + "')");
+		newResource.setAttribute("onClick", "mostrarInfoResource('" + id + "')");
+		newResource.innerHTML = "<b>Resource</b><br/>Vendor: " + state.getVendor();
+		var parentHTML = document.getElementById("resources");
+		parentHTML.insertBefore(newResource, parentHTML.firstChild);
+	}
 	
 	// *******************
 	//  PRIVATE FUNCTIONS
@@ -50,11 +50,27 @@ function Resource(resourceXML_, urlTemplate_) {
 		loadResource = function(transport) {
 			var response = transport.responseXML;
 			state = new ResourceState(response);
+			this.paint();
 		}
 		
 		var persistenceEngine = PersistenceEngineFactory.getInstance();
 		// Post Resource to PersistenceEngine. Asyncrhonous call!
 		persistenceEngine.send_post(url_Server, url_, this, loadResource, onError);
+	}
+	
+	// *******************
+	//  PRIVATE VARIABLES
+	// *******************
+
+	var state = null;
+	var id = id_;
+	
+	if (urlTemplate_ != null) {
+		_createResource(urlTemplate_);
+	}
+	else {
+		state = new ResourceState(resourceXML_);
+		this.paint();
 	}
 }
 
