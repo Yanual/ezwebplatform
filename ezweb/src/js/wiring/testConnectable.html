@@ -1,6 +1,6 @@
 <HTML>
 <HEAD>
-   <TITLE>Prueba Clases</TITLE>
+   <TITLE>Tests for the internal classes of wiring module</TITLE>
    <SCRIPT src="connectable.js" type="text/javascript"></SCRIPT>
 </HEAD>
 <BODY>
@@ -80,10 +80,10 @@
          }
       }
 
-      function pOutToJSON(){
+      function pOutSerialize(){
          slot1.setType("type1");
          slot1.setValue("value1");
-         alert(slot1.toJSON());
+         alert(slot1.serialize());
       }
 
    </SCRIPT>
@@ -92,7 +92,7 @@
       <INPUT id="bOutPruebaRemoveInput" type="button" value="Test removeOutput" onClick="pOutRemoveInput()"/>
       <INPUT id="bOutPruebaSetValue" type="button" value="Test setValue" onClick="pOutSetValue()"/>
       <INPUT id="bOutPruebaClear" type="button" value="Test clear" onClick="pOutClear()"/>
-      <INPUT id="bOutPruebaToJson" type="button" value="Test toJSON" onClick="pOutToJSON()"/>
+      <INPUT id="bOutPruebaSerialize" type="button" value="Test serialize" onClick="pOutSerialize()"/>
    </FORM>
 
    <H2>Tests for the class In</H2>
@@ -159,10 +159,10 @@
          }
       }
 
-      function pInToJSON(){
+      function pInSerialize(){
          event1.setType("type1");
          event1.setValue("value1");
-         alert(event1.toJSON());
+         alert(event1.serialize());
       }
 
    </SCRIPT>
@@ -170,7 +170,7 @@
       <INPUT id="bInPruebaAddOutput" type="button" value="Test addOutput" onClick="pInAddOutput()"/>
       <INPUT id="bInPruebaRemoveOutput" type="button" value="Test removeOutput" onClick="pInRemoveOutput()"/>
       <INPUT id="bInPruebaSetValue" type="button" value="Test setValue" onClick="pInSetValue()"/>
-      <INPUT id="bInPruebaToJson" type="button" value="Test toJSON" onClick="pInToJSON()"/>
+      <INPUT id="bInPruebaSerialize" type="button" value="Test serialize" onClick="pInSerialize()"/>
    </FORM>
 </BODY>
 
@@ -353,6 +353,30 @@
       <INPUT id="bInPruebaSetValue" type="button" value="Test setValue" onClick="pInOutSetValue()"/>
       <INPUT id="bInOutPruebaClear" type="button" value="Test clear" onClick="pInOutClear()"/>
       <INPUT id="bInOutPruebaSerialize" type="button" value="Test serialize" onClick="pInOutSerialize()"/>
+   </FORM>
+
+   <H2>Other tests</H2>
+   <SCRIPT>
+
+      function pCreate(){
+         var something = new Object();
+         something.aspect = "EVENT";
+         something.id = "id1";
+         something.type = "type1";
+         something.value = "value1";
+         something.name = "name1";
+         something.inputHash = [];
+         something.outputHash = [];
+         var testEvent = new Event(null,null,something);
+         alert(testEvent.getId()+","+testEvent.getType()+","+testEvent.getValue()+","+testEvent.getName());
+         var something2 = "{\"aspect\":\"SLOT\",\"id\":\"id2\",\"type\":\"type2\",\"value\":\"value2\",\"name\":\"name2\",\"inputHash\":[],\"outputHash\":[],}";
+         var testSlot = new Event(null,null,eval('('+ something2 +')')); 
+         alert(testSlot.getId()+","+testSlot.getType()+","+testSlot.getValue()+","+testSlot.getName());
+      }
+
+   </SCRIPT>
+   <FORM>
+      Create from object <INPUT id="bCreate" type="button" value="Run!" onClick="pCreate()"/>
    </FORM>
 </BODY>
 </HTML>
