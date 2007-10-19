@@ -1,0 +1,46 @@
+.body
+{
+	width:100%;
+}
+
+.body *
+{
+	display:block;
+}
+
+.menu
+{
+	width:10%;
+	height:500px;
+	padding:5px;
+	margin:5px;
+	float:left;
+	background-color:#ccddff;
+}
+
+.info_resource
+{
+	width:20%;
+	height:500px;
+	padding:5px;
+	margin:5px;
+	float:right;
+	background-color:#ccddff;
+}
+
+.resources
+{
+	width:66%;
+	height:100%;
+	float:left;
+}
+
+.resource
+{
+	display:inline;
+	float:left;
+	width:150px;
+	height:100px;
+	margin:5px;
+	background-color:#ccddff;
+}

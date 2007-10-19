@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<link rel="stylesheet" type="text/css" href="../css/catalogue.css" />
+		<script language="JavaScript" src="../js/lib/prototype.js"></script>
+		<script language="JavaScript" src="../js/persistenceEngine/PersistenceEngine.js"></script>
+		<script language="JavaScript" src="../js/resourceModel/Catalogue.js"></script>
+		<script language="JavaScript" src="../js/resourceModel/Resource.js"></script>
+		<script>
+			var catalogue = CatalogueFactory.getInstance();
+			catalogue.loadCatalogue("prueba.xml");
+		</script>
+		<title>
+			Catálogo de Gadgets
+		</title>
+	</head>
+	<body>
+		<div class="body">
+			<div class="menu">
+				Menu
+			</div>
+			<div id="resources" class="resources">
+			</div>
+			<div id="info_resource" class="info_resource">
+				Info
+			</div>
+		</div>
+	</body>
+</html>
