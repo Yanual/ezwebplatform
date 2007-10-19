@@ -383,7 +383,7 @@ Event.prototype = new In();
 // This class represents a connectable whose only purpose is to redistribute the data produced by an In object //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function Channel(id,name,source){
-   InOut.call(this,id,name);
+   InOut.call(this,id,name,source);
 }
 Channel.prototype = new InOut();
 
