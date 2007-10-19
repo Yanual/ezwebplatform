@@ -7,40 +7,38 @@
 		<script src = "./connectable.js" type = text/javascript></script>
 		<script src = "./wiring.js" type = text/javascript></script>
 		<script src = "../lib/prototype.js" type = text/javascript></script>
-
+		<script src = "../persistenceEngine/PersistenceEngine.js" type = "text/javascript"></script>
 	</head>
 	
 	<body>
 		<div class = "left">
 			<script>
-				var w = WiringFactory.getInstance();
-				var event = new Hash({name:"var1", aspect:"EVENT"}) 
-				var slot = new Hash({name:"var2", aspect:"SLOT"})
-				var slot2 = new Hash({name:"var3", aspect:"SLOT"})
-				
-				var conect = new Array()
-				conect.push(event)
-				conect.push(slot)
-				conect.push(slot2)
-	
-				function anadirCanal(object){
-					var result = null;
-					
-					if (!(result = w.createChannel(object))){	
+				var w = WiringFactory.getInstance()
+			
+				function addChannel (name){
 						var selector = $("selectCanal");
 						var itemize =  $("canales");
-						
+	
 						var element = document.createElement("option");
-						element.setAttribute("id", object)
-						var text = document.createTextNode(object);
+						element.setAttribute("id", name)
+						var text = document.createTextNode(name);
 						element.appendChild(text);
 						selector.appendChild(element);
 	
 						var element = document.createElement("option");
-						var text = document.createTextNode(object);
-						element.setAttribute("id", object)
+						var text = document.createTextNode(name);
+						element.setAttribute("id", name)
 						element.appendChild(text);
 						itemize.appendChild(element);
+				}
+				
+				function anadirCanal(){
+					var result = null;
+					var name = prompt("Insert Channel Name:","Channel Name...");
+					if (name != null){
+						if (!(result = w.createChannel(name))){	
+							addChannel(name);
+						}
 					}
 				}
 				
@@ -56,7 +54,7 @@
 					w.removeChannel(object);
 				}
 				
-				function anadeGadget(object){
+				function addGadget(object){
 					var selector = $("gadgets");
 					
 					var element = document.createElement("option");
@@ -64,8 +62,6 @@
 					var text = document.createTextNode(object);
 					element.appendChild(text);
 					selector.appendChild(element);
-
-					w.addInstance(object, conect);
 				}
 				
 		
@@ -81,7 +77,8 @@
 						$("valor").value = w.viewValue(channel);
 						slots.innerHTML = "";
 						events.innerHTML = "";
-						
+				//		alert(inputs);
+				//		alert(outputs);
 						for (var i = 0; i < inputs.length; i++){
 							if (inputs[i].id == null){
 								events.innerHTML += "<tr><td></td><td>" + inputs[i].name + "</td></tr>"
@@ -126,25 +123,25 @@
 						}
 					}
 				}
+				
+				function renewInterface(){
+					var iGadgets = w.getGadgetsId();
+					var channels = w.getInOutId();
+
+					for (var i = 0; i<iGadgets.length; i++){
+						addGadget(iGadgets[i]);
+					}
+					for (var j = 0; j<channels.length; j++){
+						addChannel(channels[j])
+					}
+					
+				}
 			
 			</script>
-			
-			<input id = "creaCanal" type = text value = "nombre del canal...">
-			<input type=button 
-				   value= "crear_canal" 
-				   onclick = "anadirCanal($F($('creaCanal')))"
-				   
-			<input type=button 
-				   value= "borrar_canal" 
-				   onclick = "borrarCanal($('selectCanal').value)">
-			<input id = "crearInstancia" type=text value="id del gadget...">
-			<input type=button 
-				   value= "crear_instancia" 
-				   onclick = "anadeGadget($F($('crearInstancia')))">
-			<input id = "borrarInstancia" type = text value = "id del gadget...">
-			<input type=button 
-				   value= "borrar_instancia" 
-				   onclick = "w.removeInstance($F($('borrarInstancia')))">
+	
+		<input type=button 
+				   value= "Renew Interface" 
+				   onclick = "renewInterface()">
 		<br>
 
 		<br>
@@ -231,6 +228,14 @@
 						<option value = "" selected>----</option>
 				
 					</select>
+					
+					<input type=button 
+					   value= "crear_canal" 
+					   onclick = "anadirCanal()">
+				   
+					<input type=button 
+				   		value= "borrar_canal" 
+				   		onclick = "borrarCanal($('selectCanal').value)">
 				</div>
 		
 				
@@ -324,9 +329,10 @@
 				        </table>
 				      </div>
 				</div>
-	
+				<div id = "bActualiza">
+						<input id = "actualiza" type = "button" value = "Actualizar">
+				</div>	
 			</fieldset>
-			<input id = "actualiza" type = "button" value = "Actualizar">
 		</div>
 		<div class = "right">
 			

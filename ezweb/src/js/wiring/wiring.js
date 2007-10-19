@@ -2,10 +2,6 @@
  * @author rnogal
  */
 
-<script src = "../persistenceEngine/PersistenceEngine.js" type = "text/javascript"></script>;
-<script src = "./connectable.js" type = "text/javascript"></script>;
-<script src = "../lib/prototype.js" type = "text/javascript"></script>;
-
 var WiringFactory = function () {
 
 	// *********************************
@@ -27,35 +23,35 @@ var WiringFactory = function () {
 
 			var gadgets = tempList.iGadgetList;
 			var inOuts = tempList.inOutList;
-
-
+			
 			// Constructing the structure
-			var list = null;
+			var list = [];
 			// restauring the iGadget structure
+			
 			for (var i = 0; i < gadgets.length; i++) {
 				var gadget = new Object();
 				gadget.id = gadgets[i].id;
+				gadget.list = [];
 
 				list = gadgets[i].list;
-				
 				for (var j = 0; j < list.length; j++) {
 					var connectable = new Object();
-
 					connectable.name = list[j].name;
 					connectable.aspect = list[j].aspect;
 					
 					switch (connectable.aspect) {
-						case Variable.prototype.EVENT:
-							connectable.ref = new Event(list[j]);							
+						case "EVENT":
+							connectable.ref = new Event(null, null, list[j]);							
 							break;
-						case Variable.prototype.SLOT:
-							connectable.ref = new Slot(list[j]);												
+						case "SLOT":
+							connectable.ref = new Slot(null, null, list[j]);												
 							break;
 					}
-					gadget["list"].push(connectable);
+					gadget.list.push(connectable);
 				}
-				iGadgetList.id = gadget;
+				iGadgetList[gadget.id] = gadget;
 			}
+	//		alert(Object.toJSON(iGadgetList))
 			// at this moment we have  all the iGadgets retaured in the system.
 			
 			// we use this variable to insert all the connections and then serve them all.
@@ -65,28 +61,28 @@ var WiringFactory = function () {
 				var element = new Object();
 				// creating the object inOut
 				element.name = inOuts[i].name;
-				element.ref = new Channel(inOuts[i]);
+	//			alert(Object.toJSON(inOuts[i]))
+				element.ref = new Channel(null, null, inOuts[i]);
 				// and inserting it in the wiring channel list
 				inOutList[element.name] = element;
 				
 				var inputs = new Object();
 
 				inputs.from = element.name; 
-				inputs.inputHash = inOuts[i].inputputHash;
+				inputs.inputHash = inOuts[i].inputHash;
 				inputs.outputHash = inOuts[i].outputHash;
 				connections.push(inputs);
 			}
 			// reconnecting every thing at this moment
-			
+
 			for (var r = 0; r < connections.length; r++){
 				var item = connections[r];
 				var channel = inOutList[item.from].ref;
-				
+
 				for (var i = 0; i < item.inputHash.length; i++){
 					var input = item.inputHash[i];
-					
-					if (input.id == null){
-						input = inOutList[input.id].ref;
+					if (input.id == "null"){
+						input = inOutList[input.name].ref;
 					}
 					else{
 						var gadgetlist = iGadgetList[input.id].list;
@@ -105,7 +101,7 @@ var WiringFactory = function () {
 				for (var j = 0; j < item.outputHash.length; j++){
 					var output = item.outputHash[j];
 					
-					if (output.id == null){output = inOutList[output.id].ref}
+					if (output.id == "null"){output = inOutList[output.name].ref}
 					else{
 						var gadgetlist = iGadgetList[output.id].list;
 						for (var z = 0; z < gadgetlist.length; z++){
@@ -120,8 +116,8 @@ var WiringFactory = function () {
 					channel.addOutput(output);				 	
 				}		
 						
-			}
-
+			}	
+			loaded = true;
 		}
 		
 		onError = function (transport) {
@@ -134,17 +130,23 @@ var WiringFactory = function () {
 		// *****************
 		//  PRIVATE METHODS
 		// *****************
-		
 		var persistenceEngine = PersistenceEngineFactory.getInstance();
-	
+	    this.loaded = false;	
 		var iGadgetList = new Hash();
 		var inOutList = new Hash();
-//		persistenceEngine.send_get('wiring.json', this, loadWiring, onError);
-		
+		persistenceEngine.send_get('../wiring.json', this, loadWiring, onError);
+
 		// ****************
 		// PUBLIC METHODS
 		// ****************
 		// this method is used in the first version for painting the connections for the user.
+		Wiring.prototype.getGadgetsId = function (){
+			return iGadgetList.keys();
+		}
+		Wiring.prototype.getInOutId = function (){
+			return inOutList.keys();
+		}
+
 		Wiring.prototype.connections = function (channel) {
 			var channel = inOutList[channel].ref;
 			var connections = channel.connections();
@@ -171,39 +173,31 @@ var WiringFactory = function () {
 			var gadget = new Object();
 			 
 			if (iGadgetList[iGadgetId] == undefined) {
-				//var connectables = template.getVariables();
-				var connectables = template;
-
+				var events = template.getEventsId();
+				var alots = template.getSlotsId();
+	
 				var itemList = [];
 				
 				// The instance of the iGadget doesn't exist.
 				gadget["id"] = iGadgetId;
-		
-				for (var i = 0; i < connectables.length; i++){
+
+				for (var i = 0; i < events.length; i++){
 					var item = new Object();
-				
-					item["name"] = connectables[i].name;
-					switch (connectables[i].aspect){
-						case "EVENT":
-							item["aspect"] = "EVENT";
-							item["ref"] = new Event(iGadgetId, item["name"]);
-							itemList.push(item);
-					
-							break;
-						case "SLOT": 
-							item["aspect"] = "SLOT";
-							item["ref"] = new Slot(iGadgetId, item["name"]);
-							itemList.push(item);		
-								
-							break;
-						default: 
-							break;
-					}		
+					item["name"] = i;
+					item["aspect"] = "EVENT";
+					item["ref"] = new Event(iGadgetId, i);
+					itemList.push(item);	
+				}
+				for (var j = 0; j < events.length; j++){
+					var item = new Object();
+					item["name"] = j;
+					item["aspect"] = "EVENT";
+					item["ref"] = new Event(iGadgetId, j);
+					itemList.push(item);
 				}
 				gadget["list"] = itemList;
 				iGadgetList[iGadgetId] = gadget;
-//				alert(Object.toJSON(iGadgetList[iGadgetId].list))
-				// Insertar en los eventos y los slots las variables del template
+
 				// Insertion in events and slots of the template variables.
 				return 0;
 			}
