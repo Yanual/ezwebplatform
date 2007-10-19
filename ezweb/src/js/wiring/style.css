@@ -10,7 +10,7 @@ tr {
 }
 
 .container {
-	position: relative;
+	position: absolute;
 	top:20px;
 	left: 26%;
 	width: 50%
