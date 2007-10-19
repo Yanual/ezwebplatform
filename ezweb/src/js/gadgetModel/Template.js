@@ -56,4 +56,58 @@ function Template(template_) {
 		}
         return objVars;
     }
+	
+	this.getEventsId = function () {
+        
+		// JSON-coded Template-UserPrefs mapping	
+		// Constructing the structure 
+		 
+		var objVars = [];
+		var rawVars = variableList;
+		var rawVar = null;
+		for (i = 0; i<rawVars.length; i++) {
+			rawVar = rawVars[i];
+			if (rawVar.aspect == Variable.prototype.EVENT)
+			{
+					objVars.push(rawVar.name);
+			}
+		}
+        return objVars;
+    }
+	
+	this.getSlotsId = function () {
+        
+		// JSON-coded Template-UserPrefs mapping	
+		// Constructing the structure 
+		 
+		var objVars = [];
+		var rawVars = variableList;
+		var rawVar = null;
+		for (i = 0; i<rawVars.length; i++) {
+			rawVar = rawVars[i];
+			if (rawVar.aspect == Variable.prototype.SLOT)
+			{
+					objVars.push(rawVar.name);
+			}
+		}
+        return objVars;
+    }
+	
+	this.getPropertiesId = function () {
+        
+		// JSON-coded Template-UserPrefs mapping	
+		// Constructing the structure 
+		 
+		var objVars = [];
+		var rawVars = variableList;
+		var rawVar = null;
+		for (i = 0; i<rawVars.length; i++) {
+			rawVar = rawVars[i];
+			if (rawVar.aspect == Variable.prototype.PROPERTY)
+			{
+					objVars.push(rawVar.name);
+			}
+		}
+        return objVars;
+    }
 }
