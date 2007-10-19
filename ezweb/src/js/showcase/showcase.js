@@ -60,7 +60,7 @@ var ShowcaseFactory = function () {
 		var _persistenceEngine = PersistenceEngineFactory.getInstance();			
 		
 		// Initial load from persitence system
-		_persistenceEngine.send_get('http://europa.ls.fi.upm.es:8000/user/1/gadgets', this, loadGadgets, onErrorCallback);
+		//_persistenceEngine.send_get('http://europa.ls.fi.upm.es:8000/user/1/gadgets', this, loadGadgets, onErrorCallback);
 		_persistenceEngine.send_get('gadgets.json', this, loadGadgets, onErrorCallback);
 						
 
@@ -358,3 +358,53 @@ var ShowcaseFactory = function () {
 	}
 	
 }();
+
+
+// *********************************
+// USER INTERFACE METHODS
+// *********************************
+function details(gadgetId_){
+	var detailsDiv = $('details_' + gadgetId_);
+	if (detailsDiv.style.display == 'block'){
+		detailsDiv.style.display = 'none';
+		return;
+	}
+	var myshowcase = ShowcaseFactory.getInstance();
+	var gadgetProps = myshowcase.getGadgetProperties(gadgetId_);
+	$('template_' + gadgetId_).value = gadgetProps[0];  
+	$('xhtml_' + gadgetId_).value = gadgetProps[1];
+	$('details_' + gadgetId_).style.display='block'
+}
+	
+function edit (gadgetId_){
+	var editDiv = $('edit_' + gadgetId_);
+	if (editDiv.style.display == 'block'){
+		editDiv.style.display = 'none';
+	}else{
+	var myshowcase = ShowcaseFactory.getInstance();
+	var gadgetProps = myshowcase.getGadgetProperties(gadgetId_);
+		$('image_url_' + gadgetId_).value =  gadgetProps[2];
+		$('tags_' + gadgetId_).value = gadgetProps[3];
+		editDiv.style.display = 'block';
+	}
+	
+}
+	
+function saveGadgetDetails(gadgetId_){
+	var imageSrc = $('image_url_' + gadgetId_).value;
+	var tags = $('tags_' + gadgetId_).value;
+	var myshowcase = ShowcaseFactory.getInstance();
+	myshowcase.setGadgetProperties(gadgetId_, imageSrc, tags.split(' '));
+	myshowcase.repaint();
+}
+
+function deleteGadget (gadgetId_){
+	var myshowcase = ShowcaseFactory.getInstance();
+	myshowcase.deleteGadget(gadgetId_);
+	myshowcase.repaint();
+}
+
+function show(){
+	
+	setTimeout("var myshowcase = ShowcaseFactory.getInstance();myshowcase.repaint();",2000);
+}
