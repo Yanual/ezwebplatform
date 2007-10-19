@@ -1,0 +1,78 @@
+<html>
+<head>
+<title>EzWeb Platform</title>
+<script language="JavaScript" src="lib/prototype.js"></script>
+<script language="JavaScript" src="common/uris.js"></script>
+<script language="JavaScript" src="common/modules.js"></script>
+<script language="JavaScript" src="persistenceEngine/PersistenceEngine.js"></script>
+
+<script language="JavaScript" src="gadgetModel/XHtml.js"></script>
+<script language="JavaScript" src="gadgetModel/Template.js"></script>
+<script language="JavaScript" src="gadgetModel/Gadget.js"></script>
+
+<script language="JavaScript" src="opManager/OpManager.js"></script>
+<script language="JavaScript" src="varManager/VariableGadget.js"></script>
+<script language="JavaScript" src="varManager/VariablePlatform.js"></script>
+<script language="JavaScript" src="varManager/varManager.js"></script>
+
+<script language="JavaScript" src="showcase/showcase.js"></script>
+<script language="JavaScript" src="showcase/util.js"></script>
+
+<script language="JavaScript" src="wiring/wiring.js"></script>
+
+<!-- Initialization code -->
+<script language="JavaScript">
+	
+	function show_showcase(){
+		$('dragboard').style.display='none';
+		$('wiring_container').style.display='none';
+		$('showcase_container').style.display='block';
+		var myshowcase = ShowcaseFactory.getInstance();
+		myshowcase.repaint();
+	}
+	
+	function show_dragboard(){
+		$('wiring_container').style.display='none';
+		$('showcase_container').style.display='none';
+		$('dragboard').style.display='block';
+	}
+	
+	function show_wiring(){
+		$('dragboard').style.display='none';
+		$('showcase_container').style.display='none';
+		$('wiring_container').style.display='block';
+	}
+	
+	function load(){
+		var opManager = OpManagerFactory.getInstance();
+		opManager.loadEnviroment();
+	}
+	
+		
+</script>
+
+</head>
+
+<body onLoad="load()" style="background-color: #D4D7E4">
+
+<table style="width: 100%; height: 9%">
+	<tr>
+		<td><img src="EzWeb.png" style="width: 120; height: 60" alt="Logo cannot be shown"></td>
+		<td valign="top" style="text-align: right"><a href="javascript:;" onclick="show_showcase();">My Gadgets</a> / <a href="javascript:;" onclick="show_wiring();">My Pipes</a></td>
+	</tr>
+</table>
+
+<div id="dragboard" style="width: 100%; height: 90%; border: solid green 1px">dragboard</div>	
+
+<div id="showcase_container"  style="width: 100%; height: 90%; border: solid red 1px; display: none">
+	<div style="position: relative; text-align:right; width:100%; height:5%"><a href="javascript:;" onclick="show_dragboard();">hide</a></div>
+	<div style="position: relative" id="showcase">showcase</div>
+</div>
+
+<div id="wiring_container" style="width: 100%; height: 90%; border: solid yellow 1px; display: none">
+	<div style="position: relative; text-align:right; width:100%; height:5%"><a href="javascript:;" onclick="show_dragboard();">hide</a></div>
+	<div style="position: relative" id="wiring">Wiring</div>
+</div>
+
+</body>
+</html>
