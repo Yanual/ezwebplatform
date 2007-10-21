@@ -13,7 +13,16 @@
 	<body>
 		<div class = "left">
 			<script>
-				var w = WiringFactory.getInstance()
+				var event = new Hash({name:"var1", aspect:"EVENT"}) 
+				var slot = new Hash({name:"var2", aspect:"SLOT"})
+				var slot2 = new Hash({name:"var3", aspect:"SLOT"})
+				
+				var conect = new Array()
+				conect.push(event)
+				conect.push(slot)
+				conect.push(slot2)
+
+				var w = WiringFactory.getInstance();
 			
 				function addChannel (name){
 						var selector = $("selectCanal");
@@ -41,7 +50,7 @@
 						}
 					}
 				}
-				
+		
 				function borrarCanal(object){
 					var selector = $("selectCanal");
 					var itemize =  $("canales");
@@ -54,7 +63,7 @@
 					w.removeChannel(object);
 				}
 				
-				function addGadget(object){
+				function anadeGadget(object){
 					var selector = $("gadgets");
 					
 					var element = document.createElement("option");
@@ -62,6 +71,8 @@
 					var text = document.createTextNode(object);
 					element.appendChild(text);
 					selector.appendChild(element);
+
+					//w.addInstance(object, conect);
 				}
 				
 		
@@ -77,8 +88,7 @@
 						$("valor").value = w.viewValue(channel);
 						slots.innerHTML = "";
 						events.innerHTML = "";
-				//		alert(inputs);
-				//		alert(outputs);
+						
 						for (var i = 0; i < inputs.length; i++){
 							if (inputs[i].id == null){
 								events.innerHTML += "<tr><td></td><td>" + inputs[i].name + "</td></tr>"
@@ -124,24 +134,52 @@
 					}
 				}
 				
+					
 				function renewInterface(){
 					var iGadgets = w.getGadgetsId();
 					var channels = w.getInOutId();
-
 					for (var i = 0; i<iGadgets.length; i++){
-						addGadget(iGadgets[i]);
+						anadeGadget(iGadgets[i]);
 					}
 					for (var j = 0; j<channels.length; j++){
 						addChannel(channels[j])
-					}
-					
+					}	
 				}
+	
 			
 			</script>
-	
-		<input type=button 
-				   value= "Renew Interface" 
+			<input type=button 
+				   value= "renewInterface" 
 				   onclick = "renewInterface()">
+		<br>	
+			
+			<input type=button 
+				   value= "crear_canal" 
+				   onclick = "anadirCanal()">
+				   
+			<input type=button 
+				   value= "borrar_canal" 
+				   onclick = "borrarCanal($('selectCanal').value)">
+			<script>
+				function nuevoGadget(){
+					var event = new Hash({name:"var1", aspect:"EVENT"}) 
+					var slot = new Hash({name:"var2", aspect:"SLOT"})
+					var slot2 = new Hash({name:"var3", aspect:"SLOT"})
+					var slot3 = new Hash({name:"var4", aspect:"SLOT"})
+					var conect = new Array()
+					conect["events"]=[];
+					conect["slots"]=[];
+					conect["events"].push(event);
+					conect["slots"].push(slot);
+					conect["slots"].push(slot2);
+					conect["slots"].push(slot3);
+					var x = prompt("Gadget name:");
+					w.addInstance(x, conect);
+				}
+			</script>
+			<input type=button 
+				   value= "crear_instancia" 
+				   onclick = "nuevoGadget()">
 		<br>
 
 		<br>
@@ -228,14 +266,6 @@
 						<option value = "" selected>----</option>
 				
 					</select>
-					
-					<input type=button 
-					   value= "crear_canal" 
-					   onclick = "anadirCanal()">
-				   
-					<input type=button 
-				   		value= "borrar_canal" 
-				   		onclick = "borrarCanal($('selectCanal').value)">
 				</div>
 		
 				
@@ -329,10 +359,9 @@
 				        </table>
 				      </div>
 				</div>
-				<div id = "bActualiza">
-						<input id = "actualiza" type = "button" value = "Actualizar">
-				</div>	
+	
 			</fieldset>
+			<input id = "actualiza" type = "button" value = "Actualizar">
 		</div>
 		<div class = "right">
 			

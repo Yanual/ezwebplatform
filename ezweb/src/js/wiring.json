@@ -5,28 +5,22 @@
 			"list":
 			[
 				{	"aspect": "SLOT",					
-					"id":	"slot1",
+					"id":	"igadget1",
 					"type": "type1",
-					"value": "value1",
-					"name": "nameSlot1"
+					"value": "var2",
+					"name": "var2"
 				},
 				{	"aspect": "SLOT",					
-					"id":	"slot2",
-					"type": "type2",
-					"value": "value2",
-					"name": "nameSlot2"
-				},
-				{	"aspect": "EVENT",					
-					"id":	"event1",
+					"id":	"igadget1",
 					"type": "type1",
-					"value": "value1",
-					"name": "nameEvent1"
+					"value": "var3",
+					"name": "var3"
 				},
 				{	"aspect": "EVENT",					
-					"id":	"event2",
-					"type": "type2",
-					"value": "value2",
-					"name": "nameEvent2"
+					"id":	"igadget1",
+					"type": "type1",
+					"value": "var1",
+					"name": "var1"
 				}
 			]
 		},
@@ -34,28 +28,22 @@
 			"list":
 			[
 				{	"aspect": "SLOT",					
-					"id":	"slot1",
+					"id":	"igadget2",
 					"type": "type1",
-					"value": "value1",
-					"name": "nameSlot1"
+					"value": "var3",
+					"name": "var3"
 				},
 				{	"aspect": "SLOT",					
-					"id":	"slot2",
-					"type": "type2",
-					"value": "value2",
-					"name": "nameSlot2"
-				},
-				{	"aspect": "EVENT",					
-					"id":	"event1",
+					"id":	"igadget2",
 					"type": "type1",
-					"value": "value1",
-					"name": "nameEvent1"
+					"value": "var2",
+					"name": "var2"
 				},
 				{	"aspect": "EVENT",					
-					"id":	"event2",
-					"type": "type2",
-					"value": "value2",
-					"name": "nameEvent2"
+					"id":	"igadget2",
+					"type": "type1",
+					"value": "var1",
+					"name": "var1"
 				}
 			]
 		}
@@ -65,70 +53,46 @@
 		{	"id":	"null",
 			"type": "type1",
 			"value": "value1",
-			"name": "nameChannel1"
+			"name": "channel1",
 			"inputHash":
 			[
-				{	"id":"event1",
-					"name":"nameEvent1"
+				{	"id":"igadget1",
+					"name":"var1"
 				},
-				{	"id":"event2",
-					"name":"nameEvent2"
-				},
-				{	"id":"null",
-					"name":"nameChannel1"
+				{	"id":"igadget2",
+					"name":"var1"
 				},
 				{	"id":"null",
-					"name":"nameChannel2"
+					"name":"channel2"
 				}
 			],
 			"outputHash":
 			[
-				{	"id":"slot1",
-					"name":"nameEvent1"
+				{	"id":"igadget2",
+					"name":"var2"
 				},
-				{	"id":"slot2",
-					"name":"nameSlot2"
-				},
-				{	"id":"null",
-					"name":"nameChannel1"
-				},
-				{	"id":"null",
-					"name":"nameChannel2"
+				{	"id":"igadget2",
+					"name":"var3"
 				}
 			]
 		},
 		{	"id":	"null",
 			"type": "type1",
 			"value": "value1",
-			"name": "nameChannel2",
+			"name": "channel2",
 			"inputHash":
 			[
-				{	"id":"event1",
-					"name":"nameEvent1"
-				},
-				{	"id":"event2",
-					"name":"nameEvent2"
-				},
-				{	"id":"null",
-					"name":"nameChannel1"
-				},
-				{	"id":"null",
-					"name":"nameChannel2"
+				{	"id":"igadget2",
+					"name":"var1"
 				}
 			],
 			"outputHash":
 			[
-				{	"id":"slot1",
-					"name":"nameEvent1"
-				},
-				{	"id":"slot2",
-					"name":"nameSlot2"
+				{	"id":"igadget2",
+					"name":"var2"
 				},
 				{	"id":"null",
-					"name":"nameChannel1"
-				},
-				{	"id":"null",
-					"name":"nameChannel2"
+					"name":"channel1"
 				}
 			]
 		}
