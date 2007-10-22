@@ -18,7 +18,12 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 	this.getUriWiki = function() { return state.getUriWiki(); }
 	
 	this.paint = function(){
-		var newResource = document.createElement("div");
+		var newResource = document.createElement("a");
+		newResource.setAttribute("href", "javascript:showResourceInfo('" + id + "');");
+		newResource.innerHTML = "<div class='resource' id='" + id + "' onMouseOver='selectResource(\"" + id + "\");' onMouseOut='deselectResource(\"" + id + "\");'><table><tr><td class='title'>" + state.getName() + "</td><td class='image'></tr><tr><center><img class='resource_img' src='" + state.getUriImage() + "' alt='Click para m&aacute;s informaci&oacute;n'/></center></td></tr></table></div>";
+		var parentHTML = document.getElementById("resources");
+		parentHTML.insertBefore(newResource, parentHTML.firstChild);
+		/*var newResource = document.createElement("div");
 		newResource.setAttribute("class", "resource");
 		newResource.setAttribute("id", id);
 		newResource.setAttribute("onMouseOver", "selectResource('" + id + "')");
@@ -26,7 +31,7 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 		newResource.setAttribute("onClick", "showResourceInfo('" + id + "')");
 		newResource.innerHTML = "<table><tr><td class='title'>" + state.getName() + "</td><td class='image'></tr><tr><center><img class='resource_img' src='" + state.getUriImage() + "' alt='Click para m&aacute;s informaci&oacute;n'/></center></td></tr></table>";
 		var parentHTML = document.getElementById("resources");
-		parentHTML.insertBefore(newResource, parentHTML.firstChild);
+		parentHTML.insertBefore(newResource, parentHTML.firstChild);*/
 	}
 	
 	// *******************

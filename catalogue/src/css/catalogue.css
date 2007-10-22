@@ -35,6 +35,11 @@
 	float:left;
 }
 
+.resources a
+{
+	text-decoration:none;
+}
+
 .resource
 {
 	padding:5px;
@@ -53,6 +58,7 @@
 
 .resource  td.title
 {
+	color:black;
 	font-weight:bold;
 	font-style:italic;
 }
@@ -61,6 +67,7 @@ img.resource_img
 {
 	height:70%;
 	width:90%;
+	border:none;
 }
 
 .info_resource *
