@@ -20,12 +20,9 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 	this.paint = function(){
 		var newResource = document.createElement("a");
 		newResource.setAttribute("href", "javascript:showResourceInfo('" + id + "');");
-		newResource.setAttribute("class", "paco");
-		newResource.innerHTML = "<div class='resource' id='" + id + "' onMouseOver='selectResource(\"" + id + "\");' onMouseOut='deselectResource(\"" + id + "\");'><table><tr><td class='title'>" + state.getName() + "</td></tr><tr><td class='image'><center><img class='resource_img' src='" + state.getUriImage() + "' alt='Click para m&aacute;s informaci&oacute;n'></img></center></td></tr></table></div>";
-		alert(newResource.innerHTML);
+		newResource.innerHTML = "<div class='resource' id='" + id + "' onMouseOver='selectResource(\"" + id + "\");' onMouseOut='deselectResource(\"" + id + "\");'><table><tr><td class='title'>" + state.getName() + "</td></tr><tr><td class='image'><center><a href='javascript:showResourceInfo(\"" + id + "\");'><img class='resource_img' src='" + state.getUriImage() + "' alt='Click para m&aacute;s informaci&oacute;n'></img></a></center></td></tr></table></div>";
 		var parentHTML = document.getElementById("resources");
 		parentHTML.insertBefore(newResource, parentHTML.firstChild);
-		alert(newResource.outerHTML);
 	}
 	
 	// *******************
