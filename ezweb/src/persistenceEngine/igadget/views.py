@@ -26,10 +26,15 @@ class IGadgetCollection(Resource):
     def read(self, request, user_id, screen=None):
         user_authentication(user_id)
         data_list = []
+        if not screen:
+            igadget = get_list_or_404(IGadget, screen=1)
+        else:
+            igadget = get_list_or_404(IGadget, screen=screen)
+        data = serializers.serialize('python', igadget, ensure_ascii=False)
         for d in data:
-            data_fields = _get_gadget_data(d)
+            data_fields = _get_igadget_data(d)
             data_list.append(data_fields)
-        return HttpResponse('', mimetype='application/json; charset=UTF-8')
+        return HttpResponse(json_encode(data_list), mimetype='application/json; charset=UTF-8')
 
 
 class IGadgetEntry(Resource):
@@ -71,7 +76,7 @@ def _get_igadget_data(data):
     data_variables = get_list_or_404(Variable.objects.all().values('vardef', 'value'), igadget=data['pk'])
     data_ret['variables'] = {}
     for data_variable in data_variables:
-        data_vardef = get_object_or_404(VariableDef.objects.all().values('name', 'aspect'), id=data_variable['vardef'])
+        data_vardef = get_object_or_404(VariableDef.objects.all().values('name', 'aspect', 'type'), id=data_variable['vardef'])
         data_ret['variables'] = data_vardef
         data_ret['variables']['value'] = data_variable['value']
 #    data_fields['variables'] = data_variables
