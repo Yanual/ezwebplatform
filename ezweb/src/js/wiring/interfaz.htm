@@ -24,19 +24,21 @@
 
 				var w = WiringFactory.getInstance();
 			
-				function addChannel (name){
+				function addChannelInterface(name){
 						var selector = $("selectCanal");
 						var itemize =  $("canales");
-	
+					
 						var element = document.createElement("option");
-						element.setAttribute("id", name)
+					//	element.setAttribute("id", name)
+						element.setAttribute("class", name)
 						var text = document.createTextNode(name);
 						element.appendChild(text);
 						selector.appendChild(element);
 	
 						var element = document.createElement("option");
 						var text = document.createTextNode(name);
-						element.setAttribute("id", name)
+					//	element.setAttribute("id", name)
+						element.setAttribute("class", name)
 						element.appendChild(text);
 						itemize.appendChild(element);
 				}
@@ -46,7 +48,7 @@
 					var name = prompt("Insert Channel Name:","Channel Name...");
 					if (name != null){
 						if (!(result = w.createChannel(name))){	
-							addChannel(name);
+							addChannelInterface(name);
 						}
 					}
 				}
@@ -54,16 +56,20 @@
 				function borrarCanal(object){
 					var selector = $("selectCanal");
 					var itemize =  $("canales");
-					//the first id is from the channel list	
-					var hijo = $(object);
-					selector.removeChild(hijo);
-					// the new identifier is from the item list
-					hijo = $(object);
-					itemize.removeChild(hijo);
-					w.removeChannel(object);
+					var result = null;
+				
+					if (!(result = w.removeChannel(object))){
+						//the first id is from the channel list	
+					//	var hijo = $(object);
+						var hijo = $$('option.' + object);
+						selector.removeChild(hijo[0]);
+						// the new identifier is from the item list
+					//	hijo = $(object);
+						itemize.removeChild(hijo[1]);
+					}
 				}
 				
-				function anadeGadget(object){
+				function addGadgetInterface(object){
 					var selector = $("gadgets");
 					
 					var element = document.createElement("option");
@@ -78,19 +84,20 @@
 		
 				////////////////////////
 				function renewChannel(channel){
+					var slots = $("slotsConnection")
+					var events = $("eventsConnection")
+					slots.innerHTML = "";
+					events.innerHTML = "";
+						
 					if (channel != ""){
 						var connections = w.connections(channel);
 						var inputs = connections["input"];
 						var outputs = connections["output"];
-						var slots = $("slotsConnection")
-						var events = $("eventsConnection")
 						
 						$("valor").value = w.viewValue(channel);
-						slots.innerHTML = "";
-						events.innerHTML = "";
-						
+					
 						for (var i = 0; i < inputs.length; i++){
-							if (inputs[i].id == null){
+							if (inputs[i].id == "null"){
 								events.innerHTML += "<tr><td></td><td>" + inputs[i].name + "</td></tr>"
 							}
 							else{
@@ -98,7 +105,7 @@
 							}
 						}
 						for (var j = 0; j < outputs.length; j++){
-							if (outputs[j].id == null){
+							if (outputs[j].id == "null"){
 								slots.innerHTML += "<tr><td></td><td>" + outputs[j].name + "</td></tr>"
 							}
 							else{
@@ -109,14 +116,17 @@
 				}
 
 				function renewItem(object){
-					if (Object != ""){
+					var slots = $("slots")
+					var events = $("events")
+					
+						
+					slots.innerHTML = "";
+					events.innerHTML = "";
+					
+					if (object != ""){
 						var connections = w.gadgetConnections(object);
 	
-						var slots = $("slots")
-						var events = $("events")
 						
-						slots.innerHTML = "";
-						events.innerHTML = "";
 						if (connections){
 							for (var i = 0; i < connections.length; i++){
 								if (connections[i].aspect == "SLOT"){
@@ -139,10 +149,10 @@
 					var iGadgets = w.getGadgetsId();
 					var channels = w.getInOutId();
 					for (var i = 0; i<iGadgets.length; i++){
-						anadeGadget(iGadgets[i]);
+						addGadgetInterface(iGadgets[i]);
 					}
 					for (var j = 0; j<channels.length; j++){
-						addChannel(channels[j])
+						addChannelInterface(channels[j])
 					}	
 				}
 	

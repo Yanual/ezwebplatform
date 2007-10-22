@@ -78,7 +78,6 @@ var WiringFactory = function () {
 		// *****************
 		
 		var persistenceEngine = PersistenceEngineFactory.getInstance();
-	
 		var iGadgetList = new Hash();
 		var inOutList = new Hash();
 		persistenceEngine.send_get('../wiring.json', this, loadWiring, onError);
@@ -302,9 +301,6 @@ var WiringFactory = function () {
 					// we need to connect both parts: the In connection and InOut connection
 					list.addOutput(channel.ref);
 					channel.ref.addInput(list);
-//					alert("Added event between channel " + channel.name +" and " + gadget.id)
-//					alert(channel.ref.getName());
-//					alert(channel.ref.getValue());
 					return 1;
 				}			
 			}
@@ -314,19 +310,13 @@ var WiringFactory = function () {
 				var input = inOutList[arguments[0]];
 				
 				if ((channel != undefined) && (input != undefined)){
-//					alert("Both channels exist, " + input.name + " & " + channel.name)
 					// Both channels exist.
 					input = input.ref;
 					channel = channel.ref;
 	
-//					alert("added channel to channel")
 					
-					alert("salida: " + input.getName()+"; entrada: "+ channel.getName());
 					input.addOutput(channel);
-					//alert("Input es: "+input.toJSON());
 					channel.addInput(input);
-					//alert("Output es: "+channel.toJSON());
-//					alert("valor propagado a "+ channel.getName()+ " es "+channel.getValue());
 					return 1;
 				}						
 			}

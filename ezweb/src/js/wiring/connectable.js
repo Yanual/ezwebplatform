@@ -83,8 +83,9 @@ Out.prototype.removeInput = function(input){
 
 Out.prototype.setValue = function(value){
    this.value=value;
-   var varManager = VarManagerFactory.getInstance();
-   varManager.writeSlot(this.id,this.name,this.value);
+ //  var varManager = VarManagerFactory.getInstance();
+ //  varManager.writeSlot(this.id,this.name,this.value);
+ alert("Valor en " + this.name + " es " + this.value)
 }
 
 Out.prototype.clear = function(){
@@ -111,14 +112,14 @@ In.prototype = new Connectable();
 In.prototype.addOutput = function(output){
    if (output instanceof InOut){
       if (!(this.outputHash[output.getName()] instanceof InOut)){
-         if (this.type == output.getType()){ // the checking of the types may be changed when the filters were included
+	     if (this.type == output.getType()){ // the checking of the types may be changed when the filters were included
             this.outputHash[output.getName()] = output;
             output.setValue(this.value);
             return 0;
          } else if (output.getType() == null){
             output.setValue(this.value);
             this.outputHash[output.getName()] = output;
-            output.setTypeForward(this.type);
+          //  output.setTypeForward(this.type);
             return 0;
          } else if (this.type == null){ // this should not happen y the final version
             this.type = output.getType();
