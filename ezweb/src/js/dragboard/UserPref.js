@@ -38,6 +38,15 @@ UserPref.prototype.setValue = function (iGadgetId, newValue) {
 	}
 }
 
+//////////////////////////////////////////////
+// PUBLIC CONSTANTS
+//////////////////////////////////////////////
+UserPref.prototype.TEXT = "TEXT";  
+UserPref.prototype.INTEGER = "INT";  
+UserPref.prototype.DATE = "DATE";
+UserPref.prototype.LIST = "LIST";
+
+
 /**
  * extends UserPref
  * @author aarranz
