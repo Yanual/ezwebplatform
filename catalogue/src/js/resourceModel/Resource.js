@@ -20,13 +20,12 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 	this.paint = function(){
 		var newResource = document.createElement("a");
 		newResource.setAttribute("href", "javascript:showResourceInfo('" + id + "');");
-		newResource.innerHTML = "<div class='resource' id='" + id + "' onMouseOver='selectResource(\"" + id + "\");' onMouseOut='deselectResource(\"" + id + "\");'><table><tr><td class='title'>" + state.getName() + "</td><td class='image'></tr><tr><center><img class='resource_img' src='" + state.getUriImage() + "' alt='Click para m&aacute;s informaci&oacute;n'/></center></td></tr></table></div>";
+		newResource.setAttribute("class", "paco");
+		newResource.innerHTML = "<div class='resource' id='" + id + "' onMouseOver='selectResource(\"" + id + "\");' onMouseOut='deselectResource(\"" + id + "\");'><table><tr><td class='title'>" + state.getName() + "</td></tr><tr><td class='image'><center><img class='resource_img' src='" + state.getUriImage() + "' alt='Click para m&aacute;s informaci&oacute;n'></img></center></td></tr></table></div>";
+		alert(newResource.innerHTML);
 		var parentHTML = document.getElementById("resources");
-		alert(parentHTML);
-		try
-		{		
-			parentHTML.insertBefore(newResource, parentHTML.firstChild);
-		}catch(e){alert(e.message);}
+		parentHTML.insertBefore(newResource, parentHTML.firstChild);
+		alert(newResource.outerHTML);
 	}
 	
 	// *******************
@@ -93,15 +92,15 @@ function ResourceState(resourceXML_) {
 	
 	// Parsing XML Resource
 	// Constructing the structure
-	  
-	vendor = resourceXML_.getElementsByTagName("vendor")[0].firstChild.textContent;
-	name = resourceXML_.getElementsByTagName("name")[0].firstChild.textContent;
-	version = resourceXML_.getElementsByTagName("version")[0].firstChild.textContent;
-	description = resourceXML_.getElementsByTagName("description")[0].firstChild.textContent;
-	uriImage = resourceXML_.getElementsByTagName("uriImage")[0].firstChild.textContent;
-	uriWiki = resourceXML_.getElementsByTagName("uriWiki")[0].firstChild.textContent;
-	uriTemplate = resourceXML_.getElementsByTagName("uriTemplate")[0].firstChild.textContent;
 	
+	vendor = resourceXML_.getElementsByTagName("vendor")[0].firstChild.nodeValue;
+	name = resourceXML_.getElementsByTagName("name")[0].firstChild.nodeValue;
+	version = resourceXML_.getElementsByTagName("version")[0].firstChild.nodeValue;
+	description = resourceXML_.getElementsByTagName("description")[0].firstChild.nodeValue;
+	uriImage = resourceXML_.getElementsByTagName("uriImage")[0].firstChild.nodeValue;
+	uriWiki = resourceXML_.getElementsByTagName("uriWiki")[0].firstChild.nodeValue;
+	uriTemplate = resourceXML_.getElementsByTagName("uriTemplate")[0].firstChild.nodeValue;
+
 	// ******************
 	//  PUBLIC FUNCTIONS
 	// ******************

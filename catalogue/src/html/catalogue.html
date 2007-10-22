@@ -8,20 +8,19 @@
 		<script language="JavaScript" src="../js/resourceModel/Catalogue.js"></script>
 		<script language="JavaScript" src="../js/resourceModel/Resource.js"></script>
 		<script>
-			var catalogue = CatalogueFactory.getInstance();
-			catalogue.loadCatalogue("prueba.xml");
+			//var catalogue = CatalogueFactory.getInstance();
+			//catalogue.loadCatalogue("prueba.xml");
 		</script>
 		<title>
 			Cat&aacute;logo de Gadgets
 		</title>
 	</head>
-	<body>
+	<body onload="CatalogueFactory.getInstance().loadCatalogue('prueba.xml');">
 		<div class="body">
 			<div class="menu">
 				Menu
 			</div>
 			<div id="resources" class="resources">
-				<div id="hola"> Hola </div>
 			</div>
 			<div id="info_resource" class="info_resource">
 				<b>Info</b><br/>

@@ -3,14 +3,13 @@
 	
 	selectResource = function(resourceId_) {
 		var resource = document.getElementById(resourceId_);
-		auxColor = resource.style.background;
-		resource.style.background = "lightgray";
-		
+		auxColor = resource.style.backgroundColor;
+		resource.style.backgroundColor = "#aabbff";
 	}
 	
 	deselectResource = function(resourceId_) {
 		var resource = document.getElementById(resourceId_);
-		resource.style.background = auxColor;
+		resource.style.backgroundColor = auxColor;
 	}
 	
 	showResourceInfo = function(resourceId_) {
