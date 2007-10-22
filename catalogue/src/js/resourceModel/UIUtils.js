@@ -1,13 +1,16 @@
 	var selectedResource = null;
+	var auxColor = 'none';
 	
 	selectResource = function(resourceId_) {
 		var resource = document.getElementById(resourceId_);
+		auxColor = resource.style.background;
 		resource.style.background = "lightgray";
+		
 	}
 	
 	deselectResource = function(resourceId_) {
 		var resource = document.getElementById(resourceId_);
-		resource.style.background = "#ccddff";
+		resource.style.background = auxColor;
 	}
 	
 	showResourceInfo = function(resourceId_) {

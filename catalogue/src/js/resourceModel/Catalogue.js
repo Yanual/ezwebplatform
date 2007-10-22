@@ -39,8 +39,14 @@ var CatalogueFactory  = function () {
 			}
 			
 			loadResources = function(transport) {
-				var response = transport.responseXML;
+				var response = Try.these(
+									function() { 	return new DOMParser().parseFromString(transport.responseText, 'text/xml'); },
+									function() { 	var xmldom = new ActiveXObject('Microsoft.XMLDOM'); 
+													xmldom.loadXML(transport.responseText); 
+													return xmldom; }
+								);
 				var resourcesXML = response.getElementsByTagName("resource");
+				alert(resourcesXML.length);
 				for (i=(resourcesXML.length-1); i>=0; i--)
 				{
 					this.addResource(resourcesXML[i], null);
