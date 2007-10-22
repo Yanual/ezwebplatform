@@ -19,7 +19,7 @@ var ShowcaseFactory = function () {
 		// STATIC VARIABLES
 		// ******************
 		Showcase.prototype.MODULE_HTML_ID = 'showcase';
-		Showcase.prototype.NUM_CELLS = 1;
+		Showcase.prototype.NUM_CELLS = 4;
 		
 		// ****************
 		// CALLBACK METHODS 
@@ -61,7 +61,7 @@ var ShowcaseFactory = function () {
 		
 		// Initial load from persitence system
 		_persistenceEngine.send_get('http://europa.ls.fi.upm.es:8000/user/1/gadgets', this, loadGadgets, onErrorCallback);
-		//_persistenceEngine.send_get('gadgets.json', this, loadGadgets, onErrorCallback);
+//		_persistenceEngine.send_get('gadgets.json', this, loadGadgets, onErrorCallback);
 						
 
 		// Show only one gadget
@@ -73,14 +73,14 @@ var ShowcaseFactory = function () {
 			buffer.append('<tr>\n');
 			buffer.append('<td style="float: right;">\n');
 			
-//			buffer.append('<a href="javascript:;" onClick="details(\'');
+//			buffer.append('<a href="javascript:;" onClick="showcase_details(\'');
 //			buffer.append(gadgetId_);
-//			buffer.append('\');">details</a> / <a href="javascript:;" onClick="edit(\'');
+//			buffer.append('\');">details</a> / <a href="javascript:;" onClick="showcase_edit(\'');
 
 			buffer.append('<a href="javascript:;">details</a> / <a href="javascript:;" onClick="edit(\'');
 			
 			buffer.append(gadgetId_);
-			buffer.append('\');">edit</a> / <a href="javascript:;" onClick="deleteGadget(\'');
+			buffer.append('\');">edit</a> / <a href="javascript:;" onClick="showcase_deleteGadget(\'');
 			buffer.append(gadgetId_);
 			buffer.append('\')">delete</a>\n');
 			
@@ -176,7 +176,7 @@ var ShowcaseFactory = function () {
 			buffer.append('</td>\n');
 			buffer.append('<td>\n');
 			
-			buffer.append('<a href="javascript:;" onClick="saveGadgetDetails(\'');
+			buffer.append('<a href="javascript:;" onClick="showcase_saveGadgetDetails(\'');
 			buffer.append(gadgetId_);
 			buffer.append('\')"a>save</a> / <a href="javascript:;" onClick="$(\'edit_');
 			buffer.append(gadgetId_);
@@ -286,7 +286,7 @@ var ShowcaseFactory = function () {
 		// Show gadgets in Showcase
 		Showcase.prototype.repaint = function () {
 			var bufferTable = new StringBuffer();
-			bufferTable.append('<table border="2">\n');
+			bufferTable.append('<table border="0">\n');
 			var keys = _gadgets.keys();
 			for (var i = 0; i<keys.length; i++) {
 				var gadgetId = keys[i]; 
@@ -363,7 +363,7 @@ var ShowcaseFactory = function () {
 // *********************************
 // USER INTERFACE METHODS
 // *********************************
-function details(gadgetId_){
+function showcase_details(gadgetId_){
 	var detailsDiv = $('details_' + gadgetId_);
 	if (detailsDiv.style.display == 'block'){
 		detailsDiv.style.display = 'none';
@@ -376,7 +376,7 @@ function details(gadgetId_){
 	$('details_' + gadgetId_).style.display='block'
 }
 	
-function edit (gadgetId_){
+function showcase_edit (gadgetId_){
 	var editDiv = $('edit_' + gadgetId_);
 	if (editDiv.style.display == 'block'){
 		editDiv.style.display = 'none';
@@ -390,7 +390,7 @@ function edit (gadgetId_){
 	
 }
 	
-function saveGadgetDetails(gadgetId_){
+function showcase_saveGadgetDetails(gadgetId_){
 	var imageSrc = $('image_url_' + gadgetId_).value;
 	var tags = $('tags_' + gadgetId_).value;
 	var myshowcase = ShowcaseFactory.getInstance();
@@ -398,7 +398,7 @@ function saveGadgetDetails(gadgetId_){
 	myshowcase.repaint();
 }
 
-function deleteGadget (gadgetId_){
+function showcase_deleteGadget (gadgetId_){
 	var myshowcase = ShowcaseFactory.getInstance();
 	myshowcase.deleteGadget(gadgetId_);
 	myshowcase.repaint();
