@@ -62,6 +62,8 @@ class GadgetCollection(Resource):
         
         # Parse the input
         parser.parse("http://europa.ls.fi.upm.es/~mac/template.xml")
+        
+        return HttpResponse("<ok/>")
 
 class GadgetEntry(Resource):
     def read(self, request, user_id, vendor, name, version):
