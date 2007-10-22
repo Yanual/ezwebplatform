@@ -77,7 +77,7 @@ var ShowcaseFactory = function () {
 //			buffer.append(gadgetId_);
 //			buffer.append('\');">details</a> / <a href="javascript:;" onClick="showcase_edit(\'');
 
-			buffer.append('<a href="javascript:;">details</a> / <a href="javascript:;" onClick="edit(\'');
+			buffer.append('<a href="javascript:;">details</a> / <a href="javascript:;" onClick="showcase_edit(\'');
 			
 			buffer.append(gadgetId_);
 			buffer.append('\');">edit</a> / <a href="javascript:;" onClick="showcase_deleteGadget(\'');
