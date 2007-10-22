@@ -45,7 +45,7 @@ var CatalogueFactory  = function () {
 													xmldom.loadXML(transport.responseText); 
 													return xmldom; }
 								);
-				var resourcesXML = response.getElementsByTagName("resource");
+				var resourcesXML = response.getElementsByTagName("resources");
 				alert(resourcesXML.length);
 				for (i=(resourcesXML.length-1); i>=0; i--)
 				{
