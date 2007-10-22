@@ -2,14 +2,18 @@
  * abstract
  * @author aarranz
  */
-function UserPref(varName_, desc_) {
-	var varName = null;
-	var desc = null;
+function UserPref(varName_, label_, desc_, defaultValue_) {
+	this.varName = null;
+	this.label = null;
+	this.desc = null;
+	this.defaultValue = null;
 }
 
-UserPref.prototype.UserPref = function (varName_, desc_) {
-    var varName = varName_;
-	var desc = desc_;
+UserPref.prototype.UserPref = function (varName_, label_, desc_, defaultValue_) {
+    this.varName = varName_;
+	this.label = label_;
+	this.desc = desc_;
+	this.defaultValue = defaultValue_;
 }
 
 UserPref.prototype.validate = function (newValue) {
@@ -18,7 +22,12 @@ UserPref.prototype.validate = function (newValue) {
 
 UserPref.prototype.getCurrentValue = function (iGadgetId) {
 //  return "ValorInicial" // For testing
-	return VarManagerFactory.getInstance().getVariable(iGadgetId, varName).get();
+	var variable = VarManagerFactory.getInstance().getVariable(this.iGadgetId, this.varName);
+
+	if (variable != null)
+		return variable.get();
+	else
+		return "";
 }
 
 UserPref.prototype.setValue = function (iGadgetId, newValue) {
@@ -33,14 +42,14 @@ UserPref.prototype.setValue = function (iGadgetId, newValue) {
  * extends UserPref
  * @author aarranz
  */
-function ComboBoxUserPref(name_, desc_, options_) {
-	UserPref.call(this, name_, desc_);
+function ListUserPref(name_, label_, desc_, ValueOptions_, defaultValue_) {
+	UserPref.prototype.UserPref.call(this, name_, label_, desc_, defaultValue_);
 	this.options = options_;
 }
 
-ComboBoxUserPref.prototype = new UserPref();
+ListUserPref.prototype = new UserPref();
 
-ComboBoxUserPref.prototype.makeInterface = function (iGadgetId) {
+ListUserPref.prototype.makeInterface = function (iGadgetId) {
 	var output = "";
 
 	output += "<select>";
@@ -51,34 +60,22 @@ ComboBoxUserPref.prototype.makeInterface = function (iGadgetId) {
 	return output;
 }
 
-ComboBoxUserPref.prototype.getOptions = function () {
-}
-
-ComboBoxUserPref.prototype.setOptions = function () {
-}
-
-ComboBoxUserPref.prototype.addOption = function (option) {
-}
-
-ComboBoxUserPref.prototype.removeOption = function (option) {
-}
-
-ComboBoxUserPref.prototype.validate = function (newValue) {
+ListUserPref.prototype.validate = function (newValue) {
 }
 
 /**
  * extends UserPref
  * @autor aarranz
  */
-function IntUserPref(name_, _desc) {
-	UserPref.prototype.UserPref.call(this, name_, desc_);
+function IntUserPref(name_, label_, _desc, defaultValue_) {
+	UserPref.prototype.UserPref.call(this, name_, label_, desc_, defaultValue_);
 }
 
 IntUserPref.prototype.makeInterface = function (IGadgetId) {
 	var output = "";
 
 	output += "<input type=\"text\" ";
-	var currentValue = VarManagerFactory.getInstance().getVariable(IGadgetId, varName);
+	var currentValue =this.getCurrentValue();
 	if (currentValue != null)
 		output += "value=\"" + currentValue + "\" ";
 	output += "/>";
@@ -93,13 +90,61 @@ IntUserPref.prototype.validate = function (newValue) {
  * extends UserPref
  * @autor aarranz
  */
-function TextUserPref(name_, desc_) {
-	UserPref.prototype.UserPref.call(this, name_, desc_);
+function TextUserPref(name_, label_, desc_, defaultValue_) {
+	UserPref.prototype.UserPref.call(this, name_, label_, desc_, defaultValue_);
 }
 
 TextUserPref.prototype = new UserPref();
 
 TextUserPref.prototype.makeInterface = function (IGadgetId) {
+	var output = "";
+
+	output += "<input type=\"text\" ";
+
+	var currentValue = this.getCurrentValue();
+	if (currentValue != null)
+		output += "value=\"" + currentValue + "\" ";
+
+	output += "/>";
+
+	return output;
+}
+
+/**
+ * extends UserPref
+ * @autor aarranz
+ */
+function TextUserPref(name_, label_, desc_, defaultValue_) {
+	UserPref.prototype.UserPref.call(this, name_, label_, desc_, defaultValue_);
+}
+
+TextUserPref.prototype = new UserPref();
+
+TextUserPref.prototype.makeInterface = function (IGadgetId) {
+	var output = "";
+
+	output += "<input type=\"text\" ";
+
+	var currentValue = this.getCurrentValue();
+	if (currentValue != null)
+		output += "value=\"" + currentValue + "\" ";
+
+	output += "/>";
+
+	return output;
+}
+
+/**
+ * extends UserPref
+ * @autor aarranz
+ */
+function DateUserPref(name_, label_, desc_, defaultValue_) {
+	UserPref.prototype.UserPref.call(this, name_, label_, desc_, defaultValue_);
+}
+
+DateUserPref.prototype = new UserPref();
+
+DateUserPref.prototype.makeInterface = function (IGadgetId) {
 	var output = "";
 
 	output += "<input type=\"text\" ";
