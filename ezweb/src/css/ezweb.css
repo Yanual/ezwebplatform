@@ -1,0 +1,101 @@
+body
+{
+ margin:0px;
+ padding:0px 20px 0px 20px;
+ color:#000;
+ font-size:0.8125em;
+ font-family: "Trebuchet MS","Bitstream Vera Sans",Verdana,Helvetica,sans-serif;
+ font-size-adjust:none;
+ font-style:normal;
+ font-variant:normal;
+ font-weight:normal;
+ line-height:normal;
+}
+
+a
+{
+ text-decoration:none;
+ color:#00688b
+}
+
+a:hover
+{
+ text-decoration:underline;
+ color:#00688b
+}
+
+/* header ------------------------------------------------------------------------------------------ */
+
+#toolbar {}
+
+#toolbar a{}
+
+#description {}
+
+#description p {}
+
+/* gadgets ------------------------------------------------------------------------------------------ */
+
+#gadgets {
+}
+
+#gadgets .gadget {
+	border: 1px solid #C5D7EF;
+	border-top:1px solid #7AA5D6;
+	padding:0;
+}
+
+#gadgets .gadget .toolbar{
+	margin-top:0;
+	background-color:#E5ECF9;
+	height:30px;
+	border-bottom: 1px solid #C5D7EF;
+}
+#gadgets .gadget .toolbar h2{
+	margin:0;
+	color:#36C;
+	padding:5px;
+	font-size:120%;
+	float:left;
+}
+
+#gadgets .gadget .toolbar a {
+	float:right;
+	margin-right:2%;
+	margin-top:10px;
+}
+#gadgets .gadget .toolbar a img {}
+
+#gadgets .gadget .preferences{
+	border-bottom: 1px solid #C5D7EF;
+	background-color:#E5ECF9;
+	color:#36C;
+}
+#gadgets .gadget .preferences fieldset{
+	border:none;
+}
+
+#gadgets .gadget .main{
+	padding:1%;
+}
+#gadgets .gadget .main h2{
+	border-bottom:1px dotted #dfdfdf;
+}
+#gadgets .gadget .main table{
+	border:1px dotted #dfdfdf;
+}
+#gadgets .gadget .main th{
+
+}
+#gadgets .gadget .main td{
+
+}
+#gadgets .gadget .main img{
+
+}
+
+/* footer ------------------------------------------------------------------------------------------ */
+
+#footer {}
+
+#footer p {}
