@@ -18,14 +18,13 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 	this.getUriWiki = function() { return state.getUriWiki(); }
 	
 	this.paint = function(){
-		alert("Vendor: " + state.getVendor() + "\nName: " + state.getVendor() + "\nVersion: " + state.getVersion());
 		var newResource = document.createElement("div");
 		newResource.setAttribute("class", "resource");
 		newResource.setAttribute("id", id);
-		newResource.setAttribute("onMouseOver", "seleccionarResource('" + id + "')");
-		newResource.setAttribute("onMouseOut", "deseleccionarResource('" + id + "')");
-		newResource.setAttribute("onClick", "mostrarInfoResource('" + id + "')");
-		newResource.innerHTML = "<b>Resource</b><br/>Vendor: " + state.getVendor();
+		newResource.setAttribute("onMouseOver", "selectResource('" + id + "')");
+		newResource.setAttribute("onMouseOut", "deselectResource('" + id + "')");
+		newResource.setAttribute("onClick", "showResourceInfo('" + id + "')");
+		newResource.innerHTML = "<table><tr><td class='title'>" + state.getName() + "</td><td class='image'></tr><tr><center><img class='resource_img' src='" + state.getUriImage() + "' alt='Click para m&aacute;s informaci&oacute;n'/></center></td></tr></table>";
 		var parentHTML = document.getElementById("resources");
 		parentHTML.insertBefore(newResource, parentHTML.firstChild);
 	}

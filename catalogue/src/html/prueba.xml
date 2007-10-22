@@ -2,56 +2,56 @@
 <resources>
 	<resource>
 		<vendor>Vendor1</vendor>
-		<name>Name1</name>
+		<name>Pizarra</name>
 		<version>Version1</version>
 		<description>Description1</description>
-		<uriImage>UriImage1</uriImage>
+		<uriImage>images/pizarra_pequea.jpg</uriImage>
 		<uriWiki>UriWiki1</uriWiki>
 		<uriTemplate>UriTemplate1</uriTemplate>
 	</resource>
 	<resource>
 		<vendor>Vendor2</vendor>
-		<name>Name2</name>
+		<name>Buzon</name>
 		<version>Version2</version>
 		<description>Description2</description>
-		<uriImage>UriImage2</uriImage>
+		<uriImage>images/buzon_pequeo.jpg</uriImage>
 		<uriWiki>UriWiki2</uriWiki>
 		<uriTemplate>UriTemplate2</uriTemplate>
 	</resource>
 	<resource>
 		<vendor>Vendor3</vendor>
-		<name>Name3</name>
+		<name>Localizador</name>
 		<version>Version3</version>
 		<description>Description3</description>
-		<uriImage>UriImage3</uriImage>
+		<uriImage>images/localizador_pequea.jpg</uriImage>
 		<uriWiki>UriWiki3</uriWiki>
 		<uriTemplate>UriTemplate3</uriTemplate>
 	</resource>
 	<resource>
-		<vendor>Vendor1</vendor>
-		<name>Name1</name>
-		<version>Version1</version>
-		<description>Description1</description>
-		<uriImage>UriImage1</uriImage>
-		<uriWiki>UriWiki1</uriWiki>
-		<uriTemplate>UriTemplate1</uriTemplate>
+		<vendor>Vendor4</vendor>
+		<name>Modalidades</name>
+		<version>Version4</version>
+		<description>Description4</description>
+		<uriImage>images/modalidades_pequea.jpg</uriImage>
+		<uriWiki>UriWiki4</uriWiki>
+		<uriTemplate>UriTemplate4</uriTemplate>
 	</resource>
 	<resource>
-		<vendor>Vendor2</vendor>
-		<name>Name2</name>
-		<version>Version2</version>
-		<description>Description2</description>
-		<uriImage>UriImage2</uriImage>
-		<uriWiki>UriWiki2</uriWiki>
-		<uriTemplate>UriTemplate2</uriTemplate>
+		<vendor>Vendor5</vendor>
+		<name>Selector</name>
+		<version>Version5</version>
+		<description>Description5</description>
+		<uriImage>images/selector_queries_pequeo.jpg</uriImage>
+		<uriWiki>UriWiki5</uriWiki>
+		<uriTemplate>UriTemplate5</uriTemplate>
 	</resource>
 	<resource>
-		<vendor>Vendor3</vendor>
-		<name>Name3</name>
-		<version>Version3</version>
-		<description>Description3</description>
-		<uriImage>UriImage3</uriImage>
-		<uriWiki>UriWiki3</uriWiki>
-		<uriTemplate>UriTemplate3</uriTemplate>
+		<vendor>Vendor6</vendor>
+		<name>Visor Datos</name>
+		<version>Version6</version>
+		<description>Description6</description>
+		<uriImage>images/visordatostarea_pequeo.jpg</uriImage>
+		<uriWiki>UriWiki6</uriWiki>
+		<uriTemplate>UriTemplate6</uriTemplate>
 	</resource>
 </resources>

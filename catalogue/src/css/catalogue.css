@@ -40,13 +40,30 @@
 	padding:5px;
 	display:inline;
 	float:left;
-	width:190px;
-	height:150px;
+	width:180px;
+	height:130px;
 	margin:5px;
 	background-color:#ccddff;
 }
 
+.resource td
+{
+	text-align:center;
+}
+
+.resource  td.title
+{
+	font-weight:bold;
+	font-style:italic;
+}
+
+img.resource_img
+{
+	height:70%;
+	width:90%;
+}
+
 .info_resource *
 {
-	display:inline;
+	display:block;
 }
