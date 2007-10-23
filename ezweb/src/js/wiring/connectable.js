@@ -7,7 +7,7 @@ function Connectable(id,name,source){
       // Private attributes
       this.id = id;
       this.type = null;
-      this.value = name;
+      this.value = null;
       this.name = name;
    }else{
       this.id = source.id;
@@ -46,8 +46,12 @@ Connectable.prototype.getName = function(){
    return this.name;
 }
 
-Connectable.prototype.clear = function(value){
-   null; // It will be overriden in the other classes
+Connectable.prototype.clear = function(){ //this method will be overriden in each class
+   null; // it does not have any connection to clear
+}
+
+Connectable.prototype.serialize = function(){ //this method will be overriden in each class
+   return "{\"id\":\""+this.id+"\",\"type\":\""+this.type+"\",\"value\":\""+this.value+"\",\"name\":\""+this.name+"\"}";
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -156,6 +160,14 @@ In.prototype.setValue = function(value){
    return changes + "]}"
 }
 
+In.prototype.clear = function(){
+   for (i in this.outputHash){
+      if (this.outputHash[i] instanceof InOut){
+         this.outputHash[i].removeInput(this);
+      }
+   }
+}
+
 In.prototype.serialize = function(){
    return "{\"aspect\":\"EVENT\",\"id\":\""+this.id+"\",\"type\":\""+this.type+"\",\"value\":\""+this.value+"\",\"name\":\""+this.name+"\"}";
 }
@@ -174,7 +186,7 @@ InOut.prototype = new Connectable();
 
 InOut.prototype.setTypeForward = function(type){
    this.type = type;
-   for (i=1;i<=this.outputCounter;i++){
+   for (var i=0;i<this.outputCounter;i++){
       if (this.outputList[i] instanceof InOut){
          this.outputList[i].setTypeForward(type);
       }
@@ -184,7 +196,7 @@ InOut.prototype.setTypeForward = function(type){
 
 InOut.prototype.setTypeBack = function(type){
    this.type = type;
-   for (i=1;i<=this.inputCounter;i++){
+   for (var i=0;i<this.inputCounter;i++){
       if (this.inputList[i] instanceof InOut){
          this.inputList[i].setTypeBack(type);
       }
@@ -194,9 +206,9 @@ InOut.prototype.setTypeBack = function(type){
 InOut.prototype.addOutput = function(output){
    if (!(output instanceof In)){
       if (output.getId() != this.id || output.getName() != this.name){ // for avoiding loops with itself
-         var i = 1;
+         var i = 0;
          var located = 0;
-         while (i<=this.outputCounter && located == 0){
+         while (i<this.outputCounter && located == 0){
             if (this.outputList[i].getId() == output.getId() && this.outputList[i].getName() == output.getName()){
                located = 1; // warning: the output is already connected
             }
@@ -204,22 +216,19 @@ InOut.prototype.addOutput = function(output){
          }
          if (located != 1){
             if (this.type == output.getType()){ // the checking of the types may be changed when the filters were included
-               this.outputCounter++;//alert("[normal]En el canal "+this.name+" inserto la salida "+output.getName()+" en la posicion "+this.outputCounter)
-               this.outputList[this.outputCounter]=output;
+               this.outputList[this.outputCounter++]=output;
                output.setValue(this.value);
                return 0;
             } else if (output.getType() == null){
                output.setValue(this.value);
-               this.outputCounter++;//alert("[salida null]En el canal "+this.name+" inserto la salida "+output.getName()+" en la posicion "+this.outputCounter)
-               this.outputList[this.outputCounter]=output;
+               this.outputList[this.outputCounter++]=output;
                if (output instanceof InOut){
                   output.setTypeForward(this.type);
                }
                return 0;
             } else if (this.type == null){ // in the final version this case should not happen
                this.setTypeBack(output.getType());
-               this.outputCounter++;//alert("[entrada null]En el canal "+this.name+" inserto la salida "+output.getName()+" en la posicion "+this.outputCounter)
-               this.outputList[this.outputCounter]=output;
+               this.outputList[this.outputCounter++]=output;
                return 0;
             } else {
                return -2; // error: the types are incompatible
@@ -237,17 +246,20 @@ InOut.prototype.addOutput = function(output){
 
 InOut.prototype.removeOutput = function(output){
    if (!(output instanceof In)){
-      var i = 1;
-      var located = 0;
-      while (i<=this.outputCounter && located == 0){
+      var i = 0;
+      var located = false;
+	  var position = 0;
+      while (i<this.outputCounter && !located){
          if (this.outputList[i].getId() == output.getId() && this.outputList[i].getName() == output.getName()){
-            located = i; // warning: the output is already connected
+            located = true; // warning: the output is already connected
+            position = i;
          }
          i++;
       }
-      if (located != 0){
-         this.outputList.splice(located,1);
-         if (--this.outputCounter == 0 && this.inputCounter == 0) {
+      if (located){
+         this.outputList.splice(position,1);
+         this.outputCounter--;
+         if (this.outputCounter == 0 && this.inputCounter == 0) {
             this.type = null;
             this.value = null;
          }
@@ -263,16 +275,16 @@ InOut.prototype.removeOutput = function(output){
 InOut.prototype.addInput = function(input){
    if (!(input instanceof Out)){
       if (input.getId() != this.id || input.getName() != this.name){ // for avoiding loops with itself
-         var i = 1;
+         var i = 0;
          var located = 0;
-         while (i<=this.inputCounter && located == 0){
+         while (i<this.inputCounter && located == 0){
             if (this.inputList[i].getId() == input.getId() && this.inputList[i].getName() == input.getName()){
                located = 1; // warning: the input is already connected
             }
             i++;
          }
          if (located != 1){
-            this.inputList[++this.inputCounter]=input;
+            this.inputList[this.inputCounter++]=input;
             return 0;
          } else {
             return 1; // warning: the input is already connected
@@ -287,17 +299,20 @@ InOut.prototype.addInput = function(input){
 
 InOut.prototype.removeInput = function(input){
    if (!(input instanceof Out)){
-      var i = 1;
-      var located = 0;
-      while (i<=this.inputCounter && located == 0){
+      var i = 0;
+      var located = false;
+	  var position = 0;
+      while (i<this.inputCounter && !located){
          if (this.inputList[i].getId() == input.getId() && this.inputList[i].getName() == input.getName()){
-            located = i; // warning: the input is already connected
+            located = true; // warning: the input is already connected
+            position = i;
          }
          i++;
       }
-      if (located != 0){
-         this.inputList.splice(located,1);
-         if (this.outputCounter == 0 && --this.inputCounter == 0) {
+      if (located){
+         this.inputList.splice(position,1);
+         this.inputCounter--;
+         if (this.outputCounter == 0 && this.inputCounter == 0) {
             this.type = null;
             this.value = null;
          }
@@ -311,21 +326,26 @@ InOut.prototype.removeInput = function(input){
 }
 
 InOut.prototype.setValue = function(value){
-   this.value = value;//alert("entro en :"+this.name)
-   //for (i=1;i<=this.outputCounter;i++){
-   var i =1;
-   while(i<=this.outputList.length){ // this is temporal, somehow a for loop does not work
+   this.value = value;
+   for (var i=0;i<=this.outputCounter;i++){
+   //var i =1;
+   //while(i<=this.outputList.length){ // this is temporal, somehow a for loop does not work
       if (this.outputList[i] instanceof Connectable){
          this.outputList[i].setValue(value);
       }
-      i++;
+      //i++;
    }
 }
 
 InOut.prototype.clear = function(){
-   for (i=1;i<=this.inputCounter;i++){
+   for (var i=0;i<this.inputCounter;i++){
       if (this.inputList[i] instanceof Connectable){
          this.inputList[i].removeOutput(this);
+      }
+   }
+   for (var i=0;i<this.outputCounter;i++){
+      if (this.outputList[i] instanceof Connectable){
+         this.outputList[i].removeInput(this);
       }
    }
 }
@@ -334,7 +354,7 @@ InOut.prototype.connections = function(){
    var result = new Object();
    result["input"] = [];
    result["output"] = [];
-   for (i=1;i<=this.inputCounter;i++){
+   for (var i=0;i<this.inputCounter;i++){
       if (this.inputList[i] instanceof Connectable){
          var connection = new Object();
          connection["id"] = this.inputList[i].getId();
@@ -342,7 +362,7 @@ InOut.prototype.connections = function(){
          result["input"].push(connection);
       }
    }
-   for (i=1;i<=this.outputCounter;i++){
+   for (var i=0;i<this.outputCounter;i++){
       if (this.outputList[i] instanceof Connectable){
          var connection = new Object();
          connection["id"] = this.outputList[i].getId();
@@ -356,17 +376,17 @@ InOut.prototype.connections = function(){
 InOut.prototype.serialize = function(){
    var result = "{\"id\":\""+this.id+"\",\"type\":\""+this.type+"\",\"value\":\""+this.value+"\",\"name\":\""+this.name+"\",\"inputList\":[";
    if (this.inputCounter != 0){
-      for (i=1;i<=this.inputCounter-1;i++){
+      for (var i=0;i<(this.inputCounter-1);i++){
          result+="{\"id\":\""+this.inputList[i].getId()+"\",\"name\":\""+this.inputList[i].getName()+"\"},";
       }
-      result+="{\"id\":\""+this.inputList[this.inputCounter].getId()+"\",\"name\":\""+this.inputList[this.inputCounter].getName()+"\"}";
+      result+="{\"id\":\""+this.inputList[this.inputCounter-1].getId()+"\",\"name\":\""+this.inputList[this.inputCounter-1].getName()+"\"}";
    }
    result+="],\"outputList\":[";
    if (this.outputList.length != 0){
-      for (i=1;i<=(this.outputCounter-1);i++){
+      for (var i=0;i<(this.outputCounter-1);i++){
          result+="{\"id\":\""+this.outputList[i].getId()+"\",\"name\":\""+this.outputList[i].getName()+"\"},";
       }
-      result+="{\"id\":\""+this.outputList[this.outputCounter].getId()+"\",\"name\":\""+this.outputList[this.outputCounter].getName()+"\"}";
+      result+="{\"id\":\""+this.outputList[this.outputCounter-1].getId()+"\",\"name\":\""+this.outputList[this.outputCounter-1].getName()+"\"}";
    }
    result+="]}";
    return result;
