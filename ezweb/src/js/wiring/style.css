@@ -109,6 +109,24 @@ input#actualiza {
 	left: -17%;
 }
 
+input#addChannel {
+	position: relative;
+	top: 80px;
+	left: -25%;
+	
+}
+input#deleteChannel {
+	position: relative;
+	top: 80px;
+	left: -25%;
+}
+
+input#actualiza {
+	position: relative;
+	top: 150px;
+	left: 45%;
+}
+
 
 .imagen {
 	position: relative;

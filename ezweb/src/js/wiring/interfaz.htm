@@ -190,72 +190,10 @@
 				   value= "renewInterface" 
 				   onclick = "renewInterface()">
 		<br>	
-			
-			<input type=button 
-				   value= "crear_canal" 
-				   onclick = "anadirCanal()">
-				   
-			<input type=button 
-				   value= "borrar_canal" 
-				   onclick = "borrarCanal($('selectCanal').value)">
-			<script>
-				function nuevoGadget(){
-					var event = new Hash({name:"var1", aspect:"EVENT"}) 
-					var slot = new Hash({name:"var2", aspect:"SLOT"})
-					var slot2 = new Hash({name:"var3", aspect:"SLOT"})
-					var slot3 = new Hash({name:"var4", aspect:"SLOT"})
-					var conect = new Array()
-					conect["events"]=[];
-					conect["slots"]=[];
-					conect["events"].push(event);
-					conect["slots"].push(slot);
-					conect["slots"].push(slot2);
-					conect["slots"].push(slot3);
-					var x = prompt("Gadget name:");
-					w.addInstance(x, conect);
-				}
-			</script>
-			<input type=button 
-				   value= "crear_instancia" 
-				   onclick = "nuevoGadget()">
-		<br>
-
+		
 		<br>
 		<br>
-	<!--		<input type =
-			<input id = "input1" type = text value = "id canal input...">a
-			<input id = "channel1" type = text value = "id canal...">
-			<input type = button 
-				   value= "conecta canal a otro" 
-				   onclick = "w.addChannelInput($F($('input1')), $F($('channel1')))">
-		<br>	
-		<br>
-			<input id = "input2"  type = text value = "id canal...">
-			<input id = "gadget2" type = text value = "id gadget...">
-			<input id = "event2"  type = text value = "name event...">
-			<input type = button 
-				   value = "conecta input a canal" 
-				   onclick = "w.addChannelInput($F($('gadget2')),$F($('event2')), $F($('input2')))">
-
-		<br>
-		<br>
-			<input id = "output3" type = text value = "id canal output...">a
-			<input id = "channel3" type = text value = "id canal...">
-			<input type = button 
-				   value= "conecta canal a otro" 
-				   onclick = "w.addChannelOutput($F($('output3')), $F($('channel3')))">
-		<br>
-		<br>
-			<input id = "input4"  type = text value = "id canal...">
-			<input id = "gadget4" type = text value = "id gadget...">
-			<input id = "slot4"  type = text value = "name slot...">
-			<input type = button 
-				   value= "conecta output a canal" 
-				   onclick = "w.addChannelOutput($F($('gadget4')),$F($('slot4')), $F($('input4')))">
-		<br>
-		<br>
-		<br>
--->		<br>
+			<br>
 		<br>
 		<br>
 		<br>
@@ -279,7 +217,13 @@
 		
 				
 				<div id = "view">
-					<input id = "valor" type = "text" value = "">			
+					<input id = "valor" type = "text" value = "">
+					<input id = "addChannel" type=button
+					   value= "crear_canal" 
+					   onclick = "anadirCanal()">  
+					<input id = "deleteChannel" type=button 
+					   value= "deleteChannel" 
+					   onclick = "borrarCanal($('selectCanal').value)">
 				</div>		
 				<div id = "tab_one">
 					<table class = "header">
@@ -307,6 +251,9 @@
 			</fieldset>
 
 			<fieldset id = "two">
+				<div>
+				<input id = "actualiza" type = "button" value = "Actualizar">	
+				</div>
 				<div id = "selector">
 					<em>Seleccione un item:</em>
 					<select id = "itemizer"  onChange = "renewItem($F($('itemizer')))">
@@ -341,9 +288,9 @@
 				        </table>
 				      </div>
 				</div>
-	
-			</fieldset>
-			<input id = "actualiza" type = "button" value = "Actualizar">
+				
+				</fieldset>
+			
 		</div>
 		<div class = "right">
 			
