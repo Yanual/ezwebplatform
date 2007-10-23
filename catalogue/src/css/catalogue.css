@@ -1,9 +1,9 @@
-.body
+.main
 {
 	width:100%;
 }
 
-.body *
+.main *
 {
 	display:block;
 }

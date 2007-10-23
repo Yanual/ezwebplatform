@@ -16,9 +16,42 @@
 		</title>
 	</head>
 	<body onload="CatalogueFactory.getInstance().loadCatalogue('prueba.xml');">
-		<div class="body">
-			<div class="menu">
-				Menu
+		<div id="main" class="main">
+			<div id="menu" class="menu">
+				<div id="items" class="items">
+					<div id="item1" class="item">
+						<div id="title_item1" class="title">
+							<a href="javascript:UIUtils.toggle('options_item1');">Opciones1</a>
+						</div>
+						<div id="options_item1" class="options" style="display:none;">
+							<div class="option">
+								<a href="www.google.es">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Opcion1</a>
+							</div>
+							<div class="option">
+								<a href="www.google.es">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Opcion2</a>
+							</div>
+							<div class="option">
+								<a href="www.google.es">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Opcion3</a>
+							</div>
+						</div>
+					</div>
+					<div id="item2" class="item">
+						<div id="title_item2" class="title">
+							<a href="javascript:UIUtils.toggle('options_item2');">Opciones2</a>
+						</div>
+						<div id="options_item2" class="options" style="display:none;">
+							<div class="option">
+								<a href="www.google.es">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Opcion1</a>
+							</div>
+							<div class="option">
+								<a href="www.google.es">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Opcion2</a>
+							</div>
+							<div class="option">
+								<a href="www.google.es">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Opcion3</a>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 			<div id="resources" class="resources">
 			</div>
