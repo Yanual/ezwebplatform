@@ -14,15 +14,6 @@
 	<body>
 		<div class = "left">
 			<script>
-				var event = new Hash({name:"var1", aspect:"EVENT"}) 
-				var slot = new Hash({name:"var2", aspect:"SLOT"})
-				var slot2 = new Hash({name:"var3", aspect:"SLOT"})
-				
-				var conect = new Array()
-				conect.push(event)
-				conect.push(slot)
-				conect.push(slot2)
-
 				var w = WiringFactory.getInstance();
 			
 				function addChannelInterface(name){
@@ -30,7 +21,6 @@
 						var itemize =  $("canales");
 					
 						var element = document.createElement("option");
-					//	element.setAttribute("id", name)
 						element.setAttribute("class", name)
 						var text = document.createTextNode(name);
 						element.appendChild(text);
@@ -38,7 +28,6 @@
 	
 						var element = document.createElement("option");
 						var text = document.createTextNode(name);
-					//	element.setAttribute("id", name)
 						element.setAttribute("class", name)
 						element.appendChild(text);
 						itemize.appendChild(element);
@@ -70,19 +59,44 @@
 					}
 				}
 				
-				function addGadgetInterface(object){
+				function addGadgetInterface (object){
 					var selector = $("gadgets");
-					
 					var element = document.createElement("option");
 					element.setAttribute("id", object)
 					var text = document.createTextNode(object);
 					element.appendChild(text);
 					selector.appendChild(element);
-
-					//w.addInstance(object, conect);
 				}
 				
 		
+				function addChannelLine (table, operation, gadget, name){	
+				// This function is used to actualize the  tables of connections of any channel
+							
+						var line = document.createElement("tr");
+						var col1 = document.createElement("td");
+						var col2 = document.createElement("td");
+						var button = document.createElement("input");
+						var text;
+						if (gadget == "null"){
+							text = document.createTextNode(name);
+							button.setAttribute("onClick", operation + "('" + name + "', $F('selectCanal'));renewChannel($F('selectCanal'))");
+						}
+						else{
+							text = document.createTextNode(gadget + "::" + name);
+							button.setAttribute("onClick", operation + "('" + gadget+ "','" +name+"', $F('selectCanal'));renewChannel($F('selectCanal'))");
+						}
+						
+						button.setAttribute("type", "button");
+						button.setAttribute("value", "rm");
+						col1.appendChild(button);
+						col2.appendChild(text);
+						line.setAttribute("class", gadget)
+						line.setAttribute("id", name)
+						line.appendChild(col1);
+						line.appendChild(col2);
+						table.appendChild(line);
+				}
+				
 				////////////////////////
 				function renewChannel(channel){
 					var slots = $("slotsConnection")
@@ -98,24 +112,39 @@
 						$("valor").value = w.viewValue(channel);
 					
 						for (var i = 0; i < inputs.length; i++){
-							if (inputs[i].id == "null"){
-								events.innerHTML += "<tr><td></td><td>" + inputs[i].name + "</td></tr>"
-							}
-							else{
-								events.innerHTML += "<tr><td></td><td>" + inputs[i].id + "::" + inputs[i].name + "</td></tr>"
-							}
+							addChannelLine (events, "w.removeChannelInput", inputs[i].id, inputs[i].name)
 						}
 						for (var j = 0; j < outputs.length; j++){
-							if (outputs[j].id == "null"){
-								slots.innerHTML += "<tr><td></td><td>" + outputs[j].name + "</td></tr>"
-							}
-							else{
-								slots.innerHTML += "<tr><td></td><td>" + outputs[j].id + "::" + outputs[j].name + "</td></tr>"
-							}
+							addChannelLine (slots, "w.removeChannelOutput", outputs[j].id, outputs[j].name)
 						}
 					}
 				}
-
+				function addLine (table, operation, gadget, name){	
+					// This function is used to actualize the  tables of connections of any channel			
+						var line = document.createElement("tr");
+						var col1 = document.createElement("td");
+						var col2 = document.createElement("td");
+						var button = document.createElement("input");
+						var text;
+						if (gadget == "null"){
+							text = document.createTextNode(name);
+							button.setAttribute("onClick", operation + "('" + name + "', $F('selectCanal'));renewChannel($F('selectCanal'))");
+						}
+						else{
+							text = document.createTextNode(gadget + "::" + name);
+							button.setAttribute("onClick", operation + "('" + gadget+ "','" +name+"', $F('selectCanal'));renewChannel($F('selectCanal'))");
+						}
+						button.setAttribute("type", "button");
+						button.setAttribute("value", "add");
+						col1.appendChild(button);
+						col2.appendChild(text);
+						line.setAttribute("class", gadget)
+						line.setAttribute("id", name)
+						line.appendChild(col1);
+						line.appendChild(col2);
+						table.appendChild(line);
+				}
+				
 				function renewItem(object){
 					var slots = $("slots")
 					var events = $("events")
@@ -126,21 +155,19 @@
 					
 					if (object != ""){
 						var connections = w.gadgetConnections(object);
-	
-						
 						if (connections){
 							for (var i = 0; i < connections.length; i++){
 								if (connections[i].aspect == "SLOT"){
-									slots.innerHTML += "<tr><td></td><td>" + connections[i].name + "</td></tr>"
+									addLine(slots,  "w.addChannelOutput", object, connections[i].name);
 								}
 								else{
-									events.innerHTML += "<tr><td></td><td>" + connections[i].name + "</td></tr>"
+									addLine(events,  "w.addChannelInput", object, connections[i].name);
 								}
 							}
 						}
 						else{
-							slots.innerHTML += "<tr><td></td><td> slot </td></tr>"
-							events.innerHTML += "<tr><td></td><td> event </td></tr>"		
+							addLine(events,  "w.addChannelInput", "null", object);
+							addLine(slots,  "w.addChannelOutput", "null", object);
 						}
 					}
 				}
@@ -195,6 +222,7 @@
 
 		<br>
 		<br>
+	<!--		<input type =
 			<input id = "input1" type = text value = "id canal input...">a
 			<input id = "channel1" type = text value = "id canal...">
 			<input type = button 
@@ -227,37 +255,7 @@
 		<br>
 		<br>
 		<br>
-		<br>
-			<input id = "input5" type = text value = "id canal input...">
-			<input id = "channel5" type = text value = "id canal...">
-			<input type = button 
-				   value= "Desconectar canales" 
-				   onclick = "w.removeChannelInput($F($('input5')), $F($('channel5')))">
-		<br>	
-		<br>
-			<input id = "input6"  type = text value = "id canal...">
-			<input id = "gadget6" type = text value = "id gadget...">
-			<input id = "event6"  type = text value = "name event...">
-			<input type = button 
-				   value = "Desconecta input a canal" 
-				   onclick = "w.removeChannelInput($F($('gadget6')),$F($('event6')), $F($('input6')))">
-
-		<br>
-		<br>
-			<input id = "output7" type = text value = "id canal output...">
-			<input id = "channel7" type = text value = "id canal...">
-			<input type = button 
-				   value= "conecta canal a otro" 
-				   onclick = "w.removeChannelOutput($F($('output7')), $F($('channel7')))">
-		<br>
-		<br>
-			<input id = "input8"  type = text value = "id canal...">
-			<input id = "gadget8" type = text value = "id gadget...">
-			<input id = "slot8"  type = text value = "name slot...">
-			<input type = button 
-				   value= "conecta output a canal" 
-				   onclick = "w.removeChannelOutput($F($('gadget8')),$F($('slot8')), $F($('input8')))">
-		<br>
+-->		<br>
 		<br>
 		<br>
 		<br>
@@ -289,18 +287,7 @@
 					</table>
 				    <div class = "contents">
         				<table class = "bodier" id = "eventsConnection">
-				          <tr>
-				            <td></td>
-				            <td>Gadget1::event1</td>
-				          </tr>
-				          <tr>
-				            <td><img  class = "imagen" src = "./cheacker.gif"></td>
-				            <td>canal2</td>
-				          </tr>
-				          <tr>
-				            <td></td>
-				            <td>Gadget3::event4</td>
-				          </tr>
+				          
 			
 				        </table>
 				      </div>
@@ -311,10 +298,7 @@
 					</table>
 				    <div class = "contents">
         				<table class = "bodier" id = "slotsConnection">
-						  <tr>
-				            <td></td>
-				            <td>Gadget1::slot1</td>
-				          </tr>
+						  
 				    
 				        </table>
 				      </div>
@@ -341,18 +325,8 @@
 					</table>
 				    <div class = "contents">
         				<table class = "bodier" id = "events">
-				          <tr>
-				          	<td><img  class = "imagen" src = "./cheacker.gif"></td>
-				            <td>event1</td>
-				          </tr>
-				          <tr>
-				          	<td></td>
-				            <td>event2</td>
-					      </tr>
-				          <tr>
-				          	<td></td>
-				            <td>event3</td>
-				          </tr>
+				          
+						  
 				        </table>
 				      </div>
 				</div>
@@ -362,10 +336,7 @@
 					</table>
 				    <div class = "contents">
         				<table class = "bodier" id = "slots">
-				          <tr>
-				          	<td></td>
-				            <td>slot1</td>
-				          </tr>
+				          
 				    
 				        </table>
 				      </div>

@@ -89,7 +89,7 @@ Out.prototype.setValue = function(value){
    this.value=value;
  //  var varManager = VarManagerFactory.getInstance();
  //  varManager.writeSlot(this.id,this.name,this.value);
- alert("Valor en " + this.name + " es " + this.value)
+// alert("Valor en " + this.name + " es " + this.value)
 }
 
 Out.prototype.clear = function(){

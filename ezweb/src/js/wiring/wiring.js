@@ -231,6 +231,7 @@ var WiringFactory = function () {
 			if (channel != undefined){
 				// The selected channel exists
 				channel.ref.clear();
+				
 				inOutList.remove(channelName);
 				alert("Channel deleted")
 				return 0;
