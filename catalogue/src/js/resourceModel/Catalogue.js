@@ -24,6 +24,9 @@ var CatalogueFactory  = function () {
 			resources["resource_" + resourcesLength] = new Resource("resource_" + resourcesLength, resourceXML_, urlTemplate_); 
 			resourcesLength++;
 		}
+		this.addResourceToShowCase = function(resourceId_) {
+			alert(resourceId_);
+		}
 		
 		this.loadCatalogue = function(urlCatalogue_) {
 		

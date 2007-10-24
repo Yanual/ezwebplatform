@@ -1,23 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<html>
+<?xml version="1.0">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
+		<title>Cat&aacute;logo de Gadgets - EzWeb</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<link rel="stylesheet" type="text/css" href="../css/catalogue.css" />
 		<script language="JavaScript" src="../js/lib/prototype.js"></script>
 		<script language="JavaScript" src="../js/persistenceEngine/PersistenceEngine.js"></script>
 		<script language="JavaScript" src="../js/resourceModel/UIUtils.js"></script>
 		<script language="JavaScript" src="../js/resourceModel/Catalogue.js"></script>
 		<script language="JavaScript" src="../js/resourceModel/Resource.js"></script>
-		<script>
-			//var catalogue = CatalogueFactory.getInstance();
-			//catalogue.loadCatalogue("prueba.xml");
-		</script>
-		<title>
-			Cat&aacute;logo de Gadgets
-		</title>
 	</head>
 	<body onload="CatalogueFactory.getInstance().loadCatalogue('prueba.xml');">
+		<div id="head" class="head">
+			Buscador
+		</div>
 		<div id="main" class="main">
-			<div id="menu" class="menu">
+			<!--<div id="menu" class="menu">
 				<div id="items" class="items">
 					<div id="item1" class="item">
 						<div id="title_item1" class="title">
@@ -52,7 +51,7 @@
 						</div>
 					</div>
 				</div>
-			</div>
+			</div>-->
 			<div id="resources" class="resources">
 			</div>
 			<div id="info_resource" class="info_resource">

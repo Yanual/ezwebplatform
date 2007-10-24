@@ -20,9 +20,23 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 	this.paint = function(){
 		var newResource = document.createElement("a");
 		newResource.setAttribute("href", "javascript:UIUtils.showResourceInfo('" + id + "');");
-		newResource.innerHTML = "<div class='resource' id='" + id + "' onMouseOver='UIUtils.selectResource(\"" + id + "\");' onMouseOut='UIUtils.deselectResource(\"" + id + "\");'><table><tr><td class='title'>" + state.getName() + "</td></tr><tr><td class='image'><center><a href='javascript:UIUtils.showResourceInfo(\"" + id + "\");'><img class='resource_img' src='" + state.getUriImage() + "' alt='Click para m&aacute;s informaci&oacute;n'></img></a></center></td></tr></table></div>";
+		newResource.innerHTML = "<div class='resource' id='" + id + "' onMouseOver='UIUtils.selectResource(\"" + id + "\");' onMouseOut='UIUtils.deselectResource(\"" + id + "\");'><table><tr><td class='title'>" + state.getName() + "</td></tr><tr><td class='image'><center><a href='javascript:UIUtils.showResourceInfo(\"" + id + "\");'><img class='resource_img' src='" + state.getUriImage() + "' alt='Click para m&aacute;s informaci&oacute;n'></img></a></center></td></tr></table><button class='button' onclick='CatalogueFactory.getInstance().addResourceToShowCase(\"" + id + "\");'>A&ntilde;adir a la Paleta</button></div>";
 		var parentHTML = document.getElementById("resources");
 		parentHTML.insertBefore(newResource, parentHTML.firstChild);
+	}
+	
+	this.showInfo = function() {
+		var tableInfo = document.getElementById("table_info_resource");
+		tableInfo.innerHTML = "<fieldset><table>" +
+									"<tr><td>Nombre:</td><td>" + state.getName() + "</td></tr>" +
+									"<tr><td>Versi&oacute;n:</td><td>" + state.getVersion() + "</td></tr>" +
+									"<tr><td>Vendedor:</td><td>" + state.getVendor() + "</td></tr>" +
+									"<tr><td>Descripci&oacute;n:</td><td>" + state.getDescription() + "</td></tr>" +
+									"<tr><td><center><img src='" + state.getUriImage() + "' alt=''/></center></td></tr>" +
+									"<tr><td><a href='" + state.getUriWiki() + "' target='_blank'>Acceder a la Wiki</a></td></tr>" +
+									"<tr><td><a href='" + state.getUriTemplate() + "' target='_blank'>Acceder al Template</a></td></tr>" +
+									"<tr><td></td></tr>" +
+								"</table></fieldset><button class='button' onclick='CatalogueFactory.getInstance().addResourceToShowCase(UIUtils.getSelectedResource());'>A&ntilde;adir a la Paleta</button>";
 	}
 	
 	// *******************
