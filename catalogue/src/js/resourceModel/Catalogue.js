@@ -25,6 +25,7 @@ var CatalogueFactory  = function () {
 			resourcesLength++;
 		}
 		this.addResourceToShowCase = function(resourceId_) {
+			UIUtils.showResourceInfo(resourceId_);
 			alert(resourceId_);
 		}
 		

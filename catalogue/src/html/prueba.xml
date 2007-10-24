@@ -3,8 +3,8 @@
 	<resource>
 		<vendor>Vendor1</vendor>
 		<name>Pizarra</name>
-		<version>Version1</version>
-		<description>Description1</description>
+		<version>1.0</version>
+		<description>Esta es la descripcion del recurso 1 Esta es la descripcion del recurso 1 Esta es la descripcion del recurso 1 Esta es la descripcion del recurso 1 Esta es la descripcion del recurso 1</description>
 		<uriImage>images/pizarra_pequea.jpg</uriImage>
 		<uriWiki>UriWiki1</uriWiki>
 		<uriTemplate>UriTemplate1</uriTemplate>
@@ -12,7 +12,7 @@
 	<resource>
 		<vendor>Vendor2</vendor>
 		<name>Buzon</name>
-		<version>Version2</version>
+		<version>1.1</version>
 		<description>Description2</description>
 		<uriImage>images/buzon_pequeo.jpg</uriImage>
 		<uriWiki>UriWiki2</uriWiki>
@@ -21,7 +21,7 @@
 	<resource>
 		<vendor>Vendor3</vendor>
 		<name>Localizador</name>
-		<version>Version3</version>
+		<version>2.1</version>
 		<description>Description3</description>
 		<uriImage>images/localizador_pequea.jpg</uriImage>
 		<uriWiki>UriWiki3</uriWiki>
@@ -30,7 +30,7 @@
 	<resource>
 		<vendor>Vendor4</vendor>
 		<name>Modalidades</name>
-		<version>Version4</version>
+		<version>2.0</version>
 		<description>Description4</description>
 		<uriImage>images/modalidades_pequea.jpg</uriImage>
 		<uriWiki>UriWiki4</uriWiki>
@@ -39,7 +39,7 @@
 	<resource>
 		<vendor>Vendor5</vendor>
 		<name>Selector</name>
-		<version>Version5</version>
+		<version>1.0</version>
 		<description>Description5</description>
 		<uriImage>images/selector_queries_pequeo.jpg</uriImage>
 		<uriWiki>UriWiki5</uriWiki>
@@ -48,7 +48,7 @@
 	<resource>
 		<vendor>Vendor6</vendor>
 		<name>Visor Datos</name>
-		<version>Version6</version>
+		<version>1.0</version>
 		<description>Description6</description>
 		<uriImage>images/visordatostarea_pequeo.jpg</uriImage>
 		<uriWiki>UriWiki6</uriWiki>

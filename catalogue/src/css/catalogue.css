@@ -1,15 +1,15 @@
 body
 {
- margin:0px;
- padding:0px 20px 0px 20px;
- color:#000000;
- font-size:0.8125em;
- font-family: Verdana,Helvetica,sans-serif;
- font-size-adjust:none;
- font-style:normal;
- font-variant:normal;
- font-weight:normal;
- line-height:normal;
+	margin:0px;
+	padding:0px 20px 0px 20px;
+	color:#000000;
+	font-size:0.8125em;
+	font-family: Verdana,Helvetica,sans-serif;
+	font-size-adjust:none;
+	font-style:normal;
+	font-variant:normal;
+	font-weight:normal;
+	line-height:normal;
 }
 
 a
@@ -69,16 +69,6 @@ a:hover
 	padding-left:20px;
 }
 
-.info_resource
-{
-	width:32%;
-	height:500px;
-	padding:5px;
-	float:right;
-	margin:0px;
-	background-color:#ccddff;
-}
-
 .resources
 {
 	width:65%;
@@ -96,27 +86,114 @@ a:hover
 	height:160px;
 	margin:5px;
 	background-color:#ccddff;
-}
-
-.resource td
-{
 	text-align:center;
+	color:#000000;
 }
 
-.resource  td.title
+.resource  .title
 {
+	font-size:15px;
 	font-weight:bold;
 	font-style:italic;
 }
 
-img.resource_img
+.resource .image
 {
+	display:block;
+	margin-top:10px;
+	margin-bottom:10px;
+	text-align:center;
+	width:100%;
 	height:100px;
-	width:150px;
+}
+
+.resource .image img
+{
+	width:90%;
 	border:none;
 }
 
-.info_resource *
+.info_resource
+{
+	width:32%;
+	height:500px;
+	padding:5px;
+	float:right;
+	margin:0px;
+	background-color:#ccddff;
+	text-align:center;
+}
+
+.info_resource fieldset
+{
+	text-align:left;
+	margin-top:15px;
+	margin-bottom:15px;
+	padding-top:15px;
+	padding-bottom:15px;
+}
+
+.info_resource .title
+{
+	display:inline;
+	vertical-align:text-bottom;
+}
+
+.info_resource .name
+{
+	display:inline;
+	font-weight:bold;
+	font-size:25px;
+}
+
+.info_resource .version
+{
+	padding-left:5px;
+	display:inline;
+	font-size:12px;
+}
+
+.info_resource .vendor
 {
 	display:block;
+	font-style:italic;
+	font-size:18px;
+	width:100%;
+}
+
+.info_resource .description
+{
+	margin-top:15px;
+	display:block;
+	font-size:12px;
+	width:100%;
+}
+
+.info_resource .description textarea
+{
+	width:100%;
+	height:80px;
+}
+
+.info_resource .image
+{
+	display:block;
+	margin-top:15px;
+	margin-bottom:15px;
+	text-align:center;
+	width:100%;
+	height:100px;
+}
+
+.info_resource .image img
+{
+	height:100%;
+}
+
+.info_resource .link
+{
+	display:block;
+	color:#0000ff;
+	font-size:12px;
+	width:100%;
 }
