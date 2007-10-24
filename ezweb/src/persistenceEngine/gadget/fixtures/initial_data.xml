@@ -6,6 +6,16 @@
         <field type="CharField" name="type">S</field>
         <field type="CharField" name="aspect">EVEN</field>
         <field type="CharField" name="friend_code">ZIP</field>
+        <field type="TextField" name="default_value"></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">1</field>
+    </object>
+    <object pk="2" model="gadget.variabledef">
+        <field type="CharField" name="uri">http://vardef.com/var2</field>
+        <field type="CharField" name="name">variable2</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">PREF</field>
+        <field type="CharField" name="friend_code">car</field>
+        <field type="TextField" name="default_value">Este es el valor</field>
         <field to="gadget.template" name="template" rel="ManyToOneRel">1</field>
     </object>
     <object pk="1" model="gadget.gadget">
@@ -22,6 +32,21 @@
         <field to="auth.user" name="importer" rel="ManyToOneRel">1</field>
         <field type="DateTimeField" name="last_update">2007-10-16 17:26:15</field>
         <field to="gadget.tag" name="tags" rel="ManyToManyRel"><object pk="1"></object><object pk="2"></object></field>
+    </object>
+    <object pk="2" model="gadget.gadget">
+        <field type="CharField" name="uri">http://gadgets.com/gadget2</field>
+        <field type="CharField" name="vendor">vendor2</field>
+        <field type="CharField" name="name">Gadget2</field>
+        <field type="CharField" name="version">v1</field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">1</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">1</field>
+        <field type="CharField" name="author">author2</field>
+        <field type="CharField" name="web">http://google.es</field>
+        <field type="CharField" name="description">Un descripción</field>
+        <field type="BooleanField" name="shared">False</field>
+        <field to="auth.user" name="importer" rel="ManyToOneRel">1</field>
+        <field type="DateTimeField" name="last_update">2007-10-23 13:52:39</field>
+        <field to="gadget.tag" name="tags" rel="ManyToManyRel"><object pk="2"></object></field>
     </object>
     <object pk="1" model="gadget.usereventsinfo">
         <field type="CharField" name="uri">http://gadgets.com/gadget1/elements1</field>

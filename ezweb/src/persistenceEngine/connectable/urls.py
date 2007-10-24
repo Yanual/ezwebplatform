@@ -6,8 +6,7 @@ from django_restapi.resource import Resource
 urlpatterns = patterns('connectables.views',
 
     # Connectables
-    (r'^$', 'connectables.get_list'),
-    (r'^in/(?P<id>\d+)/$', 'connectables.get_in'),
-    (r'^inout/(?P<id>\d+)/$', 'connectables.resource_inout'),
+    (r'^(screen/(?P<screen_id>\d+)/)?$',
+        WiringEntry(permitted_methods=('GET', ))),
 
 )

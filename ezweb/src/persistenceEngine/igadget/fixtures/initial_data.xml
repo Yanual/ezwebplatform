@@ -6,6 +6,12 @@
         <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">1</field>
         <field type="TextField" name="value">Mi variable</field>
     </object>
+    <object pk="2" model="igadget.variable">
+        <field type="CharField" name="uri">http://vars.com/var2</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">2</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">2</field>
+        <field type="TextField" name="value">Terremoto</field>
+    </object>
     <object pk="1" model="igadget.screen">
         <field type="CharField" name="uri">http://screen.com/screen1</field>
         <field type="CharField" name="name">Pantalla 1</field>
@@ -14,6 +20,11 @@
     <object pk="1" model="igadget.igadget">
         <field type="CharField" name="uri">http://igadgets.com/igadget1</field>
         <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">1</field>
+        <field to="igadget.screen" name="screen" rel="ManyToOneRel">1</field>
+    </object>
+    <object pk="2" model="igadget.igadget">
+        <field type="CharField" name="uri">http://igadgets.com/igadget2</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">2</field>
         <field to="igadget.screen" name="screen" rel="ManyToOneRel">1</field>
     </object>
 </django-objects>

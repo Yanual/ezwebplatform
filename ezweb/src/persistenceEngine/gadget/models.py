@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.utils.translation import ugettext as _
 
 class Template(models.Model):
     uri = models.CharField(_('URI'), max_length=500)
@@ -34,6 +34,7 @@ class VariableDef(models.Model):
     )
     aspect = models.CharField(_('Aspect'), max_length=4, choices=ASPECTS)
     friend_code = models.CharField(_('Friend code'), max_length=30)
+    default_value = models.TextField(_('Value'))
     template = models.ForeignKey(Template)
 
     class Admin:

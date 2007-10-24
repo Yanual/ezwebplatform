@@ -23,23 +23,31 @@ from models import *
 
 
 class IGadgetCollection(Resource):
-    def read(self, request, user_id, screen=None):
-        user_authentication(user_id)
+    def read(self, request, user_id, screen_id=None):
+        user = user_authentication(user_id)
         data_list = []
-        if not screen:
-            igadget = get_list_or_404(IGadget, screen=1)
+        if not screen_id:
+            screens = get_list_or_404(Screen, user=user)
+            for screen in screens:
+                igadget = get_list_or_404(IGadget, screen=screen.id)
+                data = serializers.serialize('python', igadget, ensure_ascii=False)
+                for d in data:
+                    data_fields = _get_igadget_data(d)
+                    data_list.append(data_fields)
+                
         else:
-            igadget = get_list_or_404(IGadget, screen=screen)
-        data = serializers.serialize('python', igadget, ensure_ascii=False)
-        for d in data:
-            data_fields = _get_igadget_data(d)
-            data_list.append(data_fields)
+            screen = get_object_or_404(Screen, user=user, id=screen_id)
+            igadget = get_list_or_404(IGadget, screen=screen_id)
+            data = serializers.serialize('python', igadget, ensure_ascii=False)
+            for d in data:
+                data_fields = _get_igadget_data(d)
+                data_list.append(data_fields)
         return HttpResponse(json_encode(data_list), mimetype='application/json; charset=UTF-8')
 
 
 class IGadgetEntry(Resource):
-    def read(self, request, user_id, vendor, name, version, screen=None):
-        user_authentication(user_id)
+    def read(self, request, user_id, vendor, name, version, screen_id=None):
+        user = user_authentication(user_id)
         gadget = get_object_or_404(Gadget, vendor=vendor, name=name, version=version)
         if not screen:
             igadget = get_list_or_404(IGadget, gadget=gadget, screen=1)
@@ -54,6 +62,8 @@ def user_authentication(user_id):
     user = get_object_or_404(User, id=user_id)
     if not user.is_authenticated():
         raise Http404
+    else:
+        return user
 
 
 def queryset_to_json_list(queryset, fields=None):
