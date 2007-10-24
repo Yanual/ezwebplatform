@@ -37,7 +37,7 @@ UIUtils.toggle = function(elementId_) {
 	}
 	else
 	{
-		element.style.display = 'inherit';
+		element.style.display = 'block';
 	}
 }
 

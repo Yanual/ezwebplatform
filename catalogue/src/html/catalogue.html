@@ -12,23 +12,22 @@
 		<script language="JavaScript" src="../js/resourceModel/Resource.js"></script>
 	</head>
 	<body onload="CatalogueFactory.getInstance().loadCatalogue('prueba.xml');">
-		
 		<div id="main" class="main">
 			<div id="head" class="head">
 				<div id="search" class="search">
-					<div id="simple_search" class="simple_search" style="display:inherit;">
+					<div id="simple_search" class="simple_search">
 						<form onsubmit="return false;">
 							<label for="search_text">Busqueda simple:</label>
 							<input type="text" name="search_text" class="text" autocomplete="on"></input>
-							<button onclick="UIUtils.evaluarFormulario(this.form);">Buscar</button>
-							<a href="#" onclick="javascript:UIUtils.toggle('advanced_search');UIUtils.toggle('simple_search');">Mostrar b&uacute;squeda avanzada</a>
+							<button onclick="UIUtils.evaluarFormulario(this.form);">Buscar</button><br/>
+							<a href="#" onclick="javascript:UIUtils.toggle('simple_search');UIUtils.toggle('advanced_search');">Mostrar b&uacute;squeda avanzada</a>
 						</form>
 					</div>
 					<div id="advanced_search" class="advanced_search" style="display:none;">
 						<form onsubmit="return false;">
 							<label for="search_text">Busqueda avanzada:</label>
 							<input type="text" name="search_text" class="text" autocomplete="on"></input>
-							<button onclick="UIUtils.evaluarFormulario(this.form);">Buscar</button>
+							<button onclick="UIUtils.evaluarFormulario(this.form);">Buscar</button><br/>
 							<a href="#" onclick="javascript:UIUtils.toggle('advanced_search');UIUtils.toggle('simple_search');">Mostrar b&uacute;squeda simple</a>
 						</form>
 					</div>
@@ -71,6 +70,10 @@
 				</div>
 			</div>-->
 			<div id="resources" class="resources"></div>
+			<div id="info_tags" class="info_tags" style="display:none;">
+				Informaci&oacute;n de los Tags <br/><br/>
+				<a href='#' onClick='javascript:UIUtils.toggle("info_tags");UIUtils.toggle("resources");'>Mostrar Recursos</a>
+			</div>
 			<div id="info_resource" class="info_resource"></div>
 		</div>
 	</body>

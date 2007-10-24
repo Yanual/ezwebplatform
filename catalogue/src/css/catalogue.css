@@ -43,7 +43,18 @@ a:hover
 .search
 {
 	text-align:center;
-	margin-top:15px;
+	margin-top:10px;
+}
+
+.search form *
+{
+	margin-left:0px;
+	margin-right:10px;
+}
+
+.search form a
+{
+	font-size:11px;
 }
 
 .menu
@@ -73,6 +84,14 @@ a:hover
 	border:1px solid #ffffff;
 	padding:2px;
 	padding-left:20px;
+}
+
+.info_tags
+{
+	width:65%;
+	height:100%;
+	float:left;
+	padding:0px;
 }
 
 .resources

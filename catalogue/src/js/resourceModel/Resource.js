@@ -37,6 +37,7 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 									"<div class='vendor'>" + state.getVendor() + "</div>" +
 									"<div class='description'>Descripci&oacute;n:<br/><div class='text'>" + state.getDescription() + "</div></div>" +
 									"<div class='image'><img src='" + state.getUriImage() + "' alt='" + state.getName()+ "&nbsp;" + state.getVersion() + "'/></div>" +
+									"<div class='link'><a href='#' onClick='javascript:UIUtils.toggle(\"resources\");UIUtils.toggle(\"info_tags\");'>Editar Tags</a></div>" +
 									"<div class='link'><a href='" + state.getUriWiki() + "' target='_blank'>Acceder a la Wiki</a></div>" +
 									"<div class='link'><a href='" + state.getUriTemplate() + "' target='_blank'>Acceder al Template</a></div>" +
 								"</div>" +
