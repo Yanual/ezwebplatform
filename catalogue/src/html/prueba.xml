@@ -2,9 +2,9 @@
 <resources>
 	<resource>
 		<vendor>Vendor1</vendor>
-		<name>Pizarra</name>
+		<name>Titulo largo de la Pizarra</name>
 		<version>1.0</version>
-		<description>Esta es la descripcion del recurso 1 Esta es la descripcion del recurso 1 Esta es la descripcion del recurso 1 Esta es la descripcion del recurso 1 Esta es la descripcion del recurso 1</description>
+		<description>Esta es la descripcion del recurso 1Esta es la descripcion del recurso 1Esta es la descripcion del recurso 1Esta es la descripcion del recurso 1Esta es la descripcion del recurso 1Esta es la descripcion del recurso 1Esta es la descripcion del recurso 1 Esta es la descripcion del recurso 1 Esta es la descripcion del recurso 1 Esta es la descripcion del recurso 1 Esta es la descripcion del recurso 1</description>
 		<uriImage>images/pizarra_pequea.jpg</uriImage>
 		<uriWiki>UriWiki1</uriWiki>
 		<uriTemplate>UriTemplate1</uriTemplate>

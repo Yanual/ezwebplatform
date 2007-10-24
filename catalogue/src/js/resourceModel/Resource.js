@@ -29,16 +29,17 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 	}
 	
 	this.showInfo = function() {
-		var tableInfo = document.getElementById("table_info_resource");
-		tableInfo.innerHTML = "<fieldset>" +
+		var tableInfo = document.getElementById("info_resource");
+		tableInfo.innerHTML = 	"<div class='title_fieldset'>Informaci&oacute;n del Recurso</div>" +
+								"<div class='fieldset'>" +
 									"<div class='title'><span class='name'>" + state.getName() + "</span>" +
-									"<span class='version'>versi&oacute;n&nbsp;" + state.getVersion() + "</span></div>" +
+									"<span class='version'>" + state.getVersion() + "</span></div>" +
 									"<div class='vendor'>" + state.getVendor() + "</div>" +
-									"<div class='description'>Descripci&oacute;n:<br/><textarea readonly='readonly'>" + state.getDescription() + "</textarea></div>" +
+									"<div class='description'>Descripci&oacute;n:<br/><div class='text'>" + state.getDescription() + "</div></div>" +
 									"<div class='image'><img src='" + state.getUriImage() + "' alt='" + state.getName()+ "&nbsp;" + state.getVersion() + "'/></div>" +
 									"<div class='link'><a href='" + state.getUriWiki() + "' target='_blank'>Acceder a la Wiki</a></div>" +
 									"<div class='link'><a href='" + state.getUriTemplate() + "' target='_blank'>Acceder al Template</a></div>" +
-								"</fieldset>" +
+								"</div>" +
 								"<button onclick='CatalogueFactory.getInstance().addResourceToShowCase(UIUtils.getSelectedResource());'>A&ntilde;adir a la Paleta</button>";
 	}
 	

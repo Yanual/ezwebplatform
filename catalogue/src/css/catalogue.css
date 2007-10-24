@@ -33,11 +33,17 @@ a:hover
 .head
 {
 	width:100%;
-	height:150px;
+	height:50px;
 	padding:5px;
 	margin:5px;
 	float:left;
 	background-color:#ccddff;
+}
+
+.search
+{
+	text-align:center;
+	margin-top:15px;
 }
 
 .menu
@@ -83,18 +89,19 @@ a:hover
 	display:inline;
 	float:left;
 	width:180px;
-	height:160px;
+	height:165px;
 	margin:5px;
 	background-color:#ccddff;
 	text-align:center;
 	color:#000000;
 }
 
-.resource  .title
+.resource .title
 {
+	overflow:hidden;
 	font-size:15px;
 	font-weight:bold;
-	font-style:italic;
+	height:20px;
 }
 
 .resource .image
@@ -124,13 +131,23 @@ a:hover
 	text-align:center;
 }
 
-.info_resource fieldset
+.info_resource .title_fieldset
 {
+	margin-top:15px;
+	font-size:15px;
+	font-weight:bold;
+}
+
+.info_resource .fieldset
+{
+	border:1px solid #bbbbbb;
 	text-align:left;
 	margin-top:15px;
 	margin-bottom:15px;
 	padding-top:15px;
 	padding-bottom:15px;
+	padding-left:5px;
+	padding-right:5px;
 }
 
 .info_resource .title
@@ -150,7 +167,8 @@ a:hover
 {
 	padding-left:5px;
 	display:inline;
-	font-size:12px;
+	font-weight:bold;
+	font-size:18px;
 }
 
 .info_resource .vendor
@@ -169,9 +187,15 @@ a:hover
 	width:100%;
 }
 
-.info_resource .description textarea
+.info_resource .description .text
 {
-	width:100%;
+	border:1px solid #bbbbbb;
+	margin-top:5px;
+	overflow:auto;
+	padding:5px;
+	font-size:12px;
+	background-color:#ffffff;
+	color:#555555;
 	height:80px;
 }
 

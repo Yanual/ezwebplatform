@@ -31,12 +31,17 @@ UIUtils.showResourceInfo = function(resourceId_) {
 	
 UIUtils.toggle = function(elementId_) {
 	var element = document.getElementById(elementId_);
-	if (element.style.display == 'block')
+	if (element.style.display != 'none')
 	{
 		element.style.display = 'none';
 	}
 	else
 	{
-		element.style.display = 'block';
+		element.style.display = 'inherit';
 	}
+}
+
+UIUtils.evaluarFormulario = function(form_)
+{
+	alert(form_.search_text.value);
 }
