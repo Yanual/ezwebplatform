@@ -232,16 +232,27 @@ a:hover
 	height:100%;
 }
 
+.info_resource .tags
+{
+	display:block;
+	margin-bottom:10px;
+}
+
 .info_resource .tags .my_tags
 {
 	border:1px solid #bbbbbb;
 	margin-top:5px;
-	margin-bottom:10px;
+	margin-bottom:5px;
 	overflow:auto;
 	padding:5px;
 	font-size:12px;
 	background-color:#ddeeff;
 	height:50px;
+}
+
+.info_resource .tags .buttons
+{
+	text-align:right;
 }
 
 .info_resource .tags .my_tags *

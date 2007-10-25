@@ -37,16 +37,20 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 									"<div class='vendor'>" + state.getVendor() + "</div>" +
 									"<div class='description'>Descripci&oacute;n:<br/><div class='text'>" + state.getDescription() + "</div></div>" +
 									"<div class='image'><img src='" + state.getUriImage() + "' alt='" + state.getName()+ "&nbsp;" + state.getVersion() + "'/></div>" +
-									"<div class='tags'>" +
-										"<div class='title'>Mis Tags:</div>" +
+									"<div id='add_tags_panel' class='tags' style='display:none;'>" +
+										"<div class='title'>Nuevas Etiquetas:</div>" +
 										"<div class='my_tags'>" +
 											"<div id='tag_1' class='tag' onmouseover='UIUtils.hidde(\"button_disable_tag_1\");UIUtils.show(\"button_enable_tag_1\");' onmouseout='UIUtils.hidde(\"button_enable_tag_1\");UIUtils.show(\"button_disable_tag_1\");'><a>Hola</a><div id='button_disable_tag_1'><a><img src='images/remove_disable.gif' alt=''></img></a></div><div id='button_enable_tag_1' style='display:none;'><a href='#' onclick='javascript:removeTag(\"Hola\");'><img src='images/remove_enable.gif' alt=''></img></a></div>,</div>" +
 											"<div id='tag_2' class='tag' onmouseover='UIUtils.hidde(\"button_disable_tag_2\");UIUtils.show(\"button_enable_tag_2\");' onmouseout='UIUtils.hidde(\"button_enable_tag_2\");UIUtils.show(\"button_disable_tag_2\");'><a>Adios</a><div id='button_disable_tag_2'><a><img src='images/remove_disable.gif' alt=''></img></a></div><div id='button_enable_tag_2' style='display:none;'><a href='#' onclick='javascript:removeTag(\"Adios\");'><img src='images/remove_enable.gif' alt=''></img></a></div>,</div>" +
 											"<div id='tag_3' class='tag' onmouseover='UIUtils.hidde(\"button_disable_tag_3\");UIUtils.show(\"button_enable_tag_3\");' onmouseout='UIUtils.hidde(\"button_enable_tag_3\");UIUtils.show(\"button_disable_tag_3\");'><a>Hello</a><div id='button_disable_tag_3'><a><img src='images/remove_disable.gif' alt=''></img></a></div><div id='button_enable_tag_3' style='display:none;'><a href='#' onclick='javascript:removeTag(\"Hello\");'><img src='images/remove_enable.gif' alt=''></img></a></div>,</div>" +
 											"<div id='new_tag' class='new_tag'><input type='text'/></div>" +
 										"</div>" +
+										"<div class='buttons'>" +
+											"<button onclick=''>Etiquetar</button>" +
+											"<button onClick='javascript:UIUtils.toggle(\"add_tags_panel\");UIUtils.toggle(\"add_tags_link\");'>Cancelar</button>" +
+										"</div>" +
 									"</div>" +
-									"<div class='link'><a href='#' onClick='javascript:UIUtils.toggle(\"resources\");UIUtils.toggle(\"info_tags\");'>Editar Tags</a></div>" +
+									"<div id='add_tags_link' class='link'><a href='#' onClick='javascript:UIUtils.toggle(\"add_tags_link\");UIUtils.toggle(\"add_tags_panel\");'>Etiquetar el recurso</a></div>" +
 									"<div class='link'><a href='" + state.getUriWiki() + "' target='_blank'>Acceder a la Wiki</a></div>" +
 									"<div class='link'><a href='" + state.getUriTemplate() + "' target='_blank'>Acceder al Template</a></div>" +
 								"</div>" +
