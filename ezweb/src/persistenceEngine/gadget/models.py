@@ -16,6 +16,16 @@ class Template(models.Model):
         return self.uri
 
 
+class VariableDefOption(models.Model):
+    option = models.CharField(_('Option'), max_length=30)
+    
+    class Admin:
+        pass
+    
+    def __unicode__(self):
+        return self.option
+
+
 class VariableDef(models.Model):
     uri = models.CharField(_('URI'), max_length=500)
     name = models.CharField(_('Name'), max_length=30)
@@ -33,8 +43,11 @@ class VariableDef(models.Model):
         ('PROP', _('Property')),
     )
     aspect = models.CharField(_('Aspect'), max_length=4, choices=ASPECTS)
+    label = models.CharField(_('Label'), max_length=50)
+    description = models.CharField(_('Description'), max_length=250)
     friend_code = models.CharField(_('Friend code'), max_length=30)
-    default_value = models.TextField(_('Value'))
+    default_value = models.TextField(_('Default value'), blank=True, null=True)
+    options = models.ManyToManyField(VariableDefOption, verbose_name=_('VariableDef Options'), blank=True, null=True)
     template = models.ForeignKey(Template)
 
     class Admin:
@@ -97,7 +110,7 @@ class Gadget(models.Model):
     tags = models.ManyToManyField(Tag, verbose_name=_('Tags'))
     
     shared = models.BooleanField(_('Shared'), default=False)
-    importer = models.ForeignKey(User, verbose_name=_('User'))
+    user = models.ForeignKey(User, verbose_name=_('User'))
     last_update = models.DateTimeField(_('Last update'))
 
     class Meta:

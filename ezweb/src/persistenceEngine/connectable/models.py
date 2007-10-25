@@ -4,12 +4,29 @@ from django.utils.translation import ugettext as _
 
 from igadget.models import Variable
 
+
+class InOut(models.Model):
+    uri = models.CharField(_('URI'), max_length=500, unique=True)
+    
+    name = models.CharField(_('Name'), max_length=30)
+    value = models.CharField(_('Value'), max_length=100)
+    friend_code = models.CharField(_('Friend code'), max_length=30, blank=True, null=True)
+    
+    user = models.ForeignKey(User, verbose_name=_('User'))
+        
+    class Admin:
+        pass
+
+    def __unicode__(self):
+        return self.uri + " " + self.name
+
      
 class In(models.Model):
     uri = models.CharField(_('URI'), max_length=500, unique=True)
     
     name = models.CharField(_('Name'), max_length=30)
-    variable = models.ForeignKey(Variable, verbose_name=_('Variable'))
+    variable = models.ForeignKey(Variable, verbose_name=_('Variable'))  
+    inout = models.ForeignKey(InOut, verbose_name=_('InOut'))
     
     class Meta:
         unique_together = ('name', 'variable')
@@ -25,6 +42,7 @@ class Out(models.Model):
     
     name = models.CharField(_('Name'), max_length=30)
     variable = models.ForeignKey(Variable, verbose_name=_('Variable'))
+    inout = models.ForeignKey(InOut, verbose_name=_('InOut'))
     
     class Meta:
         unique_together = ('name', 'variable')
@@ -34,25 +52,4 @@ class Out(models.Model):
 
     def __unicode__(self):
         return self.uri + " " + self.name
-    
-class InOut(models.Model):
-    uri = models.CharField(_('URI'), max_length=500, unique=True)
-    
-    name = models.CharField(_('Name'), max_length=30)
-    value = models.CharField(_('Value'), max_length=100)
-    friend_code = models.CharField(_('Friend code'), max_length=30)
-    
-    in_list = models.ManyToManyField(In, verbose_name=_('In list'))
-    out_list = models.ManyToManyField(Out, verbose_name=_('Out list'))
-    user = models.ForeignKey(User, verbose_name=_('User'))
-        
-    class Admin:
-        pass
 
-    def __unicode__(self):
-        return self.uri + " " + self.name
-            
-
-
-
-            

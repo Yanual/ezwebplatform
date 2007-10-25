@@ -1,21 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <django-objects version="1.0">
     <object pk="1" model="connectable.out">
-        <field type="CharField" name="uri">http://out.com/out1</field>
+        <field type="CharField" name="uri">http://outs.com/out1</field>
         <field type="CharField" name="name">out1</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">1</field>
+        <field to="connectable.inout" name="inout" rel="ManyToOneRel">1</field>
+    </object>
+    <object pk="2" model="connectable.out">
+        <field type="CharField" name="uri">http://outs.com/out2</field>
+        <field type="CharField" name="name">out2</field>
         <field to="igadget.variable" name="variable" rel="ManyToOneRel">2</field>
+        <field to="connectable.inout" name="inout" rel="ManyToOneRel">2</field>
+    </object>
+    <object pk="3" model="connectable.out">
+        <field type="CharField" name="uri">http://outs.com/out3</field>
+        <field type="CharField" name="name">out3</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">1</field>
+        <field to="connectable.inout" name="inout" rel="ManyToOneRel">3</field>
+    </object>
+    <object pk="4" model="connectable.out">
+        <field type="CharField" name="uri">http://outs.com/out4</field>
+        <field type="CharField" name="name">out4</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">4</field>
+        <field to="connectable.inout" name="inout" rel="ManyToOneRel">1</field>
+    </object>
+    <object pk="5" model="connectable.out">
+        <field type="CharField" name="uri">http://outs.com/out5</field>
+        <field type="CharField" name="name">out5</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">3</field>
+        <field to="connectable.inout" name="inout" rel="ManyToOneRel">2</field>
     </object>
     <object pk="1" model="connectable.inout">
-        <field type="CharField" name="uri">http://inout.com/inout1</field>
+        <field type="CharField" name="uri">http://inouts.com/inout1</field>
         <field type="CharField" name="name">inout1</field>
-        <field type="CharField" name="type">TYPE1</field>
-        <field type="CharField" name="value">el valor</field>
-        <field to="connectable.in" name="in_list" rel="ManyToManyRel"><object pk="1"></object></field>
-        <field to="connectable.out" name="out_list" rel="ManyToManyRel"><object pk="1"></object></field>
+        <field type="CharField" name="value">valor "entremedio"</field>
+        <field type="CharField" name="friend_code">car</field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
+    </object>
+    <object pk="2" model="connectable.inout">
+        <field type="CharField" name="uri">http://inouts.com/inout2</field>
+        <field type="CharField" name="name">inout2</field>
+        <field type="CharField" name="value">valor de intercambio</field>
+        <field type="CharField" name="friend_code">address</field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
+    </object>
+    <object pk="3" model="connectable.inout">
+        <field type="CharField" name="uri">http://inouts.com/inout3</field>
+        <field type="CharField" name="name">inout3</field>
+        <field type="CharField" name="value">null</field>
+        <field type="CharField" name="friend_code"></field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
     </object>
     <object pk="1" model="connectable.in">
         <field type="CharField" name="uri">http://ins.com/in1</field>
-        <field type="CharField" name="name">In 1</field>
+        <field type="CharField" name="name">in1</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">3</field>
+        <field to="connectable.inout" name="inout" rel="ManyToOneRel">1</field>
+    </object>
+    <object pk="2" model="connectable.in">
+        <field type="CharField" name="uri">http://ins.com/in2</field>
+        <field type="CharField" name="name">in2</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">2</field>
+        <field to="connectable.inout" name="inout" rel="ManyToOneRel">1</field>
+    </object>
+    <object pk="3" model="connectable.in">
+        <field type="CharField" name="uri">http://ins.com/in3</field>
+        <field type="CharField" name="name">in3</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">5</field>
+        <field to="connectable.inout" name="inout" rel="ManyToOneRel">1</field>
+    </object>
+    <object pk="4" model="connectable.in">
+        <field type="CharField" name="uri">http://ins.com/in4</field>
+        <field type="CharField" name="name">in4</field>
         <field to="igadget.variable" name="variable" rel="ManyToOneRel">1</field>
+        <field to="connectable.inout" name="inout" rel="ManyToOneRel">2</field>
+    </object>
+    <object pk="5" model="connectable.in">
+        <field type="CharField" name="uri">http://ins.com/in5</field>
+        <field type="CharField" name="name">in5</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">4</field>
+        <field to="connectable.inout" name="inout" rel="ManyToOneRel">3</field>
+    </object>
+    <object pk="6" model="connectable.in">
+        <field type="CharField" name="uri">http://ins.com/in6</field>
+        <field type="CharField" name="name">in6</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">5</field>
+        <field to="connectable.inout" name="inout" rel="ManyToOneRel">3</field>
     </object>
 </django-objects>

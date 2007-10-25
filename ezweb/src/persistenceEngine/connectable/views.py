@@ -23,21 +23,21 @@ from igadget.models import *
 from connectable.models import *
 
 
-class WiringEntry(Resource):
+class ConnectableEntry(Resource):
     def read(self, request, user_id, screen_id=None):
         user = user_authentication(user_id)
         wiring = {}
+        
         # IGadgets list
         igadget_data_list = []
         if not screen_id:
             screens = get_list_or_404(Screen, user=user)
             for screen in screens:
-                igadget = get_list_or_404(IGadget, screen=screen.id)
-                igadget_data = serializers.serialize('python', igadget, ensure_ascii=False)
+                igadgets = get_list_or_404(IGadget, screen=screen.id)
+                igadget_data = serializers.serialize('python', igadgets, ensure_ascii=False)
                 for d in igadget_data:
                     igadget_data_fields = _get_igadget_data(d)
                     igadget_data_list.append(igadget_data_fields)
-                
         else:
             screen = get_object_or_404(Screen, user=user, id=screen_id)
             igadget = get_list_or_404(IGadget, screen=screen_id)
@@ -46,7 +46,16 @@ class WiringEntry(Resource):
                 igadget_data_fields = _get_igadget_data(d)
                 igadget_data_list.append(igadget_data_fields)
         wiring['igadgets'] = igadget_data_list
+        
         # InOut list
+        inout_data_list = []
+        inouts = get_list_or_404(InOut, user=user.id)
+        inout_data = serializers.serialize('python', inouts, ensure_ascii=False)
+        for d in inout_data:
+            inout_data_fields = _get_inout_data(d)
+            inout_data_list.append(inout_data_fields)
+        wiring['inouts'] = inout_data_list
+        
         return HttpResponse(json_encode(wiring), mimetype='application/json; charset=UTF-8')
 
 
@@ -68,6 +77,23 @@ def queryset_to_json_object(queryset, fields=None):
     data = serializers.serialize('python', queryset, fields=fields, ensure_ascii=False) 
     data_object = data[0]['fields']
     return simplejson.dumps(data_object, ensure_ascii=False)
+
+
+def _get_inout_data(data):
+    data_ret = {}
+    data_fields = data['fields']
+    data_ret['uri'] = data_fields['uri']
+    data_ret['friend_code'] = data_fields['friend_code']
+    data_ret['value'] = data_fields['value']
+    data_ret['name'] = data_fields['name']
+    
+    data_ins = get_list_or_404(In.objects.all().values('uri', 'name'), inout=data['pk'])
+    data_ret['ins'] = [d for d in data_ins]
+    
+    data_outs = get_list_or_404(Out.objects.all().values('uri', 'name'), inout=data['pk'])
+    data_ret['outs'] = [d for d in data_outs]
+        
+    return data_ret
 
 
 def _get_igadget_data(data):

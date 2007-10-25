@@ -3,7 +3,7 @@ from django.conf.urls.defaults import *
 from django_restapi.model_resource import Collection
 from django_restapi.responder import *
 
-from persistenceEngine.gadget.views import *
+from gadget.views import *
 
 urlpatterns = patterns('gadget.views',
 

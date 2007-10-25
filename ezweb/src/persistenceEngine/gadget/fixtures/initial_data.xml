@@ -1,22 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <django-objects version="1.0">
     <object pk="1" model="gadget.variabledef">
-        <field type="CharField" name="uri">http://variabledefs.com/template1</field>
-        <field type="CharField" name="name">definition1</field>
+        <field type="CharField" name="uri">http://vardefs.com/vardef1</field>
+        <field type="CharField" name="name">vardef1</field>
         <field type="CharField" name="type">S</field>
-        <field type="CharField" name="aspect">EVEN</field>
-        <field type="CharField" name="friend_code">ZIP</field>
-        <field type="TextField" name="default_value"></field>
+        <field type="CharField" name="aspect">SLOT</field>
+        <field type="CharField" name="label">Etiqueta 1</field>
+        <field type="CharField" name="description">Descripción 1</field>
+        <field type="CharField" name="friend_code">address</field>
+        <field type="TextField" name="default_value">C/ Jar, 123</field>
         <field to="gadget.template" name="template" rel="ManyToOneRel">1</field>
+        <field to="gadget.variabledefoption" name="options" rel="ManyToManyRel"><object pk="1"></object></field>
     </object>
     <object pk="2" model="gadget.variabledef">
-        <field type="CharField" name="uri">http://vardef.com/var2</field>
+        <field type="CharField" name="uri">http://vardefs.com/vardef2</field>
         <field type="CharField" name="name">variable2</field>
-        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="type">B</field>
         <field type="CharField" name="aspect">PREF</field>
-        <field type="CharField" name="friend_code">car</field>
-        <field type="TextField" name="default_value">Este es el valor</field>
+        <field type="CharField" name="label">Refrescar</field>
+        <field type="CharField" name="description">Refresca automáticamente la página.</field>
+        <field type="CharField" name="friend_code">refresh</field>
+        <field type="TextField" name="default_value">True</field>
         <field to="gadget.template" name="template" rel="ManyToOneRel">1</field>
+        <field to="gadget.variabledefoption" name="options" rel="ManyToManyRel"><object pk="4"></object></field>
+    </object>
+    <object pk="3" model="gadget.variabledef">
+        <field type="CharField" name="uri">http://vardefs.com/vardef3</field>
+        <field type="CharField" name="name">vardef3</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">Evento</field>
+        <field type="CharField" name="description">Descripción del evento</field>
+        <field type="CharField" name="friend_code">event</field>
+        <field type="TextField" name="default_value">No tiene mucho valor</field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">2</field>
+        <field to="gadget.variabledefoption" name="options" rel="ManyToManyRel"><object pk="4"></object></field>
+    </object>
+    <object pk="4" model="gadget.variabledef">
+        <field type="CharField" name="uri">http://vardefs.com/vardef4</field>
+        <field type="CharField" name="name">vardef4</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">PROP</field>
+        <field type="CharField" name="label">Propiedad de la vida</field>
+        <field type="CharField" name="description">Propiedad de la vida humana</field>
+        <field type="CharField" name="friend_code">life</field>
+        <field type="TextField" name="default_value">Brevedad</field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">1</field>
+        <field to="gadget.variabledefoption" name="options" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="1" model="gadget.variabledefoption">
+        <field type="CharField" name="option">mandatory</field>
+    </object>
+    <object pk="2" model="gadget.variabledefoption">
+        <field type="CharField" name="option">validation</field>
+    </object>
+    <object pk="3" model="gadget.variabledefoption">
+        <field type="CharField" name="option">defaultListOption</field>
+    </object>
+    <object pk="4" model="gadget.variabledefoption">
+        <field type="CharField" name="option">optional</field>
     </object>
     <object pk="1" model="gadget.gadget">
         <field type="CharField" name="uri">http://gadgets.com/gadget1</field>
@@ -25,51 +67,138 @@
         <field type="CharField" name="version">v1</field>
         <field to="gadget.template" name="template" rel="ManyToOneRel">1</field>
         <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">1</field>
-        <field type="CharField" name="author">author1</field>
-        <field type="CharField" name="web">http://google.es</field>
-        <field type="CharField" name="description">Descripción 1</field>
+        <field type="CharField" name="author">Michael Jackson</field>
+        <field type="CharField" name="web">http://potalia.com</field>
+        <field type="CharField" name="description">Mi primer gadget</field>
         <field type="BooleanField" name="shared">False</field>
-        <field to="auth.user" name="importer" rel="ManyToOneRel">1</field>
-        <field type="DateTimeField" name="last_update">2007-10-16 17:26:15</field>
-        <field to="gadget.tag" name="tags" rel="ManyToManyRel"><object pk="1"></object><object pk="2"></object></field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
+        <field type="DateTimeField" name="last_update">2007-10-24 12:57:01</field>
+        <field to="gadget.tag" name="tags" rel="ManyToManyRel"><object pk="2"></object></field>
     </object>
     <object pk="2" model="gadget.gadget">
         <field type="CharField" name="uri">http://gadgets.com/gadget2</field>
-        <field type="CharField" name="vendor">vendor2</field>
-        <field type="CharField" name="name">Gadget2</field>
+        <field type="CharField" name="vendor">vendor1</field>
+        <field type="CharField" name="name">gadget2</field>
         <field type="CharField" name="version">v1</field>
-        <field to="gadget.template" name="template" rel="ManyToOneRel">1</field>
-        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">1</field>
-        <field type="CharField" name="author">author2</field>
-        <field type="CharField" name="web">http://google.es</field>
-        <field type="CharField" name="description">Un descripción</field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">2</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">2</field>
+        <field type="CharField" name="author">Miguel de Icaza</field>
+        <field type="CharField" name="web">http://www.icaza.es</field>
+        <field type="CharField" name="description">Un gadget con un poco de javascript.</field>
         <field type="BooleanField" name="shared">False</field>
-        <field to="auth.user" name="importer" rel="ManyToOneRel">1</field>
-        <field type="DateTimeField" name="last_update">2007-10-23 13:52:39</field>
-        <field to="gadget.tag" name="tags" rel="ManyToManyRel"><object pk="2"></object></field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
+        <field type="DateTimeField" name="last_update">2007-10-24 12:58:15</field>
+        <field to="gadget.tag" name="tags" rel="ManyToManyRel"><object pk="2"></object><object pk="3"></object></field>
+    </object>
+    <object pk="3" model="gadget.gadget">
+        <field type="CharField" name="uri">http://gadgets.com/gadget3</field>
+        <field type="CharField" name="vendor">vendor1</field>
+        <field type="CharField" name="name">gadget3</field>
+        <field type="CharField" name="version">v1</field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">3</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">1</field>
+        <field type="CharField" name="author">Tim Berners Lee</field>
+        <field type="CharField" name="web">http://www.w3c.org</field>
+        <field type="CharField" name="description">Otro gadget más.</field>
+        <field type="BooleanField" name="shared">False</field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
+        <field type="DateTimeField" name="last_update">2007-10-24 12:59:22</field>
+        <field to="gadget.tag" name="tags" rel="ManyToManyRel"><object pk="8"></object></field>
     </object>
     <object pk="1" model="gadget.usereventsinfo">
-        <field type="CharField" name="uri">http://gadgets.com/gadget1/elements1</field>
-        <field type="CharField" name="event">onclick</field>
-        <field type="CharField" name="handler">handler_onclick</field>
-        <field type="CharField" name="html_element">div</field>
+        <field type="CharField" name="uri">http://events.com/event1</field>
+        <field type="CharField" name="event">mouseover</field>
+        <field type="CharField" name="handler">mouseover_handler</field>
+        <field type="CharField" name="html_element">mouseover_id</field>
         <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">1</field>
     </object>
+    <object pk="2" model="gadget.usereventsinfo">
+        <field type="CharField" name="uri">http://events.com/event2</field>
+        <field type="CharField" name="event">click</field>
+        <field type="CharField" name="handler">click_handler</field>
+        <field type="CharField" name="html_element">click_id</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">1</field>
+    </object>
+    <object pk="3" model="gadget.usereventsinfo">
+        <field type="CharField" name="uri">http://events.com/event3</field>
+        <field type="CharField" name="event">resize</field>
+        <field type="CharField" name="handler">resize_change</field>
+        <field type="CharField" name="html_element">contanier_id</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">2</field>
+    </object>
     <object pk="1" model="gadget.tag">
-        <field type="CharField" name="uri">http://gadgets.com/gadget1/tags/tag1</field>
+        <field type="CharField" name="uri">http://tags.com/sport</field>
         <field type="CharField" name="value">sport</field>
     </object>
     <object pk="2" model="gadget.tag">
-        <field type="CharField" name="uri">http://gadgets.com/gadget1/tags/tag2</field>
+        <field type="CharField" name="uri">http://tags.com/funny</field>
+        <field type="CharField" name="value">funny</field>
+    </object>
+    <object pk="3" model="gadget.tag">
+        <field type="CharField" name="uri">http://tags.com/art</field>
         <field type="CharField" name="value">art</field>
     </object>
+    <object pk="4" model="gadget.tag">
+        <field type="CharField" name="uri">http://tags.com/music</field>
+        <field type="CharField" name="value">music</field>
+    </object>
+    <object pk="5" model="gadget.tag">
+        <field type="CharField" name="uri">http://tags.com/photo</field>
+        <field type="CharField" name="value">photo</field>
+    </object>
+    <object pk="6" model="gadget.tag">
+        <field type="CharField" name="uri">http://tags.com/film</field>
+        <field type="CharField" name="value">film</field>
+    </object>
+    <object pk="7" model="gadget.tag">
+        <field type="CharField" name="uri">http://tags.com/trip</field>
+        <field type="CharField" name="value">trip</field>
+    </object>
+    <object pk="8" model="gadget.tag">
+        <field type="CharField" name="uri">http://tags.com/technology</field>
+        <field type="CharField" name="value">technology</field>
+    </object>
+    <object pk="2" model="gadget.template">
+        <field type="CharField" name="uri">http://templates.com/template2</field>
+        <field type="CharField" name="description">Plantilla 2</field>
+        <field type="CharField" name="image">http://spa.fotologs.net/photo/10/13/52/versae/1187524744_f.jpg</field>
+    </object>
+    <object pk="3" model="gadget.template">
+        <field type="CharField" name="uri">http://templates.com/template3</field>
+        <field type="CharField" name="description">Plantilla 3</field>
+        <field type="CharField" name="image">http://spa.fotologs.net/photo/10/13/52/versae/1183899042_f.jpg</field>
+    </object>
+    <object pk="4" model="gadget.template">
+        <field type="CharField" name="uri">http://templates.com/template4</field>
+        <field type="CharField" name="description">Plantilla 4</field>
+        <field type="CharField" name="image">http://spa.fotologs.net/photo/10/13/52/versae/1172242889_f.jpg</field>
+    </object>
     <object pk="1" model="gadget.template">
-        <field type="CharField" name="uri">http://gadgets.com/gadget1/template1</field>
-        <field type="CharField" name="description">Descripción 1</field>
-        <field type="CharField" name="image">http://europa.ls.fi.upm.es/~lmayllon/ezweb/img/buzon_pequeo.jpg</field>
+        <field type="CharField" name="uri">http://templates.com/template1</field>
+        <field type="CharField" name="description">Plantilla 1</field>
+        <field type="CharField" name="image">http://spa.fotologs.net/photo/10/13/52/versae/1188654467_f.jpg</field>
+    </object>
+    <object pk="5" model="gadget.template">
+        <field type="CharField" name="uri">as</field>
+        <field type="CharField" name="description">as</field>
+        <field type="CharField" name="image">as</field>
+    </object>
+    <object pk="6" model="gadget.template">
+        <field type="CharField" name="uri">as</field>
+        <field type="CharField" name="description">ss</field>
+        <field type="CharField" name="image">asd</field>
     </object>
     <object pk="1" model="gadget.xhtml">
-        <field type="CharField" name="uri">http://gadgets.com/gadget1/xhtml</field>
-        <field type="TextField" name="code">Código del gadget 1</field>
+        <field type="CharField" name="uri">http://xhtml.com/code1</field>
+        <field type="TextField" name="code">Este es el código.</field>
+    </object>
+    <object pk="2" model="gadget.xhtml">
+        <field type="CharField" name="uri">http://xhtml.com/code2</field>
+        <field type="TextField" name="code">Esto es otro código con &lt;a href="#" onclick="po_pilla(); return false;"&gt;javascript&lt;/a&gt; incluso.
+&lt;scrip&gt;
+function po_pilla() {
+    alert("¡Po pilla!");
+}
+&lt;/script&gt;</field>
     </object>
 </django-objects>
