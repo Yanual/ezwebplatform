@@ -142,7 +142,7 @@ a:hover
 .info_resource
 {
 	width:32%;
-	height:500px;
+	height:650px;
 	padding:5px;
 	float:right;
 	margin:0px;
@@ -231,6 +231,44 @@ a:hover
 .info_resource .image img
 {
 	height:100%;
+}
+
+.info_resource .tags .my_tags
+{
+	border:1px solid #bbbbbb;
+	margin-top:5px;
+	margin-bottom:10px;
+	overflow:auto;
+	padding:5px;
+	font-size:12px;
+	background-color:#ffffff;
+	color:#555555;
+	height:50px;
+}
+
+.info_resource .tags .my_tags *
+{
+	display:inline;;
+}
+
+.info_resource .tags .my_tags .tag img
+{
+	border:none;
+}
+
+.info_resource .tags .my_tags .tag div a
+{
+	padding-bottom:4px;
+}
+
+.info_resource .tags .my_tags .tag a:hover
+{
+	text-decoration:underline;
+}
+
+.info_resource .tags .my_tags .tag *
+{
+	vertical-align:middle;
 }
 
 .info_resource .link
