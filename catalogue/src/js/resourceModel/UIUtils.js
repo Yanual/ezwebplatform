@@ -43,7 +43,7 @@ UIUtils.toggle = function(elementId_) {
 
 UIUtils.show = function(elementId_) {
 	var element = document.getElementById(elementId_);
-	element.style.display = 'inherit';
+	element.style.display = 'inline';
 }
 
 UIUtils.hidde = function(elementId_) {
