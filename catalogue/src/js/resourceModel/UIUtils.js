@@ -41,6 +41,16 @@ UIUtils.toggle = function(elementId_) {
 	}
 }
 
+UIUtils.show = function(elementId_) {
+	var element = document.getElementById(elementId_);
+	element.style.display = 'inherit';
+}
+
+UIUtils.hidde = function(elementId_) {
+	var element = document.getElementById(elementId_);
+	element.style.display = 'none';
+}
+
 UIUtils.evaluarFormulario = function(form_)
 {
 	alert(form_.search_text.value);

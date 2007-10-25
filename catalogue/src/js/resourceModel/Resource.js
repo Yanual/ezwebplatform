@@ -37,6 +37,14 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 									"<div class='vendor'>" + state.getVendor() + "</div>" +
 									"<div class='description'>Descripci&oacute;n:<br/><div class='text'>" + state.getDescription() + "</div></div>" +
 									"<div class='image'><img src='" + state.getUriImage() + "' alt='" + state.getName()+ "&nbsp;" + state.getVersion() + "'/></div>" +
+									"<div class='tags'>" +
+										"<div class='title'>Ver Tags</div>" +
+										"<div class='my_tags'>" +
+											"<span id='tag_1' class='tag' onmouseover='UIUtils.show(\"button_tag_1\");' onmouseout='UIUtils.hidde(\"button_tag_1\");'><a>Hola</a><span id='button_tag_1' style='display:none;'><a href='#' onclick='javascript:removeTag('Hola');'><img src='images/boton_eliminar.gif' alt='Eliminar Hola'></img></a></span>,&nbsp;</span>" +
+											"<span id='tag_2' class='tag' onmouseover='UIUtils.show(\"button_tag_2\");' onmouseout='UIUtils.hidde(\"button_tag_2\");'><a>Adios</a><span id='button_tag_2' style='display:none;'><a href='#' onclick='javascript:removeTag('Hola');'><img src='images/boton_eliminar.gif' alt='Eliminar Hola'></img></a></span>,&nbsp;</span>" +
+											"<span id='tag_3' class='tag' onmouseover='UIUtils.show(\"button_tag_3\");' onmouseout='UIUtils.hidde(\"button_tag_3\");'><a>Hello</a><span id='button_tag_3' style='display:none;'><a href='#' onclick='javascript:removeTag('Hola');'><img src='images/boton_eliminar.gif' alt='Eliminar Hola'></img></a></span>,&nbsp;</span>" +
+										"</div>" +
+									"</div>" +
 									"<div class='link'><a href='#' onClick='javascript:UIUtils.toggle(\"resources\");UIUtils.toggle(\"info_tags\");'>Editar Tags</a></div>" +
 									"<div class='link'><a href='" + state.getUriWiki() + "' target='_blank'>Acceder a la Wiki</a></div>" +
 									"<div class='link'><a href='" + state.getUriTemplate() + "' target='_blank'>Acceder al Template</a></div>" +
