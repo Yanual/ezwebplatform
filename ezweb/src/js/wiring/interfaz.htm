@@ -12,8 +12,7 @@
 	</head>
 	
 	<body>
-		<div class = "left">
-			<script>
+		<script>
 				var w = WiringFactory.getInstance();
 			
 				function addChannelInterface(name){
@@ -22,6 +21,7 @@
 					
 						var element = document.createElement("option");
 						element.setAttribute("class", name)
+						element.setAttribute("selected", true)
 						var text = document.createTextNode(name);
 						element.appendChild(text);
 						selector.appendChild(element);
@@ -50,11 +50,9 @@
 				
 					if (!(result = w.removeChannel(object))){
 						//the first id is from the channel list	
-					//	var hijo = $(object);
 						var hijo = $$('option.' + object);
 						selector.removeChild(hijo[0]);
 						// the new identifier is from the item list
-					//	hijo = $(object);
 						itemize.removeChild(hijo[1]);
 					}
 				}
@@ -77,7 +75,7 @@
 						var col2 = document.createElement("td");
 						var button = document.createElement("input");
 						var text;
-						if (gadget == "null"){
+						if (gadget == "null" || gadget == null){
 							text = document.createTextNode(name);
 							button.setAttribute("onClick", operation + "('" + name + "', $F('selectCanal'));renewChannel($F('selectCanal'))");
 						}
@@ -86,8 +84,9 @@
 							button.setAttribute("onClick", operation + "('" + gadget+ "','" +name+"', $F('selectCanal'));renewChannel($F('selectCanal'))");
 						}
 						
-						button.setAttribute("type", "button");
-						button.setAttribute("value", "rm");
+						button.setAttribute("type", "image");
+						button.setAttribute("src", "cross.png");
+						button.setAttribute("title", "delete connection");
 						col1.appendChild(button);
 						col2.appendChild(text);
 						line.setAttribute("class", gadget)
@@ -126,7 +125,7 @@
 						var col2 = document.createElement("td");
 						var button = document.createElement("input");
 						var text;
-						if (gadget == "null"){
+						if (gadget == "null" || gadget == null){
 							text = document.createTextNode(name);
 							button.setAttribute("onClick", operation + "('" + name + "', $F('selectCanal'));renewChannel($F('selectCanal'))");
 						}
@@ -134,8 +133,9 @@
 							text = document.createTextNode(gadget + "::" + name);
 							button.setAttribute("onClick", operation + "('" + gadget+ "','" +name+"', $F('selectCanal'));renewChannel($F('selectCanal'))");
 						}
-						button.setAttribute("type", "button");
-						button.setAttribute("value", "add");
+						button.setAttribute("type", "image");
+						button.setAttribute("src", "tick.png");
+						button.setAttribute("title", "add connection");
 						col1.appendChild(button);
 						col2.appendChild(text);
 						line.setAttribute("class", gadget)
@@ -185,7 +185,9 @@
 				}
 	
 			
-			</script>
+		</script>
+		<div class = "left">
+
 			<input type=button 
 				   value= "renewInterface" 
 				   onclick = "renewInterface()">
@@ -202,7 +204,7 @@
 			<input id = "value9"  type = text value = "value...">
 			<input type = button 
 				   value= "send event" 
-				   onclick = "w.sendEvent($F($('gadget9')),$F($('event9')), $F($('value9')))">
+				   onclick = "w.sendEvent($F($('gadget9')),$F($('event9')), $F($('value9')));renewChannel($F($('selectCanal')))">
 					
 		</div>
 		<div class = "container">
@@ -218,16 +220,20 @@
 				
 				<div id = "view">
 					<input id = "valor" type = "text" value = "">
-					<input id = "addChannel" type=button
-					   value= "crear_canal" 
-					   onclick = "anadirCanal()">  
-					<input id = "deleteChannel" type=button 
-					   value= "deleteChannel" 
-					   onclick = "borrarCanal($('selectCanal').value)">
+					<input id = "addChannel" type=image
+						src=add.png
+					    title="Create Channel"
+					    alt= "create channel"
+					    onclick = "anadirCanal()">  
+					<input id = "deleteChannel" type=image
+						src=delete.png
+						title="Delete Channel"
+					    alt= "Delete Channel" 
+					    onclick = "borrarCanal($('selectCanal').value)">
 				</div>		
 				<div id = "tab_one">
 					<table class = "header">
-						<tr><td> </td><td>Event connection</td></tr>
+						<tr><td> </td><td>Input connection</td></tr>
 					</table>
 				    <div class = "contents">
         				<table class = "bodier" id = "eventsConnection">
@@ -238,7 +244,7 @@
 				</div>
 				<div id = "tab_two">
 					<table class = "header">
-						<tr><td> </td><td>Slot connection</td></tr>
+						<tr><td> </td><td>Output connection</td></tr>
 					</table>
 				    <div class = "contents">
         				<table class = "bodier" id = "slotsConnection">
@@ -268,7 +274,7 @@
 				</div>
 					<div id = "tab_one">
 					<table class = "header">
-						<tr><td> </td><td>Event connection</td></tr>
+						<tr><td> </td><td>Outputs</td></tr>
 					</table>
 				    <div class = "contents">
         				<table class = "bodier" id = "events">
@@ -279,7 +285,7 @@
 				</div>
 				<div id = "tab_two">
 					<table class = "header">
-						<tr><td> </td><td>Slot connection</td></tr>
+						<tr><td> </td><td>Inputs</td></tr>
 					</table>
 				    <div class = "contents">
         				<table class = "bodier" id = "slots">

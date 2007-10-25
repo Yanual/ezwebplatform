@@ -32,6 +32,7 @@ var WiringFactory = function () {
 				}		
 			for (var i = 0; i < inOuts.length; i++) {
 				var inputs = new Object();
+			
 				this.createChannel(inOuts[i]);	
 				inputs["from"] = inOuts[i].name; 
 				inputs.inputHash = inOuts[i].inputHash;
@@ -82,11 +83,12 @@ var WiringFactory = function () {
 		var inOutList = new Hash();
 		persistenceEngine.send_get('../wiring.json', this, loadWiring, onError);
 		
+		
+		
 		// ****************
 		// PUBLIC METHODS
 		// this method is used in the first version for painting the connections for the user.
 		Wiring.prototype.getGadgetsId = function (){
-			//alert(iGadgetList.keys());
 			return iGadgetList.keys();
 		}
 		Wiring.prototype.getInOutId = function (){
@@ -122,10 +124,10 @@ var WiringFactory = function () {
 			
 			if (arguments.length == 2){
 				if (iGadgetList[iGadgetId] == undefined) {
-		//			var events = template.getEventsId();
-		//			var slots = template.getSlotsId();
-					var events = template["events"];
-					var slots = template["slots"];	
+					var events = template.getEventsId();
+					var slots = template.getSlotsId();
+		//			var events = template["events"];
+		//			var slots = template["slots"];	
 						
 					var itemList = [];
 					gadget["id"] = iGadgetId;
@@ -248,7 +250,6 @@ var WiringFactory = function () {
 			var channel = inOutList[channelName];
 			
 			if (channel != undefined){
-//			    alert("El nombre del canal es " + channelName);
 				return channel.ref.getValue();
 			}
 			return undefined;
@@ -341,10 +342,9 @@ var WiringFactory = function () {
 						}
 					}
 					
-					// Necesitamos realizar la conexion de ambos lados, una del canal al out, y otra del out al canal
+					//  we need to connect both parts to make the doubled linked list 
 					list.addInput(channel.ref);
 					channel.ref.addOutput(list);
-//					alert("valor en el slot " + list.getName()+" es " + list.getValue());
 					return 1;
 				}			
 			}
@@ -358,7 +358,6 @@ var WiringFactory = function () {
 					
 					output.ref.addInput(channel.ref);
 					channel.ref.addOutput(output.ref);
-//					alert("valor en el canal final " + output.ref.getValue());
 					return 1;
 				}	
 			}
@@ -382,7 +381,7 @@ var WiringFactory = function () {
 						}
 					}
 					
-					// Necesitamos realizar la desconexion de ambos lados, una del canal al out, y otra del out al canal
+					//  we need to connect both parts to make the doubled linked list 
 					list.removeOutput(channel.ref);
 					channel.ref.removeInput(list);
 					return 1;
@@ -423,7 +422,7 @@ var WiringFactory = function () {
 						}
 					}
 					
-					// Necesitamos realizar la conexion de ambos lados, una del canal al out, y otra del out al canal
+					// we need to connect both parts to make the doubled linked list 
 					list.removeInput(channel.ref);
 					channel.ref.removeOutput(list);
 					return 1;

@@ -112,19 +112,23 @@ input#actualiza {
 input#addChannel {
 	position: relative;
 	top: 80px;
-	left: -25%;
-	
+	left: -18%;
+	height: 4%;
+	width: 4%;
 }
 input#deleteChannel {
 	position: relative;
 	top: 80px;
-	left: -25%;
+	left: -13%;
+	height: 4%;
+	width:4%;
 }
 
 input#actualiza {
 	position: relative;
 	top: 150px;
 	left: 45%;
+	
 }
 
 
