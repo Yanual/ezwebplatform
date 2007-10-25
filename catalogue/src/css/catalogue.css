@@ -213,8 +213,7 @@ a:hover
 	overflow:auto;
 	padding:5px;
 	font-size:12px;
-	background-color:#ffffff;
-	color:#555555;
+	background-color:#ddeeff;
 	height:80px;
 }
 
@@ -241,8 +240,7 @@ a:hover
 	overflow:auto;
 	padding:5px;
 	font-size:12px;
-	background-color:#ffffff;
-	color:#555555;
+	background-color:#ddeeff;
 	height:50px;
 }
 
@@ -251,8 +249,14 @@ a:hover
 	display:inline;;
 }
 
+.info_resource .tags .my_tags .tag
+{
+	margin-right:8px;
+}
+
 .info_resource .tags .my_tags .tag img
 {
+	margin-left:2px;
 	border:none;
 }
 
@@ -269,6 +273,12 @@ a:hover
 .info_resource .tags .my_tags .tag *
 {
 	vertical-align:middle;
+}
+
+.info_resource .tags .my_tags .new_tag input
+{
+	width:40px;
+	border:1px solid #bbbbbb;
 }
 
 .info_resource .link
