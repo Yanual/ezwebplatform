@@ -132,7 +132,7 @@
          var pInRemoveOutput6 = event1.removeOutput(canal2); // warning -1
          var pInRemoveOutput7 = event1.removeOutput(canal1); // ok
          var pInRemoveOutput8 = event1.addOutput(canal2); //ok
-			
+            
          if (pInRemoveOutput1 == 0 && pInRemoveOutput2 == -1 && pInRemoveOutput3 == -1 && pInRemoveOutput4 == 0 && pInRemoveOutput5 == 0 && pInRemoveOutput6 == 1 && pInRemoveOutput7 == 0 && pInRemoveOutput8 == 0){
             alert("In.removeOutput works properly");
          }else{
@@ -192,26 +192,14 @@
           var pInOutAddOutput9 = (canal4.getType() == "type1" && canal4.getValue() == "value1" && slot2.getValue()=="value1") // true
           var pInOutAddOutput10 = canal5.addOutput(canal6); // ok
           canal6.addInput(canal5); // ok
-          canal6.addInput(slot3); //ok
           var pInOutAddOutput11 = canal6.addOutput(canal1); //ok
           var pInOutAddOutput12 = (canal5.getType() == "type1") // true
-          if (pInOutAddOutput1 == 2 && pInOutAddOutput2 == 0 && pInOutAddOutput3 == -1 && pInOutAddOutput4 == -2 && pInOutAddOutput5 == 1 && pInOutAddOutput6 == 0 && pInOutAddOutput7 == 0 && pInOutAddOutput8 == 0 && pInOutAddOutput9 && pInOutAddOutput10 == 0 && pInOutAddOutput11 == 0 && pInOutAddOutput12){
+          var pInOutAddOutput13 = canal1.addOutput(canal5); // warning 2
+          if (pInOutAddOutput1 == 2 && pInOutAddOutput2 == 0 && pInOutAddOutput3 == -1 && pInOutAddOutput4 == -2 && pInOutAddOutput5 == 1 && pInOutAddOutput6 == 0 && pInOutAddOutput7 == 0 && pInOutAddOutput8 == 0 && pInOutAddOutput9 && pInOutAddOutput10 == 0 && pInOutAddOutput11 == 0 && pInOutAddOutput12 && pInOutAddOutput13 == 2){
              alert("InOut.addOutput works properly");
           }else{
-             alert("InOut.addOutput failed!\n Results: "+ pInOutAddOutput1+","+pInOutAddOutput2+","+pInOutAddOutput3+","+pInOutAddOutput4+","+pInOutAddOutput5+","+pInOutAddOutput6+","+pInOutAddOutput7+","+pInOutAddOutput8+","+pInOutAddOutput9+","+pInOutAddOutput10+","+pInOutAddOutput11+","+pInOutAddOutput12);
-         }
-//          canal1.setValue("value1");
-//          canal1.addOutput(canal2);
-//          canal2.addInput(canal1);
-//          canal1.addOutput(canal3);
-//          canal3.addInput(canal1);
-//          canal3.addOutput(canal4);
-//          canal4.addInput(canal3);
-//          canal3.addOutput(canal5);
-//          canal5.addInput(canal3);
-//          event1.setValue("value2");
-//          event1.addOutput(canal1);
-//          canal1.addInput(event1);
+             alert("InOut.addOutput failed!\n Results: "+ pInOutAddOutput1+","+pInOutAddOutput2+","+pInOutAddOutput3+","+pInOutAddOutput4+","+pInOutAddOutput5+","+pInOutAddOutput6+","+pInOutAddOutput7+","+pInOutAddOutput8+","+pInOutAddOutput9+","+pInOutAddOutput10+","+pInOutAddOutput11+","+pInOutAddOutput12+","+pInOutAddOutput13);
+          }
       }
 
       function pInOutRemoveOutput(){
@@ -277,15 +265,11 @@
          canal1.addOutput(canal3);
          canal1.addOutput(slot2);
          canal2.addOutput(canal3);
-		 alert(canal1.serialize())
-		 alert(canal2.serialize())
-		 alert(canal3.serialize())
-		 alert(canal3.outputCounter)
          canal1.setValue("test4");
-         var pInOutSetValue6 = (canal2.getValue() == "test4");alert(canal2.getValue())
-         var pInOutSetValue7 = (canal3.getValue() == "test4");alert(canal3.getValue())
-         var pInOutSetValue8 = (slot1.getValue() == "test4");alert(slot1.getValue())
-         var pInOutSetValue9 = (slot2.getValue() == "test4");alert(slot2.getValue())
+         var pInOutSetValue6 = (canal2.getValue() == "test4");
+         var pInOutSetValue7 = (canal3.getValue() == "test4");
+         var pInOutSetValue8 = (slot1.getValue() == "test4");
+         var pInOutSetValue9 = (slot2.getValue() == "test4");
          event1.addOutput(canal1);
          event1.setValue("test5");
          var pInOutSetValue10 = (slot2.getValue() == "test5" && slot1.getValue() == "test5");
@@ -314,13 +298,13 @@
          var pInOutClear3 = event3.addOutput(canal1); // ok
          var pInOutClear4 = event3.addOutput(canal2); // warning 1
          canal2.clear();
-         var pInOutClear5 = canal1.addOutput(canal2); // ok
+         var pInOutClear5 = canal1.addOutput(canal2); // warning 1
          var pInOutClear6 = event3.addOutput(canal2); // ok
 
-         if (pInOutClear1 == 0 && pInOutClear2 == 0 && pInOutClear3 == 0 && pInOutClear4 == 1 && pInOutClear5 == 0 && pInOutClear6 == 0) {
-            alert("Out.clear works properly");
+         if (pInOutClear1 == 0 && pInOutClear2 == 0 && pInOutClear3 == 0 && pInOutClear4 == 1 && pInOutClear5 == 1 && pInOutClear6 == 0) {
+            alert("InOut.clear works properly");
          } else {
-            alert("Out.clear failed!\n Results: "+pInOutClear1+","+pInOutClear2+","+pInOutClear3+","+pInOutClear4+","+pInOutClear5+","+pInOutClear6);
+            alert("InOut.clear failed!\n Results: "+pInOutClear1+","+pInOutClear2+","+pInOutClear3+","+pInOutClear4+","+pInOutClear5+","+pInOutClear6);
          }
       }
 

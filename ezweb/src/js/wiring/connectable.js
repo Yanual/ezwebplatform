@@ -87,6 +87,7 @@ Out.prototype.removeInput = function(input){
 
 Out.prototype.setValue = function(value){
    this.value=value;
+   return "";
  //  var varManager = VarManagerFactory.getInstance();
  //  varManager.writeSlot(this.id,this.name,this.value);
 // alert("Valor en " + this.name + " es " + this.value)
@@ -116,14 +117,14 @@ In.prototype = new Connectable();
 In.prototype.addOutput = function(output){
    if (output instanceof InOut){
       if (!(this.outputHash[output.getName()] instanceof InOut)){
-	     if (this.type == output.getType()){ // the checking of the types may be changed when the filters were included
+         if (this.type == output.getType()){ // the checking of the types may be changed when the filters were included
             this.outputHash[output.getName()] = output;
             output.setValue(this.value);
             return 0;
          } else if (output.getType() == null){
             output.setValue(this.value);
             this.outputHash[output.getName()] = output;
-          //  output.setTypeForward(this.type);
+            output.setTypeForward(this.type);
             return 0;
          } else if (this.type == null){ // this should not happen y the final version
             this.type = output.getType();
@@ -151,11 +152,17 @@ In.prototype.removeOutput = function(output){
 
 In.prototype.setValue = function(value){
    this.value = value;
-   var changes ="{\"idEvent\":\""+this.id;
+   var channelList = ""
+   var changes ="{\"value\":\""+this.value+"\",\"channels\":[";
    for (i in this.outputHash){
       if (this.outputHash[i] instanceof InOut){
-        this.outputHash[i].setValue(value);
+        channelList = this.outputHash[i].setValue(value) + channelList;
       }
+   }
+   if (channelList != ""){
+      changes += channelList.slice(1);
+   } else {
+      changes += channelList;
    }
    return changes + "]}"
 }
@@ -203,9 +210,25 @@ InOut.prototype.setTypeBack = function(type){
    }
 }
 
+InOut.prototype.searchCycle = function(name){
+    if (this.name == name) {
+        return true;
+    } else {
+        var cycle = false;
+        var i = 0;
+        while (i<this.outputCounter && !cycle){
+           if (this.outputList[i] instanceof InOut){
+              cycle = cycle || this.outputList[i].searchCycle(name);
+           }
+           i++;
+        }
+        return cycle;
+    }
+}
+
 InOut.prototype.addOutput = function(output){
    if (!(output instanceof In)){
-      if (output.getId() != this.id || output.getName() != this.name){ // for avoiding loops with itself
+      if (output instanceof Out || !output.searchCycle(this.name)){
          var i = 0;
          var located = 0;
          while (i<this.outputCounter && located == 0){
@@ -237,7 +260,7 @@ InOut.prototype.addOutput = function(output){
             return 1; // warning: the input is already connected
          }
       } else {
-         return 2; // warning: the output would create a loop with itself
+         return 2; // warning: the output would create a loop
       }
    }else {
       return -1; // error: the output is an Out object
@@ -248,7 +271,7 @@ InOut.prototype.removeOutput = function(output){
    if (!(output instanceof In)){
       var i = 0;
       var located = false;
-	  var position = 0;
+      var position = 0;
       while (i<this.outputCounter && !located){
          if (this.outputList[i].getId() == output.getId() && this.outputList[i].getName() == output.getName()){
             located = true; // warning: the output is already connected
@@ -274,7 +297,7 @@ InOut.prototype.removeOutput = function(output){
 
 InOut.prototype.addInput = function(input){
    if (!(input instanceof Out)){
-      if (input.getId() != this.id || input.getName() != this.name){ // for avoiding loops with itself
+      if (input instanceof In || !this.searchCycle(input.getName())){ 
          var i = 0;
          var located = 0;
          while (i<this.inputCounter && located == 0){
@@ -301,7 +324,7 @@ InOut.prototype.removeInput = function(input){
    if (!(input instanceof Out)){
       var i = 0;
       var located = false;
-	  var position = 0;
+      var position = 0;
       while (i<this.inputCounter && !located){
          if (this.inputList[i].getId() == input.getId() && this.inputList[i].getName() == input.getName()){
             located = true; // warning: the input is already connected
@@ -326,15 +349,17 @@ InOut.prototype.removeInput = function(input){
 }
 
 InOut.prototype.setValue = function(value){
-   this.value = value;
+   var changes = "";
    for (var i=0;i<=this.outputCounter;i++){
-   //var i =1;
-   //while(i<=this.outputList.length){ // this is temporal, somehow a for loop does not work
       if (this.outputList[i] instanceof Connectable){
-         this.outputList[i].setValue(value);
+         changes = this.outputList[i].setValue(value) + changes;
       }
-      //i++;
    }
+   if (this.value != value){
+      this.value = value;
+      changes += ",{\"name\":\""+this.name+"\"}"
+   }
+   return changes;
 }
 
 InOut.prototype.clear = function(){
