@@ -263,7 +263,7 @@ InOut.prototype.addOutput = function(output){
          return 2; // warning: the output would create a loop
       }
    }else {
-      return -1; // error: the output is an Out object
+      return -1; // error: the output is an In object
    }
 }
 
@@ -415,6 +415,30 @@ InOut.prototype.serialize = function(){
    }
    result+="]}";
    return result;
+}
+
+InOut.prototype.duplicate = function(){
+   var clone = new Object();
+   clone["InOut"] = new InOut(this.getId(),this.getName());
+   clone["InOut"].setType(this.type);
+   clone["InOut"].setValue(this.value);
+   clone["input"] = [];
+   clone["output"] = [];
+   for (var i=0;i<this.inputCounter;i++){
+      if (this.inputList[i] instanceof In){
+         clone["InOut"].addInput(this.inputList[i]);
+      } else {
+         clone["input"].push(this.inputList[i].getName());
+      }
+   }
+   for (var i=0;i<this.outputCounter;i++){
+      if (this.outputList[i] instanceof Out){
+         clone["InOut"].addOutput(this.outputList[i]);
+      } else {
+         clone["output"].push(this.outputList[i].getName());
+      }
+   }
+   return clone;
 }
 
 //////////////////////////////////////////////////////////////////////////

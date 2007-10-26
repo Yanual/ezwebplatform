@@ -4,8 +4,10 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 		<title>Untitled Document</title>
 		<link rel="stylesheet" type="text/css" href="./style.css">
+
 		<script src = "./connectable.js" type = text/javascript></script>
 		<script src = "./wiring.js" type = text/javascript></script>
+		
 		<script src = "../lib/prototype.js" type = text/javascript></script>
 		<script src = "../persistenceEngine/PersistenceEngine.js" type = "text/javascript"></script>
 		<script src = "../varManager/varManager.js" type = "text/javascript"></script>
@@ -13,7 +15,9 @@
 	
 	<body>
 		<script>
-				var w = WiringFactory.getInstance();
+			
+		  	var w = WiringFactory.getInstance();
+			
 			
 				function addChannelInterface(name){
 						var selector = $("selectCanal");
@@ -33,15 +37,18 @@
 						itemize.appendChild(element);
 				}
 				
+		
 				function anadirCanal(){
 					var result = null;
 					var name = prompt("Insert Channel Name:","Channel Name...");
 					if (name != null){
 						if (!(result = w.createChannel(name))){	
 							addChannelInterface(name);
+							renewChannel(name)
 						}
 					}
 				}
+		
 		
 				function borrarCanal(object){
 					var selector = $("selectCanal");
@@ -54,9 +61,11 @@
 						selector.removeChild(hijo[0]);
 						// the new identifier is from the item list
 						itemize.removeChild(hijo[1]);
+						renewChannel("")
 					}
 				}
 				
+			
 				function addGadgetInterface (object){
 					var selector = $("gadgets");
 					var element = document.createElement("option");
@@ -97,6 +106,7 @@
 				}
 				
 				////////////////////////
+	
 				function renewChannel(channel){
 					var slots = $("slotsConnection")
 					var events = $("eventsConnection")
@@ -118,6 +128,8 @@
 						}
 					}
 				}
+				
+		
 				function addLine (table, operation, gadget, name){	
 					// This function is used to actualize the  tables of connections of any channel			
 						var line = document.createElement("tr");
@@ -145,6 +157,7 @@
 						table.appendChild(line);
 				}
 				
+			
 				function renewItem(object){
 					var slots = $("slots")
 					var events = $("events")
@@ -172,8 +185,9 @@
 					}
 				}
 				
-					
+		
 				function renewInterface(){
+					w.edition();
 					var iGadgets = w.getGadgetsId();
 					var channels = w.getInOutId();
 					for (var i = 0; i<iGadgets.length; i++){
@@ -182,9 +196,12 @@
 					for (var j = 0; j<channels.length; j++){
 						addChannelInterface(channels[j])
 					}	
+					var selector = $("selectCanal");
+					selector.value = ""
 				}
+				
+		
 	
-			
 		</script>
 		<div class = "left">
 
@@ -192,10 +209,8 @@
 				   value= "renewInterface" 
 				   onclick = "renewInterface()">
 		<br>	
+		<br>
 		
-		<br>
-		<br>
-			<br>
 		<br>
 		<br>
 		<br>
@@ -258,7 +273,11 @@
 
 			<fieldset id = "two">
 				<div>
-				<input id = "actualiza" type = "button" value = "Actualizar">	
+				<input id = "refreshbutton" 
+					type = image
+					src = disk.png
+					title = "Save data" 
+					alt = "Actualizar">	
 				</div>
 				<div id = "selector">
 					<em>Seleccione un item:</em>

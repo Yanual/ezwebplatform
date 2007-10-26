@@ -103,10 +103,12 @@ div#view {
 	left: 42%;
 }
 
-input#actualiza {
+input#refreshbutton {
 	position:relative;
-	top: 100px;
-	left: -17%;
+	top: 320px;
+	left: 50%;
+	height: 5%;
+	width: 5%;
 }
 
 input#addChannel {
