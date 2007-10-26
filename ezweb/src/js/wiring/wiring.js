@@ -65,6 +65,8 @@ var WiringFactory = function () {
 					}
 				}
 			}
+			loaded = true;
+	//		source = copy;
 		}
 		
 		onError = function (transport) {
@@ -77,11 +79,13 @@ var WiringFactory = function () {
 		// *****************
 		//  PRIVATE METHODS
 		// *****************
+		var loaded = false
 		var persistenceEngine = PersistenceEngineFactory.getInstance();
 		var iGadgetList = new Hash();
 		var inOutList = new Hash();
 		// copy is the list that is used for making new connections or disconnections with the interface.
 		var copy = new Hash(); 
+//		var source = inOutList;
 		persistenceEngine.send_get('../wiring.json', this, loadWiring, onError);
 		
 		
@@ -96,14 +100,12 @@ var WiringFactory = function () {
 			return iGadgetList.keys();
 		}
 		Wiring.prototype.getInOutId = function (){
-		//	return inOutList.keys();
 			return copy.keys();
 		}
 		
 		
 		// this method is used in the first version for painting the connections for the user.
 		Wiring.prototype.connections = function (channel) {
-		//	var channel = inOutList[channel].ref;
 			var channel = copy[channel].ref;
 			var connections = channel.connections();
 			return connections;
@@ -210,11 +212,11 @@ var WiringFactory = function () {
 			var channel = new Object();			
 			if (!(newChannel instanceof Object)){
 				// this way is ejecuted when we create a new channel.
-				if (copy[newChannel] == undefined){
+				if (source[newChannel] == undefined){
 					channel["name"] = newChannel;
 	
 					channel["ref"] = new InOut(null, newChannel);
-					copy[newChannel] = channel;
+					source[newChannel] = channel;
 					return 0;
 				}
 				else{
@@ -232,7 +234,7 @@ var WiringFactory = function () {
 		}
 		
 		Wiring.prototype.removeChannel = function (channelName){
-			var channel = copy[channelName];
+			var channel = source[channelName];
 
 			if (channel != undefined){
 				// The selected channel exists
@@ -286,11 +288,11 @@ var WiringFactory = function () {
 		}
 		 
 		Wiring.prototype.addChannelInput = function () {
-			
-			
 			if (arguments.length == 3){
    	 		// Wiring.prototype.addChannelInput = function (idGadgetId, inputName, channelName) {
-   				var channel = inOutList[arguments[2]];
+				if (loaded){var channel = copy[arguments[2]];}
+				else{var channel = inOutList[arguments[2]];}
+				
 				var gadget = iGadgetList[arguments[0]];
 
 				if ((channel != undefined) && (gadget != undefined)){
@@ -314,8 +316,15 @@ var WiringFactory = function () {
 			}
 			else if (arguments.length == 2){
 		    // Wiring.prototype.addChannelInput = function (inputName, channelName) {
-				var channel = inOutList[arguments[1]];
-				var input = inOutList[arguments[0]];
+				if (loaded){
+					var channel = copy[arguments[1]];
+					var input = copy[arguments[0]];	
+				}
+				else{
+					var channel = inOutList[arguments[1]];
+					var input = inOutList[arguments[0]];
+				}
+				
 				
 				if ((channel != undefined) && (input != undefined)){
 					// Both channels exist.
@@ -334,7 +343,9 @@ var WiringFactory = function () {
 			
 			if (arguments.length == 3){
 		//		Wiring.prototype.addChannelOutput = function (idGadgetId, outputName, channelName) {
-				var channel =inOutList[arguments[2]];
+				if (loaded){var channel = copy[arguments[2]];}
+				else{var channel = inOutList[arguments[2]];}
+				
 				var gadget = iGadgetList[arguments[0]];
 	
 				if ((channel != undefined) && (gadget != undefined)){
@@ -357,8 +368,14 @@ var WiringFactory = function () {
 			}
 			if (arguments.length == 2){
 			//		Wiring.prototype.addChannelOutput = function (outputName, channelName) {
-				var channel = inOutList[arguments[1]];
-				var output = inOutList[arguments[0]];
+				if (loaded){
+					var channel = copy[arguments[1]];
+					var output = copy[arguments[0]];	
+				}
+				else{
+					var channel = inOutList[arguments[1]];
+					var output = inOutList[arguments[0]];
+				}
 				
 				if ((channel != undefined) && (output != undefined)){
 					// Both channels exist.
@@ -373,7 +390,9 @@ var WiringFactory = function () {
 			
 			//Wiring.prototype.removeChannelInput = function (idGadgetId, inputName, channelName) {
 			if (arguments.length == 3){
-				var channel = inOutList[arguments[2]];
+				if (loaded){var channel = copy[arguments[2]];}
+				else{var channel = inOutList[arguments[2]];}
+				
 				var gadget = iGadgetList[arguments[0]];
 	
 				if ((channel != undefined) && (gadget != undefined)){
@@ -398,8 +417,14 @@ var WiringFactory = function () {
 			}
 			if (arguments.length == 2){		
 			//Wiring.prototype.removeChannelInput = function (inputName, channelName) {
-				var channel = inOutList[arguments[1]];
-				var input = inOutList[arguments[0]];
+				if (loaded){
+					var channel = copy[arguments[1]];
+					var input = copy[arguments[0]];	
+				}
+				else{
+					var channel = inOutList[arguments[1]];
+					var input = inOutList[arguments[0]];
+				}
 				
 				if ((channel != undefined) && (input != undefined)){
 					// Both channels exist.
@@ -415,7 +440,9 @@ var WiringFactory = function () {
 			
 		//	Wiring.prototype.removeChannelOutput = function (idGadgetId, outputName, channelName) {
 			if (arguments.length == 3){
-				var channel = inOutList[arguments[2]];
+				if (loaded){var channel = copy[arguments[2]];}
+				else{var channel = inOutList[arguments[2]];}
+				
 				var gadget = iGadgetList[arguments[0]];
 	
 				if ((channel != undefined) && (gadget != undefined)){
@@ -440,8 +467,14 @@ var WiringFactory = function () {
 			}
 			if (arguments.length == 2){
 			//Wiring.prototype.removeChannelOutput = function (outputName, channelName) {
-				var channel = inOutList[arguments[1]];
-				var output = inOutList[arguments[0]];
+				if (loaded){
+					var channel = copy[arguments[1]];
+					var output = copy[arguments[0]];	
+				}
+				else{
+					var channel = inOutList[arguments[1]];
+					var output = inOutList[arguments[0]];
+				}
 				
 				if ((channel != undefined) && (output != undefined)){
 					// Both channels exist.
@@ -459,7 +492,6 @@ var WiringFactory = function () {
 			var channelConnections = new Hash();
 		
 			for (var i = 0; i < keys.length; i++){
-				alert("iteracion: "+ i)
 				var element = inOutList[keys[i]].ref;
 				var newElement = element.duplicate();
 				// newElement has the new object channel with the connectios to the channel's names which have to reconnect
@@ -475,8 +507,6 @@ var WiringFactory = function () {
 				channel["outputs"] = newElement["output"];
 				channelConnections[keys[i]] = channel;	
 			}
-	//		alert(Object.toJSON(copy));
-			alert(Object.toJSON(channelConnections));
 			
 			for (var i = 0; i < keys.length; i++){
 				var newInput = channelConnections[keys[i]];
@@ -495,6 +525,12 @@ var WiringFactory = function () {
 		
 		Wiring.prototype.restaure = function () {
 			// we nedd to reconnect every thing to this part
+			var keys = inOutList.keys();
+			
+			for (var i = 0; i < keys.length; i++){
+				var channel = copy[keys[i]];
+				channel.ref.refresh(channel.ref);
+			}
 			inOutList = copy;
 		}
 	}

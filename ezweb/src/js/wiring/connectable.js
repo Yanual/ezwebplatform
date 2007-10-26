@@ -105,6 +105,10 @@ Out.prototype.serialize = function(){
    return "{\"aspect\":\"SLOT\",\"id\":\""+this.id+"\",\"type\":\""+this.type+"\",\"value\":\""+this.value+"\",\"name\":\""+this.name+"\"}";
 }
 
+Out.prototype.refresh = function (channelRef){
+	this.inputHash[channelRef.getName()] = channelRef;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 // This class represents every object which may initialize one transmission through the wiring module //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -177,6 +181,10 @@ In.prototype.clear = function(){
 
 In.prototype.serialize = function(){
    return "{\"aspect\":\"EVENT\",\"id\":\""+this.id+"\",\"type\":\""+this.type+"\",\"value\":\""+this.value+"\",\"name\":\""+this.name+"\"}";
+}
+
+In.prototype.refresh = function (channelRef){
+	this.outputHash[channelRef.getName()] = channelRef;
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -439,6 +447,22 @@ InOut.prototype.duplicate = function(){
       }
    }
    return clone;
+}
+
+InOut.prototype.refresh = function (channelRef){
+	for (var i = 0; i < this.inputCounter; i++){
+		if (this.inputList[i] instanceof In){
+			this.inputList[i].refresh(channelRef);
+		}
+	/*	if (input.getName() == channelRef.getName()){
+			this.inputList[i] = channelRef;
+		}*/
+	}
+	for (var j = 0; j < this.outputCounter; j++){
+		if (this.outputList[i] instanceof Out){
+			this.outputList[i].refresh(channelRef);
+		}
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////
