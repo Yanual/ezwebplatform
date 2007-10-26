@@ -39,6 +39,36 @@ function Template(template_) {
         return objVars;
     }
 	
+	this.getUserPrefs = function () {
+		
+		// JSON-coded Template-Variables mapping	
+		// Constructing the structure 
+		 
+		var objVars = [];
+		var rawVars = variableList;
+		var rawVar = null;
+		for (i = 0; i<rawVars.length; i++) {
+			rawVar = rawVars[i];
+			if (rawVar.aspect == Variable.prototype.PROPERTY) {
+				switch (rawVar.type) {
+					case UserPref.prototype.TEXT:  
+						objVars[rawVar.name] = new TextUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.defaultValue);
+						break;
+					case UserPref.prototype.INTEGER:  
+						objVars[rawVar.name] = new IntUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.defaultValue);
+						break;
+					case UserPref.prototype.DATE:
+						objVars[rawVar.name] = new DateUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.defaultValue);
+						break;
+					case UserPref.prototype.LIST:
+						objVars[rawVar.name] = new ListUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.defaultValue);
+						break;
+				}
+			}
+		}
+        return objVars;
+	}
+	
 	this.getUserPrefsId = function () {
         
 		// JSON-coded Template-UserPrefs mapping	
