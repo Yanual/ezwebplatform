@@ -69,177 +69,267 @@ var ShowcaseFactory = function () {
 			var gadget = _gadgets[gadgetId_]
 			var buffer = new StringBuffer();
 			
-			buffer.append('<table>\n');
-			buffer.append('<tr>\n');
-			buffer.append('<td style="float: right;">\n');
-			
-//			buffer.append('<a href="javascript:;" onClick="showcase_details(\'');
-//			buffer.append(gadgetId_);
-//			buffer.append('\');">details</a> / <a href="javascript:;" onClick="showcase_edit(\'');
-
-			buffer.append('<a href="javascript:;">details</a> / <a href="javascript:;" onClick="showcase_edit(\'');
-			
+			// Open Gadget Layer
+			buffer.append('<div id="');
 			buffer.append(gadgetId_);
-			buffer.append('\');">edit</a> / <a href="javascript:;" onClick="showcase_deleteGadget(\'');
+			buffer.append('" class="gadget">\n');
+			
+			// Links to gadget operations
+			buffer.append('<div class="toolbar">\n');
+			buffer.append('<h2>');
+			buffer.append(gadget.getName());
+			buffer.append('</h2>\n');
+
+			buffer.append('<a href="javascript:;" onClick="showcase_deleteGadget(\'');
 			buffer.append(gadgetId_);
-			buffer.append('\')">delete</a>\n');
-			
-			buffer.append('</td>\n');
-			buffer.append('</tr>\n');
-			buffer.append('<tr>\n');
-			buffer.append('<td>\n');
+			buffer.append('\')">| delete</a>\n');
 
-			buffer.append('<div id="details_');
+			buffer.append('<a href="javascript:;" onClick="showcase_edit(\'');
 			buffer.append(gadgetId_);
-			buffer.append('" style="display: none">\n');
+			buffer.append('\');">| edit </a>\n');
 
-			buffer.append('<table>\n');
-			buffer.append('<tr>\n');
-			buffer.append('<td>\n');
+			buffer.append('<a href="javascript:;">details </a>\n');
+			// Close links layer
+			buffer.append('</div>');
 			
-			buffer.append('<label>Template</label>\n');
 			
-			buffer.append('</td>\n');
-			buffer.append('</tr>\n');
-			buffer.append('<tr>\n');
-			buffer.append('<td>\n');
-			
-			buffer.append('<input id="template_');
-			buffer.append(gadgetId_);
-			buffer.append('" type="text" readonly>\n');											
-			
-			buffer.append('</td>\n');
-			buffer.append('</tr>\n');
-			buffer.append('<tr>\n');
-			buffer.append('<td>\n');
-			
-			buffer.append('<label>XHTML</label>\n');
-			
-			buffer.append('</td>\n');
-			buffer.append('</tr>\n');
-			buffer.append('<tr>\n');
-			buffer.append('<td>\n');
-			
-			buffer.append('<input id="xhtml_');
-			buffer.append(gadgetId_);
-			buffer.append('" type="text" readonly>\n');			
-			
-			buffer.append('</td>\n');
-			buffer.append('</tr>\n');
-			buffer.append('</table>\n');
-
-			buffer.append('</div>\n');
-
-			buffer.append('</td>\n');
-			buffer.append('</tr>\n');
-			buffer.append('<tr>\n');
-			buffer.append('<td style="float: center;">\n');
-
+			// Layer with edited preferences 
 			buffer.append('<div id="edit_');
 			buffer.append(gadgetId_);
-			buffer.append('" style="display: none">\n');
-
-			buffer.append('<table>\n');
+			buffer.append('" class="preferences"  style="display: none">\n');
+			
+			buffer.append('&nbsp;');
+			
+			
+          	buffer.append('<table>\n');
 			buffer.append('<tr>\n');
-			buffer.append('<td>\n');
 			
-			buffer.append('<label>Image URL</label>\n');
-			
-			buffer.append('</td>\n');
-			buffer.append('<td>\n');
-			
-			buffer.append('<input id="image_url_');
+			buffer.append('<td><label for="image_url_');
 			buffer.append(gadgetId_);
-			buffer.append('" type="text" maxlength="255" style="width: 400px;"/>\n');
-			
-			buffer.append('</td>\n');
+			buffer.append('">Image URL</label></td>\n');
+			buffer.append('<td><input type="text" id="image_url_');
+			buffer.append(gadgetId_);
+			buffer.append('" name="image_url_');
+			buffer.append(gadgetId_);
+			buffer.append('" maxlength="256"/></td>\n');
 			buffer.append('</tr>\n');
+			
 			buffer.append('<tr>\n');
-			buffer.append('<td>\n');
-			
-			buffer.append('<label>Tags</label>\n');
-			
-			buffer.append('</td>\n');
-			buffer.append('<td>\n');
-			
-			buffer.append('<input id="tags_');
+			buffer.append('<td><label for="image_url_');
 			buffer.append(gadgetId_);
-			buffer.append('" type="text" maxlength="255" style="width: 400px;"/>\n');
-			
-			buffer.append('</td>\n');
+			buffer.append('">Tags</label></td>\n');
+			buffer.append('<td><input type="text" id="tags_');
+			buffer.append(gadgetId_);
+			buffer.append('" name="tags_');
+			buffer.append(gadgetId_);
+			buffer.append('" maxlength="256"/></td>\n');
 			buffer.append('</tr>\n');
-			buffer.append('<tr>\n');	
-			buffer.append('<td>\n');
 			
-			buffer.append('<label> </label>\n');
-			
-			buffer.append('</td>\n');
-			buffer.append('<td>\n');
-			
-			buffer.append('<a href="javascript:;" onClick="showcase_saveGadgetDetails(\'');
+			buffer.append('<tr>\n');
+			buffer.append('<td colspan="2"><a href="javascript:;" onClick="showcase_saveGadgetDetails(\'');
 			buffer.append(gadgetId_);
 			buffer.append('\')"a>save</a> / <a href="javascript:;" onClick="$(\'edit_');
 			buffer.append(gadgetId_);
-			buffer.append('\').style.display=\'none\'">cancel</a>\n');
-			
-			buffer.append('</td>\n');
-			buffer.append('</tr>\n');
-			
+			buffer.append('\').style.display=\'none\'">cancel</a></td>\n');
 			buffer.append('</table>\n');
-
-			buffer.append('</div>\n');
-
-			buffer.append('</td>\n');
-			buffer.append('</tr>\n');
-			buffer.append('</tr>\n');
-			buffer.append('<tr>\n');
-			buffer.append('<td align="left">\n');
+			// Close preferences layer
+			buffer.append('</div>');
 			
-			buffer.append('vendor: ');
+			buffer.append('<div class="main">\n');
+			buffer.append('<h4>Description</h4>\n');
+			buffer.append('<ul>\n');
+            buffer.append('<li><strong>Vendor: </strong>');
 			buffer.append(gadget.getVendor()); 
-			buffer.append(' name: ');
- 			buffer.append(gadget.getName());
-			buffer.append(' version: '); 
-			buffer.append(gadget.getVersion());
+			buffer.append('</li>\n');
+            buffer.append('<li><strong>Name: </strong>');
+			buffer.append(gadget.getName()); 
+			buffer.append('</li>\n');
+			buffer.append('<li><strong>Version: </strong>');
+			buffer.append(gadget.getVersion()); 
+			buffer.append('</li>\n');
+			buffer.append('<li><strong>Tags: </strong>');
+			buffer.append(gadget.getTags()); 
+			buffer.append('</li>\n');
+          	buffer.append('</ul>\n');
+			buffer.append('<center><img src="');
+			buffer.append(gadget.getImage()); 
+			buffer.append('" alt="Imagen cannot be shown" /><br/>\n');
+			buffer.append('<a href="javascript:;">add</a></center>\n');
+			buffer.append('</div>\n');
 			
-			buffer.append('</td>\n');
-			buffer.append('</tr>\n');
-			buffer.append('<tr>\n');
-			buffer.append('<td align="center">\n');
+			// Close Gadget Layer
+			buffer.append('</div>\n'); //			
 			
-			buffer.append('<img id="image_');
-			buffer.append(gadgetId_);
-			buffer.append('" src="');
-			buffer.append(gadget.getImage());
-			buffer.append('" width="120" height="60" alt="Image cannot be shown">\n');
-			
-			buffer.append('</td>\n');
-			buffer.append('</tr>\n');
-			buffer.append('<tr>\n');
-			buffer.append('<td align="left">\n');
-			
-			buffer.append('tags: ');
-			
-			var tags = gadget.getTags();
-			for (var i = 0; i<tags.length; i++) {
-				var tag = tags[i];
-				buffer.append(tag);
-				if (i != (tags.length-1)){
-					buffer.append(', ');
-				}
-			}
-			
-			buffer.append('</td>\n');
-			buffer.append('</tr>\n');
-			buffer.append('<tr>\n');
-			buffer.append('<td align="center">\n');
-			
-			buffer.append('<a href="javascript:;">add</a>\n');
-			
-			buffer.append('</td>\n');
-			buffer.append('</tr>\n');
-			buffer.append('</table>\n');
-		
+//			buffer.append('<tr>\n');
+//			buffer.append('<td style="float: right;">\n');
+//			
+////			buffer.append('<a href="javascript:;" onClick="showcase_details(\'');
+////			buffer.append(gadgetId_);
+////			buffer.append('\');">details</a> / <a href="javascript:;" onClick="showcase_edit(\'');
+//
+//			buffer.append('<a href="javascript:;">details</a> / <a href="javascript:;" onClick="showcase_edit(\'');
+//			
+//			buffer.append(gadgetId_);
+//			buffer.append('\');">edit</a> / <a href="javascript:;" onClick="showcase_deleteGadget(\'');
+//			buffer.append(gadgetId_);
+//			buffer.append('\')">delete</a>\n');
+//			
+//			buffer.append('</td>\n');
+//			buffer.append('</tr>\n');
+//			buffer.append('<tr>\n');
+//			buffer.append('<td>\n');
+//
+//			buffer.append('<div id="details_');
+//			buffer.append(gadgetId_);
+//			buffer.append('" style="display: none">\n');
+//
+//			buffer.append('<table>\n');
+//			buffer.append('<tr>\n');
+//			buffer.append('<td>\n');
+//			
+//			buffer.append('<label>Template</label>\n');
+//			
+//			buffer.append('</td>\n');
+//			buffer.append('</tr>\n');
+//			buffer.append('<tr>\n');
+//			buffer.append('<td>\n');
+//			
+//			buffer.append('<input id="template_');
+//			buffer.append(gadgetId_);
+//			buffer.append('" type="text" readonly>\n');											
+//			
+//			buffer.append('</td>\n');
+//			buffer.append('</tr>\n');
+//			buffer.append('<tr>\n');
+//			buffer.append('<td>\n');
+//			
+//			buffer.append('<label>XHTML</label>\n');
+//			
+//			buffer.append('</td>\n');
+//			buffer.append('</tr>\n');
+//			buffer.append('<tr>\n');
+//			buffer.append('<td>\n');
+//			
+//			buffer.append('<input id="xhtml_');
+//			buffer.append(gadgetId_);
+//			buffer.append('" type="text" readonly>\n');			
+//			
+//			buffer.append('</td>\n');
+//			buffer.append('</tr>\n');
+//			buffer.append('</table>\n');
+//
+//			buffer.append('</div>\n');
+//
+//			buffer.append('</td>\n');
+//			buffer.append('</tr>\n');
+//			buffer.append('<tr>\n');
+//			buffer.append('<td style="float: center;">\n');
+//
+//			buffer.append('<div id="edit_');
+//			buffer.append(gadgetId_);
+//			buffer.append('" style="display: none">\n');
+//
+//			buffer.append('<table>\n');
+//			buffer.append('<tr>\n');
+//			buffer.append('<td>\n');
+//			
+//			buffer.append('<label>Image URL</label>\n');
+//			
+//			buffer.append('</td>\n');
+//			buffer.append('<td>\n');
+//			
+//			buffer.append('<input id="image_url_');
+//			buffer.append(gadgetId_);
+//			buffer.append('" type="text" maxlength="255" style="width: 400px;"/>\n');
+//			
+//			buffer.append('</td>\n');
+//			buffer.append('</tr>\n');
+//			buffer.append('<tr>\n');
+//			buffer.append('<td>\n');
+//			
+//			buffer.append('<label>Tags</label>\n');
+//			
+//			buffer.append('</td>\n');
+//			buffer.append('<td>\n');
+//			
+//			buffer.append('<input id="tags_');
+//			buffer.append(gadgetId_);
+//			buffer.append('" type="text" maxlength="255" style="width: 400px;"/>\n');
+//			
+//			buffer.append('</td>\n');
+//			buffer.append('</tr>\n');
+//			buffer.append('<tr>\n');	
+//			buffer.append('<td>\n');
+//			
+//			buffer.append('<label> </label>\n');
+//			
+//			buffer.append('</td>\n');
+//			buffer.append('<td>\n');
+//			
+//			buffer.append('<a href="javascript:;" onClick="showcase_saveGadgetDetails(\'');
+//			buffer.append(gadgetId_);
+//			buffer.append('\')"a>save</a> / <a href="javascript:;" onClick="$(\'edit_');
+//			buffer.append(gadgetId_);
+//			buffer.append('\').style.display=\'none\'">cancel</a>\n');
+//			
+//			buffer.append('</td>\n');
+//			buffer.append('</tr>\n');
+//			
+//			buffer.append('</table>\n');
+//
+//			buffer.append('</div>\n');
+//
+//			buffer.append('</td>\n');
+//			buffer.append('</tr>\n');
+//			buffer.append('</tr>\n');
+//			buffer.append('<tr>\n');
+//			buffer.append('<td align="left">\n');
+//			
+//			buffer.append('vendor: ');
+//			buffer.append(gadget.getVendor()); 
+//			buffer.append(' name: ');
+// 			buffer.append(gadget.getName());
+//			buffer.append(' version: '); 
+//			buffer.append(gadget.getVersion());
+//			
+//			buffer.append('</td>\n');
+//			buffer.append('</tr>\n');
+//			buffer.append('<tr>\n');
+//			buffer.append('<td align="center">\n');
+//			
+//			buffer.append('<img id="image_');
+//			buffer.append(gadgetId_);
+//			buffer.append('" src="');
+//			buffer.append(gadget.getImage());
+//			buffer.append('" width="120" height="60" alt="Image cannot be shown">\n');
+//			
+//			buffer.append('</td>\n');
+//			buffer.append('</tr>\n');
+//			buffer.append('<tr>\n');
+//			buffer.append('<td align="left">\n');
+//			
+//			buffer.append('tags: ');
+//			
+//			var tags = gadget.getTags();
+//			for (var i = 0; i<tags.length; i++) {
+//				var tag = tags[i];
+//				buffer.append(tag);
+//				if (i != (tags.length-1)){
+//					buffer.append(', ');
+//				}
+//			}
+//			
+//			buffer.append('</td>\n');
+//			buffer.append('</tr>\n');
+//			buffer.append('<tr>\n');
+//			buffer.append('<td align="center">\n');
+//			
+//			buffer.append('<a href="javascript:;">add</a>\n');
+//			
+//			buffer.append('</td>\n');
+//			buffer.append('</tr>\n');
+//			buffer.append('</table>\n');
+//		
 			return buffer.toString();
 		}
 
@@ -286,27 +376,36 @@ var ShowcaseFactory = function () {
 		// Show gadgets in Showcase
 		Showcase.prototype.repaint = function () {
 			var bufferTable = new StringBuffer();
-			bufferTable.append('<table border="0">\n');
+			bufferTable.append('<div id="gadgets">\n');
+			bufferTable.append('<table style="position: relative; width:100%; height:100%">\n');
+
 			var keys = _gadgets.keys();
-			for (var i = 0; i<keys.length; i++) {
-				var gadgetId = keys[i]; 
+			var num_cells = Showcase.prototype.NUM_CELLS + (keys.length - (keys.length % Showcase.prototype.NUM_CELLS));      
+			var width = (1 / num_cells) * 100; 
+			for (var i = 0; i<num_cells; i++) {
 				
 				if (i==0){
 					bufferTable.append('<tr>\n');
 				} 
 
-				bufferTable.append('<td>');
-				bufferTable.append(showGadget(gadgetId));
+				bufferTable.append('<td style="width:');
+				bufferTable.append(width);
+				bufferTable.append('%" valign="top">');
+				if (i < keys.length){
+					bufferTable.append(showGadget(keys[i]));
+				}else{
+					bufferTable.append('&nbsp;');
+				}
 				bufferTable.append('</td>');
 								
-				if (i == (keys.length -1 )){
+				if (i == (num_cells -1 )){
 					bufferTable.append('</tr>\n');
-					
 				} else if ((Showcase.prototype.NUM_CELLS == 1) || ((i!=0) && ((i% Showcase.prototype.NUM_CELLS) == 0))) {
 					bufferTable.append('</tr><tr>\n');
 				}
 			}
 			bufferTable.append('</table>\n');
+			bufferTable.append('</div>\n');
 
 			var mydiv = $(Showcase.prototype.MODULE_HTML_ID);
 			mydiv.innerHTML = bufferTable.toString();

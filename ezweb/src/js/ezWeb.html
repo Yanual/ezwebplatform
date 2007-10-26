@@ -1,6 +1,13 @@
 <html>
 <head>
 <title>EzWeb Platform</title>
+
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+<link rel="stylesheet" type="text/css" media="screen,projection" href="../css/ezweb.css" />
+<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="shortcut icon" type="image/x-icon" href="../css/favicon.ico" />
+
 <script language="JavaScript" src="lib/prototype.js"></script>
 <script language="JavaScript" src="common/uris.js"></script>
 <script language="JavaScript" src="common/modules.js"></script>
@@ -18,13 +25,14 @@
 <script language="JavaScript" src="showcase/showcase.js"></script>
 <script language="JavaScript" src="showcase/util.js"></script>
 
+<script language="JavaScript" src="wiring/connectable.js"></script>
 <script language="JavaScript" src="wiring/wiring.js"></script>
 
 <!-- Initialization code -->
 <script language="JavaScript">
 	
 	function show_showcase(){
-		$('dragboard').style.display='none';
+		$('dragboard_container').style.display='none';
 		$('wiring_container').style.display='none';
 		$('showcase_container').style.display='block';
 		var myshowcase = ShowcaseFactory.getInstance();
@@ -34,11 +42,11 @@
 	function show_dragboard(){
 		$('wiring_container').style.display='none';
 		$('showcase_container').style.display='none';
-		$('dragboard').style.display='block';
+		$('dragboard_container').style.display='block';
 	}
 	
 	function show_wiring(){
-		$('dragboard').style.display='none';
+		$('dragboard_container').style.display='none';
 		$('showcase_container').style.display='none';
 		$('wiring_container').style.display='block';
 	}
@@ -51,28 +59,351 @@
 		
 </script>
 
+<script>
+				var w = WiringFactory.getInstance();
+			
+				function addChannelInterface(name){
+						var selector = $("selectCanal");
+						var itemize =  $("canales");
+					
+						var element = document.createElement("option");
+						element.setAttribute("class", name)
+						element.setAttribute("selected", true)
+						var text = document.createTextNode(name);
+						element.appendChild(text);
+						selector.appendChild(element);
+	
+						var element = document.createElement("option");
+						var text = document.createTextNode(name);
+						element.setAttribute("class", name)
+						element.appendChild(text);
+						itemize.appendChild(element);
+				}
+				
+				function anadirCanal(){
+					var result = null;
+					var name = prompt("Insert Channel Name:","Channel Name...");
+					if (name != null){
+						if (!(result = w.createChannel(name))){	
+							addChannelInterface(name);
+						}
+					}
+				}
+		
+				function borrarCanal(object){
+					var selector = $("selectCanal");
+					var itemize =  $("canales");
+					var result = null;
+				
+					if (!(result = w.removeChannel(object))){
+						//the first id is from the channel list	
+						var hijo = $$('option.' + object);
+						selector.removeChild(hijo[0]);
+						// the new identifier is from the item list
+						itemize.removeChild(hijo[1]);
+					}
+				}
+				
+				function addGadgetInterface (object){
+					var selector = $("gadgets");
+					var element = document.createElement("option");
+					element.setAttribute("id", object)
+					var text = document.createTextNode(object);
+					element.appendChild(text);
+					selector.appendChild(element);
+				}
+				
+		
+				function addChannelLine (table, operation, gadget, name){	
+				// This function is used to actualize the  tables of connections of any channel
+							
+						var line = document.createElement("tr");
+						var col1 = document.createElement("td");
+						var col2 = document.createElement("td");
+						var button = document.createElement("input");
+						var text;
+						if (gadget == "null" || gadget == null){
+							text = document.createTextNode(name);
+							button.setAttribute("onClick", operation + "('" + name + "', $F('selectCanal'));renewChannel($F('selectCanal'))");
+						}
+						else{
+							text = document.createTextNode(gadget + "::" + name);
+							button.setAttribute("onClick", operation + "('" + gadget+ "','" +name+"', $F('selectCanal'));renewChannel($F('selectCanal'))");
+						}
+						
+						button.setAttribute("type", "image");
+						button.setAttribute("src", "cross.png");
+						button.setAttribute("title", "delete connection");
+						col1.appendChild(button);
+						col2.appendChild(text);
+						line.setAttribute("class", gadget)
+						line.setAttribute("id", name)
+						line.appendChild(col1);
+						line.appendChild(col2);
+						table.appendChild(line);
+				}
+				
+				////////////////////////
+				function renewChannel(channel){
+					var slots = $("slotsConnection")
+					var events = $("eventsConnection")
+					slots.innerHTML = "";
+					events.innerHTML = "";
+						
+					if (channel != ""){
+						var connections = w.connections(channel);
+						var inputs = connections["input"];
+						var outputs = connections["output"];
+						
+						$("valor").value = w.viewValue(channel);
+					
+						for (var i = 0; i < inputs.length; i++){
+							addChannelLine (events, "w.removeChannelInput", inputs[i].id, inputs[i].name)
+						}
+						for (var j = 0; j < outputs.length; j++){
+							addChannelLine (slots, "w.removeChannelOutput", outputs[j].id, outputs[j].name)
+						}
+					}
+				}
+				function addLine (table, operation, gadget, name){	
+					// This function is used to actualize the  tables of connections of any channel			
+						var line = document.createElement("tr");
+						var col1 = document.createElement("td");
+						var col2 = document.createElement("td");
+						var button = document.createElement("input");
+						var text;
+						if (gadget == "null" || gadget == null){
+							text = document.createTextNode(name);
+							button.setAttribute("onClick", operation + "('" + name + "', $F('selectCanal'));renewChannel($F('selectCanal'))");
+						}
+						else{
+							text = document.createTextNode(gadget + "::" + name);
+							button.setAttribute("onClick", operation + "('" + gadget+ "','" +name+"', $F('selectCanal'));renewChannel($F('selectCanal'))");
+						}
+						button.setAttribute("type", "image");
+						button.setAttribute("src", "tick.png");
+						button.setAttribute("title", "add connection");
+						col1.appendChild(button);
+						col2.appendChild(text);
+						line.setAttribute("class", gadget)
+						line.setAttribute("id", name)
+						line.appendChild(col1);
+						line.appendChild(col2);
+						table.appendChild(line);
+				}
+				
+				function renewItem(object){
+					var slots = $("slots")
+					var events = $("events")
+					
+						
+					slots.innerHTML = "";
+					events.innerHTML = "";
+					
+					if (object != ""){
+						var connections = w.gadgetConnections(object);
+						if (connections){
+							for (var i = 0; i < connections.length; i++){
+								if (connections[i].aspect == "SLOT"){
+									addLine(slots,  "w.addChannelOutput", object, connections[i].name);
+								}
+								else{
+									addLine(events,  "w.addChannelInput", object, connections[i].name);
+								}
+							}
+						}
+						else{
+							addLine(events,  "w.addChannelInput", "null", object);
+							addLine(slots,  "w.addChannelOutput", "null", object);
+						}
+					}
+				}
+				
+					
+				function renewInterface(){
+					var iGadgets = w.getGadgetsId();
+					var channels = w.getInOutId();
+					for (var i = 0; i<iGadgets.length; i++){
+						addGadgetInterface(iGadgets[i]);
+					}
+					for (var j = 0; j<channels.length; j++){
+						addChannelInterface(channels[j])
+					}	
+				}
+	
+			
+</script>
+
+
 </head>
 
-<body onLoad="load()" style="background-color: #D4D7E4">
+<body onLoad="load()">
 
+<!-- HEADER -->
 <table style="width: 100%; height: 9%">
 	<tr>
 		<td><img src="http://europa.ls.fi.upm.es:8000/ezweb/Ezweb.png" style="width: 120; height: 60" alt="Logo cannot be shown"></td>
-		<td valign="top" style="text-align: right"><a href="javascript:;" onclick="show_showcase();">My Gadgets</a> / <a href="javascript:;" onclick="show_wiring();">My Pipes</a></td>
+		<td valign="top" style="text-align: right"><div id="toolbar">
+				<a href="javascript:;" onclick="show_showcase();">My Gadgets</a> | <a href="javascript:;" onclick="show_wiring();">My Pipes</a>
+		</div></td>
 	</tr>
 </table>
 
-<div id="dragboard" style="width: 100%; height: 90%; border: solid green 1px">dragboard</div>	
+<!-- DRAGBOARD LAYER -->
+<div id="dragboard_container" style="width:100%; height:90%; border: solid green 1px">
+<table style="position: relative; width:100%; height:4%">
+	<tr>
+		<td style="text-align:left"><h3>My Instances</h3></td>
+		<td style="text-align:right"></td>
+	</tr>
+</table>
+	<div style="position:relative; width:100%; height:93%; overflow:auto" id="dragboard">
+	<!-- DRAGBOARD VIEW -->
+	
+	</div> <!-- DRAGBOARD VIEW -->
+</div> <!-- DRAGBOARD LAYER -->
 
+<!-- SHOWCASE LAYER -->
 <div id="showcase_container"  style="width: 100%; height: 90%; border: solid red 1px; display: none">
-	<div style="position: relative; text-align:right; width:100%; height:5%"><a href="javascript:;" onclick="show_dragboard();">hide</a></div>
-	<div style="position: relative" id="showcase">showcase</div>
-</div>
+	<table style="position: relative; width:100%; height:4%">
+	<tr>
+		<td style="text-align:left"><h3>My Gadgets</h3></td>
+		<td style="text-align:right" valign="top"><a href="javascript:;" onclick="show_dragboard();">hide</a></td>
+	</tr>
+	</table>
+	<div style="position:relative; width:100%; height:93%; overflow:auto" id="showcase">
+	<!-- SHOWCASE VIEW -->
+	</div> <!-- SHOWCASE VIEW -->
+</div> <!-- SHOWCASE LAYER -->
 
-<div id="wiring_container" style="width: 100%; height: 90%; border: solid yellow 1px; display: none">
-	<div style="position: relative; text-align:right; width:100%; height:5%"><a href="javascript:;" onclick="show_dragboard();">hide</a></div>
-	<div style="position: relative" id="wiring">Wiring</div>
-</div>
+<!-- WIRING LAYER -->
+<div id="wiring_container" style="width: 100%; height: 90%; border: solid grey 1px; display: none">
+	<table style="position: relative; width:100%; height:4%">
+	<tr>
+		<td style="text-align:left"><h3>My Pipes</h3></td>
+		<td style="text-align:right" valign="top"><a href="javascript:;" onclick="show_dragboard();">hide</a></td>
+	</tr>
+	</table>
+	<div style="position:relative; width:100%; height:93%; overflow:auto" id="wiring">
+	<!-- WIRING VIEW -->
+			<div class = "left">
+
+			<input type=button 
+				   value= "renewInterface" 
+				   onclick = "renewInterface()">
+		<br>	
+		
+		<br>
+		<br>
+			<br>
+		<br>
+		<br>
+		<br>
+			<input id = "gadget9" type = text value = "id gadget...">
+			<input id = "event9"  type = text value = "name event...">
+			<input id = "value9"  type = text value = "value...">
+			<input type = button 
+				   value= "send event" 
+				   onclick = "w.sendEvent($F($('gadget9')),$F($('event9')), $F($('value9')));renewChannel($F($('selectCanal')))">
+					
+		</div>
+		<div class = "container">
+			<fieldset id = "one">
+				<div id = "selector">
+					<em>Seleccione un canal:</em>
+					<select id = "selectCanal"  onChange = "renewChannel($F($('selectCanal')))">
+						<option value = "" selected>----</option>
+				
+					</select>
+				</div>
+		
+				
+				<div id = "view">
+					<input id = "valor" type = "text" value = "">
+					<input id = "addChannel" type=image
+						src=add.png
+					    title="Create Channel"
+					    alt= "create channel"
+					    onclick = "anadirCanal()">  
+					<input id = "deleteChannel" type=image
+						src=delete.png
+						title="Delete Channel"
+					    alt= "Delete Channel" 
+					    onclick = "borrarCanal($('selectCanal').value)">
+				</div>		
+				<div id = "tab_one">
+					<table class = "header">
+						<tr><td> </td><td>Input connection</td></tr>
+					</table>
+				    <div class = "contents">
+        				<table class = "bodier" id = "eventsConnection">
+				          
+			
+				        </table>
+				      </div>
+				</div>
+				<div id = "tab_two">
+					<table class = "header">
+						<tr><td> </td><td>Output connection</td></tr>
+					</table>
+				    <div class = "contents">
+        				<table class = "bodier" id = "slotsConnection">
+						  
+				    
+				        </table>
+				      </div>
+				</div>
+
+			</fieldset>
+
+			<fieldset id = "two">
+				<div>
+				<input id = "actualiza" type = "button" value = "Actualizar">	
+				</div>
+				<div id = "selector">
+					<em>Seleccione un item:</em>
+					<select id = "itemizer"  onChange = "renewItem($F($('itemizer')))">
+						<option value = "" selected>----</option>
+						<optgroup id="canales">
+							<option value = "" disabled>Canales</option>
+							</optgroup>
+						<optgroup id ="gadgets">
+							<option value = "" disabled>Gadgets</option>
+						</optgroup>
+					</select>
+				</div>
+					<div id = "tab_one">
+					<table class = "header">
+						<tr><td> </td><td>Outputs</td></tr>
+					</table>
+				    <div class = "contents">
+        				<table class = "bodier" id = "events">
+				          
+						  
+				        </table>
+				      </div>
+				</div>
+				<div id = "tab_two">
+					<table class = "header">
+						<tr><td> </td><td>Inputs</td></tr>
+					</table>
+				    <div class = "contents">
+        				<table class = "bodier" id = "slots">
+				          
+				    
+				        </table>
+				      </div>
+				</div>
+				
+				</fieldset>
+			
+		</div>
+		<div class = "right">
+			
+		</div>
+
+	</div> <!-- WIRING VIEW -->
+</div> <!-- WIRING LAYER -->
 
 </body>
 </html>

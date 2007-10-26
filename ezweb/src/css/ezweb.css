@@ -71,6 +71,23 @@ a:hover
 	background-color:#E5ECF9;
 	color:#36C;
 }
+
+#gadgets .gadget .preferences table{
+	width:90%; 
+	margin-left:5%; 
+	margin-right:5%;
+	background-color:#E5ECF9;
+	color:#36C;
+}
+
+#gadgets .gadget .preferences input{
+	width:100%; 
+}
+
+#gadgets .gadget .preferences td{
+	text-align:left;
+}
+
 #gadgets .gadget .preferences fieldset{
 	border:none;
 }
@@ -78,7 +95,8 @@ a:hover
 #gadgets .gadget .main{
 	padding:1%;
 }
-#gadgets .gadget .main h2{
+#gadgets .gadget .main h4{
+	margin-top:1%;
 	border-bottom:1px dotted #dfdfdf;
 }
 #gadgets .gadget .main table{
@@ -91,7 +109,9 @@ a:hover
 
 }
 #gadgets .gadget .main img{
-
+	width:120px;
+	height:60px;
+	margin-bottom: 1%;
 }
 
 /* footer ------------------------------------------------------------------------------------------ */
