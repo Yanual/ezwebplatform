@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 
+from django.utils.translation import ugettext as _
+
 from persistenceEngine.gadget.models import Gadget, VariableDef
 
 class Screen(models.Model):
