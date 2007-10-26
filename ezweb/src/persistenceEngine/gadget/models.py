@@ -27,7 +27,6 @@ class VariableDefOption(models.Model):
 
 
 class VariableDef(models.Model):
-    uri = models.CharField(_('URI'), max_length=500)
     name = models.CharField(_('Name'), max_length=30)
     TYPES = (
         ('N', _('Number')),
@@ -43,9 +42,9 @@ class VariableDef(models.Model):
         ('PROP', _('Property')),
     )
     aspect = models.CharField(_('Aspect'), max_length=4, choices=ASPECTS)
-    label = models.CharField(_('Label'), max_length=50)
-    description = models.CharField(_('Description'), max_length=250)
-    friend_code = models.CharField(_('Friend code'), max_length=30)
+    label = models.CharField(_('Label'), max_length=50, null=True)
+    description = models.CharField(_('Description'), max_length=250, null=True)
+    friend_code = models.CharField(_('Friend code'), max_length=30, null=True)
     default_value = models.TextField(_('Default value'), blank=True, null=True)
     options = models.ManyToManyField(VariableDefOption, verbose_name=_('VariableDef Options'), blank=True, null=True)
     template = models.ForeignKey(Template)
@@ -54,7 +53,7 @@ class VariableDef(models.Model):
         pass
 
     def __unicode__(self):
-        return self.uri + " " + self.aspect
+        return self.template.uri + " " + self.aspect
     
       
 class XHTML(models.Model):
@@ -69,7 +68,6 @@ class XHTML(models.Model):
 
 
 class UserEventsInfo(models.Model):
-    uri = models.CharField(_('URI'), max_length=500)
     event = models.CharField(_('Event'), max_length=20)
     handler = models.CharField(_('Handler'), max_length=50)
     html_element = models.CharField(_('HtmlElement'), max_length=20)
@@ -79,7 +77,7 @@ class UserEventsInfo(models.Model):
         pass
 
     def __unicode__(self):
-        return self.uri
+        return self.xhtml.uri
 
 
 class Tag(models.Model):
@@ -104,14 +102,17 @@ class Gadget(models.Model):
     xhtml = models.ForeignKey(XHTML)
     
     author = models.CharField(_('Author'), max_length=250)
-    web = models.URLField(_('Web'))
+    mail = models.CharField(_('Mail'), max_length=30)
    
+    wikiURI = models.URLField(_('wikiURI'))
+    imageURI = models.URLField(_('imageURI'))
+
     description = models.CharField(_('Description'), max_length=250)
     tags = models.ManyToManyField(Tag, verbose_name=_('Tags'))
     
-    shared = models.BooleanField(_('Shared'), default=False)
-    user = models.ForeignKey(User, verbose_name=_('User'))
-    last_update = models.DateTimeField(_('Last update'))
+    shared = models.BooleanField(_('Shared'), default=False, null=True)
+    user = models.ForeignKey(User, verbose_name=_('User'), null=True)
+    last_update = models.DateTimeField(_('Last update'), null=True)
 
     class Meta:
         unique_together = ('vendor', 'name', 'version')
