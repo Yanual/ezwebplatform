@@ -232,13 +232,13 @@ a:hover
 	height:100%;
 }
 
-.info_resource .tags
+.info_resource .new_tags
 {
 	display:block;
 	margin-bottom:10px;
 }
 
-.info_resource .tags .my_tags
+.info_resource .new_tags .my_tags
 {
 	border:1px solid #bbbbbb;
 	margin-top:5px;
@@ -250,43 +250,43 @@ a:hover
 	height:50px;
 }
 
-.info_resource .tags .buttons
+.info_resource .new_tags .buttons
 {
 	text-align:right;
 }
 
-.info_resource .tags .my_tags *
+.info_resource .new_tags .my_tags *
 {
 	display:inline;;
 }
 
-.info_resource .tags .my_tags .tag
+.info_resource .new_tags .my_tags .new_tag
 {
 	margin-right:8px;
 }
 
-.info_resource .tags .my_tags .tag img
+.info_resource .new_tags .my_tags .new_tag img
 {
 	margin-left:2px;
 	border:none;
 }
 
-.info_resource .tags .my_tags .tag div a
+.info_resource .new_tags .my_tags .new_tag div a
 {
-	padding-bottom:4px;
+	padding-bottom:8px;
 }
 
-.info_resource .tags .my_tags .tag a:hover
+.info_resource .new_tags .my_tags .new_tag a:hover
 {
 	text-decoration:underline;
 }
 
-.info_resource .tags .my_tags .tag *
+.info_resource .new_tags .my_tags .new_tag *
 {
 	vertical-align:middle;
 }
 
-.info_resource .tags .my_tags .new_tag input
+.info_resource .new_tags .my_tags .new_tag_text input
 {
 	width:40px;
 	border:1px solid #bbbbbb;

@@ -51,7 +51,25 @@ UIUtils.hidde = function(elementId_) {
 	element.style.display = 'none';
 }
 
-UIUtils.evaluarFormulario = function(form_)
-{
+UIUtils.evaluarFormulario = function(form_) {
 	alert(form_.search_text.value);
 }
+
+UIUtils.removeTag = function(id_) {
+	var resources = CatalogueFactory.getInstance().getResources();
+	var tagger = resources[selectedResource].getTagger();
+	tagger.removeTag(id_);
+}
+
+UIUtils.addTag = function(inputText_) {
+	var resources = CatalogueFactory.getInstance().getResources();
+	var tagger = resources[selectedResource].getTagger();
+	tagger.addTag(inputText_.value);
+	inputText_.value = '';
+}
+
+// Enables you to react to return being pressed in an input
+UIUtils.onReturn = function(event_, handler_, inputText_) {
+  if (!event_) event_ = window.event;
+  if (event_ && event_.keyCode && event_.keyCode == 13) handler_(inputText_);
+};
