@@ -212,11 +212,11 @@ var WiringFactory = function () {
 			var channel = new Object();			
 			if (!(newChannel instanceof Object)){
 				// this way is ejecuted when we create a new channel.
-				if (source[newChannel] == undefined){
+				if (copy[newChannel] == undefined){
 					channel["name"] = newChannel;
 	
 					channel["ref"] = new InOut(null, newChannel);
-					source[newChannel] = channel;
+					copy[newChannel] = channel;
 					return 0;
 				}
 				else{
@@ -234,7 +234,7 @@ var WiringFactory = function () {
 		}
 		
 		Wiring.prototype.removeChannel = function (channelName){
-			var channel = source[channelName];
+			var channel = copy[channelName];
 
 			if (channel != undefined){
 				// The selected channel exists
@@ -253,7 +253,7 @@ var WiringFactory = function () {
 		Wiring.prototype.viewValue = function (channelName){
 			// this method returns the actual value of the channel if it exits, if doesn't exists returns -1
 			// ***********************
-			var channel = copy[channelName];
+			var channel = inOutList[channelName];
 			
 			if (channel != undefined){
 				return channel.ref.getValue();
@@ -529,6 +529,8 @@ var WiringFactory = function () {
 			
 			for (var i = 0; i < keys.length; i++){
 				var channel = copy[keys[i]];
+				channel.ref.value = inOutList[keys[i]].ref.value;
+				
 				channel.ref.refresh(channel.ref);
 			}
 			inOutList = copy;
