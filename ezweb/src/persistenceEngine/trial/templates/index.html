@@ -38,17 +38,18 @@
     <ul>
         <li>Listar connectable: <a onclick="do_get('/user/1/connectable/');" href="#">
             GET sobre '/user/1/connectable/'</a></li>
+        <li>Crear connectable: <a onclick="do_post('/user/1/connectable/', json['connectable']);" href="#">
+            POST sobre '/user/1/connectable/'</a></li>
     </ul>
 
 
 <script language="javascript" type="text/javascript">
-var txt;
+json["connectable"] = ""
 function do_get(url) {
     new Ajax.Request(url, {
         method: 'get',
         onSuccess: function (transport) {
             alert(transport.responseText);
-            txt = transport.responseText;
         },
         onError: function () {
             alert('Error');
@@ -61,6 +62,18 @@ function do_delete(url) {
         method: 'delete',
         onSuccess: function (transport) {
             alert('Deleted');
+        },
+        onError: function () {
+            alert('Error');
+        }
+    });
+}
+
+function do_post(url, json) {
+    new Ajax.Request(url, {
+        method: 'get',
+        onSuccess: function (transport) {
+            alert(transport.responseText);
         },
         onError: function () {
             alert('Error');

@@ -9,6 +9,6 @@ urlpatterns = patterns('connectables.views',
 
     # Connectables
     (r'^(screen/(?P<screen_id>\d+)/)?$',
-        ConnectableEntry(permitted_methods=('GET', ))),
+        ConnectableEntry(permitted_methods=('GET', 'POST'))),
 
 )

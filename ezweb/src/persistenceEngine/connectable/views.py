@@ -40,4 +40,15 @@ class ConnectableEntry(Resource):
         wiring['inouts'] = inout_data_list
         
         return HttpResponse(json_encode(wiring), mimetype='application/json; charset=UTF-8')
+    
+    def create(self, request, user_id, screen_id=None):
+        if not screen_id:
+            screen_id = 1
+        if request.POST.has_key('json'):
+            json = request.POST['json']
+        else:
+            raise Http404
+            
+        print json
+        return HttpResponse('')
 

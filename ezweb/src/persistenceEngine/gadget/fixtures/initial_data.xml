@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <django-objects version="1.0">
     <object pk="1" model="gadget.variabledef">
-        <field type="CharField" name="uri">http://vardefs.com/vardef1</field>
         <field type="CharField" name="name">vardef1</field>
         <field type="CharField" name="type">S</field>
         <field type="CharField" name="aspect">SLOT</field>
@@ -13,7 +12,6 @@
         <field to="gadget.variabledefoption" name="options" rel="ManyToManyRel"><object pk="1"></object></field>
     </object>
     <object pk="2" model="gadget.variabledef">
-        <field type="CharField" name="uri">http://vardefs.com/vardef2</field>
         <field type="CharField" name="name">variable2</field>
         <field type="CharField" name="type">B</field>
         <field type="CharField" name="aspect">PREF</field>
@@ -25,7 +23,6 @@
         <field to="gadget.variabledefoption" name="options" rel="ManyToManyRel"><object pk="4"></object></field>
     </object>
     <object pk="3" model="gadget.variabledef">
-        <field type="CharField" name="uri">http://vardefs.com/vardef3</field>
         <field type="CharField" name="name">vardef3</field>
         <field type="CharField" name="type">S</field>
         <field type="CharField" name="aspect">EVEN</field>
@@ -37,7 +34,6 @@
         <field to="gadget.variabledefoption" name="options" rel="ManyToManyRel"><object pk="4"></object></field>
     </object>
     <object pk="4" model="gadget.variabledef">
-        <field type="CharField" name="uri">http://vardefs.com/vardef4</field>
         <field type="CharField" name="name">vardef4</field>
         <field type="CharField" name="type">S</field>
         <field type="CharField" name="aspect">PROP</field>
@@ -68,7 +64,6 @@
         <field to="gadget.template" name="template" rel="ManyToOneRel">1</field>
         <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">1</field>
         <field type="CharField" name="author">Michael Jackson</field>
-        <field type="CharField" name="web">http://potalia.com</field>
         <field type="CharField" name="description">Mi primer gadget</field>
         <field type="BooleanField" name="shared">False</field>
         <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
@@ -83,7 +78,6 @@
         <field to="gadget.template" name="template" rel="ManyToOneRel">2</field>
         <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">2</field>
         <field type="CharField" name="author">Miguel de Icaza</field>
-        <field type="CharField" name="web">http://www.icaza.es</field>
         <field type="CharField" name="description">Un gadget con un poco de javascript.</field>
         <field type="BooleanField" name="shared">False</field>
         <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
@@ -98,7 +92,6 @@
         <field to="gadget.template" name="template" rel="ManyToOneRel">3</field>
         <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">1</field>
         <field type="CharField" name="author">Tim Berners Lee</field>
-        <field type="CharField" name="web">http://www.w3c.org</field>
         <field type="CharField" name="description">Otro gadget más.</field>
         <field type="BooleanField" name="shared">False</field>
         <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
@@ -106,21 +99,18 @@
         <field to="gadget.tag" name="tags" rel="ManyToManyRel"><object pk="8"></object></field>
     </object>
     <object pk="1" model="gadget.usereventsinfo">
-        <field type="CharField" name="uri">http://events.com/event1</field>
         <field type="CharField" name="event">mouseover</field>
         <field type="CharField" name="handler">mouseover_handler</field>
         <field type="CharField" name="html_element">mouseover_id</field>
         <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">1</field>
     </object>
     <object pk="2" model="gadget.usereventsinfo">
-        <field type="CharField" name="uri">http://events.com/event2</field>
         <field type="CharField" name="event">click</field>
         <field type="CharField" name="handler">click_handler</field>
         <field type="CharField" name="html_element">click_id</field>
         <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">1</field>
     </object>
     <object pk="3" model="gadget.usereventsinfo">
-        <field type="CharField" name="uri">http://events.com/event3</field>
         <field type="CharField" name="event">resize</field>
         <field type="CharField" name="handler">resize_change</field>
         <field type="CharField" name="html_element">contanier_id</field>
