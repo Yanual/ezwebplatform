@@ -54,6 +54,10 @@ Connectable.prototype.serialize = function(){ //this method will be overriden in
    return "{\"id\":\""+this.id+"\",\"type\":\""+this.type+"\",\"value\":\""+this.value+"\",\"name\":\""+this.name+"\"}";
 }
 
+Connectable.prototype.refresh = function(){ //this method will be overriden in each class
+   null; // it does not have any connection to clear
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // This class represents every object which may be placed in the middle of a connection between a In object and Out object //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

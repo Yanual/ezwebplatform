@@ -264,6 +264,7 @@ var WiringFactory = function () {
 		Wiring.prototype.sendEvent = function (iGadgetId, event, value) {
 			// asynchronous
 			var gadget = iGadgetList[iGadgetId];
+			var channelList;
 
 			if (gadget != undefined){
 				// The channel and the gadget selected exist.
@@ -278,7 +279,7 @@ var WiringFactory = function () {
 					}
 				}
 
-				list.setValue(value);
+				channelList = list.setValue(value);
 				return 1;
 			}
 			else {
@@ -529,8 +530,7 @@ var WiringFactory = function () {
 			
 			for (var i = 0; i < keys.length; i++){
 				var channel = copy[keys[i]];
-				channel.ref.value = inOutList[keys[i]].ref.value;
-				
+				channel.ref.value = inOutList[keys[i]].ref.getValue();
 				channel.ref.refresh(channel.ref);
 			}
 			inOutList = copy;
