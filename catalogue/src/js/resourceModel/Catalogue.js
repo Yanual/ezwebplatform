@@ -11,19 +11,24 @@ var CatalogueFactory  = function () {
 		//  PRIVATE VARIABLES AND FUNCTIONS
 		// *********************************
 		
-		var resources = new Array();
-		var resourcesLength = 0;
+		var resources = new HashTable();
 		
 		// ********************
 		//  PRIVILEGED METHODS
 		// ********************
 		
-		this.setResources = function(resources_) { resources = resources_; }
-		this.getResources = function() { return resources; }
-		this.addResource = function(resourceXML_, urlTemplate_) { 
-			resources["resource_" + resourcesLength] = new Resource("resource_" + resourcesLength, resourceXML_, urlTemplate_); 
-			resourcesLength++;
+		this.getResources = function() {
+			return resources;
 		}
+		
+		this.getResource = function(id_) {
+			return resources.getValue(id_);
+		}
+		
+		this.addResource = function(resourceXML_, urlTemplate_) { 
+			resources.addElement("resource_" + resources.size(), new Resource("resource_" + resources.size(), resourceXML_, urlTemplate_)); 
+		}
+		
 		this.addResourceToShowCase = function(resourceId_) {
 			UIUtils.showResourceInfo(resourceId_);
 			alert(resourceId_);

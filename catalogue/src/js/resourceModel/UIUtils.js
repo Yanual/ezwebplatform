@@ -26,7 +26,7 @@ UIUtils.deselectResource = function(resourceId_) {
 	
 UIUtils.showResourceInfo = function(resourceId_) {
 	selectedResource = resourceId_;
-	CatalogueFactory.getInstance().getResources()[resourceId_].showInfo();
+	CatalogueFactory.getInstance().getResource(selectedResource).showInfo();
 }
 	
 UIUtils.toggle = function(elementId_) {
@@ -56,16 +56,25 @@ UIUtils.evaluarFormulario = function(form_) {
 }
 
 UIUtils.removeTag = function(id_) {
-	var resources = CatalogueFactory.getInstance().getResources();
-	var tagger = resources[selectedResource].getTagger();
+	var tagger = CatalogueFactory.getInstance().getResource(selectedResource).getTagger();
 	tagger.removeTag(id_);
 }
 
+UIUtils.removeAllTags = function() {
+	var tagger = CatalogueFactory.getInstance().getResource(selectedResource).getTagger();
+	tagger.removeAll();
+}
+
+UIUtils.sendTags = function() {
+	var tagger = CatalogueFactory.getInstance().getResource(selectedResource).getTagger();
+	tagger.sendTags();
+}
+
 UIUtils.addTag = function(inputText_) {
-	var resources = CatalogueFactory.getInstance().getResources();
-	var tagger = resources[selectedResource].getTagger();
+	var tagger = CatalogueFactory.getInstance().getResource(selectedResource).getTagger();
 	tagger.addTag(inputText_.value);
 	inputText_.value = '';
+	inputText_.focus();
 }
 
 // Enables you to react to return being pressed in an input

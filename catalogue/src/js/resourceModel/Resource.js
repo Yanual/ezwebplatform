@@ -20,10 +20,16 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 	
 	this.paint = function(){
 		var newResource = document.createElement("div");
-		newResource.innerHTML = "<div class='resource' id='" + id + "' onMouseOver='UIUtils.selectResource(\"" + id + "\");' onMouseOut='UIUtils.deselectResource(\"" + id + "\");'>" +
-									"<div class='title'>" + state.getName() + "</div>" +
-									"<div class='image'><a href='javascript:UIUtils.showResourceInfo(\"" + id + "\");'><img src='" + state.getUriImage() + "' alt='Click para m&aacute;s informaci&oacute;n'></img></a></div>" +
-									"<button onclick='CatalogueFactory.getInstance().addResourceToShowCase(\"" + id + "\");'>A&ntilde;adir a la Paleta</button>";
+		newResource.setAttribute('id', id);
+		newResource.innerHTML = "<div class='resource' onMouseOver='UIUtils.selectResource(\"content_" + id + "\");' onMouseOut='UIUtils.deselectResource(\"content_" + id + "\");'>" +
+									"<div class = 'top'></div>" +
+									"<div class = 'toolbar'>Encabezado</div>" +
+									"<div id='content_" + id + "' class = 'content'>" +
+										"<div class='title'>" + state.getName() + "</div>" +
+										"<div class='image'><a href='javascript:UIUtils.showResourceInfo(\"" + id + "\");'><img src='" + state.getUriImage() + "' alt='Click para m&aacute;s informaci&oacute;n'></img></a></div>" +
+										"<button onclick='CatalogueFactory.getInstance().addResourceToShowCase(\"" + id + "\");'>A&ntilde;adir a la Paleta</button>";
+									"</div>" +
+									"<div class = 'bottom'></div>" +
 								"</div>";
 		var parentHTML = document.getElementById("resources");
 		parentHTML.insertBefore(newResource, parentHTML.firstChild);
@@ -38,27 +44,21 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 									"<div class='vendor'>" + state.getVendor() + "</div>" +
 									"<div class='description'>Descripci&oacute;n:<br/><div class='text'>" + state.getDescription() + "</div></div>" +
 									"<div class='image'><img src='" + state.getUriImage() + "' alt='" + state.getName()+ "&nbsp;" + state.getVersion() + "'/></div>" +
-									"<div id='add_tags_panel' class='new_tags' style='display:none;'><form onSubmit='return false;'>" +
+									"<div id='add_tags_panel' class='new_tags' style='display:none;'>" +
 										"<div class='title'>Nuevas Etiquetas:</div>" +
 										"<div id='my_tags' class='my_tags'>" +
-	//										"<div id='tag_1' class='tag' onmouseover='UIUtils.hidde(\"button_disable_tag_1\");UIUtils.show(\"button_enable_tag_1\");' onmouseout='UIUtils.hidde(\"button_enable_tag_1\");UIUtils.show(\"button_disable_tag_1\");'><a>Hola</a><div id='button_disable_tag_1'><a><img src='images/remove_disable.gif' alt=''></img></a></div><div id='button_enable_tag_1' style='display:none;'><a href='#' onclick='javascript:removeTag(\"Hola\");'><img src='images/remove_enable.gif' alt=''></img></a></div>,</div>" +
-	//										"<div id='tag_2' class='tag' onmouseover='UIUtils.hidde(\"button_disable_tag_2\");UIUtils.show(\"button_enable_tag_2\");' onmouseout='UIUtils.hidde(\"button_enable_tag_2\");UIUtils.show(\"button_disable_tag_2\");'><a>Adios</a><div id='button_disable_tag_2'><a><img src='images/remove_disable.gif' alt=''></img></a></div><div id='button_enable_tag_2' style='display:none;'><a href='#' onclick='javascript:removeTag(\"Adios\");'><img src='images/remove_enable.gif' alt=''></img></a></div>,</div>" +
-	//										"<div id='tag_3' class='tag' onmouseover='UIUtils.hidde(\"button_disable_tag_3\");UIUtils.show(\"button_enable_tag_3\");' onmouseout='UIUtils.hidde(\"button_enable_tag_3\");UIUtils.show(\"button_disable_tag_3\");'><a>Hello</a><div id='button_disable_tag_3'><a><img src='images/remove_disable.gif' alt=''></img></a></div><div id='button_enable_tag_3' style='display:none;'><a href='#' onclick='javascript:removeTag(\"Hello\");'><img src='images/remove_enable.gif' alt=''></img></a></div>,</div>" +
-											"<div id='new_tag_text' class='new_tag_text'><input type='text' onkeypress=\"UIUtils.onReturn(event,UIUtils.addTag,this);\"/></div>" +
+											"<div id='new_tag_text' class='new_tag_text'><input id='new_tag_text_input' type='text' onkeypress=\"UIUtils.onReturn(event,UIUtils.addTag,this);\"/></div>" +
 										"</div>" +
 										"<div class='buttons'>" +
-											"<button onclick=''>Etiquetar</button>" +
-											"<button onClick='javascript:UIUtils.toggle(\"add_tags_panel\");UIUtils.toggle(\"add_tags_link\");'>Cancelar</button>" +
+											"<button onclick='javascript:UIUtils.sendTags();'>Etiquetar</button>" +
+											"<button onClick='javascript:UIUtils.toggle(\"add_tags_panel\");UIUtils.toggle(\"add_tags_link\");UIUtils.removeAllTags();'>Cancelar</button>" +
 										"</div>" +
-									"</form></div>" +
-									"<div id='add_tags_link' class='link'><a href='#' onClick='javascript:UIUtils.toggle(\"add_tags_link\");UIUtils.toggle(\"add_tags_panel\");'>Etiquetar el recurso</a></div>" +
+									"</div>" +
+									"<div id='add_tags_link' class='link'><a href='#' onClick='javascript:UIUtils.toggle(\"add_tags_link\");UIUtils.toggle(\"add_tags_panel\");document.getElementById(\"new_tag_text_input\").focus();'>Etiquetar el recurso</a></div>" +
 									"<div class='link'><a href='" + state.getUriWiki() + "' target='_blank'>Acceder a la Wiki</a></div>" +
 									"<div class='link'><a href='" + state.getUriTemplate() + "' target='_blank'>Acceder al Template</a></div>" +
 								"</div>" +
 								"<button onclick='CatalogueFactory.getInstance().addResourceToShowCase(UIUtils.getSelectedResource());'>A&ntilde;adir a la Paleta</button>";
-//		UIUtils.addTag("Hola");
-//		UIUtils.addTag("Paco");
-//		UIUtils.addTag("Adios");
 	}
 	
 	this.addTag = function(value_) {

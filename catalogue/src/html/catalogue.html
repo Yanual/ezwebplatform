@@ -11,25 +11,26 @@
 		<script language="JavaScript" src="../js/resourceModel/Catalogue.js"></script>
 		<script language="JavaScript" src="../js/resourceModel/Resource.js"></script>
 		<script language="JavaScript" src="../js/resourceModel/Tagger.js"></script>
+		<script language="JavaScript" src="../js/resourceModel/HashTable.js"></script>
 	</head>
-	<body onload="CatalogueFactory.getInstance().loadCatalogue('prueba.xml');">
+	<body onload="CatalogueFactory.getInstance().loadCatalogue('prueba.xml');document.getElementById('simple_search_text').focus();">
 		<div id="main" class="main">
 			<div id="head" class="head">
 				<div id="search" class="search">
 					<div id="simple_search" class="simple_search">
 						<form onsubmit="return false;">
 							<label for="search_text">Busqueda simple:</label>
-							<input type="text" name="search_text" class="text" autocomplete="on"></input>
+							<input type="text" id="simple_search_text" name="simple_search_text" class="text" autocomplete="on"></input>
 							<button onclick="UIUtils.evaluarFormulario(this.form);">Buscar</button><br/>
-							<a href="#" onclick="javascript:UIUtils.toggle('simple_search');UIUtils.toggle('advanced_search');">Mostrar b&uacute;squeda avanzada</a>
+							<a href="#" onclick="javascript:UIUtils.toggle('simple_search');UIUtils.toggle('advanced_search');document.getElementById('advanced_search_text').focus();">Mostrar b&uacute;squeda avanzada</a>
 						</form>
 					</div>
 					<div id="advanced_search" class="advanced_search" style="display:none;">
 						<form onsubmit="return false;">
 							<label for="search_text">Busqueda avanzada:</label>
-							<input type="text" name="search_text" class="text" autocomplete="on"></input>
+							<input type="text" id="advanced_search_text" name="advanced_search_text" class="text" autocomplete="on"></input>
 							<button onclick="UIUtils.evaluarFormulario(this.form);">Buscar</button><br/>
-							<a href="#" onclick="javascript:UIUtils.toggle('advanced_search');UIUtils.toggle('simple_search');">Mostrar b&uacute;squeda simple</a>
+							<a href="#" onclick="javascript:UIUtils.toggle('advanced_search');UIUtils.toggle('simple_search');document.getElementById('simple_search_text').focus();">Mostrar b&uacute;squeda simple</a>
 						</form>
 					</div>
 				</div>

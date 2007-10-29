@@ -104,18 +104,50 @@ a:hover
 
 .resource
 {
-	padding:5px;
 	display:inline;
 	float:left;
-	width:180px;
-	height:165px;
+	width:190px;
+	height:180px;
 	margin:5px;
+	background:none;
+	text-align:center;
+}
+
+.top 
+{
+	display: block;
+	z-index: 2;
+	width: 192px;
+	height: 10px;
+	top: -5px;
+	background: url(images/resource-left-top.png) no-repeat top right;
+}
+
+.resource .toolbar
+{
+	display:block;
+	width:100%;
+	height:30px;
+	background-color:#0000ff;
+	text-align:center;
+	color:#ffffff;
+}
+
+.resource .content
+{
+	border:2px solid #0000ff;
+	padding-top:5px;
+	padding-bottom:5px;
+	display:block;
+	width:186px;
+	height:136px;
 	background-color:#ccddff;
 	text-align:center;
 	color:#000000;
 }
 
-.resource .title
+
+.resource .content .title
 {
 	overflow:hidden;
 	font-size:15px;
@@ -123,19 +155,20 @@ a:hover
 	height:20px;
 }
 
-.resource .image
+.resource .content .image
 {
 	display:block;
-	margin-top:10px;
+	margin-top:5px;
 	margin-bottom:10px;
 	text-align:center;
 	width:100%;
-	height:100px;
+	height:80px;
 }
 
-.resource .image img
+.resource .content .image img
 {
-	width:90%;
+	width:170px;
+	height:80px;
 	border:none;
 }
 
@@ -229,7 +262,8 @@ a:hover
 
 .info_resource .image img
 {
-	height:100%;
+	width:210px;
+	height:100px;
 }
 
 .info_resource .new_tags

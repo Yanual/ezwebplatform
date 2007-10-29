@@ -1,14 +1,22 @@
 function Tagger(){
-	var tags = [];
-	var nextTag = 0;
+	
+	var tags = new HashTable();
 	
 	this.addTag = function(tag_) {
-		var id = 'new_tag_' + (nextTag++);
-		tags[id] = tag_;
-		paintTag(id, tag_);
+		if (tag_.length < 3) {
+			alert("La etiqueta debe tener al menos tres caracteres.");
+		}
+		else {
+			if (!tags.contains(tag_)) {
+				var id = 'new_tag_' + tags.size();
+				tags.addElement(id, tag_);
+				paintTag(id, tag_);
+			}
+		}
 	}
+
 	this.removeTag = function(id_) { 
-		tags[id_] = null;
+		tags.removeElement(id_);
 		eraserTag(id_);
 	}
 	
@@ -17,23 +25,35 @@ function Tagger(){
 		eraserAll();
 	}
 	
+	this.sendTags = function()
+	{
+		var elements = tags.getValues();
+		var tagsXML = 	"<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + 
+							"<tags>";
+		for (i=0; i<elements.size(); i++)
+		{
+			tagsXML += ("<tag>" + elements[i] + "</tag>");
+		}
+		tagsXML += "</tags>"
+		alert(tagsXML);
+	}
+	
 	var paintTag = function(id_, tag_) {
 		var newTag = document.createElement("div");
 		newTag.setAttribute('id', id_);
-		newTag.setAttribute('class', 'new_tag');
-		newTag.setAttribute('onmouseover', "UIUtils.hidde('button_disable_" + id_ + "');UIUtils.show('button_enable_" + id_ + "');");
-		newTag.setAttribute('onmouseout', "UIUtils.hidde('button_enable_" + id_ + "');UIUtils.show('button_disable_" + id_ + "');");
-		newTag.innerHTML = 	tag_ + 
-							"<div id='button_disable_" + id_ + "'>" +
-								"<a>" +
-									"<img src='images/remove_disable.gif' alt=''></img>" +
-								"</a>" +
-							"</div>" +
-							"<div id='button_enable_" + id_ + "' style='display:none;'>" +
-								"<a href='#' onclick='javascript:UIUtils.removeTag(\"" + id_ + "\");'>" +
-									"<img src='images/remove_enable.gif' alt=''></img>" +
-								"</a>" +
-							"</div>,";
+		newTag.innerHTML = 	"<div class='new_tag' onmouseover=\"UIUtils.hidde('button_disable_" + id_ + "');UIUtils.show('button_enable_" + id_ + "');\" onmouseout=\"UIUtils.hidde('button_enable_" + id_ + "');UIUtils.show('button_disable_" + id_ + "');\">" + 
+								tag_ + 
+								"<div id='button_disable_" + id_ + "'>" +
+									"<a>" +
+										"<img src='images/remove_disable.gif' alt=''></img>" +
+									"</a>" +
+								"</div>" +
+								"<div id='button_enable_" + id_ + "' style='display:none;'>" +
+									"<a href='#' onclick='javascript:UIUtils.removeTag(\"" + id_ + "\");'>" +
+										"<img src='images/remove_enable.gif' alt=''></img>" +
+									"</a>" +
+								"</div>," + 
+							"</div>";
 		var parentHTML = document.getElementById("my_tags");
 		parentHTML.insertBefore(newTag, parentHTML.lastChild);
 	}
@@ -45,6 +65,10 @@ function Tagger(){
 	}
 	
 	var eraserAll = function() {
-		
+		var parentHTML = document.getElementById("my_tags");
+		while(parentHTML.childNodes.length > 1)
+		{
+			parentHTML.removeChild(parentHTML.childNodes[0]);
+		}
 	} 
 }
