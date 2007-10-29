@@ -104,10 +104,11 @@ a:hover
 
 .resource
 {
+	position:relative;
 	display:inline;
 	float:left;
-	width:190px;
-	height:180px;
+	width:192px;
+	height:190px;
 	margin:5px;
 	background:none;
 	text-align:center;
@@ -115,9 +116,13 @@ a:hover
 
 .resource .top 
 {
+	position: absolute;
 	display: block;
 	width: 192px;
 	height: 7px;
+	padding: 0px;
+    margin: 0px;
+	top:-5px;
 	background: url(../html/images/resource-left-top.png) no-repeat top right;
 }
 
@@ -127,6 +132,8 @@ a:hover
 	display: block;
 	width: 192px;
 	height: 11px;
+	padding: 0px;
+	bottom: 5px;
 	background: url(../html/images/resource-left-bottom.png) no-repeat bottom right;
 }
 
@@ -134,9 +141,18 @@ a:hover
 {
 	display:block;
 	width: 192px;
-	height:23px;
-	text-align:center;
+	height: 23px;
+	padding: 0px;
+    margin: 0px;
+	text-align:right;
 	background: url(../html/images/resource-left-header.png) no-repeat bottom right;
+}
+
+.resource .toolbar *
+{
+	margin-top:3px;
+	margin-right:3px;
+	border:none;
 }
 
 .resource .content
@@ -145,7 +161,8 @@ a:hover
 	padding-bottom:5px;
 	display:block;
 	width:192px;
-	height:136px;
+	height:149px;
+    margin: 0px;
 	background: url(../html/images/resource-left-fill.png) repeat-y top right;
 	text-align:center;
 	color:#000000;
@@ -311,7 +328,7 @@ a:hover
 
 .info_resource .new_tags .my_tags .new_tag div a
 {
-	padding-bottom:8px;
+	padding-bottom:6px;
 }
 
 .info_resource .new_tags .my_tags .new_tag a:hover

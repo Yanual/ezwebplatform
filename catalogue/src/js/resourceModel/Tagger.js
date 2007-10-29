@@ -45,12 +45,12 @@ function Tagger(){
 								tag_ + 
 								"<div id='button_disable_" + id_ + "'>" +
 									"<a>" +
-										"<img src='images/remove_disable.gif' alt=''></img>" +
+										"<img src='images/cancel_gray.png' alt=''></img>" +
 									"</a>" +
 								"</div>" +
 								"<div id='button_enable_" + id_ + "' style='display:none;'>" +
 									"<a href='#' onclick='javascript:UIUtils.removeTag(\"" + id_ + "\");'>" +
-										"<img src='images/remove_enable.gif' alt=''></img>" +
+										"<img src='images/cancel_red.png' alt=''></img>" +
 									"</a>" +
 								"</div>," + 
 							"</div>";

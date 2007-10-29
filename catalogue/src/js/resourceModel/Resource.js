@@ -22,8 +22,22 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 		var newResource = document.createElement("div");
 		newResource.setAttribute('id', id);
 		newResource.innerHTML = "<div class='resource' onMouseOver='UIUtils.selectResource(\"" + id + "\");' onMouseOut='UIUtils.deselectResource(\"" + id + "\");'>" +
-									"<div class = 'top'></div>" +
-									"<div class = 'toolbar' onMouseOver='UIUtils.show(\"" + id + "_toolbar\");' onMouseOut='UIUtils.hidde(\"" + id + "_toolbar\");'><div id='" + id + "_toolbar' style='display:none;'>Hola</div></div>" +
+									"<div class='tools'  onMouseOver='UIUtils.show(\"" + id + "_toolbar\");' onMouseOut='UIUtils.hidde(\"" + id + "_toolbar\");'>" +
+										"<div class='top'></div>" +
+										"<div class='toolbar'>" +
+											"<div id='" + id + "_toolbar' style='display:none;'>" +
+												"<a href=''>" +
+													"<img src='images/description.png' alt='Descripci&oacute;n'></img>" +
+												"</a>" +
+												"<a href='" + state.getUriWiki() + "' target='_blank'>" +
+													"<img src='images/wiki.png' alt='Wiki'></img>" +
+												"</a>" +
+												"<a href='" + state.getUriTemplate() + "' target='_blank'>" +
+													"<img src='images/template.png' alt='Template'></img>" +
+												"</a>" +
+											"</div>" +
+										"</div>" +
+									"</div>" +
 									"<div id='" + id + "_content' class='content'>" +
 										"<div class='title'>" + state.getName() + "</div>" +
 										"<div class='image'><a href='javascript:UIUtils.showResourceInfo(\"" + id + "\");'><img src='" + state.getUriImage() + "' alt='Click para m&aacute;s informaci&oacute;n'></img></a></div>" +
