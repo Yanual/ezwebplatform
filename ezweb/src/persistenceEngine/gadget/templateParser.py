@@ -39,6 +39,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
     _user_id = ""
     _gadgetURI = ""
     _xhtml = ""
+    _lastPreference = ""
 
 
     def setUser(self, user_id):
@@ -91,7 +92,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 
             vDef.save()
         else:
-            print "Needed attributed missed!"
+            print "Needed attributed missed in processProperty"
 
     def processPreference(self, attrs):
         _name = ''
@@ -119,8 +120,11 @@ class TemplateHandler(saxutils.handler.ContentHandler):
                                 template=self._template )
     
             vDef.save()
+
+            self._lastPreference = vDef
+                
         else:
-            print "Needed attributed missed!"
+            print "Needed attributed missed in processPreference"
 
 
     def processWire(self, attrs):
@@ -161,7 +165,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 
             vDef.save()
         else:
-            print "Needed attributed missed!"
+            print "Needed attributed missed in processWire!"
 
     def processXHTML (self, attrs):
         _href=""
@@ -175,6 +179,24 @@ class TemplateHandler(saxutils.handler.ContentHandler):
             gadgetParser.parseUserEvents(_href, self._user_id, self._gadgetURI)
 
             self._xhtml = gadgetParser.getXHTML()
+
+    def processOption (self, attrs):
+        _value=""
+        _name=""
+
+        print "processing Option"
+        print self._lastPreference.type
+
+        if (attrs.has_key('name')==True):
+            _name = attrs.get('name')
+
+        if (attrs.has_key('value')==True):
+            _value = attrs.get('value')
+
+        if (_value!= "") and (_name!="") and (self._lastPreference.type ==  self.typeText2typeCode("list")):
+            option = UserPrefOption(value=_value, name=_name, variableDef=self._lastPreference)
+
+            option.save()
 
 ###############
 
@@ -199,6 +221,10 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 
         if (name == 'XHTML'):
             self.processXHTML(attrs)
+            return
+
+        if (name == 'Option'):
+            self.processOption(attrs)
             return
 
 
@@ -267,6 +293,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
                 and self._gadgetMail != "" and self._gadgetDesc != "" \
                 and self._gadgetWiki != "" and self._gadgetImage != "":
 
+            
             gadget = Gadget ( uri=self._gadgetURI, vendor=self._gadgetVendor, 
                               name=self._gadgetName, version=self._gadgetVersion, 
                               template=self._template, xhtml=self._xhtml, 
@@ -274,7 +301,8 @@ class TemplateHandler(saxutils.handler.ContentHandler):
                               wikiURI=self._gadgetWiki, imageURI=self._gadgetImage, 
                               description=self._gadgetDesc )
 
-            gadget.save()
 
+            gadget.save()
+            
     def reset_Accumulator(self):
         self._accumulator = ""

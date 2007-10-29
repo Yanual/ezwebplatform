@@ -16,16 +16,6 @@ class Template(models.Model):
         return self.uri
 
 
-class VariableDefOption(models.Model):
-    option = models.CharField(_('Option'), max_length=30)
-    
-    class Admin:
-        pass
-    
-    def __unicode__(self):
-        return self.option
-
-
 class VariableDef(models.Model):
     name = models.CharField(_('Name'), max_length=30)
     TYPES = (
@@ -46,7 +36,6 @@ class VariableDef(models.Model):
     description = models.CharField(_('Description'), max_length=250, null=True)
     friend_code = models.CharField(_('Friend code'), max_length=30, null=True)
     default_value = models.TextField(_('Default value'), blank=True, null=True)
-    options = models.ManyToManyField(VariableDefOption, verbose_name=_('VariableDef Options'), blank=True, null=True)
     template = models.ForeignKey(Template)
 
     class Admin:
@@ -54,7 +43,31 @@ class VariableDef(models.Model):
 
     def __unicode__(self):
         return self.template.uri + " " + self.aspect
+
+
+class UserPrefOption(models.Model):
+    value = models.CharField(_('Value'), max_length=30)
+    name = models.CharField(_('Name'), max_length=30)
+    variableDef = models.ForeignKey(VariableDef)
     
+    class Admin:
+        pass
+    
+    def __unicode__(self):
+        return self.variableDef.template.uri + " " + self.name
+
+
+class VariableDefAttr(models.Model):
+    value = models.CharField(_('Value'), max_length=30)
+    name = models.CharField(_('Name'), max_length=30)
+    variableDef = models.ForeignKey(VariableDef)
+    
+    class Admin:
+        pass
+    
+    def __unicode__(self):
+        return self.variableDef + self.name
+
       
 class XHTML(models.Model):
     uri = models.CharField(_('URI'), max_length=500)

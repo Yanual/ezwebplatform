@@ -19,6 +19,8 @@ class GadgetCodeParser(HTMLParser):
 
         self.feed(xhtml)
 
+        return
+
     def handle_starttag(self, tag, attrs):
         handler = None
         event = None
@@ -39,6 +41,8 @@ class GadgetCodeParser(HTMLParser):
         if (handler != None and event != None and id != None):
             mapping = UserEventsInfo(event=event, handler=handler,html_element=id, xhtml=self.xHTML)
             mapping.save()
+
+        return
 
     def getXHTML (self):
         return self.xHTML
