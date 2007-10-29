@@ -21,15 +21,15 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 	this.paint = function(){
 		var newResource = document.createElement("div");
 		newResource.setAttribute('id', id);
-		newResource.innerHTML = "<div class='resource' onMouseOver='UIUtils.selectResource(\"content_" + id + "\");' onMouseOut='UIUtils.deselectResource(\"content_" + id + "\");'>" +
+		newResource.innerHTML = "<div class='resource' onMouseOver='UIUtils.selectResource(\"" + id + "\");' onMouseOut='UIUtils.deselectResource(\"" + id + "\");'>" +
 									"<div class = 'top'></div>" +
-									"<div class = 'toolbar'>Encabezado</div>" +
-									"<div id='content_" + id + "' class = 'content'>" +
+									"<div class = 'toolbar' onMouseOver='UIUtils.show(\"" + id + "_toolbar\");' onMouseOut='UIUtils.hidde(\"" + id + "_toolbar\");'><div id='" + id + "_toolbar' style='display:none;'>Hola</div></div>" +
+									"<div id='" + id + "_content' class='content'>" +
 										"<div class='title'>" + state.getName() + "</div>" +
 										"<div class='image'><a href='javascript:UIUtils.showResourceInfo(\"" + id + "\");'><img src='" + state.getUriImage() + "' alt='Click para m&aacute;s informaci&oacute;n'></img></a></div>" +
-										"<button onclick='CatalogueFactory.getInstance().addResourceToShowCase(\"" + id + "\");'>A&ntilde;adir a la Paleta</button>";
+										"<button onclick='CatalogueFactory.getInstance().addResourceToShowCase(\"" + id + "\");'>A&ntilde;adir a la Paleta</button>" +
 									"</div>" +
-									"<div class = 'bottom'></div>" +
+									"<div id='" + id + "_bottom' class = 'bottom'></div>" +
 								"</div>";
 		var parentHTML = document.getElementById("resources");
 		parentHTML.insertBefore(newResource, parentHTML.firstChild);

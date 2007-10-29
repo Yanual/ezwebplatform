@@ -7,21 +7,27 @@ function UIUtils()
 }
 
 UIUtils.selectedResource = null;
-UIUtils.auxColor = 'none';
+UIUtils.imageBottom = '';
+UIUtils.imageContent = '';
 
 UIUtils.getSelectedResource = function() {
 	return selectedResource;
 }
 	
 UIUtils.selectResource = function(resourceId_) {
-	var resource = document.getElementById(resourceId_);
-	auxColor = resource.style.backgroundColor;
-	resource.style.backgroundColor = "#aabbff";
+	var bottom = document.getElementById(resourceId_ + '_bottom');
+	imageBottom = bottom.style.backgroundImage;
+	bottom.style.backgroundImage = 'url(images/resource-left-bottom-select.png)';
+	var content = document.getElementById(resourceId_ + '_content');
+	imageContent = content.style.backgroundImage;
+	content.style.backgroundImage = 'url(images/resource-left-fill-select.png)';
 }
 	
 UIUtils.deselectResource = function(resourceId_) {
-	var resource = document.getElementById(resourceId_);
-	resource.style.backgroundColor = auxColor;
+	var bottom = document.getElementById(resourceId_ + '_bottom');
+	bottom.style.backgroundImage = imageBottom;
+	var content = document.getElementById(resourceId_ + '_content');
+	content.style.backgroundImage = imageContent;
 }
 	
 UIUtils.showResourceInfo = function(resourceId_) {
