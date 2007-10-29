@@ -9,7 +9,7 @@ class InOut(models.Model):
     uri = models.CharField(_('URI'), max_length=500, unique=True)
     
     name = models.CharField(_('Name'), max_length=30)
-    value = models.CharField(_('Value'), max_length=100)
+    value = models.CharField(_('Value'), max_length=100, blank=True, null=True)
     friend_code = models.CharField(_('Friend code'), max_length=30, blank=True, null=True)
     
     user = models.ForeignKey(User, verbose_name=_('User'))
@@ -20,7 +20,7 @@ class InOut(models.Model):
     def __unicode__(self):
         return self.uri + " " + self.name
 
-     
+
 class In(models.Model):
     uri = models.CharField(_('URI'), max_length=500, unique=True)
     
@@ -37,6 +37,7 @@ class In(models.Model):
     def __unicode__(self):
         return self.uri + " " + self.name
     
+
 class Out(models.Model):
     uri = models.CharField(_('URI'), max_length=500, unique=True)
     

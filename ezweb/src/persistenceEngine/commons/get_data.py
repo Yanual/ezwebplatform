@@ -50,11 +50,12 @@ def get_igadget_data(data):
     data_fields = data['fields']
     data_ret['uri'] = data_fields['uri']
     
-    data_variables = get_list_or_404(Variable.objects.all().values('vardef', 'value'), igadget=data['pk'])
-    data_ret['variables'] = {}
+    data_variables = get_list_or_404(Variable.objects.all().values('vardef', 'value', 'uri'), igadget=data['pk'])
+    data_ret['variables'] = []
     for data_variable in data_variables:
         data_vardef = get_object_or_404(VariableDef.objects.all().values('name', 'aspect', 'type'), id=data_variable['vardef'])
-        data_ret['variables'] = data_vardef
-        data_ret['variables']['value'] = data_variable['value']
+        data_vardef['value'] = data_variable['value']
+        data_vardef['uri'] = data_variable['uri']
+        data_ret['variables'].append(data_vardef)
     
     return data_ret

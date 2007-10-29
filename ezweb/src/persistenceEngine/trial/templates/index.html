@@ -10,7 +10,11 @@
 </head>
 
 <body>
+<script language="javascript" type="text/javascript">
+var json = [];
+json["connectable"] = eval({"igadgets": [{"variables": [{"aspect": "SLOT", "type": "S", "name": "vardef1", "value": "valor por defecto", "uri": "http://vars.com/var1"}], "uri": "http://igadgets.com/igadget4"}, {"variables": [{"aspect": "EVEN", "type": "S", "name": "vardef3", "value": "evento", "uri": "http://vars.com/var5"}, {"aspect": "EVEN", "type": "S", "name": "vardef3", "value": "valor predeterminado", "uri": "http://vars.com/var4"}], "uri": "http://igadgets.com/igadget3"}, {"variables": [{"aspect": "SLOT", "type": "S", "name": "vardef1", "value": "null", "uri": "http://vars.com/var2"}], "uri": "http://igadgets.com/igadget2"}, {"variables": [{"aspect": "PROP", "type": "S", "name": "vardef4", "value": "Corta", "uri": "http://vars.com/var3"}], "uri": "http://igadgets.com/igadget1"}], "inouts": [{"outs": [{"uri": "http://outs.com/out3", "name": "out3"}], "name": "inout3", "uri": "http://inouts.com/inout3", "value": "null", "ins": [{"uri": "http://ins.com/in6", "name": "in6"}, {"uri": "http://ins.com/in5", "name": "in5"}], "friend_code": ""}, {"outs": [{"uri": "http://outs.com/out5", "name": "out5"}, {"uri": "http://outs.com/out2", "name": "out2"}], "name": "inout2", "uri": "http://inouts.com/inout2", "value": "valor de intercambio", "ins": [{"uri": "http://ins.com/in4", "name": "in4"}], "friend_code": "address"}, {"outs": [{"uri": "http://outs.com/out4", "name": "out4"}, {"uri": "http://outs.com/out1", "name": "out1"}], "name": "inout1", "uri": "http://inouts.com/inout1", "value": "valor \"entremedio\"", "ins": [{"uri": "http://ins.com/in3", "name": "in3"}, {"uri": "http://ins.com/in2", "name": "in2"}, {"uri": "http://ins.com/in1", "name": "in1"}], "friend_code": "car"}]});
 
+</script>
     <h1>Pruebas ReST sobre el modelo de datos</h1>
     <h2>Gadget</h2>
     <ul>
@@ -44,7 +48,7 @@
 
 
 <script language="javascript" type="text/javascript">
-json["connectable"] = ""
+
 function do_get(url) {
     new Ajax.Request(url, {
         method: 'get',
@@ -71,7 +75,8 @@ function do_delete(url) {
 
 function do_post(url, json) {
     new Ajax.Request(url, {
-        method: 'get',
+        method: 'post',
+        parameters: "json="+Object.toJSON(json),
         onSuccess: function (transport) {
             alert(transport.responseText);
         },
