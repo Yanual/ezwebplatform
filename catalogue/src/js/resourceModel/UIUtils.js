@@ -57,6 +57,11 @@ UIUtils.hidde = function(elementId_) {
 	element.style.display = 'none';
 }
 
+UIUtils.changeImage = function(elementId_, newImage_) {
+	var element = document.getElementById(elementId_);
+	element.src = newImage_;
+}
+
 UIUtils.evaluarFormulario = function(form_) {
 	alert(form_.search_text.value);
 }

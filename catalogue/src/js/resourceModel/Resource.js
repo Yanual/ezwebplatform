@@ -25,23 +25,14 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 									"<div class='top'></div>" +
 									"<div class='toolbar'>" +
 										"<div id='" + id + "_toolbar' style='display:none;'>" +
-											"<a id='" + id + "_description_disable' href='#' onmouseover=\"UIUtils.hidde('" + id_ + "_description_disable');UIUtils.show('" + id_ + "_description_enable');\">" +
-												"<img src='images/description_gray.png' alt=''></img>" +
+											"<a href='#' onmouseover=\"UIUtils.changeImage('" + id_ + "_description', 'images/description.png');\" onmouseout=\"UIUtils.changeImage('" + id_ + "_description', 'images/description_gray.png');\">" +
+												"<img id='" + id + "_description' src='images/description_gray.png' alt=''></img>" +
 											"</a>" +
-											"<a id='" + id + "_description_enable' href='#' style='display:none;' onmouseout=\"UIUtils.hidde('" + id_ + "_description_enable');UIUtils.show('" + id_ + "_description_disable');\">" +
-												"<img src='images/description.png' alt='Descripci&oacute;n'></img>" +
+											"<a href='" + state.getUriWiki() + "' target='_blank'  onmouseover=\"UIUtils.changeImage('" + id_ + "_wiki', 'images/wiki.png');\" onmouseout=\"UIUtils.changeImage('" + id_ + "_wiki', 'images/wiki_gray.png');\">" +
+												"<img id='" + id + "_wiki' src='images/wiki_gray.png' alt='Wiki'></img>" +
 											"</a>" +
-											"<a id='" + id + "_wiki_disable' href='#' onmouseover=\"UIUtils.hidde('" + id_ + "_wiki_disable');UIUtils.show('" + id_ + "_wiki_enable');\">" +
-												"<img src='images/wiki_gray.png' alt=''></img>" +
-											"</a>" +
-											"<a id='" + id + "_wiki_enable' href='" + state.getUriWiki() + "' target='_blank' style='display:none;' onmouseout=\"UIUtils.hidde('" + id_ + "_wiki_enable');UIUtils.show('" + id_ + "_wiki_disable');\">" +
-												"<img src='images/wiki.png' alt='Wiki'></img>" +
-											"</a>" +
-											"<a id='" + id + "_template_disable' href='#' onmouseover=\"UIUtils.hidde('" + id_ + "_template_disable');UIUtils.show('" + id_ + "_template_enable');\">" +
-												"<img src='images/template_gray.png' alt=''></img>" +
-											"</a>" +
-											"<a id='" + id + "_template_enable' href='" + state.getUriTemplate() + "' target='_blank' style='display:none;' onmouseout=\"UIUtils.hidde('" + id_ + "_template_enable');UIUtils.show('" + id_ + "_template_disable');\">" +
-												"<img src='images/template.png' alt='Template'></img>" +
+											"<a href='" + state.getUriTemplate() + "' target='_blank' onmouseover=\"UIUtils.changeImage('" + id_ + "_template', 'images/template.png');\" onmouseout=\"UIUtils.changeImage('" + id_ + "_template', 'images/template_gray.png');\">" +
+												"<img id='" + id + "_template' src='images/template_gray.png' alt='Template'></img>" +
 											"</a>" +
 										"</div>" +
 									"</div>" +
