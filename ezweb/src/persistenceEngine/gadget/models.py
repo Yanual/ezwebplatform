@@ -134,5 +134,5 @@ class Gadget(models.Model):
         pass
 
     def __unicode__(self):
-        return self.name
+        return self.uri
 

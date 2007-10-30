@@ -184,9 +184,6 @@ class TemplateHandler(saxutils.handler.ContentHandler):
         _value=""
         _name=""
 
-        print "processing Option"
-        print self._lastPreference.type
-
         if (attrs.has_key('name')==True):
             _name = attrs.get('name')
 
