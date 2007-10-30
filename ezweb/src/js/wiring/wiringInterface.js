@@ -1,7 +1,7 @@
 //This class is the controller of the interface provided for managing the wiring module
 
 function wiringInterface(){
-	null;
+	var loaded = false;
 }
 
 wiringInterface.prototype.addChannelInterface = function(name, selector, itemize){
@@ -28,15 +28,18 @@ wiringInterface.prototype.addGadgetInterface = function (object,selector){
 
 wiringInterface.prototype.renewInterface = function (w,selector,sGadgets,itemize){
 	w.edition();
-	var iGadgets = w.getGadgetsId();
-	var channels = w.getInOutId();
-	for (var i = 0; i<iGadgets.length; i++){
-		this.addGadgetInterface(iGadgets[i],sGadgets);
+	if (!this.loaded){
+		var iGadgets = w.getGadgetsId();
+		var channels = w.getInOutId();
+		for (var i = 0; i<iGadgets.length; i++){
+			this.addGadgetInterface(iGadgets[i],sGadgets);
+		}
+		for (var j = 0; j<channels.length; j++){
+			this.addChannelInterface(channels[j],selector,itemize)
+		}
+		selector.value = ""
+		this.loaded = true
 	}
-	for (var j = 0; j<channels.length; j++){
-		this.addChannelInterface(channels[j],selector,itemize)
-	}
-	selector.value = ""
 }
 
 wiringInterface.prototype.anadirCanal = function (w,selector,itemize,slots,events){
@@ -117,7 +120,7 @@ wiringInterface.prototype.addLine = function (w, table, operation, gadget, name)
 		button.setAttribute("onClick", operation + "('" + gadget+ "','" +name+"', $F('selectCanal'));wI.renewChannel(w,$F('selectCanal'),$('slotsConnection'),$('eventsConnection'))");
 	}
 	button.setAttribute("type", "image");
-	button.setAttribute("src", "tick.png");
+	button.setAttribute("src", "wiring/tick.png");
 	button.setAttribute("title", "add connection");
 	col1.appendChild(button);
 	col2.appendChild(text);
@@ -144,7 +147,7 @@ wiringInterface.prototype.addChannelLine = function (w,table, operation, gadget,
 		button.setAttribute("onClick", operation + "('" + gadget+ "','" +name+"', $F('selectCanal'));wI.renewChannel(w,$F('selectCanal'),$('slotsConnection'),$('eventsConnection'))");
 	}
 	button.setAttribute("type", "image");
-	button.setAttribute("src", "cross.png");
+	button.setAttribute("src", "wiring/cross.png");
 	button.setAttribute("title", "delete connection");
 	col1.appendChild(button);
 	col2.appendChild(text);
