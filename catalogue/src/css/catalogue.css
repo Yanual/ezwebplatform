@@ -57,51 +57,12 @@ a:hover
 	font-size:11px;
 }
 
-.menu
-{
-	width:15%;
-	height:500px;
-	padding:5px;
-	margin:5px;
-	float:left;
-	background-color:#ccddff;
-}
-
-.menu .title a
-{
-	background-color:#0000ff;
-	color:#ffffff;
-	border:1px solid #ffffff;
-	padding:2px;
-	font-weight:bold;
-	padding-left:5px;
-}
-
-.menu .option a
-{
-	background-color:#aabbff;
-	color:#000000;
-	border:1px solid #ffffff;
-	padding:2px;
-	padding-left:20px;
-}
-
-.info_tags
-{
-	width:65%;
-	height:100%;
-	float:left;
-	padding:0px;
-}
-
 .resources
 {
-	width:65%;
+	width:60%;
 	height:100%;
 	float:left;
 	padding-top:10px;
-	padding-left:5px;
-	padding-right:5px;
 }
 
 .resource
@@ -111,7 +72,8 @@ a:hover
 	float:left;
 	width:192px;
 	height:190px;
-	margin:5px;
+	margin-left:10px;
+	margin-top:10px;
 	background:none;
 	text-align:center;
 }
@@ -196,13 +158,27 @@ a:hover
 	border:none;
 }
 
+.tab_info_resource
+{
+	text-align:right;
+	margin-top:150px;
+	width:5%;
+	height:100%;
+	float:left;
+}
+
+.tab_info_resource img
+{
+	border:none;
+}
+
 .info_resource
 {
-	width:32%;
+	width:35%;
 	height:650px;
-	padding:5px;
 	float:right;
 	margin:0px;
+	float:left;
 	background-color:#ccddff;
 	text-align:center;
 }
@@ -220,6 +196,8 @@ a:hover
 	text-align:left;
 	margin-top:15px;
 	margin-bottom:15px;
+	margin-left:5px;
+	margin-right:5px;
 	padding-top:15px;
 	padding-bottom:15px;
 	padding-left:5px;
