@@ -35,7 +35,7 @@ class GadgetCollection(Resource):
         return HttpResponse(json_encode(data_list), mimetype='application/json; charset=UTF-8')
 
     def create(self, request, user_id):
-        user_authentication(user_id)
+        user = user_authentication(user_id)
 
         if request.POST.has_key('url'):
             templateURL = request.POST['url']
@@ -45,7 +45,7 @@ class GadgetCollection(Resource):
 
         ########### Template Parser
         
-        templateParser = TemplateParser(templateURL, user_id)
+        templateParser = TemplateParser(templateURL, user)
 
         templateParser.parse()
         
@@ -100,6 +100,8 @@ def user_authentication(user_id):
     user = get_object_or_404(User, id=user_id)
     if not user.is_authenticated():
         raise Http404
+
+    return user
 
 def _get_gadget_data(data):
     data_fields = data['fields']

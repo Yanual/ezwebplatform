@@ -8,10 +8,12 @@ from gadgetCodeParser import GadgetCodeParser
 from models import *
 
 class TemplateParser:
-    def __init__(self, uri, user_id):
+    def __init__(self, uri, user):
+
         self.parser = make_parser()
         self.handler = TemplateHandler()
-        self.handler.setUser(user_id)                
+        self.handler.setUser(user)
+
         self.uri = uri
 
         # Tell the parser to use our handler
@@ -36,16 +38,15 @@ class TemplateHandler(saxutils.handler.ContentHandler):
     _gadgetMail = ""
     _gadgetDesc = ""
     _template = ""
-    _user_id = ""
+    _user = ""
     _gadgetURI = ""
     _xhtml = ""
     _lastPreference = ""
 
-
-    def setUser(self, user_id):
-        self._user_id = user_id
-
         
+    def setUser (self, user):
+        self._user=user
+
     def typeText2typeCode (self, typeText):
         if typeText == 'text':
                 return 'S'
@@ -176,7 +177,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
         if (_href != ""):
             # Gadget Code Parsing
             gadgetParser = GadgetCodeParser()
-            gadgetParser.parseUserEvents(_href, self._user_id, self._gadgetURI)
+            gadgetParser.parseUserEvents(_href, self._gadgetURI)
 
             self._xhtml = gadgetParser.getXHTML()
 
@@ -228,7 +229,9 @@ class TemplateHandler(saxutils.handler.ContentHandler):
     def endElement(self, name):
         if (name == 'Catalog.ResourceDescription'):
             
-            self._gadgetURI = "/user/" + self._user_id + "/gadgets/" + self._gadgetVendor \
+            type (self._user)
+
+            self._gadgetURI = "/user/" + self._user.username + "/gadgets/" + self._gadgetVendor \
                 + "/" + self._gadgetName + "/" + self._gadgetVersion
 
             self._template = Template ( uri=self._gadgetURI + "/template", 
@@ -296,7 +299,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
                               template=self._template, xhtml=self._xhtml, 
                               author=self._gadgetAuthor, mail=self._gadgetMail,
                               wikiURI=self._gadgetWiki, imageURI=self._gadgetImage, 
-                              description=self._gadgetDesc )
+                              description=self._gadgetDesc, user=self._user )
 
 
             gadget.save()

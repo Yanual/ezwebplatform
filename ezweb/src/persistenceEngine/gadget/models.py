@@ -124,7 +124,7 @@ class Gadget(models.Model):
     tags = models.ManyToManyField(Tag, verbose_name=_('Tags'))
     
     shared = models.BooleanField(_('Shared'), default=False, null=True)
-    user = models.ForeignKey(User, verbose_name=_('User'), null=True)
+    user = models.ForeignKey(User, verbose_name=_('User'))
     last_update = models.DateTimeField(_('Last update'), null=True)
 
     class Meta:

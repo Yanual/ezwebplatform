@@ -7,11 +7,8 @@ class GadgetCodeParser(HTMLParser):
 # HTML parsing
 
     xHTML = None
-    user_id = ""
 
-    def parseUserEvents(self, codeURI, user_id, gadgetURI):
-        self.user_id = user_id
-
+    def parseUserEvents(self, codeURI, gadgetURI):
         xhtml = urlopen(codeURI).read()
         
         self.xHTML = XHTML (uri=gadgetURI + "/xhtml", code=xhtml)
