@@ -28,19 +28,19 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 									"<div class='toolbar'>" +
 										"<div id='" + id + "_toolbar' style='display:none;'>" +
 											"<a title='Ver Descripci&oacute;n' href='#' onmouseover=\"UIUtils.changeImage('" + id_ + "_description', 'images/description.png');\" onmouseout=\"UIUtils.changeImage('" + id_ + "_description', 'images/description_gray.png');\">" +
-												"<img id='" + id + "_description' src='images/description_gray.png' alt='Description'></img>" +
+												"<img id='" + id + "_description' src='images/description_gray.png'></img>" +
 											"</a>" +
 											"<a title='Acceder a la Wiki' href='" + state.getUriWiki() + "' target='_blank'  onmouseover=\"UIUtils.changeImage('" + id_ + "_wiki', 'images/wiki.png');\" onmouseout=\"UIUtils.changeImage('" + id_ + "_wiki', 'images/wiki_gray.png');\">" +
-												"<img id='" + id + "_wiki' src='images/wiki_gray.png' alt='Wiki'></img>" +
+												"<img id='" + id + "_wiki' src='images/wiki_gray.png'></img>" +
 											"</a>" +
 											"<a title='Ver el Template' href='" + state.getUriTemplate() + "' target='_blank' onmouseover=\"UIUtils.changeImage('" + id_ + "_template', 'images/template.png');\" onmouseout=\"UIUtils.changeImage('" + id_ + "_template', 'images/template_gray.png');\">" +
-												"<img id='" + id + "_template' src='images/template_gray.png' alt='Template'></img>" +
+												"<img id='" + id + "_template' src='images/template_gray.png'></img>" +
 											"</a>" +
 										"</div>" +
 									"</div>" +
 									"<div id='" + id + "_content' class='content'>" +
 										"<div class='title'>" + state.getName() + "</div>" +
-										"<div class='image'><a title='Mostrar informaci&oacute;n del recurso' href='javascript:UIUtils.showResourceInfo(\"" + id + "\");'><img src='" + state.getUriImage() + "' alt='Mostrar informaci&oacute;n del recurso'></img></a></div>" +
+										"<div class='image'><a title='Mostrar informaci&oacute;n del recurso' href='javascript:UIUtils.showResourceInfo(\"" + id + "\");'><img src='" + state.getUriImage() + "'></img></a></div>" +
 										"<button onclick='CatalogueFactory.getInstance().addResourceToShowCase(\"" + id + "\");'>A&ntilde;adir a la Paleta</button>" +
 									"</div>" +
 									"<div id='" + id + "_bottom' class = 'bottom'></div>" +
