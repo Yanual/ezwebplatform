@@ -8,6 +8,20 @@
 		<uriImage>images/pizarra_pequea.jpg</uriImage>
 		<uriWiki>UriWiki1</uriWiki>
 		<uriTemplate>UriTemplate1</uriTemplate>
+		<tags>
+			<tag>
+				<value>tag1</value>
+				<appearances>7</appearances>
+			</tag>
+			<tag>
+				<value>tag2</value>
+				<appearances>20</appearances>
+			</tag>
+			<tag>
+				<value>tag3</value>
+				<appearances>34</appearances>
+			</tag>
+		</tags>
 	</resource>
 	<resource>
 		<vendor>Vendor2</vendor>
@@ -17,6 +31,20 @@
 		<uriImage>images/buzon_pequeo.jpg</uriImage>
 		<uriWiki>UriWiki2</uriWiki>
 		<uriTemplate>UriTemplate2</uriTemplate>
+		<tags>
+			<tag>
+				<value>tag1</value>
+				<appearances>7</appearances>
+			</tag>
+			<tag>
+				<value>tag2</value>
+				<appearances>20</appearances>
+			</tag>
+			<tag>
+				<value>tag3</value>
+				<appearances>34</appearances>
+			</tag>
+		</tags>
 	</resource>
 	<resource>
 		<vendor>Vendor3</vendor>
@@ -26,6 +54,20 @@
 		<uriImage>images/localizador_pequea.jpg</uriImage>
 		<uriWiki>UriWiki3</uriWiki>
 		<uriTemplate>UriTemplate3</uriTemplate>
+		<tags>
+			<tag>
+				<value>tag1</value>
+				<appearances>7</appearances>
+			</tag>
+			<tag>
+				<value>tag2</value>
+				<appearances>20</appearances>
+			</tag>
+			<tag>
+				<value>tag3</value>
+				<appearances>34</appearances>
+			</tag>
+		</tags>
 	</resource>
 	<resource>
 		<vendor>Vendor4</vendor>
@@ -35,6 +77,20 @@
 		<uriImage>images/modalidades_pequea.jpg</uriImage>
 		<uriWiki>UriWiki4</uriWiki>
 		<uriTemplate>UriTemplate4</uriTemplate>
+		<tags>
+			<tag>
+				<value>tag1</value>
+				<appearances>7</appearances>
+			</tag>
+			<tag>
+				<value>tag2</value>
+				<appearances>20</appearances>
+			</tag>
+			<tag>
+				<value>tag3</value>
+				<appearances>34</appearances>
+			</tag>
+		</tags>
 	</resource>
 	<resource>
 		<vendor>Vendor5</vendor>
@@ -44,6 +100,20 @@
 		<uriImage>images/selector_queries_pequeo.jpg</uriImage>
 		<uriWiki>UriWiki5</uriWiki>
 		<uriTemplate>UriTemplate5</uriTemplate>
+		<tags>
+			<tag>
+				<value>tag1</value>
+				<appearances>7</appearances>
+			</tag>
+			<tag>
+				<value>tag2</value>
+				<appearances>20</appearances>
+			</tag>
+			<tag>
+				<value>tag3</value>
+				<appearances>34</appearances>
+			</tag>
+		</tags>
 	</resource>
 	<resource>
 		<vendor>Vendor6</vendor>
@@ -53,5 +123,19 @@
 		<uriImage>images/visordatostarea_pequeo.jpg</uriImage>
 		<uriWiki>UriWiki6</uriWiki>
 		<uriTemplate>UriTemplate6</uriTemplate>
+		<tags>
+			<tag>
+				<value>tag1</value>
+				<appearances>7</appearances>
+			</tag>
+			<tag>
+				<value>tag2</value>
+				<appearances>20</appearances>
+			</tag>
+			<tag>
+				<value>tag3</value>
+				<appearances>34</appearances>
+			</tag>
+		</tags>
 	</resource>
 </resources>
