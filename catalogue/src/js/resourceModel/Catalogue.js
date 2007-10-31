@@ -56,7 +56,7 @@ var CatalogueFactory  = function () {
 								);
 				//var response = transport.responseXML;
 				var resourcesXML = response.getElementsByTagName("resource");
-				for (i=(resourcesXML.length-1); i>=0; i--)
+				for (var i=(resourcesXML.length-1); i>=0; i--)
 				{
 					this.addResource(resourcesXML[i], null);
 				}

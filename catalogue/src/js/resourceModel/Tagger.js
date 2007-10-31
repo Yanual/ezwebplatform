@@ -30,7 +30,7 @@ function Tagger(){
 		var elements = tags.getValues();
 		var tagsXML = 	"<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + 
 							"<tags>";
-		for (i=0; i<elements.size(); i++)
+		for (var i=0; i<elements.size(); i++)
 		{
 			tagsXML += ("<tag>" + elements[i] + "</tag>");
 		}

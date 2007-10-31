@@ -139,17 +139,6 @@ function ResourceState(resourceXML_) {
 	var uriTemplate = null;
 	var tags = [];
 	
-	// Parsing XML Resource
-	// Constructing the structure
-	
-	vendor = resourceXML_.getElementsByTagName("vendor")[0].firstChild.nodeValue;
-	name = resourceXML_.getElementsByTagName("name")[0].firstChild.nodeValue;
-	version = resourceXML_.getElementsByTagName("version")[0].firstChild.nodeValue;
-	description = resourceXML_.getElementsByTagName("description")[0].firstChild.nodeValue;
-	uriImage = resourceXML_.getElementsByTagName("uriImage")[0].firstChild.nodeValue;
-	uriWiki = resourceXML_.getElementsByTagName("uriWiki")[0].firstChild.nodeValue;
-	uriTemplate = resourceXML_.getElementsByTagName("uriTemplate")[0].firstChild.nodeValue;
-
 	// ******************
 	//  PUBLIC FUNCTIONS
 	// ******************
@@ -162,6 +151,26 @@ function ResourceState(resourceXML_) {
 	this.getUriTemplate = function() { return uriTemplate; }
 	this.getUriWiki = function() { return uriWiki; }
 
-	this.setTags = function(tags_) { tags = tags_; }
+	this.setTags = function(tagsXML_) {
+		tags.clear();
+		var tagsXMLList = tagsXML_.getElementsByTagName("tag");
+		for (var i=0; i<tagsXMLList.length; i++)
+		{
+			tags.push(new Tag(tagsXMLList[i]));
+		}
+	}
+	
 	this.getTags = function() { return tags; }
+	
+	// Parsing XML Resource
+	// Constructing the structure
+	
+	vendor = resourceXML_.getElementsByTagName("vendor")[0].firstChild.nodeValue;
+	name = resourceXML_.getElementsByTagName("name")[0].firstChild.nodeValue;
+	version = resourceXML_.getElementsByTagName("version")[0].firstChild.nodeValue;
+	description = resourceXML_.getElementsByTagName("description")[0].firstChild.nodeValue;
+	uriImage = resourceXML_.getElementsByTagName("uriImage")[0].firstChild.nodeValue;
+	uriWiki = resourceXML_.getElementsByTagName("uriWiki")[0].firstChild.nodeValue;
+	uriTemplate = resourceXML_.getElementsByTagName("uriTemplate")[0].firstChild.nodeValue;
+	this.setTags(resourceXML_.getElementsByTagName("tags")[0]);
 }

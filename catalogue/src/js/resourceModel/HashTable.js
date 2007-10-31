@@ -7,7 +7,7 @@ function HashTable() {
 	}
 	
 	this.removeElement = function(key_) {
-		for (i=0; i<list.length; i++)
+		for (var i=0; i<list.length; i++)
 		{
 			if (list[i].getKey() == key_) {
 				list = list.without(list[i]);
@@ -16,7 +16,7 @@ function HashTable() {
 	}
 	
 	this.getValue = function(key_) {
-		for (i=0; i<list.length; i++)
+		for (var i=0; i<list.length; i++)
 		{
 			if (list[i].getKey() == key_) {
 				return list[i].getValue();
@@ -38,14 +38,14 @@ function HashTable() {
 	
 	this.getValues = function() {
 		var values = [];
-		for (i=0; i<list.length; i++){
+		for (var i=0; i<list.length; i++){
 			values[i] = list[i].getValue();
 		}		
 		return values;
 	}
 	
 	this.contains = function(value_) {
-		for (i=0; i<list.length; i++){
+		for (var i=0; i<list.length; i++){
 			if (list[i].getValue() == value_) {
 				return true;
 			}
