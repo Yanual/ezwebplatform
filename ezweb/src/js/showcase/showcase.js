@@ -18,9 +18,10 @@ var ShowcaseFactory = function () {
 		// ******************
 		// STATIC VARIABLES
 		// ******************
-		Showcase.prototype.MODULE_HTML_ID = 'showcase';
+	    
+	        Showcase.prototype.MODULE_HTML_ID = "showcase";
 		Showcase.prototype.NUM_CELLS = 4;
-		
+
 		// ****************
 		// CALLBACK METHODS 
 		// ****************
@@ -42,7 +43,7 @@ var ShowcaseFactory = function () {
 			
 			// Showcase loaded
 			_loaded = true;
-			//_opManager.continueLoading (Modules.prototype.SHOWCASE);
+			_opManager.continueLoading (Modules.prototype.SHOWCASE);
 			
 		}
 		
@@ -60,8 +61,8 @@ var ShowcaseFactory = function () {
 		var _persistenceEngine = PersistenceEngineFactory.getInstance();			
 		
 		// Initial load from persitence system
-		_persistenceEngine.send_get('http://europa.ls.fi.upm.es:8000/user/1/gadgets', this, loadGadgets, onErrorCallback);
-//		_persistenceEngine.send_get('gadgets.json', this, loadGadgets, onErrorCallback);
+		_persistenceEngine.send_get('http://europa.ls.fi.upm.es:8000/user/admin/gadgets', this, loadGadgets, onErrorCallback);
+		//_persistenceEngine.send_get('gadgets.json', this, loadGadgets, onErrorCallback);
 						
 
 		// Show only one gadget
