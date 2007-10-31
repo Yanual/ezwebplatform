@@ -40,7 +40,7 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 									"</div>" +
 									"<div id='" + id + "_content' class='content'>" +
 										"<div class='title'>" + state.getName() + "</div>" +
-										"<div class='image'><a title='Mostrar informaci&oacute;n del recurso' href='javascript:UIUtils.showResourceInfo(\"" + id + "\");'><img src='" + state.getUriImage() + "'></img></a></div>" +
+										"<div class='image'><a title='Mostrar informaci&oacute;n del recurso' href='javascript:UIUtils.showResourceInfo(\"" + id + "\");UIUtils.openInfoResource();'><img src='" + state.getUriImage() + "'></img></a></div>" +
 										"<button onclick='CatalogueFactory.getInstance().addResourceToShowCase(\"" + id + "\");'>A&ntilde;adir a la Paleta</button>" +
 									"</div>" +
 									"<div id='" + id + "_bottom' class = 'bottom'></div>" +
@@ -68,7 +68,7 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 											"<button onClick='javascript:UIUtils.toggle(\"add_tags_panel\");UIUtils.toggle(\"add_tags_link\");UIUtils.removeAllTags();'>Cancelar</button>" +
 										"</div>" +
 									"</div>" +
-									"<div id='add_tags_link' class='link'><a href='#' onClick='javascript:UIUtils.toggle(\"add_tags_link\");UIUtils.toggle(\"add_tags_panel\");document.getElementById(\"new_tag_text_input\").focus();'>Etiquetar el recurso</a></div>" +
+									"<div id='add_tags_link' class='link'><a href='javascript:UIUtils.toggle(\"add_tags_link\");UIUtils.toggle(\"add_tags_panel\");document.getElementById(\"new_tag_text_input\").focus();'>Etiquetar el recurso</a></div>" +
 									"<div class='link'><a href='" + state.getUriWiki() + "' target='_blank'>Acceder a la Wiki</a></div>" +
 									"<div class='link'><a href='" + state.getUriTemplate() + "' target='_blank'>Acceder al Template</a></div>" +
 								"</div>" +

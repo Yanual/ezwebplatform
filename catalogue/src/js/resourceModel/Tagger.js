@@ -49,7 +49,7 @@ function Tagger(){
 									"</a>" +
 								"</div>" +
 								"<div id='button_enable_" + id_ + "' style='display:none;'>" +
-									"<a href='#' onclick='javascript:UIUtils.removeTag(\"" + id_ + "\");'>" +
+									"<a href='javascript:UIUtils.removeTag(\"" + id_ + "\");'>" +
 										"<img src='images/cancel.png' alt=''></img>" +
 									"</a>" +
 								"</div>," + 

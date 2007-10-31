@@ -25,7 +25,7 @@
 							<label for="search_text">Busqueda simple:</label>
 							<input type="text" id="simple_search_text" name="simple_search_text" class="text" autocomplete="on"></input>
 							<button onclick="UIUtils.evaluarFormulario(this.form);">Buscar</button><br/>
-							<a href="#" onclick="javascript:UIUtils.toggle('simple_search');UIUtils.toggle('advanced_search');document.getElementById('advanced_search_text').focus();">Mostrar b&uacute;squeda avanzada</a>
+							<a href="javascript:UIUtils.toggle('simple_search');UIUtils.toggle('advanced_search');document.getElementById('advanced_search_text').focus();">Mostrar b&uacute;squeda avanzada</a>
 						</form>
 					</div>
 					<div id="advanced_search" class="advanced_search" style="display:none;">
@@ -33,21 +33,24 @@
 							<label for="search_text">Busqueda avanzada:</label>
 							<input type="text" id="advanced_search_text" name="advanced_search_text" class="text" autocomplete="on"></input>
 							<button onclick="UIUtils.evaluarFormulario(this.form);">Buscar</button><br/>
-							<a href="#" onclick="javascript:UIUtils.toggle('advanced_search');UIUtils.toggle('simple_search');document.getElementById('simple_search_text').focus();">Mostrar b&uacute;squeda simple</a>
+							<a href="javascript:UIUtils.toggle('advanced_search');UIUtils.toggle('simple_search');document.getElementById('simple_search_text').focus();">Mostrar b&uacute;squeda simple</a>
 						</form>
 					</div>
 				</div>
 			</div>
 			<div id="center" class="center">
 				<div id="resources" class="resources"></div>
-				<div id="info_resource" class="info_resource">
+				<div id="info_resource" class="info_resource" style="display:none;">
 					<div class="top"></div>
 					<div id="info_resource_content" class="content"></div>
 					<div class="bottom"></div>
 				</div>
 				<div id="tab_info_resource" class="tab_info_resource">
-					<a title="" href="" onmouseover="" onmouseout="">
-						<img  id="tab_info_resource" src="images/info_resource_open.png"></img>
+					<a id="tab_info_resource_open" title="Mostrar informaci&oacute;n del recurso" href="javascript:UIUtils.openInfoResource();" onmouseover="UIUtils.changeImage('tab_info_resource_open_img', 'images/info_resource_open_selected.png');" onmouseout="UIUtils.changeImage('tab_info_resource_open_img', 'images/info_resource_open.png');">
+						<img  id="tab_info_resource_open_img" src="images/info_resource_open.png"></img>
+					</a>
+					<a id="tab_info_resource_close" title="Ocultar informaci&oacute;n del recurso" href="javascript:UIUtils.closeInfoResource();" onmouseover="UIUtils.changeImage('tab_info_resource_close_img', 'images/info_resource_close_selected.png');" onmouseout="UIUtils.changeImage('tab_info_resource_close_img', 'images/info_resource_close.png');" style="display:none;">
+						<img  id="tab_info_resource_close_img" src="images/info_resource_close.png"></img>
 					</a>
 				</div>
 			</div>
