@@ -92,8 +92,11 @@ UIUtils.setResourcesWidth = function() {
 	var tab = document.getElementById('tab_info_resource');
 	var info = document.getElementById('info_resource');
 	var main = document.getElementById('main');
+	var head = document.getElementById('head');
 	var resources = document.getElementById('resources');
-	resources.style.width = (main.offsetWidth - (tab.offsetWidth + info.offsetWidth)) + 'px';
+	var center = document.getElementById('center');
+	center.style.width = head.offsetWidth + 'px';
+	resources.style.width = (center.offsetWidth - (tab.offsetWidth + info.offsetWidth)) + 'px';
 }
 
 // Enables you to react to return being pressed in an input

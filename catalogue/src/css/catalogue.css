@@ -31,7 +31,7 @@ a:hover
 	float:left;
 }
 
-.head
+.main .head
 {
 	width:100%;
 	height:50px;
@@ -41,24 +41,34 @@ a:hover
 	background-color:#ccddff;
 }
 
-.search
+.main .head .search
 {
 	text-align:center;
 	margin-top:10px;
 }
 
-.search form *
+.main .head .search form *
 {
 	margin-left:0px;
 	margin-right:10px;
 }
 
-.search form a
+.main .head .search form a
 {
 	font-size:11px;
 }
 
-.resources
+.main .center
+{
+	width:100%;
+	height:100%;
+	position:relative;
+	float:left;
+	margin:0px;
+	padding:0px;
+}
+
+.main .center .resources
 {
 	height:100%;
 	width:100%;
@@ -66,7 +76,7 @@ a:hover
 	padding-top:10px;
 }
 
-.resource
+.main .center .resource
 {
 	position:relative;
 	display:inline;
@@ -79,7 +89,7 @@ a:hover
 	text-align:center;
 }
 
-.resource .top 
+.main .center .resource .top 
 {
 	position: absolute;
 	display: block;
@@ -91,7 +101,7 @@ a:hover
 	background: url(../html/images/resource-left-top.png) no-repeat top right;
 }
 
-.resource .bottom 
+.main .center .resource .bottom 
 {
 	position: relative;
 	display: block;
@@ -102,7 +112,7 @@ a:hover
 	background: url(../html/images/resource-left-bottom.png) no-repeat bottom right;
 }
 
-.resource .toolbar
+.main .center .resource .toolbar
 {
 	display:block;
 	width: 192px;
@@ -113,14 +123,14 @@ a:hover
 	background: url(../html/images/resource-left-header.png) no-repeat bottom right;
 }
 
-.resource .toolbar *
+.main .center .resource .toolbar *
 {
 	margin-top:3px;
 	margin-right:3px;
 	border:none;
 }
 
-.resource .content
+.main .center .resource .content
 {
 	padding-top:5px;
 	padding-bottom:5px;
@@ -133,7 +143,7 @@ a:hover
 	color:#000000;
 }
 
-.resource .content .title
+.main .center .resource .content .title
 {
 	overflow:hidden;
 	font-size:15px;
@@ -141,7 +151,7 @@ a:hover
 	height:20px;
 }
 
-.resource .content .image
+.main .center .resource .content .image
 {
 	display:block;
 	margin-top:5px;
@@ -151,7 +161,7 @@ a:hover
 	height:80px;
 }
 
-.resource .content .image img
+.main .center .resource .content .image img
 {
 	padding-right:3px;
 	width:170px;
@@ -159,7 +169,7 @@ a:hover
 	border:none;
 }
 
-.tab_info_resource
+.main .center .tab_info_resource
 {
 	text-align:right;
 	margin-top:150px;
@@ -168,12 +178,12 @@ a:hover
 	float:right;
 }
 
-.tab_info_resource img
+.main .center .tab_info_resource img
 {
 	border:none;
 }
 
-.info_resource
+.main .center .info_resource
 {
 	width:300px;
 	height:650px;
@@ -183,14 +193,14 @@ a:hover
 	text-align:center;
 }
 
-.info_resource .title_fieldset
+.main .center .info_resource .title_fieldset
 {
 	margin-top:15px;
 	font-size:15px;
 	font-weight:bold;
 }
 
-.info_resource .fieldset
+.main .center .info_resource .fieldset
 {
 	border:1px solid #bbbbbb;
 	text-align:left;
@@ -204,20 +214,20 @@ a:hover
 	padding-right:5px;
 }
 
-.info_resource .title
+.main .center .info_resource .title
 {
 	display:inline;
 	vertical-align:text-bottom;
 }
 
-.info_resource .name
+.main .center .info_resource .name
 {
 	display:inline;
 	font-weight:bold;
 	font-size:25px;
 }
 
-.info_resource .version
+.main .center .info_resource .version
 {
 	padding-left:5px;
 	display:inline;
@@ -225,7 +235,7 @@ a:hover
 	font-size:18px;
 }
 
-.info_resource .vendor
+.main .center .info_resource .vendor
 {
 	display:block;
 	font-style:italic;
@@ -233,7 +243,7 @@ a:hover
 	width:100%;
 }
 
-.info_resource .description
+.main .center .info_resource .description
 {
 	margin-top:15px;
 	display:block;
@@ -241,7 +251,7 @@ a:hover
 	width:100%;
 }
 
-.info_resource .description .text
+.main .center .info_resource .description .text
 {
 	border:1px solid #bbbbbb;
 	margin-top:5px;
@@ -252,7 +262,7 @@ a:hover
 	height:80px;
 }
 
-.info_resource .image
+.main .center .info_resource .image
 {
 	display:block;
 	margin-top:15px;
@@ -262,19 +272,19 @@ a:hover
 	height:100px;
 }
 
-.info_resource .image img
+.main .center .info_resource .image img
 {
 	width:210px;
 	height:100px;
 }
 
-.info_resource .new_tags
+.main .center .info_resource .new_tags
 {
 	display:block;
 	margin-bottom:10px;
 }
 
-.info_resource .new_tags .my_tags
+.main .center .info_resource .new_tags .my_tags
 {
 	border:1px solid #bbbbbb;
 	margin-top:5px;
@@ -286,49 +296,49 @@ a:hover
 	height:50px;
 }
 
-.info_resource .new_tags .buttons
+.main .center .info_resource .new_tags .buttons
 {
 	text-align:right;
 }
 
-.info_resource .new_tags .my_tags *
+.main .center .info_resource .new_tags .my_tags *
 {
 	display:inline;;
 }
 
-.info_resource .new_tags .my_tags .new_tag
+.main .center .info_resource .new_tags .my_tags .new_tag
 {
 	margin-right:8px;
 }
 
-.info_resource .new_tags .my_tags .new_tag img
+.main .center .info_resource .new_tags .my_tags .new_tag img
 {
 	margin-left:2px;
 	border:none;
 }
 
-.info_resource .new_tags .my_tags .new_tag div a
+.main .center .info_resource .new_tags .my_tags .new_tag div a
 {
 	padding-bottom:6px;
 }
 
-.info_resource .new_tags .my_tags .new_tag a:hover
+.main .center .info_resource .new_tags .my_tags .new_tag a:hover
 {
 	text-decoration:underline;
 }
 
-.info_resource .new_tags .my_tags .new_tag *
+.main .center .info_resource .new_tags .my_tags .new_tag *
 {
 	vertical-align:middle;
 }
 
-.info_resource .new_tags .my_tags .new_tag_text input
+.main .center .info_resource .new_tags .my_tags .new_tag_text input
 {
 	width:40px;
 	border:1px solid #bbbbbb;
 }
 
-.info_resource .link
+.main .center .info_resource .link
 {
 	display:block;
 	color:#0000ff;
