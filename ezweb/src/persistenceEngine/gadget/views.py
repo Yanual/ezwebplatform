@@ -17,6 +17,8 @@ from commons.authentication import user_authentication
 from commons.get_data import get_gadget_data
 from commons.utils import json_encode
 
+from gadget.templateParser import TemplateParser
+
 from django.contrib.auth.models import User
 
 from commons.utils import *
