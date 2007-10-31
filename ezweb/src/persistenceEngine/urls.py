@@ -16,7 +16,7 @@ urlpatterns = patterns('',
 #    (r'^user/(?P<user_id>\d+)/', include('user.urls')),
 
     # Gadgets
-    (r'^user/(?P<user_id>\d+)/gadget(s)?/', include('gadget.urls')),
+    (r'^user/(?P<user_id>\w+)/gadget(s)?/', include('gadget.urls')),
 
     # IGadgets
     (r'^user/(?P<user_id>\d+)/igadget(s)?/', include('igadget.urls')),

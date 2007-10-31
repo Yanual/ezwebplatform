@@ -21,10 +21,12 @@ def get_gadget_data(data):
     data_fields['xhtml'] = data_code
     data_fields['xhtml']['elements'] = data_elements
 
+    """
     data_tags = get_list_or_404(Tag.objects.all().values('value'), gadget=get_object_or_404( \
                 Gadget, vendor=data_fields['vendor'], name=data_fields['name'], version=data_fields['version']))
     data_fields['tags'] = [d['value'] for d in data_tags]
-    
+    """
+
     return data_fields
 
 

@@ -19,14 +19,14 @@ from commons.utils import json_encode
 
 from django.contrib.auth.models import User
 
-from templateParser import TemplateParser
+from commons.utils import *
 
-from gadget.models import Gadget, Tag
+from gadget.models import Gadget, Tag, Template
 
 class GadgetCollection(Resource):
     def read(self, request, user_id):
-        user = user_authentication(user_id)
-        gadgets = get_list_or_404(Gadget, user=user_id)
+        user = user_authentication(user_id, request.user)
+        gadgets = get_list_or_404(Gadget, user=user)
         data = serializers.serialize('python', gadgets, ensure_ascii=False)
         data_list = []
         for d in data:
@@ -35,7 +35,7 @@ class GadgetCollection(Resource):
         return HttpResponse(json_encode(data_list), mimetype='application/json; charset=UTF-8')
 
     def create(self, request, user_id):
-        user = user_authentication(user_id)
+        user = user_authentication(user_id, request.user)
 
         if request.POST.has_key('url'):
             templateURL = request.POST['url']
@@ -53,8 +53,8 @@ class GadgetCollection(Resource):
 
 class GadgetEntry(Resource):
     def read(self, request, user_id, vendor, name, version):
-        user = user_authentication(user_id)
-        gadgets = get_list_or_404(Gadget, user=user_id, vendor=vendor, name=name, version=version)
+        user = user_authentication(user_id, request.user)
+        gadgets = get_list_or_404(Gadget, user=user, vendor=vendor, name=name, version=version)
         data = serializers.serialize('python', gadgets, ensure_ascii=False)
         data_fields = get_gadget_data(data[0])
         return HttpResponse(json_encode(data_fields), mimetype='application/json; charset=UTF-8')
@@ -96,36 +96,12 @@ class GadgetTagsEntry(Resource):
         return HttpResponse(json_encode(tags), mimetype='application/json; charset=UTF-8')
 
 
-def user_authentication(user_id):
-    user = get_object_or_404(User, id=user_id)
-    if not user.is_authenticated():
+def user_authentication(user_id, user):
+    if user == None or user.username != user_id or not user.is_authenticated():
+        print "Auth failure"
         raise Http404
 
     return user
-
-def _get_gadget_data(data):
-    data_fields = data['fields']
-
-    data_image = get_object_or_404(Template, id=data_fields['template'])
-    data_fields['image'] = data_image.image
-
-    data_template = get_list_or_404(VariableDef.objects.all().values('aspect', 'name', 'type'), id=data_fields['template'])
-    data_fields['template'] = data_template
-
-    data_code = get_object_or_404(XHTML.objects.all().values('uri'), id=data_fields['xhtml'])
-    data_elements = get_list_or_404(UserEventsInfo.objects.all().values('event', 'handler', 'html_element'), \
-                xhtml=data_fields['xhtml'])
-    data_fields['xhtml'] = data_code
-    data_fields['xhtml']['elements'] = data_elements
-
-    """
-    data_tags = get_list_or_404(Tag.objects.all().values('value'), gadget=get_object_or_404( \
-                Gadget, vendor=data_fields['vendor'], name=data_fields['name'], version=data_fields['version']))
-    data_fields['tags'] = [d['value'] for d in data_tags]
-    """
-
-    return data_fields
-
 
 def queryset_to_json_list(queryset, fields=None):
     data = serializers.serialize('python', queryset, fields=fields, ensure_ascii=False) 

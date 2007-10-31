@@ -121,7 +121,7 @@ class Gadget(models.Model):
     imageURI = models.URLField(_('imageURI'))
 
     description = models.CharField(_('Description'), max_length=250)
-    tags = models.ManyToManyField(Tag, verbose_name=_('Tags'))
+    tags = models.ManyToManyField(Tag, verbose_name=_('Tags'), null=True)
     
     shared = models.BooleanField(_('Shared'), default=False, null=True)
     user = models.ForeignKey(User, verbose_name=_('User'))
