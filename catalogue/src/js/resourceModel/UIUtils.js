@@ -88,6 +88,14 @@ UIUtils.addTag = function(inputText_) {
 	inputText_.focus();
 }
 
+UIUtils.setResourcesWidth = function() {
+	var tab = document.getElementById('tab_info_resource');
+	var info = document.getElementById('info_resource');
+	var main = document.getElementById('main');
+	var resources = document.getElementById('resources');
+	resources.style.width = (main.offsetWidth - (tab.offsetWidth + info.offsetWidth)) + 'px';
+}
+
 // Enables you to react to return being pressed in an input
 UIUtils.onReturn = function(event_, handler_, inputText_) {
   if (!event_) event_ = window.event;
