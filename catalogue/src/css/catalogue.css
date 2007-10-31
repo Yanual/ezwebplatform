@@ -210,12 +210,16 @@ a:hover
 	width: 400px;
 	height: 11px;
 	padding: 0px;
+	left:0px;
 	bottom: 0px;
 	background: url(../html/images/info-resource-right-bottom.png) no-repeat bottom right;
 }
 
 .main .center .info_resource .content
 {
+	position:absolute;
+	left:0px;
+	top:7px;
 	width:400px;
 	height:632px;
 	float:right;
