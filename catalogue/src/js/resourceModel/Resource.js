@@ -50,7 +50,7 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 	}
 	
 	this.showInfo = function() {
-		var tableInfo = document.getElementById("info_resource");
+		var tableInfo = document.getElementById("info_resource_content");
 		tableInfo.innerHTML = 	"<div class='title_fieldset'>Informaci&oacute;n del Recurso</div>" +
 								"<div class='fieldset'>" +
 									"<div class='title'><span class='name'>" + state.getName() + "</span>" +
