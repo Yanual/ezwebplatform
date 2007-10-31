@@ -12,7 +12,7 @@ from commons.authentication import user_authentication
 from commons.get_data import get_igadget_data
 from commons.utils import json_encode
 
-from igadget.models import IGadget, Screen
+from igadget.models import IGadget, Screen, Position
 from gadget.models import Gadget
 
 
@@ -32,6 +32,36 @@ class IGadgetCollection(Resource):
             data = serializers.serialize('python', igadget, ensure_ascii=False)
             data_list = [get_igadget_data(d) for d in  data]
         return HttpResponse(json_encode(data_list), mimetype='application/json; charset=UTF-8')
+
+    def create(self, request, user_id, screen_id=None):
+        user = user_authentication(user_id)
+        if not screen_id:
+            screen_id = 1
+
+        if not request.has_key('json'):
+            raise Http404('iGadget JSON expected')
+        received_json = request.POST['json']
+        screen_id = received_json.get('currentId')
+        igadgets = received_json.get('iGadgets')
+        for igadget in igadgets:
+            id = igadget.get('id')
+            width = igadget.get('width')
+            height = igadget.get('height')
+            top = igadget.get('top')
+            left = igadget.get('left')
+            
+            position = Position (uri=None, posX=left, posY=top, height=height, width=width)
+            position.save()
+            
+            screen = Screen.objects.get(id=1)
+            if not screen:
+                screen = Screen (uri=None, name=None, user=user_id)
+                screen.save()
+
+            new_igadget = IGadget (uri=None, gadget=None, screen=screen, position=position)
+            new_igadget.save()
+        
+        return HttpResponse('')
 
 
 class IGadgetEntry(Resource):
