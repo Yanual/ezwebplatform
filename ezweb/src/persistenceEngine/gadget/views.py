@@ -96,13 +96,6 @@ class GadgetTagsEntry(Resource):
         return HttpResponse(json_encode(tags), mimetype='application/json; charset=UTF-8')
 
 
-def user_authentication(user_id, user):
-    if user == None or user.username != user_id or not user.is_authenticated():
-        print "Auth failure"
-        raise Http404
-
-    return user
-
 def queryset_to_json_list(queryset, fields=None):
     data = serializers.serialize('python', queryset, fields=fields, ensure_ascii=False) 
     data_list = [d['fields'] for d in data]

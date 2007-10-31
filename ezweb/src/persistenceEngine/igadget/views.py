@@ -18,7 +18,7 @@ from gadget.models import Gadget
 
 class IGadgetCollection(Resource):
     def read(self, request, user_id, screen_id=None):
-        user = user_authentication(user_id)
+        user = user_authentication(user_id, request.user)
         data_list = []
         if not screen_id:
             screens = get_list_or_404(Screen, user=user)
@@ -34,7 +34,7 @@ class IGadgetCollection(Resource):
         return HttpResponse(json_encode(data_list), mimetype='application/json; charset=UTF-8')
 
     def create(self, request, user_id, screen_id=None):
-        user = user_authentication(user_id)
+        user = user_authentication(user_id, request.user)
         if not screen_id:
             screen_id = 1
 
@@ -55,7 +55,7 @@ class IGadgetCollection(Resource):
             
             screen = Screen.objects.get(id=1)
             if not screen:
-                screen = Screen (uri=None, name=None, user=user_id)
+                screen = Screen (uri=None, name=None, user=user)
                 screen.save()
 
             new_igadget = IGadget (uri=None, gadget=None, screen=screen, position=position)
@@ -66,8 +66,8 @@ class IGadgetCollection(Resource):
 
 class IGadgetEntry(Resource):
     def read(self, request, user_id, vendor, name, version, screen_id=None):
-        user = user_authentication(user_id)
-        gadget = get_object_or_404(Gadget, user=user_id, vendor=vendor, name=name, version=version)
+        user = user_authentication(user_id, request.user)
+        gadget = get_object_or_404(Gadget, user=user, vendor=vendor, name=name, version=version)
         if not screen_id:
             igadget = get_list_or_404(IGadget, gadget=gadget, screen=1)
         else:
