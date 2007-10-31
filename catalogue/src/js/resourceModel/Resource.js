@@ -51,6 +51,12 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 	
 	this.showInfo = function() {
 		var tableInfo = document.getElementById("info_resource_content");
+		var tagsHTML = 'Tags: ';
+		var tagsAux = state.getTags();
+		for (var i=0; i<tagsAux.length; i++)
+		{
+			tagsHTML += tagsAux[i].getValue() + '-' + tagsAux[i].getAppearances() + ' | ';
+		}
 		tableInfo.innerHTML = 	"<div class='title_fieldset'>Informaci&oacute;n del Recurso</div>" +
 								"<div class='fieldset'>" +
 									"<div class='title'><span class='name'>" + state.getName() + "</span>" +
@@ -72,7 +78,7 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 									"<div class='link'><a href='" + state.getUriWiki() + "' target='_blank'>Acceder a la Wiki</a></div>" +
 									"<div class='link'><a href='" + state.getUriTemplate() + "' target='_blank'>Acceder al Template</a></div>" +
 								"</div>" +
-								"<button onclick='CatalogueFactory.getInstance().addResourceToShowCase(UIUtils.getSelectedResource());'>A&ntilde;adir a la Paleta</button>";
+								"<button onclick='CatalogueFactory.getInstance().addResourceToShowCase(UIUtils.getSelectedResource());'>A&ntilde;adir a la Paleta</button><br/>" + tagsHTML;
 	}
 	
 	// *******************
