@@ -60,29 +60,29 @@ class GadgetEntry(Resource):
         return HttpResponse(json_encode(data_fields), mimetype='application/json; charset=UTF-8')
 
     def update(self, request, user_id, vendor, name, version):
-        user = user_authentication(user_id)
-        gadget = get_object_or_404(Gadget, user=user_id, vendor=vendor, name=name, version=version)
+        user = user_authentication(user_id, request.user)
+        gadget = get_object_or_404(Gadget, user=user, vendor=vendor, name=name, version=version)
         gadget.save()
         return HttpResponse('')
 
     def delete(self, request, user_id, vendor, name, version):
-        user = user_authentication(user_id)
-        gadget = get_object_or_404(Gadget, user=user_id, vendor=vendor, name=name, version=version)
+        user = user_authentication(user_id, request.user)
+        gadget = get_object_or_404(Gadget, user=user, vendor=vendor, name=name, version=version)
         gadget.delete()
         return HttpResponse('')
 
 
 class GadgetTemplateEntry(Resource):
     def read(self, request, user_id, vendor, name, version):
-        user = user_authentication(user_id)
-        gadget = get_object_or_404(Gadget, user=user_id, vendor=vendor, name=name, version=version)
+        user = user_authentication(user_id, request.user)
+        gadget = get_object_or_404(Gadget, user=user, vendor=vendor, name=name, version=version)
         template = get_object_or_404(gadget.template, id=gadget.template.id)
         return HttpResponse(json_encode(template), mimetype='application/json; charset=UTF-8')
 
 
 class GadgetCodeEntry(Resource):
     def read(self, request, user_id, vendor, name, version):
-        user_authentication(user_id)
+        user_authentication(user_id, request.user)
         gadget = get_object_or_404(Gadget, vendor=vendor, name=name, version=version)
         code = get_object_or_404(gadget.xhtml, id=gadget.xhtml.id)
         return HttpResponse(json_encode(code), mimetype='application/json; charset=UTF-8')
@@ -90,8 +90,8 @@ class GadgetCodeEntry(Resource):
 
 class GadgetTagsEntry(Resource):
     def read(self, request, user_id, vendor, name, version):
-        user = user_authentication(user_id)
-        gadget = get_object_or_404(Gadget, user=user_id, vendor=vendor, name=name, version=version)
+        user = user_authentication(user_id, request.user)
+        gadget = get_object_or_404(Gadget, user=user, vendor=vendor, name=name, version=version)
         tags = get_list_or_404(Tag, gadget=gadget)
         return HttpResponse(json_encode(tags), mimetype='application/json; charset=UTF-8')
 
