@@ -35,32 +35,47 @@ class IGadgetCollection(Resource):
 
     def create(self, request, user_id, screen_id=None):
         user = user_authentication(user_id, request.user)
+
+        #TODO by default. Remove in final release
         if not screen_id:
             screen_id = 1
+        
+        if not request.has_key('igadgets'):
+            return HttpResponse('<error>iGadget JSON expected</error>')
 
-        if not request.has_key('json'):
-            raise Http404('iGadget JSON expected')
-        received_json = request.POST['json']
-        screen_id = received_json.get('currentId')
-        igadgets = received_json.get('iGadgets')
+        #TODO we can make this with deserializers?      
+        received_json = request.POST['igadgets']
+        received_data = eval(received_json)
+        
+        current_id = received_data.get('currentId') #TODO currentId is needed???
+                
+        igadgets = received_data.get('iGadgets')
         for igadget in igadgets:
             id = igadget.get('id')
+            uri = igadget.get('uri')#TODO add igadget uri in JSON
+            gadget_id = igadget.get('gadget')#TODO add gadget id in JSON
             width = igadget.get('width')
             height = igadget.get('height')
             top = igadget.get('top')
             left = igadget.get('left')
+            if not id or not uri or not gadget_id or not width or not height or not top or not left:
+                return HttpResponse('<error>Malformed iGadget JSON</error>')   
             
-            position = Position (uri=None, posX=left, posY=top, height=height, width=width)
+            position = Position (uri=uri + '/position', posX=left, posY=top, height=height, width=width)
             position.save()
-            
-            screen = Screen.objects.get(id=1)
-            if not screen:
-                screen = Screen (uri=None, name=None, user=user)
-                screen.save()
 
-            new_igadget = IGadget (uri=None, gadget=None, screen=screen, position=position)
+            screen = Screen.objects.get(id=screen_id)
+            if not screen:
+                screen_uri = uri.partition('igadget')[0] + 'screen/' + screen_id
+                screen = Screen (uri=screen_uri, name=None, user=user_id) #TODO screen name is not given by JSON
+                screen.save()
+            
+            gadget = Gadget.objects.get(id=igadgets)
+            if not gadget:
+                return HttpResponse('<error>iGadget without associated gadget</error>')
+            
+            new_igadget = IGadget (uri=uri, gadget=gadget, screen=screen, position=position)
             new_igadget.save()
-        
         return HttpResponse('')
 
 
