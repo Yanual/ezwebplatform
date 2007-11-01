@@ -43,7 +43,7 @@ class IGadgetCollection(Resource):
         if not request.has_key('igadgets'):
             return HttpResponse('<error>iGadget JSON expected</error>')
 
-        #TODO we can make this with deserializers?      
+        #TODO we can make this with deserializers (simplejson)      
         received_json = request.POST['igadgets']
         received_data = eval(received_json)
         
