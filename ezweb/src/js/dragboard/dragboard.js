@@ -672,18 +672,18 @@ IGadget.prototype.paint = function(where, style) {
 		}
 	};
 
+	// Mark as draggable
+	/*
+	var drag = new Draggable(gadgetElement, {
+											  handle: gadgetMenu,
+											  revert: revertFunc,
+											  onStart: startFunc,											  onDrag: updateFunc        											});
+
+	*/
 
 	// Commit it
 	where.appendChild(gadgetElement);
 	this.element = gadgetElement;
-
-	// Mark as draggable
-	var drag = new Draggable(gadgetElement, {
-											  handle: gadgetMenu,
-											  revert: revertFunc,
-											  onStart: startFunc,
-											  onDrag: updateFunc
-        											});
 
 	return this.element;
 }
