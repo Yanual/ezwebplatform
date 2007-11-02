@@ -9,7 +9,7 @@ function Template(template_) {
 	//  PRIVATE VARIABLES
 	// *******************
 
-   var variableList = template_.variables;
+   var variableList = template_;
 
 	// ******************
 	//  PUBLIC FUNCTIONS
