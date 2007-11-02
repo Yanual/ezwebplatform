@@ -53,23 +53,19 @@
 		$('wiring_container').style.display='block';
 	}
 	
-	function load(){
-		var opManager = OpManagerFactory.getInstance();
-		opManager.loadEnviroment();
-	}
+	// Platform initialization
+	var opManager = OpManagerFactory.getInstance();
+	opManager.loadEnviroment();
 	
+
+	var wI = new wiringInterface();
+	var w = WiringFactory.getInstance();	
 		
 </script>
 
-<script>
-	var wI = new wiringInterface();
-	var w = WiringFactory.getInstance();
-</script>
-
-
 </head>
 
-<body onLoad="load()">
+<body>
 
 <!-- HEADER -->
 <table style="width: 100%; height: 9%">
