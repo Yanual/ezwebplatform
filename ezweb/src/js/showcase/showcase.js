@@ -69,7 +69,7 @@ var ShowcaseFactory = function () {
 		function showGadget (gadgetId_){
 			var gadget = _gadgets[gadgetId_]
 			var buffer = new StringBuffer();
-			
+
 			// Open Gadget Layer
 			buffer.append('<div id="');
 			buffer.append(gadgetId_);
@@ -155,7 +155,7 @@ var ShowcaseFactory = function () {
 			buffer.append('<center><img src="');
 			buffer.append(gadget.getImage()); 
 			buffer.append('" alt="Imagen cannot be shown" /><br/>\n');
-			buffer.append('<a href="javascript:;">add</a></center>\n');
+			buffer.append('<a href="javascript:_opManager.addInstance(gadget)">add</a></center>\n');
 			buffer.append('</div>\n');
 			
 			// Close Gadget Layer
