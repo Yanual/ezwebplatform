@@ -130,7 +130,7 @@ var VarManagerFactory = function () {
 				
 			var templateVariables = template.getVariables(iGadgetId);
 			
-			igadgets[iGadgetId] = templateVariables;
+			iGadgets[iGadgetId] = templateVariables;
 		}
 		
 	}
