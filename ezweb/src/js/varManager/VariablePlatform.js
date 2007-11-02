@@ -36,10 +36,10 @@ GadgetVariable.prototype.set = function (value, wiring) { }
 // PUBLIC CONSTANTS
 //////////////////////////////////////////////
 
-Variable.prototype.EVENT = "EVENT"  
+Variable.prototype.EVENT = "EVEN"  
 Variable.prototype.SLOT = "SLOT"  
-Variable.prototype.USER_PREF = "USER_PREF"  
-Variable.prototype.PROPERTY = "PROPERTY"  
+Variable.prototype.USER_PREF = "PREF"  
+Variable.prototype.PROPERTY = "PROP"  
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // RVARIABLE (Derivated class) <<PLATFORM>>
