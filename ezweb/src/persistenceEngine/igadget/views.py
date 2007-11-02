@@ -15,7 +15,6 @@ from commons.utils import json_encode
 from igadget.models import IGadget, Screen, Position
 from gadget.models import Gadget
 
-
 class IGadgetCollection(Resource):
     def read(self, request, user_id, screen_id=None):
         user = user_authentication(user_id, request.user)
@@ -64,14 +63,18 @@ class IGadgetCollection(Resource):
             position = Position (uri=uri + '/position', posX=left, posY=top, height=height, width=width)
             position.save()
 
-            screen = Screen.objects.get(id=screen_id)
-            if not screen:
-                screen_uri = uri.partition('igadget')[0] + 'screen/' + screen_id
-                screen = Screen (uri=screen_uri, name=None, user=user_id) #TODO screen name is not given by JSON
+            try:
+                screen = Screen.objects.get(id=screen_id)
+            except Screen.DoesNotExist: 
+                screen_uri = uri.partition('igadget')[0] + 'screen/' + str(screen_id)
+                #TODO screen name is not given by JSON
+                #     screen name is not null in database, where can we get it?
+                screen = Screen (id=screen_id, uri=screen_uri, name='myScreen', user=user) 
                 screen.save()
             
-            gadget = Gadget.objects.get(id=igadgets)
-            if not gadget:
+            try:
+                gadget = Gadget.objects.get(id=gadget_id)
+            except Gadget.DoesNotExist:
                 return HttpResponse('<error>iGadget without associated gadget</error>')
             
             new_igadget = IGadget (uri=uri, gadget=gadget, screen=screen, position=position)
