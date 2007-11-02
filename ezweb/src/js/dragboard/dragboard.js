@@ -683,7 +683,7 @@ IGadget.prototype.paint = function(where, style) {
 	//										  revert: revertFunc,
 	//										  onStart: startFunc,
 	//										  onDrag: updateFunc
-											});
+        //											});
 
 	return this.element;
 }
