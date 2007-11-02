@@ -51,13 +51,14 @@ class IGadgetCollection(Resource):
         igadgets = received_data.get('iGadgets')
         for igadget in igadgets:
             id = igadget.get('id')
-            uri = igadget.get('uri')#TODO add igadget uri in JSON
-            gadget_id = igadget.get('gadget')#TODO add gadget id in JSON
+            #TODO uri must be /user/user_id/screen/screen_id/igadgets/igadget_id
+            uri = "/user/" + user.username + "/igadgets/" + id
+            gadget_uri = igadget.get('gadget')#TODO add gadget id in JSON
             width = igadget.get('width')
             height = igadget.get('height')
             top = igadget.get('top')
             left = igadget.get('left')
-            if not id or not uri or not gadget_id or not width or not height or not top or not left:
+            if not id or not gadget_uri or not width or not height or not top or not left:
                 return HttpResponse('<error>Malformed iGadget JSON</error>')   
             
             position = Position (uri=uri + '/position', posX=left, posY=top, height=height, width=width)
@@ -66,18 +67,17 @@ class IGadgetCollection(Resource):
             try:
                 screen = Screen.objects.get(id=screen_id)
             except Screen.DoesNotExist: 
-                screen_uri = uri.partition('igadget')[0] + 'screen/' + str(screen_id)
-                #TODO screen name is not given by JSON
-                #     screen name is not null in database, where can we get it?
+                screen_uri = "/user/" + user.username + '/screen/' + str(screen_id)
+                #TODO screen name is not given by JSON and it is not null in database, where can we get it?
                 screen = Screen (id=screen_id, uri=screen_uri, name='myScreen', user=user) 
                 screen.save()
             
             try:
-                gadget = Gadget.objects.get(id=gadget_id)
+                gadget = Gadget.objects.get(uri=gadget_uri)
             except Gadget.DoesNotExist:
                 return HttpResponse('<error>iGadget without associated gadget</error>')
             
-            new_igadget = IGadget (uri=uri, gadget=gadget, screen=screen, position=position)
+            new_igadget = IGadget (id=id, uri=uri, gadget=gadget, screen=screen, position=position)
             new_igadget.save()
         return HttpResponse('')
 
