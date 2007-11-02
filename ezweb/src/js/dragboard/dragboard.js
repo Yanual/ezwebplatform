@@ -672,6 +672,11 @@ IGadget.prototype.paint = function(where, style) {
 		}
 	};
 
+
+	// Commit it
+	where.appendChild(gadgetElement);
+	this.element = gadgetElement;
+
 	// Mark as draggable
 	var drag = new Draggable(gadgetElement, {
 											  handle: gadgetMenu,
@@ -679,9 +684,7 @@ IGadget.prototype.paint = function(where, style) {
 											  onStart: startFunc,
 											  onDrag: updateFunc
 											});
-	// Commit it
-	where.appendChild(gadgetElement);
-	this.element = gadgetElement;
+
 	return this.element;
 }
 
