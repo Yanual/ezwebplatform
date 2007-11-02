@@ -66,6 +66,7 @@ var WiringFactory = function () {
 				}
 			}
 			loaded = true;
+			OpManagerFactory.getInstance().continueLoading(Modules.prototype.WIRING);
 	//		source = copy;
 		}
 		
