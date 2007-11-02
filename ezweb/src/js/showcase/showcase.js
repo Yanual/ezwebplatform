@@ -155,7 +155,7 @@ var ShowcaseFactory = function () {
 			buffer.append('<center><img src="');
 			buffer.append(gadget.getImage()); 
 			buffer.append('" alt="Imagen cannot be shown" /><br/>\n');
-			buffer.append('<a href="javascript:opManager.addInstance(gadget)">add</a></center>\n');
+			buffer.append('<a href="javascript:opManager.addInstance(' + gadgetId_ + ')">add</a></center>\n');
 			buffer.append('</div>\n');
 			
 			// Close Gadget Layer
@@ -372,6 +372,13 @@ var ShowcaseFactory = function () {
 		Showcase.prototype.addInstance = function (gadgetId_) {
 			var gadget = _gadget[gadgetId_];
 			_opManager.addInstance (gadget);
+		}
+
+		// Get a gadget by its gadgetID
+		Showcase.prototype.getGadget = function (gadgetId_) {
+			var gadget = _gadget[gadgetId_];
+
+			return gadget;
 		}
 		
 		// Show gadgets in Showcase
