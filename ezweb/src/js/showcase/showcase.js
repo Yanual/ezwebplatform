@@ -155,7 +155,7 @@ var ShowcaseFactory = function () {
 			buffer.append('<center><img src="');
 			buffer.append(gadget.getImage()); 
 			buffer.append('" alt="Imagen cannot be shown" /><br/>\n');
-			buffer.append('<a href="javascript:opManager.addInstance(\'' + gadgetId_ + '\');		$(\"showcase_container\").style.display=\"block\"">add</a></center>\n');
+			buffer.append('<a href="javascript:opManager.addInstance(\'' + gadgetId_ + '\')">add</a></center>\n');
 			buffer.append('</div>\n');
 			
 			// Close Gadget Layer
