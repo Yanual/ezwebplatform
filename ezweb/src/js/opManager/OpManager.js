@@ -26,14 +26,16 @@ var OpManagerFactory = function () {
 		// PUBLIC METHODS 
 		// ****************
 			
-		OpManager.prototype.addInstance = function (gadget) {
+		OpManager.prototype.addInstance = function (gadgetId) {
 		        if (!loadCompleted)
 				return;
+
+			var gadget = showcase.getGadget(gadgetId);
 				
 			var iGadgetId = dragboard.addInstance(gadget);
 			
-			varManager.addInstance(gadget.getTemplate(). iGadgetId);
-			wiring.addInstance(template.getTemplate(), iGadgetId);
+			varManager.addInstance(iGadgetId, gadget.getTemplate());
+			wiring.addInstance(iGadgetId, gadget.getTemplate());
 			
 			dragboard.showInstance(iGadgetId);
 		}
