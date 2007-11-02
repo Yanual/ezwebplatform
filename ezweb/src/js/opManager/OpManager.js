@@ -38,6 +38,9 @@ var OpManagerFactory = function () {
 			wiring.addInstance(iGadgetId, gadget.getTemplate());
 			
 			dragboard.showInstance(iGadgetId);
+
+			// The dragboard must be shown after an igadget insertion
+			show_dragboard()
 		}
 		 
 		OpManager.prototype.removeInstance = function (iGadgetId) {
