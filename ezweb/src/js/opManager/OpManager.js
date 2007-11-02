@@ -27,7 +27,7 @@ var OpManagerFactory = function () {
 		// ****************
 			
 		OpManager.prototype.addInstance = function (gadget) {
-			if (!loadCompleted)
+		        if (!loadCompleted)
 				return;
 				
 			var iGadgetId = dragboard.addInstance(gadget);
