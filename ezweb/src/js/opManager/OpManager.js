@@ -77,9 +77,6 @@ var OpManagerFactory = function () {
 				
 			if (module == Modules.prototype.DRAGBOARD) {
 				wiring = WiringFactory.getInstance();
-	var wI = new wiringInterface();
-	var w = WiringFactory.getInstance();	
-
 				return;
 			}
 			
