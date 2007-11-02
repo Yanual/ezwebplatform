@@ -370,13 +370,13 @@ var ShowcaseFactory = function () {
 		
 		// Deploy a Showcase gadget into dragboard as gadget instance  
 		Showcase.prototype.addInstance = function (gadgetId_) {
-			var gadget = _gadget[gadgetId_];
+			var gadget = _gadgets[gadgetId_];
 			_opManager.addInstance (gadget);
 		}
 
 		// Get a gadget by its gadgetID
 		Showcase.prototype.getGadget = function (gadgetId_) {
-			var gadget = _gadget[gadgetId_];
+			var gadget = _gadgets[gadgetId_];
 
 			return gadget;
 		}
