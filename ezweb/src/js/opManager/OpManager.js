@@ -58,7 +58,11 @@ var OpManagerFactory = function () {
 		}
 
 		OpManager.prototype.loadEnviroment = function () {
-			varManager = VarManagerFactory.getInstance();	
+		    varManager = VarManagerFactory.getInstance();	
+		}
+
+		OpManager.prototype.repaintShowcase = function () {
+		    showcase.repaint();
 		}
 		
 		OpManager.prototype.continueLoading = function (module) {
