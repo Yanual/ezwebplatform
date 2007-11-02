@@ -35,6 +35,39 @@
 <script language="JavaScript" src="wiring/wiring.js"></script>
 <script language="JavaScript" src="wiring/wiringInterface.js"></script>
 
+<!-- Initialization code -->
+<script language="JavaScript">
+	
+	function show_showcase(){
+		$('dragboard_container').style.display='none';
+		$('wiring_container').style.display='none';
+		$('showcase_container').style.display='block';
+		var myshowcase = ShowcaseFactory.getInstance();
+		myshowcase.repaint();
+	}
+	
+	function show_dragboard(){
+		$('wiring_container').style.display='none';
+		$('showcase_container').style.display='none';
+		$('dragboard_container').style.display='block';
+	}
+	
+	function show_wiring(){
+		$('dragboard_container').style.display='none';
+		$('showcase_container').style.display='none';
+		$('wiring_container').style.display='block';
+	}
+	
+	// Platform initialization
+	var opManager = OpManagerFactory.getInstance();
+	opManager.loadEnviroment();
+	
+
+	var wI = new wiringInterface();
+	var w = WiringFactory.getInstance();	
+		
+</script>
+
 
 </head>
 
@@ -168,39 +201,5 @@
 </div> <!-- WIRING LAYER -->
 
 </body>
-
-<!-- Initialization code -->
-<script language="JavaScript">
-	
-	function show_showcase(){
-		$('dragboard_container').style.display='none';
-		$('wiring_container').style.display='none';
-		$('showcase_container').style.display='block';
-		var myshowcase = ShowcaseFactory.getInstance();
-		myshowcase.repaint();
-	}
-	
-	function show_dragboard(){
-		$('wiring_container').style.display='none';
-		$('showcase_container').style.display='none';
-		$('dragboard_container').style.display='block';
-	}
-	
-	function show_wiring(){
-		$('dragboard_container').style.display='none';
-		$('showcase_container').style.display='none';
-		$('wiring_container').style.display='block';
-	}
-	
-	// Platform initialization
-	var opManager = OpManagerFactory.getInstance();
-	opManager.loadEnviroment();
-	
-
-	var wI = new wiringInterface();
-	var w = WiringFactory.getInstance();	
-		
-</script>
-
 
 </html>
