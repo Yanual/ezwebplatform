@@ -678,12 +678,12 @@ IGadget.prototype.paint = function(where, style) {
 	this.element = gadgetElement;
 
 	// Mark as draggable
-	//var drag = new Draggable(gadgetElement, {
-	//										  handle: gadgetMenu,
-	//										  revert: revertFunc,
-	//										  onStart: startFunc,
-	//										  onDrag: updateFunc
-        //											});
+	var drag = new Draggable(gadgetElement, {
+											  handle: gadgetMenu,
+											  revert: revertFunc,
+											  onStart: startFunc,
+											  onDrag: updateFunc
+        											});
 
 	return this.element;
 }
