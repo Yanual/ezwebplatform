@@ -59,12 +59,10 @@
 	}
 	
 	// Platform initialization
+	xI = new WiringInterface();
+
 	var opManager = OpManagerFactory.getInstance();
 	opManager.loadEnviroment();
-	
-
-	var wI = new wiringInterface();
-	var w = WiringFactory.getInstance();	
 		
 </script>
 
@@ -125,7 +123,7 @@
 			<input id = "gadget9" type = text value = "id gadget...">
 			<input id = "event9"  type = text value = "name event...">
 			<input id = "value9"  type = text value = "value...">
-			<input type = button  value= "send event" onclick = "w.sendEvent($F($('gadget9')),$F($('event9')), $F($('value9')));wI.renewChannel(w,$F($('selectCanal')),$('slotsConnection'),$('eventsConnection'))">
+			<input type = button  value= "send event" onclick = "opManager.sendEvent($F($('gadget9')),$F($('event9')), $F($('value9')));wI.renewChannel(w,$F($('selectCanal')),$('slotsConnection'),$('eventsConnection'))">
 		</div>
 		<div class = "container">
 			<fieldset id = "one">
@@ -163,7 +161,7 @@
 			</fieldset>
 			<fieldset id = "two">
 				<div>
-					<input id = "refreshbutton" type = image src = wiring/disk.png title = "Save data" alt = "Actualizar" onClick = "w.restaure()">	
+					<input id = "refreshbutton" type = image src = wiring/disk.png title = "Save data" alt = "Actualizar" onClick = "opManager.restaure()">	
 				</div>
 				<div id = "selector">
 					<em>Seleccione un item:</em>

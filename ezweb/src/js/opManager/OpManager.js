@@ -49,6 +49,14 @@ var OpManagerFactory = function () {
 		}
 		
 		
+		OpManager.prototype.sendEvent = function (gadget, event, value) {
+		    wiring.sendEvent(gadget, event, value);
+		}
+
+		OpManager.prototype.restaure = function () {
+		    wiring.restaure();
+		}
+
 		OpManager.prototype.loadEnviroment = function () {
 			varManager = VarManagerFactory.getInstance();	
 		}
@@ -69,6 +77,9 @@ var OpManagerFactory = function () {
 				
 			if (module == Modules.prototype.DRAGBOARD) {
 				wiring = WiringFactory.getInstance();
+	var wI = new wiringInterface();
+	var w = WiringFactory.getInstance();	
+
 				return;
 			}
 			
