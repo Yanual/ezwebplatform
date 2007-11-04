@@ -1,108 +1,59 @@
+.button {
+  cursor: pointer;
+}
 
-		body, html {
-			margin: 0px;
-			padding: 0px;
-		}
+#dragboard {
+  min-width: 400px;
+  position: relative;
+}
 
-		.button {
-			cursor: pointer;
-		}
+div.gadget_window {
+  position: absolute;
+  border: 1px solid blue;
+  background: white;
+}
 
-		#dragboard {
-			min-width: 400px;
-			position: relative;
-		}
+div.gadget_window div.gadget_menu {
+  cursor: move;
+  background: #AAA;
+  border: 1px solid blue;
+  padding: 3px;
+}
 
-		div.gadget_window {
-			position: absolute;
-			border: 1px solid blue;
-			background: white;
-		}
+div.gadget_window div.gadget_menu div.button {
+  display: inline;
+  margin: 0 3px;
+  border: 1px solid blue;
+  background: #DDD;
+}
 
-		div.gadget_window div.gadget_menu {
-			cursor: move;
-			background: #AAA;
-			border: 1px solid blue;
-			padding: 3px;
-		}
+.floatleft {
+  float: left;
+}
 
-		div.gadget_window div.gadget_menu div.button {
-			display: inline;
-			margin: 0 3px;
-			border: 1px solid blue;
-			background: #DDD;
-		}
+.floatright {
+  float: right;
+}
 
-		.left {
-			float: left;
-		}
+#dragboardcursor {
+  position:absolute;
+  border: 3px dashed #AAA;
+  z-index: 1;
+}
 
-		.right {
-			float: right;
-		}
+#grid {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  height: 100%;
+  width: 100%;
+}
 
-		#dragboardcursor {
-			position:absolute;
-			border: 3px dashed #AAA;
-			z-index: 1;
-		}
-
-
-
-
-
-
-
-	div.gadget_window {
-			z-index: 1000;
-		}
-		#grid {
-			position: absolute;
-			top: 0px;
-			left: 0px;
-			right: 0px;
-			height: 100%;
-			width: 100%;
-		}
-		div.cell {
-			position: absolute;
-			width: 30%;
-			height: 15px;
-			border: 1px dashed gray;
-			z-indez: 0;
-		}
-		div.occupedcell {
-			position: absolute;
-			width: 30%;
-			height: 15px;
-			background: yellow;
-			z-indez: 0;
-		}
-		#dragboard {
-			position: absolute;
-			top: 10%;
-			left: 10%;
-			right: 10%;
-			height: 90%;
-			background: #EEE;
-		}
-		#debugconsole {
-			border-top: 1px solid gray;
-			opacity: 0.80;
-			color: white;
-			background: black;
-			position: absolute;
-			bottom: 0px;
-			left: 0px;
-			right: 0px;
-			overflow: auto;
-			height: 200px;
-		}
-		#dragboardcursor {
-			top: 195px;
-			left: 35%;
-			width: 30%;
-			height:60px;
-			border: 2px dashed gray;
-			z-index: 1;
-		}
+div.cell {
+  position: absolute;
+  width: 30%;
+  height: 15px;
+  border: 1px dashed gray;
+  z-indez: 0;
+}
