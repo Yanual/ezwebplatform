@@ -89,6 +89,7 @@ var OpManagerFactory = function () {
 			
 			if (module == Modules.prototype.WIRING) {
 				loadCompleted = true;
+				environmentLoadedCallback();
 				return;
 			}
 		}
