@@ -56,10 +56,13 @@
 		$('showcase_container').style.display='none';
 		$('wiring_container').style.display='block';
 	}
-	
+		
 	// Platform initialization
-	var wI = new wiringInterface();
-
+	
+	function environmentLoadedCallback(){
+		wI = new wiringInterface();
+	}
+	
 	var opManager = OpManagerFactory.getInstance();
 	opManager.loadEnviroment();
 		
