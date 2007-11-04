@@ -2,6 +2,7 @@
 
 function wiringInterface(){
 	var loaded = false;
+	var w = WiringFactory.getInstance();
 }
 
 wiringInterface.prototype.addChannelInterface = function(name, selector, itemize){
