@@ -1,0 +1,22 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>writer Gadget</title>
+	</head>
+	
+	<body>
+		<script>
+			var Calle = new RWGadgetVariable(this, "calle");
+			var Counter = new RWGadgetVariable(this, "counter");
+						
+		</script>
+		<div>
+			<form>
+				<input id = "writer" type = text>
+				<input id = "sendEvent" type = button value = "send" onClick = "Calle.set($F('writer')); Counter.set((Counter+1))">
+			</form>
+		</div>
+	</body>
+</html>
