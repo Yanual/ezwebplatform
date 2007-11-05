@@ -149,6 +149,7 @@ var ShowcaseFactory = function () {
 			
 			// Insert Showcase HTML in its layer 
 			var showcaseLayer = $(Showcase.prototype.MODULE_HTML_ID);
+			showcaseLayer.innerHTML="";
 			showcaseLayer.appendChild (gadgetsLayer); 
 		}
 		
