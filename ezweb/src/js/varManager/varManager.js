@@ -64,7 +64,7 @@ var VarManagerFactory = function () {
 		
 		var findVariable = function (iGadgetId, name) {
 			var variables = iGadgets[iGadgetId];
-			var variable = variables[variableName];
+			var variable = variables[name];
 		
 			return variable;
 		}
@@ -72,7 +72,7 @@ var VarManagerFactory = function () {
 		var loaded = false;
 		var persistenceEngine = PersistenceEngineFactory.getInstance();
 		var opManager = OpManagerFactory.getInstance();
-		var wiring = null;
+		var wiring = WiringFactory.getInstance();
 		var iGadgets = [];
 		
 		// Getting IGadgets from PersistenceEngine. Asyncrhonous call!
@@ -87,9 +87,9 @@ var VarManagerFactory = function () {
 			if (! loaded)
 				return;
 			
-			var variable = findVariable(iGadgetId, variableName);
+			var variable = findVariable(iGadgetId, slotName);
 			
-			variable.writeSlot(value);
+			variable.set(value,wiring);
 		} 
 		
 		VarManager.prototype.registerVariable = function (iGadgetId, variableName, handler) {

@@ -115,7 +115,7 @@ RWVariable.prototype.set = function (value_, wiring) {
 		case Variable.prototype.EVENT:
 		// PersistentEngine.guardar
 			if (value != value_){
-				wiring.sendEvent(iGadgetId, name, value_);
+				wiring.sendEvent(iGadget, name, value_);
 			}
 		break;
 	}
