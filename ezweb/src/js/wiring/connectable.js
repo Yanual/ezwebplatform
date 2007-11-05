@@ -59,7 +59,7 @@ wConnectable.prototype.refresh = function(){ //this method will be overriden in 
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// This class represents every object which may be placed in the middle of a connection between a In object and Out object //
+// This class represents every object which may be placed in the middle of a connection between a In object and wOut object //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function wOut(id,name,source){
    wConnectable.call(this,id,name,source);
@@ -91,8 +91,8 @@ wOut.prototype.removeInput = function(input){
 
 wOut.prototype.setValue = function(value){
    this.value=value;
-   var varManager = VarManagerFactory.getInstance();
-   varManager.writeSlot(this.id,this.name,this.value);
+   //var varManager = VarManagerFactory.getInstance();
+   //varManager.writeSlot(this.id,this.name,this.value);
    return "";
 }
 
@@ -443,7 +443,7 @@ wInOut.prototype.duplicate = function(){
       }
    }
    for (var i=0;i<this.outputCounter;i++){
-      if (this.outputList[i] instanceof Out){
+      if (this.outputList[i] instanceof wOut){
          clone["InOut"].addOutput(this.outputList[i]);
       } else {
          clone["output"].push(this.outputList[i].getName());
@@ -474,7 +474,7 @@ wInOut.prototype.refresh = function (channelRef){
 function wEvent(id,name,source){
    wIn.call(this,id,name,source);
 }
-Event.prototype = new wIn();
+wEvent.prototype = new wIn();
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // This class represents a wConnectable whose only purpose is to redistribute the data produced by an wIn object //
@@ -482,7 +482,7 @@ Event.prototype = new wIn();
 function wChannel(id,name,source){
    wInOut.call(this,id,name,source);
 }
-Channel.prototype = new wInOut();
+wChannel.prototype = new wInOut();
 
 /////////////////////////////////////////////////////////////////////////////
 // This class representents a iGadget variable which may receive some data //
@@ -490,4 +490,4 @@ Channel.prototype = new wInOut();
 function wSlot(id,name,source){
    wOut.call(this,id,name,source);
 }
-Slot.prototype = new Out();
+wSlot.prototype = new wOut();
