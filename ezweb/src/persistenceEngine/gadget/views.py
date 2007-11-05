@@ -87,7 +87,7 @@ class GadgetCodeEntry(Resource):
         user_authentication(user_id, request.user)
         gadget = get_object_or_404(Gadget, vendor=vendor, name=name, version=version)
         code = get_object_or_404(gadget.xhtml, id=gadget.xhtml.id)
-        return HttpResponse(json_encode(code), mimetype='application/json; charset=UTF-8')
+        return HttpResponse(code.code, mimetype='text/html; charset=UTF-8')
 
 
 class GadgetTagsEntry(Resource):

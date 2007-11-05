@@ -72,7 +72,7 @@ var VarManagerFactory = function () {
 		var loaded = false;
 		var persistenceEngine = PersistenceEngineFactory.getInstance();
 		var opManager = OpManagerFactory.getInstance();
-		var wiring = WiringFactory.getInstance();
+		var wiring = null; 
 		var iGadgets = [];
 		
 		// Getting IGadgets from PersistenceEngine. Asyncrhonous call!
