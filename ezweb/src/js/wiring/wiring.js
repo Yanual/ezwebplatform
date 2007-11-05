@@ -144,7 +144,7 @@ var WiringFactory = function () {
 						var item = new Object();
 						item["name"] = events[i].name;
 						item["aspect"] = "EVENT";
-						item["ref"] = new Event(iGadgetId, item["name"]);
+						item["ref"] = new wEvent(iGadgetId, item["name"]);
 						itemList.push(item);
 								
 					}
@@ -152,7 +152,7 @@ var WiringFactory = function () {
 						var item = new Object();
 						item["name"] = slots[j].name;
 						item["aspect"] = "SLOT";
-						item["ref"] = new Slot(iGadgetId, item["name"]);
+						item["ref"] = new wSlot(iGadgetId, item["name"]);
 						itemList.push(item);
 					}
 					gadget["list"] = itemList;
@@ -177,10 +177,10 @@ var WiringFactory = function () {
 					connectable.aspect = list[j].aspect;
 					switch (connectable.aspect) {
 						case "EVENT":
-							connectable.ref = new Event(null, null, list[j]);							
+							connectable.ref = new wEvent(null, null, list[j]);							
 							break;
 						case "SLOT":
-							connectable.ref = new Slot(null, null, list[j]);												
+							connectable.ref = new wSlot(null, null, list[j]);												
 							break;
 					}
 					gadget["list"].push(connectable);
@@ -216,7 +216,7 @@ var WiringFactory = function () {
 				if (copy[newChannel] == undefined){
 					channel["name"] = newChannel;
 	
-					channel["ref"] = new InOut(null, newChannel);
+					channel["ref"] = new wInOut(null, newChannel);
 					copy[newChannel] = channel;
 					return 0;
 				}
@@ -228,7 +228,7 @@ var WiringFactory = function () {
 			else {
 				// this way is ejecuted when channels are added from persistence.
 				channel["name"] = newChannel["name"];
-				channel["ref"] = new InOut(null, null, newChannel);
+				channel["ref"] = new wInOut(null, null, newChannel);
 				inOutList[newChannel["name"]] = channel;
 				return 0;	
 			}
