@@ -51,13 +51,10 @@ class IGadgetCollection(Resource):
         received_json = request.POST['igadgets']
         received_data = eval(received_json)
         
-        current_id = received_data.get('currentId') #TODO currentId is needed???
-                
         igadgets = received_data.get('iGadgets')
         for igadget in igadgets:
-            id = igadget.get('id')
-            #TODO uri must be /user/user_id/screen/screen_id/igadgets/igadget_id
-            uri = "/user/" + user.username + "/igadgets/" + id
+            uri = igadget.get('uri')
+            id = uri.partition("/igadgets/")[2]
             gadget_uri = igadget.get('gadget')#TODO add gadget id in JSON
             width = igadget.get('width')
             height = igadget.get('height')
