@@ -1,3 +1,4 @@
+from django.http import Http404
 from HTMLParser import HTMLParser
 from urllib import urlopen
 
@@ -9,7 +10,12 @@ class GadgetCodeParser(HTMLParser):
     xHTML = None
 
     def parseUserEvents(self, codeURI, gadgetURI):
-        xhtml = urlopen(codeURI).read()
+        
+        xhtml = ""
+        try:
+            xhtml = urlopen(codeURI).read()
+        except Exception:
+            raise Http404("XHTML code is not accessible")
         
         self.xHTML = XHTML (uri=gadgetURI + "/xhtml", code=xhtml)
         self.xHTML.save()
