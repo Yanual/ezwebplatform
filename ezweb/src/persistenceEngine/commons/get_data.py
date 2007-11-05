@@ -2,13 +2,12 @@
 from django.shortcuts import get_object_or_404, get_list_or_404
 
 from gadget.models import Template, Gadget, XHTML, Tag, UserEventsInfo
-from igadget.models import Variable, VariableDef
+from igadget.models import Variable, VariableDef, Position
 from connectable.models import In, Out
 
 
 def get_gadget_data(data):
     data_fields = data['fields']
-
     data_image = get_object_or_404(Template, id=data_fields['template'])
     data_fields['image'] = data_image.image
 
@@ -28,7 +27,6 @@ def get_gadget_data(data):
     """
 
     return data_fields
-
 
 def get_inout_data(data):
     data_ret = {}
@@ -50,14 +48,14 @@ def get_inout_data(data):
 def get_igadget_data(data):
     data_ret = {}
     data_fields = data['fields']
+    gadget = Gadget.objects.get(pk=data_fields['gadget'])
+    position = Position.objects.get(pk=data_fields['position'])
+      
     data_ret['uri'] = data_fields['uri']
-    
-    data_variables = get_list_or_404(Variable.objects.all().values('vardef', 'value', 'uri'), igadget=data['pk'])
-    data_ret['variables'] = []
-    for data_variable in data_variables:
-        data_vardef = get_object_or_404(VariableDef.objects.all().values('name', 'aspect', 'type'), id=data_variable['vardef'])
-        data_vardef['value'] = data_variable['value']
-        data_vardef['uri'] = data_variable['uri']
-        data_ret['variables'].append(data_vardef)
-    
+    data_ret['gadget'] = gadget.uri
+    data_ret['top'] = position.posY 
+    data_ret['left'] = position.posX
+    data_ret['width'] = position.width
+    data_ret['height'] = position.height
+       
     return data_ret

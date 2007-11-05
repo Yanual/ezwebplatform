@@ -18,7 +18,12 @@ from gadget.models import Gadget
 class IGadgetCollection(Resource):
     def read(self, request, user_id, screen_id=None):
         user = user_authentication(user_id, request.user)
-        data_list = []
+        
+        #TODO by default. Remove in final release
+        if not screen_id:
+            screen_id = 1
+        
+        data_list = {}
         if not screen_id:
             screens = get_list_or_404(Screen, user=user)
             for screen in screens:
@@ -29,7 +34,7 @@ class IGadgetCollection(Resource):
             screen = get_object_or_404(Screen, user=user, id=screen_id)
             igadget = get_list_or_404(IGadget, screen=screen_id)
             data = serializers.serialize('python', igadget, ensure_ascii=False)
-            data_list = [get_igadget_data(d) for d in  data]
+            data_list['iGadgets'] = [get_igadget_data(d) for d in  data]
         return HttpResponse(json_encode(data_list), mimetype='application/json; charset=UTF-8')
 
     def create(self, request, user_id, screen_id=None):
