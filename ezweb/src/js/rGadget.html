@@ -7,11 +7,11 @@ html>
 	
 	<body>
 		<script>
-			var Direccion = new RGadgetVariable(this, "direccion", _handler);
-			var Counter = new RWGadgetVariable(this, "counter");
+			var Direccion = new RGadgetVariable("Lector", "direccion", _handler);
+			var Counter = new RWGadgetVariable("Lector", "counter");
 						
-			function _handler(){
-				alert("El valor recibido es: " + Direccion );
+			function _handler(value){
+				alert("El valor recibido es: " + value );
 			}
 		</script>
 	</body>
