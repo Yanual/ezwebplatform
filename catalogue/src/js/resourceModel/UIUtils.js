@@ -100,19 +100,53 @@ UIUtils.setResourcesWidth = function() {
 }
 
 UIUtils.openInfoResource = function() {
-	UIUtils.isInfoResourcesOpen = true;
-	UIUtils.setResourcesWidth();
-	UIUtils.show('info_resource');
-	UIUtils.hidde('tab_info_resource_open');
-	UIUtils.show('tab_info_resource_close');
+	if (!UIUtils.isInfoResourcesOpen)
+	{
+		UIUtils.isInfoResourcesOpen = true;
+		UIUtils.SlideInfoResourceIntoView('info_resource');
+	}
 }
 
 UIUtils.closeInfoResource = function() {
-	UIUtils.isInfoResourcesOpen = false;
-	UIUtils.hidde('info_resource');
-	UIUtils.setResourcesWidth();
-	UIUtils.hidde('tab_info_resource_close');
-	UIUtils.show('tab_info_resource_open');
+	if (UIUtils.isInfoResourcesOpen)
+	{
+		UIUtils.isInfoResourcesOpen = false;
+		UIUtils.SlideInfoResourceOutOfView('info_resource');
+	}
+}
+
+UIUtils.SlideInfoResourceIntoView = function(element) {
+  $(element).style.width = '0px';
+  $(element).style.overflow = 'hidden';
+  $(element).firstChild.style.position = 'relative';
+  UIUtils.setResourcesWidth();
+  Element.show(element);
+  new Effect.Scale(element, 100,
+    Object.extend(arguments[1] || {}, {
+      scaleContent: false,
+      scaleY: false,
+      scaleMode: 'contents',
+      scaleFrom: 0,
+      afterUpdate: function(effect){},
+	  afterFinish: function(effect)
+        { UIUtils.hidde('tab_info_resource_open'); UIUtils.show('tab_info_resource_close'); }
+    })
+  );
+}
+
+UIUtils.SlideInfoResourceOutOfView = function(element) {
+  $(element).style.overflow = 'hidden';
+  $(element).firstChild.style.position = 'relative';
+  Element.show(element);
+  new Effect.Scale(element, 0,
+    Object.extend(arguments[1] || {}, {
+      scaleContent: false,
+      scaleY: false,
+      afterUpdate: function(effect){},
+      afterFinish: function(effect)
+        { Element.hide(effect.element); UIUtils.setResourcesWidth(); UIUtils.hidde('tab_info_resource_close'); UIUtils.show('tab_info_resource_open'); }
+    })
+  );
 }
 
 // Enables you to react to return being pressed in an input
