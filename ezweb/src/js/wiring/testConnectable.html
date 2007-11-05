@@ -5,25 +5,25 @@
 </HEAD>
 <BODY>
    You must reload the page before clicking any button to restart common objects. In other case the results can be wrong.
-   <H1>Unity tests for the classes which inherit from Connectable</H1>
+   <H1>Unity tests for the classes which inherit from wConnectable</H1>
    <SCRIPT>
-      var canal1 = new InOut(null,"canal1");
-      var canal2 = new InOut(null,"canal2");
-      var canal3 = new InOut(null,"canal3");
-      var canal4 = new InOut(null,"canal4");
-      var canal5 = new InOut(null,"canal5");
-      var canal6 = new InOut(null,"canal6");
-      var slot1 = new Out(1,"slot1");
-      var slot2 = new Out(1,"slot2");
-      var slot3 = new Out(2,"slot3");
-      var slot4 = new Out(2,"slot4");
-      var event1 = new Event(1,"event1");
-      var event2 = new Event(1,"event2");
-      var event3 = new Event(2,"event3");
-      var event4 = new Event(2,"event4");
+      var canal1 = new wInOut(null,"canal1");
+      var canal2 = new wInOut(null,"canal2");
+      var canal3 = new wInOut(null,"canal3");
+      var canal4 = new wInOut(null,"canal4");
+      var canal5 = new wInOut(null,"canal5");
+      var canal6 = new wInOut(null,"canal6");
+      var slot1 = new wOut(1,"slot1");
+      var slot2 = new wOut(1,"slot2");
+      var slot3 = new wOut(2,"slot3");
+      var slot4 = new wOut(2,"slot4");
+      var event1 = new wEvent(1,"event1");
+      var event2 = new wEvent(1,"event2");
+      var event3 = new wEvent(2,"event3");
+      var event4 = new wEvent(2,"event4");
    </SCRIPT>
 
-   <H2>Tests for the class Out</H2>
+   <H2>Tests for the class wOut</H2>
    <SCRIPT>
 
       function pOutAddInput(){ // here there is no need of checking types
@@ -33,9 +33,9 @@
          var pOutAddInput4 = slot1.addInput(canal2); //ok
          var pOutAddInput5 = slot1.addInput(canal2); // warning 1
          if (pOutAddInput1 == 0 && pOutAddInput2 == -1 && pOutAddInput3 == -1 && pOutAddInput4 == 0 && pOutAddInput5 == 1){
-            alert("Out.addInput works properly");
+            alert("wOut.addInput works properly");
          }else{
-            alert("Out.addInput failed!\n Results: "+ pOutAddInput1+","+pOutAddInput2+","+pOutAddInput3+","+pOutAddInput4+","+pOutAddInput5);
+            alert("wOut.addInput failed!\n Results: "+ pOutAddInput1+","+pOutAddInput2+","+pOutAddInput3+","+pOutAddInput4+","+pOutAddInput5);
          }
       }
 
@@ -49,16 +49,16 @@
          var pOutRemoveInput7 = slot1.removeInput(canal1); // ok
          var pOutRemoveInput8 = slot1.addInput(canal2); //ok
          if (pOutRemoveInput1 == 0 && pOutRemoveInput2 == -1 && pOutRemoveInput3 == -1 && pOutRemoveInput4 == 0 && pOutRemoveInput5 == 0 && pOutRemoveInput6 == 1 && pOutRemoveInput7 == 0 && pOutRemoveInput8 == 0){
-            alert("Out.removeInput works properly");
+            alert("wOut.removeInput works properly");
          }else{
-            alert("Out.removeInput failed!\n Results: " + pOutRemoveInput1+","+pOutRemoveInput2+","+pOutRemoveInput3+","+pOutRemoveInput4+","+pOutRemoveInput5+","+pOutRemoveInput6+","+pOutRemoveInput7+","+pOutRemoveInput8);
+            alert("wOut.removeInput failed!\n Results: " + pOutRemoveInput1+","+pOutRemoveInput2+","+pOutRemoveInput3+","+pOutRemoveInput4+","+pOutRemoveInput5+","+pOutRemoveInput6+","+pOutRemoveInput7+","+pOutRemoveInput8);
          }
       }
 
       function pOutSetValue(){
          slot1.setValue("value1");
          if (slot1.getValue() == "value1") {
-            alert("Out.setValue works properly (the call tothe method writeSlot has not been included yet)");
+            alert("wOut.setValue works properly (the call tothe method writeSlot has not been included yet)");
          }
       }
 
@@ -74,9 +74,9 @@
          var pOutClear3 = canal2.addOutput(slot1); // warning 1
 
          if (pOutClear1 == 0 && pOutClear2 == 0 && pOutClear3 == 1) {
-            alert("Out.clear works properly");
+            alert("wOut.clear works properly");
          } else {
-            alert("Out.clear failed!\n Results: "+pOutClear1+","+pOutClear2+","+pOutClear3);
+            alert("wOut.clear failed!\n Results: "+pOutClear1+","+pOutClear2+","+pOutClear3);
          }
       }
 
@@ -95,7 +95,7 @@
       <INPUT id="bOutPruebaSerialize" type="button" value="Test serialize" onClick="pOutSerialize()"/>
    </FORM>
 
-   <H2>Tests for the class In</H2>
+   <H2>Tests for the class wIn</H2>
    <SCRIPT>
 
       function pInAddOutput(){
@@ -117,9 +117,9 @@
          var pInAddOutput10 = event2.addOutput(canal4); // ok
          var pInAddOutput11 = (event2.getType() == "type3") // true
          if (pInAddOutput1 == 0 && pInAddOutput2 && pInAddOutput3 == -1 && pInAddOutput4 == -1 && pInAddOutput5 == 0 && pInAddOutput6 && pInAddOutput7 == 1 && pInAddOutput8 == -2 && pInAddOutput9 == 0 && pInAddOutput10 == 0 && pInAddOutput11){
-            alert("In.addOutput works properly");
+            alert("wIn.addOutput works properly");
          }else{
-            alert("In.addOutput failed!\n Results: "+ pInAddOutput1+","+pInAddOutput2+","+pInAddOutput3+","+pInAddOutput4+","+pInAddOutput5+","+pInAddOutput6+","+pInAddOutput7+","+pInAddOutput8+","+pInAddOutput9+","+pInAddOutput10+","+pInAddOutput11);
+            alert("wIn.addOutput failed!\n Results: "+ pInAddOutput1+","+pInAddOutput2+","+pInAddOutput3+","+pInAddOutput4+","+pInAddOutput5+","+pInAddOutput6+","+pInAddOutput7+","+pInAddOutput8+","+pInAddOutput9+","+pInAddOutput10+","+pInAddOutput11);
          }
       }
 
@@ -134,9 +134,9 @@
          var pInRemoveOutput8 = event1.addOutput(canal2); //ok
             
          if (pInRemoveOutput1 == 0 && pInRemoveOutput2 == -1 && pInRemoveOutput3 == -1 && pInRemoveOutput4 == 0 && pInRemoveOutput5 == 0 && pInRemoveOutput6 == 1 && pInRemoveOutput7 == 0 && pInRemoveOutput8 == 0){
-            alert("In.removeOutput works properly");
+            alert("wIn.removeOutput works properly");
          }else{
-            alert("In.removeOutput failed!\n Results: " + pInRemoveOutput1+","+pInRemoveOutput2+","+pInRemoveOutput3+","+pInRemoveOutput4+","+pInRemoveOutput5+","+pInRemoveOutput6+","+pInRemoveOutput7+","+pInRemoveOutput8);
+            alert("wIn.removeOutput failed!\n Results: " + pInRemoveOutput1+","+pInRemoveOutput2+","+pInRemoveOutput3+","+pInRemoveOutput4+","+pInRemoveOutput5+","+pInRemoveOutput6+","+pInRemoveOutput7+","+pInRemoveOutput8);
          }
       }
 
@@ -153,9 +153,9 @@
          var pInSetValue5 = (canal2.getValue() == "test3");
 
          if ( pInSetValue1 && pInSetValue2 && pInSetValue3 && pInSetValue4 && pInSetValue5) {
-            alert("In.setValue works properly");
+            alert("wIn.setValue works properly");
          } else {
-            alert("In.setValue failed!\n Results: " + pInSetValue1+","+pInSetValue2+","+pInSetValue3+","+pInSetValue4+","+pInSetValue5);
+            alert("wIn.setValue failed!\n Results: " + pInSetValue1+","+pInSetValue2+","+pInSetValue3+","+pInSetValue4+","+pInSetValue5);
          }
       }
 
@@ -174,7 +174,7 @@
    </FORM>
 </BODY>
 
-   <H2>Tests for the class InOut</H2>
+   <H2>Tests for the class wInOut</H2>
    <SCRIPT>
 
       function pInOutAddOutput(){
@@ -196,9 +196,9 @@
           var pInOutAddOutput12 = (canal5.getType() == "type1") // true
           var pInOutAddOutput13 = canal1.addOutput(canal5); // warning 2
           if (pInOutAddOutput1 == 2 && pInOutAddOutput2 == 0 && pInOutAddOutput3 == -1 && pInOutAddOutput4 == -2 && pInOutAddOutput5 == 1 && pInOutAddOutput6 == 0 && pInOutAddOutput7 == 0 && pInOutAddOutput8 == 0 && pInOutAddOutput9 && pInOutAddOutput10 == 0 && pInOutAddOutput11 == 0 && pInOutAddOutput12 && pInOutAddOutput13 == 2){
-             alert("InOut.addOutput works properly");
+             alert("wInOut.addOutput works properly");
           }else{
-             alert("InOut.addOutput failed!\n Results: "+ pInOutAddOutput1+","+pInOutAddOutput2+","+pInOutAddOutput3+","+pInOutAddOutput4+","+pInOutAddOutput5+","+pInOutAddOutput6+","+pInOutAddOutput7+","+pInOutAddOutput8+","+pInOutAddOutput9+","+pInOutAddOutput10+","+pInOutAddOutput11+","+pInOutAddOutput12+","+pInOutAddOutput13);
+             alert("wInOut.addOutput failed!\n Results: "+ pInOutAddOutput1+","+pInOutAddOutput2+","+pInOutAddOutput3+","+pInOutAddOutput4+","+pInOutAddOutput5+","+pInOutAddOutput6+","+pInOutAddOutput7+","+pInOutAddOutput8+","+pInOutAddOutput9+","+pInOutAddOutput10+","+pInOutAddOutput11+","+pInOutAddOutput12+","+pInOutAddOutput13);
           }
       }
 
@@ -214,9 +214,9 @@
          var pInOutRemoveOutput9 = canal1.removeOutput(slot1); // warning 1
 
          if (pInOutRemoveOutput1 == 0 && pInOutRemoveOutput2 == 1 && pInOutRemoveOutput3 == -1 && pInOutRemoveOutput4 == 0 && pInOutRemoveOutput5 == 0 && pInOutRemoveOutput6 == 1 && pInOutRemoveOutput7 == 1 && pInOutRemoveOutput8 == 0 && pInOutRemoveOutput9 == 1){
-            alert("InOut.removeOutput works properly");
+            alert("wInOut.removeOutput works properly");
          }else{
-            alert("InOut.removeOutput failed!\n Results: " + pInOutRemoveOutput1+","+pInOutRemoveOutput2+","+pInOutRemoveOutput3+","+pInOutRemoveOutput4+","+pInOutRemoveOutput5+","+pInOutRemoveOutput6+","+pInOutRemoveOutput7+","+pInOutRemoveOutput8+","+pInOutRemoveOutput9);
+            alert("wInOut.removeOutput failed!\n Results: " + pInOutRemoveOutput1+","+pInOutRemoveOutput2+","+pInOutRemoveOutput3+","+pInOutRemoveOutput4+","+pInOutRemoveOutput5+","+pInOutRemoveOutput6+","+pInOutRemoveOutput7+","+pInOutRemoveOutput8+","+pInOutRemoveOutput9);
          }
       }
 
@@ -227,9 +227,9 @@
          var pInOutAddInput4 = canal1.addInput(canal2); // ok
          var pInOutAddInput5 = canal1.addInput(canal2); // warning 1
          if (pInOutAddInput1 == 2 && pInOutAddInput2 == -1 && pInOutAddInput3 == 0 && pInOutAddInput4 == 0 && pInOutAddInput5 == 1){
-            alert("InOut.addInput works properly");
+            alert("wInOut.addInput works properly");
          }else{
-            alert("InOut.addInput failed!\n Results: " + pInOutAddInput1+","+pInOutAddInput2+","+pInOutAddInput3+","+pInOutAddInput4+","+pInOutAddInput5);
+            alert("wInOut.addInput failed!\n Results: " + pInOutAddInput1+","+pInOutAddInput2+","+pInOutAddInput3+","+pInOutAddInput4+","+pInOutAddInput5);
          }
       }
 
@@ -245,9 +245,9 @@
          var pInOutRemoveInput9 = canal1.removeInput(event1); // warning 1
 
          if (pInOutRemoveInput1 == 0 && pInOutRemoveInput2 == -1 && pInOutRemoveInput3 == 1 && pInOutRemoveInput4 == 0 && pInOutRemoveInput5 == 0 && pInOutRemoveInput6 == 1 && pInOutRemoveInput7 == 1 && pInOutRemoveInput8 == 0 && pInOutRemoveInput9 == 1){
-            alert("InOut.removeInput works properly");
+            alert("wInOut.removeInput works properly");
          }else{
-            alert("InOut.removeInput failed!\n Results: " + pInOutRemoveInput1+","+pInOutRemoveInput2+","+pInOutRemoveInput3+","+pInOutRemoveInput4+","+pInOutRemoveInput5+","+pInOutRemoveInput6+","+pInOutRemoveInput7+","+pInOutRemoveInput8+","+pInOutRemoveInput9);
+            alert("wInOut.removeInput failed!\n Results: " + pInOutRemoveInput1+","+pInOutRemoveInput2+","+pInOutRemoveInput3+","+pInOutRemoveInput4+","+pInOutRemoveInput5+","+pInOutRemoveInput6+","+pInOutRemoveInput7+","+pInOutRemoveInput8+","+pInOutRemoveInput9);
          }
       }
 
@@ -275,9 +275,9 @@
          var pInOutSetValue10 = (slot2.getValue() == "test5" && slot1.getValue() == "test5");
 
          if ( pInOutSetValue1 && pInOutSetValue2 && pInOutSetValue3 && pInOutSetValue4 && pInOutSetValue5  && pInOutSetValue6 && pInOutSetValue7 && pInOutSetValue8 && pInOutSetValue9 && pInOutSetValue10) {
-            alert("InOut.setValue works properly");
+            alert("wInOut.setValue works properly");
          } else {
-            alert("InOut.setValue failed!\n Results: " + pInOutSetValue1+","+pInOutSetValue2+","+pInOutSetValue3+","+pInOutSetValue4+","+pInOutSetValue5+","+pInOutSetValue6+","+pInOutSetValue7+","+pInOutSetValue8+","+pInOutSetValue9+","+pInOutSetValue10)
+            alert("wInOut.setValue failed!\n Results: " + pInOutSetValue1+","+pInOutSetValue2+","+pInOutSetValue3+","+pInOutSetValue4+","+pInOutSetValue5+","+pInOutSetValue6+","+pInOutSetValue7+","+pInOutSetValue8+","+pInOutSetValue9+","+pInOutSetValue10)
          }
       }
 
@@ -302,9 +302,9 @@
          var pInOutClear6 = event3.addOutput(canal2); // ok
 
          if (pInOutClear1 == 0 && pInOutClear2 == 0 && pInOutClear3 == 0 && pInOutClear4 == 1 && pInOutClear5 == 1 && pInOutClear6 == 0) {
-            alert("InOut.clear works properly");
+            alert("wInOut.clear works properly");
          } else {
-            alert("InOut.clear failed!\n Results: "+pInOutClear1+","+pInOutClear2+","+pInOutClear3+","+pInOutClear4+","+pInOutClear5+","+pInOutClear6);
+            alert("wInOut.clear failed!\n Results: "+pInOutClear1+","+pInOutClear2+","+pInOutClear3+","+pInOutClear4+","+pInOutClear5+","+pInOutClear6);
          }
       }
 
@@ -351,10 +351,10 @@
          something.name = "name1";
          something.inputHash = [];
          something.outputHash = [];
-         var testEvent = new Event(null,null,something);
+         var testEvent = new wEvent(null,null,something);
          alert(testEvent.getId()+","+testEvent.getType()+","+testEvent.getValue()+","+testEvent.getName());
          var something2 = "{\"aspect\":\"SLOT\",\"id\":\"id2\",\"type\":\"type2\",\"value\":\"value2\",\"name\":\"name2\",\"inputHash\":[],\"outputHash\":[],}";
-         var testSlot = new Event(null,null,eval('('+ something2 +')')); 
+         var testSlot = new wEvent(null,null,eval('('+ something2 +')')); 
          alert(testSlot.getId()+","+testSlot.getType()+","+testSlot.getValue()+","+testSlot.getName());
       }
 

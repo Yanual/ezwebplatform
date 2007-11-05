@@ -2,7 +2,7 @@
 // This is the class has the common properties of every connectable object of the wiring module //
 // The other connectable classes from the wiring module will inherit from this class            //
 //////////////////////////////////////////////////////////////////////////////////////////////////
-function Connectable(id,name,source){
+function wConnectable(id,name,source){
    if (source==undefined || source==null){
       // Private attributes
       this.id = id;
@@ -18,113 +18,112 @@ function Connectable(id,name,source){
 }
 // Public methods 
 
-Connectable.prototype.getId = function(){
+wConnectable.prototype.getId = function(){
    return this.id;
 }
 
-Connectable.prototype.setId = function(value){
+wConnectable.prototype.setId = function(value){
    this.id=value;
 }
 
-Connectable.prototype.getType = function(){
+wConnectable.prototype.getType = function(){
    return this.type;
 }
 
-Connectable.prototype.setType = function(value){
+wConnectable.prototype.setType = function(value){
    this.type=value;
 }
 
-Connectable.prototype.getValue = function(){
+wConnectable.prototype.getValue = function(){
    return this.value;
 }
 
-Connectable.prototype.setValue = function(value){
+wConnectable.prototype.setValue = function(value){
    this.value=value;
 }
 
-Connectable.prototype.getName = function(){
+wConnectable.prototype.getName = function(){
    return this.name;
 }
 
-Connectable.prototype.clear = function(){ //this method will be overriden in each class
+wConnectable.prototype.clear = function(){ //this method will be overriden in each class
    null; // it does not have any connection to clear
 }
 
-Connectable.prototype.serialize = function(){ //this method will be overriden in each class
+wConnectable.prototype.serialize = function(){ //this method will be overriden in each class
    return "{\"id\":\""+this.id+"\",\"type\":\""+this.type+"\",\"value\":\""+this.value+"\",\"name\":\""+this.name+"\"}";
 }
 
-Connectable.prototype.refresh = function(){ //this method will be overriden in each class
+wConnectable.prototype.refresh = function(){ //this method will be overriden in each class
    null; // it does not have any connection to clear
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // This class represents every object which may be placed in the middle of a connection between a In object and Out object //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function Out(id,name,source){
-   Connectable.call(this,id,name,source);
+function wOut(id,name,source){
+   wConnectable.call(this,id,name,source);
    this.inputHash = [];
 }
-Out.prototype = new Connectable();
+wOut.prototype = new wConnectable();
 
-Out.prototype.addInput = function(input){
-   if (input instanceof InOut){
-      if (!(this.inputHash[input.getName()] instanceof Connectable)){
+wOut.prototype.addInput = function(input){
+   if (input instanceof wInOut){
+      if (!(this.inputHash[input.getName()] instanceof wConnectable)){
          this.inputHash[input.getName()] = input;
          return 0;
       }
       return 1; // warning: the input is already connected
    }
-   return -1; // error: the input is not a InOut object
+   return -1; // error: the input is not a wInOut object
 }
 
-Out.prototype.removeInput = function(input){
-   if (input instanceof InOut){
-      if (this.inputHash[input.getName()] instanceof Connectable){
+wOut.prototype.removeInput = function(input){
+   if (input instanceof wInOut){
+      if (this.inputHash[input.getName()] instanceof wConnectable){
          this.inputHash[input.getName()] = null;
          return 0;
       }
       return 1; // warning: the input does not exist
    }
-   return -1; // error: the input is not a InOut object
+   return -1; // error: the input is not a wInOut object
 }
 
-Out.prototype.setValue = function(value){
+wOut.prototype.setValue = function(value){
    this.value=value;
-//   var varManager = VarManagerFactory.getInstance();
-//   varManager.writeSlot(this.id,this.name,this.value);
+   var varManager = VarManagerFactory.getInstance();
+   varManager.writeSlot(this.id,this.name,this.value);
    return "";
-// alert("Valor en " + this.name + " es " + this.value)
 }
 
-Out.prototype.clear = function(){
+wOut.prototype.clear = function(){
    for (i in this.inputHash){
-      if (this.inputHash[i] instanceof InOut){
+      if (this.inputHash[i] instanceof wInOut){
          this.inputHash[i].removeOutput(this);
       }
    }
 }
 
-Out.prototype.serialize = function(){
+wOut.prototype.serialize = function(){
    return "{\"aspect\":\"SLOT\",\"id\":\""+this.id+"\",\"type\":\""+this.type+"\",\"value\":\""+this.value+"\",\"name\":\""+this.name+"\"}";
 }
 
-Out.prototype.refresh = function (channelRef){
+wOut.prototype.refresh = function (channelRef){
 	this.inputHash[channelRef.getName()] = channelRef;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 // This class represents every object which may initialize one transmission through the wiring module //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-function In(id,name,source){
-   Connectable.call(this,id,name,source);
+function wIn(id,name,source){
+   wConnectable.call(this,id,name,source);
    this.outputHash = [];
 }
-In.prototype = new Connectable();
+wIn.prototype = new wConnectable();
 
-In.prototype.addOutput = function(output){
-   if (output instanceof InOut){
-      if (!(this.outputHash[output.getName()] instanceof InOut)){
+wIn.prototype.addOutput = function(output){
+   if (output instanceof wInOut){
+      if (!(this.outputHash[output.getName()] instanceof wInOut)){
          if (this.type == output.getType()){ // the checking of the types may be changed when the filters were included
             this.outputHash[output.getName()] = output;
             output.setValue(this.value);
@@ -144,26 +143,26 @@ In.prototype.addOutput = function(output){
       }
       return 1; // warning: the input is already connected
    }
-   return -1; // error: the input is not a InOut object
+   return -1; // error: the input is not a wInOut object
 }
 
-In.prototype.removeOutput = function(output){
-   if (output instanceof InOut){
-      if (this.outputHash[output.getName()] instanceof InOut){
+wIn.prototype.removeOutput = function(output){
+   if (output instanceof wInOut){
+      if (this.outputHash[output.getName()] instanceof wInOut){
          this.outputHash[output.getName()] = null;
          return 0;
       }
       return 1; // warning: the input does not exist
    }
-   return -1; // error: the input is not a InOut object
+   return -1; // error: the input is not a wInOut object
 }
 
-In.prototype.setValue = function(value){
+wIn.prototype.setValue = function(value){
    this.value = value;
    var channelList = ""
    var changes ="{\"value\":\""+this.value+"\",\"channels\":[";
    for (i in this.outputHash){
-      if (this.outputHash[i] instanceof InOut){
+      if (this.outputHash[i] instanceof wInOut){
         channelList = this.outputHash[i].setValue(value) + channelList;
       }
    }
@@ -175,61 +174,61 @@ In.prototype.setValue = function(value){
    return changes + "]}"
 }
 
-In.prototype.clear = function(){
+wIn.prototype.clear = function(){
    for (i in this.outputHash){
-      if (this.outputHash[i] instanceof InOut){
+      if (this.outputHash[i] instanceof wInOut){
          this.outputHash[i].removeInput(this);
       }
    }
 }
 
-In.prototype.serialize = function(){
+wIn.prototype.serialize = function(){
    return "{\"aspect\":\"EVENT\",\"id\":\""+this.id+"\",\"type\":\""+this.type+"\",\"value\":\""+this.value+"\",\"name\":\""+this.name+"\"}";
 }
 
-In.prototype.refresh = function (channelRef){
+wIn.prototype.refresh = function (channelRef){
 	this.outputHash[channelRef.getName()] = channelRef;
 }
 
 /////////////////////////////////////////////////////////////////////
 // This class represents every object which may transmit some data //
 /////////////////////////////////////////////////////////////////////
-function InOut(id,name,source){
-   Connectable.call(this,id,name,source);
+function wInOut(id,name,source){
+   wConnectable.call(this,id,name,source);
    this.inputList = [];
    this.outputList = [];
    this.inputCounter = 0;
    this.outputCounter = 0;
 }
-InOut.prototype = new Connectable();
+wInOut.prototype = new wConnectable();
 
-InOut.prototype.setTypeForward = function(type){
+wInOut.prototype.setTypeForward = function(type){
    this.type = type;
    for (var i=0;i<this.outputCounter;i++){
-      if (this.outputList[i] instanceof InOut){
+      if (this.outputList[i] instanceof wInOut){
          this.outputList[i].setTypeForward(type);
       }
    }
 }
 
 
-InOut.prototype.setTypeBack = function(type){
+wInOut.prototype.setTypeBack = function(type){
    this.type = type;
    for (var i=0;i<this.inputCounter;i++){
-      if (this.inputList[i] instanceof InOut){
+      if (this.inputList[i] instanceof wInOut){
          this.inputList[i].setTypeBack(type);
       }
    }
 }
 
-InOut.prototype.searchCycle = function(name){
+wInOut.prototype.searchCycle = function(name){
     if (this.name == name) {
         return true;
     } else {
         var cycle = false;
         var i = 0;
         while (i<this.outputCounter && !cycle){
-           if (this.outputList[i] instanceof InOut){
+           if (this.outputList[i] instanceof wInOut){
               cycle = cycle || this.outputList[i].searchCycle(name);
            }
            i++;
@@ -238,9 +237,9 @@ InOut.prototype.searchCycle = function(name){
     }
 }
 
-InOut.prototype.addOutput = function(output){
-   if (!(output instanceof In)){
-      if (output instanceof Out || !output.searchCycle(this.name)){
+wInOut.prototype.addOutput = function(output){
+   if (!(output instanceof wIn)){
+      if (output instanceof wOut || !output.searchCycle(this.name)){
          var i = 0;
          var located = 0;
          while (i<this.outputCounter && located == 0){
@@ -257,7 +256,7 @@ InOut.prototype.addOutput = function(output){
             } else if (output.getType() == null){
                output.setValue(this.value);
                this.outputList[this.outputCounter++]=output;
-               if (output instanceof InOut){
+               if (output instanceof wInOut){
                   output.setTypeForward(this.type);
                }
                return 0;
@@ -275,12 +274,12 @@ InOut.prototype.addOutput = function(output){
          return 2; // warning: the output would create a loop
       }
    }else {
-      return -1; // error: the output is an In object
+      return -1; // error: the output is an wIn object
    }
 }
 
-InOut.prototype.removeOutput = function(output){
-   if (!(output instanceof In)){
+wInOut.prototype.removeOutput = function(output){
+   if (!(output instanceof wIn)){
       var i = 0;
       var located = false;
       var position = 0;
@@ -303,13 +302,13 @@ InOut.prototype.removeOutput = function(output){
          return 1; // warning: the output does not exist
       }
    }else {
-      return -1; // error: the output is an In object
+      return -1; // error: the output is an wIn object
    }
 }
 
-InOut.prototype.addInput = function(input){
-   if (!(input instanceof Out)){
-      if (input instanceof In || !this.searchCycle(input.getName())){ 
+wInOut.prototype.addInput = function(input){
+   if (!(input instanceof wOut)){
+      if (input instanceof wIn || !this.searchCycle(input.getName())){ 
          var i = 0;
          var located = 0;
          while (i<this.inputCounter && located == 0){
@@ -328,12 +327,12 @@ InOut.prototype.addInput = function(input){
          return 2; // warning: the input would create a loop with itself
       }
    }else {
-      return -1; // error: the input is an Out object
+      return -1; // error: the input is an wOut object
    }
 }
 
-InOut.prototype.removeInput = function(input){
-   if (!(input instanceof Out)){
+wInOut.prototype.removeInput = function(input){
+   if (!(input instanceof wOut)){
       var i = 0;
       var located = false;
       var position = 0;
@@ -356,14 +355,14 @@ InOut.prototype.removeInput = function(input){
          return 1; // warning: the input does not exist
       }
    }else {
-      return -1; // error: the input is an Out object
+      return -1; // error: the input is an wOut object
    }
 }
 
-InOut.prototype.setValue = function(value){
+wInOut.prototype.setValue = function(value){
    var changes = "";
    for (var i=0;i<=this.outputCounter;i++){
-      if (this.outputList[i] instanceof Connectable){
+      if (this.outputList[i] instanceof wConnectable){
          changes = this.outputList[i].setValue(value) + changes;
       }
    }
@@ -374,25 +373,25 @@ InOut.prototype.setValue = function(value){
    return changes;
 }
 
-InOut.prototype.clear = function(){
+wInOut.prototype.clear = function(){
    for (var i=0;i<this.inputCounter;i++){
-      if (this.inputList[i] instanceof Connectable){
+      if (this.inputList[i] instanceof wConnectable){
          this.inputList[i].removeOutput(this);
       }
    }
    for (var i=0;i<this.outputCounter;i++){
-      if (this.outputList[i] instanceof Connectable){
+      if (this.outputList[i] instanceof wConnectable){
          this.outputList[i].removeInput(this);
       }
    }
 }
 
-InOut.prototype.connections = function(){
+wInOut.prototype.connections = function(){
    var result = new Object();
    result["input"] = [];
    result["output"] = [];
    for (var i=0;i<this.inputCounter;i++){
-      if (this.inputList[i] instanceof Connectable){
+      if (this.inputList[i] instanceof wConnectable){
          var connection = new Object();
          connection["id"] = this.inputList[i].getId();
          connection["name"] = this.inputList[i].getName();
@@ -400,7 +399,7 @@ InOut.prototype.connections = function(){
       }
    }
    for (var i=0;i<this.outputCounter;i++){
-      if (this.outputList[i] instanceof Connectable){
+      if (this.outputList[i] instanceof wConnectable){
          var connection = new Object();
          connection["id"] = this.outputList[i].getId();
          connection["name"] = this.outputList[i].getName();
@@ -410,7 +409,7 @@ InOut.prototype.connections = function(){
    return result;
 }
 
-InOut.prototype.serialize = function(){
+wInOut.prototype.serialize = function(){
    var result = "{\"id\":\""+this.id+"\",\"type\":\""+this.type+"\",\"value\":\""+this.value+"\",\"name\":\""+this.name+"\",\"inputList\":[";
    if (this.inputCounter != 0){
       for (var i=0;i<(this.inputCounter-1);i++){
@@ -429,15 +428,15 @@ InOut.prototype.serialize = function(){
    return result;
 }
 
-InOut.prototype.duplicate = function(){
+wInOut.prototype.duplicate = function(){
    var clone = new Object();
-   clone["InOut"] = new InOut(this.getId(),this.getName());
+   clone["InOut"] = new wInOut(this.getId(),this.getName());
    clone["InOut"].setType(this.type);
    clone["InOut"].setValue(this.value);
    clone["input"] = [];
    clone["output"] = [];
    for (var i=0;i<this.inputCounter;i++){
-      if (this.inputList[i] instanceof In){
+      if (this.inputList[i] instanceof wIn){
          clone["InOut"].addInput(this.inputList[i]);
       } else {
          clone["input"].push(this.inputList[i].getName());
@@ -453,9 +452,9 @@ InOut.prototype.duplicate = function(){
    return clone;
 }
 
-InOut.prototype.refresh = function (channelRef){
+wInOut.prototype.refresh = function (channelRef){
 	for (var i = 0; i < this.inputCounter; i++){
-		if (this.inputList[i] instanceof In){
+		if (this.inputList[i] instanceof wIn){
 			this.inputList[i].refresh(channelRef);
 		}
 	/*	if (input.getName() == channelRef.getName()){
@@ -463,7 +462,7 @@ InOut.prototype.refresh = function (channelRef){
 		}*/
 	}
 	for (var j = 0; j < this.outputCounter; j++){
-		if (this.outputList[i] instanceof Out){
+		if (this.outputList[i] instanceof wOut){
 			this.outputList[i].refresh(channelRef);
 		}
 	}
@@ -472,23 +471,23 @@ InOut.prototype.refresh = function (channelRef){
 //////////////////////////////////////////////////////////////////////////
 // This class represents a iGadget variable which may produce some data //
 //////////////////////////////////////////////////////////////////////////
-function Event(id,name,source){
-   In.call(this,id,name,source);
+function wEvent(id,name,source){
+   wIn.call(this,id,name,source);
 }
-Event.prototype = new In();
+Event.prototype = new wIn();
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// This class represents a connectable whose only purpose is to redistribute the data produced by an In object //
+// This class represents a wConnectable whose only purpose is to redistribute the data produced by an wIn object //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function Channel(id,name,source){
-   InOut.call(this,id,name,source);
+function wChannel(id,name,source){
+   wInOut.call(this,id,name,source);
 }
-Channel.prototype = new InOut();
+Channel.prototype = new wInOut();
 
 /////////////////////////////////////////////////////////////////////////////
 // This class representents a iGadget variable which may receive some data //
 /////////////////////////////////////////////////////////////////////////////
-function Slot(id,name,source){
-   Out.call(this,id,name,source);
+function wSlot(id,name,source){
+   wOut.call(this,id,name,source);
 }
 Slot.prototype = new Out();
