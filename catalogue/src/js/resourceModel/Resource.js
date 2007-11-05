@@ -21,19 +21,25 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 	this.getTagger = function() { return tagger; }
 	
 	this.paint = function(){
+		var tagsHTML = '';
+		var tagsAux = state.getTags();
+		for (var i=0; i<((tagsAux.length>3)?3:tagsAux.length); i++)
+		{
+			tagsHTML += ("<a title='Buscar "+ tagsAux[i].getValue() +"' href='#'>" + tagsAux[i].getValue() + "</a>" + ((i<(((tagsAux.length>3)?3:tagsAux.length)-1))?",&nbsp;":""));
+		}
 		var newResource = document.createElement("div");
 		newResource.setAttribute('id', id);
 		newResource.innerHTML = "<div class='resource' onMouseOver='UIUtils.selectResource(\"" + id + "\");UIUtils.show(\"" + id + "_toolbar\");' onMouseOut='UIUtils.deselectResource(\"" + id + "\");UIUtils.hidde(\"" + id + "_toolbar\");'>" +
 									"<div class='top'></div>" +
 									"<div class='toolbar'>" +
 										"<div id='" + id + "_toolbar' style='display:none;'>" +
-											"<a title='Ver Descripci&oacute;n' href='#' onmouseover=\"UIUtils.changeImage('" + id_ + "_description', 'images/description.png');\" onmouseout=\"UIUtils.changeImage('" + id_ + "_description', 'images/description_gray.png');\">" +
+											"<a title='Ver Descripci&oacute;n' href='#' onmouseover=\"UIUtils.changeImage('" + id + "_description', 'images/description.png');\" onmouseout=\"UIUtils.changeImage('" + id + "_description', 'images/description_gray.png');\">" +
 												"<img id='" + id + "_description' src='images/description_gray.png'></img>" +
 											"</a>" +
-											"<a title='Acceder a la Wiki' href='" + state.getUriWiki() + "' target='_blank'  onmouseover=\"UIUtils.changeImage('" + id_ + "_wiki', 'images/wiki.png');\" onmouseout=\"UIUtils.changeImage('" + id_ + "_wiki', 'images/wiki_gray.png');\">" +
+											"<a title='Acceder a la Wiki' href='" + state.getUriWiki() + "' target='_blank'  onmouseover=\"UIUtils.changeImage('" + id + "_wiki', 'images/wiki.png');\" onmouseout=\"UIUtils.changeImage('" + id + "_wiki', 'images/wiki_gray.png');\">" +
 												"<img id='" + id + "_wiki' src='images/wiki_gray.png'></img>" +
 											"</a>" +
-											"<a title='Ver el Template' href='" + state.getUriTemplate() + "' target='_blank' onmouseover=\"UIUtils.changeImage('" + id_ + "_template', 'images/template.png');\" onmouseout=\"UIUtils.changeImage('" + id_ + "_template', 'images/template_gray.png');\">" +
+											"<a title='Ver el Template' href='" + state.getUriTemplate() + "' target='_blank' onmouseover=\"UIUtils.changeImage('" + id + "_template', 'images/template.png');\" onmouseout=\"UIUtils.changeImage('" + id + "_template', 'images/template_gray.png');\">" +
 												"<img id='" + id + "_template' src='images/template_gray.png'></img>" +
 											"</a>" +
 										"</div>" +
@@ -41,6 +47,14 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 									"<div id='" + id + "_content' class='content'>" +
 										"<div class='title'>" + state.getName() + "</div>" +
 										"<div class='image'><a title='Mostrar informaci&oacute;n del recurso' href='javascript:UIUtils.showResourceInfo(\"" + id + "\");UIUtils.openInfoResource();'><img src='" + state.getUriImage() + "'></img></a></div>" +
+										"<div class='tags'>" + 
+											tagsHTML +
+										"</div>" +
+										"<div class='more_tags'>" +
+											"<a title='Ver el Tag Cloud del recurso' href='#' onmouseover=\"UIUtils.changeImage('" + id + "_tag_cloud_img', 'images/more_tags.png');\" onmouseout=\"UIUtils.changeImage('" + id + "_tag_cloud_img', 'images/more_tags_gray.png');\">" +
+												"<img id='" + id + "_tag_cloud_img' src='images/more_tags_gray.png'></img>" +
+											"</a>" + 
+										"</div>" +
 										"<button onclick='CatalogueFactory.getInstance().addResourceToShowCase(\"" + id + "\");'>A&ntilde;adir a la Paleta</button>" +
 									"</div>" +
 									"<div id='" + id + "_bottom' class = 'bottom'></div>" +

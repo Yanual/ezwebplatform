@@ -82,7 +82,7 @@ a:hover
 	display:inline;
 	float:left;
 	width:192px;
-	height:190px;
+	height:195px;
 	margin-left:10px;
 	margin-top:10px;
 	background:none;
@@ -136,7 +136,7 @@ a:hover
 	padding-bottom:5px;
 	display:block;
 	width:192px;
-	height:149px;
+	height:154px;
     margin: 0px;
 	background: url(../html/images/resource-left-fill.png) repeat-y top right;
 	text-align:center;
@@ -155,7 +155,7 @@ a:hover
 {
 	display:block;
 	margin-top:5px;
-	margin-bottom:10px;
+	margin-bottom:5px;
 	text-align:center;
 	width:100%;
 	height:80px;
@@ -167,6 +167,37 @@ a:hover
 	width:170px;
 	height:80px;
 	border:none;
+}
+
+.main .center .resources .resource .content .tags
+{
+	text-align:left;
+	float:left;
+	display:block;
+	width:147px;
+	height:15px;
+	overflow:hidden;
+	font-size:11px;
+	margin-left:10px;
+}
+
+.main .center .resources .resource .content .more_tags
+{
+	float:left;
+	display:block;
+	width:23px;
+	height:18px;
+	text-align:right;
+}
+
+.main .center .resources .resource .content .more_tags img
+{
+	border:none;
+}
+
+.main .center .resources .resource .content button
+{
+	margin-top:5px;
 }
 
 .main .center .tab_info_resource
