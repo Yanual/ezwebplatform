@@ -98,6 +98,13 @@ var ShowcaseFactory = function () {
 			return gadget.gadget;
 		}
 		
+		// Set gadget properties (User Interface)
+		Showcase.prototype.setGadgetProperties = function (gadgetId_, imageSrc_, tags_) {
+			var gadget = _gadgets[gadgetId_];
+			gadget.setImage(imageSrc_);
+			gadget.setTags(tags_);
+		}
+
 		// Add a tag to a Showcase gadget
 		Showcase.prototype.tagGadget = function (gadgetId_, tags_) {
 			for (var i = 0; i<tags_.length; i++) {
@@ -134,7 +141,7 @@ var ShowcaseFactory = function () {
 
 				for (var j = 0; j<Showcase.prototype.NUM_CELLS; j++) {
 					var cell = row.insertCell(j);
-					cell.style.width = width;
+					cell.style.width = width + '%';
 					cell.vAlign = 'top';
 				
 					if (insertedGadgets < gadgets.length){
@@ -151,13 +158,6 @@ var ShowcaseFactory = function () {
 			var showcaseLayer = $(Showcase.prototype.MODULE_HTML_ID);
 			showcaseLayer.innerHTML="";
 			showcaseLayer.appendChild (gadgetsLayer); 
-		}
-		
-		// Set gadget properties (User Interface)
-		Showcase.prototype.setGadgetProperties = function (gadgetId_, imageSrc_, tags_) {
-			var gadget = _gadgets[gadgetId_];
-			gadget.setImage(imageSrc_);
-			gadget.setTags(tags_);
 		}
 		
 	}
@@ -181,36 +181,36 @@ var ShowcaseFactory = function () {
  * ShowcaseViewer is a static class, used by the User Inteface.
  */
 
-var ShowcaseViewer = function () {
+var ShowcaseViewer = new function () {
 	
-	ShowcaseViewer.prototype.details = function (gadgetId_){
+	this.details = function (gadgetId_){
 		var detailsDiv = $('details_' + gadgetId_);
 		if (detailsDiv.style.display == 'block'){
 			detailsDiv.style.display = 'none';
 			return;
 		}
 		var myshowcase = ShowcaseFactory.getInstance();
-		var gadgetProps = myshowcase.getGadgetProperties(gadgetId_);
-		$('template_' + gadgetId_).value = gadgetProps[0];  
-		$('xhtml_' + gadgetId_).value = gadgetProps[1];
+		var gadget = myshowcase.getGadget(gadgetId_);
+		$('template_' + gadgetId_).value = gadget.getTemplate();  
+		$('xhtml_' + gadgetId_).value = gadget.getXHtml();
 		$('details_' + gadgetId_).style.display='block'
 	}
 	
-	ShowcaseViewer.prototype.edit = function (gadgetId_){
+	this.edit = function (gadgetId_){
 		var editDiv = $('edit_' + gadgetId_);
 		if (editDiv.style.display == 'block'){
 			editDiv.style.display = 'none';
 		}else{
 		var myshowcase = ShowcaseFactory.getInstance();
-		var gadgetProps = myshowcase.getGadgetProperties(gadgetId_);
-			$('image_url_' + gadgetId_).value =  gadgetProps[2];
-			$('tags_' + gadgetId_).value = gadgetProps[3];
+		var gadget = myshowcase.getGadget(gadgetId_);
+			$('image_url_' + gadgetId_).value =  gadget.getImage();
+			$('tags_' + gadgetId_).value = gadget.getTags();
 			editDiv.style.display = 'block';
 		}
 		
 	}
 		
-	ShowcaseViewer.prototype.saveGadgetDetails = function (gadgetId_){
+	this.saveGadgetDetails = function (gadgetId_){
 		var imageSrc = $('image_url_' + gadgetId_).value;
 		var tags = $('tags_' + gadgetId_).value;
 		var myshowcase = ShowcaseFactory.getInstance();
@@ -218,16 +218,12 @@ var ShowcaseViewer = function () {
 		myshowcase.repaint();
 	}
 
-	ShowcaseViewer.deleteGadget = function (gadgetId_){
+	this.deleteGadget = function (gadgetId_){
 		var myshowcase = ShowcaseFactory.getInstance();
 		myshowcase.deleteGadget(gadgetId_);
 		myshowcase.repaint();
 	}
 
-	//ShowcaseViewer.show = function (){
-	//	
-	//	setTimeout("var myshowcase = ShowcaseFactory.getInstance();myshowcase.repaint();",2000);
-	//}
 }
 
 /**
@@ -364,3 +360,4 @@ GadgetWrapper.prototype.paint = function() {
 	gadgetElement.appendChild(this._generateMainElement());
 	return gadgetElement;	
 }
+
