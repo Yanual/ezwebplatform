@@ -192,6 +192,11 @@ a:hover
 	font-size:11px;
 }
 
+.main .center .resources .resource .content .tags .important_tags *
+{
+	color:blue;
+}
+
 .main .center .resources .resource .content .tags .more_tags
 {
 	position:absolute;
@@ -374,25 +379,25 @@ a:hover
 .main .center .info_resource .content .tagcloud .tags .tag_type_1
 {
 	font-size:11px;
-	color:black;
+	color:#7673fe;
 }
 
 .main .center .info_resource .content .tagcloud .tags .tag_type_2
 {
 	font-size:14px;
-	color:red;
+	color:#4f4afd;
 }
 
 .main .center .info_resource .content .tagcloud .tags .tag_type_3
 {
 	font-size:17px;
-	color:green;
+	color:#2a25ff;
 }
 
 .main .center .info_resource .content .tagcloud .tags .tag_type_4
 {
 	font-size:20px;
-	color:blue;
+	color:#0600ff;
 }
 
 .main .center .info_resource .content .new_tags
