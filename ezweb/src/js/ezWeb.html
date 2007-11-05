@@ -2,7 +2,7 @@
 <head>
 <title>EzWeb Platform</title>
 
-<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
 <link rel="stylesheet" type="text/css" media="screen,projection" href="css/ezweb.css" />
 <link rel="stylesheet" type="text/css" href="css/dragboard.css">
@@ -35,24 +35,27 @@
 
 <!-- Initialization code -->
 <script language="JavaScript">
-	
-	function show_showcase(){
-		$('dragboard_container').style.display='none';
-		$('wiring_container').style.display='none';
-		$('showcase_container').style.display='block';
-	        opManager.repaintShowcase();
+
+	function showInterface(element) {
+		var elements = ["wiring_container", "showcase_container", "dragboard_container"];
+
+		for (var i = 0; i < elements.length; i++)
+			$(elements[i]).style.zIndex = 1;
+
+		$(element).style.zIndex = 2;
+	}
+
+	function show_showcase() {
+		showInterface('showcase_container');
+        opManager.repaintShowcase();
 	}
 	
-	function show_dragboard(){
-		$('wiring_container').style.display='none';
-		$('showcase_container').style.display='none';
-		$('dragboard_container').style.display='block';
+	function show_dragboard() {
+		showInterface('dragboard_container');
 	}
 	
-	function show_wiring(){
-		$('dragboard_container').style.display='none';
-		$('showcase_container').style.display='none';
-		$('wiring_container').style.display='block';
+	function show_wiring() {
+		showInterface('wiring_container');
 	}
 		
 	// Platform initialization
@@ -77,45 +80,45 @@
 <body>
 
 <!-- HEADER -->
-<table style="width: 100%; height: 9%">
+<table id="header">
 	<tr>
-		<td><img src="http://europa.ls.fi.upm.es:8000/ezweb/Ezweb.png" style="width: 120; height: 60" alt="Logo cannot be shown"></td>
+		<td><img src="http://europa.ls.fi.upm.es:8000/ezweb/Ezweb.png" style="width: 120px; height: 60px" alt="EzWeb Logo"></td>
 		<td valign="top" style="text-align: right"><div id="toolbar">
 				<a href="javascript:;" onclick="show_showcase();">My Gadgets</a> | <a href="javascript:;" onclick="show_wiring();wI.renewInterface(w,$('selectCanal'),$('gadgets'),$('canales'))">My Pipes</a>
 		</div></td>
 	</tr>
 </table>
 
-<!-- DRAGBOARD LAYER -->
-<div id="dragboard_container" style="width:100%; height:90%; border: solid green 1px">
-<table style="position: relative; width:100%; height:4%">
-	<tr>
-		<td style="text-align:left"><h3>My Instances</h3></td>
-		<td style="text-align:right"></td>
-	</tr>
-</table>
-	<div style="position:relative; width:100%; height:93%" id="dragboard">
-	<!-- DRAGBOARD VIEW -->
+<div id="wrapper">
+  <!-- DRAGBOARD LAYER -->
+  <div id="dragboard_container" class="container">
+     <table class="container_header">
+     <tr>
+       <td style="text-align:left"><h3>My Instances</h3></td>
+       <td style="text-align:right"></td>
+     </tr>
+     </table>
+     <!-- DRAGBOARD VIEW -->
+     <div id="dragboard">
+     </div><!-- DRAGBOARD VIEW -->
+  </div>
 
-	</div> <!-- DRAGBOARD VIEW -->
-</div> <!-- DRAGBOARD LAYER -->
+  <!-- SHOWCASE LAYER -->
+  <div id="showcase_container" class="container">
+    <table class="container_header">
+    <tr>
+       <td style="text-align:left"><h3>My Gadgets</h3></td>
+       <td style="text-align:right" valign="top"><a href="javascript:;" onclick="show_dragboard();">hide</a></td>
+    </tr>
+    </table>
+    <!-- SHOWCASE VIEW -->
+    <div id="showcase">
+    </div> <!-- SHOWCASE VIEW -->
+  </div> <!-- SHOWCASE LAYER -->
 
-<!-- SHOWCASE LAYER -->
-<div id="showcase_container"  style="width: 100%; height: 90%; border: solid red 1px; display: none">
-	<table style="position: relative; width:100%; height:4%">
-	<tr>
-		<td style="text-align:left"><h3>My Gadgets</h3></td>
-		<td style="text-align:right" valign="top"><a href="javascript:;" onclick="show_dragboard();">hide</a></td>
-	</tr>
-	</table>
-	<div style="position:relative; width:100%; height:93%; overflow:auto" id="showcase">
-	<!-- SHOWCASE VIEW -->
-	</div> <!-- SHOWCASE VIEW -->
-</div> <!-- SHOWCASE LAYER -->
-
-<!-- WIRING LAYER -->
-<div id="wiring_container" style="width: 100%; height: 90%; border: solid grey 1px; display: none">
-	<table style="position: relative; width:100%; height:4%">
+  <!-- WIRING LAYER -->
+  <div id="wiring_container" class="container">
+	<table class="container_header">
 	<tr>
 		<td style="text-align:left"><h3>My Pipes</h3></td>
 		<td style="text-align:right" valign="top"><a href="javascript:;" onclick="show_dragboard();">hide</a></td>
@@ -199,9 +202,9 @@
 				</div>
 			</fieldset>
 		</div>
-	</div> <!-- WIRING VIEW -->
-</div> <!-- WIRING LAYER -->
-
+    </div> <!-- WIRING VIEW -->
+  </div> <!-- WIRING LAYER -->
+</div>
 </body>
 
 </html>
