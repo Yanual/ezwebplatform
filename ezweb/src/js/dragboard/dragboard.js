@@ -81,7 +81,7 @@ var DragboardFactory = function () {
 				width = parseInt(curIGadget.width);
 				height = parseInt(curIGadget.height);
 
-				gadget = null; // TODO ShowcaseFactory.getInstance().getGadget(curIGadget.gadget)
+				gadget = ShowcaseFactory.getInstance().getGadget(curIGadget.gadgetid); // TODO
 				igadget = new IGadget(gadget, curIGadget.id, position, width, height);
 				iGadgets[curIGadget.id] = igadget;
 				_reserveSpace(matrix, igadget);
@@ -337,8 +337,8 @@ var DragboardFactory = function () {
 		// PUBLIC METHODS 
 		// ****************
 		Dragboard.prototype.addInstance = function (gadget) {
-//			if ((gadget == null) || !(gadget instanceof Gadget))
-//				return; // TODO exception
+			if ((gadget == null) || !(gadget instanceof Gadget))
+				return; // TODO exception
 
 			// Search a position for the gadget
 			var positionX, positionY, found;
@@ -651,7 +651,8 @@ IGadget.prototype.paint = function(where, style) {
 	gadgetContent.setAttribute("id", "gadget_" + this.id);
 	gadgetContent.setAttribute("class", "gadget_object");
 	gadgetContent.setAttribute("type", "text/html"); // TODO xhtml? => application/xhtml+xml
-//	gadgetContent.setAttribute("data", this.gadget.getXhtml().getURICode());
+	if (this.gadget != null) // TODO remove this line this.gadgte must be not null
+	gadgetContent.setAttribute("data", this.gadget.getXhtml().getURICode());
 	gadgetContent.setAttribute("standby", "Loading...");
 	gadgetContent.innerHTML = "Loading...."; // TODO add an animation
 
