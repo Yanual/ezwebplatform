@@ -48,7 +48,7 @@ class ConnectableEntry(Resource):
         if request.POST.has_key('json'):
             json = simplejson.loads(request.POST['json'])
         else:
-            raise Http404    
+            raise Http404
         if not screen_id:
             screen_id = 1
         screen = get_object_or_404(Screen, user=user, id=screen_id)

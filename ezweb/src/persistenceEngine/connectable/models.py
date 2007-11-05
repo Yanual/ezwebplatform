@@ -36,7 +36,7 @@ class In(models.Model):
 
     def __unicode__(self):
         return self.uri + " " + self.name
-    
+
 
 class Out(models.Model):
     uri = models.CharField(_('URI'), max_length=500, unique=True)
@@ -53,4 +53,3 @@ class Out(models.Model):
 
     def __unicode__(self):
         return self.uri + " " + self.name
-
