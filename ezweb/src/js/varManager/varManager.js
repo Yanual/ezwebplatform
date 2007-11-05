@@ -123,16 +123,23 @@ var VarManagerFactory = function () {
 			
 			return variable.set(value, wiring);
 		}
-		
+
 		VarManager.prototype.addInstance = function (iGadgetId, template) {
 			if (! loaded)
 				return;
-				
+
 			var templateVariables = template.getVariables(iGadgetId);
 			
 			iGadgets[iGadgetId] = templateVariables;
 		}
 		
+		VarManager.prototype.removeInstance = function (iGadgetId) {
+			if (! loaded)
+			    return;
+
+			delete iGadgets[iGadgetId];
+		}
+
 	}
 	
 		

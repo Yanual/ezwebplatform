@@ -1,4 +1,4 @@
-// TODO split this file[6~
+// TODO split this file
 
 /**
  * @author aarranz
@@ -348,7 +348,7 @@ var DragboardFactory = function () {
 			var width = 1;
 			// TODO +2 for the menu
 			var height = 4 + 2 + 2; // one cell of margin at the top and at the bottom
-			var columns = dragboardStyle.getColumns();
+			var columns = dragboardStyle.getColumns() - width + 1;
 
 			// Search first free space
 			dragboard_addInstance_exit: for (; !found; positionY++)
@@ -517,7 +517,7 @@ var DragboardFactory = function () {
 		// *******************
 		// INITIALIZING CODE
 		// *******************
-		dragboard = document.getElementById$("dragboard");
+		dragboard = document.getElementById("dragboard");
 		dragboardStyle = new DragboardStyle(dragboard, 3, 15); // 3 columns, cell height = 15px
 
 		_clearMatrix();
@@ -639,7 +639,7 @@ IGadget.prototype.paint = function(where, style) {
 	gadgetMenu.setAttribute("class", "gadget_menu");
 
 	// buttons. Inserted from right to left
-	gadgetMenu.innerHTML = "<div class=\"floatright button\" onclick=\"javascript:DragboardFactory.getInstance().removeInstance(" + this.id + ")\" >X</div>"	// close button
+	gadgetMenu.innerHTML = "<div class=\"floatright button\" onclick=\"javascript:OpManagerFactory.getInstance().removeInstance(" + this.id + ")\" >X</div>"	// close button
 						 + "<div class=\"floatright button\" onclick=\"javascript:DragboardFactory.getInstance().configure(" + this.id + ")\" >P</div>"	// settings button
 						 + "<div class=\"floatright button\" onclick=\"javascript:DragboardFactory.getInstance().minimize(" + this.id + ")\" >-</div>"	// minimize button
 						 + "Gadget " + this.id;	// TODO Gadget Title
@@ -652,7 +652,7 @@ IGadget.prototype.paint = function(where, style) {
 	gadgetContent.setAttribute("class", "gadget_object");
 	gadgetContent.setAttribute("type", "text/html"); // TODO xhtml? => application/xhtml+xml
 	if (this.gadget != null) // TODO remove this line this.gadgte must be not null
-	gadgetContent.setAttribute("data", this.gadget.getXhtml().getURICode());
+	gadgetContent.setAttribute("data", this.gadget.getXHtml().getURICode());
 	gadgetContent.setAttribute("standby", "Loading...");
 	gadgetContent.innerHTML = "Loading...."; // TODO add an animation
 

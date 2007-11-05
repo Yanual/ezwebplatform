@@ -46,7 +46,8 @@ var OpManagerFactory = function () {
 		OpManager.prototype.removeInstance = function (iGadgetId) {
 			if (!loadCompleted)
 				return;
-			
+
+			dragboard.removeInstance(iGadgetId); // TODO split into hideInstance and removeInstance
 			varManager.removeInstance(iGadgetId);
 			wiring.removeInstance(iGadgetId);
 		}
