@@ -87,7 +87,7 @@ var WiringFactory = function () {
 		// copy is the list that is used for making new connections or disconnections with the interface.
 		var copy = new Hash(); 
 //		var source = inOutList;
-		//persistenceEngine.send_get('wiring.json', this, loadWiring, onError);
+		persistenceEngine.send_get('wiring.json', this, loadWiring, onError);
 		
 		
 		// ****************
