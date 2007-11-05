@@ -89,7 +89,7 @@ var VarManagerFactory = function () {
 			
 			var variable = findVariable(iGadgetId, slotName);
 			
-			variable.set(value,wiring);
+			variable.writeSlot(value);
 		} 
 		
 		VarManager.prototype.registerVariable = function (iGadgetId, variableName, handler) {
