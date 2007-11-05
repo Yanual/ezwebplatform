@@ -1,3 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <django-objects version="1.0">
+    <object pk="24" model="igadget.position">
+        <field type="CharField" name="uri">/user/admin/igadgets/0/position</field>
+        <field type="IntegerField" name="posX">0</field>
+        <field type="IntegerField" name="posY">1</field>
+        <field type="IntegerField" name="height">2</field>
+        <field type="IntegerField" name="width">1</field>
+    </object>
+    <object pk="25" model="igadget.position">
+        <field type="CharField" name="uri">/user/admin/igadgets/1/position</field>
+        <field type="IntegerField" name="posX">1</field>
+        <field type="IntegerField" name="posY">1</field>
+        <field type="IntegerField" name="height">2</field>
+        <field type="IntegerField" name="width">2</field>
+    </object>
+    <object pk="26" model="igadget.position">
+        <field type="CharField" name="uri">/user/admin/igadgets/2/position</field>
+        <field type="IntegerField" name="posX">0</field>
+        <field type="IntegerField" name="posY">6</field>
+        <field type="IntegerField" name="height">4</field>
+        <field type="IntegerField" name="width">1</field>
+    </object>
+    <object pk="1" model="igadget.screen">
+        <field type="CharField" name="uri">/user/admin/screen/1</field>
+        <field type="CharField" name="name">myScreen</field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
+    </object>
+    <object pk="0" model="igadget.igadget">
+        <field type="CharField" name="uri">/user/admin/igadgets/0</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">4</field>
+        <field to="igadget.screen" name="screen" rel="ManyToOneRel">1</field>
+        <field to="igadget.position" name="position" rel="ManyToOneRel">24</field>
+    </object>
+    <object pk="1" model="igadget.igadget">
+        <field type="CharField" name="uri">/user/admin/igadgets/1</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">4</field>
+        <field to="igadget.screen" name="screen" rel="ManyToOneRel">1</field>
+        <field to="igadget.position" name="position" rel="ManyToOneRel">25</field>
+    </object>
+    <object pk="2" model="igadget.igadget">
+        <field type="CharField" name="uri">/user/admin/igadgets/2</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">4</field>
+        <field to="igadget.screen" name="screen" rel="ManyToOneRel">1</field>
+        <field to="igadget.position" name="position" rel="ManyToOneRel">26</field>
+    </object>
 </django-objects>
