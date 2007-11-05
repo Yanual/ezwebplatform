@@ -420,6 +420,13 @@ var DragboardFactory = function () {
 		 */
 		Dragboard.prototype.getCellAt = function (x, y) {
 			x = x - dragboard.offsetLeft;
+			var curParent = dragboard.parentNode;
+			while (curParent.tagName != 'BODY') { // TODO case sensitive => IE, opera .... ?
+			    x -= curParent.offsetLeft;
+			    y -= curParent.offsetTop;
+			    curParent = curParent.parentNode;
+			}
+
 			if ((x < 0) || (x > dragboard.offsetWidth))
 				return null;
 
