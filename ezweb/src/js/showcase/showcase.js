@@ -93,9 +93,9 @@ var ShowcaseFactory = function () {
 
 		// Get a gadget by its gadgetID
 		Showcase.prototype.getGadget = function (gadgetId_) {
-			var gadget = _gadget[gadgetId_].gadget;
+			var gadget = _gadgets[gadgetId_];
 
-			return gadget;
+			return gadget.gadget;
 		}
 		
 		// Add a tag to a Showcase gadget
@@ -108,7 +108,7 @@ var ShowcaseFactory = function () {
 		
 		// Deploy a Showcase gadget into dragboard as gadget instance  
 		Showcase.prototype.addInstance = function (gadgetId_) {
-			var gadget = _gadget[gadgetId_].gadget;
+			var gadget = _gadgets[gadgetId_].gadget;
 			_opManager.addInstance (gadget);
 		}
 		
@@ -332,7 +332,7 @@ function GadgetWrapper(gadgetId_, gadget_) {
 		buffer.append('<center><img src="');
 		buffer.append(this.gadget.getImage()); 
 		buffer.append('" alt="Imagen cannot be shown" /><br/>\n');
-		buffer.append('<a href="javascript:;">add</a></center>\n');
+		buffer.append('<a href="javascript:opManager.addInstance(\'' + this.id + '\');">add</a></center>\n');
 		
 		mainElem.innerHTML = buffer.toString();
 		return mainElem
