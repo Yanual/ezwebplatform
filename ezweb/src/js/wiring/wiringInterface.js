@@ -43,7 +43,7 @@ wiringInterface.prototype.renewInterface = function (w,selector,sGadgets,itemize
 	}
 }
 
-wiringInterface.prototype.anadirCanal = function (w,selector,itemize,slots,events){
+wiringInterface.prototype.addChannel = function (w,selector,itemize,slots,events){
 	var result = null;
 	var name = prompt("Insert Channel Name:","Channel Name...");
 	if (name != null){
@@ -54,7 +54,7 @@ wiringInterface.prototype.anadirCanal = function (w,selector,itemize,slots,event
 	}
 }
 
-wiringInterface.prototype.borrarCanal = function (w,object,selector,itemize,slots,events){
+wiringInterface.prototype.deleteChannel = function (w,object,selector,itemize,slots,events){
 	var result = null;
 	if (!(result = w.removeChannel(object))){
 		//the first id is from the channel list	

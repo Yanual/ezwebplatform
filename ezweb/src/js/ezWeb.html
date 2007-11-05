@@ -4,10 +4,8 @@
 
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 
-<!--<link rel="stylesheet" type="text/css" media="screen,projection" href="css/ezweb.css" />-->
-<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="stylesheet" type="text/css" media="screen,projection" href="css/ezweb.css" />
 <link rel="stylesheet" type="text/css" href="css/dragboard.css">
-<link rel="stylesheet" type="text/css" href="wiring/style.css"><!-- Temporary css for the wiring module interface -->
 <link rel="shortcut icon" type="image/x-icon" href="../css/favicon.ico" />
 
 <script type="text/javascript" language="javascript" src="lib/prototype.js"></script>
@@ -137,9 +135,9 @@
 				<div id = "view">
 					<input id = "valor" type = "text" value = "">
 					<input id = "addChannel" type=image src=wiring/add.png title="Create Channel" alt= "create channel"
-					    onclick = "wI.anadirCanal(w,$('selectCanal'),$('canales'),$('slotsConnection'),$('eventsConnection'))">
+					    onclick = "wI.addChannel(w,$('selectCanal'),$('canales'),$('slotsConnection'),$('eventsConnection'))">
 					<input id = "deleteChannel" type=image src=wiring/delete.png title="Delete Channel" alt= "Delete Channel"
-					    onclick = "wI.borrarCanal(w,$('selectCanal').value,$('selectCanal'),$('canales'),$('slotsConnection'),$('eventsConnection'))">
+					    onclick = "wI.deleteChannel(w,$('selectCanal').value,$('selectCanal'),$('canales'),$('slotsConnection'),$('eventsConnection'))">
 				</div>
 				<div id = "tab_one">
 					<table class = "header">
