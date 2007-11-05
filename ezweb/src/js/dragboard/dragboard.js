@@ -36,7 +36,7 @@ var DragboardFactory = function () {
 
 			dragboard.innerHTML = "";
 
-			// TODO debug
+/*			// TODO debug
 			var x, y, tmp, posX;
 			var grid = document.createElement("div");
 			grid.setAttribute("id", "grid");
@@ -50,7 +50,7 @@ var DragboardFactory = function () {
 					posX = 3 + (x * 32);
 					tmp.style.left = posX + "%";
 				}
-			// TODO end debug
+			// TODO end debug*/
 
 			_clearMatrix();
 
