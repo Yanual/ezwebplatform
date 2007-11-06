@@ -149,6 +149,10 @@ UIUtils.SlideInfoResourceOutOfView = function(element) {
   );
 }
 
+UIUtils.showDescriptionBalloon = function(resourceId_) {
+	CatalogueFactory.getInstance().getResource(resourceId_).showDescriptionBalloon();
+}
+
 // Enables you to react to return being pressed in an input
 UIUtils.onReturn = function(event_, handler_, inputText_) {
   if (!event_) event_ = window.event;

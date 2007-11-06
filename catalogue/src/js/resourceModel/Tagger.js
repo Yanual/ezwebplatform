@@ -53,7 +53,7 @@ function Tagger(){
 										"<img src='images/cancel.png' alt=''></img>" +
 									"</a>" +
 								"</div>," + 
-							"</div>";
+							"</div> ";
 		var parentHTML = document.getElementById("my_tags");
 		parentHTML.insertBefore(newTag, parentHTML.lastChild);
 	}

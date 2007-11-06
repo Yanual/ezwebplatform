@@ -123,11 +123,17 @@ a:hover
 	background: url(../html/images/resource-left-header.png) no-repeat bottom right;
 }
 
-.main .center .resources .resource .toolbar a *
+.main .center .resources .resource .toolbar a
 {
 	display:inline;
+	padding-right:5px;
+	border:none;
+	width:18px;
+}
+
+.main .center .resources .resource .toolbar a *
+{
 	margin-top:3px;
-	margin-right:3px;
 	border:none;
 }
 
@@ -409,28 +415,15 @@ a:hover
 	height:80px;
 }
 
-.main .center .info_resource .content .tagcloud .tags .tag_type_1
+.multiple_size_tag
 {
-	font-size:11px;
-	color:#7673fe;
+	display:inline;
+	margin-right:5px;
 }
 
-.main .center .info_resource .content .tagcloud .tags .tag_type_2
+.multiple_size_tag *
 {
-	font-size:14px;
-	color:#4f4afd;
-}
-
-.main .center .info_resource .content .tagcloud .tags .tag_type_3
-{
-	font-size:17px;
-	color:#2a25ff;
-}
-
-.main .center .info_resource .content .tagcloud .tags .tag_type_4
-{
-	font-size:20px;
-	color:#0600ff;
+	vertical-align:text-bottom;
 }
 
 .main .center .info_resource .content .new_tags
@@ -463,6 +456,7 @@ a:hover
 
 .main .center .info_resource .content .new_tags .my_tags .new_tag
 {
+	white-space:nowrap;
 	margin-right:8px;
 }
 

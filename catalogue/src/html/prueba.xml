@@ -65,11 +65,15 @@
 			</tag>
 			<tag>
 				<value>Taglargo</value>
-				<appearances>20</appearances>
+				<appearances>1</appearances>
 			</tag>
 			<tag>
 				<value>Largiiiiiiiisimo</value>
 				<appearances>34</appearances>
+			</tag>
+			<tag>
+				<value>TagMasLargoTodavia</value>
+				<appearances>50</appearances>
 			</tag>
 		</tags>
 	</resource>
