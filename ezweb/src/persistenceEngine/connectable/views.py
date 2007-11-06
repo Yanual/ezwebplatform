@@ -52,18 +52,46 @@ class ConnectableEntry(Resource):
         if not screen_id:
             screen_id = 1
         screen = get_object_or_404(Screen, user=user, id=screen_id)
+
+        inouts = get_list_or_404(InOut, user=user)
+        inouts.delete()
+
+        inouts = json['inouts']
+        for io in inouts:
+            inout = InOut(user=user, uri=io['uri'], name=io['name'], friend_code=io['friend_code'], value=io['value'])
+            inout.save()
+            for ins in io['ins']:
+                variable = get_object_or_404(Variable, uri=ins['variable'], igadget=igadget)
+                uri_in = "/user/%s/igadget/%s/variable/%s/in/%s" % (user_id, igadget.id, variable.id, ins['name'])
+                in_object = In(uri=uri_in, name=ins['name'], variable=variable)
+                in_object.inout.add(inout)
+                in_object.save()
+            for outs in io['outs']:
+                variable = get_object_or_404(Variable, uri=outs['variable'], igadget=igadget)
+                uri_out = "/user/%s/igadget/%s/variable/%s/out/%s" % (user_id, igadget.id, variable.id, outs['name'])
+                out_object = In(uri=uri_in, name=out['name'], variable=variable)
+                out_object.inout.add(inout)
+                out_object.save()
         
-        # IGadgets
         igadgets = json['igadgets']
         for ig in igadgets:
             igadget = get_object_or_404(IGadget, screen=screen, uri=ig['uri'])
-            print igadget
-        
-        # InOuts
-        inouts = json['inouts']
-        for io in inouts:
-            inout = get_object_or_404(InOut, user=user, uri=io['uri'])
-            print inout
+            for ins in ig['ins']:
+                variable = get_object_or_404(Variable, uri=ins['variable'], igadget=igadget)
+                uri_in = "/user/%s/igadget/%s/variable/%s/in/%s" % (user_id, igadget.id, variable.id, ins['name'])
+                in_object = In(uri=uri_in, name=ins['name'], variable=variable)
+                for inout in ins['inouts']:
+                    inout = get_object_or_404(InOut, uri=inout)
+                    in_object.inout.add(inout)
+                in_object.save()
+            for outs in ig['outs']:            
+                variable = get_object_or_404(Variable, uri=outs['variable'], igadget=igadget)
+                uri_out = "/user/%s/igadget/%s/variable/%s/out/%s" % (user_id, igadget.id, variable.id, outs['name'])
+                out_object = In(uri=uri_in, name=out['name'], variable=variable)
+                for inout in outs['inouts']:
+                    inout = get_object_or_404(InOut, uri=inout)
+                    out_object.inout.add(inout)
+                out_object.save()
 
         return HttpResponse('')
 

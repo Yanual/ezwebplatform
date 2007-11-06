@@ -28,6 +28,7 @@ urlpatterns = patterns('',
     (r'^catalogue/resources/',include('Resource.urls')),
 
     # Django contrib
+    (r'^accounts/login/$', 'django.contrib.auth.views.login'),
     (r'^logout/$', 'django.contrib.auth.views.logout'),
     (r'^admin/', include('django.contrib.admin.urls')),
 

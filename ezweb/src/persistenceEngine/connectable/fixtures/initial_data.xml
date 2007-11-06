@@ -1,3 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <django-objects version="1.0">
+    <object pk="1" model="connectable.inout">
+        <field type="CharField" name="uri">/user/admin/inout/1</field>
+        <field type="CharField" name="name">Inout 1</field>
+        <field type="CharField" name="value"></field>
+        <field type="CharField" name="friend_code"></field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
+    </object>
+    <object pk="2" model="connectable.inout">
+        <field type="CharField" name="uri">/user/admin/inout/2</field>
+        <field type="CharField" name="name">InOut 2</field>
+        <field type="CharField" name="value">valor</field>
+        <field type="CharField" name="friend_code">frienCode</field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
+    </object>
+    <object pk="1" model="connectable.in">
+        <field type="CharField" name="uri">/user/admin/ins/in1</field>
+        <field type="CharField" name="name">In 1</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">1</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"><object pk="1"></object><object pk="2"></object></field>
+    </object>
 </django-objects>

@@ -26,7 +26,7 @@ class In(models.Model):
     
     name = models.CharField(_('Name'), max_length=30)
     variable = models.ForeignKey(Variable, verbose_name=_('Variable'))  
-    inout = models.ForeignKey(InOut, verbose_name=_('InOut'))
+    inout = models.ManyToManyField(InOut, verbose_name=_('InOut'))
     
     class Meta:
         unique_together = ('name', 'variable')
@@ -43,7 +43,7 @@ class Out(models.Model):
     
     name = models.CharField(_('Name'), max_length=30)
     variable = models.ForeignKey(Variable, verbose_name=_('Variable'))
-    inout = models.ForeignKey(InOut, verbose_name=_('InOut'))
+    inout = models.ManyToManyField(InOut, verbose_name=_('InOut'))
     
     class Meta:
         unique_together = ('name', 'variable')
