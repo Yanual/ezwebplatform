@@ -155,7 +155,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
         if (attrs.has_key('wiring')==True):
             _wiring = attrs.get('wiring')
 
-        if (_name != '' and _type != '' and _label != '' and _wiring != ''):
+        if (_name != '' and _type != '' and _friendCode != '' and _wiring != ''):
 
             vDef = VariableDef( name = _name, description = _description, 
                                 type = self.typeText2typeCode(_type), 
@@ -217,7 +217,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
             self.processWire(attrs)
             return
 
-        if (name == 'xhtml'):
+        if (name == 'XHTML'):
             self.processXHTML(attrs)
             return
 
