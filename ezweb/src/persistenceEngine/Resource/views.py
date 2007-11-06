@@ -1,0 +1,122 @@
+﻿from catalogue.Resource.parser import TemplateHandler
+from urllib import urlopen
+from django_restapi.resource import Resource
+from catalogue.Resource.models import gadgetResource
+from xml.sax import saxutils
+from xml.sax import make_parser
+from datetime import datetime
+from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseServerError
+from psycopg2 import IntegrityError
+from django.core.paginator import ObjectPaginator, InvalidPage
+import sys
+
+
+class CatalogueResource(Resource):
+
+	def create(self,request):
+	
+		parser = make_parser()
+		handler = TemplateHandler()
+	
+		# Tell the parser to use our handler
+		parser.setContentHandler(handler)
+	
+		#template_uri = request.__getitem__('template_uri')
+		
+		
+		
+		# Parse the input
+		#parser.parse(template_uri)
+		parser.parse("http://europa.ls.fi.upm.es/~mac/template.xml")
+	
+		
+		gadget=gadgetResource()
+
+		gadget.short_name=handler._name
+		gadget.vendor=handler._vendor
+		gadget.added_by_user_id = 1
+		gadget.version=handler._version
+		gadget.author=handler._author
+		gadget.description=handler._description
+		gadget.mail=handler._mail
+		gadget.image_uri=handler._imageURI
+		gadget.wiki_page_uri=handler._wikiURI
+		#gadget.template_uri=''
+		gadget.creation_date=datetime.today()
+	
+		try:
+			gadget.save()
+		except IntegrityError:
+			value = str(sys.exc_info()[1])
+			print value
+			xml_error = '<fault>\n\
+			<value>'+'IntegrityError'+'</value>\n\
+			<description>'+value+'</description>\n\
+			</fault>'
+			#+sys.exc_info()[2]'+</description></fault>'
+			return HttpResponse(xml_error,mimetype='text/xml; charset=UTF-8')
+			
+		xml_ok = '<ResponseOK>OK</ResponseOK>'
+		return HttpResponse(xml_ok,mimetype='text/xml; charset=UTF-8')
+
+
+	def read(self,request,offset,pag):
+		
+		#paginate
+
+		a= int(pag)
+		b= int(offset)
+		c=(a-1)*b +1
+		d=b*a+1
+		
+		control = 1
+		xml_resource = ''
+		for e in gadgetResource.objects.all()[c:d]:
+			xml_resource +='<Resource>\n\
+			<Vendor>'+e.vendor+'</Vendor>\n\
+			<Name>'+e.short_name+'</Name>\n\
+			<Version>'+e.version+'</Version>\n\
+			<Author>'+e.author+'</Author>\n\
+			<Mail>'+e.mail+'</Mail>\n\
+			<Description>'+e.description+'</Description>\n\
+			<ImageURI>'+e.image_uri+'</ImageURI>\n\
+			</Resource>'
+			control=control +1
+		
+		response = '<resources>'+xml_resource+'</resources>'
+		
+		return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
+
+
+
+
+
+
+def addToPlatform(request, id_user):
+	
+	template_uri = request.__getitem__('template_uri')
+
+	parameters = {
+		'template_uri': template_uri,
+	}
+	
+	coreURL='http://plataforma.tid.es/'
+	uri='/platform/user/'+id_user+'/gadgets'
+	url=coreURL+uri
+
+	response = urllib.urlopen(url, urllib.urlencode(parameters)).read()
+	
+
+
+
+
+	
+
+	
+	
+	
+
+
+
+
+

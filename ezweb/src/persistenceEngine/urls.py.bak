@@ -23,9 +23,6 @@ urlpatterns = patterns('',
 
     # Connectables
     (r'^user/(?P<user_id>\w+)/connectable(s)?/', include('connectable.urls')),
-    
-   # Catalogue
-    (r'^catalogue/resources/',include('Resource.urls')),
 
     # Django contrib
     (r'^logout/$', 'django.contrib.auth.views.logout'),

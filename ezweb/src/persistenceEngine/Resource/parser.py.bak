@@ -1,0 +1,47 @@
+from urllib import urlopen
+from xml.sax import saxutils
+from xml.sax import make_parser
+
+
+#class AddToCatalogue():
+
+class TemplateHandler(saxutils.handler.ContentHandler): 
+	
+	_accumulator = []
+	
+	def resetAccumulator(self):
+		self._accumulator = []
+	
+	def endElement(self, name):
+		if (name == 'Name'):
+			_name = self._accumulator[0]
+			return
+		if (name == 'Vendor'):
+			_vendor = self._accumulator[0]
+			return
+		if (name == 'Version'):
+			_version = self._accumulator[0]
+			return
+		if (name == 'Author'):
+			_author = self._accumulator[0]
+			return
+		if (name == 'Description'):
+			_description = self._accumulator[0]
+			return
+		if (name == 'Mail'):
+			_mail = self._accumulator[0]
+			return
+		if (name == 'ImageURI'):
+			_imageURI = self._accumulator[0]
+			return
+		if (name == 'WikiURI'):
+			_wikiURI = self._accumulator[0]
+			return
+
+	def characters(self, text):
+		self._accumulator.append(text)
+
+	def startElement(self, name, attrs):
+		if (name == 'Name') or (name=='Version') or (name=='Vendor') or (name=='Author') or (name=='Description') or (name=='Mail') or (name=='ImageURI') or (name=='WikiURI'):
+			self.resetAccumulator()
+			return
