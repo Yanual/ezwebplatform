@@ -123,8 +123,17 @@ a:hover
 	background: url(../html/images/resource-left-header.png) no-repeat bottom right;
 }
 
-.main .center .resources .resource .toolbar *
+.main .center .resources .resource .toolbar a *
 {
+	display:inline;
+	margin-top:3px;
+	margin-right:3px;
+	border:none;
+}
+
+.main .center .resources .resource .toolbar .description
+{
+	display:inline;
 	margin-top:3px;
 	margin-right:3px;
 	border:none;
@@ -210,6 +219,30 @@ a:hover
 .main .center .resources .resource .content .tags .more_tags img
 {
 	border:none;
+}
+
+ .tag_type_1
+{
+	font-size:11px;
+	color:#7673fe;
+}
+
+ .tag_type_2
+{
+	font-size:14px;
+	color:#4f4afd;
+}
+
+ .tag_type_3
+{
+	font-size:17px;
+	color:#2a25ff;
+}
+
+ .tag_type_4
+{
+	font-size:20px;
+	color:#0600ff;
 }
 
 .main .center .tab_info_resource

@@ -26,16 +26,40 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 		for (var i=0; i<((tagsAux.length>3)?3:tagsAux.length); i++)
 		{
 			tagsHTML += ("<a title='Buscar "+ tagsAux[i].getValue() +"' href='#'>" + tagsAux[i].getValue() + "</a>" + ((i<(((tagsAux.length>3)?3:tagsAux.length)-1))?",&nbsp;":""));
+		}	
+		var tagcloudHTML = '';
+		var classAux = '';
+		for (var i=0; i<tagsAux.length; i++)
+		{
+			if (tagsAux[i].getAppearances()<5)		 classAux = 'tag_type_1';
+			else if (tagsAux[i].getAppearances()<15) classAux = 'tag_type_2';
+			else if (tagsAux[i].getAppearances()<25) classAux = 'tag_type_3';
+			else									 classAux = 'tag_type_4';
+			
+			tagcloudHTML += ("<a class='" + classAux + "' title='Buscar "+ tagsAux[i].getValue() +"' href='#'>" + tagsAux[i].getValue() + "</a>" + ((i<(tagsAux.length-1))?",&nbsp;":""));
 		}
+		alert(tagcloudHTML);
 		var newResource = document.createElement("div");
 		newResource.setAttribute('id', id);
 		newResource.innerHTML = "<div class='resource' onMouseOver='UIUtils.selectResource(\"" + id + "\");UIUtils.show(\"" + id + "_toolbar\");' onMouseOut='UIUtils.deselectResource(\"" + id + "\");UIUtils.hidde(\"" + id + "_toolbar\");'>" +
 									"<div class='top'></div>" +
 									"<div class='toolbar'>" +
 										"<div id='" + id + "_toolbar' style='display:none;'>" +
-											"<a title='Ver Descripci&oacute;n' href='#' onmouseover=\"UIUtils.changeImage('" + id + "_description', 'images/description.png');\" onmouseout=\"UIUtils.changeImage('" + id + "_description', 'images/description_gray.png');\">" +
-												"<img id='" + id + "_description' src='images/description_gray.png'></img>" +
-											"</a>" +
+											"<div id='" + id + "_description' class='description'> </div>" +
+											"<script>" +
+												"var " + id + "_description_hb = new HelpBalloon({" +
+													"returnElement: true," +
+													"icon: '../js/lib/HelpBalloons/images/icon_info.gif'," +	//url to the icon to use
+													"altText: 'Descripci&oacute;n'," +							//Alt text of the help icon
+													"title: 'Descripción:'," +							//Title of the balloon topic
+													"content: '" + state.getDescription() + "'," +				//Static content of the help balloon
+													"imagePath: '../js/lib/HelpBalloons/images/'" +
+												"});" +
+												"$('" + id + "_description').appendChild(" + id + "_description_hb._elements.icon);" +
+											"</script>" +
+											//"<a title='Ver Descripci&oacute;n' href='#' onmouseover=\"UIUtils.changeImage('" + id + "_description', 'images/description.png');\" onmouseout=\"UIUtils.changeImage('" + id + "_description', 'images/description_gray.png');\">" +
+											//	"<img id='" + id + "_description' src='images/description_gray.png'></img>" +
+											//"</a>" +
 											"<a title='Acceder a la Wiki' href='" + state.getUriWiki() + "' target='_blank'  onmouseover=\"UIUtils.changeImage('" + id + "_wiki', 'images/wiki.png');\" onmouseout=\"UIUtils.changeImage('" + id + "_wiki', 'images/wiki_gray.png');\">" +
 												"<img id='" + id + "_wiki' src='images/wiki_gray.png'></img>" +
 											"</a>" +
@@ -52,9 +76,21 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 												tagsHTML +
 											"</div>" +
 											"<div class='more_tags'>" +
-												"<a title='Ver el Tagcloud del recurso' href='#' onmouseover=\"UIUtils.changeImage('" + id + "_tag_cloud_img', 'images/more_tags.png');\" onmouseout=\"UIUtils.changeImage('" + id + "_tag_cloud_img', 'images/more_tags_gray.png');\">" +
-													"<img id='" + id + "_tag_cloud_img' src='images/more_tags_gray.png'></img>" +
-												"</a>" + 
+												//"<a title='Ver el Tagcloud del recurso' href='#' onmouseover=\"UIUtils.changeImage('" + id + "_tag_cloud_img', 'images/more_tags.png');\" onmouseout=\"UIUtils.changeImage('" + id + "_tag_cloud_img', 'images/more_tags_gray.png');\">" +
+												//	"<img id='" + id + "_tag_cloud_img' src='images/more_tags_gray.png'></img>" +
+												//"</a>" + 
+												"<div id='" + id + "_tagcloud' class='tagcloud'> </div>" +
+												"<script>" +
+													"var " + id + "_tagcloud_hb = new HelpBalloon({" +
+														"returnElement: true," +
+														"icon: '../js/lib/HelpBalloons/images/icon_info.gif'," +	//url to the icon to use
+														"altText: 'TagCloud'," +							//Alt text of the help icon
+														"title: 'TagCloud:'," +									//Title of the balloon topic
+														"content: \"" + tagcloudHTML + "\"," +							//Static content of the help balloon
+														"imagePath: '../js/lib/HelpBalloons/images/'" +
+													"});" +
+													"$('" + id + "_tagcloud').appendChild(" + id + "_tagcloud_hb._elements.icon);" +
+												"</script>" +
 											"</div>" +
 										"</div>" +
 										"<button onclick='CatalogueFactory.getInstance().addResourceToShowCase(\"" + id + "\");'>A&ntilde;adir a la Paleta</button>" +

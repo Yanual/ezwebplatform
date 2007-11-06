@@ -5,8 +5,10 @@
 		<title>Cat&aacute;logo de Gadgets - EzWeb</title>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<link rel="stylesheet" type="text/css" href="../css/catalogue.css" />
-		<script language="JavaScript" src="../js/lib/prototype.js"></script>
-		<script language="JavaScript" src="../js/lib/scriptaculous.js"></script>
+		<script language="JavaScript" src="../js/lib/prototype/prototype.js"></script>
+		<script language="JavaScript" src="../js/lib/prototype/prototype.improvements.js"></script>
+		<script language="JavaScript" src="../js/lib/scriptaculous/scriptaculous.js"></script>
+		<script language="JavaScript" src="../js/lib/HelpBalloons/HelpBalloon.js"></script>
 		<script language="JavaScript" src="../js/persistenceEngine/PersistenceEngine.js"></script>
 		<script language="JavaScript" src="../js/resourceModel/UIUtils.js"></script>
 		<script language="JavaScript" src="../js/resourceModel/Catalogue.js"></script>
@@ -20,6 +22,7 @@
 	</head>
 	<body onload="UIUtils.setResourcesWidth();CatalogueFactory.getInstance().loadCatalogue('prueba.xml');document.getElementById('simple_search_text').focus();">
 		<div id="main" class="main" onresize="UIUtils.setResourcesWidth();">
+			
 			<div id="head" class="head">
 				<div id="search" class="search">
 					<div id="simple_search" class="simple_search">
