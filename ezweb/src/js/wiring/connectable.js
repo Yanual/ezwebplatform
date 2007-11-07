@@ -55,9 +55,12 @@ wConnectable.prototype.serialize = function(){ //this method will be overriden i
 }
 
 wConnectable.prototype.refresh = function(){ //this method will be overriden in each class
-   null; // it does not have any connection to clear
+   null;
 }
 
+wConnectable.prototype.connections = function(){ //this method will be overriden in each class
+   null;
+}
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // This class represents every object which may be placed in the middle of a connection between a In object and wOut object //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -100,6 +103,18 @@ wOut.prototype.clear = function(){
    for (i in this.inputHash){
       if (this.inputHash[i] instanceof wInOut){
          this.inputHash[i].removeOutput(this);
+      }
+   }
+}
+
+wOut.prototype.connections = function(){
+   var result = new Object();
+   result["input"] = [];
+   for (i in this.outputHash){
+      if (this.outputHash[i] instanceof wInOut){
+         var connection = new Object();
+         connection["name"] = this.inputList[i].getName();
+         result["input"].push(connection);
       }
    }
 }
@@ -188,6 +203,18 @@ wIn.prototype.serialize = function(){
 
 wIn.prototype.refresh = function (channelRef){
 	this.outputHash[channelRef.getName()] = channelRef;
+}
+
+wIn.prototype.connections = function(){
+   var result = new Object();
+   result["output"] = [];
+   for (i in this.outputHash){
+      if (this.outputHash[i] instanceof wInOut){
+         var connection = new Object();
+         connection["name"] = this.outputList[i].getName();
+         result["output"].push(connection);
+      }
+   }
 }
 
 /////////////////////////////////////////////////////////////////////
