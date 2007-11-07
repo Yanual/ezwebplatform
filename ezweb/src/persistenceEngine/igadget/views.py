@@ -16,8 +16,8 @@ from igadget.models import IGadget, Screen, Position
 from gadget.models import Gadget
 
 class IGadgetCollection(Resource):
-    def read(self, request, user_id, screen_id=None):
-        user = user_authentication(user_id)
+    def read(self, request, user_name, screen_id=None):
+        user = user_authentication(user_name)
         
         #TODO by default. Remove in final release
         if not screen_id:
@@ -37,8 +37,8 @@ class IGadgetCollection(Resource):
             data_list['iGadgets'] = [get_igadget_data(d) for d in  data]
         return HttpResponse(json_encode(data_list), mimetype='application/json; charset=UTF-8')
 
-    def create(self, request, user_id, screen_id=None):
-        user = user_authentication(user_id)
+    def create(self, request, user_name, screen_id=None):
+        user = user_authentication(user_name)
 
         #TODO by default. Remove in final release
         if not screen_id:
@@ -85,8 +85,8 @@ class IGadgetCollection(Resource):
 
 
 class IGadgetEntry(Resource):
-    def read(self, request, user_id, vendor, name, version, screen_id=None):
-        user = user_authentication(user_id)
+    def read(self, request, user_name, vendor, name, version, screen_id=None):
+        user = user_authentication(user_name)
         gadget = get_object_or_404(Gadget, user=user, vendor=vendor, name=name, version=version)
         if not screen_id:
             igadget = get_list_or_404(IGadget, gadget=gadget, screen=1)

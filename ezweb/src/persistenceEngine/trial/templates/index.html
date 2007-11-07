@@ -92,21 +92,21 @@ json["connectable"] = eval(
     <h1>Pruebas ReST sobre el modelo de datos</h1>
     <h2>Gadget</h2>
     <ul>
-        <li>Listar gadgets: <a onclick="do_get('/user/1/gadgets/');" href="#">
-            GET sobre '/user/1/gadgets/'</a></li>
-        <li>Obtener gadget: <a onclick="do_get('/user/1/gadget/vendor1/gadget1/v1/');" href="#">
-            GET sobre '/user/1/gadget/vendor1/gadget1/v1/'</a></li>
-        <li>Borrar gadget: <a onclick="do_delete('/user/1/gadget/vendor3/gadget3/v1/');" href="#">
-            DELETE sobre '/user/1/gadget/vendor3/gadget3/v1/'</a></li>
-        <li>Obtener código del gadget: <a onclick="do_get('/user/1/gadget/vendor1/gadget1/v1/code/');" href="#">
-            GET sobre '/user/1/gadget/vendor1/gadget1/v1/code/'</a></li>
-        <li>Obtener el template del gadget: <a onclick="do_get('/user/1/gadget/vendor1/gadget1/v1/template/');" href="#">
-            GET sobre '/user/1/gadget/vendor1/gadget1/v1/template/'</a></li>
-        <li>Obtener las tags del gadget: <a onclick="do_get('/user/1/gadget/vendor1/gadget1/v1/tags/');" href="#">
-            GET sobre '/user/1/gadget/vendor1/gadget1/v1/tags/'</a></li>
-        <li>Crear gadgets: POST sobre '/user/1/gadgets/' con 'url': 'http://europa.ls.fi.upm.es/~mac/template4.xml'
+        <li>Listar gadgets: <a onclick="do_get('/user/admin/gadgets/');" href="#">
+            GET sobre '/user/admin/gadgets/'</a></li>
+        <li>Obtener gadget: <a onclick="do_get('/user/admin/gadget/vendor1/gadget1/v1/');" href="#">
+            GET sobre '/user/admin/gadget/vendor1/gadget1/v1/'</a></li>
+        <li>Borrar gadget: <a onclick="do_delete('/user/admin/gadget/vendor3/gadget3/v1/');" href="#">
+            DELETE sobre '/user/admin/gadget/vendor3/gadget3/v1/'</a></li>
+        <li>Obtener código del gadget: <a onclick="do_get('/user/admin/gadget/vendor1/gadget1/v1/code/');" href="#">
+            GET sobre '/user/admin/gadget/vendor1/gadget1/v1/code/'</a></li>
+        <li>Obtener el template del gadget: <a onclick="do_get('/user/admin/gadget/vendor1/gadget1/v1/template/');" href="#">
+            GET sobre '/user/admin/gadget/vendor1/gadget1/v1/template/'</a></li>
+        <li>Obtener las tags del gadget: <a onclick="do_get('/user/admin/gadget/vendor1/gadget1/v1/tags/');" href="#">
+            GET sobre '/user/admin/gadget/vendor1/gadget1/v1/tags/'</a></li>
+        <li>Crear gadgets: POST sobre '/user/admin/gadgets/' con 'url': 'http://europa.ls.fi.upm.es/~mac/template4.xml'
 
-<form action="/user/1/gadgets/" method="POST">
+<form action="/user/admin/gadgets/" method="POST">
 <input type="hidden" name="url" value="http://europa.ls.fi.upm.es/~mac/template4.xml" >
 <input type="submit" >
 </form>
@@ -114,17 +114,17 @@ json["connectable"] = eval(
     </ul>
     <h2>IGadget</h2>
     <ul>
-        <li>Listar igadgets: <a onclick="do_get('/user/1/igadgets/');" href="#">
-            GET sobre '/user/1/igadgets/'</a></li>
-        <li>Obtener igadget: <a onclick="do_get('/user/1/igadget/vendor1/gadget1/v1/');" href="#">
-            GET sobre '/user/1/igadget/vendor1/gadget1/v1/'</a></li>
+        <li>Listar igadgets: <a onclick="do_get('/user/admin/igadgets/');" href="#">
+            GET sobre '/user/admin/igadgets/'</a></li>
+        <li>Obtener igadget: <a onclick="do_get('/user/admin/igadget/vendor1/gadget1/v1/');" href="#">
+            GET sobre '/user/admin/igadget/vendor1/gadget1/v1/'</a></li>
     </ul>
     <h2>Connectable</h2>
     <ul>
-        <li>Listar connectable: <a onclick="do_get('/user/1/connectable/');" href="#">
-            GET sobre '/user/1/connectable/'</a></li>
-        <li>Crear connectable: <a onclick="do_post('/user/1/connectable/', json['connectable']);" href="#">
-            POST sobre '/user/1/connectable/'</a></li>
+        <li>Listar connectable: <a onclick="do_get('/user/admin/connectable/');" href="#">
+            GET sobre '/user/admin/connectable/'</a></li>
+        <li>Crear connectable: <a onclick="do_post('/user/admin/connectable/', json['connectable']);" href="#">
+            POST sobre '/user/admin/connectable/'</a></li>
     </ul>
 
 

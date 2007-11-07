@@ -6,7 +6,7 @@ from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.contrib.admin.views.decorators import staff_member_required
 
 
-def index(request, user_id=None):
+def index(request, user_name=None):
     """ vista demostrador """
     return render_to_response('index.html', {}, context_instance=RequestContext(request))
 index = staff_member_required(index)

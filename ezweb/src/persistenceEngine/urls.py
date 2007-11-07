@@ -12,17 +12,16 @@ urlpatterns = patterns('',
 
     # EzWeb
     (r'^$', include('trial.urls')),
-    (r'^user/(?P<user_id>\w+)/$', include('trial.urls')),
-#    (r'^user/(?P<user_id>\d+)/', include('user.urls')),
+    (r'^user/(?P<user_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/$', include('trial.urls')),
 
     # Gadgets
-    (r'^user/(?P<user_id>\w+)/gadget(s)?/', include('gadget.urls')),
+    (r'^user/(?P<user_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/gadget(s)?/', include('gadget.urls')),
 
     # IGadgets
-    (r'^user/(?P<user_id>\w+)/igadget(s)?/', include('igadget.urls')),
+    (r'^user/(?P<user_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/igadget(s)?/', include('igadget.urls')),
 
     # Connectables
-    (r'^user/(?P<user_id>\w+)/connectable(s)?/', include('connectable.urls')),
+    (r'^user/(?P<user_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/connectable(s)?/', include('connectable.urls')),
     
    # Catalogue
     (r'^catalogue/resources/',include('Resource.urls')),

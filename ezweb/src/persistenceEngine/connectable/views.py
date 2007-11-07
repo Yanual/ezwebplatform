@@ -17,8 +17,8 @@ from igadget.models import IGadget, Screen, Variable
 from connectable.models import InOut
 
 class ConnectableEntry(Resource):
-    def read(self, request, user_id, screen_id=None):
-        user = user_authentication(user_id)
+    def read(self, request, user_name, screen_id=None):
+        user = user_authentication(user_name)
         wiring = {}
         
         # IGadgets list
@@ -43,8 +43,8 @@ class ConnectableEntry(Resource):
         
         return HttpResponse(json_encode(wiring), mimetype='application/json; charset=UTF-8')
     
-    def create(self, request, user_id, screen_id=None):
-        user = user_authentication(user_id)
+    def create(self, request, user_name, screen_id=None):
+        user = user_authentication(user_name)
         if request.POST.has_key('json'):
             json = simplejson.loads(request.POST['json'])
         else:
@@ -62,13 +62,13 @@ class ConnectableEntry(Resource):
             inout.save()
             for ins in io['ins']:
                 variable = get_object_or_404(Variable, uri=ins['variable'], igadget=igadget)
-                uri_in = "/user/%s/igadget/%s/variable/%s/in/%s" % (user_id, igadget.id, variable.id, ins['name'])
+                uri_in = "/user/%s/igadget/%s/variable/%s/in/%s" % (user_name, igadget.id, variable.id, ins['name'])
                 in_object = In(uri=uri_in, name=ins['name'], variable=variable)
                 in_object.inout.add(inout)
                 in_object.save()
             for outs in io['outs']:
                 variable = get_object_or_404(Variable, uri=outs['variable'], igadget=igadget)
-                uri_out = "/user/%s/igadget/%s/variable/%s/out/%s" % (user_id, igadget.id, variable.id, outs['name'])
+                uri_out = "/user/%s/igadget/%s/variable/%s/out/%s" % (user_name, igadget.id, variable.id, outs['name'])
                 out_object = In(uri=uri_in, name=out['name'], variable=variable)
                 out_object.inout.add(inout)
                 out_object.save()
@@ -78,7 +78,7 @@ class ConnectableEntry(Resource):
             igadget = get_object_or_404(IGadget, screen=screen, uri=ig['uri'])
             for ins in ig['ins']:
                 variable = get_object_or_404(Variable, uri=ins['variable'], igadget=igadget)
-                uri_in = "/user/%s/igadget/%s/variable/%s/in/%s" % (user_id, igadget.id, variable.id, ins['name'])
+                uri_in = "/user/%s/igadget/%s/variable/%s/in/%s" % (user_name, igadget.id, variable.id, ins['name'])
                 in_object = In(uri=uri_in, name=ins['name'], variable=variable)
                 for inout in ins['inouts']:
                     inout = get_object_or_404(InOut, uri=inout)
@@ -86,7 +86,7 @@ class ConnectableEntry(Resource):
                 in_object.save()
             for outs in ig['outs']:            
                 variable = get_object_or_404(Variable, uri=outs['variable'], igadget=igadget)
-                uri_out = "/user/%s/igadget/%s/variable/%s/out/%s" % (user_id, igadget.id, variable.id, outs['name'])
+                uri_out = "/user/%s/igadget/%s/variable/%s/out/%s" % (user_name, igadget.id, variable.id, outs['name'])
                 out_object = In(uri=uri_in, name=out['name'], variable=variable)
                 for inout in outs['inouts']:
                     inout = get_object_or_404(InOut, uri=inout)
