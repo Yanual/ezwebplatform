@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from catalogue.Resource.views import *
+from persistenceEngine.Resource.views import *
 
 from django_restapi.model_resource import Collection
 from django_restapi.responder import *
