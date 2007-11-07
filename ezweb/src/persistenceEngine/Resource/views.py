@@ -21,13 +21,13 @@ class CatalogueResource(Resource):
 		# Tell the parser to use our handler
 		parser.setContentHandler(handler)
 	
-		#template_uri = request.__getitem__('template_uri')
+		template_uri = request.__getitem__('template_uri')
 		
 		
 		
 		# Parse the input
-		#parser.parse(template_uri)
-		parser.parse("http://europa.ls.fi.upm.es/~mac/template.xml")
+		parser.parse(template_uri)
+		#parser.parse("http://europa.ls.fi.upm.es/~mac/template.xml")
 	
 		
 		gadget=gadgetResource()
@@ -41,7 +41,7 @@ class CatalogueResource(Resource):
 		gadget.mail=handler._mail
 		gadget.image_uri=handler._imageURI
 		gadget.wiki_page_uri=handler._wikiURI
-		#gadget.template_uri=''
+		gadget.template_uri=template_uri
 		gadget.creation_date=datetime.today()
 	
 		try:
