@@ -1,4 +1,4 @@
-﻿from catalogue.Resource.parser import TemplateHandler
+﻿from persistenceEngine.Resource.parser import TemplateHandler
 from urllib import urlopen
 from django_restapi.resource import Resource
 from catalogue.Resource.models import gadgetResource
@@ -71,7 +71,7 @@ class CatalogueResource(Resource):
 		
 		control = 1
 		xml_resource = ''
-		for e in gadgetResource.objects.all()[0:d]:
+		for e in gadgetResource.objects.all()[c:d]:
 			xml_resource +='<Resource>\n\
 			<Vendor>'+e.vendor+'</Vendor>\n\
 			<Name>'+e.short_name+'</Name>\n\
