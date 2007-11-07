@@ -6,7 +6,7 @@ from xml.sax import saxutils
 from xml.sax import make_parser
 from datetime import datetime
 from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseServerError
-from psycopg2 import IntegrityError
+#from psycopg2 import IntegrityError
 from django.core.paginator import ObjectPaginator, InvalidPage
 import sys
 
@@ -47,11 +47,11 @@ class CatalogueResource(Resource):
 		try:
 			gadget.save()
 		except IntegrityError:
-			value = str(sys.exc_info()[1])
+			#value = str(sys.exc_info()[1])
 			print value
 			xml_error = '<fault>\n\
 			<value>'+'IntegrityError'+'</value>\n\
-			<description>'+value+'</description>\n\
+			<description>'+'Error de Integridad'+'</description>\n\
 			</fault>'
 			#+sys.exc_info()[2]'+</description></fault>'
 			return HttpResponse(xml_error,mimetype='text/xml; charset=UTF-8')
