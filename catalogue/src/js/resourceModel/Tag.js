@@ -3,10 +3,34 @@ function Tag(tagXML_)
 	var state = new StateTag(tagXML_);
 	
 	this.getValue = function() { return state.getValue(); }
-	this.getAppearances = function() { return state.getAppearances(); } 
+	this.getAppearances = function() { return state.getAppearances(); }
+	
+	this.tagToHTML = function() {
+		return "<a title='Buscar "+ state.getValue() +"' href='#'>" + state.getValue() + "</a>";
+	}
+	
+	this.tagToTypedHTML = function() {
+		var classAux = '';
+		if (state.getAppearances()<5)		classAux = 'tag_type_1';
+		else if (state.getAppearances()<15) classAux = 'tag_type_2';
+		else if (state.getAppearances()<25) classAux = 'tag_type_3';
+		else								classAux = 'tag_type_4';
+			
+		return "<a class='" + classAux + "' title='Buscar "+ state.getValue() +"' href='#'>" + state.getValue() + "</a>";
+	}
+	
+	this.equals = function(tag_) {
+		return ((tag_.getValue() == state.getValue()) && (tag_.getAppearances() == state.getAppearances()));
+	}
+	
+	this.compareTo = function(tag_) {
+		if 		(parseInt(state.getAppearances()) < (parseInt(tag_.getAppearances()))) return -1;
+		else if	(parseInt(state.getAppearances()) > (parseInt(tag_.getAppearances()))) return 1;
+		else return 0;
+	}
 }
 
-function StateTag(tagXML_)
+function StateTag(tagXML_) 
 {
 	var value = tagXML_.getElementsByTagName("value")[0].firstChild.nodeValue;
 	var appearances = tagXML_.getElementsByTagName("appearances")[0].firstChild.nodeValue;

@@ -82,7 +82,7 @@ a:hover
 	display:inline;
 	float:left;
 	width:192px;
-	height:195px;
+	height:202px;
 	margin-left:10px;
 	margin-top:10px;
 	background:none;
@@ -116,7 +116,7 @@ a:hover
 {
 	display:block;
 	width: 192px;
-	height: 23px;
+	height: 30px;
 	padding: 0px;
     margin: 0px;
 	text-align:right;
@@ -126,7 +126,8 @@ a:hover
 .main .center .resources .resource .toolbar a
 {
 	display:inline;
-	padding-right:5px;
+	padding-right:8px;
+	padding-top:3px;
 	border:none;
 	width:18px;
 }
@@ -225,6 +226,11 @@ a:hover
 .main .center .resources .resource .content .tags .more_tags img
 {
 	border:none;
+}
+
+.description_balloon
+{
+	color:#666666;
 }
 
  .tag_type_1
