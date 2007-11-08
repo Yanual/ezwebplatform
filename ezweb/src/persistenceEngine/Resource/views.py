@@ -1,19 +1,18 @@
-﻿from persistenceEngine.Resource.parser import TemplateHandler
+﻿from catalogue.Resource.parser import TemplateHandler
 from urllib import urlopen
 from django_restapi.resource import Resource
-from persistenceEngine.Resource.models import gadgetResource
+from catalogue.Resource.models import gadgetResource
 from xml.sax import saxutils
 from xml.sax import make_parser
 from datetime import datetime
 from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseServerError
-#from psycopg2 import IntegrityError
 from django.core.paginator import ObjectPaginator, InvalidPage
 import sys
 
 
-class CatalogueResource(Resource):
+class GadgetsCollection(Resource):
 
-	def create(self,request):
+	def create(self,request, user_id):
 	
 		parser = make_parser()
 		handler = TemplateHandler()
@@ -27,7 +26,7 @@ class CatalogueResource(Resource):
 		
 		# Parse the input
 		parser.parse(template_uri)
-		#parser.parse("http://europa.ls.fi.upm.es/~mac/template.xml")
+		#parser.parse("http://europa.ls.fi.upm.es/~mac/template4.xml")
 	
 		
 		gadget=gadgetResource()
@@ -41,17 +40,17 @@ class CatalogueResource(Resource):
 		gadget.mail=handler._mail
 		gadget.image_uri=handler._imageURI
 		gadget.wiki_page_uri=handler._wikiURI
-		gadget.template_uri=template_uri
+		#gadget.template_uri=template_uri
 		gadget.creation_date=datetime.today()
 	
 		try:
 			gadget.save()
-		except IntegrityError:
-			#value = str(sys.exc_info()[1])
+		except:
+			value = str(sys.exc_info()[1])
 			print value
 			xml_error = '<fault>\n\
-			<value>'+'IntegrityError'+'</value>\n\
-			<description>'+'Error de Integridad'+'</description>\n\
+			<value>'+'Error'+'</value>\n\
+			<description>'+value+'</description>\n\
 			</fault>'
 			#+sys.exc_info()[2]'+</description></fault>'
 			return HttpResponse(xml_error,mimetype='text/xml; charset=UTF-8')
@@ -60,7 +59,7 @@ class CatalogueResource(Resource):
 		return HttpResponse(xml_ok,mimetype='text/xml; charset=UTF-8')
 
 
-	def read(self,request,offset,pag):
+	def read(self,request, user_id, offset,pag):
 		
 		#paginate
 
@@ -92,7 +91,7 @@ class CatalogueResource(Resource):
 
 
 
-def addToPlatform(request, id_user):
+def addToPlatform(request, user_id):
 	
 	template_uri = request.__getitem__('template_uri')
 

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 from os import path
 from django.conf.urls.defaults import *
 from django.http import HttpResponseRedirect
@@ -12,19 +12,28 @@ urlpatterns = patterns('',
 
     # EzWeb
     (r'^$', include('trial.urls')),
-    (r'^user/(?P<user_id>\w+)/$', include('trial.urls')),
-#    (r'^user/(?P<user_id>\d+)/', include('user.urls')),
+    (r'^user/(?P<user_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/$', include('trial.urls')),
 
     # Gadgets
-    (r'^user/(?P<user_id>\w+)/gadget(s)?/', include('gadget.urls')),
+    (r'^user/(?P<user_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/gadget(s)?/', include('gadget.urls')),
 
     # IGadgets
-    (r'^user/(?P<user_id>\w+)/igadget(s)?/', include('igadget.urls')),
+    (r'^user/(?P<user_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/igadget(s)?/', include('igadget.urls')),
 
     # Connectables
-    (r'^user/(?P<user_id>\w+)/connectable(s)?/', include('connectable.urls')),
+    (r'^user/(?P<user_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/connectable(s)?/', include('connectable.urls')),
+    
+    # Catalogue Resource
+    (r'^catalogue/user/(?P<user_id>\w+)/resource(s)?/',include('Resource.urls')),
+
+    # Catalogue Tag
+    (r'^catalogue/user/(?P<user_id>\w+)/tag(s)?/',include('Tag.urls')),
+    
+   # Catalogue
+    (r'^catalogue/resources/',include('Resource.urls')),
 
     # Django contrib
+    (r'^accounts/login/$', 'django.contrib.auth.views.login'),
     (r'^logout/$', 'django.contrib.auth.views.logout'),
     (r'^admin/', include('django.contrib.admin.urls')),
 

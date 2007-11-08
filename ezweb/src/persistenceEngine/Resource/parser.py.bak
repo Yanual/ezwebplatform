@@ -14,28 +14,28 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 	
 	def endElement(self, name):
 		if (name == 'Name'):
-			_name = self._accumulator[0]
+			self._name = self._accumulator[0]
 			return
 		if (name == 'Vendor'):
-			_vendor = self._accumulator[0]
+			self._vendor = self._accumulator[0]
 			return
 		if (name == 'Version'):
-			_version = self._accumulator[0]
+			self._version = self._accumulator[0]
 			return
 		if (name == 'Author'):
-			_author = self._accumulator[0]
+			self._author = self._accumulator[0]
 			return
 		if (name == 'Description'):
-			_description = self._accumulator[0]
+			self._description = self._accumulator[0]
 			return
 		if (name == 'Mail'):
-			_mail = self._accumulator[0]
+			self._mail = self._accumulator[0]
 			return
 		if (name == 'ImageURI'):
-			_imageURI = self._accumulator[0]
+			self._imageURI = self._accumulator[0]
 			return
 		if (name == 'WikiURI'):
-			_wikiURI = self._accumulator[0]
+			self._wikiURI = self._accumulator[0]
 			return
 
 	def characters(self, text):

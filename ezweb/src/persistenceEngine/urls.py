@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 from os import path
 from django.conf.urls.defaults import *
 from django.http import HttpResponseRedirect
@@ -23,9 +23,13 @@ urlpatterns = patterns('',
     # Connectables
     (r'^user/(?P<user_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/connectable(s)?/', include('connectable.urls')),
     
-   # Catalogue
-    (r'^catalogue/resources/',include('Resource.urls')),
+    # Catalogue Resource
+    (r'^catalogue/user/(?P<user_id>\w+)/resource(s)?/',include('Resource.urls')),
 
+    # Catalogue Tag
+    (r'^catalogue/user/(?P<user_id>\w+)/tag(s)?/',include('Tag.urls')),
+    
+   
     # Django contrib
     (r'^accounts/login/$', 'django.contrib.auth.views.login'),
     (r'^logout/$', 'django.contrib.auth.views.logout'),

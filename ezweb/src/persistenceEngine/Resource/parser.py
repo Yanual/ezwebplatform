@@ -2,9 +2,6 @@ from urllib import urlopen
 from xml.sax import saxutils
 from xml.sax import make_parser
 
-
-#class AddToCatalogue():
-
 class TemplateHandler(saxutils.handler.ContentHandler): 
 	
 	_accumulator = []
