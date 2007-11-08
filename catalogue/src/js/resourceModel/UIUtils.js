@@ -211,9 +211,13 @@ UIUtils.SlideAdvancedSearchOutOfView = function(element) {
   );
 }
 
-UIUtils.showDescriptionBalloon = function(resourceId_) {
-	CatalogueFactory.getInstance().getResource(resourceId_).showDescriptionBalloon();
-}
+UIUtils.abrirVentana = function() {
+      MiVentana=open("EzWeb","nuevaVentana",
+        "toolbar=no,directories=no,menubar=no,status=yes");
+      MiVentana.document.write(
+        "<head><title>Nuevo Recurso</title></head>");
+      MiVentana.document.write("<body>Prueba</body>");
+    }
 
 // Enables you to react to return being pressed in an input
 UIUtils.onReturn = function(event_, handler_, inputText_) {

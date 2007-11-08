@@ -61,7 +61,7 @@ a:hover
 	float:left;
 	display:block;
 	height:45px;
-	width:100%;
+	width:90%;
 }
 
 .main .head .search .simple_search
@@ -69,7 +69,21 @@ a:hover
 	float:left;
 	display:block;
 	height:45px;
-	width:100%;
+	width:90%;
+}
+
+.main .head .search .new_resource
+{
+	float:left;
+	display:block;
+	height:45px;
+	width:10%;
+	color:blue;
+}
+
+.main .head .search .new_resource a
+{
+	cursor:pointer;
 }
 
 .main .head .search form *
