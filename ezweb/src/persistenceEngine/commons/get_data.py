@@ -11,14 +11,13 @@ def get_gadget_data(data):
     data_image = get_object_or_404(Template, id=data_fields['template'])
     data_fields['image'] = data_image.image
 
-    # VariableDef not 404
-    data_template = get_list_or_404(VariableDef.objects.all().values('aspect', 'name', 'type'), id=data_fields['template'])
+    # VariableDef doesn't need return 404
+    data_template = VariableDef.objects.filter(template=data_fields['template']).values('aspect', 'name', 'type')
     data_fields['template'] = data_template
 
     data_code = get_object_or_404(XHTML.objects.all().values('uri'), id=data_fields['xhtml'])
-    # UserEventsInfo not 404
-    data_elements = get_list_or_404(UserEventsInfo.objects.all().values('event', 'handler', 'html_element'), \
-                xhtml=data_fields['xhtml'])
+    # UserEventsInfo doesn't need return 404
+    data_elements = UserEventsInfo.objects.filter(xhtml=data_fields['xhtml']).values('event', 'handler', 'html_element'))
     data_fields['xhtml'] = data_code
     data_fields['xhtml']['elements'] = data_elements
 
