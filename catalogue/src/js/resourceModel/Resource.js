@@ -69,7 +69,7 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 									"<div class='vendor'>" + state.getVendor() + "</div>" +
 									"<div class='image'><img src='" + state.getUriImage() + "' alt='" + state.getName()+ "&nbsp;" + state.getVersion() + "'/></div>" +
 									"<div class='description'>Descripci&oacute;n:<br/><div class='text'>" + state.getDescription() + "</div></div>" +
-									"<div class='tagcloud'>Tagcloud:<br/><div class='tags'>" + _tagsToTypedHTML() + "</div></div>" +
+									"<div class='tagcloud'>Tagcloud:<br/><div class='tags'>" + _tagsToTagcloud() + "</div></div>" +
 									"<div id='add_tags_panel' class='new_tags' style='display:none;'>" +
 										"<div class='title'>Nuevas Etiquetas:</div>" +
 										"<div id='my_tags' class='my_tags'>" +

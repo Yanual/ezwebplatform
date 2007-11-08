@@ -24,8 +24,8 @@ function Tag(tagXML_)
 	}
 	
 	this.compareTo = function(tag_) {
-		if 		(parseInt(state.getAppearances()) < (parseInt(tag_.getAppearances()))) return -1;
-		else if	(parseInt(state.getAppearances()) > (parseInt(tag_.getAppearances()))) return 1;
+		if 		(state.getAppearances() < (tag_.getAppearances())) return -1;
+		else if	(state.getAppearances() > (tag_.getAppearances())) return 1;
 		else return 0;
 	}
 }
@@ -33,7 +33,7 @@ function Tag(tagXML_)
 function StateTag(tagXML_) 
 {
 	var value = tagXML_.getElementsByTagName("value")[0].firstChild.nodeValue;
-	var appearances = tagXML_.getElementsByTagName("appearances")[0].firstChild.nodeValue;
+	var appearances = parseInt(tagXML_.getElementsByTagName("appearances")[0].firstChild.nodeValue);
 	
 	this.getValue = function() { return value; }
 	this.getAppearances = function() { return appearances; } 
