@@ -108,15 +108,13 @@ wOut.prototype.clear = function(){
 }
 
 wOut.prototype.connections = function(){
-   var result = new Object();
-   result["input"] = [];
-   for (i in this.outputHash){
-      if (this.outputHash[i] instanceof wInOut){
-         var connection = new Object();
-         connection["name"] = this.inputList[i].getName();
-         result["input"].push(connection);
+   var result = [];
+   for (i in this.inputHash){
+      if (this.inputHash[i] instanceof wInOut){
+         result.push(this.inputHash[i].getName());
       }
    }
+   return result;
 }
 
 wOut.prototype.serialize = function(){
@@ -206,15 +204,13 @@ wIn.prototype.refresh = function (channelRef){
 }
 
 wIn.prototype.connections = function(){
-   var result = new Object();
-   result["output"] = [];
+   var result = [];
    for (i in this.outputHash){
       if (this.outputHash[i] instanceof wInOut){
-         var connection = new Object();
-         connection["name"] = this.outputList[i].getName();
-         result["output"].push(connection);
+         result.push(this.outputHash[i].getName());
       }
    }
+   return result;
 }
 
 /////////////////////////////////////////////////////////////////////
