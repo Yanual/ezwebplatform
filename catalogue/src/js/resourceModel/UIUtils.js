@@ -149,6 +149,68 @@ UIUtils.SlideInfoResourceOutOfView = function(element) {
   );
 }
 
+UIUtils.SlideAdvancedSearchIntoView = function(element) {
+  element = $(element).cleanWhitespace();
+  // SlideDown need to have the content of the element wrapped in a container element with fixed height!
+  var oldInnerBottom = element.down().getStyle('bottom');
+  var elementDimensions = element.getDimensions();
+  return new Effect.Scale(element, 100, Object.extend({ 
+    scaleContent: false, 
+    scaleX: false, 
+    scaleFrom: window.opera ? 0 : 1,
+    scaleMode: {originalHeight: elementDimensions.height, originalWidth: elementDimensions.width},
+    restoreAfterFinish: true,
+    afterSetup: function(effect) {
+      effect.element.makePositioned();
+      effect.element.down().makePositioned();
+      if(window.opera) effect.element.setStyle({top: ''});
+      effect.element.makeClipping().setStyle({height: '0px'}).show(); 
+    },
+    afterUpdateInternal: function(effect) {
+      effect.element.down().setStyle({bottom:
+        (effect.dims[0] - effect.element.clientHeight) + 'px' }); 
+    },
+    afterFinishInternal: function(effect) {
+      effect.element.undoClipping().undoPositioned();
+      effect.element.down().undoPositioned().setStyle({bottom: oldInnerBottom}); 
+	  UIUtils.toggle('simple_search');
+	  UIUtils.toggle('advanced_search_bottom');
+	  document.getElementById('advanced_search_text').focus();
+	  }
+    }, arguments[1] || {})
+  );
+}
+
+UIUtils.SlideAdvancedSearchOutOfView = function(element) {
+  element = $(element).cleanWhitespace();
+  var oldInnerBottom = element.down().getStyle('bottom');
+  return new Effect.Scale(element, window.opera ? 0 : 1,
+   Object.extend({ scaleContent: false, 
+    scaleX: false, 
+    scaleMode: 'box',
+    scaleFrom: 100,
+    restoreAfterFinish: true,
+    beforeStartInternal: function(effect) {
+      effect.element.makePositioned();
+      effect.element.down().makePositioned();
+      if(window.opera) effect.element.setStyle({top: ''});
+      effect.element.makeClipping().show();
+    },  
+    afterUpdateInternal: function(effect) {
+      effect.element.down().setStyle({bottom:
+        (effect.dims[0] - effect.element.clientHeight) + 'px' });
+    },
+    afterFinishInternal: function(effect) {
+      effect.element.hide().undoClipping().undoPositioned().setStyle({bottom: oldInnerBottom});
+      effect.element.down().undoPositioned();
+	  UIUtils.toggle('advanced_search_bottom');
+	  UIUtils.toggle('simple_search');
+	  document.getElementById('simple_search_text').focus();
+    }
+   }, arguments[1] || {})
+  );
+}
+
 UIUtils.showDescriptionBalloon = function(resourceId_) {
 	CatalogueFactory.getInstance().getResource(resourceId_).showDescriptionBalloon();
 }

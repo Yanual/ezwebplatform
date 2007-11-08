@@ -34,7 +34,7 @@ a:hover
 .main .head
 {
 	width:100%;
-	height:50px;
+	height:auto;
 	padding:0px;
 	margin:0px;
 	float:left;
@@ -43,8 +43,33 @@ a:hover
 
 .main .head .search
 {
+	height:auto;
 	text-align:center;
 	margin-top:10px;
+}
+
+.main .head .search .advanced_search_top
+{
+	float:left;
+	display:block;
+	height:80px;
+	width:100%;
+}
+
+.main .head .search .advanced_search_bottom
+{
+	float:left;
+	display:block;
+	height:45px;
+	width:100%;
+}
+
+.main .head .search .simple_search
+{
+	float:left;
+	display:block;
+	height:45px;
+	width:100%;
 }
 
 .main .head .search form *
