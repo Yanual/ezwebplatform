@@ -17,7 +17,7 @@ def get_gadget_data(data):
 
     data_code = get_object_or_404(XHTML.objects.all().values('uri'), id=data_fields['xhtml'])
     # UserEventsInfo doesn't need return 404
-    data_elements = UserEventsInfo.objects.filter(xhtml=data_fields['xhtml']).values('event', 'handler', 'html_element'))
+    data_elements = UserEventsInfo.objects.filter(xhtml=data_fields['xhtml']).values('event', 'handler', 'html_element')
     data_fields['xhtml'] = data_code
     data_fields['xhtml']['elements'] = data_elements
 
