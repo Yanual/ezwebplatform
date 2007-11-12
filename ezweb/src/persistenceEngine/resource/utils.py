@@ -3,7 +3,7 @@ from xml.sax import make_parser
 
 from persistenceEngine.tag.models import userTag
 from persistenceEngine.tag.utils import get_tags_by_resource
-
+from persistenceEngine.resource.models import gadgetResource
 
 def get_xml_description(gadgetlist):
 
@@ -13,7 +13,7 @@ def get_xml_description(gadgetlist):
 
         xml_tag = get_tags_by_resource(e.id)
 	  				
-				xml_resource +='<Resource>\n\
+	xml_resource +='<Resource>\n\
         <Vendor>'+e.vendor+'</Vendor>\n\
         <Name>'+e.short_name+'</Name>\n\
 	<Version>'+e.version+'</Version>\n\
