@@ -29,9 +29,7 @@ urlpatterns = patterns('',
     # Catalogue Tag
     (r'^catalogue/user/(?P<user_id>\w+)/tag(s)?/',include('Tag.urls')),
     
-   # Catalogue
-    (r'^catalogue/resources/',include('Resource.urls')),
-
+   
     # Django contrib
     (r'^accounts/login/$', 'django.contrib.auth.views.login'),
     (r'^logout/$', 'django.contrib.auth.views.logout'),
