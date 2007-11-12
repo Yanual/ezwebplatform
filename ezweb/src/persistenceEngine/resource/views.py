@@ -1,4 +1,4 @@
-﻿from persistenceEngine.resource.parser import TemplateHandler
+﻿from catalogue.resource.parser import TemplateHandler
 from urllib import urlopen
 from django_restapi.resource import Resource
 from persistenceEngine.resource.models import gadgetResource
@@ -75,7 +75,7 @@ class GadgetsCollection(Resource):
 	if a==1:
 		c=0
 	
-	response = get_xml_description(gadgetResource.objects.all()[c:d])
+	xml_resource = get_xml_description(gadgetResource.objects.all()[c:d])
 		
 	response = '<resources>'+xml_resource+'</resources>'
 		
