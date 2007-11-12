@@ -1,9 +1,9 @@
-﻿from catalogue.resource.parser import TemplateHandler
+﻿from persistenceEngine.resource.parser import TemplateHandler
 from urllib import urlopen
 from django_restapi.resource import Resource
-from catalogue.resource.models import gadgetResource
-from catalogue.tag.models import userTag
-from catalogue.tag.utils import get_tags_by_resource
+from persistenceEngine.resource.models import gadgetResource
+from persistenceEngine.tag.models import userTag
+from persistenceEngine.tag.utils import get_tags_by_resource
 from django.contrib.auth.models import User
 
 from xml.sax import saxutils

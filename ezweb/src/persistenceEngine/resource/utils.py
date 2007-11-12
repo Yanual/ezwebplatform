@@ -1,7 +1,7 @@
 from xml.sax import saxutils
 from xml.sax import make_parser
 
-from catalogue.tag.models import userTag
+from persistenceEngine.tag.models import userTag
 
 
 def get_xml_description(gadgetlist):
