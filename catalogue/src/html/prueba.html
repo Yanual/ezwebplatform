@@ -15,19 +15,23 @@
 		<script type="text/javascript">
 			function Prueba()
 			{
-				this.onError = function(transport) {
+				onError = function(transport) {
 					alert("Error Resource POST");
 					// Process
 				}
 		
-				this.loadResources = function(transport) {
+				loadResources = function(transport) {
 					var response = transport.responseText;
 					alert(response);
+				}
+				
+				this.enviar = function() {
+					PersistenceEngineFactory.getInstance().send_get ("http://europa.ls.fi.upm.es:8000/catalogue/resources/5/1/ ", this, loadResources, onError);
 				}
 			}
 			
 			var prueba = new Prueba();
-			PersistenceEngineFactory.getInstance().send_get ("http://europa.ls.fi.upm.es:8000/catalogue/resources/5/1/ ", prueba, loadResources, onError);
+			prueba.enviar();
 			
 		</script>
 	</head>
