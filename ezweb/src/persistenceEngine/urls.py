@@ -24,10 +24,10 @@ urlpatterns = patterns('',
     (r'^user/(?P<user_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/connectable(s)?/', include('connectable.urls')),
     
     # Catalogue Resource
-    (r'^catalogue/user/(?P<user_id>\w+)/resource(s)?/',include('resource.urls')),
+    (r'^user/(?P<user_name>\w+)/catalogue/resource(s)?/',include('resource.urls')),
 
     # Catalogue Tag
-    (r'^catalogue/user/(?P<user_id>\w+)/tag(s)?/',include('tag.urls')),
+    (r'^user/(?P<user_name>\w+)/catalogue/tag(s)?/',include('tag.urls')),
     
    
     # Django contrib
