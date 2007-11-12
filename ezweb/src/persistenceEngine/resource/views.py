@@ -1,4 +1,4 @@
-﻿from catalogue.resource.parser import TemplateHandler
+﻿from persistenceEngine.resource.parser import TemplateHandler
 from urllib import urlopen
 from django_restapi.resource import Resource
 from persistenceEngine.resource.models import gadgetResource
