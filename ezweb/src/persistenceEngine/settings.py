@@ -84,7 +84,8 @@ INSTALLED_APPS = (
     'persistenceEngine.gadget',
     'persistenceEngine.igadget',
     'persistenceEngine.connectable',
-    'persistenceEngine.Resource',
+    'persistenceEngine.resource',
+    'persistenceEngine.tag',
 )
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
