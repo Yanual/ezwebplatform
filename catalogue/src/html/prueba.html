@@ -16,22 +16,38 @@
 			function Prueba()
 			{
 				onError = function(transport) {
-					alert("Error Resource POST");
+					alert("Error");
 					// Process
 				}
 		
-				loadResources = function(transport) {
+				loadGET = function(transport) {
 					var response = transport.responseText;
-					alert(response);
+					alert("Respuesta:\n" + response);
 				}
 				
-				this.enviar = function() {
-					PersistenceEngineFactory.getInstance().send_get ("http://europa.ls.fi.upm.es:8000/catalogue/resources/5/1/ ", this, loadResources, onError);
+				loadPOST = function(transport) {
+					var response = transport.responseText;
+					alert("Respuesta:\n" + response);
+				}
+				
+				this.enviarGET = function() {
+					var uri = prompt("URI del recurso", "");
+					PersistenceEngineFactory.getInstance().send_get (uri, this, loadGET, onError);
+				}
+				
+				this.enviarPOST = function() {
+					var uri = prompt("URI del recurso", "");
+					var value = prompt("Mensaje a enviar", "");
+					PersistenceEngineFactory.getInstance().send_post (uri, value, this, loadPOST, onError);
 				}
 			}
 			
 			var prueba = new Prueba();
-			prueba.enviar();
+			
+			if (confirm("Pulsa 'SI' para GET y 'NO' para POST"))
+				prueba.enviarGET();
+			else
+				prueba.enviarPOST();
 			
 		</script>
 	</head>
