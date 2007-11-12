@@ -1,0 +1,31 @@
+<html>
+	<head>
+		<title>Prueba</title>
+		<script language="JavaScript" src="../js/lib/prototype/prototype.js"></script>
+		<script language="JavaScript" src="../js/lib/prototype/prototype.improvements.js"></script>
+		<script language="JavaScript" src="../js/lib/scriptaculous/scriptaculous.js"></script>
+		<script language="JavaScript" src="../js/lib/HelpBalloons/HelpBalloon.js"></script>
+		<script language="JavaScript" src="../js/persistenceEngine/PersistenceEngine.js"></script>
+		<script language="JavaScript" src="../js/resourceModel/UIUtils.js"></script>
+		<script language="JavaScript" src="../js/resourceModel/Catalogue.js"></script>
+		<script language="JavaScript" src="../js/resourceModel/Resource.js"></script>
+		<script language="JavaScript" src="../js/resourceModel/Tagger.js"></script>
+		<script language="JavaScript" src="../js/resourceModel/Tag.js"></script>
+		<script language="JavaScript" src="../js/resourceModel/HashTable.js"></script>
+		<script type="text/javascript">
+			onError = function(transport) {
+				alert("Error Resource POST");
+				// Process
+			}
+		
+			loadResources = function(transport) {
+				var response = transport.responseText;
+				alert(response);
+			}
+			
+			PersitenceEngine.prototype.send_get ("http://europa.ls.fi.upm.es:8000/catalogue/resources/5/0/ ", this, loadResources, onError);
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

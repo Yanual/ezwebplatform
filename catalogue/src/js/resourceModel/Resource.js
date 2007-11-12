@@ -173,7 +173,7 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 									icon: 		'images/more_tags_gray.png',		//url to the icon to use
 									altText: 	'TagCloud', 						//Alt text of the help icon
 									title: 		'TagCloud:',						//Title of the balloon topic
-									content:	"<p class='tagcloud_balloon'>" + 					//Static content of the help balloon
+									content:	"<p class='tagcloud_balloon'>" + 	//Static content of the help balloon
 													_tagsToTagcloud() + 
 												"</p>",
 									imagePath: 	'../js/lib/HelpBalloons/images/'

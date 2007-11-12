@@ -212,7 +212,7 @@ UIUtils.SlideAdvancedSearchOutOfView = function(element) {
 }
 
 UIUtils.abrirVentana = function() {
-      MiVentana=open("EzWeb","nuevaVentana",
+      MiVentana=open("nuevo_recurso.html","nueva_recurso",
         "toolbar=no,directories=no,menubar=no,status=yes");
       MiVentana.document.write(
         "<head><title>Nuevo Recurso</title></head>");
