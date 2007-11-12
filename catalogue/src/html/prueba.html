@@ -13,17 +13,20 @@
 		<script language="JavaScript" src="../js/resourceModel/Tag.js"></script>
 		<script language="JavaScript" src="../js/resourceModel/HashTable.js"></script>
 		<script type="text/javascript">
-			onError = function(transport) {
-				alert("Error Resource POST");
-				// Process
-			}
+			function prueba()
+			{
+				this.onError = function(transport) {
+					alert("Error Resource POST");
+					// Process
+				}
 		
-			loadResources = function(transport) {
-				var response = transport.responseText;
-				alert(response);
+				this.loadResources = function(transport) {
+					var response = transport.responseText;
+					alert(response);
+				}
+				
+				PersistenceEngineFactory.getInstance().send_get ("http://europa.ls.fi.upm.es:8000/catalogue/resources/5/1/ ", this, loadResources, onError);
 			}
-			
-			PersistenceEngineFactory.getInstance().send_get ("http://europa.ls.fi.upm.es:8000/catalogue/resources/5/1/ ", this, loadResources, onError);
 		</script>
 	</head>
 	<body>
