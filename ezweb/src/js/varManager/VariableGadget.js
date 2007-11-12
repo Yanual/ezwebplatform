@@ -5,9 +5,9 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function GadgetVariable (iGadgetId, name) {
-	var varManager = null;
-	var iGadgetId = null;
-	var name = null;
+	this.varManager = null;
+	this.iGadgetId = null;
+	this.name = null;
 }
 
 //////////////////////////////////////////////
@@ -15,10 +15,10 @@ function GadgetVariable (iGadgetId, name) {
 //////////////////////////////////////////////
  
 GadgetVariable.prototype.GadgetVariable = function (iGadget_, name_) {
-    varManager = VarManagerFactory.getInstance();  
+    this.varManager = VarManagerFactory.getInstance();  
   
-    iGadgetId = iGadget_;
-    name = name_;
+    this.iGadgetId = iGadget_;
+    this.name = name_;
 }
 
 //////////////////////////////////////////////
@@ -26,7 +26,7 @@ GadgetVariable.prototype.GadgetVariable = function (iGadget_, name_) {
 //////////////////////////////////////////////
 
 GadgetVariable.prototype.get = function () { 
-	return varManager.getVariable(iGadget, name);
+	return this.varManager.getVariable(this.iGadget, this.name);
 }  
 
 GadgetVariable.prototype.set = function (value) { } 
@@ -40,7 +40,7 @@ GadgetVariable.prototype.register = function (handler) { }
 function RGadgetVariable(iGadget_, name_, handler_) {
 	GadgetVariable.prototype.GadgetVariable.call(this, iGadget_, name_);
   
-	var handler = handler_;
+	this.handler = handler_;
 }
 
 //////////////////////////////////////////////
@@ -54,7 +54,7 @@ RGadgetVariable.prototype = new GadgetVariable;
 //////////////////////////////////////////////
 
 GadgetVariable.prototype.register = function (handler) { 
-	varManager.registerVariable(iGadgetId, name, handler);
+	this.varManager.registerVariable(this.iGadgetId, this.name, handler);
 } 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,6 +82,6 @@ RWGadgetVariable.prototype = new GadgetVariable;
 //////////////////////////////////////////////
 
 RWGadgetVariable.prototype.set = function (value) {  
-	varManager.setVariable(iGadget, name, value)
+	this.varManager.setVariable(this.iGadgetId, this.name, value)
 } 
 

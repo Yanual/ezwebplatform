@@ -5,10 +5,10 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function Variable (iGadget, name) {
-	var iGadget = null;
-	var name = null;
-	var aspect = null;
-	var value = null;
+	this.iGadget = null;
+	this.name = null;
+	this.aspect = null;
+	this.value = null;
 }
 
 //////////////////////////////////////////////
@@ -16,10 +16,10 @@ function Variable (iGadget, name) {
 //////////////////////////////////////////////
  
 Variable.prototype.Variable = function (iGadget_, name_, aspect_, value_) {
-    iGadget = iGadget_;
-    name = name_;
-	aspect = aspect_;
-	value = value_;
+    	this.iGadget = iGadget_;
+    	this.name = name_;
+	this.aspect = aspect_;
+	this.value = value_;
 }
 
 //////////////////////////////////////////////
@@ -48,7 +48,7 @@ Variable.prototype.PROPERTY = "PROP"
 function RVariable(iGadget_, name_, aspect_, value_) {
 	Variable.prototype.Variable.call(this, iGadget_, name_, aspect_, value_);
   
-	var handler = null;
+	this.handler = null;
 }
 
 //////////////////////////////////////////////
@@ -62,9 +62,9 @@ RVariable.prototype = new Variable;
 ////////////////////////////////////////////// 
 
 RVariable.prototype.writeSlot = function (newValue) { 
-	switch (aspect){
+	switch (this.aspect){
 		case Variable.prototype.SLOT:
-			value = newValue;
+			this.value = newValue;
 			handler(newValue);
 			break;
 	}
@@ -75,15 +75,15 @@ RVariable.prototype.writeSlot = function (newValue) {
 //////////////////////////////////////////////
 
 RVariable.prototype.setHandler = function (handler_) { 
-	handler = handler_;
+	this.handler = handler_;
 } 
 
 RVariable.prototype.get = function () { 
-	switch (aspect){
+	switch (this.aspect){
 		case Variable.prototype.USER_PREF:
-			return value;
+			return this.value;
 		case Variable.prototype.SLOT:
-			return value;
+			return this.value;
 	}
 }  
 
@@ -108,18 +108,18 @@ RWVariable.prototype = new Variable;
 
 RWVariable.prototype.set = function (value_, wiring) {  
   // Error control needed here!!!!!!!!
-	switch (aspect){
+	switch (this.aspect){
 		case Variable.prototype.PROPERTY:
 		// PersistentEngine.guardar
 		break;
 		case Variable.prototype.EVENT:
 		// PersistentEngine.guardar
-			if (value != value_){
-				wiring.sendEvent(iGadget, name, value_);
+			if (this.value != value_){
+				wiring.sendEvent(this.iGadget, this.name, value_);
 			}
 		break;
 	}
-	value = value_;
+	this.value = value_;
 }  
 
 //////////////////////////////////////////////
@@ -128,11 +128,11 @@ RWVariable.prototype.set = function (value_, wiring) {
 
 RWVariable.prototype.get = function () {  
   // Error control needed here!!!!!!!!
-	switch (aspect){
+	switch (this.aspect){
 		case Variable.prototype.PROPERTY:
-		return value;
+		return this.value;
 		case Variable.prototype.EVENT:
-		return value;
+		return this.value;
 	}
 }
 
