@@ -8,7 +8,7 @@ from persistenceEngine.resource.models import gadgetResource
 
 def get_xml_description(gadgetlist):
 
-    xml_resource = ""
+    xml_resource = ''
     xml_tag=''
     for e in gadgetlist:
 

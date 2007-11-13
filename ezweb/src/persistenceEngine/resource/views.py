@@ -75,6 +75,7 @@ class GadgetsCollection(Resource):
 	if a==1:
 		c=0
 	
+	response = ''
 	response = get_xml_description(gadgetResource.objects.all()[c:d])
 		
 	response = '<resources>'+response+'</resources>'
@@ -87,7 +88,8 @@ class TagGadgetsCollection(Resource):
     def read(self, request, user_name, tag):
 	
         taglist = get_list_or_404(userTag,tag=tag)
-
+	
+	response = ''
 	for b in taglist:
         
 	    gadgetlist = get_list_or_404(gadgetResource, id=b.idResource_id)
