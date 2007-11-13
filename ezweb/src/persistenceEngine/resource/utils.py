@@ -1,14 +1,15 @@
 from xml.sax import saxutils
 from xml.sax import make_parser
 
-from catalogue.tag.models import userTag
-from catalogue.resource.models import gadgetResource
-from catalogue.tag.utils import get_tags_by_resource
+from persistenceEngine.tag.models import userTag
+from persistenceEngine.resource.models import gadgetResource
+from persistenceEngine.tag.utils import get_tags_by_resource
 
 def get_xml_description(gadgetlist):
 
     xml_resource = ''
-    xml_tag=''
+    xml_tag = ''
+    response = '' 
     for e in gadgetlist:
 
         xml_tag = get_tags_by_resource(e.id)
