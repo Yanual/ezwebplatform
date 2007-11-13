@@ -58,7 +58,8 @@ HelpBalloon.prototype = {
 				background: 'white',
 				width: '300px',
 				height: '240px',
-				display: 'none'
+				display: 'none',
+				zIndex: '3'
 			},
 			button: this.options.imagePath + 'button.png',		//Closing 'X' image
 			visible: false,										//Status of Balloon's visibility
