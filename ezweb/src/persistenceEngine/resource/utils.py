@@ -3,13 +3,14 @@ from xml.sax import make_parser
 
 from persistenceEngine.tag.models import userTag
 from persistenceEngine.tag.utils import get_tags_by_resource
+from persistenceEngine.resource.models import gadgetResource
 
 
 def get_xml_description(gadgetlist):
 
     xml_resource = ''
     xml_tag=''
-    for e in gadgetlist:
+    for e in gadgetResource.objects.all():
 
         xml_tag = get_tags_by_resource(e.id)
 	  				
