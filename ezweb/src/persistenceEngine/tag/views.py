@@ -1,7 +1,6 @@
-# Create your views here.
+﻿
 import sys
 
-from psycopg2 import IntegrityError
 
 from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseServerError
 from django.shortcuts import get_object_or_404
@@ -12,9 +11,9 @@ from xml.sax import saxutils
 from xml.sax import make_parser
 from xml.sax.xmlreader import InputSource
 
-from catalogue.tag.models import userTag
-from catalogue.tag.utils import get_tags_by_resource, TagsXMLHandler
-from catalogue.resource.models import gadgetResource
+from persistenceEngine.tag.models import userTag
+from persistenceEngine.tag.utils import get_tags_by_resource, TagsXMLHandler
+from persistenceEngine.resource.models import gadgetResource
 
 
 class GadgetTagsCollection(Resource):
@@ -38,7 +37,7 @@ class GadgetTagsCollection(Resource):
             from StringIO import StringIO
         except ImportError:
 	    from cStringIO import StringIO
-        inpsrc = InputSource()
+	inpsrc = InputSource()
         inpsrc.setByteStream(StringIO(tags_xml))
         parser.parse(inpsrc)
 	
@@ -52,22 +51,25 @@ class GadgetTagsCollection(Resource):
 	
 	# Insert the tags for these resource and user in the database
 	for e in handler._tags:
-	    tag = userTag()
-	    tag.tag = e
-	    tag.idUser_id = user_id
-	    tag.idResource_id = gadget_id
-	
 	    try:
-	        tag.save()
-	    except IntegrityError:
-	        value = str(sys.exc_info()[1])
-                print value
-	        xml_error = '<fault>\n\
-	        <value>'+'IntegrityError'+'</value>\n\
-	        <description>'+value+'</description>\n\
-	        </fault>'
-	        #+sys.exc_info()[2]'+</description></fault>'
-	        return HttpResponse(xml_error,mimetype='text/xml; charset=UTF-8')
+	    		tag_bd=get_object_or_404(userTag, tag=e, idUser=user_id, idResource=gadget_id)
+	    except:
+	    		tag = userTag()
+	    		tag.tag = e
+	    		tag.idUser_id = user_id
+	    		tag.idResource_id = gadget_id
+	
+	    		try:
+	        		tag.save()
+	    		except:
+	        		value = str(sys.exc_info()[1])
+                		print value
+	        		xml_error = '<fault>\n\
+	        		<value>'+'Error'+'</value>\n\
+	        		<description>'+value+'</description>\n\
+	        		</fault>'
+	        		#+sys.exc_info()[2]'+</description></fault>'
+	        		return HttpResponse(xml_error,mimetype='text/xml; charset=UTF-8')
 			
 	response = get_tags_by_resource(gadget_id)
 	return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
