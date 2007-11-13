@@ -71,7 +71,7 @@ class GadgetsCollection(Resource):
 	b= int(offset)
 	c=(a-1)*b +1
 	d=b*a+1
-	
+	response = ''
 	if a==1:
 		c=0
 	
