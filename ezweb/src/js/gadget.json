@@ -1,5 +1,5 @@
 {
-	"vendor":"vendor1",
+	"vendor":"vendor",
   	"name":"nombre1",
   	"version":"1.0",
   	"tags":
@@ -30,15 +30,16 @@
 		"elements":
 	  	[
 	  		{
-	  			"id":"elemento1",
+	  			"html_element":"elemento1",
 	  			"event":"evento1",
 	  			"handler":"manejador1"
 	  		},
 	  		{
-	  			"id":"elemento2",
+	  			"html_element":"elemento2",
 	  			"event":"evento2",
 	  			"handler":"manejador2"
 	  		}
 	  	]
-	}
+	},
+	"image":"image.gif"
 }
