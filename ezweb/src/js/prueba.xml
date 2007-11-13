@@ -146,4 +146,27 @@
 			</tag>
 		</tags>
 	</resource>
+	<resource>
+		<vendor>vendedor</vendor>
+		<name>Nombre</name>
+		<version>V</version>
+		<description>Description6</description>
+		<uriImage>http://www.image.com</uriImage>
+		<uriWiki>http://www.image.com</uriWiki>
+		<uriTemplate>http://europa.ls.fi.upm.es/~mac/template4.xml</uriTemplate>
+		<tags>
+			<tag>
+				<value>tag1</value>
+				<appearances>7</appearances>
+			</tag>
+			<tag>
+				<value>tag2</value>
+				<appearances>20</appearances>
+			</tag>
+			<tag>
+				<value>tag3</value>
+				<appearances>34</appearances>
+			</tag>
+		</tags>
+	</resource>
 </resources>
