@@ -72,11 +72,14 @@ var ShowcaseFactory = function () {
 		// Add a new gadget from Internet
 		Showcase.prototype.addGadget = function (url_) {
 			var gadget = new Gadget (null, url_);
-				
-			// Insert gadget object in showcase object model
-			var gadgetId = gadget.getVendor() + '_' + gadget.getName() + '_' + gadget.getVersion();
-			_gadgets[gadgetId] = gadget;
-		} 
+		}
+		
+		// Insert gadget object in showcase object model
+		Showcase.prototype.gadgetToShowcaseGadgetModel = function(gadget_) {
+			var gadgetId = gadget_.getVendor() + '_' + gadget_.getName() + '_' + gadget_.getVersion();
+			_gadgets[gadgetId] = gadget_;
+			_opManager.addInstance(gadgetId);
+		}
 		
 		// Remove a Showcase gadget
 		Showcase.prototype.deleteGadget = function (gadgetId_) {

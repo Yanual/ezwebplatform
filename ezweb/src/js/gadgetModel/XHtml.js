@@ -13,7 +13,6 @@ function XHtml(xhtml_) {
 	
 	// JSON-coded XHtml mapping
 	// Constructing the structure
-	
 	uri = xhtml_.uri;
 	for (i = 0; i<xhtml_.elements.length; i++) {
 		elements.push(new ElementHtml(xhtml_.elements[i].html_element, xhtml_.elements[i].event, xhtml_.elements[i].handler));

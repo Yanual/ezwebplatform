@@ -5,22 +5,10 @@
 
 function Gadget(gadget_, url_) {
 	
-	// *******************
-	//  PRIVATE VARIABLES
-	// *******************
-
-	var state = null;
-	
-	if (url_ != null) {
-		_solitarGadget(url_);
-	}
-	else {
-		state = new GadgetState(gadget_);
-	}
-	
 	// ******************
 	//  PUBLIC FUNCTIONS
 	// ******************
+	var _this = this;
 	
 	this.setTags = function(tags_) { state.setTags(tags_); }
 	this.getTags = function() { return state.getTags(); }
@@ -48,14 +36,9 @@ function Gadget(gadget_, url_) {
 		// ******************
 	
 		// Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
-	
-		loadURI = function(transport) {
-			// Getting Gadget from PersistenceEngine. Asyncrhonous call!
-			persistenceEngine.send_get(transport.responseText, this, loadGadget, onError);
-		}
 		
 		onError = function(transport) {
-			alert("Error Gadget GET");
+			alert("Error Gadget POST");
 			// Process
 		}
 		
@@ -63,11 +46,26 @@ function Gadget(gadget_, url_) {
 			var response = transport.responseText;
 			var objRes = eval ('(' + response + ')');
 			state = new GadgetState(objRes);
+			ShowcaseFactory.getInstance().gadgetToShowcaseGadgetModel(_this);
 		}
 		
 		var persistenceEngine = PersistenceEngineFactory.getInstance();
 		// Post Gadget to PersistenceEngine. Asyncrhonous call!
-		persistenceEngine.send_post(url_Server, url_, this, loadURI, onError);
+		//persistenceEngine.send_get("gadget.json", this, loadGadget, onError);
+		persistenceEngine.send_post("http://europa.ls.fi.upm.es:8000/user/admin/gadgets/", url_, this, loadGadget, onError);
+	}
+	
+	// *******************
+	//  PRIVATE VARIABLES
+	// *******************
+
+	var state = null;
+	
+	if (url_ != null) {
+		_solicitarGadget(url_);
+	}
+	else {
+		state = new GadgetState(gadget_);
 	}
 }
 
@@ -91,7 +89,6 @@ function GadgetState(gadget_) {
 	
 	// JSON-coded Gadget mapping
 	// Constructing the structure
-	  
 	vendor = gadget_.vendor;
 	name = gadget_.name;
 	version = gadget_.version;

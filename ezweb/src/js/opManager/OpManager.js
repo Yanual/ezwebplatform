@@ -62,7 +62,8 @@ var OpManagerFactory = function () {
 		}
 
 		OpManager.prototype.loadEnviroment = function () {
-		    varManager = VarManagerFactory.getInstance();	
+		    varManager = VarManagerFactory.getInstance();
+			CatalogueFactory.getInstance().loadCatalogue('prueba.xml');	
 		}
 
 		OpManager.prototype.repaintShowcase = function () {
