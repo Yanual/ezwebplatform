@@ -21,7 +21,7 @@ class gadgetResource(models.Model):
     
      class Meta:
 	 unique_together = ("short_name", "vendor","version")
-	 db_table = 'resources'
+	 db_table = 'Resources'
 
      class Admin: 
          pass 

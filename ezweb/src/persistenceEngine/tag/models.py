@@ -15,7 +15,7 @@ class userTag(models.Model):
          
      class Meta:
 	 unique_together = ("tag", "idUser","idResource")
-	 db_table = 'usertags'
+	 db_table = 'UserTags'
 
      class Admin: 
          pass 
