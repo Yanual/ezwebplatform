@@ -87,6 +87,7 @@ class TagGadgetsCollection(Resource):
     def read(self, request, user_name, tag):
 	
         taglist = get_list_or_404(userTag,tag=tag)
+	response=''
 	
 	for b in taglist:
         
