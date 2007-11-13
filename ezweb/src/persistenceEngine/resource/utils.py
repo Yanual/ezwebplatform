@@ -13,7 +13,7 @@ def get_xml_description(gadgetlist):
     for e in gadgetlist:
 
         xml_tag = get_tags_by_resource(e.id)
-	  				
+
 	xml_resource +='<Resource>\n\
         <Vendor>'+e.vendor+'</Vendor>\n\
         <Name>'+e.short_name+'</Name>\n\
@@ -23,8 +23,8 @@ def get_xml_description(gadgetlist):
     	<Description>'+e.description+'</Description>\n\
     	<ImageURI>'+e.image_uri+'</ImageURI>\n\
     	<WikiURI>'+e.wiki_page_uri+'</WikiURI>\n\
-	#<TemplateURI>'+e.template_uri+'</TemplateURI>\n\
-	'+xml_tag+'\n\
+	<TemplateURI>'+e.template_uri+'</TemplateURI>\n\
+	#'+xml_tag+'\n\
    	</Resource>'
 		
     response = xml_resource
