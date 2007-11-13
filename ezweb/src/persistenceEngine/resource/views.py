@@ -77,7 +77,7 @@ class GadgetsCollection(Resource):
 	
 	response = get_xml_description(gadgetResource.objects.all()[c:d])
 		
-	response = '<resources>'+xml_resource+'</resources>'
+	response = '<resources>'+response+'</resources>'
 		
 	return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
 
@@ -95,7 +95,7 @@ class TagGadgetsCollection(Resource):
 	    temp = get_xml_description(gadgetlist)
 	    response = response+temp
 
-	response = '<resources>'+xml_resource+'</resources>'
+	response = '<resources>'+response+'</resources>'
 
         return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
 

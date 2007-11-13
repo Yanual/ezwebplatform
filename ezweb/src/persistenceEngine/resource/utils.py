@@ -10,7 +10,7 @@ def get_xml_description(gadgetlist):
 
     xml_resource = ''
     xml_tag=''
-    for e in gadgetResource.objects.all():
+    for e in gadgetlist:
 
         xml_tag = get_tags_by_resource(e.id)
 	  				
