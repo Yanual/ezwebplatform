@@ -1,5 +1,6 @@
 from xml.sax import saxutils
 from xml.sax import make_parser
+from StringIO import StringIO
 
 from persistenceEngine.tag.models import userTag
 from persistenceEngine.resource.models import gadgetResource
