@@ -4,6 +4,7 @@ from django_restapi.resource import Resource
 from persistenceEngine.resource.models import gadgetResource
 from persistenceEngine.tag.models import userTag
 from persistenceEngine.tag.utils import get_tags_by_resource
+from persistenceEngine.resource.utils import get_xml_description
 from django.contrib.auth.models import User
 
 from xml.sax import saxutils
