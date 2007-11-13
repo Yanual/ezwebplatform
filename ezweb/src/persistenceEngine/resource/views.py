@@ -75,7 +75,7 @@ class GadgetsCollection(Resource):
 	if a==1:
 		c=0
 	
-	response = get_xml_description(gadgetResource.objects.all()[c:d])
+	response = get_xml_description()
 		
 	response = '<resources>'+xml_resource+'</resources>'
 		

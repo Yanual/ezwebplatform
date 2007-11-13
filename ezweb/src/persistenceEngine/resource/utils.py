@@ -6,7 +6,7 @@ from persistenceEngine.tag.utils import get_tags_by_resource
 from persistenceEngine.resource.models import gadgetResource
 
 
-def get_xml_description(gadgetlist):
+def get_xml_description():
 
     xml_resource = ''
     xml_tag=''
