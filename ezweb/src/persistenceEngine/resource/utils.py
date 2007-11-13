@@ -14,19 +14,18 @@ def get_xml_description(gadgetlist):
 
         xml_tag = get_tags_by_resource(e.id)
 	  				
-	temp = '<Resource>\n\
-        <Vendor>'+e.vendor+'</Vendor>\n\
-        <Name>'+e.short_name+'</Name>\n\
-	<Version>'+e.version+'</Version>\n\
-	<Author>'+e.author+'</Author>\n\
-	<Mail>'+e.mail+'</Mail>\n\
-    	<Description>'+e.description+'</Description>\n\
-    	<ImageURI>'+e.image_uri+'</ImageURI>\n\
-    	<WikiURI>'+e.wiki_page_uri+'</WikiURI>\n\
-	<TemplateURI>'+e.template_uri+'</TemplateURI>\n\
+	xml_resource += '<Resource>\n\
+        <Vendor>'+str(e.vendor)+'</Vendor>\n\
+        <Name>'+str(e.short_name)+'</Name>\n\
+	<Version>'+str(e.version)+'</Version>\n\
+	<Author>'+str(e.author)+'</Author>\n\
+	<Mail>'+str(e.mail)+'</Mail>\n\
+    	<Description>'+str(e.description)+'</Description>\n\
+    	<ImageURI>'+str(e.image_uri)+'</ImageURI>\n\
+    	<WikiURI>'+str(e.wiki_page_uri)+'</WikiURI>\n\
+	<TemplateURI>'+str(e.template_uri)+'</TemplateURI>\n\
 	'+xml_tag+'\n\
    	</Resource>'
-	xml_resource = xml_resource+temp
 		
     response = xml_resource
     return response
