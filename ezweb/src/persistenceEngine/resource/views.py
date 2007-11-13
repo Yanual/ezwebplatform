@@ -75,11 +75,11 @@ class GadgetsCollection(Resource):
 		
 	xml_resource = ''
 	xml_tag=''
-	for e in gadgetResource.objects.all()[c:d]:
+	for e in gadgetResource.objects.all():
 		
 		xml_tag = get_tags_by_resource(e.id)
 	  				
-	   	xml_resource ='<Resource>\n\
+	   	xml_resource +='<Resource>\n\
 	    	<Vendor>'+e.vendor+'</Vendor>\n\
 	    	<Name>'+e.short_name+'</Name>\n\
 	    	<Version>'+e.version+'</Version>\n\
