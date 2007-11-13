@@ -33,6 +33,7 @@ a:hover
 
 .main .head
 {
+	position:relative;
 	width:100%;
 	height:auto;
 	padding:0px;
@@ -46,7 +47,16 @@ a:hover
 	height:auto;
 	text-align:center;
 	margin-top:10px;
+	width:90%;
+	float:left;
 }
+
+.main .head .search form
+{
+	margin:0px;
+	padding:0px;
+}
+
 
 .main .head .search .advanced_search_top
 {
@@ -61,7 +71,7 @@ a:hover
 	float:left;
 	display:block;
 	height:45px;
-	width:90%;
+	width:100%;
 }
 
 .main .head .search .simple_search
@@ -69,10 +79,10 @@ a:hover
 	float:left;
 	display:block;
 	height:45px;
-	width:90%;
+	width:100%;
 }
 
-.main .head .search .new_resource
+.main .head .new_resource
 {
 	float:left;
 	display:block;
@@ -81,7 +91,7 @@ a:hover
 	color:blue;
 }
 
-.main .head .search .new_resource a
+.main .head .new_resource a
 {
 	cursor:pointer;
 }

@@ -167,16 +167,18 @@ UIUtils.SlideAdvancedSearchIntoView = function(element) {
       effect.element.makeClipping().setStyle({height: '0px'}).show(); 
     },
     afterUpdateInternal: function(effect) {
-      effect.element.down().setStyle({bottom:
+      	effect.element.down().setStyle({bottom:
         (effect.dims[0] - effect.element.clientHeight) + 'px' }); 
     },
     afterFinishInternal: function(effect) {
-      effect.element.undoClipping().undoPositioned();
-      effect.element.down().undoPositioned().setStyle({bottom: oldInnerBottom}); 
-	  UIUtils.toggle('simple_search');
-	  UIUtils.toggle('advanced_search_bottom');
-	  document.getElementById('advanced_search_text').focus();
-	  }
+      	effect.element.undoClipping().undoPositioned();
+      	effect.element.down().undoPositioned().setStyle({bottom: oldInnerBottom}); 
+	},
+	afterFinish: function(effect) {
+		UIUtils.hidde('simple_search');
+	  	UIUtils.show('advanced_search_bottom');
+	  	document.getElementById('advanced_search_text').focus();
+	}
     }, arguments[1] || {})
   );
 }
@@ -203,20 +205,19 @@ UIUtils.SlideAdvancedSearchOutOfView = function(element) {
     afterFinishInternal: function(effect) {
       effect.element.hide().undoClipping().undoPositioned().setStyle({bottom: oldInnerBottom});
       effect.element.down().undoPositioned();
-	  UIUtils.toggle('advanced_search_bottom');
-	  UIUtils.toggle('simple_search');
-	  document.getElementById('simple_search_text').focus();
-    }
+    },
+	afterFinish: function(effect) {
+	  	UIUtils.hidde('advanced_search_bottom');
+	  	UIUtils.show('simple_search');
+	  	document.getElementById('simple_search_text').focus();
+	}
    }, arguments[1] || {})
   );
 }
 
 UIUtils.abrirVentana = function() {
-      MiVentana=open("nuevo_recurso.html","nueva_recurso",
-        "toolbar=no,directories=no,menubar=no,status=yes");
-      MiVentana.document.write(
-        "<head><title>Nuevo Recurso</title></head>");
-      MiVentana.document.write("<body>Prueba</body>");
+      var ventana = window.open("nuevo_recurso.html","nueva_recurso",
+        "width=500, height=350, toolbar=no, directories=no, menubar=no, status=yes");
     }
 
 // Enables you to react to return being pressed in an input

@@ -13,6 +13,7 @@
 		<script language="JavaScript" src="../js/resourceModel/Tag.js"></script>
 		<script language="JavaScript" src="../js/resourceModel/HashTable.js"></script>
 		<script type="text/javascript">
+
 			function Prueba()
 			{
 				onError = function(transport) {
@@ -37,8 +38,8 @@
 				
 				this.enviarPOST = function() {
 					var uri = prompt("URI del recurso", "");
-					var value = prompt("Mensaje a enviar", "");
-					PersistenceEngineFactory.getInstance().send_post (uri, value, this, loadPOST, onError);
+					var message = prompt("Mensaje a enviar", "");
+					PersistenceEngineFactory.getInstance().send_post (uri, message, this, loadPOST, onError);
 				}
 			}
 			

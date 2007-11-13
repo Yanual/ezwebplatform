@@ -24,28 +24,26 @@
 		<div id="main" class="main" onresize="UIUtils.setResourcesWidth();">
 			<div id="head" class="head">
 				<div id="search" class="search">
-					<div id="advanced_search_top" class="advanced_search_top" style="display:none;">
-						<span>Opciones avanzadas</span>
-					</div>
-					<div id="advanced_search_bottom" class="advanced_search_bottom" style="display:none;">
-						<form onsubmit="return false;">
+					<form onsubmit="return false;">
+						<div id="advanced_search_top" class="advanced_search_top" style="display:none;">
+							<span>Opciones avanzadas</span>
+						</div>
+						<div id="advanced_search_bottom" class="advanced_search_bottom" style="display:none;">
 							<label for="advanced_search_text">B&uacute;squeda:</label>
 							<input type="text" id="advanced_search_text" name="advanced_search_text" class="text" autocomplete="on"></input>
 							<button onclick="UIUtils.evaluarFormulario(this.form);">Buscar</button><br/>
 							<a href="#" onclick="UIUtils.SlideAdvancedSearchOutOfView('advanced_search_top');">Mostrar b&uacute;squeda simple</a>
-						</form>
-					</div>
-					<div id="simple_search" class="simple_search">
-						<form onsubmit="return false;">
+						</div>
+						<div id="simple_search" class="simple_search">
 							<label for="simple_search_text">B&uacute;squeda:</label>
 							<input type="text" id="simple_search_text" name="simple_search_text" class="text" autocomplete="on"></input>
 							<button onclick="UIUtils.evaluarFormulario(this.form);">Buscar</button><br/>
 							<a href="#" onclick="UIUtils.SlideAdvancedSearchIntoView('advanced_search_top');">Mostrar b&uacute;squeda avanzada</a>
-						</form>
-					</div>
-					<div id="new_resource" class="new_resource">
-						<a onclick="UIUtils.abrirVentana();">Nuevo recurso</a>
-					</div>
+						</div>
+					</form>
+				</div>
+				<div id="new_resource" class="new_resource">
+					<a onclick="UIUtils.abrirVentana();">Nuevo recurso</a>
 				</div>
 			</div>
 			<div id="center" class="center">
