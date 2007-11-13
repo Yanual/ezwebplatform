@@ -70,7 +70,7 @@ var DragboardFactory = function () {
 			var response = eval ('(' + receivedData.responseText + ')');
 			var curIGadget, position, width, height, igadget, gadget;
 
-			currentId = response.currentId;
+			currentId = 0; // TODO remove, persistenceEngine will manage ids
 			iGadgets = new Hash();
 
 			tmp = response.iGadgets;
@@ -84,11 +84,15 @@ var DragboardFactory = function () {
 				gadget = ShowcaseFactory.getInstance().getGadget(curIGadget.gadgetid); // TODO
 				igadget = new IGadget(gadget, curIGadget.id, position, width, height);
 				iGadgets[curIGadget.id] = igadget;
+
+				curIGadget.id = parseInt(curIGadget.id);
+				if (curIGadget.id >= currentId) // TODO remove, persistenceEngine will manage ids
+					currentId =  curIGadget.id + 1;
+
 				_reserveSpace(matrix, igadget);
 			}
 
 			loaded = true;
-			_repaint(); // TODO the OpManager must call to this method => remove from here
 			OpManagerFactory.getInstance().continueLoading(Modules.prototype.DRAGBOARD);
 		}
 
@@ -161,10 +165,13 @@ var DragboardFactory = function () {
 
 		function _searchInsertPoint(_matrix, x, y, width, height) {
 			// Search the topmost position for the gadget
+
+			// First if in the current position there is a gadget then... use atleat its position
 			if (_matrix[x][y] != null) {
        				y = _getPositionOn(_matrix, _matrix[x][y]).y - 1;
 			}
 
+			// If we are
 			if ((y == 0) || (_matrix[x][y - 1] != null)) {
 				y++;
 			} else {
@@ -254,7 +261,7 @@ var DragboardFactory = function () {
 				finalPosition.y -= (offsetY - 2); // TODO
 
 				// Search affected gadgets
-				// TODO move the topmost gadgets for optimizing
+				// TODO move the topmost gadget for optimizing
 				var igadget, x, y, columnsize;
 				for (x = 0; x < iGadget.getContentWidth(); x++) {
 					columnsize = _matrix[position.x + x].length;
@@ -392,14 +399,14 @@ var DragboardFactory = function () {
 		}
 
 		Dragboard.prototype.maximize = function (iGadgetId) {
-			var element = document.getElementById('gadget_' + iGadgetId);
+			var element = $('gadget_' + iGadgetId);
 			var mySlider = new Effect.SlideDown(element);
 		}
 
 		Dragboard.prototype.minimize = function (iGadgetId) {
 //			var igadget = iGadgets[iGadgetId];
 //			var element = igadget.getElement(); // TODO get correct div
-			var element = document.getElementById('gadget_' + iGadgetId);
+			var element = $('gadget_' + iGadgetId);
 			var mySlider = new Effect.SlideUp(element, {
 			                     afterFinish: function(element) {
 			                       DragboardFactory.getInstance().maximize(element.element.iGadgetId); // TODO
@@ -416,7 +423,7 @@ var DragboardFactory = function () {
 		}
 
 		/**
-		 * Calculate what cell is a 
+		 * Calculate what cell is at a given position
 		 */
 		Dragboard.prototype.getCellAt = function (x, y) {
 			x = x - dragboard.offsetLeft;
@@ -521,10 +528,15 @@ var DragboardFactory = function () {
 			shadowMatrix = null;
 		}
 
+		Dragboard.prototype.bindUIEvent = function(iGadgetId) {
+			var igadget = iGadgets[iGadgetId];
+			igadget.bindUIEvent();
+		}
+
 		// *******************
 		// INITIALIZING CODE
 		// *******************
-		dragboard = document.getElementById("dragboard");
+		dragboard = $("dragboard");
 		dragboardStyle = new DragboardStyle(dragboard, 3, 15); // 3 columns, cell height = 15px
 
 		_clearMatrix();
@@ -629,6 +641,7 @@ IGadget.prototype.isVisible = function() {
 }
 
 IGadget.prototype.bindUIEvents = function() {
+	var elements = this.gadget.getXHtml().getElements()
 }
 
 IGadget.prototype.paint = function(where, style) {
@@ -649,7 +662,8 @@ IGadget.prototype.paint = function(where, style) {
 	gadgetMenu.innerHTML = "<div class=\"floatright button\" onclick=\"javascript:OpManagerFactory.getInstance().removeInstance(" + this.id + ")\" >X</div>"	// close button
 						 + "<div class=\"floatright button\" onclick=\"javascript:DragboardFactory.getInstance().configure(" + this.id + ")\" >P</div>"	// settings button
 						 + "<div class=\"floatright button\" onclick=\"javascript:DragboardFactory.getInstance().minimize(" + this.id + ")\" >-</div>"	// minimize button
-						 + "Gadget " + this.id;	// TODO Gadget Title
+	                     + this.gadget.getName()
+	                     + " (Gadget " + this.id + ")";	// TODO Gadget Title
 
 	gadgetElement.appendChild(gadgetMenu);
 
@@ -659,14 +673,14 @@ IGadget.prototype.paint = function(where, style) {
 	gadgetContent.setAttribute("class", "gadget_object");
 	gadgetContent.setAttribute("type", "text/html"); // TODO xhtml? => application/xhtml+xml
 	if (this.gadget != null) // TODO remove this line this.gadgte must be not null
-	gadgetContent.setAttribute("data", this.gadget.getXHtml().getURICode());
+		gadgetContent.setAttribute("data", this.gadget.getXHtml().getURICode() + "?id=" + this.id);
 	gadgetContent.setAttribute("standby", "Loading...");
-	gadgetContent.innerHTML = "Loading...."; // TODO add an animation
+	gadgetContent.innerHTML = "<param name=\"IGadgetId\" value=\"" + this.id + "\" />Loading...."; // TODO add an animation
 
 	gadgetElement.appendChild(gadgetContent);
 
 	// Position // TODO
-	gadgetElement.style.left = (3 + (this.position.x) * 32) + "%";
+	gadgetElement.style.left = style.getColumnOffsetLeft(this.position.x);
 	gadgetElement.style.top = style.fromVCellsToPixels(this.position.y) + "px";
 
 	// Sizes
@@ -792,9 +806,13 @@ DragboardStyle.prototype.fromHCellsToPixels = function(cells) {
 	return (cells * (this.dragboardElement.offsetWidth * 0.30)); // TODO
 }
 
+DragboardStyle.prototype.getColumnOffsetLeftInPixels = function(column) {
+	var percentage = 3 + (column * 32); // TODO this is only for 3 columns
+	return ((this.dragboardElement.offsetWidth * percentage) / 100) + "px";
+}
+
 DragboardStyle.prototype.getColumnOffsetLeft = function(column) {
-	var percentage = 3 + (column * 32); // TODO this is for 3 columns
-	return ((this.dragboardElement.offsetWidth * percentage) / 100) + "px"; // TODO script.aculo.us sucks with percentages
+	return (3 + (column * 32)) + "%"; // TODO this is only for 3 columns
 }
 
 /////////////////////////////////////

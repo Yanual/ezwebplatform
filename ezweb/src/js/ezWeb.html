@@ -74,11 +74,11 @@
 	}
 		
 	// Platform initialization
-	
-	function environmentLoadedCallback(){
+	function environmentLoadedCallback() {
+		DragboardFactory.getInstance().repaint();
 		wI = new wiringInterface();
 	}
-	
+	var wI;
 	var opManager = OpManagerFactory.getInstance();
 	opManager.loadEnviroment();
 </script>
