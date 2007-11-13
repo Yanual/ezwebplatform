@@ -88,8 +88,8 @@ class GadgetsCollection(Resource):
 	    	<Description>'+e.description+'</Description>\n\
 	    	<ImageURI>'+e.image_uri+'</ImageURI>\n\
 	    	<WikiURI>'+e.wiki_page_uri+'</WikiURI>\n\
-      		<TemplateURI>'+e.template_uri+'</TemplateURI>\n\
-      		'+xml_tag+'\n\
+      		#<TemplateURI>'+e.template_uri+'</TemplateURI>\n\
+      		#'+xml_tag+'\n\
 	    	</Resource>'
 	    	
 	    	
