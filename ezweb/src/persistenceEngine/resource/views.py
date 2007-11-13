@@ -79,7 +79,7 @@ class GadgetsCollection(Resource):
 		
 		xml_tag = get_tags_by_resource(e.id)
 	  				
-	   	xml_resource +='<Resource>\n\
+	   	xml_resource ='<Resource>\n\
 	    	<Vendor>'+e.vendor+'</Vendor>\n\
 	    	<Name>'+e.short_name+'</Name>\n\
 	    	<Version>'+e.version+'</Version>\n\
