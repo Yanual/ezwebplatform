@@ -70,8 +70,9 @@ class GadgetTagsCollection(Resource):
 	        		</fault>'
 	        		#+sys.exc_info()[2]'+</description></fault>'
 	        		return HttpResponse(xml_error,mimetype='text/xml; charset=UTF-8')
-			
-	response = get_tags_by_resource(gadget_id)
+
+        response = '<?xml version="1.0" encoding="UTF-8" ?>\n'
+	response += get_tags_by_resource(gadget_id)
 	return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
 
 	
@@ -86,7 +87,8 @@ class GadgetTagsCollection(Resource):
 	    <Value>'+e.tag+'</Value>\n\
 	    </Tag>'
 			
-	response='<Tags>'+xml_tag+'</Tags>'
+	response = '<?xml version="1.0" encoding="UTF-8" ?>\n'
+	response +='<Tags>'+xml_tag+'</Tags>'
 	return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
 
 	
