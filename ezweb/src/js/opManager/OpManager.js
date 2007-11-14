@@ -19,6 +19,7 @@ var OpManagerFactory = function () {
 		var wiring = null;
 		var dragboard = null;
 		var showcase = null;
+		var catalogue = null;
 		
 		var loadCompleted = false;
 		
@@ -63,12 +64,12 @@ var OpManagerFactory = function () {
 
 		OpManager.prototype.loadEnviroment = function () {
 		    varManager = VarManagerFactory.getInstance();
-			CatalogueFactory.getInstance().loadCatalogue('http://europa.ls.fi.upm.es:8000/user/admin/catalogue/resources/');	
+			catalogue.loadCatalogue('http://europa.ls.fi.upm.es:8000/user/admin/catalogue/resources/');	
 			//CatalogueFactory.getInstance().loadCatalogue('http://europa.ls.fi.upm.es:8000/ezweb/prueba.xml');	
 		}
 
 		OpManager.prototype.repaintShowcase = function () {
-		    showcase.repaint();
+		    //showcase.repaint();
 		}
 		
 		OpManager.prototype.continueLoading = function (module) {
@@ -77,6 +78,7 @@ var OpManagerFactory = function () {
 			
 			if (module == Modules.prototype.VAR_MANAGER) {
 				showcase = ShowcaseFactory.getInstance();
+				catalogue = CatalogueFactory.getInstance()
 				return; 
 			}
 			
