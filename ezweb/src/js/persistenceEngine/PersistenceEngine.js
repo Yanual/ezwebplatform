@@ -18,10 +18,10 @@ var PersistenceEngineFactory = function () {
 			});
 		} 
 		
-		PersitenceEngine.prototype.send_post = function (url, value, context, successHandler, errorHandler) {
+		PersitenceEngine.prototype.send_post = function (url, params, context, successHandler, errorHandler) {
 			new Ajax.Request(url, {
 				method: 'post',
-				parameters: 'param=' + value,
+				parameters: params,
 				onSuccess: successHandler.bind(context),
 				onError: errorHandler.bind(context)
 			});
