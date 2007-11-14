@@ -55,7 +55,7 @@ function Gadget(gadget_, url_) {
 		var persistenceEngine = PersistenceEngineFactory.getInstance();
 		// Post Gadget to PersistenceEngine. Asyncrhonous call!
 		var param = 'url=' + url_
-		persistenceEngine.send_post("http://europa.ls.fi.upm.es:8000/user/admin/gadgets/", url_, this, loadGadget, onError);
+		persistenceEngine.send_post("http://europa.ls.fi.upm.es:8000/user/admin/gadgets/", param, this, loadGadget, onError);
 	}
 	
 	// *******************
