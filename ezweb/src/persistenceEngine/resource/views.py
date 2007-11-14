@@ -57,7 +57,7 @@ class GadgetsCollection(Resource):
 	    <description>'+value+'</description>\n\
 	    </fault>'
 	    #+sys.exc_info()[2]'+</description></fault>'
-	    return HttpResponse(xml_error,mimetype='text/xml; charset=UTF-8')
+	    return HttpResponseServerError(xml_error,mimetype='text/xml; charset=UTF-8')
 			
 	xml_ok = '<ResponseOK>OK</ResponseOK>'
 	return HttpResponse(xml_ok,mimetype='text/xml; charset=UTF-8')
