@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<django-objects version="1.0">
+    <object pk="1" model="gadget.variabledef">
+        <field type="CharField" name="name">counter</field>
+        <field type="CharField" name="type">N</field>
+        <field type="CharField" name="aspect">PROP</field>
+        <field type="CharField" name="label"><None></None></field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code"><None></None></field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">1</field>
+    </object>
+    <object pk="2" model="gadget.variabledef">
+        <field type="CharField" name="name">direccion</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">SLOT</field>
+        <field type="CharField" name="label">Direccion</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">address</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">1</field>
+    </object>
+    <object pk="3" model="gadget.variabledef">
+        <field type="CharField" name="name">counter</field>
+        <field type="CharField" name="type">N</field>
+        <field type="CharField" name="aspect">PROP</field>
+        <field type="CharField" name="label"><None></None></field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code"><None></None></field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">2</field>
+    </object>
+    <object pk="4" model="gadget.variabledef">
+        <field type="CharField" name="name">calle</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">Calle</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">address</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">2</field>
+    </object>
+    <object pk="1" model="gadget.gadget">
+        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Lector_direcciones/V_1.0</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="name">Lector_direcciones</field>
+        <field type="CharField" name="version">V_1.0</field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">1</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">1</field>
+        <field type="CharField" name="author">rnogal</field>
+        <field type="CharField" name="mail">rnogal@pegaso.fi.upm.es</field>
+        <field type="CharField" name="wikiURI">http://www.image.com</field>
+        <field type="CharField" name="imageURI">www.arrakis.es/~cotton/hot/mapa.jpg</field>
+        <field type="CharField" name="description">Recibe un dato en un canal</field>
+        <field type="BooleanField" name="shared">False</field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
+        <field type="DateTimeField" name="last_update"><None></None></field>
+        <field to="gadget.tag" name="tags" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="2" model="gadget.gadget">
+        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Escritor/V_1.0</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="name">Escritor</field>
+        <field type="CharField" name="version">V_1.0</field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">2</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">2</field>
+        <field type="CharField" name="author">rnogal</field>
+        <field type="CharField" name="mail">rnogal@pegaso.fi.upm.es</field>
+        <field type="CharField" name="wikiURI">http://www.image.com</field>
+        <field type="CharField" name="imageURI">www.arrakis.es/~cotton/hot/mapa.jpg</field>
+        <field type="CharField" name="description">Escribe un dato en un canal</field>
+        <field type="BooleanField" name="shared">False</field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
+        <field type="DateTimeField" name="last_update"><None></None></field>
+        <field to="gadget.tag" name="tags" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="3" model="gadget.gadget">
+        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Arquitectura_ADSL/1.0</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="name">Arquitectura_ADSL</field>
+        <field type="CharField" name="version">1.0</field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">3</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">3</field>
+        <field type="CharField" name="author">miglesia</field>
+        <field type="CharField" name="mail">miglesia@pegaso.ls.fi.upm.es</field>
+        <field type="CharField" name="wikiURI">http://www.image.com</field>
+        <field type="CharField" name="imageURI">http://www.peluzzo.com/img/libro/gb_help.gif</field>
+        <field type="CharField" name="description">Este gadget representa la arquitectura de una red adsl</field>
+        <field type="BooleanField" name="shared">False</field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
+        <field type="DateTimeField" name="last_update"><None></None></field>
+        <field to="gadget.tag" name="tags" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="4" model="gadget.gadget">
+        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Arquitectura_Imagenio/1.1</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="name">Arquitectura_Imagenio</field>
+        <field type="CharField" name="version">1.1</field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">4</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">4</field>
+        <field type="CharField" name="author">miglesia</field>
+        <field type="CharField" name="mail">miglesia@pegaso.ls.fi.upm.es</field>
+        <field type="CharField" name="wikiURI">http://www.image.com</field>
+        <field type="CharField" name="imageURI">http://www.peluzzo.com/img/libro/gb_help.gif</field>
+        <field type="CharField" name="description">Este gadget representa la arquitectura de la red Imagenio</field>
+        <field type="BooleanField" name="shared">False</field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
+        <field type="DateTimeField" name="last_update"><None></None></field>
+        <field to="gadget.tag" name="tags" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="1" model="gadget.usereventsinfo">
+        <field type="CharField" name="event">click</field>
+        <field type="CharField" name="handler">adsfas</field>
+        <field type="CharField" name="html_element">boton</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">1</field>
+    </object>
+    <object pk="2" model="gadget.usereventsinfo">
+        <field type="CharField" name="event">click</field>
+        <field type="CharField" name="handler">adsfas</field>
+        <field type="CharField" name="html_element">sendEvent</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">2</field>
+    </object>
+    <object pk="1" model="gadget.template">
+        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Lector_direcciones/V_1.0/template</field>
+        <field type="CharField" name="description">Recibe un dato en un canal</field>
+        <field type="CharField" name="image">www.arrakis.es/~cotton/hot/mapa.jpg</field>
+    </object>
+    <object pk="2" model="gadget.template">
+        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Escritor/V_1.0/template</field>
+        <field type="CharField" name="description">Escribe un dato en un canal</field>
+        <field type="CharField" name="image">www.arrakis.es/~cotton/hot/mapa.jpg</field>
+    </object>
+    <object pk="3" model="gadget.template">
+        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Arquitectura_ADSL/1.0/template</field>
+        <field type="CharField" name="description">Este gadget representa la arquitectura de una red adsl</field>
+        <field type="CharField" name="image">http://www.peluzzo.com/img/libro/gb_help.gif</field>
+    </object>
+    <object pk="4" model="gadget.template">
+        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Arquitectura_Imagenio/1.1/template</field>
+        <field type="CharField" name="description">Este gadget representa la arquitectura de la red Imagenio</field>
+        <field type="CharField" name="image">http://www.peluzzo.com/img/libro/gb_help.gif</field>
+    </object>
+    <object pk="3" model="gadget.xhtml">
+        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Arquitectura_ADSL/1.0/xhtml</field>
+        <field type="TextField" name="code">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
+
+&lt;html&gt;
+	&lt;head&gt;
+		&lt;meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /&gt;
+		&lt;title&gt;Arquitectura_ADSL&lt;/title&gt;
+	&lt;/head&gt;
+	&lt;body&gt;
+		&lt;div id="innerADSL"&gt;&lt;/div&gt;
+		&lt;script&gt;
+			var today = new Date();
+			var svgADSL  = "&lt;object align='center' type='text/html' data='http://europa.ls.fi.upm.es/~lmayllon/html/adsl.html?rnd="+today.getTime();
+			svgADSL += "' width='100%'&gt;&lt;/object&gt;";
+			document.getElementById("innerADSL").innerHTML=svgADSL;
+		&lt;/script&gt;
+	&lt;/body&gt;
+&lt;/html&gt;</field>
+    </object>
+    <object pk="4" model="gadget.xhtml">
+        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Arquitectura_Imagenio/1.1/xhtml</field>
+        <field type="TextField" name="code">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
+
+&lt;html&gt;
+	&lt;head&gt;
+		&lt;meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /&gt;
+		&lt;title&gt;Arquitectura_Imagenio&lt;/title&gt;
+	&lt;/head&gt;
+	&lt;body&gt;
+		&lt;div id="innerimag"&gt;&lt;/div&gt;
+		&lt;script&gt;
+			var today = new Date();
+			var svgimag  = "&lt;object align='center' type='text/html' data='http://europa.ls.fi.upm.es/~lmayllon/html/imag.html?rnd="+today.getTime();
+			svgimag += "' width='100%'&gt;&lt;/object&gt;";
+			document.getElementById("innerimag").innerHTML=svgimag;
+		&lt;/script&gt;
+	&lt;/body&gt;
+&lt;/html&gt;</field>
+    </object>
+    <object pk="2" model="gadget.xhtml">
+        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Escritor/V_1.0/xhtml</field>
+        <field type="TextField" name="code">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
+
+&lt;html&gt;
+	&lt;head&gt;
+		&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /&gt;
+		&lt;title&gt;writer Gadget&lt;/title&gt;
+	&lt;/head&gt;
+	
+	&lt;body&gt;
+		&lt;script&gt;
+			var Counter = new this.parent.RWGadgetVariable("0", "counter");
+		
+			var Calle = new this.parent.RWGadgetVariable("0", "calle");
+						
+		&lt;/script&gt;
+		&lt;div&gt;
+			&lt;form&gt;
+				&lt;input id = "writer" type = text&gt;
+				&lt;input ezweb:handler="adsfas" ezweb:event="click" id="sendEvent" type = button value = "send" onClick = "Calle.set(document.getElementById('writer').value)"&gt;
+			&lt;/form&gt;
+		&lt;/div&gt;
+	&lt;/body&gt;
+&lt;/html&gt;
+</field>
+    </object>
+    <object pk="1" model="gadget.xhtml">
+        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Lector_direcciones/V_1.0/xhtml</field>
+        <field type="TextField" name="code">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
+&lt;html&gt;
+	&lt;head&gt;
+		&lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /&gt;
+		&lt;title&gt;Reader Gadget&lt;/title&gt;
+	&lt;/head&gt;
+	
+	&lt;body&gt;
+		&lt;script&gt;
+			var Direccion = new this.parent.RGadgetVariable("1", "direccion", _handler);
+	
+			var Counter = new this.parent.RWGadgetVariable("1", "counter");
+						
+			function _handler(value){
+				alert("El valor recibido es: " + value );
+			}
+			
+
+		&lt;/script&gt;
+		
+		&lt;input ezweb:handler="adsfas" ezweb:event="click" id="boton"&gt;&lt;/input&gt;
+	&lt;/body&gt;
+&lt;/html&gt;
+</field>
+    </object>
+</django-objects>
