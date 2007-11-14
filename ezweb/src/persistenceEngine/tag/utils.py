@@ -1,7 +1,7 @@
 from xml.sax import saxutils
 from xml.sax import make_parser
 
-from persistenceEngine.tag.models import userTag
+from persistenceEngine.tag.models import UserTag
 
 
 def get_tags_by_resource(gadget_id):
@@ -9,7 +9,7 @@ def get_tags_by_resource(gadget_id):
 		
     xml_tag=''
 		
-    for e in userTag.objects.filter(idResource=gadget_id):
+    for e in UserTag.objects.filter(idResource=gadget_id):
         xml_tag +='<Tag>\n\
         <Value>'+e.tag+'</Value>\n\
         </Tag>'

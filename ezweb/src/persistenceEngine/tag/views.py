@@ -11,9 +11,9 @@ from xml.sax import saxutils
 from xml.sax import make_parser
 from xml.sax.xmlreader import InputSource
 
-from persistenceEngine.tag.models import userTag
+from persistenceEngine.tag.models import UserTag
 from persistenceEngine.tag.utils import get_tags_by_resource, TagsXMLHandler
-from persistenceEngine.resource.models import gadgetResource
+from persistenceEngine.resource.models import GadgetResource
 
 
 class GadgetTagsCollection(Resource):
@@ -44,7 +44,7 @@ class GadgetTagsCollection(Resource):
 	print(handler._tags)
 
         # Get the gadget's id for those vendor, name and version
-        gadget_id = get_object_or_404(gadgetResource, short_name=name,vendor=vendor,version=version).id
+        gadget_id = get_object_or_404(GadgetResource, short_name=name,vendor=vendor,version=version).id
 
 	# Get the user's id for that user_name
 	user_id = get_object_or_404(User, username=user_name).id
@@ -52,9 +52,9 @@ class GadgetTagsCollection(Resource):
 	# Insert the tags for these resource and user in the database
 	for e in handler._tags:
 	    try:
-	    		tag_bd=get_object_or_404(userTag, tag=e, idUser=user_id, idResource=gadget_id)
+	    		tag_bd=get_object_or_404(UserTag, tag=e, idUser=user_id, idResource=gadget_id)
 	    except:
-	    		tag = userTag()
+	    		tag = UserTag()
 	    		tag.tag = e
 	    		tag.idUser_id = user_id
 	    		tag.idResource_id = gadget_id
@@ -78,11 +78,11 @@ class GadgetTagsCollection(Resource):
 	
     def read(self,request,user_name,vendor,name,version):
 		
-        b = get_object_or_404(gadgetResource, short_name=name,vendor=vendor,version=version)
+        b = get_object_or_404(GadgetResource, short_name=name,vendor=vendor,version=version)
 		
 	xml_tag=''
 		
-	for e in userTag.objects.filter(idResource=b.id):
+	for e in UserTag.objects.filter(idResource=b.id):
 	    xml_tag +='<Tag>\n\
 	    <Value>'+e.tag+'</Value>\n\
 	    </Tag>'
