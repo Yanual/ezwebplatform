@@ -1,9 +1,9 @@
 from xml.sax import saxutils
 from xml.sax import make_parser
 
-from persistenceEngine.tag.models import userTag
+from persistenceEngine.tag.models import UserTag
 from persistenceEngine.tag.utils import get_tags_by_resource
-from persistenceEngine.resource.models import gadgetResource
+from persistenceEngine.resource.models import GadgetResource
 
 
 def get_xml_description(gadgetlist):

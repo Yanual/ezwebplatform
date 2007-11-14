@@ -1,8 +1,8 @@
-﻿from persistenceEngine.resource.parser import TemplateHandler
-from urllib import urlopen
+from persistenceEngine.resource.parser import TemplateHandler
+from urllib import urlopen, urlencode
 from django_restapi.resource import Resource
-from persistenceEngine.resource.models import gadgetResource
-from persistenceEngine.tag.models import userTag
+from persistenceEngine.resource.models import GadgetResource
+from persistenceEngine.tag.models import UserTag
 from persistenceEngine.tag.utils import get_tags_by_resource
 from persistenceEngine.resource.utils import get_xml_description
 from django.contrib.auth.models import User
@@ -32,7 +32,7 @@ class GadgetsCollection(Resource):
 	parser.parse(template_uri)
 	#parser.parse("http://europa.ls.fi.upm.es/~mac/template.xml")
 			
-	gadget=gadgetResource()
+	gadget=GadgetResource()
 
 	gadget.short_name=handler._name
 	gadget.vendor=handler._vendor
@@ -63,19 +63,24 @@ class GadgetsCollection(Resource):
 	return HttpResponse(xml_ok,mimetype='text/xml; charset=UTF-8')
 
 
-    def read(self,request, user_name, offset,pag):
+    def read(self,request, user_name, offset=0,pag=0):
 		
         #paginate
 
-	a= int(pag)
-	b= int(offset)
-	c=(a-1)*b +1
-	d=b*a+1
+	if offset == 0 and pag == 0:
+		response = get_xml_description(GadgetResource.objects.all())	
+	else:
 	
-	if a==1:
-		c=0
+		a= int(pag)
+		b= int(offset)
+		c=(a-1)*b +1
+		d=b*a+1
 	
-	response = get_xml_description(gadgetResource.objects.all()[c:d])
+		if a==1:
+			c=0
+	
+		response = get_xml_description(GadgetResource.objects.all()[c:d])
+
 		
 	response = '<?xml version="1.0" encoding="UTF-8" ?>\n\
 	<resources>'+response+'</resources>'
@@ -87,12 +92,12 @@ class TagGadgetsCollection(Resource):
 
     def read(self, request, user_name, tag):
 	
-        taglist = get_list_or_404(userTag,tag=tag)
+        taglist = get_list_or_404(UserTag,tag=tag)
 	response=''
 	
 	for b in taglist:
         
-	    gadgetlist = get_list_or_404(gadgetResource, id=b.idResource_id)
+	    gadgetlist = get_list_or_404(GadgetResource, id=b.idResource_id)
 	    
 	    temp = get_xml_description(gadgetlist)
 	    response = response+temp
@@ -108,14 +113,14 @@ def addToPlatform(request, user_name):
     template_uri = request.__getitem__('template_uri')
 
     parameters = {
-        'template_uri': template_uri,
+        'url': template_uri,
     }
 	
-    coreURL='http://plataforma.tid.es/'
+    coreURL='http://europa.ls.fi.upm.es:8000'
     uri='/user/'+user_name+'/gadgets'
     url=coreURL+uri
 
-    response = urllib.urlopen(url, urllib.urlencode(parameters)).read()
+    response = urlopen(url, urlencode(parameters)).read()
 	
-
+    return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
 

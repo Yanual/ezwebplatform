@@ -1,8 +1,7 @@
 from django.db import models 
 from django.contrib.auth.models import User 
   
-class gadgetResource(models.Model): 
-      
+class GadgetResource(models.Model): 
      
      short_name = models.CharField(max_length=20) 
      vendor= models.CharField(max_length=100)
@@ -21,10 +20,9 @@ class gadgetResource(models.Model):
     
      class Meta:
 	 unique_together = ("short_name", "vendor","version")
-	 db_table = 'Resources'
 
      class Admin: 
          pass 
   
-     #def __unicode__(self): 
-     #    return self.gadget_uri 
+     def __unicode__(self): 
+         return self.gadget_uri 
