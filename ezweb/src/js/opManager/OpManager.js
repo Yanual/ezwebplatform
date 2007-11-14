@@ -63,7 +63,8 @@ var OpManagerFactory = function () {
 
 		OpManager.prototype.loadEnviroment = function () {
 		    varManager = VarManagerFactory.getInstance();
-			CatalogueFactory.getInstance().loadCatalogue('http://europa.ls.fi.upm.es:8000/ezweb/prueba.xml');	
+			CatalogueFactory.getInstance().loadCatalogue('http://europa.ls.fi.upm.es:8000/user/admin/catalogue/resources/');	
+			//CatalogueFactory.getInstance().loadCatalogue('http://europa.ls.fi.upm.es:8000/ezweb/prueba.xml');	
 		}
 
 		OpManager.prototype.repaintShowcase = function () {
