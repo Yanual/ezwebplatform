@@ -61,6 +61,8 @@ var ShowcaseFactory = function () {
 		var _persistenceEngine = PersistenceEngineFactory.getInstance();			
 		
 		// Initial load from persitence system
+		
+		//_persistenceEngine.send_get('http://10.95.25.145:8001/user/admin/gadgets', this, loadGadgets, onErrorCallback);
 		_persistenceEngine.send_get('http://europa.ls.fi.upm.es:8000/user/admin/gadgets', this, loadGadgets, onErrorCallback);
 		//_persistenceEngine.send_get('gadgets.json', this, loadGadgets, onErrorCallback);
 						
@@ -72,6 +74,7 @@ var ShowcaseFactory = function () {
 		// Add a new gadget from Internet
 		Showcase.prototype.addGadget = function (url_) {
 			var gadget = new Gadget (null, url_);
+			//TODO esto es raruno, la variable gadget va en la hash, no gusta el _this = this de gadget
 		}
 		
 		// Insert gadget object in showcase object model
