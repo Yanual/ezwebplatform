@@ -10,11 +10,9 @@ def get_tags_by_resource(gadget_id):
     xml_tag=''
 		
     for e in UserTag.objects.filter(idResource=gadget_id):
-        xml_tag +='<Tag>\n\
-        <Value>'+e.tag+'</Value>\n\
-        </Tag>'
-			
-    response='<Tags>'+xml_tag+'</Tags>'
+        xml_tag +='<tag>'+e.tag+'</tag>\n'
+        			
+    response='<tags>'+xml_tag+'</tags>'
     return response
 
 
