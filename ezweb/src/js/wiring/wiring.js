@@ -138,11 +138,15 @@ var WiringFactory = function () {
 					
 					var itemList = [];
 					gadget["id"] = iGadgetId;
-			
+
+					var gadgetModel = DragboardFactory.getInstance().getGadget(iGadgetId);
+
+					gadget["vendor"] = gadgetModel.getVendor();
+					gadget["version"] = gadgetModel.getVersion();		
 					// The instance of the iGadget doesn't exist.
 					for (var i = 0; i < events.length; i++){
 						var item = new Object();
-						item["name"] = events[i].name;
+						item["name"] = events[i];
 						item["aspect"] = "EVENT";
 						item["ref"] = new wEvent(iGadgetId, item["name"]);
 						itemList.push(item);
@@ -150,7 +154,7 @@ var WiringFactory = function () {
 					}
 					for (var j = 0; j < slots.length; j++){
 						var item = new Object();
-						item["name"] = slots[j].name;
+						item["name"] = slots[j];
 						item["aspect"] = "SLOT";
 						item["ref"] = new wSlot(iGadgetId, item["name"]);
 						itemList.push(item);
@@ -528,14 +532,65 @@ var WiringFactory = function () {
 		Wiring.prototype.restaure = function () {
 			// we nedd to reconnect every thing to this part
 			var keys = inOutList.keys();
+			var copyKeys = copy.keys();
 			
-			for (var i = 0; i < keys.length; i++){
-				var channel = copy[keys[i]];
-				channel.ref.value = inOutList[keys[i]].ref.getValue();
+			for (var i = 0; i < copyKeys.length; i++){
+				var channel = copy[copyKeys[i]];
+				if (keys.indexOf(i) != -1){channel.ref.value = inOutList[copyKeys[i]].ref.getValue();}
 				channel.ref.refresh(channel.ref);
+				keys.without(i);
 			}
 			inOutList = copy;
 		}
+
+		Wiring.prototype.serialize = function (){
+			var gadgets = "", inouts = "";
+			var gadgetKeys = iGadgetList.keys();
+			var inOutKeys = copy.keys();
+			
+			for (var i = 0; i < gadgetKeys.length; i++){
+				var ins = "", outs = "";
+				for (var j = 0; j < iGadgetList[gadgetKeys[i]].list.length; j++){
+					var connectablejson = "{\"name\": \"" + iGadgetList[gadgetKeys[i]].list[j].name + "\", \"variable\": \"/igadget/" + gadgetKeys[i] + "/var/" + iGadgetList[gadgetKeys[i]].list[j].name + "\"}";
+					if (iGadgetList[gadgetKeys[i]].list[j].aspect == "SLOT"){
+						outs += connectablejson;
+					}
+					else{
+						ins += connectablejson;		
+					}
+				}
+				var itemjson = "{\"uri\": \"/user/admin/gadgets/" + iGadgetList[gadgetKeys[i]].vendor + "/" + iGadgetList[gadgetKeys[i]].name + "/" + iGadgetList[gadgetKeys[i]].version + "\", \"ins\":[" + ins + "], \"outs\":[" + outs + "]}" ;			
+				if (i != (gadgetKeys.length-1)){		
+					itemjson += ", " ;					
+				}
+				gadgets += itemjson;
+			}
+			/////////////////////////////////////////////////////
+			for(var t = 0; t < inOutKeys.length; t++){
+				var connectable = copy[inOutKeys[t]].ref;
+				var ins = "", outs = "";
+				var connectTo = copy[inOutKeys[t]].ref.connections();
+				if (connectTo["input"].length > 0){
+					for (var z = 0; z < (connectTo["input"].length-1); z++){
+						ins += "\"variable\": \"/igadget/" + connectTo["input"][z].id + "/var/" + connectTo["input"][z].name + "/\",";		
+					}
+					ins += "\"variable\": \"/igadget/" + connectTo["input"][connectTo["input"].length].id + "/var/" + connectTo["input"][connectTo["input"].length].name + "/\"";		
+				}
+				if (connectTo["output"].length > 0){
+					for (var h = 0; h < (connectTo["output"].length-1); h++){
+						outs += "\"variable\": \"/igadget/" + connectTo["output"][h].id + "/var/" + connectTo["output"][h].name + "/\",";		
+					}
+					outs += "\"variable\": \"/igadget/" + connectTo["input"][connectTo["output"].length].id + "/var/" + connectTo["input"][connectTo["output"].length].name + "/\"";		
+				}
+
+				inouts += "{\"uri\": \"/user/admin/wiring/" + copy[inOutKeys[t]].ref.getName() + "/\", \"friend_code\":" + copy[inOutKeys[t]].ref.getType()+ ", \"value\":" + copy[inOutKeys[t]].ref.getValue()+", \"name\":"+ copy[inOutKeys[t]].ref.getName() + "\", \"ins\": ["+ins+"], \"outs\": ["+outs+"]}";					
+				if (t != (inOutKeys.length - 1)){
+				inouts += ",";					
+				}
+			}
+			return "{\"igadgets\": [" + gadgets + "], " + "\"inouts\": [" + inouts + "]}";
+		}
+
 	}
 	
 	
@@ -543,13 +598,13 @@ var WiringFactory = function () {
 	// SINGLETON GET INSTANCE
 	// *********************************
 	return new function() {
-    	this.getInstance = function() {
-    		if (instance == null) {
-        		instance = new Wiring();
-            	instance.constructor = null;
-         	}
-         	return instance;
-       	}
+ 	   	this.getInstance = function() {
+    			if (instance == null) {
+        			instance = new Wiring();
+        	    	instance.constructor = null;
+         		}
+      		   	return instance;
+      	 	}
 	}
 	
 }();

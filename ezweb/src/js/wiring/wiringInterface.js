@@ -28,6 +28,7 @@ wiringInterface.prototype.addGadgetInterface = function (object,selector){
 }
 
 wiringInterface.prototype.renewInterface = function (w,selector,sGadgets,itemize){
+//wiringInterface.prototype.renewInterface = function (){
 	w.edition();
 	if (!this.loaded){
 		var iGadgets = w.getGadgetsId();

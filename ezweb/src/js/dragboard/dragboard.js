@@ -528,11 +528,11 @@ var DragboardFactory = function () {
 			shadowMatrix = null;
 		}
 
-		Dragboard.prototype.bindUIEvent = function(iGadgetId) {
+		// TODO rename this method to something like getGadgetFromIGadget
+		Dragboard.prototype.getGadget = function (iGadgetId) {
 			var igadget = iGadgets[iGadgetId];
-			igadget.bindUIEvent();
+			return igadget.getGadget();
 		}
-
 		// *******************
 		// INITIALIZING CODE
 		// *******************
@@ -542,7 +542,7 @@ var DragboardFactory = function () {
 		_clearMatrix();
 
 		var persistenceEngine = PersistenceEngineFactory.getInstance();
-//		persistenceEngine.send_get(URIConstants.prototype.IGADGETS, this, _load, onError);
+//		persistenceEngine.send_get("http://hercules.ls.fi.upm.es:8000/user/admin/igadgets/", this, _load, onError);
 		persistenceEngine.send_get("dragboard.json", this, _load, onError);
 	}
 
@@ -638,10 +638,6 @@ IGadget.prototype.getElement = function() {
 
 IGadget.prototype.isVisible = function() {
 	return this.element != null;
-}
-
-IGadget.prototype.bindUIEvents = function() {
-	var elements = this.gadget.getXHtml().getElements()
 }
 
 IGadget.prototype.paint = function(where, style) {
