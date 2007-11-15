@@ -38,12 +38,12 @@ function Tagger(){
 	this.sendTags = function(url, resourceURI)
 	{
 		onError = function(transport) {
-			alert(transport.responseText);
+			alert("Error POST");
 			// Process
 		}
 		
 		loadTags = function(transport) {
-			alert(transport.responseText);
+			CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).setTags(transport.responseXML);
 		}
 		
 		var elements = tags.getValues();
