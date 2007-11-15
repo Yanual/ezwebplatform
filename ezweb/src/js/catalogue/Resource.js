@@ -91,7 +91,7 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 	{
 		document.getElementById(id + "_important_tags").innerHTML = _tagsToMoreImportantTags(3);
 		document.getElementById(id + '_tagcloud_balloon').innerHTML = "\n";
-		//_createTagcloudBalloon();
+		_createTagcloudBalloon();
 		if (id == UIUtils.selectedResource) document.getElementById(id + "_tagcloud").innerHTML = _tagsToTagcloud();
 	}
 	
