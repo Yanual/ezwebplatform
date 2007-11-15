@@ -1,5 +1,6 @@
 function Tagger(){
 	
+	var _this = this;
 	var tags = new HashTable();
 	
 	this.addTag = function(tag_) {
@@ -24,43 +25,39 @@ function Tagger(){
 		tags.clear();
 		eraserAll();
 	}
-
-	this.onSuccess = function(response) {
-		alert (response);
-	
-	}
-
-	this.onError = function(response) {
-		alert (response);
-	
-	}
 	
 	this.sendTags = function(url, resourceURI)
 	{
-		onError = function(transport) {
-			alert("Error POST");
-			// Process
-		}
-		
-		loadTags = function(transport) {
-			var resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
-			resource.setTags(transport.responseXML);
-			resource.updateTags();
-		}
-		
-		var elements = tags.getValues();
-		var tagsXML = 	//"<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + 
-							"<tags>";
-		for (var i=0; i<elements.size(); i++)
+		UIUtils.toggle('add_tags_panel');
+		UIUtils.toggle('add_tags_link');
+		if (tags.size()>0)
 		{
-			tagsXML += ("<tag>" + elements[i] + "</tag>");
+			onError = function(transport) {
+				alert("Error POST");
+				// Process
+			}
+			
+			loadTags = function(transport) {
+				var resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
+				resource.setTags(transport.responseXML);
+				resource.updateTags();
+			}
+			
+			var elements = tags.getValues();
+			var tagsXML = 	//"<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + 
+								"<tags>";
+			for (var i=0; i<elements.size(); i++)
+			{
+				tagsXML += ("<tag>" + elements[i] + "</tag>");
+			}
+			tagsXML += "</tags>"
+			alert(tagsXML);
+	
+			param = "tags_xml=" + tagsXML;
+	
+			PersistenceEngineFactory.getInstance().send_post(url + resourceURI, param, this, loadTags, onError);
+			_this.removeAll();
 		}
-		tagsXML += "</tags>"
-		alert(tagsXML);
-
-		param = "tags_xml=" + tagsXML;
-
-		PersistenceEngineFactory.getInstance().send_post(url + resourceURI, param, this, loadTags, onError);
 	}
 	
 	var paintTag = function(id_, tag_) {
