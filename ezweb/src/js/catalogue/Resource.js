@@ -90,9 +90,9 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 	this.updateTags = function()
 	{
 		document.getElementById(id + "_important_tags").innerHTML = _tagsToMoreImportantTags(3);
-		var tagcloud = _tagsToTagcloud();
-		document.getElementById(id + "_tagcloud_balloon").innerHTML = tagcloud;
-		if (id == UIUtils.selectedResource) document.getElementById(id + "_tagcloud").innerHTML = tagcloud;
+		document.getElementById(id + '_tagcloud').innerHTML = "\n";
+		_createTagcloudBalloon();
+		if (id == UIUtils.selectedResource) document.getElementById(id + "_tagcloud").innerHTML = _tagsToTagcloud();
 	}
 	
 	this.changeIconDescriptionBalloon = function(src_)
@@ -181,9 +181,9 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 									icon: 		'images/more_tags_gray.png',										//url to the icon to use
 									altText: 	'TagCloud', 														//Alt text of the help icon
 									title: 		'TagCloud:',														//Title of the balloon topic
-									content:	"<div id='" + id + "_tagcloud_balloon' class='tagcloud_balloon'>" +	//Static content of the help balloon
+									content:	"<p class='tagcloud_balloon'>" +	//Static content of the help balloon
 													_tagsToTagcloud() + 
-												"</div>",
+												"</p>",
 									imagePath: 	'lib/helpballoon/images/'
 		});
 		$(id + '_tagcloud').appendChild(tagcloudBalloon._elements.icon);
