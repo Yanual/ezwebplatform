@@ -47,7 +47,7 @@ a:hover
 	height:auto;
 	text-align:center;
 	margin-top:10px;
-	width:50%;
+	width:90%;
 	float:left;
 }
 
@@ -61,7 +61,6 @@ a:hover
 .main .head .search .advanced_search_top
 {
 	float:left;
-	text-align:center;
 	display:block;
 	height:80px;
 	width:100%;
@@ -70,7 +69,6 @@ a:hover
 .main .head .search .advanced_search_bottom
 {
 	float:left;
-	text-align:center;
 	display:block;
 	height:45px;
 	width:100%;
@@ -79,7 +77,6 @@ a:hover
 .main .head .search .simple_search
 {
 	float:left;
-	text-align:center;
 	display:block;
 	height:45px;
 	width:100%;
@@ -90,7 +87,7 @@ a:hover
 	float:left;
 	display:block;
 	height:45px;
-	width:50%;
+	width:10%;
 	color:blue;
 }
 
