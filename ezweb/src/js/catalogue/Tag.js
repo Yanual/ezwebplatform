@@ -6,7 +6,9 @@ function Tag(tagXML_)
 	this.getAppearances = function() { return state.getAppearances(); }
 	
 	this.tagToHTML = function() {
-		return "<a title='Buscar "+ state.getValue() +"' href='#'>" + state.getValue() + "</a>";
+		var jsCall = 'javascript:UIUtils.searchByTag("http://europa.ls.fi.upm.es:8000/user/admin/catalogue/resources/", "' + state.getValue() + '");';
+
+		return "<a title='Buscar " + state.getValue() +"' href='" + jsCall + "'>" + state.getValue() + "</a>";
 	}
 	
 	this.tagToTypedHTML = function() {
@@ -14,9 +16,13 @@ function Tag(tagXML_)
 		if (state.getAppearances()<5)		classAux = 'tag_type_1';
 		else if (state.getAppearances()<15) classAux = 'tag_type_2';
 		else if (state.getAppearances()<25) classAux = 'tag_type_3';
-		else								classAux = 'tag_type_4';
-			
-		return "<a class='" + classAux + "' title='Buscar "+ state.getValue() +"' href='#'>" + state.getValue() + "</a>";
+		else classAux = 'tag_type_4';
+		
+		var jsCall = 'javascript:UIUtils.searchByTag("http://europa.ls.fi.upm.es:8000/user/admin/catalogue/resources/", "' + state.getValue() + '");';
+
+		var result = "<a class='" + classAux + "' title='Buscar "+ state.getValue() +"' href='" + jsCall + "'>" + state.getValue() + "</a>";
+
+		return result;
 	}
 	
 	this.equals = function(tag_) {

@@ -81,6 +81,7 @@ UIUtils.changeImage = function(elementId_, newImage_) {
 }
 
 UIUtils.searchByTag = function(url, tag) {
+	this.closeInfoResource();
 	var opManager = OpManagerFactory.getInstance();
 
 	opManager.repaintCatalogue(url + tag + "/");
