@@ -61,6 +61,7 @@ a:hover
 .main .head .search .advanced_search_top
 {
 	float:left;
+	text-align:center;
 	display:block;
 	height:80px;
 	width:100%;
@@ -69,6 +70,7 @@ a:hover
 .main .head .search .advanced_search_bottom
 {
 	float:left;
+	text-align:center;
 	display:block;
 	height:45px;
 	width:100%;
@@ -77,6 +79,7 @@ a:hover
 .main .head .search .simple_search
 {
 	float:left;
+	text-align:center;
 	display:block;
 	height:45px;
 	width:100%;
