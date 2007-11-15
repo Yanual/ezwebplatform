@@ -31,7 +31,6 @@ class IGadgetCollection(Resource):
                 data = serializers.serialize('python', igadget, ensure_ascii=False)
                 data_list = [get_igadget_data(d) for d in  data]
         else:
-            screen = get_object_or_404(Screen, user=user, id=screen_id)
             igadget = get_list_or_404(IGadget, screen=screen_id)
             data = serializers.serialize('python', igadget, ensure_ascii=False)
             data_list['iGadgets'] = [get_igadget_data(d) for d in  data]

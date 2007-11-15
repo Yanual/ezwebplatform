@@ -1,3 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <django-objects version="1.0">
+    <object pk="1" model="igadget.variable">
+        <field type="CharField" name="uri">/user/admin/variables/var1</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">6</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">1</field>
+        <field type="TextField" name="value">valor</field>
+    </object>
+    <object pk="1" model="igadget.position">
+        <field type="CharField" name="uri">/user/admin/position/1</field>
+        <field type="IntegerField" name="posX">0</field>
+        <field type="IntegerField" name="posY">0</field>
+        <field type="IntegerField" name="height">0</field>
+        <field type="IntegerField" name="width">0</field>
+    </object>
+    <object pk="1" model="igadget.screen">
+        <field type="CharField" name="uri">/user/admin/screen/1</field>
+        <field type="CharField" name="name">Screen 1</field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
+    </object>
+    <object pk="1" model="igadget.igadget">
+        <field type="CharField" name="uri">/user/admin/igadgets/1</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">1</field>
+        <field to="igadget.screen" name="screen" rel="ManyToOneRel">1</field>
+        <field to="igadget.position" name="position" rel="ManyToOneRel">1</field>
+    </object>
 </django-objects>
