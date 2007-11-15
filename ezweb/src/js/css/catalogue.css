@@ -45,8 +45,9 @@ a:hover
 .main .head .search
 {
 	height:auto;
+	text-align:left;
 	margin-top:10px;
-	width:50%;
+	width:45%;
 	float:left;
 }
 
@@ -79,16 +80,7 @@ a:hover
 	display:block;
 	height:45px;
 	width:100%;
-}
-
-.main .head .new_resource
-{
-	float:left;
-	display:block;
-	height:45px;
-	margin-left:20px;
-	width:50%;
-	color:blue;
+	padding-left:20px; 
 }
 
 .main .head .new_resource a
@@ -310,7 +302,7 @@ a:hover
 {
 	text-align:right;
 	margin-top:150px;
-	width:36px;
+	width:20px;
 	height:100%;
 	float:right;
 }
