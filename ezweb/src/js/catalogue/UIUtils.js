@@ -81,9 +81,9 @@ UIUtils.changeImage = function(elementId_, newImage_) {
 }
 
 UIUtils.searchByTag = function(url, tag) {
-	var persistenceEngine = PersistenceEngineFactory.getInstance();	
+	var opManager = OpManagerFactory.getInstance();
 
-	persistenceEngine.send_get(url + tag + "/", this, UIUtils.newResourceOnSuccess, UIUtils.newResourceOnError)
+	opManager.repaintCatalogue(url + tag + "/");
 }
 
 UIUtils.removeTag = function(id_) {
