@@ -41,6 +41,8 @@ function RGadgetVariable(iGadget_, name_, handler_) {
 	GadgetVariable.prototype.GadgetVariable.call(this, iGadget_, name_);
   
 	this.handler = handler_;
+
+	this.register(handler_);
 }
 
 //////////////////////////////////////////////

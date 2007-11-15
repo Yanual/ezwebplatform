@@ -65,7 +65,7 @@ RVariable.prototype.writeSlot = function (newValue) {
 	switch (this.aspect){
 		case Variable.prototype.SLOT:
 			this.value = newValue;
-			handler(newValue);
+			this.handler(newValue);
 			break;
 	}
 }
