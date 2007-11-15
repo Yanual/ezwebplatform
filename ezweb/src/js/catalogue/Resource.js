@@ -91,10 +91,7 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 	{
 		document.getElementById(id + "_important_tags").innerHTML = _tagsToMoreImportantTags(3);
 		var tagcloud = _tagsToTagcloud();
-		var prueba1 = tagcloudBalloon._elements;
-		var prueba2 = tagcloudBalloon._elements.content;
-		tagcloudBalloon._elements.content = tagcloud;		
-		document.getElementById(id + "_tagcloud").innerHTML = tagcloud;
+		if (id == UIUtils.selectedResource) document.getElementById(id + "_tagcloud").innerHTML = tagcloud;
 	}
 	
 	this.changeIconDescriptionBalloon = function(src_)

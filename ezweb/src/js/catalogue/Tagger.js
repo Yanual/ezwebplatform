@@ -43,7 +43,9 @@ function Tagger(){
 		}
 		
 		loadTags = function(transport) {
-			CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).setTags(transport.responseXML);
+			var resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
+			resource.setTags(transport.responseXML);
+			resource.updateTags();
 		}
 		
 		var elements = tags.getValues();
