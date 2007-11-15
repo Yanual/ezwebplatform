@@ -4,17 +4,31 @@ function wiringInterface(){
 	var loaded = false;
 	w = WiringFactory.getInstance();
 }
+wiringInterface.prototype.unloaded = function (){
+	loaded = false;
+	$("selectCanal").innerHTML = "";
+//	$("wCanales").innerHTML = "";
+//	$("wGadgets").innerHTML = "";
+	var element = document.createElement("option");
+	element.setAttribute("value","")
+	element.setAttribute("selected", true)
+	var text = document.createTextNode("----");
+	element.appendChild(text);
+	$("selectCanal").appendChild(element);
+	this.renewItem(WiringFactory.getInstance(),"","eventsConnection","slotsConnection")
+	
+}
 
 wiringInterface.prototype.addChannelInterface = function(name, selector, itemize){
 	var element = document.createElement("option");
-	element.setAttribute("class", name)
+	element.setAttribute("id","option_select_"+name)
 	element.setAttribute("selected", true)
 	var text = document.createTextNode(name);
 	element.appendChild(text);
 	selector.appendChild(element);
 	var element = document.createElement("option");
 	var text = document.createTextNode(name);
-	element.setAttribute("class", name)
+	element.setAttribute("id", "option_itemize_"+name)
 	element.appendChild(text);
 	itemize.appendChild(element);
 }
@@ -59,10 +73,11 @@ wiringInterface.prototype.deleteChannel = function (w,object,selector,itemize,sl
 	var result = null;
 	if (!(result = w.removeChannel(object))){
 		//the first id is from the channel list	
-		var hijo = $$('option.' + object);
-		selector.removeChild(hijo[0]);
+		var hijo = $('option_select_' + object);
+		selector.removeChild(hijo);
 		// the new identifier is from the item list
-		itemize.removeChild(hijo[1]);
+		var hijo = $('option_itemize_' + object);
+		itemize.removeChild(hijo);
 		this.renewChannel(w,"",slots,events)
 	}
 }
