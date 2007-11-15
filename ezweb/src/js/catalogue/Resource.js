@@ -163,10 +163,10 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 	{
 		descriptionBalloon = new HelpBalloon({
 									returnElement: true,
-									icon: 		'images/description_gray.png',											//url to the icon to use
-									altText: 	'Descripcion', 															//Alt text of the help icon
-									title: 		'Descripcion:',															//Title of the balloon topic
-									content:	"<p id='" + id + "_tagcloud_balloon' class='description_balloon'>" + 	//Static content of the help balloon
+									icon: 		'images/description_gray.png',			//url to the icon to use
+									altText: 	'Descripcion', 							//Alt text of the help icon
+									title: 		'Descripcion:',							//Title of the balloon topic
+									content:	"<p class='description_balloon'>" + 	//Static content of the help balloon
 													state.getDescription() + 
 												"</p>",
 									imagePath: 	'lib/helpballoon/images/'
@@ -178,12 +178,12 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 	{
 		tagcloudBalloon = new HelpBalloon({
 									returnElement: true,
-									icon: 		'images/more_tags_gray.png',			//url to the icon to use
-									altText: 	'TagCloud', 							//Alt text of the help icon
-									title: 		'TagCloud:',							//Title of the balloon topic
-									content:	"<p class='tagcloud_balloon'>" + 		//Static content of the help balloon
+									icon: 		'images/more_tags_gray.png',										//url to the icon to use
+									altText: 	'TagCloud', 														//Alt text of the help icon
+									title: 		'TagCloud:',														//Title of the balloon topic
+									content:	"<div id='" + id + "_tagcloud_balloon' class='tagcloud_balloon'>" +	//Static content of the help balloon
 													_tagsToTagcloud() + 
-												"</p>",
+												"</div>",
 									imagePath: 	'lib/helpballoon/images/'
 		});
 		$(id + '_tagcloud').appendChild(tagcloudBalloon._elements.icon);
