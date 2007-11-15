@@ -4,8 +4,10 @@ from xml.dom.ext import Print
 from xml.sax._exceptions import SAXParseException
 from StringIO import StringIO
 
+from psycopg import IntegrityError
+
 from django.shortcuts import get_object_or_404, get_list_or_404
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseServerError
 from django.core import serializers
 from django.utils import simplejson
 
@@ -20,6 +22,7 @@ from commons.utils import json_encode
 from gadget.templateParser import TemplateParser
 
 from django.contrib.auth.models import User
+from django.db import transaction
 
 from commons.utils import *
 
@@ -38,21 +41,29 @@ class GadgetCollection(Resource):
 
     def create(self, request, user_name):
         user = user_authentication(user_name)
-
         if request.POST.has_key('url'):
             templateURL = request.POST['url']
         else:
             return HttpResponse("<error>Url not specified</error>")
 
-
         ########### Template Parser
+        templateParser = None
         
-        templateParser = TemplateParser(templateURL, user)
-
-        templateParser.parse()
+        try:
+            templateParser = TemplateParser(templateURL, user)
+            templateParser.parse()
+        except IntegrityError:
+            # Gadget already exists. Rollback transaction
+            transaction.rollback_unless_managed()
+        except:
+            # Internal error
+            return HttpResponseServerError('Unknown error')
         
-        return HttpResponse("<ok/>")
-
+        gadget = templateParser.getGadget()
+        gadget_entry = GadgetEntry()
+        # POST and GET behavior is alike, both must return a Gadget JSON representation
+        return gadget_entry.read(request, user_name, gadget.vendor, gadget.name, gadget.version)
+        
 class GadgetEntry(Resource):
     def read(self, request, user_name, vendor, name, version):
         user = user_authentication(user_name)

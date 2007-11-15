@@ -22,6 +22,9 @@ class TemplateParser:
     def parse(self):
         # Parse the input
         self.parser.parse(self.uri)
+        
+    def getGadget (self):
+        return self.handler._gadget 
 
             
 class TemplateHandler(saxutils.handler.ContentHandler):
@@ -42,6 +45,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
     _gadgetURI = ""
     _xhtml = ""
     _lastPreference = ""
+    _gadget = None
 
         
     def setUser (self, user):
@@ -293,16 +297,14 @@ class TemplateHandler(saxutils.handler.ContentHandler):
                 and self._gadgetMail != "" and self._gadgetDesc != "" \
                 and self._gadgetWiki != "" and self._gadgetImage != "":
 
-            
-            gadget = Gadget ( uri=self._gadgetURI, vendor=self._gadgetVendor, 
+            self._gadget = Gadget ( uri=self._gadgetURI, vendor=self._gadgetVendor, 
                               name=self._gadgetName, version=self._gadgetVersion, 
                               template=self._template, xhtml=self._xhtml, 
                               author=self._gadgetAuthor, mail=self._gadgetMail,
                               wikiURI=self._gadgetWiki, imageURI=self._gadgetImage, 
                               description=self._gadgetDesc, user=self._user )
 
-
-            gadget.save()
+            self._gadget.save()
             
     def reset_Accumulator(self):
         self._accumulator = ""
