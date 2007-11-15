@@ -80,8 +80,10 @@ UIUtils.changeImage = function(elementId_, newImage_) {
 	element.src = newImage_;
 }
 
-UIUtils.evaluarFormulario = function(form_) {
-	alert(form_.search_text.value);
+UIUtils.searchByTag = function(url, tag) {
+	var persistenceEngine = PersistenceEngineFactory.getInstance();	
+
+	persistenceEngine.send_get(url + tag + "/", this, UIUtils.newResourceOnSuccess, UIUtils.newResourceOnError)
 }
 
 UIUtils.removeTag = function(id_) {
@@ -95,8 +97,11 @@ UIUtils.removeAllTags = function() {
 }
 
 UIUtils.sendTags = function() {
-	var tagger = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).getTagger();
-	tagger.sendTags();
+	var resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
+	var tagger = resource.getTagger();
+	var resourceURI = resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion() + "/";
+
+	tagger.sendTags("http://europa.ls.fi.upm.es:8000/user/admin/catalogue/tags/", resourceURI);
 }
 
 UIUtils.addTag = function(inputText_) {

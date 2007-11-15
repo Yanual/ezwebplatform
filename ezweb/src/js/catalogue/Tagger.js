@@ -24,11 +24,21 @@ function Tagger(){
 		tags.clear();
 		eraserAll();
 	}
+
+	this.onSuccess = function(response) {
+		alert (response);
 	
-	this.sendTags = function()
+	}
+
+	this.onError = function(response) {
+		alert (response);
+	
+	}
+	
+	this.sendTags = function(url, resourceURI)
 	{
 		var elements = tags.getValues();
-		var tagsXML = 	"<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + 
+		var tagsXML = 	//"<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + 
 							"<tags>";
 		for (var i=0; i<elements.size(); i++)
 		{
@@ -36,6 +46,10 @@ function Tagger(){
 		}
 		tagsXML += "</tags>"
 		alert(tagsXML);
+
+		param = "tags_xml=" + tagsXML;
+
+		PersistenceEngineFactory.getInstance().send_post(url + resourceURI, param, this, this.onSuccess, this.onError);
 	}
 	
 	var paintTag = function(id_, tag_) {
