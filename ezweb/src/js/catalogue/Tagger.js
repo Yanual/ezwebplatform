@@ -37,6 +37,15 @@ function Tagger(){
 	
 	this.sendTags = function(url, resourceURI)
 	{
+		onError = function(transport) {
+			alert(transport.responseText);
+			// Process
+		}
+		
+		loadTags = function(transport) {
+			alert(transport.responseText);
+		}
+		
 		var elements = tags.getValues();
 		var tagsXML = 	//"<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + 
 							"<tags>";
@@ -49,7 +58,7 @@ function Tagger(){
 
 		param = "tags_xml=" + tagsXML;
 
-		PersistenceEngineFactory.getInstance().send_post(url + resourceURI, param, this, this.onSuccess, this.onError);
+		PersistenceEngineFactory.getInstance().send_post(url + resourceURI, param, this, loadTags, onError);
 	}
 	
 	var paintTag = function(id_, tag_) {
