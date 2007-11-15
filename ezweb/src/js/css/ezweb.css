@@ -187,7 +187,7 @@ a:hover
 	min-width: 100px;
 }
 
-#wiring .container {
+#wiring .wContainer {
 	position: absolute;
 	top: 0px;
 	/*left: 26%;*/
@@ -197,7 +197,7 @@ a:hover
 	margin-right: 200px;
 }
 
-#wiring .container fieldset {
+#wiring .wContainer fieldset {
 	width:96%;
 	height: 400px;
 	background-color:#AACCFF;
@@ -206,40 +206,40 @@ a:hover
 	border-width:3px;
 }
 
-#wiring .container fieldset#one {
+#wiring .wContainer fieldset#one {
 	position: relative;
 	top: 30%;
 }
 
-#wiring .container fieldset#two {
+#wiring .wContainer fieldset#two {
 	position:relative;
 	top: 40px;
 }
 
-#wiring .container fieldset #selector {
+#wiring .wContainer fieldset #selector {
 	position: relative;
 	left: 30%;
 	top: 4%;
 	width: 80%;
 }
 
-#wiring .container fieldset #selector select {
+#wiring .wContainer fieldset #selector select {
 	position:relative;
 	left: 1%;
 }
 
-#wiring .container fieldset #view {
+#wiring .wContainer fieldset #view {
 	position:relative;
 	top: 100px;
 	left: 42%;
 }
 
-#wiring .container fieldset #view #value {
+#wiring .wContainer fieldset #view #value {
 	position: relative;
 	width: 100px;
 }
 
-#wiring .container fieldset #view #addChannel {
+#wiring .wContainer fieldset #view #addChannel {
 	position: relative;
 	top: 80px;
 	left: -18%;
@@ -247,7 +247,7 @@ a:hover
 	width: 25px;
 }
 
-#wiring .container fieldset #view input#deleteChannel {
+#wiring .wContainer fieldset #view input#deleteChannel {
 	position: relative;
 	top: 80px;
 	left: -13%;
@@ -255,7 +255,7 @@ a:hover
 	width: 25px;
 }
 
-#wiring .container fieldset #tab_one {
+#wiring .wContainer fieldset #tab_one {
 	position: relative;
 	left: 15%;
 	top: 65px;
@@ -263,7 +263,7 @@ a:hover
 	min-width: 15%;
 	height: 350px;
 }
-#wiring .container fieldset #tab_two {
+#wiring .wContainer fieldset #tab_two {
 	position: relative;
 	left: 70%;
 	top: -285px;
@@ -273,7 +273,7 @@ a:hover
 	height: 350px;
 }
 
-#wiring .container fieldset div .header {
+#wiring .wContainer fieldset div .header {
 	position:relative;
 	width:150px;
 	height: 16px;
@@ -284,14 +284,14 @@ a:hover
 	background-color:#AABBAA;
 }
 
-#wiring .container fieldset div .contents {
+#wiring .wContainer fieldset div .contents {
 	position: relative;
 	max-height: 210px;
 	overflow:auto;
 	overflow-x:hidden;
 }
 
-#wiring .container fieldset div .contents .bodier {
+#wiring .wContainer fieldset div .contents .bodier {
 	position:relative;
 	width:150px;
 	font-family:"Book Antiqua";
@@ -301,7 +301,7 @@ a:hover
 	background-color:#99BBDD;
 }
 
-#wiring .container fieldset#two #refreshbutton {
+#wiring .wContainer fieldset#two #refreshbutton {
 	position:relative;
 	top: 320px;
 	left: 50%;

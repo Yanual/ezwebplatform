@@ -17,6 +17,10 @@ var CatalogueFactory  = function () {
 		//  PRIVILEGED METHODS
 		// ********************
 		
+	 	this.emptyResourceList = function() {
+		
+		}	
+
 		this.getResources = function() {
 			return resources;
 		}
@@ -40,7 +44,7 @@ var CatalogueFactory  = function () {
 			//  CALLBACK METHODS 
 			// ******************
 		
-			// Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
+			//Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
 			
 			onError = function(transport) {
 				alert("Error Resources GET");
@@ -54,7 +58,7 @@ var CatalogueFactory  = function () {
 													xmldom.loadXML(transport.responseText); 
 													return xmldom; }
 								);
-				//var response = transport.responseXML;
+				//alert( transport.responseXML);
 				var resourcesXML = response.getElementsByTagName("resource");
 				for (var i=(resourcesXML.length-1); i>=0; i--)
 				{

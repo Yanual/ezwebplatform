@@ -13,6 +13,7 @@ var OpManagerFactory = function () {
 		
 		// Already loaded modules
 		var persistenceEngine = PersistenceEngineFactory.getInstance();
+		var catalogue = CatalogueFactory.getInstance();
 		
 		// Still to load modules
 		var varManager = null;
@@ -67,8 +68,9 @@ var OpManagerFactory = function () {
 			//CatalogueFactory.getInstance().loadCatalogue('http://europa.ls.fi.upm.es:8000/ezweb/prueba.xml');	
 		}
 
-		OpManager.prototype.repaintShowcase = function () {
-		    //showcase.repaint();
+		OpManager.prototype.repaintCatalogue = function () {
+	 	    catalogue.emptyResourceList();
+		    catalogue.loadCatalogue('http://europa.ls.fi.upm.es:8000/user/admin/catalogue/resources/');	
 		}
 		
 		OpManager.prototype.continueLoading = function (module) {

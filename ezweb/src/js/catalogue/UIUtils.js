@@ -12,6 +12,22 @@ UIUtils.imageContent = '';
 UIUtils.infoResourcesWidth = 400;
 UIUtils.isInfoResourcesOpen = false;
 
+UIUtils.newResourceOnSuccess = function (response) {
+	OpManagerFactory.getInstance().repaintCatalogue();
+}
+
+UIUtils.newResourceOnError = function (response) {
+	alert (response);
+}
+
+UIUtils.addResource = function(url, paramName, paramValue) {
+	var persistenceEngine = PersistenceEngineFactory.getInstance();	
+
+	var params = paramName + "=" + paramValue;
+
+	persistenceEngine.send_post(url, params, this, UIUtils.newResourceOnSuccess, UIUtils.newResourceOnError)
+}
+
 UIUtils.getSelectedResource = function() {
 	return UIUtils.selectedResource;
 }
@@ -215,10 +231,6 @@ UIUtils.SlideAdvancedSearchOutOfView = function(element) {
   );
 }
 
-UIUtils.abrirVentana = function() {
-      var ventana = window.open("nuevo_recurso.html","nueva_recurso",
-        "width=500, height=350, toolbar=no, directories=no, menubar=no, status=yes");
-    }
 
 // Enables you to react to return being pressed in an input
 UIUtils.onReturn = function(event_, handler_, inputText_) {
