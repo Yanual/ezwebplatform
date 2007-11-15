@@ -45,7 +45,7 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 												_tagsToMoreImportantTags(3) +
 											"</div>" +
 											"<div class='more_tags'>" +
-												"<a id='" + id + "_tagcloud' title='Ver el Tagcloud del recurso' onmouseover=\"CatalogueFactory.getInstance().getResource('" + id + "').changeIconTagcloudBalloon('images/more_tags.png');\" onmouseout=\"CatalogueFactory.getInstance().getResource('" + id + "').changeIconTagcloudBalloon('images/more_tags_gray.png');\">" +
+												"<a id='" + id + "_tagcloud_balloon' title='Ver el Tagcloud del recurso' onmouseover=\"CatalogueFactory.getInstance().getResource('" + id + "').changeIconTagcloudBalloon('images/more_tags.png');\" onmouseout=\"CatalogueFactory.getInstance().getResource('" + id + "').changeIconTagcloudBalloon('images/more_tags_gray.png');\">" +
 												"</a>" + 
 											"</div>" +
 										"</div>" +
@@ -90,7 +90,7 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 	this.updateTags = function()
 	{
 		document.getElementById(id + "_important_tags").innerHTML = _tagsToMoreImportantTags(3);
-		document.getElementById(id + '_tagcloud').innerHTML = "\n";
+		document.getElementById(id + '_tagcloud_balloon').innerHTML = "\n";
 		//_createTagcloudBalloon();
 		if (id == UIUtils.selectedResource) document.getElementById(id + "_tagcloud").innerHTML = _tagsToTagcloud();
 	}
@@ -186,7 +186,7 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 												"</p>",
 									imagePath: 	'lib/helpballoon/images/'
 		});
-		$(id + '_tagcloud').appendChild(tagcloudBalloon._elements.icon);
+		$(id + '_tagcloud_balloon').appendChild(tagcloudBalloon._elements.icon);
 	}
 
 	var _createResource = function(urlTemplate_) {
