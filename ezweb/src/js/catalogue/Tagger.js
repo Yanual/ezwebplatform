@@ -51,9 +51,8 @@ function Tagger(){
 				tagsXML += ("<tag>" + elements[i] + "</tag>");
 			}
 			tagsXML += "</tags>"
-			alert(tagsXML);
 	
-			param = "tags_xml=" + tagsXML;
+			var param = "tags_xml=" + tagsXML;
 	
 			PersistenceEngineFactory.getInstance().send_post(url + resourceURI, param, this, loadTags, onError);
 			_this.removeAll();
