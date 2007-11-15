@@ -26,7 +26,7 @@ GadgetVariable.prototype.GadgetVariable = function (iGadget_, name_) {
 //////////////////////////////////////////////
 
 GadgetVariable.prototype.get = function () { 
-	return this.varManager.getVariable(this.iGadget, this.name);
+	return this.varManager.getVariable(this.iGadgetId, this.name);
 }  
 
 GadgetVariable.prototype.set = function (value) { } 

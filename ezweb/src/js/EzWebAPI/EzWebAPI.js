@@ -20,7 +20,7 @@ _EzWebAPI.prototype.createRWGadgetVariable = function(name) {
 
 _EzWebAPI.prototype.createRGadgetVariable = function(name, handler) {
 	var variable = new this.platform.RGadgetVariable(this.id, name, handler);
-	variable.register();
+//	variable.register(handler);
 
 	return variable;
 }
