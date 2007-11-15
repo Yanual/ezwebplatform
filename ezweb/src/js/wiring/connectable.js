@@ -125,6 +125,10 @@ wOut.prototype.refresh = function (channelRef){
 	this.inputHash[channelRef.getName()] = channelRef;
 }
 
+wOut.prototype.delConnections = function (){
+	
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 // This class represents every object which may initialize one transmission through the wiring module //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -211,6 +215,10 @@ wIn.prototype.connections = function(){
       }
    }
    return result;
+}
+
+wIn.prototype.delConnections = function (){
+	
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -480,9 +488,6 @@ wInOut.prototype.refresh = function (channelRef){
 		if (this.inputList[i] instanceof wIn){
 			this.inputList[i].refresh(channelRef);
 		}
-	/*	if (input.getName() == channelRef.getName()){
-			this.inputList[i] = channelRef;
-		}*/
 	}
 	for (var j = 0; j < this.outputCounter; j++){
 		if (this.outputList[i] instanceof wOut){
@@ -490,6 +495,16 @@ wInOut.prototype.refresh = function (channelRef){
 		}
 	}
 }
+
+wInOut.prototype.delConnections = function (){
+	for (var i = 0; i < this.inputCounter; i++){
+			this.inputList[i].removeOutput(channelRef);
+	}
+	for (var j = 0; j < this.outputCounter; j++){
+			this.outputList[i].removeInput(channelRef);
+	}
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 // This class represents a iGadget variable which may produce some data //
