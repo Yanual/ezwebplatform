@@ -45,16 +45,15 @@ a:hover
 .main .head .search
 {
 	height:auto;
-	text-align:center;
 	margin-top:10px;
-	width:90%;
+	width:50%;
 	float:left;
 }
 
 .main .head .search form
 {
 	margin:0px;
-	padding:0px;
+	padding-left:10px;
 }
 
 
@@ -87,7 +86,8 @@ a:hover
 	float:left;
 	display:block;
 	height:45px;
-	width:10%;
+	margin-left:20px;
+	width:50%;
 	color:blue;
 }
 
