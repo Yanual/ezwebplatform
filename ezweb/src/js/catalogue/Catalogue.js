@@ -18,7 +18,9 @@ var CatalogueFactory  = function () {
 		// ********************
 		
 	 	this.emptyResourceList = function() {
-		
+			document.getElementById("resources").innerHTML="\n";
+			document.getElementById("info_resource_content").innerHTML="\n";
+			resources.clear();
 		}	
 
 		this.getResources = function() {
