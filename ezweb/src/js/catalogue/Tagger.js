@@ -32,12 +32,12 @@ function Tagger(){
 		UIUtils.toggle('add_tags_link');
 		if (tags.size()>0)
 		{
-			onError = function(transport) {
+			var onError = function(transport) {
 				alert("Error POST");
 				// Process
 			}
 			
-			loadTags = function(transport) {
+			var loadTags = function(transport) {
 				var resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
 				resource.setTags(transport.responseXML);
 				resource.updateTags();
