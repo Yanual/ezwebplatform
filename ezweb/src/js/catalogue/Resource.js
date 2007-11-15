@@ -41,7 +41,7 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 										"<div class='title'>" + state.getName() + "</div>" +
 										"<div class='image'><a title='Mostrar informaci&oacute;n del recurso' href='javascript:UIUtils.showResourceInfo(\"" + id + "\");UIUtils.openInfoResource();'><img src='" + state.getUriImage() + "'></img></a></div>" +
 										"<div class='tags'>" +
-											"<div class='important_tags'>" + 
+											"<div id='" + id + "_important_tags' class='important_tags'>" + 
 												_tagsToMoreImportantTags(3) +
 											"</div>" +
 											"<div class='more_tags'>" +
@@ -69,7 +69,7 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 									"<div class='vendor'>" + state.getVendor() + "</div>" +
 									"<div class='image'><img src='" + state.getUriImage() + "' alt='" + state.getName()+ "&nbsp;" + state.getVersion() + "'/></div>" +
 									"<div class='description'>Descripci&oacute;n:<br/><div class='text'>" + state.getDescription() + "</div></div>" +
-									"<div class='tagcloud'>Tagcloud:<br/><div class='tags'>" + _tagsToTagcloud() + "</div></div>" +
+									"<div class='tagcloud'>Tagcloud:<br/><div id='" + id + "_tagcloud' class='tags'>" + _tagsToTagcloud() + "</div></div>" +
 									"<div id='add_tags_panel' class='new_tags' style='display:none;'>" +
 										"<div class='title'>Nuevas Etiquetas:</div>" +
 										"<div id='my_tags' class='my_tags'>" +
@@ -84,7 +84,18 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 									"<div class='link'><a href='" + state.getUriWiki() + "' target='_blank'>Acceder a la Wiki</a></div>" +
 									"<div class='link'><a href='" + state.getUriTemplate() + "' target='_blank'>Acceder al Template</a></div>" +
 								"</div>" +
-								"<button onclick='CatalogueFactory.getInstance().addResourceToShowCase(UIUtils.getSelectedResource());'>A&ntilde;adir Instancia</button>";
+								"<button onclick='CatalogueFactory.getInstance().addResourceToShowCase(UIUtils.getSelectedResource());'>A&ntilde;adir Instancia</button><a href='#' onclick='CatalogueFactory.getInstance().getResource(\"" + id + "\").updateTags()'>Update</a>";
+	}
+	
+	this.updateTags = function()
+	{
+		document.getElementById(id + "_important_tags").innerHTML = _tagsToMoreImportantTags(3);
+		var tagcloud = _tagsToTagcloud();
+		tagcloudBalloon._elements.content = tagcloud;
+		if (id == UIUtils.selectedResource)
+		{
+			document.getElementById(id + "_tagcloud").innerHTML = tagcloud;
+		}
 	}
 	
 	this.changeIconDescriptionBalloon = function(src_)
