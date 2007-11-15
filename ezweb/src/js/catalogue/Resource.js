@@ -84,13 +84,14 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 									"<div class='link'><a href='" + state.getUriWiki() + "' target='_blank'>Acceder a la Wiki</a></div>" +
 									"<div class='link'><a href='" + state.getUriTemplate() + "' target='_blank'>Acceder al Template</a></div>" +
 								"</div>" +
-								"<button onclick='CatalogueFactory.getInstance().addResourceToShowCase(UIUtils.getSelectedResource());'>A&ntilde;adir Instancia</button><a href='#' onclick='CatalogueFactory.getInstance().getResource(\"" + id + "\").updateTags()'>Update</a>";
+								"<button onclick='CatalogueFactory.getInstance().addResourceToShowCase(UIUtils.getSelectedResource());'>A&ntilde;adir Instancia</button>";
 	}
 	
 	this.updateTags = function()
 	{
 		document.getElementById(id + "_important_tags").innerHTML = _tagsToMoreImportantTags(3);
 		var tagcloud = _tagsToTagcloud();
+		document.getElementById(id + "_tagcloud_balloon").innerHTML = tagcloud;
 		if (id == UIUtils.selectedResource) document.getElementById(id + "_tagcloud").innerHTML = tagcloud;
 	}
 	
@@ -162,10 +163,10 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 	{
 		descriptionBalloon = new HelpBalloon({
 									returnElement: true,
-									icon: 		'images/description_gray.png',			//url to the icon to use
-									altText: 	'Descripcion', 							//Alt text of the help icon
-									title: 		'Descripcion:',							//Title of the balloon topic
-									content:	"<p class='description_balloon'>" + 	//Static content of the help balloon
+									icon: 		'images/description_gray.png',											//url to the icon to use
+									altText: 	'Descripcion', 															//Alt text of the help icon
+									title: 		'Descripcion:',															//Title of the balloon topic
+									content:	"<p id='" + id + "_tagcloud_balloon' class='description_balloon'>" + 	//Static content of the help balloon
 													state.getDescription() + 
 												"</p>",
 									imagePath: 	'lib/helpballoon/images/'
