@@ -32,8 +32,10 @@ function Tag(tagXML_)
 
 function StateTag(tagXML_) 
 {
-	var value = tagXML_.getElementsByTagName("value")[0].firstChild.nodeValue;
-	var appearances = parseInt(tagXML_.getElementsByTagName("appearances")[0].firstChild.nodeValue);
+	var value = tagXML_.firstChild.nodeValue;
+	var appearances = 1;
+	//var value = tagXML_.getElementsByTagName("value")[0].firstChild.nodeValue;
+	//var appearances = parseInt(tagXML_.getElementsByTagName("appearances")[0].firstChild.nodeValue);
 	
 	this.getValue = function() { return value; }
 	this.getAppearances = function() { return appearances; } 
