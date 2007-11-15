@@ -1,7 +1,7 @@
 function Tagger(){
 	
 	var _this = this;
-	var tags = new HashTable();
+	var tags  = new HashTable();
 	
 	this.addTag = function(tag_) {
 		if (tag_.length < 3) {
