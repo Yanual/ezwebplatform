@@ -48,12 +48,12 @@ var CatalogueFactory  = function () {
 		
 			//Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
 			
-			onError = function(transport) {
+			var onError = function(transport) {
 				alert("Error Resources GET");
 				// Process
 			}
 			
-			loadResources = function(transport) {
+			var loadResources = function(transport) {
 				var response = Try.these(
 									function() { 	return new DOMParser().parseFromString(transport.responseText, 'text/xml'); },
 									function() { 	var xmldom = new ActiveXObject('Microsoft.XMLDOM'); 
