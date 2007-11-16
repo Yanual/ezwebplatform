@@ -16,10 +16,10 @@ var OpManagerFactory = function () {
 		var catalogue = CatalogueFactory.getInstance();
 		
 		// Still to load modules
-		var varManager = null;
-		var wiring = null;
-		var dragboard = null;
-		var showcase = null;
+		var varManagerModule = null;
+		var wiringModule = null;
+		var dragboardModule = null;
+		var showcaseModule = null;
 		
 		var loadCompleted = false;
 		
@@ -31,14 +31,14 @@ var OpManagerFactory = function () {
 		        if (!loadCompleted)
 				return;
 
-			var gadget = showcase.getGadget(gadgetId);
+			var gadget = showcaseModule.getGadget(gadgetId);
 				
-			var iGadgetId = dragboard.addInstance(gadget);
+			var iGadgetId = dragboardModule.addInstance(gadget);
 			
-			varManager.addInstance(iGadgetId, gadget.getTemplate());
-			wiring.addInstance(iGadgetId, gadget.getTemplate());
+			varManagerModule.addInstance(iGadgetId, gadget.getTemplate());
+			wiringModule.addInstance(iGadgetId, gadget.getTemplate());
 			
-			dragboard.showInstance(iGadgetId);
+			dragboardModule.showInstance(iGadgetId);
 
 			// The dragboard must be shown after an igadget insertion
 			show_dragboard()
@@ -48,22 +48,22 @@ var OpManagerFactory = function () {
 			if (!loadCompleted)
 				return;
 
-			dragboard.removeInstance(iGadgetId); // TODO split into hideInstance and removeInstance
-			varManager.removeInstance(iGadgetId);
-			wiring.removeInstance(iGadgetId);
+			dragboardModule.removeInstance(iGadgetId); // TODO split into hideInstance and removeInstance
+			varManagerModule.removeInstance(iGadgetId);
+			wiringModule.removeInstance(iGadgetId);
 		}
 		
 		
 		OpManager.prototype.sendEvent = function (gadget, event, value) {
-		    wiring.sendEvent(gadget, event, value);
+		    wiringModule.sendEvent(gadget, event, value);
 		}
 
 		OpManager.prototype.restaure = function () {
-		    wiring.restaure();
+		    wiringModule.restaure();
 		}
 
 		OpManager.prototype.loadEnviroment = function () {
-		    varManager = VarManagerFactory.getInstance();
+		    varManagerModule = VarManagerFactory.getInstance();
 			CatalogueFactory.getInstance().loadCatalogue('http://europa.ls.fi.upm.es:8000/user/admin/catalogue/resources/');	
 			//CatalogueFactory.getInstance().loadCatalogue('http://europa.ls.fi.upm.es:8000/ezweb/prueba.xml');	
 		}
@@ -78,17 +78,17 @@ var OpManagerFactory = function () {
 			// Each module notifies OpManager it has finished loading!
 			
 			if (module == Modules.prototype.VAR_MANAGER) {
-				showcase = ShowcaseFactory.getInstance();
+				showcaseModule = ShowcaseFactory.getInstance();
 				return; 
 			}
 			
 			if (module == Modules.prototype.SHOWCASE) {
-				dragboard = DragboardFactory.getInstance();
+				dragboardModule = DragboardFactory.getInstance();
 				return;
 			}
 				
 			if (module == Modules.prototype.DRAGBOARD) {
-				wiring = WiringFactory.getInstance();
+				wiringModule = WiringFactory.getInstance();
 				return;
 			}
 			
