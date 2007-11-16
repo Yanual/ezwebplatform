@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Template schemaLocation="http://morfeo-project.org/2007/Template">
+<!-- Meta tags define gadgets properties -->
+	<Catalog.ResourceDescription>
+		<Vendor>Morfeo</Vendor>
+		<Name>Visor_de_Datos_de_Equipo</Name>
+		<Version>1.0</Version>
+		<Author>miglesia</Author>
+		<Mail>miglesia@pegaso.ls.fi.upm.es</Mail>
+		<Description>Este gadget presenta la informacion relativa a un equipo perteneciente a la red de encaminadores</Description>
+		<ImageURI>http://europa.ls.fi.upm.es/ezweb/gadgets/notepad.jpg</ImageURI>
+		<WikiURI>http://www.image.com</WikiURI>
+	</Catalog.ResourceDescription>
+	<!-- EzWeb Gadgets Tags -->
+	<Platform.Preferences>
+	</Platform.Preferences>
+	<!-- EzWeb Gadget Persistent State -->
+	<Platform.StateProperties>
+	</Platform.StateProperties>
+	<!-- EzWeb Gadget Data Wiring -->
+	<Platform.Wiring>
+		<Wire name="address" type="text" label="Address" friendcode = "address" wiring="in"/>
+		<Wire name="deviceId" type="text" label="deviceId" friendcode = "deviceId" wiring="out"/>
+		<Wire name="deviceStatus" type="text" label="deviceStatus" friendcode = "deviceStatus" wiring="out"/>
+	</Platform.Wiring>
+	<Platform.Link>
+		<XHTML href="http://europa.ls.fi.upm.es/ezweb/gadgets/visorDatosEquipo.html"/>
+	</Platform.Link>
+</Template>

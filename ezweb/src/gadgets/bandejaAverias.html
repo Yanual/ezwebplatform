@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<!--<link rel="stylesheet" type="text/css" href="bandejaAverias.css">-->
+		<title>Bandeja de Aver&iacute;as</title>
+		<script>
+			var phoneNumber = new EzWebAPI.createRWGadgetVariable("phoneNumber");
+			var serviceHired = new EzWebAPI.createRWGadgetVariable("serviceHired");
+
+			function sendData(row){
+				var rows = document.getElementsByTagName("td");
+				phoneNumber.set(rows[row*5+1].innerHTML);
+				serviceHired.set(rows[row*5+4].innerHTML);
+			}
+		</script>
+	</head>
+	<body>
+		<!-- This table will disappear in following version -->
+		<table cellspacing='0' 	style="font-family: Arial; font-size: 14px; text-align: center; width: 95%; height: 50px; margin: 0px; padding: 0px;">
+			<tr>
+				<th id='th0' style="background-color: #000077; color: #FFFFFF; border: 1px; border-style: outset; border-color: #DDDDDD; width: 12%;">Identificador de aver&iacute;a</th>
+				<th id='th1'  style="background-color: #000077; color: #FFFFFF; border: 1px; border-style: outset; border-color: #DDDDDD; width: 12%;">Tel&eacute;fono</th>
+				<th id='th2'  style="background-color: #000077; color: #FFFFFF; border: 1px; border-style: outset; border-color: #DDDDDD; width: 32%;">Usuario</th>
+				<th id='th3'  style="background-color: #000077; color: #FFFFFF; border: 1px; border-style: outset; border-color: #DDDDDD; width: 32%;">Descripci&oacute;n del s&iacute;ntoma</th>
+				<th id='th4'  style="background-color: #000077; color: #FFFFFF; border: 1px; border-style: outset; border-color: #DDDDDD; width: 12%;">Servicio contratado</th>
+			</tr>
+			<tr>
+				<td class='breakDown' onclick="sendData(0)" align='center' valign='middle' style="color: #000077; text-decoration: underline; border: 1px; border-style: outset; border-color: #DDDDDD;">aver&iacute;a-0</td>
+				<td style="border: 1px; border-style: outset; border-color: #DDDDDD;">913933233</td>
+				<td style="border: 1px; border-style: outset; border-color: #DDDDDD;">Gonz&aacute;lez P&eacute;rez, Alejandro</td>
+				<td style="border: 1px; border-style: outset; border-color: #DDDDDD;">El usuario no es capaz de navegar por Internet</td>
+				<td style="border: 1px; border-style: outset; border-color: #DDDDDD;">INTERNET</td>
+			</tr>
+			<tr>
+				<td class='breakDown' onclick="sendData(1)" align='center' valign='middle' style="color: #000077; text-decoration: underline; border: 1px; border-style: outset; border-color: #DDDDDD;">aver&iacute;a-1</td>
+				<td align='center' valign='middle' style="border: 1px; border-style: outset; border-color: #DDDDDD;">915334432</td>
+				<td align='center' valign='middle' style="border: 1px; border-style: outset; border-color: #DDDDDD;">L&oacute;pez Romero, Marta</td>
+				<td align='center' valign='middle' style="border: 1px; border-style: outset; border-color: #DDDDDD;">No puede comprar contenidos v&iacute;a PPV</td>
+				<td align='center' valign='middle' style="border: 1px; border-style: outset; border-color: #DDDDDD;">TV</td>
+			</tr>
+			<tr>
+				<td class='breakDown' onclick="sendData(2)" align='center' valign='middle' style="color: #000077; text-decoration: underline; border: 1px; border-style: outset; border-color: #DDDDDD;">aver&iacute;a-10</td>
+				<td style="border: 1px; border-style: outset; border-color: #DDDDDD;">916432233</td>
+				<td style="border: 1px; border-style: outset; border-color: #DDDDDD;">Fern&aacute;ndez Bartolom&eacute;, Rodrigo</td>
+				<td style="border: 1px; border-style: outset; border-color: #DDDDDD;">El usuario navega m&aacute;s lento que la velocidad contratada</td>
+				<td style="border: 1px; border-style: outset; border-color: #DDDDDD;">INTERNET</td>
+			</tr>
+			<tr>
+				<td class='breakDown' onclick="sendData(3)" align='center' valign='middle' style="color: #000077; text-decoration: underline; border: 1px; border-style: outset; border-color: #DDDDDD;">aver&iacute;a-11</td>
+				<td style="border: 1px; border-style: outset; border-color: #DDDDDD;">917294723</td>
+				<td style="border: 1px; border-style: outset; border-color: #DDDDDD;">P&eacute;rez Casas, Mar&iacute;a</td>
+				<td style="border: 1px; border-style: outset; border-color: #DDDDDD;">El usuario no es capaz de navegar por Internet</td>
+				<td style="border: 1px; border-style: outset; border-color: #DDDDDD;">INTERNET</td>
+			</tr>
+			<tr>
+				<td class='breakDown' onclick="sendData(4)" align='center' valign='middle' style="color: #000077; text-decoration: underline; border: 1px; border-style: outset; border-color: #DDDDDD;">aver&iacute;a-2</td>
+				<td style="border: 1px; border-style: outset; border-color: #DDDDDD;">917744331</td>
+				<td style="border: 1px; border-style: outset; border-color: #DDDDDD;">Garc&iacute;a Casas, Alberto</td>
+				<td style="border: 1px; border-style: outset; border-color: #DDDDDD;">El usuario ve la televisi&oacute;n pixelada</td>
+				<td style="border: 1px; border-style: outset; border-color: #DDDDDD;">TV</td>
+			</tr>
+			<tr>
+				<td class='breakDown' onclick="sendData(5)" align='center' valign='middle' style="color: #000077; text-decoration: underline; border: 1px; border-style: outset; border-color: #DDDDDD;">aver&iacute;a-8</td>
+				<td style="border: 1px; border-style: outset; border-color: #DDDDDD;">917744331</td>
+				<td style="border: 1px; border-style: outset; border-color: #DDDDDD;">Garc&iacute;a Casas, Alberto</td>
+				<td style="border: 1px; border-style: outset; border-color: #DDDDDD;">El usuario no es capaz de navegar por Internet</td>
+				<td style="border: 1px; border-style: outset; border-color: #DDDDDD;">TV</td>
+			</tr>
+		</table>
+	</body>
+</html>

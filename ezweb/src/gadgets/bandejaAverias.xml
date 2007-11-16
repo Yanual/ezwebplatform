@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Template schemaLocation="http://morfeo-project.org/2007/Template">
+<!-- Meta tags define gadgets properties -->
+	<Catalog.ResourceDescription>
+		<Vendor>Morfeo</Vendor>
+		<Name>Bandeja_de_Averias</Name>
+		<Version>1.0</Version>
+		<Author>miglesia</Author>
+		<Mail>miglesia@pegaso.ls.fi.upm.es</Mail>
+		<Description>Este gadget presenta una lista de averías registradas por usuarios y la información relativa a ellas</Description>
+		<ImageURI>http://europa.ls.fi.upm.es/ezweb/gadgets/RedLightBulb.gif</ImageURI>
+		<WikiURI>http://www.image.com</WikiURI>
+	</Catalog.ResourceDescription>
+	<!-- EzWeb Gadgets Tags -->
+	<Platform.Preferences>
+	</Platform.Preferences>
+	<!-- EzWeb Gadget Persistent State -->
+	<Platform.StateProperties>
+	</Platform.StateProperties>
+	<!-- EzWeb Gadget Data Wiring -->
+	<Platform.Wiring>
+		<Wire name="phoneNumber" type="text" label="PhoneNumber" friendcode = "phone" wiring="in"/>
+		<Wire name="serviceHired" type="text" label="ServiceHired" friendcode = "service" wiring="in"/>
+	</Platform.Wiring>
+	<Platform.Link>
+		<XHTML href="http://europa.ls.fi.upm.es/ezweb/gadgets/bandejaAverias.html"/>
+	</Platform.Link>
+</Template>
