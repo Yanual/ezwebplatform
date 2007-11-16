@@ -49,7 +49,7 @@ var CatalogueFactory  = function () {
 			//Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
 			
 			var onError = function(transport) {
-				alert("Error Resources GET");
+				alert("Error loadCatalogue");
 				// Process
 			}
 			
@@ -60,7 +60,7 @@ var CatalogueFactory  = function () {
 													xmldom.loadXML(transport.responseText); 
 													return xmldom; }
 								);
-				//alert( transport.responseXML);
+								
 				var resourcesXML = response.getElementsByTagName("resource");
 				for (var i=(resourcesXML.length-1); i>=0; i--)
 				{

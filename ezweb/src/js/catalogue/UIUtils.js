@@ -18,7 +18,7 @@ UIUtils.addResource = function(url, paramName, paramValue) {
 	}
 	
 	var newResourceOnError = function (response) {
-		alert (response.responseText);
+		alert ('Error addResource');
 	}
 	
 	var persistenceEngine = PersistenceEngineFactory.getInstance();	
