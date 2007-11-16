@@ -10,10 +10,22 @@ function Template(template_) {
 	// *******************
 
    var variableList = template_;
+   //var width = template_.size.width;
+   //var height = template_size.height;
+   var width = 2;
+   var height = 2;
 
 	// ******************
 	//  PUBLIC FUNCTIONS
 	// ******************
+
+    this.getWidth = function () {
+        return width;
+    }
+
+    this.getHeight = function () {
+        return height;
+    }
 
     this.getVariables = function (igadget_) {
         
