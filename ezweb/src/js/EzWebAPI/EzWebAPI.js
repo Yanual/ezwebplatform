@@ -8,18 +8,18 @@ function _EzWebAPI() {
 }
 
 _EzWebAPI.prototype.getId = function() {
-	return this.id;
+	return EzWebAPI.id;
 }
 
 _EzWebAPI.prototype.createRWGadgetVariable = function(name) {
-	var variable = new this.platform.RWGadgetVariable(this.id, name);
+	var variable = new EzWebAPI.platform.RWGadgetVariable(EzWebAPI.id, name);
 	variable.register();
 
 	return variable;
 }
 
 _EzWebAPI.prototype.createRGadgetVariable = function(name, handler) {
-	var variable = new this.platform.RGadgetVariable(this.id, name, handler);
+	var variable = new EzWebAPI.platform.RGadgetVariable(EzWebAPI.id, name, handler);
 //	variable.register(handler);
 
 	return variable;
@@ -27,9 +27,4 @@ _EzWebAPI.prototype.createRGadgetVariable = function(name, handler) {
 
 var EzWebAPI = new _EzWebAPI();
 
-//EzWebAPI = new _EzWebAPI();
-
-//function RWGadgetVariable(name) {
-//        this.platform.RWGadgetVariable(this, EzWebAPI.getID(), name);
-//}
 
