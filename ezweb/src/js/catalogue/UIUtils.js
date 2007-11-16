@@ -12,20 +12,20 @@ UIUtils.imageContent = '';
 UIUtils.infoResourcesWidth = 400;
 UIUtils.isInfoResourcesOpen = false;
 
-UIUtils.newResourceOnSuccess = function (response) {
-	OpManagerFactory.getInstance().repaintCatalogue();
-}
-
-UIUtils.newResourceOnError = function (response) {
-	alert (response.responseText);
-}
-
 UIUtils.addResource = function(url, paramName, paramValue) {
+	var newResourceOnSuccess = function (response) {
+		OpManagerFactory.getInstance().repaintCatalogue();
+	}
+	
+	var newResourceOnError = function (response) {
+		alert (response.responseText);
+	}
+	
 	var persistenceEngine = PersistenceEngineFactory.getInstance();	
 
 	var params = paramName + "=" + paramValue;
 
-	persistenceEngine.send_post(url, params, this, UIUtils.newResourceOnSuccess, UIUtils.newResourceOnError)
+	persistenceEngine.send_post(url, params, this, newResourceOnSuccess, newResourceOnError);
 }
 
 UIUtils.getSelectedResource = function() {
