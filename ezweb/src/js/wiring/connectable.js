@@ -123,6 +123,7 @@ wOut.prototype.serialize = function(){
 
 wOut.prototype.refresh = function (channelRef){
 	this.inputHash[channelRef.getName()] = channelRef;
+	this.setValue(channelRef.getValue());
 }
 
 wOut.prototype.delConnections = function (){
@@ -208,6 +209,7 @@ wIn.prototype.serialize = function(){
 
 wIn.prototype.refresh = function (channelRef){
 	this.outputHash[channelRef.getName()] = channelRef;
+	channelRef.setValue(this.value);
 }
 
 wIn.prototype.connections = function(){
