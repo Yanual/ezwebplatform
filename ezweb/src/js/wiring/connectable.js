@@ -143,12 +143,12 @@ wIn.prototype.addOutput = function(output){
       if (!(this.outputHash[output.getName()] instanceof wInOut)){
          if (this.type == output.getType()){ // the checking of the types may be changed when the filters were included
             this.outputHash[output.getName()] = output;
-            output.setValue(this.value);
+            //output.setValue(this.value);
             return 0;
          } else if (output.getType() == null){
-            output.setValue(this.value);
+            //output.setValue(this.value);
             this.outputHash[output.getName()] = output;
-            output.setTypeForward(this.type);
+            //output.setTypeForward(this.type);
             return 0;
          } else if (this.type == null){ // this should not happen y the final version
             this.type = output.getType();
@@ -180,7 +180,10 @@ wIn.prototype.setValue = function(value){
    var changes ="{\"value\":\""+this.value+"\",\"channels\":[";
    for (i in this.outputHash){
       if (this.outputHash[i] instanceof wInOut){
-        channelList = this.outputHash[i].setValue(value) + channelList;
+         channelList = this.outputHash[i].setValue(value) + channelList;
+		 if (this.outputList[i]==null){
+		 	this.outputList[i].setTypeForward(this.type);
+		 }
       }
    }
    if (channelList != ""){
@@ -282,17 +285,16 @@ wInOut.prototype.addOutput = function(output){
          if (located != 1){
             if (this.type == output.getType()){ // the checking of the types may be changed when the filters were included
                this.outputList[this.outputCounter++]=output;
-               output.setValue(this.value);
                return 0;
             } else if (output.getType() == null){
                output.setValue(this.value);
                this.outputList[this.outputCounter++]=output;
-               if (output instanceof wInOut){
-                  output.setTypeForward(this.type);
-               }
+               //if (output instanceof wInOut){
+                 // output.setTypeForward(this.type);
+               //}
                return 0;
             } else if (this.type == null){ // in the final version this case should not happen
-               this.setTypeBack(output.getType());
+               //this.setTypeBack(output.getType());
                this.outputList[this.outputCounter++]=output;
                return 0;
             } else {
@@ -395,6 +397,9 @@ wInOut.prototype.setValue = function(value){
    for (var i=0;i<=this.outputCounter;i++){
       if (this.outputList[i] instanceof wConnectable){
          changes = this.outputList[i].setValue(value) + changes;
+		 if (this.outputList[i]==null && this.outputList[i] instanceof wInOut){
+		 	this.outputList[i].setTypeForward(this.type);
+		 }
       }
    }
    if (this.value != value){
@@ -490,8 +495,8 @@ wInOut.prototype.refresh = function (channelRef){
 		}
 	}
 	for (var j = 0; j < this.outputCounter; j++){
-		if (this.outputList[i] instanceof wOut){
-			this.outputList[i].refresh(channelRef);
+		if (this.outputList[j] instanceof wOut){
+			this.outputList[j].refresh(channelRef);
 		}
 	}
 }
@@ -501,7 +506,7 @@ wInOut.prototype.delConnections = function () {
 			this.inputList[i].removeOutput(this);
 	}
 	for (var j = 0; j < this.outputCounter; j++){
-			this.outputList[i].removeInput(this);
+			this.outputList[j].removeInput(this);
 	}
 }
 
