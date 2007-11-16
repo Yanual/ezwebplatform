@@ -553,7 +553,6 @@ var DragboardFactory = function () {
 		this.getInstance = function() {
 			if (instance == null) {
 				instance = new Dragboard();
-				instance.constructor = null;
 			}
 			return instance;
 		}

@@ -175,8 +175,7 @@ var ShowcaseFactory = function () {
     	this.getInstance = function() {
     		if (instance == null) {
         		instance = new Showcase();
-            	instance.constructor = null;
-         	}
+          	}
          	return instance;
        	}
 	}

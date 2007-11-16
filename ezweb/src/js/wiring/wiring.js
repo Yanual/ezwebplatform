@@ -602,7 +602,6 @@ var WiringFactory = function () {
  	   	this.getInstance = function() {
     			if (instance == null) {
         			instance = new Wiring();
-        	    	instance.constructor = null;
          		}
       		   	return instance;
       	 	}
