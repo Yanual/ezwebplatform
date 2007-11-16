@@ -12,16 +12,16 @@ var OpManagerFactory = function () {
 		// *********************************
 		
 		// Already loaded modules
-		var persistenceEngine = PersistenceEngineFactory.getInstance();
-		var catalogue = CatalogueFactory.getInstance();
+		this.persistenceEngine = PersistenceEngineFactory.getInstance();
+		this.catalogue = CatalogueFactory.getInstance();
 		
 		// Still to load modules
-		var varManagerModule = null;
-		var wiringModule = null;
-		var dragboardModule = null;
-		var showcaseModule = null;
+		this.varManagerModule = null;
+		this.wiringModule = null;
+		this.dragboardModule = null;
+		this.showcaseModule = null;
 		
-		var loadCompleted = false;
+		this.loadCompleted = false;
 		
 		// ****************
 		// PUBLIC METHODS 
@@ -31,14 +31,14 @@ var OpManagerFactory = function () {
 		        if (!loadCompleted)
 				return;
 
-			var gadget = showcaseModule.getGadget(gadgetId);
+			var gadget = this.showcaseModule.getGadget(gadgetId);
 				
-			var iGadgetId = dragboardModule.addInstance(gadget);
+			var iGadgetId = this.dragboardModule.addInstance(gadget);
 			
-			varManagerModule.addInstance(iGadgetId, gadget.getTemplate());
-			wiringModule.addInstance(iGadgetId, gadget.getTemplate());
+			this.varManagerModule.addInstance(iGadgetId, gadget.getTemplate());
+			this.wiringModule.addInstance(iGadgetId, gadget.getTemplate());
 			
-			dragboardModule.showInstance(iGadgetId);
+			this.dragboardModule.showInstance(iGadgetId);
 
 			// The dragboard must be shown after an igadget insertion
 			show_dragboard()
@@ -48,29 +48,28 @@ var OpManagerFactory = function () {
 			if (!loadCompleted)
 				return;
 
-			dragboardModule.removeInstance(iGadgetId); // TODO split into hideInstance and removeInstance
-			varManagerModule.removeInstance(iGadgetId);
-			wiringModule.removeInstance(iGadgetId);
+			this.dragboardModule.removeInstance(iGadgetId); // TODO split into hideInstance and removeInstance
+			this.varManagerModule.removeInstance(iGadgetId);
+			this.wiringModule.removeInstance(iGadgetId);
 		}
 		
 		
 		OpManager.prototype.sendEvent = function (gadget, event, value) {
-		    wiringModule.sendEvent(gadget, event, value);
+		    this.wiringModule.sendEvent(gadget, event, value);
 		}
 
 		OpManager.prototype.restaure = function () {
-		    wiringModule.restaure();
+		    this.wiringModule.restaure();
 		}
 
 		OpManager.prototype.loadEnviroment = function () {
-		    varManagerModule = VarManagerFactory.getInstance();
-			CatalogueFactory.getInstance().loadCatalogue('http://europa.ls.fi.upm.es:8000/user/admin/catalogue/resources/');	
-			//CatalogueFactory.getInstance().loadCatalogue('http://europa.ls.fi.upm.es:8000/ezweb/prueba.xml');	
+			this.varManagerModule = VarManagerFactory.getInstance();
+			this.catalogue.loadCatalogue('http://europa.ls.fi.upm.es:8000/user/admin/catalogue/resources/');
 		}
 
-		OpManager.prototype.repaintCatalogue = function () {
-	 	    catalogue.emptyResourceList();
-		    catalogue.loadCatalogue('http://europa.ls.fi.upm.es:8000/user/admin/catalogue/resources/');	
+		OpManager.prototype.repaintCatalogue = function (url) {
+	 	    this.catalogue.emptyResourceList();
+		    this.catalogue.loadCatalogue(url);	
 		}
 		
 		OpManager.prototype.continueLoading = function (module) {
@@ -78,17 +77,17 @@ var OpManagerFactory = function () {
 			// Each module notifies OpManager it has finished loading!
 			
 			if (module == Modules.prototype.VAR_MANAGER) {
-				showcaseModule = ShowcaseFactory.getInstance();
+				this.showcaseModule = ShowcaseFactory.getInstance();
 				return; 
 			}
 			
 			if (module == Modules.prototype.SHOWCASE) {
-				dragboardModule = DragboardFactory.getInstance();
+				this.dragboardModule = DragboardFactory.getInstance();
 				return;
 			}
 				
 			if (module == Modules.prototype.DRAGBOARD) {
-				wiringModule = WiringFactory.getInstance();
+				this.wiringModule = WiringFactory.getInstance();
 				return;
 			}
 			
