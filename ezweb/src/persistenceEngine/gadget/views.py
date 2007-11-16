@@ -55,9 +55,9 @@ class GadgetCollection(Resource):
         except IntegrityError:
             # Gadget already exists. Rollback transaction
             transaction.rollback_unless_managed()
-        except:
+        except Exception, e:
             # Internal error
-            return HttpResponseServerError('Unknown error')
+            return HttpResponseServerError("<error>%s</error>" % e, mimetype='text/xml; charset=UTF-8')
         
         gadget = templateParser.getGadget()
         gadget_entry = GadgetEntry()
