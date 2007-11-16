@@ -532,7 +532,7 @@ var WiringFactory = function () {
 			
 			for (var i = 0; i < copyKeys.length; i++){
 				var channel = copyList[copyKeys[i]];
-				if (keys.indexOf(i) != -1){
+				if (keys.indexOf(copyKeys[i]) != -1){
 					channel.ref.value = inOutList[copyKeys[i]].ref.getValue();
 				}
 				channel.ref.refresh(channel.ref);
