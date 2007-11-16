@@ -170,6 +170,10 @@ var WiringFactory = function () {
 				var gadget = new Object();
 				gadget["list"] = [];
 				gadget["id"] = arguments[0]["id"];
+	
+				var gadgetModel = DragboardFactory.getInstance().getGadget(arguments[0]["id"]);
+				gadget["vendor"] = gadgetModel.getVendor();
+				gadget["version"] = gadgetModel.getVersion();		
 
 				list = arguments[0].list;
 				for (var j = 0; j < list.length; j++){
@@ -561,7 +565,7 @@ var WiringFactory = function () {
 						ins += connectablejson;		
 					}
 				}
-				var itemjson = "{\"uri\": \"/user/admin/gadgets/" + iGadgetList[gadgetKeys[i]].vendor + "/" + iGadgetList[gadgetKeys[i]].name + "/" + iGadgetList[gadgetKeys[i]].version + "\", \"ins\":[" + ins + "], \"outs\":[" + outs + "]}" ;			
+				var itemjson = "{\"uri\": \"/user/admin/gadgets/" + iGadgetList[gadgetKeys[i]].vendor + "/" + iGadgetList[gadgetKeys[i]].id + "/" + iGadgetList[gadgetKeys[i]].version + "\", \"ins\":[" + ins + "], \"outs\":[" + outs + "]}" ;			
 				if (i != (gadgetKeys.length-1)){		
 					itemjson += ", " ;					
 				}
