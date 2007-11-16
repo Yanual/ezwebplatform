@@ -496,12 +496,12 @@ wInOut.prototype.refresh = function (channelRef){
 	}
 }
 
-wInOut.prototype.delConnections = function (){
+wInOut.prototype.delConnections = function () {
 	for (var i = 0; i < this.inputCounter; i++){
-			this.inputList[i].removeOutput(channelRef);
+			this.inputList[i].removeOutput(this);
 	}
 	for (var j = 0; j < this.outputCounter; j++){
-			this.outputList[i].removeInput(channelRef);
+			this.outputList[i].removeInput(this);
 	}
 }
 

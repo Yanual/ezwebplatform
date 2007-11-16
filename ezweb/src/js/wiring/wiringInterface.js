@@ -1,14 +1,14 @@
 //This class is the controller of the interface provided for managing the wiring module
 
 function wiringInterface(){
-	var loaded = false;
+	this.loaded = false;
 	w = WiringFactory.getInstance();
 }
 wiringInterface.prototype.unloaded = function (){
-	loaded = false;
+	this.loaded = false;
 	$("selectCanal").innerHTML = "";
-//	$("wCanales").innerHTML = "";
-//	$("wGadgets").innerHTML = "";
+	$("wCanales").innerHTML = "";
+	$("wGadgets").innerHTML = "";
 	var element = document.createElement("option");
 	element.setAttribute("value","")
 	element.setAttribute("selected", true)
