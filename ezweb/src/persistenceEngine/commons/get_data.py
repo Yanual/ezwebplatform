@@ -52,6 +52,7 @@ def get_igadget_data(data):
     gadget = Gadget.objects.get(pk=data_fields['gadget'])
     position = Position.objects.get(pk=data_fields['position'])
       
+    data_ret['id'] = data['pk']
     data_ret['uri'] = data_fields['uri']
     data_ret['gadget'] = gadget.uri
     data_ret['top'] = position.posY 
