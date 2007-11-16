@@ -8,6 +8,8 @@ class Template(models.Model):
     uri = models.CharField(_('URI'), max_length=500)
     description = models.CharField(_('Description'), max_length=250)
     image = models.CharField(max_length=500)
+    width = models.IntegerField(_('Width'), default=1)
+    height = models.IntegerField(_('Height'), default=1)    
 
     class Admin:
         pass

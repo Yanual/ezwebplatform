@@ -200,6 +200,25 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 
             option.save()
 
+    def processRendering (self, attrs):
+        _width=""
+        _height=""
+
+        if (attrs.has_key('width')==True):
+            _width = attrs.get('width')
+
+        if (attrs.has_key('height')==True):
+            _height = attrs.get('height')
+        
+        if (_width != "" and _heigth != ""):
+            #self._template.width=_width
+            #self._template.height=_height
+            #self._template.save()
+            print "hola"
+                        
+
+
+
 ###############
 
     def startElement(self, name, attrs):
@@ -228,6 +247,10 @@ class TemplateHandler(saxutils.handler.ContentHandler):
         if (name == 'Option'):
             self.processOption(attrs)
             return
+
+        """if (name == 'Platform.Rendering'):
+            self.processRendering(attrs)
+            return"""
 
 
     def endElement(self, name):

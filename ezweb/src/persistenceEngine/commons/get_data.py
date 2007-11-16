@@ -13,7 +13,11 @@ def get_gadget_data(data):
 
     # VariableDef doesn't need return 404
     data_template = VariableDef.objects.filter(template=data_fields['template']).values('aspect', 'name', 'type')
-    data_fields['template'] = data_template
+
+    data_fields['template'] ['variables'] = data_template
+
+    data_fields['template'] ['size'] ['width'] = data_image.width
+    data_fields['template'] ['size'] ['height'] = data_image.height
 
     data_code = get_object_or_404(XHTML.objects.all().values('uri'), id=data_fields['xhtml'])
     # UserEventsInfo doesn't need return 404
