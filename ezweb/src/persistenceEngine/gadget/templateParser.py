@@ -209,15 +209,12 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 
         if (attrs.has_key('height')==True):
             _height = attrs.get('height')
-        
-        if (_width != "" and _heigth != ""):
-            #self._template.width=_width
-            #self._template.height=_height
-            #self._template.save()
-            print "hola"
+
+        if (_width != "" and _height != ""):
+            self._template.width=_width
+            self._template.height=_height
+            self._template.save()
                         
-
-
 
 ###############
 
@@ -248,9 +245,9 @@ class TemplateHandler(saxutils.handler.ContentHandler):
             self.processOption(attrs)
             return
 
-        """if (name == 'Platform.Rendering'):
+        if (name == 'Platform.Rendering'):
             self.processRendering(attrs)
-            return"""
+            return
 
 
     def endElement(self, name):
