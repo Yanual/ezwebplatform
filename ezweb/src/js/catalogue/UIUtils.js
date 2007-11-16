@@ -117,8 +117,9 @@ UIUtils.setResourcesWidth = function() {
 	var head = document.getElementById('head');
 	var resources = document.getElementById('resources');
 	var center = document.getElementById('center');
+	var scrollWidth = 25;
 	center.style.width = head.offsetWidth + 'px';
-	resources.style.width = (center.offsetWidth - (tab.offsetWidth + (UIUtils.isInfoResourcesOpen?UIUtils.infoResourcesWidth:0))) + 'px';
+	resources.style.width = (center.offsetWidth - (tab.offsetWidth + (UIUtils.isInfoResourcesOpen?UIUtils.infoResourcesWidth:0) + scrollWidth)) + 'px';
 }
 
 UIUtils.openInfoResource = function() {
