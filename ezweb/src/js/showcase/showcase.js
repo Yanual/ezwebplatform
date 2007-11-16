@@ -99,9 +99,7 @@ var ShowcaseFactory = function () {
 
 		// Get a gadget by its gadgetID
 		Showcase.prototype.getGadget = function (gadgetId_) {
-			var gadget = _gadgets[gadgetId_];
-
-			return gadget.gadget;
+			return _gadgets[gadgetId_];
 		}
 		
 		// Set gadget properties (User Interface)
@@ -115,13 +113,13 @@ var ShowcaseFactory = function () {
 		Showcase.prototype.tagGadget = function (gadgetId_, tags_) {
 			for (var i = 0; i<tags_.length; i++) {
 				var tag = tags_[i];
-				_gadgets[gadgetId_].gadget.addTag(tag);
+				_gadgets[gadgetId_].addTag(tag);
 			}
 		}
 		
 		// Deploy a Showcase gadget into dragboard as gadget instance  
 		Showcase.prototype.addInstance = function (gadgetId_) {
-			var gadget = _gadgets[gadgetId_].gadget;
+			var gadget = _gadgets[gadgetId_];
 			_opManager.addInstance (gadget);
 		}
 		
