@@ -17,7 +17,7 @@ UIUtils.newResourceOnSuccess = function (response) {
 }
 
 UIUtils.newResourceOnError = function (response) {
-	alert (response);
+	alert (response.responseText);
 }
 
 UIUtils.addResource = function(url, paramName, paramValue) {
