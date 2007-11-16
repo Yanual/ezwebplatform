@@ -6,7 +6,6 @@
 
 <link rel="stylesheet" type="text/css" media="screen,projection" href="css/ezweb.css" />
 <link rel="stylesheet" type="text/css" href="css/dragboard.css">
-<link rel="stylesheet" type="text/css" href="css/ezweb.css">
 <link rel="shortcut icon" type="image/x-icon" href="css/favicon.ico" />
 
 <script type="text/javascript" language="javascript" src="lib/prototype/prototype.js"></script>
@@ -60,13 +59,15 @@
 	}
 
 	function show_showcase() {
-	        opManager.repaintCatalogue("http://europa.ls.fi.upm.es:8000/user/admin/catalogue/resources");
+		wI.unloaded();
+	    opManager.repaintCatalogue("http://europa.ls.fi.upm.es:8000/user/admin/catalogue/resources");
 		showInterface('showcase_container');
 		UIUtils.setResourcesWidth();
 		document.getElementById('simple_search_text').focus();
 	}
 	
 	function show_dragboard() {
+		wI.unloaded();
 		showInterface('dragboard_container');
 	}
 	
@@ -79,9 +80,10 @@
 	// Platform initialization
 	function environmentLoadedCallback() {
 		DragboardFactory.getInstance().repaint();
-		wI = new wiringInterface();
+		//wI = new wiringInterface();
 	}
 	var wI;
+	wI = new wiringInterface();
 	var opManager = OpManagerFactory.getInstance();
 	opManager.loadEnviroment();
 </script>
@@ -107,7 +109,8 @@
      <table class="container_header">
      <tr>
        <td style="text-align:left"><h3>My Instances</h3></td>
-       <td style="text-align:right"></td>
+       <td style="text-align:right">
+       </td>
      </tr>
      </table>
      <!-- DRAGBOARD VIEW -->
@@ -117,7 +120,7 @@
 
   <!-- SHOWCASE LAYER -->
   <div id="showcase_container" class="container">
-    <table class="container_header">
+  	<table class="container_header">
     <tr>
        <td style="text-align:left"><h3>My Gadgets</h3></td>
        <td style="text-align:right" valign="top"><a href="javascript:;" onclick="show_dragboard();">hide</a></td>
@@ -125,6 +128,7 @@
     </table>
     <!-- SHOWCASE VIEW -->
 		<div id="showcase" class="main" onresize="UIUtils.setResourcesWidth();">
+ 
 			<div id="head" class="head">
 				<div id="new_resource" class="search">
 				<div class="simple_search">
