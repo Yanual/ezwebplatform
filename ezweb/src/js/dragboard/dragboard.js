@@ -347,14 +347,15 @@ var DragboardFactory = function () {
 			if ((gadget == null) || !(gadget instanceof Gadget))
 				return; // TODO exception
 
+			var template = gadget.getTemplate();
 			// Search a position for the gadget
 			var positionX, positionY, found;
 
 			positionX = 0; // tmp
 			positionY = 0;
-			var width = 1;
+			var width = template.getWidth();
 			// TODO +2 for the menu
-			var height = 4 + 2 + 2; // one cell of margin at the top and at the bottom
+			var height = template.getHeight() + 2 + 2; // one cell of margin at the top and at the bottom
 			var columns = dragboardStyle.getColumns() - width + 1;
 
 			// Search first free space
@@ -798,7 +799,19 @@ DragboardStyle.prototype.fromVCellsToPixels = function(cells) {
 }
 
 DragboardStyle.prototype.fromHCellsToPixels = function(cells) {
-	return (cells * (this.dragboardElement.offsetWidth * 0.30)); // TODO
+	// TODO
+	var tmp = cells * 0.30;
+	if (cells > 1)
+	  tmp += ((cells - 1) * 0.02);
+	return (this.dragboardElement.offsetWidth * tmp);
+}
+
+DragboardStyle.prototype.fromHCellsToPercentage = function(cells) {
+	// TODO
+	var tmp = cells * 30;
+	if (cells > 1)
+	  tmp += (cells - 1) * 2;
+	return tmp;
 }
 
 DragboardStyle.prototype.getColumnOffsetLeftInPixels = function(column) {
