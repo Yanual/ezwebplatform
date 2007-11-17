@@ -96,12 +96,20 @@ var WiringFactory = function () {
 		
 		// this method is used in the first version for painting the connections for the user.
 		Wiring.prototype.getGadgetsId = function (){
-			return iGadgetList.keys();
+			var gadgetsId = iGadgetList.keys();
+			var result = []
+			for (var i = 0; i<gadgetsId.length; i++){
+				var iGadget = new Object();
+				iGadget.name = iGadgetList[gadgetsId[i]].name;
+				iGadget.id = gadgetsId[i];
+				result.push(iGadget);
+			}
+			return result;
 		}
+		
 		Wiring.prototype.getInOutId = function (){
 			return copyList.keys();
 		}
-		
 		
 		// this method is used in the first version for painting the connections for the user.
 		Wiring.prototype.connections = function (channel) {

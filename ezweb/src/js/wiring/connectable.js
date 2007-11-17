@@ -433,6 +433,13 @@ wInOut.prototype.connections = function(){
          var connection = new Object();
          connection["id"] = this.inputList[i].getId();
          connection["name"] = this.inputList[i].getName();
+		 
+		 if (connection["id"] != null && connection["id"] != "null"){
+		 	var gadgetModel = DragboardFactory.getInstance().getGadget(connection["id"]);
+			connection["gadgetName"] = gadgetModel.getName();			
+		 }
+		 else{connection["gadgetName"] = ""}
+		
          result["input"].push(connection);
       }
    }
@@ -441,7 +448,14 @@ wInOut.prototype.connections = function(){
          var connection = new Object();
          connection["id"] = this.outputList[i].getId();
          connection["name"] = this.outputList[i].getName();
-         result["output"].push(connection);
+        
+		 if (connection["id"] != null && connection["id"] != "null"){
+		 	var gadgetModel = DragboardFactory.getInstance().getGadget(connection["id"]);
+			connection["gadgetName"] = gadgetModel.getName();			
+		 }
+		 else{connection["gadgetName"] = ""}
+		
+		 result["output"].push(connection);
       }
    }
    return result;

@@ -178,9 +178,9 @@
   <div id="wiring_container" class="container">
 	<div id="wiring" class="container_content">
 	<!-- WIRING VIEW -->
-		<form>
+		
 		<input type = button value = "serializa" id = "serializa" onClick ="alert(WiringFactory.getInstance().serialize())">
-		</form>
+		
 		<div class = "wContainer">
 				<div id ="selector_panel">
 					<div id = "selector">
@@ -192,7 +192,7 @@
 					
 					<div class = "connections_tab left_tab">
 						<table class = "header">
-							<tr><td> </td><td>Input connection</td></tr>
+							<tr><td id="input_header"> </td><td>Inputs</td></tr>
 						</table>
 						<div class = "contents">
 	        					<table class = "bodier" id = "eventsConnection">
@@ -201,7 +201,7 @@
 					</div>
 					<div class = "connections_tab right_tab">
 						<table class = "header">
-							<tr><td> </td><td>Output connection</td></tr>
+							<tr><td id="output_header"> </td><td>Outputs</td></tr>
 						</table>
 						<div class = "contents">
 	        					<table class = "bodier" id = "slotsConnection">
@@ -247,9 +247,9 @@
 							</table>
 						</div>
 					</div>
-					<form>
-						<input id = "refreshbutton" type = image src = wiring/disk.png title = "Save data" alt = "Actualizar" onClick = "opManager.restaure()">	
-					</form>
+					<div>
+						<input id = "refreshbutton" type = image src = wiring/disk.png title = "Save data" alt = "Save changes" onClick = "opManager.restaure()">	
+					</div>
 				</div><!--items_panel-->
 		</div>
     </div> <!-- WIRING VIEW -->

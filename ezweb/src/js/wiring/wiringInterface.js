@@ -7,6 +7,11 @@ function wiringInterface(){
 wiringInterface.prototype.unloaded = function (){
 	this.loaded = false;
 	this._hideItems();
+	$("eventConnection").innerHTML = "";
+	$("slotConnection").innerHTML = "";
+	$("events").innerHTML = "";
+	$("slots").innerHTML = "";
+	
 	$("selectCanal").innerHTML = "";
 	$("wCanales").innerHTML = "";
 	$("wGadgets").innerHTML = "";
@@ -36,8 +41,8 @@ wiringInterface.prototype.addChannelInterface = function(name, selector, itemize
 
 wiringInterface.prototype.addGadgetInterface = function (object,selector){
 	var element = document.createElement("option");
-	element.setAttribute("id", object)
-	var text = document.createTextNode(object);
+	element.setAttribute("id", object.id)
+	var text = document.createTextNode(object.name+"_"+object.id);
 	element.appendChild(text);
 	selector.appendChild(element);
 }
@@ -87,15 +92,16 @@ wiringInterface.prototype.renewChannel = function (w,channel,slots,events){
 	slots.innerHTML = "";
 	events.innerHTML = "";
 	if (channel != ""){
+		this._nameChannel(channel);
 		var connections = w.connections(channel);
 		var inputs = connections["input"];
 		var outputs = connections["output"];
 		$("valor").value = w.viewValue(channel);
 		for (var i = 0; i < inputs.length; i++){
-			this.addChannelLine (w,events, "w.removeChannelInput", inputs[i].id, inputs[i].name)
+			this.addChannelLine (w,events, "w.removeChannelInput",inputs[i].gadgetName,inputs[i].id, inputs[i].name)
 		}
 		for (var j = 0; j < outputs.length; j++){
-			this.addChannelLine (w, slots, "w.removeChannelOutput", outputs[j].id, outputs[j].name)
+			this.addChannelLine (w, slots, "w.removeChannelOutput", outputs[j].gadgetName,outputs[j].id, outputs[j].name)
 		}
 		this._showItems();
 	}
@@ -150,7 +156,7 @@ wiringInterface.prototype.addLine = function (w, table, operation, gadget, name)
 	table.appendChild(line);
 }
 
-wiringInterface.prototype.addChannelLine = function (w,table, operation, gadget, name){	
+wiringInterface.prototype.addChannelLine = function (w,table, operation,gadgetName, gadget, name){	
 	// This function is used to actualize the  tables of connections of any channel
 	var line = document.createElement("tr");
 	var col1 = document.createElement("td");
@@ -162,7 +168,7 @@ wiringInterface.prototype.addChannelLine = function (w,table, operation, gadget,
 		button.setAttribute("onClick", operation + "('" + name + "', $F('selectCanal'));wI.renewChannel(w,$F('selectCanal'),$('slotsConnection'),$('eventsConnection'))");
 	}
 	else{
-		text = document.createTextNode(gadget + "::" + name);
+		text = document.createTextNode(gadgetName+"_"+gadget + "::" + name);
 		button.setAttribute("onClick", operation + "('" + gadget+ "','" +name+"', $F('selectCanal'));wI.renewChannel(w,$F('selectCanal'),$('slotsConnection'),$('eventsConnection'))");
 	}
 	button.setAttribute("type", "image");
@@ -183,4 +189,19 @@ wiringInterface.prototype._showItems = function (){
 
 wiringInterface.prototype._hideItems = function (){
 	$("items_panel").style.visibility = "hidden";
+}
+
+wiringInterface.prototype._nameChannel = function(channelName){
+	var inputHeader = $("input_header");
+	var outputHeader = $("output_header");
+	var firstChild = inputHeader.firstChild;
+	
+	if (firstChild != undefined){
+		inputHeader.removeChild(firstChild);
+		outputHeader.removeChild(outputHeader.firstChild);
+	}
+	channelName1 = document.createTextNode(channelName);
+	channelName2 = document.createTextNode(channelName);
+	inputHeader.appendChild(channelName1);
+	outputHeader.appendChild(channelName2);
 }
