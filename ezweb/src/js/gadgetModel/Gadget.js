@@ -37,11 +37,11 @@ function Gadget(gadget_, url_) {
 	
 		// Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
 		
-		onError = function(transport) {
+		var onError = function(transport) {
 			alert ("Unexpected error in HTTP method invocation")
 		}
 		
-		loadGadget = function(transport) {
+		var loadGadget = function(transport) {
 			var response = transport.responseText;
 			var objRes = eval ('(' + response + ')');
 			state = new GadgetState(objRes);
@@ -51,7 +51,7 @@ function Gadget(gadget_, url_) {
 		var persistenceEngine = PersistenceEngineFactory.getInstance();
 		// Post Gadget to PersistenceEngine. Asyncrhonous call!
 		var param = 'url=' + url_
-		persistenceEngine.send_post("http://europa.ls.fi.upm.es:8000/user/admin/gadgets/", param, this, loadGadget, loadGadget);
+		persistenceEngine.send_post("http://europa.ls.fi.upm.es:8000/user/admin/gadgets/", param, this, loadGadget, onError);
 	}
 	
 	// *******************
