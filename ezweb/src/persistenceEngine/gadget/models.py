@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 
 class Template(models.Model):
-    uri = models.CharField(_('URI'), max_length=500)
+    uri = models.CharField(_('URI'), max_length=500, unique=True)
     description = models.CharField(_('Description'), max_length=250)
     image = models.CharField(max_length=500)
     width = models.IntegerField(_('Width'), default=1)
@@ -13,9 +13,6 @@ class Template(models.Model):
 
     class Admin:
         pass
-
-    class Meta:
-        unique_together = ('uri')
 
     def __unicode__(self):
         return self.uri
@@ -75,11 +72,8 @@ class VariableDefAttr(models.Model):
 
       
 class XHTML(models.Model):
-    uri = models.CharField(_('URI'), max_length=500)
+    uri = models.CharField(_('URI'), max_length=500, unique=True)
     code = models.TextField(_('Code'))
-
-    class Meta:
-        unique_together = ('uri')
 
     class Admin:
         pass
