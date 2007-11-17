@@ -14,6 +14,9 @@ class Template(models.Model):
     class Admin:
         pass
 
+    class Meta:
+        unique_together = ('uri')
+
     def __unicode__(self):
         return self.uri
 
@@ -74,6 +77,9 @@ class VariableDefAttr(models.Model):
 class XHTML(models.Model):
     uri = models.CharField(_('URI'), max_length=500)
     code = models.TextField(_('Code'))
+
+    class Meta:
+        unique_together = ('uri')
 
     class Admin:
         pass
