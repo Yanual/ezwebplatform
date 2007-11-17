@@ -148,7 +148,8 @@ var WiringFactory = function () {
 					var gadgetModel = DragboardFactory.getInstance().getGadget(iGadgetId);
 
 					gadget["vendor"] = gadgetModel.getVendor();
-					gadget["version"] = gadgetModel.getVersion();		
+					gadget["version"] = gadgetModel.getVersion();	
+					gadget["name"] = gadgetModel.getName();	
 					// The instance of the iGadget doesn't exist.
 					for (var i = 0; i < events.length; i++){
 						var item = new Object();
@@ -182,7 +183,8 @@ var WiringFactory = function () {
 				var gadgetModel = DragboardFactory.getInstance().getGadget(arguments[0]["id"]);
 				gadget["vendor"] = gadgetModel.getVendor();
 				gadget["version"] = gadgetModel.getVersion();		
-
+				gadget["name"] = gadgetModel.getName();
+				
 				list = arguments[0].list;
 				for (var j = 0; j < list.length; j++){
 					var connectable = new Object();
