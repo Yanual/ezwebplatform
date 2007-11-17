@@ -7,8 +7,8 @@ function wiringInterface(){
 wiringInterface.prototype.unloaded = function (){
 	this.loaded = false;
 	this._hideItems();
-	$("eventConnection").innerHTML = "";
-	$("slotConnection").innerHTML = "";
+	$("eventsConnection").innerHTML = "";
+	$("slotsConnection").innerHTML = "";
 	$("events").innerHTML = "";
 	$("slots").innerHTML = "";
 	
