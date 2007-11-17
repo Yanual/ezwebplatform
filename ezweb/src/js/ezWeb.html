@@ -178,80 +178,79 @@
   <div id="wiring_container" class="container">
 	<div id="wiring" class="container_content">
 	<!-- WIRING VIEW -->
-		<div class = "left">
-			<input id = "gadget9" type = text value = "id gadget...">
-			<input id = "event9"  type = text value = "name event...">
-			<input id = "value9"  type = text value = "value...">
-			<input type = button  value= "send event" onclick = "opManager.sendEvent($F($('gadget9')),$F($('event9')), $F($('value9')));wI.renewChannel(w,$F($('selectCanal')),$('slotsConnection'),$('eventsConnection'))">
-			<input type = button value = "serializa" id = "serializa" onClick ="alert(WiringFactory.getInstance().serialize())">
-		</div>
+		<form>
+		<input type = button value = "serializa" id = "serializa" onClick ="alert(WiringFactory.getInstance().serialize())">
+		</form>
 		<div class = "wContainer">
-			<fieldset id = "one">
-				<div id = "selector">
-					<em>Seleccione un canal:</em>
-					<select id = "selectCanal"  onChange = "wI.renewChannel(w,$F($('selectCanal')),$('slotsConnection'),$('eventsConnection'))">
-						<option value = "" selected>----</option>
-					</select>
-				</div>
-				<div id = "view">
-					<input id = "valor" type = "text" value = "">
-					<input id = "addChannel" type=image src=wiring/add.png title="Create Channel" alt= "create channel"
-					    onclick = "wI.addChannel(w,$('selectCanal'),$('wCanales'),$('slotsConnection'),$('eventsConnection'))">
-					<input id = "deleteChannel" type=image src=wiring/delete.png title="Delete Channel" alt= "Delete Channel"
-					    onclick = "wI.deleteChannel(w,$('selectCanal').value,$('selectCanal'),$('wCanales'),$('slotsConnection'),$('eventsConnection'))">
-				</div>
-				<div id = "tab_one">
-					<table class = "header">
-						<tr><td> </td><td>Input connection</td></tr>
-					</table>
-					<div class = "contents">
-        					<table class = "bodier" id = "eventsConnection">
-						</table>
+				<div id ="selector_panel">
+					<div id = "selector">
+						<em>Seleccione un canal:</em>
+						<select id = "selectCanal"  onChange = "wI.renewChannel(w,$F($('selectCanal')),$('slotsConnection'),$('eventsConnection'))">
+							<option value = "" selected>----</option>
+						</select>
 					</div>
-				</div>
-				<div id = "tab_two">
-					<table class = "header">
-						<tr><td> </td><td>Output connection</td></tr>
-					</table>
-					<div class = "contents">
-        					<table class = "bodier" id = "slotsConnection">
+					
+					<div class = "connections_tab left_tab">
+						<table class = "header">
+							<tr><td> </td><td>Input connection</td></tr>
 						</table>
+						<div class = "contents">
+	        					<table class = "bodier" id = "eventsConnection">
+							</table>
+						</div>
 					</div>
-				</div>
-			</fieldset>
-			<fieldset id = "two">
-				<div>
-					<input id = "refreshbutton" type = image src = wiring/disk.png title = "Save data" alt = "Actualizar" onClick = "opManager.restaure()">	
-				</div>
-				<div id = "selector">
-					<em>Seleccione un item:</em>
-					<select id = "itemizer"  onChange = "wI.renewItem(w,$F($('itemizer')),$('slots'),$('events'))">
-						<option value = "" selected>----</option>
-					<optgroup id="wCanales" label="Canales">
-					</optgroup>
-					<optgroup id ="wGadgets" label="Gadgets">
-					</optgroup>
-					</select>
-				</div>
-				<div id = "tab_one">
-					<table class = "header">
-						<tr><td> </td><td>Outputs</td></tr>
-					</table>
-					<div class = "contents">
-        					<table class = "bodier" id = "events">
+					<div class = "connections_tab right_tab">
+						<table class = "header">
+							<tr><td> </td><td>Output connection</td></tr>
 						</table>
+						<div class = "contents">
+	        					<table class = "bodier" id = "slotsConnection">
+							</table>
+						</div>
 					</div>
+					<fieldset id = "view">
+						<legend>Gestionar Canales</legend>
+						<center><em>Valor del canal:</em></center><br/>
+						<input id = "valor" type = "text" value = "" disabled>
+						<input id = "addChannel" type=image src=wiring/add.png title="Create Channel" alt= "create channel"
+						    onclick = "wI.addChannel(w,$('selectCanal'),$('wCanales'),$('slotsConnection'),$('eventsConnection'))">
+						<input id = "deleteChannel" type=image src=wiring/delete.png title="Delete Channel" alt= "Delete Channel"
+						    onclick = "wI.deleteChannel(w,$('selectCanal').value,$('selectCanal'),$('wCanales'),$('slotsConnection'),$('eventsConnection'))">
+					</fieldset>
 				</div>
-				<div id = "tab_two">
-					<table class = "header">
-						<tr><td> </td><td>Inputs</td></tr>
-					</table>
-					<div class = "contents">
-        					<table class = "bodier" id = "slots">
+				<div id ="items_panel">
+					<div id = "selector">
+						<em>Seleccione un item:</em>
+						<select id = "itemizer"  onChange = "wI.renewItem(w,$F($('itemizer')),$('slots'),$('events'))">
+							<option value = "" selected>----</option>
+						<optgroup id="wCanales" label="Canales">
+						</optgroup>
+						<optgroup id ="wGadgets" label="Gadgets">
+						</optgroup>
+						</select>
+					</div>
+					<div class = "connectables_tab left_tab">
+						<table class = "header">
+							<tr><td> </td><td>Outputs</td></tr>
 						</table>
+						<div class = "contents">
+	        					<table class = "bodier" id = "events">
+							</table>
+						</div>
 					</div>
-				</div>
-			</fieldset>
+					<div class = "connectables_tab right_tab">
+						<table class = "header">
+							<tr><td> </td><td>Inputs</td></tr>
+						</table>
+						<div class = "contents">
+	        					<table class = "bodier" id = "slots">
+							</table>
+						</div>
+					</div>
+					<form>
+						<input id = "refreshbutton" type = image src = wiring/disk.png title = "Save data" alt = "Actualizar" onClick = "opManager.restaure()">	
+					</form>
+				</div><!--items_panel-->
 		</div>
     </div> <!-- WIRING VIEW -->
   </div> <!-- WIRING LAYER -->

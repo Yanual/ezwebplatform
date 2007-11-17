@@ -557,14 +557,18 @@ var WiringFactory = function () {
 			for (var i = 0; i < gadgetKeys.length; i++){
 				var ins = "", outs = "";
 				for (var j = 0; j < iGadgetList[gadgetKeys[i]].list.length; j++){
-					var connectablejson = "{\"name\": \"" + iGadgetList[gadgetKeys[i]].list[j].name + "\", \"variable\": \"/igadget/" + gadgetKeys[i] + "/var/" + iGadgetList[gadgetKeys[i]].list[j].name + "\"}";
+					var connectablejson = "{\"name\": \"" + iGadgetList[gadgetKeys[i]].list[j].name + "\", \"variable\": \"/igadget/" + gadgetKeys[i] + "/var/" + iGadgetList[gadgetKeys[i]].list[j].name + "/\"},";
 					if (iGadgetList[gadgetKeys[i]].list[j].aspect == "SLOT"){
 						outs += connectablejson;
 					}
 					else{
 						ins += connectablejson;		
 					}
+					
 				}
+				outs = outs.substring(0, (outs.length-1));
+				ins = ins.substring(0, (ins.length-1));
+				
 				var itemjson = "{\"uri\": \"/user/admin/gadgets/" + iGadgetList[gadgetKeys[i]].vendor + "/" + iGadgetList[gadgetKeys[i]].id + "/" + iGadgetList[gadgetKeys[i]].version + "\", \"ins\":[" + ins + "], \"outs\":[" + outs + "]}" ;			
 				if (i != (gadgetKeys.length-1)){		
 					itemjson += ", " ;					
@@ -578,18 +582,18 @@ var WiringFactory = function () {
 				var connectTo = copyList[inOutKeys[t]].ref.connections();
 				if (connectTo["input"].length > 0){
 					for (var z = 0; z < (connectTo["input"].length-1); z++){
-						ins += "\"variable\": \"/igadget/" + connectTo["input"][z].id + "/var/" + connectTo["input"][z].name + "/\",";		
+						ins += "{\"variable\": \"/igadget/" + connectTo["input"][z].id + "/var/" + connectTo["input"][z].name + "/\"},";		
 					}
-					ins += "\"variable\": \"/igadget/" + connectTo["input"][connectTo["input"].length].id + "/var/" + connectTo["input"][connectTo["input"].length].name + "/\"";		
+					ins += "{\"variable\": \"/igadget/" + connectTo["input"][(connectTo["input"].length-1)].id + "/var/" + connectTo["input"][(connectTo["input"].length-1)].name + "/\"}";		
 				}
 				if (connectTo["output"].length > 0){
 					for (var h = 0; h < (connectTo["output"].length-1); h++){
-						outs += "\"variable\": \"/igadget/" + connectTo["output"][h].id + "/var/" + connectTo["output"][h].name + "/\",";		
+						outs += "{\"variable\": \"/igadget/" + connectTo["output"][h].id + "/var/" + connectTo["output"][h].name + "/\"},";		
 					}
-					outs += "\"variable\": \"/igadget/" + connectTo["input"][connectTo["output"].length].id + "/var/" + connectTo["input"][connectTo["output"].length].name + "/\"";		
+					outs += "{\"variable\": \"/igadget/" + connectTo["input"][(connectTo["output"].length-1)].id + "/var/" + connectTo["input"][(connectTo["output"].length-1)].name + "/\"}";		
 				}
 
-				inouts += "{\"uri\": \"/user/admin/wiring/" + copyList[inOutKeys[t]].ref.getName() + "/\", \"friend_code\":" + copyList[inOutKeys[t]].ref.getType()+ ", \"value\":" + copyList[inOutKeys[t]].ref.getValue()+", \"name\":"+ copyList[inOutKeys[t]].ref.getName() + "\", \"ins\": ["+ins+"], \"outs\": ["+outs+"]}";					
+				inouts += "{\"uri\": \"/user/admin/connectable/" + copyList[inOutKeys[t]].ref.getName() + "/\", \"friend_code\":" + copyList[inOutKeys[t]].ref.getType()+ ", \"value\":" + copyList[inOutKeys[t]].ref.getValue()+", \"name\":"+ copyList[inOutKeys[t]].ref.getName() + "\", \"ins\": ["+ins+"], \"outs\": ["+outs+"]}";					
 				if (t != (inOutKeys.length - 1)){
 				inouts += ",";					
 				}

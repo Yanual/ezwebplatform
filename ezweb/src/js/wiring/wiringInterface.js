@@ -6,6 +6,7 @@ function wiringInterface(){
 }
 wiringInterface.prototype.unloaded = function (){
 	this.loaded = false;
+	this._hideItems();
 	$("selectCanal").innerHTML = "";
 	$("wCanales").innerHTML = "";
 	$("wGadgets").innerHTML = "";
@@ -96,6 +97,7 @@ wiringInterface.prototype.renewChannel = function (w,channel,slots,events){
 		for (var j = 0; j < outputs.length; j++){
 			this.addChannelLine (w, slots, "w.removeChannelOutput", outputs[j].id, outputs[j].name)
 		}
+		this._showItems();
 	}
 }
 
@@ -173,4 +175,12 @@ wiringInterface.prototype.addChannelLine = function (w,table, operation, gadget,
 	line.appendChild(col1);
 	line.appendChild(col2);
 	table.appendChild(line);
+}
+
+wiringInterface.prototype._showItems = function (){
+	$("items_panel").style.visibility = "visible";
+}
+
+wiringInterface.prototype._hideItems = function (){
+	$("items_panel").style.visibility = "hidden";
 }
