@@ -39,6 +39,7 @@ class GadgetCollection(Resource):
             data_list.append(data_fields)
         return HttpResponse(json_encode(data_list), mimetype='application/json; charset=UTF-8')
 
+    @transaction.commit_manually
     def create(self, request, user_name):
         user = user_authentication(user_name)
         if request.POST.has_key('url'):
@@ -52,11 +53,13 @@ class GadgetCollection(Resource):
         try:
             templateParser = TemplateParser(templateURL, user)
             templateParser.parse()
+            transaction.commit()
         except IntegrityError:
             # Gadget already exists. Rollback transaction
-            transaction.rollback_unless_managed()
+            transaction.rollback()
         except Exception, e:
             # Internal error
+            transaction.rollback()
             return HttpResponseServerError("<error>%s</error>" % e, mimetype='text/xml; charset=UTF-8')
         
         gadget = templateParser.getGadget()
