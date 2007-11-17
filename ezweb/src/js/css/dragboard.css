@@ -2,29 +2,31 @@
   cursor: pointer;
 }
 
-#dragboard {
-  min-width: 400px;
-  position: relative;
-}
-
 div.gadget_window {
   position: absolute;
-  border: 1px solid blue;
+  border: 1px solid #4c5054;
   background: white;
 }
 
 div.gadget_window div.gadget_menu {
   cursor: move;
-  background: #AAA;
-  border: 1px solid blue;
+  border-bottom: 1px solid #4c5054;
   padding: 3px;
+  font-weight: bold;
+  color: #FFF;
+  background: #97a0a8;
 }
 
 div.gadget_window div.gadget_menu div.button {
   display: inline;
-  margin: 0 3px;
-  border: 1px solid blue;
-  background: #DDD;
+  margin: 0 0 0 3px;
+  border: 1px solid #4c5054;
+  padding: 0px 2px;
+}
+
+div.gadget_window div.gadget_menu div.button:hover {
+  color: #000;
+  background: #e6f3ff;
 }
 
 .floatleft {

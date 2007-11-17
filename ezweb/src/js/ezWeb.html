@@ -50,31 +50,34 @@
 <script language="JavaScript">
 
 	function showInterface(element) {
-		var elements = ["wiring_container", "showcase_container", "dragboard_container"];
+		var tabs = ["wiring", "showcase", "dragboard"];
 
-		for (var i = 0; i < elements.length; i++)
-			$(elements[i]).style.zIndex = 1;
+		for (var i = 0; i < tabs.length; i++) {
+			$(tabs[i] + "_container").style.zIndex = 1;
+			$(tabs[i] + "_tab").className = "tab";
+		}
 
-		$(element).style.zIndex = 2;
+		$(element + "_container").setStyle({"zIndex" : 2});
+		$(element + "_tab").className = "tab current";
 	}
 
 	function show_showcase() {
 		wI.unloaded();
 	    opManager.repaintCatalogue("http://europa.ls.fi.upm.es:8000/user/admin/catalogue/resources");
-		showInterface('showcase_container');
+		showInterface('showcase');
 		UIUtils.setResourcesWidth();
 		document.getElementById('simple_search_text').focus();
 	}
 	
 	function show_dragboard() {
 		wI.unloaded();
-		showInterface('dragboard_container');
+		showInterface('dragboard');
 	}
 	
 	function show_wiring() {
 		wI.renewInterface(WiringFactory.getInstance(),$('selectCanal'),$('wGadgets'),$('wCanales'));
 		//wI.renewInterface();
-		showInterface('wiring_container');
+		showInterface('wiring');
 	}
 		
 	// Platform initialization
@@ -82,6 +85,11 @@
 		DragboardFactory.getInstance().repaint();
 		//wI = new wiringInterface();
 	}
+	
+	function resizeWrapper() {
+		$("wrapper").setStyle({"height" : (window.innerHeight - $("header").offsetHeight - 20) + "px"});
+	}
+
 	var wI;
 	wI = new wiringInterface();
 	var opManager = OpManagerFactory.getInstance();
@@ -91,43 +99,30 @@
 
 </head>
 
-<body>
+<body onload="resizeWrapper();" onresize="resizeWrapper();">
 
 <!-- HEADER -->
-<table id="header">
-	<tr>
-		<td><img src="http://europa.ls.fi.upm.es:8000/ezweb/Ezweb.png" style="width: 120px; height: 60px" alt="EzWeb Logo"></td>
-		<td valign="top" style="text-align: right"><div id="toolbar">
-				<a href="javascript:;" onclick="show_showcase();">My Gadgets</a> | <a href="javascript:;" onclick="show_wiring();">My Pipes</a>
-		</div></td>
-	</tr>
-</table>
+<div id="header">
+  <img id="logo" src="http://europa.ls.fi.upm.es:8000/ezweb/Ezweb.png" alt="EzWeb Logo">
+  <div class="tab_section">
+    <span id="wiring_tab" class="tab" onclick="show_wiring();">My Pipes</span>
+    <span id="showcase_tab" class="tab" onclick="show_showcase();">My Gadgets</span>
+    <span id="dragboard_tab" class="tab current" onclick="show_dragboard();">My Instances</span>
+  </div>
+</div>
 
 <div id="wrapper">
   <!-- DRAGBOARD LAYER -->
   <div id="dragboard_container" class="container">
-     <table class="container_header">
-     <tr>
-       <td style="text-align:left"><h3>My Instances</h3></td>
-       <td style="text-align:right">
-       </td>
-     </tr>
-     </table>
      <!-- DRAGBOARD VIEW -->
-     <div id="dragboard">
+     <div id="dragboard" class="container_content">
      </div><!-- DRAGBOARD VIEW -->
   </div>
 
   <!-- SHOWCASE LAYER -->
   <div id="showcase_container" class="container">
-  	<table class="container_header">
-    <tr>
-       <td style="text-align:left"><h3>My Gadgets</h3></td>
-       <td style="text-align:right" valign="top"><a href="javascript:;" onclick="show_dragboard();">hide</a></td>
-    </tr>
-    </table>
     <!-- SHOWCASE VIEW -->
-		<div id="showcase" class="main" onresize="UIUtils.setResourcesWidth();">
+		<div id="catalogue" class="container_content" onresize="UIUtils.setResourcesWidth();">
  
 			<div id="head" class="head">
 				<div id="new_resource" class="search">
@@ -181,13 +176,7 @@
 
   <!-- WIRING LAYER -->
   <div id="wiring_container" class="container">
-	<table class="container_header">
-	<tr>
-		<td style="text-align:left"><h3>My Pipes</h3></td>
-		<td style="text-align:right" valign="top"><a href="javascript:;" onclick="show_dragboard();">hide</a></td>
-	</tr>
-	</table>
-	<div style="position:relative; width:100%; height:93%; overflow:auto" id="wiring">
+	<div id="wiring" class="container_content">
 	<!-- WIRING VIEW -->
 		<div class = "left">
 			<input id = "gadget9" type = text value = "id gadget...">

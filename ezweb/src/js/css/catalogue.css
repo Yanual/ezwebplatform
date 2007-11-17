@@ -15,8 +15,8 @@
 	height:auto;
 	padding:0px;
 	margin:0px;
-	float:left;
-	background-color:#ccddff;
+	background: #e6f3ff;
+	height: 60px; // workaround 
 }
 
 #catalogue .head .search
@@ -84,6 +84,8 @@
 	float:left;
 	margin:0px;
 	padding:0px;
+	background: #FFF;
+	border-top: 1px solid #4c5054;
 }
 
 #catalogue .center .resources
@@ -279,7 +281,7 @@
 {
 	text-align:right;
 	margin-top:150px;
-	width:19px;
+	width:21px;
 	height:100%;
 	float:right;
 }
