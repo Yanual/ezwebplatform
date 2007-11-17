@@ -35,10 +35,9 @@ var ShowcaseFactory = function () {
 				var jsonGadget = jsonGadgetList[i];
 				var gadget = new Gadget (jsonGadget, null);
 				var gadgetId = gadget.getVendor() + '_' + gadget.getName() + '_' + gadget.getVersion();
-				var gadgetWrapper = new GadgetWrapper (gadgetId, gadget)
 				
 				// Insert gadget object in showcase object model
-				_gadgets[gadgetId] = gadgetWrapper;
+				_gadgets[gadgetId] = gadget;
 			}
 			
 			// Showcase loaded
@@ -47,9 +46,10 @@ var ShowcaseFactory = function () {
 			
 		}
 		
-		// Error callback
+		// Error callback (empty gadget list)
 		onErrorCallback = function (receivedData_) {
-			alert ("Error in Showcase callback");
+			_loaded = true;
+			_opManager.continueLoading (Modules.prototype.SHOWCASE);
 		}
 		
 		// *******************************
@@ -61,10 +61,7 @@ var ShowcaseFactory = function () {
 		var _persistenceEngine = PersistenceEngineFactory.getInstance();			
 		
 		// Initial load from persitence system
-		
-		//_persistenceEngine.send_get('http://10.95.25.145:8001/user/admin/gadgets', this, loadGadgets, onErrorCallback);
 		_persistenceEngine.send_get('http://europa.ls.fi.upm.es:8000/user/admin/gadgets', this, loadGadgets, onErrorCallback);
-		//_persistenceEngine.send_get('gadgets.json', this, loadGadgets, onErrorCallback);
 						
 
 		// ****************
@@ -88,7 +85,6 @@ var ShowcaseFactory = function () {
 		Showcase.prototype.deleteGadget = function (gadgetId_) {
 			var gadget = _gadgets.remove(gadgetId_);
 			//gadget.remove();
-			this.repaint();
 		}
 		
 		// Update a Showcase gadget
@@ -123,47 +119,6 @@ var ShowcaseFactory = function () {
 			_opManager.addInstance (gadget);
 		}
 		
-		// Show all Showcase's gadgets in the Plataform Interface
-		Showcase.prototype.repaint = function () {
-			var gadgets = _gadgets.values();
-			var num_rows = (gadgets.length + (gadgets.length % Showcase.prototype.NUM_CELLS)) / Showcase.prototype.NUM_CELLS;
-			var width = (1 / Showcase.prototype.NUM_CELLS) * 100;
-			//var num_cells = Showcase.prototype.NUM_CELLS + (gadgets.length - (gadgets.length % Showcase.prototype.NUM_CELLS));
-			
-			var gadgetsLayer = document.createElement("div");
-			gadgetsLayer.setAttribute("id", 'gadgets');
-			
-			var table = document.createElement("table");
-			table.style.border = '2';
-			table.style.position = 'relative';
-			table.style.width = '100%';
-			table.style.height = '100%';
-			
-			var insertedGadgets = 0;
-			for (var i = 0; i<num_rows; i++) {
-				var row = table.insertRow(i);
-
-				for (var j = 0; j<Showcase.prototype.NUM_CELLS; j++) {
-					var cell = row.insertCell(j);
-					cell.style.width = width + '%';
-					cell.vAlign = 'top';
-				
-					if (insertedGadgets < gadgets.length){
-						cell.appendChild(gadgets[j].paint());
-						insertedGadgets++;
-					}else{
-						cell.innerHTML = '&nbsp;';
-					}
-				}
-			}
-			gadgetsLayer.appendChild(table);
-			
-			// Insert Showcase HTML in its layer 
-			var showcaseLayer = $(Showcase.prototype.MODULE_HTML_ID);
-			showcaseLayer.innerHTML="";
-			showcaseLayer.appendChild (gadgetsLayer); 
-		}
-		
 	}
 	
 	// *********************************
@@ -179,188 +134,3 @@ var ShowcaseFactory = function () {
 	}
 	
 }();
-
-/**
- * ShowcaseViewer is a static class, used by the User Inteface.
- */
-
-var ShowcaseViewer = new function () {
-	
-	this.details = function (gadgetId_){
-		var detailsDiv = $('details_' + gadgetId_);
-		if (detailsDiv.style.display == 'block'){
-			detailsDiv.style.display = 'none';
-			return;
-		}
-		var myshowcase = ShowcaseFactory.getInstance();
-		var gadget = myshowcase.getGadget(gadgetId_);
-		$('template_' + gadgetId_).value = gadget.getTemplate();  
-		$('xhtml_' + gadgetId_).value = gadget.getXHtml();
-		$('details_' + gadgetId_).style.display='block'
-	}
-	
-	this.edit = function (gadgetId_){
-		var editDiv = $('edit_' + gadgetId_);
-		if (editDiv.style.display == 'block'){
-			editDiv.style.display = 'none';
-		}else{
-		var myshowcase = ShowcaseFactory.getInstance();
-		var gadget = myshowcase.getGadget(gadgetId_);
-			$('image_url_' + gadgetId_).value =  gadget.getImage();
-			$('tags_' + gadgetId_).value = gadget.getTags();
-			editDiv.style.display = 'block';
-		}
-		
-	}
-		
-	this.saveGadgetDetails = function (gadgetId_){
-		var imageSrc = $('image_url_' + gadgetId_).value;
-		var tags = $('tags_' + gadgetId_).value;
-		var myshowcase = ShowcaseFactory.getInstance();
-		myshowcase.setGadgetProperties(gadgetId_, imageSrc, tags.split(' '));
-		myshowcase.repaint();
-	}
-
-	this.deleteGadget = function (gadgetId_){
-		var myshowcase = ShowcaseFactory.getInstance();
-		myshowcase.deleteGadget(gadgetId_);
-		myshowcase.repaint();
-	}
-
-}
-
-/**
- * This class represents a improved Gadget with interface methods 
- */
-function GadgetWrapper(gadgetId_, gadget_) {
-	this.id = gadget_.getVendor() + '_' + gadget_.getName() + '_' + gadget_.getVersion();
-	this.gadget = gadget_;
-	
-	// Generates Gadget Toolbar
-	this._generateToolbarElement = function (){
-		var toolbar = document.createElement("div");
-		toolbar.setAttribute("class", "toolbar");
-
-		// Creates Gadget Toolbar HTML
-		var buffer = new StringBuffer();
-		
-		buffer.append('<h2>');
-		buffer.append(this.gadget.getName());
-		buffer.append('</h2>\n');
-		buffer.append('<a href="javascript:;" onClick="ShowcaseViewer.deleteGadget(\'');
-		buffer.append(this.id);
-		buffer.append('\')">| delete</a>\n');
-		buffer.append('<a href="javascript:;" onClick="ShowcaseViewer.edit(\'');
-		buffer.append(this.id);
-		buffer.append('\');">| edit </a>\n');
-		buffer.append('<a href="javascript:;">details </a>\n');
-		
-		toolbar.innerHTML = buffer.toString();
-		return toolbar
-	}
-	
-	// Generates Gadget Preferences HTML
-	this._generatePreferencesElement = function (){     
-		var preferences = document.createElement("div");
-		preferences.setAttribute("id", 'edit_' + this.id);
-		preferences.setAttribute("class", "preferences");
-		preferences.style.display = 'none';
-		
-		// Creates Gadget Preferences HTML
-		var buffer = new StringBuffer();
-		buffer.append('&nbsp;');
-	
-		buffer.append('<table>\n');
-		buffer.append('<tr>\n');	
-		buffer.append('<td><label for="image_url_');
-		buffer.append(this.id);
-		buffer.append('">Image URL</label></td>\n');
-		buffer.append('<td><input type="text" id="image_url_');
-		buffer.append(this.id);
-		buffer.append('" name="image_url_');
-		buffer.append(this.id);
-		buffer.append('" maxlength="256"/></td>\n');
-		buffer.append('</tr>\n');
-			
-		buffer.append('<tr>\n');
-		buffer.append('<td><label for="image_url_');
-		buffer.append(this.id);
-		buffer.append('">Tags</label></td>\n');
-		buffer.append('<td><input type="text" id="tags_');
-		buffer.append(this.id);
-		buffer.append('" name="tags_');
-		buffer.append(this.id);
-		buffer.append('" maxlength="256"/></td>\n');
-		buffer.append('</tr>\n');
-			
-		buffer.append('<tr>\n');
-		buffer.append('<td colspan="2"><a href="javascript:;" onClick="showcase_saveGadgetDetails(\'');
-		buffer.append(this.id);
-		buffer.append('\')"a>save</a> / <a href="javascript:;" onClick="$(\'edit_');
-		buffer.append(this.id);
-		buffer.append('\').style.display=\'none\'">cancel</a></td>\n');
-		buffer.append('</table>\n');
-		
-		preferences.innerHTML = buffer.toString();
-		return preferences
-	}	
-
-	// Generates Gadget Main HTML
-	this._generateMainElement = function (){
-		var mainElem = document.createElement("div");
-		mainElem.setAttribute("id", 'edit_' + this.id);
-		mainElem.setAttribute("class", "main");
-		
-		// Creates Gadget Preferences HTML
-		var buffer = new StringBuffer();
-		
-		buffer.append('<h4>Description</h4>\n');
-		buffer.append('<ul>\n');
-        buffer.append('<li><strong>Vendor: </strong>');
-		buffer.append(this.gadget.getVendor()); 
-		buffer.append('</li>\n');
-        buffer.append('<li><strong>Name: </strong>');
-		buffer.append(this.gadget.getName()); 
-		buffer.append('</li>\n');
-		buffer.append('<li><strong>Version: </strong>');
-		buffer.append(this.gadget.getVersion()); 
-		buffer.append('</li>\n');
-		buffer.append('<li><strong>Tags: </strong>');
-		buffer.append(this.gadget.getTags()); 
-		buffer.append('</li>\n');
-        buffer.append('</ul>\n');
-		buffer.append('<center><img src="');
-		buffer.append(this.gadget.getImage()); 
-		buffer.append('" alt="Imagen cannot be shown" /><br/>\n');
-		buffer.append('<a href="javascript:opManager.addInstance(\'' + this.id + '\');">add</a></center>\n');
-		
-		mainElem.innerHTML = buffer.toString();
-		return mainElem
-	}
-
-}
-
-// Gets Gadget identifier
-GadgetWrapper.prototype.getId = function() {
-	return this.id;
-}
-
-// Gets internal Gadget
-GadgetWrapper.prototype.getGadget = function() {
-	return this.gadget;
-}
-
-// Generates Gadget View
-GadgetWrapper.prototype.paint = function() {
-
-	// Creates Gadget Layer
-	var gadgetElement = document.createElement("div");
-	gadgetElement.setAttribute("id", this.id);
-	gadgetElement.setAttribute("class", "gadget");
-
-	gadgetElement.appendChild(this._generateToolbarElement());
-	gadgetElement.appendChild(this._generatePreferencesElement());
-	gadgetElement.appendChild(this._generateMainElement());
-	return gadgetElement;	
-}
-
