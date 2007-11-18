@@ -550,7 +550,7 @@ var WiringFactory = function () {
 					channel.ref.value = inOutList[copyKeys[i]].ref.getValue();
 				}
 				channel.ref.refresh(channel.ref);
-				keys.without(i);
+				keys = keys.without(copyKeys[i]);
 			}
 			for (var j= 0; j < keys.length; j++){
 				var deletedChannel = inOutList[keys[j]].ref;
