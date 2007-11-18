@@ -546,7 +546,7 @@ var WiringFactory = function () {
 			var iGadgets = iGadgetList.keys();
 			
 			for (var t = 0; t<iGadgets.length; t++){
-				var list = iGadgets[t].list;
+				var list = iGadgetList[iGadgets[t]].list;
 				for (var z = 0; z < list.length; z++){
 					list[z].ref.eraseConnections();
 				}	
