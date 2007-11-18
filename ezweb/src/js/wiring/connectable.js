@@ -123,7 +123,7 @@ wOut.prototype.serialize = function(){
 
 wOut.prototype.refresh = function (channelRef){
 	this.inputHash[channelRef.getName()] = channelRef;
-	this.setValue(channelRef.getValue());
+//	this.setValue(channelRef.getValue());
 }
 
 wOut.prototype.delConnections = function (){
@@ -182,8 +182,8 @@ wIn.prototype.setValue = function(value){
    for (i in this.outputHash){
       if (this.outputHash[i] instanceof wInOut){
          channelList = this.outputHash[i].setValue(value) + channelList;
-		 if (this.outputList[i]==null){
-		 	this.outputList[i].setTypeForward(this.type);
+		 if (this.outputHash[i]==null){
+		 	this.outputHash[i].setTypeForward(this.type);
 		 }
       }
    }
@@ -396,7 +396,7 @@ wInOut.prototype.removeInput = function(input){
 
 wInOut.prototype.setValue = function(value){
    var changes = "";
-   for (var i=0;i<=this.outputCounter;i++){
+   for (var i=0;i<this.outputCounter;i++){
       if (this.outputList[i] instanceof wConnectable){
          changes = this.outputList[i].setValue(value) + changes;
 		 if (this.outputList[i]==null && this.outputList[i] instanceof wInOut){

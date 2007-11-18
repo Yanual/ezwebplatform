@@ -42,6 +42,7 @@ wiringInterface.prototype.addChannelInterface = function(name, selector, itemize
 wiringInterface.prototype.addGadgetInterface = function (object,selector){
 	var element = document.createElement("option");
 	element.setAttribute("id", object.id)
+	element.setAttribute("value", object.id)
 	var text = document.createTextNode(object.name+"_"+object.id);
 	element.appendChild(text);
 	selector.appendChild(element);
