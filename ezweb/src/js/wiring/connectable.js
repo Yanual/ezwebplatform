@@ -126,8 +126,8 @@ wOut.prototype.refresh = function (channelRef){
 //	this.setValue(channelRef.getValue());
 }
 
-wOut.prototype.delConnections = function (){
-	
+wOut.prototype.eraseConnections = function (){
+	this.inputHash = [];
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -222,8 +222,8 @@ wIn.prototype.connections = function(){
    return result;
 }
 
-wIn.prototype.delConnections = function (){
-	
+wIn.prototype.eraseConnections = function (){
+	this.outputHash = [];
 }
 
 /////////////////////////////////////////////////////////////////////

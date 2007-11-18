@@ -543,6 +543,14 @@ var WiringFactory = function () {
 			// we nedd to reconnect every thing to this part
 			var keys = inOutList.keys();
 			var copyKeys = copyList.keys();
+			var iGadgets = iGadgetList.keys();
+			
+			for (var t = 0; t<iGadgets.length; t++){
+				var list = iGadgets[t].list;
+				for (var z = 0; z < list.length; z++){
+					list[z].ref.eraseConnections();
+				}	
+			}
 			
 			for (var i = 0; i < copyKeys.length; i++){
 				var channel = copyList[copyKeys[i]];
