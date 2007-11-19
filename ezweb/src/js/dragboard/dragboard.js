@@ -27,11 +27,11 @@ var DragboardFactory = function () {
 		// PRIVATED FUNCTIONS 
 		// ***********************
 		function _repaint(receivedData) {
-			var iGadget, gadgetElement;
+			var iGadget, position, iGadgetsToReinsert = new Array();
 			iGadgets.each( function (pair) {
 				iGadget = pair.value;
 
-				gadgetElement = iGadget.destroy();
+				iGadget.destroy();
 			});
 
 			dragboard.innerHTML = "";
@@ -57,39 +57,65 @@ var DragboardFactory = function () {
 			iGadgets.each( function (pair) {
 				iGadget = pair.value;
 
-				// TODO checkSpace
-				gadgetElement = iGadget.paint(dragboard, dragboardStyle);
-				_reserveSpace(matrix, iGadget);
+				position = iGadget.getPosition();
+				// height + 2 for check that there is space with margins (1 cell at top and another at bottom)
+				if (_hasSpaceFor(matrix, position.x, position.y - 1, iGadget.getContentWidth(), iGadget.getHeight() + 2)) {
+					iGadget.paint(dragboard, dragboardStyle);
+					_reserveSpace(matrix, iGadget);
+				} else {
+					iGadgetsToReinsert.push(iGadget);
+				}
 			});
+
+			for (i = 0; i < iGadgetsToReinsert.length; i++) {
+				position = _searchFreeSpace(iGadgetsToReinsert[i].getContentWidth(),
+				                            iGadgetsToReinsert[i].getHeight());
+				iGadgetsToReinsert[i].setPosition(position);
+				iGadgetsToReinsert[i].paint(dragboard, dragboardStyle);
+				_reserveSpace(matrix, iGadgetsToReinsert[i]);
+			}
 		}
 
 		/**
 		 * Loads data from persistenceEngine
 		 */
 		function _load(receivedData) {
-			var response = eval ('(' + receivedData.responseText + ')');
-			var curIGadget, position, width, height, igadget, gadget;
+			var curIGadget, position, width, height, igadget, gadget, gadgetid;
 
-			currentId = 0; // TODO remove, persistenceEngine will manage ids
+			var iGadgetsJson = eval ('(' + receivedData.responseText + ')');
+			iGadgetsJson = iGadgetsJson.iGadgets;
+
+			var opManager = OpManagerFactory.getInstance();
+
+			currentId = 1; // TODO remove, persistenceEngine will manage ids
 			iGadgets = new Hash();
 
-			tmp = response.iGadgets;
-			for (var i = 0; i < response.iGadgets.length; i++) {
-				curIGadget = response.iGadgets[i];
+			for (var i = 0; i < iGadgetsJson.length; i++) {
+				curIGadget = iGadgetsJson[i];
 
 				position = new DragboardPosition(parseInt(curIGadget.left), parseInt(curIGadget.top));
 				width = parseInt(curIGadget.width);
 				height = parseInt(curIGadget.height);
 
-				gadget = ShowcaseFactory.getInstance().getGadget(curIGadget.gadgetid); // TODO
+				// Parse gadget id
+				gadgetid = curIGadget.gadget.split("/");
+				gadgetid = gadgetid[4] + "_" + gadgetid[5] + "_" + gadgetid[6];
+				// Get gadget model
+				gadget = ShowcaseFactory.getInstance().getGadget(gadgetid);
+
+				// Parse instance id
+				curIGadget.id = curIGadget.uri.split("/");
+				curIGadget.id = parseInt(curIGadget.id[curIGadget.id.length - 1]);
+
+				// Create instance model
 				igadget = new IGadget(gadget, curIGadget.id, position, width, height);
 				iGadgets[curIGadget.id] = igadget;
 
-				curIGadget.id = parseInt(curIGadget.id);
 				if (curIGadget.id >= currentId) // TODO remove, persistenceEngine will manage ids
 					currentId =  curIGadget.id + 1;
 
 				_reserveSpace(matrix, igadget);
+				opManager.notifyInstance(curIGadget.id);
 			}
 
 			loaded = true;
@@ -340,6 +366,19 @@ var DragboardFactory = function () {
 			_reserveSpace(matrix, iGadget);
 		}
 
+
+		function _searchFreeSpace(width, height) {
+			var positionX = 0, positionY = 0;
+			var columns = dragboardStyle.getColumns() - width + 1;
+			height += 2; // margins
+
+			for (positionY = 0; true ; positionY++)
+				for (positionX = 0; positionX < columns; positionX++)
+					if (_hasSpaceFor(matrix, positionX, positionY, width, height)) {
+						return new DragboardPosition(positionX, positionY + 1);
+					}
+		}
+
 		// ****************
 		// PUBLIC METHODS 
 		// ****************
@@ -348,32 +387,16 @@ var DragboardFactory = function () {
 				return; // TODO exception
 
 			var template = gadget.getTemplate();
-			// Search a position for the gadget
-			var positionX, positionY, found;
-
-			positionX = 0; // tmp
-			positionY = 0;
 			var width = template.getWidth();
-			// TODO +2 for the menu
-			var height = template.getHeight() + 2 + 2; // one cell of margin at the top and at the bottom
-			var columns = dragboardStyle.getColumns() - width + 1;
+			var height = template.getHeight();
 
-			// Search first free space
-			dragboard_addInstance_exit: for (; !found; positionY++)
-				for (positionX = 0; positionX < columns; positionX++)
-					if (_hasSpaceFor(matrix, positionX, positionY, width, height)) {
-						found = true;
-						break dragboard_addInstance_exit;
-					}
-
-			// Add the offset of the margin (one cell of margin) and remove
-			// margins to the height
-			positionY++;
-			height -= (2 + 2); 
+			// Search a position for the gadget
+			// TODO height +2 for the menu
+			var position = _searchFreeSpace(width, height + 2);
 
 			// Create the instance
-			var position = new DragboardPosition(positionX, positionY);
 			var iGadget = new IGadget(gadget, currentId, position, width, height);
+			iGadget.save();
 			iGadgets[currentId] = iGadget;
 			currentId++;
 
@@ -420,7 +443,8 @@ var DragboardFactory = function () {
 		}
 
 		Dragboard.prototype.repaint = function (iGadgetId) {
-			_repaint();
+			if (loaded)
+			    _repaint();
 		}
 
 		/**
@@ -544,7 +568,7 @@ var DragboardFactory = function () {
 
 		var persistenceEngine = PersistenceEngineFactory.getInstance();
 //		persistenceEngine.send_get("http://hercules.ls.fi.upm.es:8000/user/admin/igadgets/", this, _load, onError);
-		persistenceEngine.send_get("dragboard.json", this, _load, onError);
+		persistenceEngine.send_get("/user/admin/igadgets", this, _load, onError);
 	}
 
 	// *********************************
@@ -684,7 +708,7 @@ IGadget.prototype.paint = function(where, style) {
 	gadgetElement.style.width = ((30 * width) + (2 * (width - 1))) + "%";  // TODO
 	gadgetContent.style.height = style.fromVCellsToPixels(this.height) + "px";
 	gadgetContent.style.width = "100%";
-	gadgetMenu.style.height = (style.fromVCellsToPixels(2) - 8) + "px"; // borders and margins
+//	gadgetMenu.style.height = (style.fromVCellsToPixels(2) - 8) + "px"; // borders and margins
 //(cellHeight - gadgetMenu.style.marginTop - gadgetMenu.style.marginBottom - gadgetMenu.style.borderTopWidth - gadgetMenu.style.borderBottomWidth) + "px";
 
 	// References
@@ -763,6 +787,29 @@ IGadget.prototype.makeConfigureInterface = function() {
                  "</div></form>";
 
 	return interface;
+}
+
+IGadget.prototype.save = function() {
+	function onSuccess() {
+//		alert ("v success");
+	}
+	function onError() {
+//		alert ("x error");
+	}
+
+	var persistenceEngine = PersistenceEngineFactory.getInstance();
+	var data = new Hash();
+	data['iGadget'] = new Hash();
+	data['iGadget']['left'] = this.position.x;
+	data['iGadget']['top'] = this.position.y;
+	data['iGadget']['width'] = this.width;
+	data['iGadget']['height'] = this.height;
+	data['iGadget']['uri'] = "/user/admin/igadgets/" + this.id;
+	data['iGadget']['gadget'] = "/user/admin/gadgets/" + this.gadget.getVendor() + "/" +
+			this.gadget.getName() + "/" +
+			this.gadget.getVersion();
+	data = "igadget=" + data.toJSON();
+//	persistenceEngine.send_post("/user/admin/igadgets/" + "kk/kk/kk/", data, this, onSuccess, onError);
 }
 
 /////////////////////////////////////
