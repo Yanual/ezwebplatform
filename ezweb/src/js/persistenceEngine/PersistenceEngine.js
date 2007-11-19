@@ -14,6 +14,7 @@ var PersistenceEngineFactory = function () {
 			new Ajax.Request(url, {
 				method: 'get',
 				onSuccess: successHandler.bind(context),
+				onFailure: errorHandler.bind(context),
 				onException: errorHandler.bind(context)
 			});
 		} 
@@ -23,6 +24,7 @@ var PersistenceEngineFactory = function () {
 				method: 'post',
 				parameters: params,
 				onSuccess: successHandler.bind(context),
+				onFailure: errorHandler.bind(context),
 				onException: errorHandler.bind(context)
 			});
 		}
@@ -31,6 +33,7 @@ var PersistenceEngineFactory = function () {
 			new Ajax.Request(url, {
 				method: 'delete',
 				onSuccess: successHandler.bind(context),
+				onFailure: errorHandler.bind(context),
 				onException: errorHandler.bind(context)
 			});
 		}
@@ -40,6 +43,7 @@ var PersistenceEngineFactory = function () {
 				method: 'put',
 				parameters: params,
 				onSuccess: successHandler.bind(context),
+				onFailure: errorHandler.bind(context),
 				onException: errorHandler.bind(context)
 			});
 		}
