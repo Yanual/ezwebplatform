@@ -584,10 +584,13 @@ var WiringFactory = function () {
 					}
 					
 				}
+
 				outs = outs.substring(0, (outs.length-1));
 				ins = ins.substring(0, (ins.length-1));
 				
+
 				var itemjson = "{\"uri\": \"/user/admin/igadget/" + iGadgetList[gadgetKeys[i]].vendor + "/" + iGadgetList[gadgetKeys[i]].id + "/" + iGadgetList[gadgetKeys[i]].version + "/\", \"ins\":[" + ins + "], \"outs\":[" + outs + "]}" ;			
+
 				if (i != (gadgetKeys.length-1)){		
 					itemjson += ", " ;					
 				}
