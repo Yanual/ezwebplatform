@@ -25,4 +25,5 @@
 	<Platform.Link>
 		<XHTML href="http://europa.ls.fi.upm.es/ezweb/gadgets/bandejaAverias.html"/>
 	</Platform.Link>
+	<Platform.Rendering width="3" height="1"/>
 </Template>

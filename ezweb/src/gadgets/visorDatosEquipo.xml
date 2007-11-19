@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
 <Template schemaLocation="http://morfeo-project.org/2007/Template">
 <!-- Meta tags define gadgets properties -->
 	<Catalog.ResourceDescription>
 		<Vendor>Morfeo</Vendor>
-		<Name>Visor_de_Datos_de_Equipo</Name>
+		<Name>Visor_Datos_Equipo</Name>
 		<Version>1.0</Version>
 		<Author>miglesia</Author>
 		<Mail>miglesia@pegaso.ls.fi.upm.es</Mail>
@@ -26,4 +25,5 @@
 	<Platform.Link>
 		<XHTML href="http://europa.ls.fi.upm.es/ezweb/gadgets/visorDatosEquipo.html"/>
 	</Platform.Link>
+	<Platform.Rendering width="1" height="3"/>
 </Template>

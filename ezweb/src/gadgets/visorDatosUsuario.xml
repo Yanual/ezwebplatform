@@ -3,7 +3,7 @@
 <!-- Meta tags define gadgets properties -->
 	<Catalog.ResourceDescription>
 		<Vendor>Morfeo</Vendor>
-		<Name>Visor_de_Datos_de_Usuario</Name>
+		<Name>Visor_Datos_Usuario</Name>
 		<Version>1.0</Version>
 		<Author>miglesia</Author>
 		<Mail>miglesia@pegaso.ls.fi.upm.es</Mail>
@@ -25,4 +25,5 @@
 	<Platform.Link>
 		<XHTML href="http://europa.ls.fi.upm.es/ezweb/gadgets/visorDatosUsuario.html"/>
 	</Platform.Link>
+	<Platform.Rendering width="1" height="3"/>
 </Template>

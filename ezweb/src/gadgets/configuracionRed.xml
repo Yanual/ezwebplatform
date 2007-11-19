@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Template schemaLocation="http://morfeo-project.org/2007/Template">
 	<!-- Meta tags define gadgets properties -->
 	<Catalog.ResourceDescription>
@@ -19,11 +19,12 @@
 	</Platform.StateProperties>
 	<!-- EzWeb Gadget Data Wiring -->
 	<Platform.Wiring>
-		<Wire name="serviceHired" type="text" label="ServiceHired" friendcode = "service" wiring="out"/>
-		<Wire name="deviceId" type="text" label="deviceId" friendcode = "deviceId" wiring="in"/>
-		<Wire name="deviceStatus" type="text" label="deviceStatus" friendcode = "deviceStatus" wiring="in"/>
+		<Wire name="serviceHired" type="text" label="ServiceHired" friendcode="service" wiring="out"/>
+		<Wire name="deviceId" type="text" label="deviceId" friendcode="deviceId" wiring="in"/>
+		<Wire name="deviceStatus" type="text" label="deviceStatus" friendcode="deviceStatus" wiring="in"/>
 	</Platform.Wiring>
 	<Platform.Link>
 		<XHTML href="http://europa.ls.fi.upm.es/ezweb/gadgets/configuracionRed.html"/>
 	</Platform.Link>
+	<Platform.Rendering width="1" height="3"/>
 </Template>
