@@ -577,17 +577,17 @@ var WiringFactory = function () {
 				for (var j = 0; j < iGadgetList[gadgetKeys[i]].list.length; j++){
 					var connectablejson = "{\"name\": \"" + iGadgetList[gadgetKeys[i]].list[j].name + "\", \"variable\": \"/igadget/" + gadgetKeys[i] + "/var/" + iGadgetList[gadgetKeys[i]].list[j].name + "/\"},";
 					if (iGadgetList[gadgetKeys[i]].list[j].aspect == "SLOT"){
-						outs += connectablejson;
+						ins += connectablejson;
 					}
 					else{
-						ins += connectablejson;		
+						outs += connectablejson;		
 					}
 					
 				}
 				outs = outs.substring(0, (outs.length-1));
 				ins = ins.substring(0, (ins.length-1));
 				
-				var itemjson = "{\"uri\": \"/user/admin/gadgets/" + iGadgetList[gadgetKeys[i]].vendor + "/" + iGadgetList[gadgetKeys[i]].id + "/" + iGadgetList[gadgetKeys[i]].version + "\", \"ins\":[" + ins + "], \"outs\":[" + outs + "]}" ;			
+				var itemjson = "{\"uri\": \"/user/admin/igadget/" + iGadgetList[gadgetKeys[i]].vendor + "/" + iGadgetList[gadgetKeys[i]].id + "/" + iGadgetList[gadgetKeys[i]].version + "/\", \"ins\":[" + ins + "], \"outs\":[" + outs + "]}" ;			
 				if (i != (gadgetKeys.length-1)){		
 					itemjson += ", " ;					
 				}
@@ -608,7 +608,7 @@ var WiringFactory = function () {
 					for (var h = 0; h < (connectTo["output"].length-1); h++){
 						outs += "{\"variable\": \"/igadget/" + connectTo["output"][h].id + "/var/" + connectTo["output"][h].name + "/\"},";		
 					}
-					outs += "{\"variable\": \"/igadget/" + connectTo["input"][(connectTo["output"].length-1)].id + "/var/" + connectTo["input"][(connectTo["output"].length-1)].name + "/\"}";		
+					outs += "{\"variable\": \"/igadget/" + connectTo["output"][(connectTo["output"].length-1)].id + "/var/" + connectTo["output"][(connectTo["output"].length-1)].name + "/\"}";		
 				}
 
 				inouts += "{\"uri\": \"/user/admin/connectable/" + copyList[inOutKeys[t]].ref.getName() + "/\", \"friend_code\":" + copyList[inOutKeys[t]].ref.getType()+ ", \"value\":" + copyList[inOutKeys[t]].ref.getValue()+", \"name\":"+ copyList[inOutKeys[t]].ref.getName() + "\", \"ins\": ["+ins+"], \"outs\": ["+outs+"]}";					
