@@ -68,22 +68,23 @@
 		UIUtils.setResourcesWidth();
 		document.getElementById('simple_search_text').focus();
 	}
-	
+
 	function show_dragboard() {
 		wI.unloaded();
 		showInterface('dragboard');
 	}
-	
+
 	function show_wiring() {
 		wI.renewInterface(WiringFactory.getInstance(),$('selectCanal'),$('wGadgets'),$('wCanales'));
 		//wI.renewInterface();
 		showInterface('wiring');
 	}
-		
+
 	// Platform initialization
 	function environmentLoadedCallback() {
 		DragboardFactory.getInstance().repaint();
-		//wI = new wiringInterface();
+
+		wI = new wiringInterface();
 	}
 	
 	function resizeWrapper() {
@@ -91,7 +92,6 @@
 	}
 
 	var wI;
-	wI = new wiringInterface();
 	var opManager = OpManagerFactory.getInstance();
 	opManager.loadEnviroment();
 </script>

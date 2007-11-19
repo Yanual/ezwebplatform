@@ -13,13 +13,13 @@ var OpManagerFactory = function () {
 		
 		// Already loaded modules
 		this.persistenceEngine = PersistenceEngineFactory.getInstance();
-		this.catalogue = CatalogueFactory.getInstance();
 		
 		// Still to load modules
 		this.varManagerModule = null;
 		this.wiringModule = null;
 		this.dragboardModule = null;
 		this.showcaseModule = null;
+		this.catalogue = null;
 		
 		this.loadCompleted = false;
 		
@@ -28,7 +28,7 @@ var OpManagerFactory = function () {
 		// ****************
 			
 		OpManager.prototype.addInstance = function (gadgetId) {
-		        if (!loadCompleted)
+		        if (!this.loadCompleted)
 				return;
 
 			var gadget = this.showcaseModule.getGadget(gadgetId);
@@ -43,9 +43,21 @@ var OpManagerFactory = function () {
 			// The dragboard must be shown after an igadget insertion
 			show_dragboard()
 		}
+
+		/**
+		 * TODO search a better name for this method
+		 * This method is used by the dragboard at init and will be removed when
+		 * the load is completed.
+		 */
+		OpManager.prototype.notifyInstance = function (iGadgetId) {
+			var gadget = this.dragboardModule.getGadget(iGadgetId);
+
+			this.varManagerModule.addInstance(iGadgetId, gadget.getTemplate());
+			// Wiring will ask dragboard for the inital instances
+		}
 		 
 		OpManager.prototype.removeInstance = function (iGadgetId) {
-			if (!loadCompleted)
+			if (!this.loadCompleted)
 				return;
 
 			this.dragboardModule.removeInstance(iGadgetId); // TODO split into hideInstance and removeInstance
@@ -64,7 +76,6 @@ var OpManagerFactory = function () {
 
 		OpManager.prototype.loadEnviroment = function () {
 			this.varManagerModule = VarManagerFactory.getInstance();
-			this.catalogue.loadCatalogue('http://europa.ls.fi.upm.es:8000/user/admin/catalogue/resources/');
 		}
 
 		OpManager.prototype.repaintCatalogue = function (url) {
@@ -92,7 +103,11 @@ var OpManagerFactory = function () {
 			}
 			
 			if (module == Modules.prototype.WIRING) {
-				loadCompleted = true;
+				this.catalogue = CatalogueFactory.getInstance();
+				this.catalogue.loadCatalogue('http://europa.ls.fi.upm.es:8000/user/admin/catalogue/resources/');
+
+				this.loadCompleted = true;
+				delete this.notifyInstance;
 				environmentLoadedCallback();
 				return;
 			}
