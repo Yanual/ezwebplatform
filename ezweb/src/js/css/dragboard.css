@@ -11,7 +11,8 @@ div.gadget_window {
 div.gadget_window div.gadget_menu {
   cursor: move;
   border-bottom: 1px solid #4c5054;
-  padding: 3px;
+  padding: 3px 7px;
+  height: 16px;
   font-weight: bold;
   color: #FFF;
   background: #97a0a8;
@@ -19,7 +20,7 @@ div.gadget_window div.gadget_menu {
 
 div.gadget_window div.gadget_menu div.button {
   display: inline;
-  margin: 0 0 0 3px;
+  margin: 0 0 0 5px;
   border: 1px solid #4c5054;
   padding: 0px 2px;
 }
