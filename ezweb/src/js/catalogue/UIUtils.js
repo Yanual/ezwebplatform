@@ -14,7 +14,7 @@ UIUtils.isInfoResourcesOpen = false;
 
 UIUtils.addResource = function(url, paramName, paramValue) {
 	var newResourceOnSuccess = function (response) {
-		OpManagerFactory.getInstance().repaintCatalogue();
+		OpManagerFactory.getInstance().repaintCatalogue("http://europa.ls.fi.upm.es:8000/user/admin/catalogue/resources/");
 	}
 	
 	var newResourceOnError = function (response) {
@@ -117,9 +117,8 @@ UIUtils.setResourcesWidth = function() {
 	var head = document.getElementById('head');
 	var resources = document.getElementById('resources');
 	var center = document.getElementById('center');
-	var scrollWidth = 25;
 	center.style.width = head.offsetWidth + 'px';
-	resources.style.width = (center.offsetWidth - (tab.offsetWidth + (UIUtils.isInfoResourcesOpen?UIUtils.infoResourcesWidth:0) + scrollWidth)) + 'px';
+	resources.style.width = (center.offsetWidth - (tab.offsetWidth + (UIUtils.isInfoResourcesOpen?UIUtils.infoResourcesWidth:0))) + 'px';
 }
 
 UIUtils.openInfoResource = function() {
