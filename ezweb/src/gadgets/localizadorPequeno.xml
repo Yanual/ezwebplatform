@@ -9,7 +9,7 @@
 		<Mail>miglesia@pegaso.ls.fi.upm.es</Mail>
 		<Description>Este gadget presenta la ubicacion en el plano de una determinada direccion</Description>
 		<ImageURI>http://europa.ls.fi.upm.es/ezweb/gadgets/brujula.gif</ImageURI>
-		<WikiURI>http://piccolo.ls.fi.upm.es:7000/Localizador</WikiURI>
+		<WikiURI>http://piccolo.ls.fi.upm.es:7000/LocalizadorPequeno</WikiURI>
 	</Catalog.ResourceDescription>
 	<!-- EzWeb Gadgets Tags -->
 	<Platform.Preferences>
@@ -24,5 +24,5 @@
 	<Platform.Link>
 		<XHTML href="http://europa.ls.fi.upm.es/ezweb/gadgets/localizador.html"/>
 	</Platform.Link>
-	<Platform.Rendering width="2" height="27"/>
+	<Platform.Rendering width="1" height="25"/>
 </Template>

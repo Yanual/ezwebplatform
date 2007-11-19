@@ -9,7 +9,7 @@
 		<Mail>miglesia@pegaso.ls.fi.upm.es</Mail>
 		<Description>Este gadget presenta la informacion relativa a un usuario para el cual se ha detectado una averia</Description>
 		<ImageURI>http://europa.ls.fi.upm.es/ezweb/gadgets/person.jpg</ImageURI>
-		<WikiURI>http://www.image.com</WikiURI>
+		<WikiURI>http://piccolo.ls.fi.upm.es:7000//Visor_Datos_Usuario</WikiURI>
 	</Catalog.ResourceDescription>
 	<!-- EzWeb Gadgets Tags -->
 	<Platform.Preferences>
@@ -25,5 +25,5 @@
 	<Platform.Link>
 		<XHTML href="http://europa.ls.fi.upm.es/ezweb/gadgets/visorDatosUsuario.html"/>
 	</Platform.Link>
-	<Platform.Rendering width="1" height="3"/>
+	<Platform.Rendering width="1" height="11"/>
 </Template>

@@ -9,7 +9,7 @@
 		<Mail>miglesia@pegaso.ls.fi.upm.es</Mail>
 		<Description>Este gadget presenta un diagrama con la localizacion de la averia en el servicio</Description>
 		<ImageURI>http://europa.ls.fi.upm.es/ezweb/gadgets/red.jpg</ImageURI>
-		<WikiURI>http://www.image.com</WikiURI>
+		<WikiURI>http://piccolo.ls.fi.upm.es:7000/Configuracion_de_Red</WikiURI>
 	</Catalog.ResourceDescription>
 	<!-- EzWeb Gadgets Tags -->
 	<Platform.Preferences>
@@ -26,5 +26,5 @@
 	<Platform.Link>
 		<XHTML href="http://europa.ls.fi.upm.es/ezweb/gadgets/configuracionRed.html"/>
 	</Platform.Link>
-	<Platform.Rendering width="1" height="3"/>
+	<Platform.Rendering width="1" height="11"/>
 </Template>
