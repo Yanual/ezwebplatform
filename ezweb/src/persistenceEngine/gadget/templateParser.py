@@ -26,6 +26,15 @@ class TemplateParser:
     def getGadget (self):
         return self.handler._gadget 
 
+    def getGadgetName (self):
+        return self.handler._gadgetName 
+
+    def getGadgetVersion (self):
+        return self.handler._gadgetVersion
+
+    def getGadgetVendor (self):
+        return self.handler._gadgetVendor
+
             
 class TemplateHandler(saxutils.handler.ContentHandler):
     # XML parsing

@@ -62,10 +62,13 @@ class GadgetCollection(Resource):
             transaction.rollback()
             return HttpResponseServerError("<error>%s</error>" % e, mimetype='text/xml; charset=UTF-8')
         
-        gadget = templateParser.getGadget()
+	gadgetName = templateParser.getGadgetName()
+	gadgetVendor = templateParser.getGadgetVendor()
+	gadgetVersion = templateParser.getGadgetVersion()
+
         gadget_entry = GadgetEntry()
         # POST and GET behavior is alike, both must return a Gadget JSON representation
-        return gadget_entry.read(request, user_name, gadget.vendor, gadget.name, gadget.version)
+        return gadget_entry.read(request, user_name, gadgetVendor, gadgetName, gadgetVersion)
         
 class GadgetEntry(Resource):
     def read(self, request, user_name, vendor, name, version):

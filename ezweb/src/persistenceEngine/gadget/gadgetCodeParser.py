@@ -20,7 +20,7 @@ class GadgetCodeParser(HTMLParser):
         self.xHTML = XHTML (uri=gadgetURI + "/xhtml", code=xhtml)
         self.xHTML.save()
 
-        self.feed(xhtml)
+        #self.feed(xhtml)
 
         return
 
