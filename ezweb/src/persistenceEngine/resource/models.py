@@ -25,4 +25,4 @@ class GadgetResource(models.Model):
          pass 
   
      def __unicode__(self): 
-         return self.gadget_uri 
+         return self.short_name
