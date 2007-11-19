@@ -9,11 +9,9 @@ function Template(template_) {
 	//  PRIVATE VARIABLES
 	// *******************
 
-   var variableList = template_;
-   //var width = template_.size.width;
-   //var height = template_size.height;
-   var width = 2;
-   var height = 2;
+   var variableList = template_.variables;
+   var width = template_.size.width;
+   var height = template_.size.height;
 
 	// ******************
 	//  PUBLIC FUNCTIONS
