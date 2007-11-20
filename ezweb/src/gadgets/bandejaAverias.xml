@@ -7,7 +7,7 @@
 		<Version>1.0</Version>
 		<Author>miglesia</Author>
 		<Mail>miglesia@pegaso.ls.fi.upm.es</Mail>
-		<Description>Este gadget presenta una lista de averías registradas por usuarios y la información relativa a ellas</Description>
+		<Description>Este gadget presenta una lista de averias registradas por usuarios y la informacion relativa a ellas</Description>
 		<ImageURI>http://europa.ls.fi.upm.es/ezweb/gadgets/RedLightBulb.gif</ImageURI>
 		<WikiURI>http://piccolo.ls.fi.upm.es:7000/Bandeja_de_Averias</WikiURI>
 	</Catalog.ResourceDescription>
