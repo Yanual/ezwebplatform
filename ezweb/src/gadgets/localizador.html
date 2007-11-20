@@ -22,6 +22,12 @@ geocoder = new GClientGeocoder();
 }
 
 function _addressHandler(address) {
+
+if (address == null || address == undefined) {
+  map.setCenter(new GLatLng(34, 0), 1);
+  return;
+}
+
 if (geocoder) {
 geocoder.getLatLng(
 address,
