@@ -334,8 +334,7 @@ serviceHired.set(rows[row*5+4].innerHTML);
 &lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;TV&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;&lt;/table&gt;
-&lt;/body&gt;&lt;/html&gt;
-</field>
+&lt;/body&gt;&lt;/html&gt;</field>
     </object>
     <object pk="2" model="gadget.xhtml">
         <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Configuracion_de_Red/1.0/xhtml</field>
@@ -389,56 +388,6 @@ document.body.replaceChild(oFragment,document.getElementById("visorConfRed"));
 &lt;/SCRIPT&gt;&lt;/HEAD&gt;&lt;BODY&gt;
 &lt;DIV id="visorConfRed"&gt;&lt;I&gt;A la espera de seleccionar una averia...&lt;/I&gt;&lt;/DIV&gt;
 &lt;/BODY&gt;&lt;/HTML&gt;</field>
-    </object>
-    <object pk="3" model="gadget.xhtml">
-        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Localizador/1.0/xhtml</field>
-        <field type="TextField" name="code">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
-
-&lt;html&gt;
-&lt;head&gt;
-&lt;meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /&gt;
-&lt;script language="javascript" src="/ezweb/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
-&lt;title&gt;Localizador&lt;/title&gt;
-&lt;script src="http://maps.google.com/maps?file=api&amp;amp;v=2&amp;amp;key=ABQIAAAAoMH4tTPsZmm1jaPem3DI7BQ4_NLUn61t1r9bXCIqXPpm5-RihhTyVyZWHK_kmpzl1NrJF4sXz3ZVDw" type="text/javascript"&gt;&lt;/script&gt;
-&lt;script&gt;
-var map=null;
-var geocoder=null;
-var address = new EzWebAPI.createRGadgetVariable("address",_addressHandler);
-
-function _initialize() {
-if (GBrowserIsCompatible()) {
-map = new GMap2(document.getElementById("map_canvas"));
-map.addControl(new GMapTypeControl());
-map.addControl(new GLargeMapControl());
-map.setCenter(new GLatLng(34, 0), 1);
-geocoder = new GClientGeocoder();
-}
-}
-
-function _addressHandler(address) {
-if (geocoder) {
-geocoder.getLatLng(
-address,
-function(point) {
-if (!point) {
-document.getElementById("map_canvas").innerHTML="Direccion no encontrada";
-} else {
-map.setCenter(point, 16);
-var marker = new GMarker(point);
-map.addOverlay(marker);
-marker.openInfoWindowHtml(address);
-}
-}
-);
-}
-}
-
-&lt;/script&gt;
-&lt;/head&gt;
-&lt;body style="padding: 0px; margin: 0px" onload="_initialize();"&gt;
-&lt;div id="map_canvas" style="500px; height: 400px;"&gt;&lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;</field>
     </object>
     <object pk="4" model="gadget.xhtml">
         <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Visor_Datos_Equipo/1.0/xhtml</field>
@@ -583,6 +532,12 @@ geocoder = new GClientGeocoder();
 }
 
 function _addressHandler(address) {
+
+if (address == null || address == undefined) {
+  map.setCenter(new GLatLng(34, 0), 1);
+  return;
+}
+
 if (geocoder) {
 geocoder.getLatLng(
 address,
@@ -604,6 +559,62 @@ marker.openInfoWindowHtml(address);
 &lt;/head&gt;
 &lt;body style="padding: 0px; margin: 0px" onload="_initialize();"&gt;
 &lt;div id="map_canvas" style="500px; height: 375px;"&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</field>
+    </object>
+    <object pk="3" model="gadget.xhtml">
+        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Localizador/1.0/xhtml</field>
+        <field type="TextField" name="code">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
+
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /&gt;
+&lt;script language="javascript" src="/ezweb/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
+&lt;title&gt;Localizador&lt;/title&gt;
+&lt;script src="http://maps.google.com/maps?file=api&amp;amp;v=2&amp;amp;key=ABQIAAAAoMH4tTPsZmm1jaPem3DI7BQ4_NLUn61t1r9bXCIqXPpm5-RihhTyVyZWHK_kmpzl1NrJF4sXz3ZVDw" type="text/javascript"&gt;&lt;/script&gt;
+&lt;script&gt;
+var map=null;
+var geocoder=null;
+var address = new EzWebAPI.createRGadgetVariable("address",_addressHandler);
+
+function _initialize() {
+if (GBrowserIsCompatible()) {
+map = new GMap2(document.getElementById("map_canvas"));
+map.addControl(new GMapTypeControl());
+map.addControl(new GLargeMapControl());
+map.setCenter(new GLatLng(34, 0), 1);
+geocoder = new GClientGeocoder();
+}
+}
+
+function _addressHandler(address) {
+
+if (address == null || address == undefined) {
+  map.setCenter(new GLatLng(34, 0), 1);
+  return;
+}
+
+if (geocoder) {
+geocoder.getLatLng(
+address,
+function(point) {
+if (!point) {
+document.getElementById("map_canvas").innerHTML="Direccion no encontrada";
+} else {
+map.setCenter(point, 16);
+var marker = new GMarker(point);
+map.addOverlay(marker);
+marker.openInfoWindowHtml(address);
+}
+}
+);
+}
+}
+
+&lt;/script&gt;
+&lt;/head&gt;
+&lt;body style="padding: 0px; margin: 0px" onload="_initialize();"&gt;
+&lt;div id="map_canvas" style="500px; height: 400px;"&gt;&lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;</field>
     </object>
