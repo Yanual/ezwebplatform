@@ -33,7 +33,7 @@ geocoder.getLatLng(
 address,
 function(point) {
 if (!point) {
-document.getElementById("map_canvas").innerHTML="Direccion no encontrada";
+_initialize();
 } else {
 map.setCenter(point, 16);
 var marker = new GMarker(point);
