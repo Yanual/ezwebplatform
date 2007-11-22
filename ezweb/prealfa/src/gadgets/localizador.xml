@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Template schemaLocation="http://morfeo-project.org/2007/Template">
+	<!-- Meta tags define gadgets properties -->
+	<Catalog.ResourceDescription>
+		<Vendor>Morfeo</Vendor>
+		<Name>Localizador</Name>
+		<Version>1.0</Version>
+		<Author>miglesia</Author>
+		<Mail>miglesia@pegaso.ls.fi.upm.es</Mail>
+		<Description>Este gadget presenta la ubicacion en el plano de una determinada direccion</Description>
+		<ImageURI>http://europa.ls.fi.upm.es/ezweb/gadgets/brujula.gif</ImageURI>
+		<WikiURI>http://piccolo.ls.fi.upm.es:7000/Localizador</WikiURI>
+	</Catalog.ResourceDescription>
+	<!-- EzWeb Gadgets Tags -->
+	<Platform.Preferences>
+	</Platform.Preferences>
+	<!-- EzWeb Gadget Persistent State -->
+	<Platform.StateProperties>
+	</Platform.StateProperties>
+	<!-- EzWeb Gadget Data Wiring -->
+	<Platform.Wiring>
+		<Wire name="address" type="text" label="Address" friendcode = "address" wiring="out"/>
+	</Platform.Wiring>
+	<Platform.Link>
+		<XHTML href="http://europa.ls.fi.upm.es/ezweb/gadgets/localizador.html"/>
+	</Platform.Link>
+	<Platform.Rendering width="2" height="27"/>
+</Template>
