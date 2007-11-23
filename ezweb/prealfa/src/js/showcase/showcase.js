@@ -61,7 +61,7 @@ var ShowcaseFactory = function () {
 		var _persistenceEngine = PersistenceEngineFactory.getInstance();			
 		
 		// Initial load from persitence system
-		_persistenceEngine.send_get('http://europa.ls.fi.upm.es:8000/user/admin/gadgets', this, loadGadgets, onErrorCallback);
+		_persistenceEngine.send_get(URIConstants.prototype.GET_GADGETS, this, loadGadgets, onErrorCallback);
 						
 
 		// ****************

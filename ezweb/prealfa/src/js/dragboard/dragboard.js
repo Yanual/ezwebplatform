@@ -568,7 +568,7 @@ var DragboardFactory = function () {
 
 		var persistenceEngine = PersistenceEngineFactory.getInstance();
 //		persistenceEngine.send_get("http://hercules.ls.fi.upm.es:8000/user/admin/igadgets/", this, _load, onError);
-		persistenceEngine.send_get("/user/admin/igadgets", this, _load, onError);
+		persistenceEngine.send_get(URIConstants.prototype.GET_IGADGETS, this, _load, onError);
 	}
 
 	// *********************************
@@ -809,7 +809,7 @@ IGadget.prototype.save = function() {
 			this.gadget.getName() + "/" +
 			this.gadget.getVersion();
 	data = "igadget=" + data.toJSON();
-//	persistenceEngine.send_post("/user/admin/igadgets/" + "kk/kk/kk/", data, this, onSuccess, onError);
+//	persistenceEngine.send_post(URIConstantes.prototype.POST_IGADGET.evaluate(vendor, nam, version Mira la sinxtamis please!!!), data, this, onSuccess, onError);
 }
 
 /////////////////////////////////////
