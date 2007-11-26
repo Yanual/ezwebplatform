@@ -19,38 +19,37 @@ from gadget.models import Gadget
 
 @transaction.commit_on_success
 def SaveIGadget(igadget, user, screen_id, igadget_id):
-            uri = igadget.get('uri')
-# 	     id = uri.partition("/igadgets/")[2]
-            gadget_uri = igadget.get('gadget')#TODO add gadget id in JSON
-            width = igadget.get('width')
-            height = igadget.get('height')
-            top = igadget.get('top')
-            left = igadget.get('left')
-            if not uri or not gadget_uri or not width or not height or not top or not left:
-                raise Exception('Malformed iGadget JSON')   
+    uri = igadget.get('uri')
+# 	id = uri.partition("/igadgets/")[2]
+    gadget_uri = igadget.get('gadget')#TODO add gadget id in JSON
+    width = igadget.get('width')
+    height = igadget.get('height')
+    top = igadget.get('top')
+    left = igadget.get('left')
+    if not uri or not gadget_uri or not width or not height or not top or not left:
+        raise Exception('Malformed iGadget JSON')   
             
-            position = Position (uri=uri + '/position', posX=left, posY=top, height=height, width=width)
-            position.save()
+    position = Position (uri=uri + '/position', posX=left, posY=top, height=height, width=width)
+    position.save()
 
-            try:
-                screen = Screen.objects.get(id=screen_id)
-            except Screen.DoesNotExist: 
-                screen_uri = "/user/" + user.username + '/screen/' + str(screen_id)
-                #TODO screen name is not given by JSON and it is not null in database, where can we get it?
-                screen = Screen (id=screen_id, uri=screen_uri, name='myScreen', user=user) 
-                screen.save()            
+    try:
+        screen = Screen.objects.get(id=screen_id)
+    except Screen.DoesNotExist: 
+        screen_uri = "/user/" + user.username + '/screen/' + str(screen_id)
+        #TODO screen name is not given by JSON and it is not null in database, where can we get it?
+        screen = Screen (id=screen_id, uri=screen_uri, name='myScreen', user=user) 
+        screen.save()            
 
-            try:
-                gadget = Gadget.objects.get(uri=gadget_uri)		
-            except Gadget.DoesNotExist:
-                raise Gadget.DoesNotExist('iGadget without associated gadget')
+    try:
+        gadget = Gadget.objects.get(uri=gadget_uri)		
+    except Gadget.DoesNotExist:
+        raise Gadget.DoesNotExist('iGadget without associated gadget')
             
-            
-	    if igadget_id:
-		new_igadget = IGadget (id=igadget_id ,uri=uri, gadget=gadget, screen=screen, position=position)
-	    else:
+	if igadget_id:
+	   new_igadget = IGadget (id=igadget_id ,uri=uri, gadget=gadget, screen=screen, position=position)
+	else:
 		new_igadget = IGadget (uri=uri, gadget=gadget, screen=screen, position=position)
-            new_igadget.save()
+        new_igadget.save()
 
 class IGadgetCollection(Resource):
     def read(self, request, user_name, screen_id=None):
@@ -86,36 +85,43 @@ class IGadgetCollection(Resource):
 
         #TODO we can make this with deserializers (simplejson)      
         received_json = request.POST['igadgets']
-	
-	try:
-	    received_data = eval(received_json)
-	except Exception, e:
-	    return HttpResponseBadRequest('<error>%s</error>' % e)
+	    
+        try:
+            received_data = eval(received_json)
+        except Exception, e:
+            return HttpResponseBadRequest('<error>%s</error>' % e)
         igadgets = received_data.get('iGadgets')
-	
-	try:    
-	    for igadget in igadgets:
-	 	SaveIGadget(igadget, user, screen_id, igadget_id=None)
-	except Exception, e:
-	    transaction.rollback()
-	    return HttpResponseServerError('<error>iGadgets cannot be saved: %s</error>' % e)
-        
-	transaction.commit()
-	return HttpResponse('ok')
+        try:
+            for igadget in igadgets:
+                SaveIGadget(igadget, user, screen_id, igadget_id=None)
+            transaction.commit()
+            return HttpResponse('ok')
+        except Exception, e:
+            transaction.rollback()
+            return HttpResponseServerError('<error>iGadgets cannot be saved: %s</error>' % e)
 
 
 class IGadgetEntry(Resource):
-    def read(self, request, user_name, vendor, name, version, igadget_id, screen_id=None):
+    def read(self, request, user_name, screen_id=None, igadget_id):
         user = user_authentication(user_name)
-        gadget = get_object_or_404(Gadget, user=user, vendor=vendor, name=name, version=version)
+              
+        #TODO by default. Remove in final release
         if not screen_id:
-            igadget = get_list_or_404(IGadget, gadget=gadget, screen=1)
+            screen_id = 1
+        
+        data_list = {}
+        if not screen_id:
+            screens = Screen.objects.filter(user=user)
+            for screen in screens:
+                igadget = IGadget.objects.filter(id=igadget_id, screen=screen.id)
+                data = serializers.serialize('python', igadget, ensure_ascii=False)
+                data_list = [get_igadget_data(d) for d in  data]
         else:
-            igadget = get_list_or_404(IGadget, gadget=gadget, screen=screen)
-        data = serializers.serialize('python', igadget, ensure_ascii=False)
-        data_fields = get_igadget_data(data[0])
-        return HttpResponse(json_encode(data_fields), mimetype='application/json; charset=UTF-8')
-
+            igadget = IGadget.objects.filter(screen=screen_id)
+            data = serializers.serialize('python', igadget, ensure_ascii=False)
+            igadget_data = get_igadget_data(data)
+        return HttpResponse(json_encode(igadget_data), mimetype='application/json; charset=UTF-8')
+    
     def create(self, request, user_name, vendor, name, version, igadget_id, screen_id=None):
         user = user_authentication(user_name)
 
@@ -133,12 +139,13 @@ class IGadgetEntry(Resource):
             igadget = eval(received_json)
         except Exception, e:
             return HttpResponseBadRequest('<error>%s</error>' % e)
-        
-	try:
+
+        try:
             SaveIGadget(igadget, user, screen_id, igadget_id)
+            return HttpResponse('ok')
         except Exception, e:
             return HttpResponseServerError('<error>iGadget cannot be saved: %s</error>' % e)
 
-        return HttpResponse('ok')
+
 
 
