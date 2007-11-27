@@ -169,7 +169,7 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 									content:	"<p class='description_balloon'>" + 	//Static content of the help balloon
 													state.getDescription() + 
 												"</p>",
-									imagePath: 	'/ezweb/lib/helpballoon/images/'
+									imagePath: 	'/ezweb/js/lib/helpballoon/images/'
 		});
 		$(id + '_description').appendChild(descriptionBalloon._elements.icon);
 	}
@@ -184,7 +184,7 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 									content:	"<p class='tagcloud_balloon'>" +	//Static content of the help balloon
 													_tagsToTagcloud() + 
 												"</p>",
-									imagePath: 	'/ezweb/lib/helpballoon/images/'
+									imagePath: 	'/ezweb/js/lib/helpballoon/images/'
 		});
 		$(id + '_tagcloud_balloon').appendChild(tagcloudBalloon._elements.icon);
 	}

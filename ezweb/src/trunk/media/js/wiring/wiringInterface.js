@@ -146,7 +146,7 @@ wiringInterface.prototype.addLine = function (w, table, operation, gadget, name)
 		button.setAttribute("onClick", operation + "('" + gadget+ "','" +name+"', $F('selectCanal'));wI.renewChannel(w,$F('selectCanal'),$('slotsConnection'),$('eventsConnection'))");
 	}
 	button.setAttribute("type", "image");
-	button.setAttribute("src", "wiring/tick.png");
+	button.setAttribute("src", "/ezweb/js/wiring/tick.png");
 	button.setAttribute("title", "add connection");
 	col1.appendChild(button);
 	col2.appendChild(text);
@@ -173,7 +173,7 @@ wiringInterface.prototype.addChannelLine = function (w,table, operation,gadgetNa
 		button.setAttribute("onClick", operation + "('" + gadget+ "','" +name+"', $F('selectCanal'));wI.renewChannel(w,$F('selectCanal'),$('slotsConnection'),$('eventsConnection'))");
 	}
 	button.setAttribute("type", "image");
-	button.setAttribute("src", "wiring/cross.png");
+	button.setAttribute("src", "/ezweb/js/wiring/cross.png");
 	button.setAttribute("title", "delete connection");
 	col1.appendChild(button);
 	col2.appendChild(text);

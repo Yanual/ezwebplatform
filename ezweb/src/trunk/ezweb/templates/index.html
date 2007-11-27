@@ -112,6 +112,7 @@ URIConstants.prototype.POST_IGADGET = new Template ('/user/{{ user.username }}/i
 
 <!-- HEADER -->
 <div id="header">
+  <div>Bienvenido, {{ user.username }} / <a href="/logout">Salir</a></div>
   <img id="logo" src="{{ MEDIA_URL }}images/Ezweb.png" alt="EzWeb Logo">
   <div class="tab_section">
     <span id="wiring_tab" class="tab" onclick="show_wiring();">My Pipes</span>
