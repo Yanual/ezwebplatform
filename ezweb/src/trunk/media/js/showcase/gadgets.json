@@ -1,0 +1,22 @@
+[
+{"web": "http://google.es", 
+"vendor": "vendor1", 
+"name": "gadget1", 
+"tags": ["sport", "art"], 
+"image": "http://europa.ls.fi.upm.es/~lmayllon/ezweb/img/buzon_pequeo.jpg", 
+"author": "author1", 
+"uri": "http://gadgets.com/gadget1", 
+"last_update": "2007-10-16 17:26:15", 
+"importer": 1, 
+"version": "v1", 
+"template": [
+	{"name": "definition1", "aspect": "EVEN"}
+	], 
+"shared": false, 
+"xhtml": {
+	"elements":	[
+		{"handler": "handler_onclick","event": "onclick","html_element": "div"}
+		], 
+"uri": "http://gadgets.com/gadget1/xhtml"}, 
+"description": "Descripción 1"}
+]

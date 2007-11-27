@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<django-objects version="1.0">
+    <object pk="1" model="resource.gadgetresource">
+        <field type="CharField" name="short_name">Bandeja_de_Averias</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field to="auth.user" name="added_by_user" rel="ManyToOneRel">1</field>
+        <field type="CharField" name="author">miglesia</field>
+        <field type="CharField" name="size"><None></None></field>
+        <field type="CharField" name="license"><None></None></field>
+        <field type="CharField" name="version">1.0</field>
+        <field type="CharField" name="mail">miglesia@pegaso.ls.fi.upm.es</field>
+        <field type="CharField" name="description">Este gadget presenta una lista de averias registradas por usuarios y la informacion relativa a ellas</field>
+        <field type="CharField" name="gadget_uri"><None></None></field>
+        <field type="DateTimeField" name="creation_date">2007-11-19 17:16:21</field>
+        <field type="CharField" name="image_uri">http://europa.ls.fi.upm.es/ezweb/gadgets/RedLightBulb.gif</field>
+        <field type="CharField" name="wiki_page_uri">http://piccolo.ls.fi.upm.es:7000/Bandeja_de_Averias</field>
+        <field type="CharField" name="template_uri">http://europa.ls.fi.upm.es/ezweb/gadgets/bandejaAverias.xml</field>
+    </object>
+    <object pk="2" model="resource.gadgetresource">
+        <field type="CharField" name="short_name">Configuracion_de_Red</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field to="auth.user" name="added_by_user" rel="ManyToOneRel">1</field>
+        <field type="CharField" name="author">miglesia</field>
+        <field type="CharField" name="size"><None></None></field>
+        <field type="CharField" name="license"><None></None></field>
+        <field type="CharField" name="version">1.0</field>
+        <field type="CharField" name="mail">miglesia@pegaso.ls.fi.upm.es</field>
+        <field type="CharField" name="description">Este gadget presenta un diagrama con la localizacion de la averia en el servicio</field>
+        <field type="CharField" name="gadget_uri"><None></None></field>
+        <field type="DateTimeField" name="creation_date">2007-11-19 17:18:22</field>
+        <field type="CharField" name="image_uri">http://europa.ls.fi.upm.es/ezweb/gadgets/red.jpg</field>
+        <field type="CharField" name="wiki_page_uri">http://piccolo.ls.fi.upm.es:7000/Configuracion_de_Red</field>
+        <field type="CharField" name="template_uri">http://europa.ls.fi.upm.es/ezweb/gadgets/configuracionRed.xml</field>
+    </object>
+    <object pk="3" model="resource.gadgetresource">
+        <field type="CharField" name="short_name">Localizador</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field to="auth.user" name="added_by_user" rel="ManyToOneRel">1</field>
+        <field type="CharField" name="author">miglesia</field>
+        <field type="CharField" name="size"><None></None></field>
+        <field type="CharField" name="license"><None></None></field>
+        <field type="CharField" name="version">1.0</field>
+        <field type="CharField" name="mail">miglesia@pegaso.ls.fi.upm.es</field>
+        <field type="CharField" name="description">Este gadget presenta la ubicacion en el plano de una determinada direccion</field>
+        <field type="CharField" name="gadget_uri"><None></None></field>
+        <field type="DateTimeField" name="creation_date">2007-11-19 17:20:35</field>
+        <field type="CharField" name="image_uri">http://europa.ls.fi.upm.es/ezweb/gadgets/brujula.gif</field>
+        <field type="CharField" name="wiki_page_uri">http://piccolo.ls.fi.upm.es:7000/Localizador</field>
+        <field type="CharField" name="template_uri">http://europa.ls.fi.upm.es/ezweb/gadgets/localizador.xml</field>
+    </object>
+    <object pk="11" model="resource.gadgetresource">
+        <field type="CharField" name="short_name">Visor_Datos_Equipo</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field to="auth.user" name="added_by_user" rel="ManyToOneRel">1</field>
+        <field type="CharField" name="author">miglesia</field>
+        <field type="CharField" name="size"><None></None></field>
+        <field type="CharField" name="license"><None></None></field>
+        <field type="CharField" name="version">1.0</field>
+        <field type="CharField" name="mail">miglesia@pegaso.ls.fi.upm.es</field>
+        <field type="CharField" name="description">Este gadget presenta la informacion relativa a un equipo perteneciente a la red de encaminadores</field>
+        <field type="CharField" name="gadget_uri"><None></None></field>
+        <field type="DateTimeField" name="creation_date">2007-11-19 17:28:19</field>
+        <field type="CharField" name="image_uri">http://europa.ls.fi.upm.es/ezweb/gadgets/notepad.jpg</field>
+        <field type="CharField" name="wiki_page_uri">http://piccolo.ls.fi.upm.es:7000/Visor_Datos_Equipo</field>
+        <field type="CharField" name="template_uri">http://europa.ls.fi.upm.es/ezweb/gadgets/visorDatosEquipo.xml</field>
+    </object>
+    <object pk="12" model="resource.gadgetresource">
+        <field type="CharField" name="short_name">Visor_Datos_Usuario</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field to="auth.user" name="added_by_user" rel="ManyToOneRel">1</field>
+        <field type="CharField" name="author">miglesia</field>
+        <field type="CharField" name="size"><None></None></field>
+        <field type="CharField" name="license"><None></None></field>
+        <field type="CharField" name="version">1.0</field>
+        <field type="CharField" name="mail">miglesia@pegaso.ls.fi.upm.es</field>
+        <field type="CharField" name="description">Este gadget presenta la informacion relativa a un usuario para el cual se ha detectado una averia</field>
+        <field type="CharField" name="gadget_uri"><None></None></field>
+        <field type="DateTimeField" name="creation_date">2007-11-19 17:28:43</field>
+        <field type="CharField" name="image_uri">http://europa.ls.fi.upm.es/ezweb/gadgets/person.jpg</field>
+        <field type="CharField" name="wiki_page_uri">http://piccolo.ls.fi.upm.es:7000//Visor_Datos_Usuario</field>
+        <field type="CharField" name="template_uri">http://europa.ls.fi.upm.es/ezweb/gadgets/visorDatosUsuario.xml</field>
+    </object>
+    <object pk="15" model="resource.gadgetresource">
+        <field type="CharField" name="short_name">LocalizadorPequeno</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field to="auth.user" name="added_by_user" rel="ManyToOneRel">1</field>
+        <field type="CharField" name="author">miglesia</field>
+        <field type="CharField" name="size"><None></None></field>
+        <field type="CharField" name="license"><None></None></field>
+        <field type="CharField" name="version">1.0</field>
+        <field type="CharField" name="mail">miglesia@pegaso.ls.fi.upm.es</field>
+        <field type="CharField" name="description">Este gadget presenta la ubicacion en el plano de una determinada direccion</field>
+        <field type="CharField" name="gadget_uri"><None></None></field>
+        <field type="DateTimeField" name="creation_date">2007-11-19 17:44:11</field>
+        <field type="CharField" name="image_uri">http://europa.ls.fi.upm.es/ezweb/gadgets/brujula.gif</field>
+        <field type="CharField" name="wiki_page_uri">http://piccolo.ls.fi.upm.es:7000/LocalizadorPequeno</field>
+        <field type="CharField" name="template_uri">http://europa.ls.fi.upm.es/ezweb/gadgets/localizadorPequeno.xml</field>
+    </object>
+</django-objects>

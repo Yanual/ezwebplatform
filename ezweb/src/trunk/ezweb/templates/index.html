@@ -1,0 +1,268 @@
+<html>
+<head>
+<title>EzWeb Platform</title>
+
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+<link rel="stylesheet" type="text/css" media="screen,projection" href="{{ MEDIA_URL }}css/ezweb.css" />
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/dragboard.css">
+<link rel="shortcut icon" type="image/x-icon" href="{{ MEDIA_URL }}css/favicon.ico" />
+
+<script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/lib/prototype/prototype.js"></script>
+<script type="text/javascript" language="javascript">
+URIConstants = function(){}
+URIConstants.prototype.GET_IGADGETS = '/user/{{ user.username }}/igadgets/';	
+URIConstants.prototype.GET_GADGETS = '/user/{{ user.username }}/gadgets/';	
+URIConstants.prototype.GET_POST_RESOURCES = '/user/{{ user.username }}/catalogue/resources/';	
+URIConstants.prototype.POST_RESOURCE_TAGS = '/user/{{ user.username }}/catalogue/tags/';	
+URIConstants.prototype.POST_IGADGET = new Template ('/user/{{ user.username }}/igadgets/#{vendor}/#{name}/#{version}/');	
+</script>
+<!--<script language="JavaScript" src="{{ MEDIA_URL }}js/common/uris.js"></script>-->
+<script language="JavaScript" src="{{ MEDIA_URL }}js/common/modules.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/persistenceEngine/PersistenceEngine.js"></script>
+
+<script language="JavaScript" src="{{ MEDIA_URL }}js/gadgetModel/XHtml.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/gadgetModel/Template.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/gadgetModel/Gadget.js"></script>
+
+<script language="JavaScript" src="{{ MEDIA_URL }}js/opManager/OpManager.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/varManager/VariableGadget.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/varManager/VariablePlatform.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/varManager/varManager.js"></script>
+
+<script language="JavaScript" src="{{ MEDIA_URL }}js/showcase/showcase.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/showcase/util.js"></script>
+
+<script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/lib/scriptaculous/scriptaculous.js"></script>
+<script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/dragboard/dragboard.js"></script>
+<script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/dragboard/UserPref.js"></script>
+
+<script language="JavaScript" src="{{ MEDIA_URL }}js/wiring/connectable.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/wiring/wiring.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/wiring/wiringInterface.js"></script>
+
+		<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/catalogue.css" />
+		<script language="JavaScript" src="{{ MEDIA_URL }}js/lib/prototype/prototype.improvements.js"></script>
+		<script language="JavaScript" src="{{ MEDIA_URL }}js/lib/helpballoon/HelpBalloon.js"></script>
+		<script language="JavaScript" src="{{ MEDIA_URL }}js/catalogue/UIUtils.js"></script>
+		<script language="JavaScript" src="{{ MEDIA_URL }}js/catalogue/Catalogue.js"></script>
+		<script language="JavaScript" src="{{ MEDIA_URL }}js/catalogue/Resource.js"></script>
+		<script language="JavaScript" src="{{ MEDIA_URL }}js/catalogue/Tagger.js"></script>
+		<script language="JavaScript" src="{{ MEDIA_URL }}js/catalogue/Tag.js"></script>
+		<script language="JavaScript" src="{{ MEDIA_URL }}js/catalogue/HashTable.js"></script>
+		<script type="text/javascript">
+			window.onresize = UIUtils.setResourcesWidth;
+		</script>
+
+<!-- Initialization code -->
+<script language="JavaScript">
+
+	function showInterface(element) {
+		var tabs = ["wiring", "showcase", "dragboard"];
+
+		for (var i = 0; i < tabs.length; i++) {
+			$(tabs[i] + "_container").style.zIndex = 1;
+			$(tabs[i] + "_tab").className = "tab";
+		}
+
+		$(element + "_container").setStyle({"zIndex" : 2});
+		$(element + "_tab").className = "tab current";
+	}
+
+	function show_showcase() {
+		wI.unloaded();
+	    opManager.repaintCatalogue(URIConstants.prototype.GET_POST_RESOURCES);
+		showInterface('showcase');
+		UIUtils.setResourcesWidth();
+		document.getElementById('simple_search_text').focus();
+	}
+
+	function show_dragboard() {
+		wI.unloaded();
+		showInterface('dragboard');
+	}
+
+	function show_wiring() {
+		wI.renewInterface(WiringFactory.getInstance(),$('selectCanal'),$('wGadgets'),$('wCanales'));
+		//wI.renewInterface();
+		showInterface('wiring');
+	}
+
+	// Platform initialization
+	function environmentLoadedCallback() {
+		DragboardFactory.getInstance().repaint();
+
+		wI = new wiringInterface();
+	}
+	
+	function resizeWrapper() {
+		$("wrapper").setStyle({"height" : (window.innerHeight - $("header").offsetHeight - 20) + "px"});
+	}
+
+	var wI;
+	var opManager = OpManagerFactory.getInstance();
+	opManager.loadEnviroment();
+</script>
+
+
+</head>
+
+<body onload="resizeWrapper();" onresize="resizeWrapper();">
+
+<!-- HEADER -->
+<div id="header">
+  <img id="logo" src="{{ MEDIA_URL }}images/Ezweb.png" alt="EzWeb Logo">
+  <div class="tab_section">
+    <span id="wiring_tab" class="tab" onclick="show_wiring();">My Pipes</span>
+    <span id="showcase_tab" class="tab" onclick="show_showcase();">My Gadgets</span>
+    <span id="dragboard_tab" class="tab current" onclick="show_dragboard();">My Instances</span>
+  </div>
+</div>
+
+<div id="wrapper">
+  <!-- DRAGBOARD LAYER -->
+  <div id="dragboard_container" class="container">
+     <!-- DRAGBOARD VIEW -->
+     <div id="dragboard" class="container_content">
+     </div><!-- DRAGBOARD VIEW -->
+  </div>
+
+  <!-- SHOWCASE LAYER -->
+  <div id="showcase_container" class="container">
+    <!-- SHOWCASE VIEW -->
+		<div id="catalogue" class="container_content" onresize="UIUtils.setResourcesWidth();">
+ 
+			<div id="head" class="head">
+				<div id="new_resource" class="search">
+				<div class="simple_search">
+				        <form action="#" onSubmit="UIUtils.addResource(URIConstants.prototype.GET_POST_RESOURCES, 'template_uri', this.template_uri.value)">
+					<label for="new_resource_text">URL del Template: </label>
+					<input id="new_resource_text" name="template_uri" type="text" />
+					<button>Crear recurso</button>
+					</form>
+				</div>
+				</div>
+				<div id="search" class="search">
+					<form onsubmit="return false;">
+						<div id="advanced_search_top" class="advanced_search_top" style="display:none;">
+							<span>Opciones avanzadas</span>
+						</div>
+						<div id="advanced_search_bottom" class="advanced_search_bottom" style="display:none;">
+							<label for="advanced_search_text">B&uacute;squeda:</label>
+							<input type="text" id="advanced_search_text" name="advanced_search_text" class="text" autocomplete="on"></input>
+							<button onclick="UIUtils.searchByTag(URIConstants.prototype.GET_POST_RESOURCES, this.form.advanced_search_text.value);">Buscar</button><br/>
+							<a href="#" onclick="UIUtils.SlideAdvancedSearchOutOfView('advanced_search_top');">Mostrar b&uacute;squeda simple</a>
+						</div>
+						<div id="simple_search" class="simple_search">
+							<label for="simple_search_text">B&uacute;squeda:</label>
+							<input type="text" id="simple_search_text" name="simple_search_text" class="text" autocomplete="on"></input>
+							<button onclick="UIUtils.searchByTag(URIConstants.prototype.GET_POST_RESOURCES, this.form.simple_search_text.value);">Buscar</button><br/>
+							<a href="#" onclick="UIUtils.SlideAdvancedSearchIntoView('advanced_search_top');">Mostrar b&uacute;squeda avanzada</a>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div id="center" class="center">
+				<div id="resources" class="resources"></div>
+				<div id="info_resource" class="info_resource" style="display:none;"><div>
+					<div class="top"></div>
+					<div id="info_resource_content" class="content"></div>
+					<div class="bottom"></div>
+				</div></div>
+				<div id="tab_info_resource" class="tab_info_resource">
+					<a id="tab_info_resource_open" title="Mostrar informaci&oacute;n del recurso" href="javascript:UIUtils.openInfoResource();" onmouseover="UIUtils.changeImage('tab_info_resource_open_img', '{{ MEDIA_URL }}images/info_resource_open_selected.png');" onmouseout="UIUtils.changeImage('tab_info_resource_open_img', '{{ MEDIA_URL }}images/info_resource_open.png');">
+						<img  id="tab_info_resource_open_img" src="{{ MEDIA_URL }}images/info_resource_open.png"></img>
+					</a>
+					<a id="tab_info_resource_close" title="Ocultar informaci&oacute;n del recurso" href="javascript:UIUtils.closeInfoResource();" onmouseover="UIUtils.changeImage('tab_info_resource_close_img', '{{ MEDIA_URL }}images/info_resource_close_selected.png');" onmouseout="UIUtils.changeImage('tab_info_resource_close_img', '{{ MEDIA_URL }}images/info_resource_close.png');" style="display:none;">
+						<img  id="tab_info_resource_close_img" src="{{ MEDIA_URL }}images/info_resource_close.png"></img>
+					</a>
+				</div>
+			</div>
+		</div>
+ <!-- SHOWCASE VIEW -->
+  </div> <!-- SHOWCASE LAYER -->
+
+  <!-- WIRING LAYER -->
+  <div id="wiring_container" class="container">
+	<div id="wiring" class="container_content">
+	<!-- WIRING VIEW -->
+		
+		<input type = button value = "serializa" id = "serializa" onClick ="alert(WiringFactory.getInstance().serialize())">
+		
+		<div class = "wContainer">
+				<div id ="selector_panel">
+					<div id = "selector">
+						<em>Seleccione un canal:</em>
+						<select id = "selectCanal"  onChange = "wI.renewChannel(w,$F($('selectCanal')),$('slotsConnection'),$('eventsConnection'))">
+							<option value = "" selected>----</option>
+						</select>
+					</div>
+					
+					<div class = "connections_tab left_tab">
+						<table class = "header">
+							<tr><td id="input_header"> </td><td>Inputs</td></tr>
+						</table>
+						<div class = "contents">
+	        					<table class = "bodier" id = "eventsConnection">
+							</table>
+						</div>
+					</div>
+					<div class = "connections_tab right_tab">
+						<table class = "header">
+							<tr><td id="output_header"> </td><td>Outputs</td></tr>
+						</table>
+						<div class = "contents">
+	        					<table class = "bodier" id = "slotsConnection">
+							</table>
+						</div>
+					</div>
+					<fieldset id = "view">
+						<legend>Gestionar Canales</legend>
+						<center><em>Valor del canal:</em></center><br/>
+						<input id = "valor" type = "text" value = "" disabled>
+						<input id = "addChannel" type="image" src="{{ MEDIA_URL }}js/wiring/add.png" title="Create Channel" alt= "create channel"
+						    onclick = "wI.addChannel(w,$('selectCanal'),$('wCanales'),$('slotsConnection'),$('eventsConnection'))">
+						<input id = "deleteChannel" type="image" src="{{ MEDIA_URL }}js/wiring/delete.png" title="Delete Channel" alt= "Delete Channel"
+						    onclick = "wI.deleteChannel(w,$('selectCanal').value,$('selectCanal'),$('wCanales'),$('slotsConnection'),$('eventsConnection'))">
+					</fieldset>
+				</div>
+				<div id ="items_panel">
+					<div id = "selector">
+						<em>Seleccione un item:</em>
+						<select id = "itemizer"  onChange = "wI.renewItem(w,$F($('itemizer')),$('slots'),$('events'))">
+							<option value = "" selected>----</option>
+						<optgroup id="wCanales" label="Canales">
+						</optgroup>
+						<optgroup id ="wGadgets" label="Gadgets">
+						</optgroup>
+						</select>
+					</div>
+					<div class = "connectables_tab left_tab">
+						<table class = "header">
+							<tr><td> </td><td>Outputs</td></tr>
+						</table>
+						<div class = "contents">
+	        					<table class = "bodier" id = "events">
+							</table>
+						</div>
+					</div>
+					<div class = "connectables_tab right_tab">
+						<table class = "header">
+							<tr><td> </td><td>Inputs</td></tr>
+						</table>
+						<div class = "contents">
+	        					<table class = "bodier" id = "slots">
+							</table>
+						</div>
+					</div>
+					<div>
+						<input id = "refreshbutton" type="image" src="{{ MEDIA_URL }}js/wiring/disk.png" title = "Save data" alt = "Save changes" onClick = "opManager.restaure()">	
+					</div>
+				</div><!--items_panel-->
+		</div>
+    </div> <!-- WIRING VIEW -->
+  </div> <!-- WIRING LAYER -->
+</div>
+</body>
+
+</html>
