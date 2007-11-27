@@ -11,6 +11,7 @@
 <script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/lib/prototype/prototype.js"></script>
 <script type="text/javascript" language="javascript">
 URIConstants = function(){}
+URIConstants.prototype.USER = '/user/{{ user.username }}/';	
 URIConstants.prototype.GET_IGADGETS = '/user/{{ user.username }}/igadgets/';	
 URIConstants.prototype.GET_GADGETS = '/user/{{ user.username }}/gadgets/';	
 URIConstants.prototype.GET_POST_RESOURCES = '/user/{{ user.username }}/catalogue/resources/';	
