@@ -102,7 +102,7 @@ class IGadgetCollection(Resource):
 
 
 class IGadgetEntry(Resource):
-    def read(self, request, user_name, screen_id=None, igadget_id):
+    def read(self, request, user_name, igadget_id, screen_id=None):
         user = user_authentication(user_name)
               
         #TODO by default. Remove in final release
@@ -122,7 +122,7 @@ class IGadgetEntry(Resource):
             igadget_data = get_igadget_data(data)
         return HttpResponse(json_encode(igadget_data), mimetype='application/json; charset=UTF-8')
     
-    def create(self, request, user_name, vendor, name, version, igadget_id, screen_id=None):
+    def create(self, request, user_name, igadget_id, screen_id=None):
         user = user_authentication(user_name)
 
         #TODO by default. Remove in final release
