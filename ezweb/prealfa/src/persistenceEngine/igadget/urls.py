@@ -9,7 +9,7 @@ urlpatterns = patterns('igadget.views',
 
     # IGadgets
     (r'^$', IGadgetCollection(permitted_methods=('GET', 'POST'))),
-    (r'^(?P<igadget_id>\d+)/$',
+    (r'^(?P<igadget_id>\d+)/screen/(?P<screen_id>\d+)/$',
         IGadgetEntry(permitted_methods=('GET', 'POST')))
 
 )
