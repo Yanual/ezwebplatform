@@ -16,6 +16,32 @@ from gadget.models import VariableDef
 from igadget.models import IGadget, Screen, Variable
 from connectable.models import InOut
 
+
+def kk () :
+    igadgets = json['igadgets']
+    for ig in igadgets:
+        igadget = get_object_or_404(IGadget, screen=screen, uri=ig['uri'])
+        for ins in ig['ins']:
+            variable = get_object_or_404(Variable, uri=ins['variable'], igadget=igadget)
+            uri_in = "/user/%s/igadget/%s/variable/%s/in/%s" % (user_name, igadget.id, variable.id, ins['name'])
+            in_object = In(uri=uri_in, name=ins['name'], variable=variable)
+            for inout in ins['inouts']:
+                inout = get_object_or_404(InOut, uri=inout)
+                in_object.inout.add(inout)
+                in_object.save()
+            for outs in ig['outs']:            
+                variable = get_object_or_404(Variable, uri=outs['variable'], igadget=igadget)
+                uri_out = "/user/%s/igadget/%s/variable/%s/out/%s" % (user_name, igadget.id, variable.id, outs['name'])
+                out_object = In(uri=uri_in, name=out['name'], variable=variable)
+            for inout in outs['inouts']:
+                inout = get_object_or_404(InOut, uri=inout)
+                out_object.inout.add(inout)
+                out_object.save()
+                
+        
+
+
+
 class ConnectableEntry(Resource):
     def read(self, request, user_name, screen_id=None):
         user = user_authentication(user_name)
@@ -45,19 +71,24 @@ class ConnectableEntry(Resource):
     
     def create(self, request, user_name, screen_id=None):
         user = user_authentication(user_name)
+
         if request.POST.has_key('json'):
+            print request.POST['json']
             json = simplejson.loads(request.POST['json'])
         else:
             raise Http404
         if not screen_id:
             screen_id = 1
+
         screen = get_object_or_404(Screen, user=user, id=screen_id)
 
-        inouts = get_list_or_404(InOut, user=user)
-        inouts.delete()
+        InOut.objects.filter(user=user).delete()
+        #Out.objects.filter(variable.igadget.gadget.user=user).delete()
+        #In.objects.filter(user=user).delete() 
 
         inouts = json['inouts']
         for io in inouts:
+
             inout = InOut(user=user, uri=io['uri'], name=io['name'], friend_code=io['friend_code'], value=io['value'])
             inout.save()
             for ins in io['ins']:
@@ -71,27 +102,10 @@ class ConnectableEntry(Resource):
                 uri_out = "/user/%s/igadget/%s/variable/%s/out/%s" % (user_name, igadget.id, variable.id, outs['name'])
                 out_object = In(uri=uri_in, name=out['name'], variable=variable)
                 out_object.inout.add(inout)
-                out_object.save()
+                out_object.save()  
         
-        igadgets = json['igadgets']
-        for ig in igadgets:
-            igadget = get_object_or_404(IGadget, screen=screen, uri=ig['uri'])
-            for ins in ig['ins']:
-                variable = get_object_or_404(Variable, uri=ins['variable'], igadget=igadget)
-                uri_in = "/user/%s/igadget/%s/variable/%s/in/%s" % (user_name, igadget.id, variable.id, ins['name'])
-                in_object = In(uri=uri_in, name=ins['name'], variable=variable)
-                for inout in ins['inouts']:
-                    inout = get_object_or_404(InOut, uri=inout)
-                    in_object.inout.add(inout)
-                in_object.save()
-            for outs in ig['outs']:            
-                variable = get_object_or_404(Variable, uri=outs['variable'], igadget=igadget)
-                uri_out = "/user/%s/igadget/%s/variable/%s/out/%s" % (user_name, igadget.id, variable.id, outs['name'])
-                out_object = In(uri=uri_in, name=out['name'], variable=variable)
-                for inout in outs['inouts']:
-                    inout = get_object_or_404(InOut, uri=inout)
-                    out_object.inout.add(inout)
-                out_object.save()
+            
+        print "fin for"
 
         return HttpResponse('')
 
