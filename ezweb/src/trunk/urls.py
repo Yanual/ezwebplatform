@@ -34,7 +34,8 @@ urlpatterns = patterns('',
 
     # Catalogue Tag
     (r'^user/(?P<user_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/catalogue/tag(s)?/',include('tag.urls')),
-    
+    # Proxy
+    (r'^proxy/', include('proxy.urls')),
    
     # Django contrib
     (r'^accounts/login/$', 'django.contrib.auth.views.login'),
