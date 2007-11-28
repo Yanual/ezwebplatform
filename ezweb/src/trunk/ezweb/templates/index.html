@@ -15,9 +15,10 @@ URIConstants.prototype.USER = '/user/{{ user.username }}/';
 URIConstants.prototype.GET_IGADGET = new Template ('/user/{{ user.username }}/igadgets/#{id}/');
 URIConstants.prototype.GET_IGADGETS = '/user/{{ user.username }}/igadgets/';
 URIConstants.prototype.GET_GADGETS = '/user/{{ user.username }}/gadgets/';
+URIConstants.prototype.GET_POST_WIRING = '/user/{{ user.username }}/connectables/';
 URIConstants.prototype.GET_POST_RESOURCES = '/user/{{ user.username }}/catalogue/resources/';
 URIConstants.prototype.POST_RESOURCE_TAGS = '/user/{{ user.username }}/catalogue/tags/';
-URIConstants.prototype.POST_IGADGET = new Template ('/user/{{ user.username }}/igadgets/#{vendor}/#{name}/#{version}/');
+URIConstants.prototype.POST_IGADGET = new Template ('/user/{{ user.username }}/igadgets/#{iGadgetId}/');
 </script>
 <!--<script language="JavaScript" src="{{ MEDIA_URL }}js/common/uris.js"></script>-->
 <script language="JavaScript" src="{{ MEDIA_URL }}js/common/modules.js"></script>
