@@ -567,61 +567,79 @@ var WiringFactory = function () {
 			inOutList = copyList;
 		}
 
-		Wiring.prototype.serialize = function (){
-			var gadgets = "", inouts = "";
-			var gadgetKeys = iGadgetList.keys();
-			var inOutKeys = copyList.keys();
-			
-			for (var i = 0; i < gadgetKeys.length; i++){
-				var ins = "", outs = "";
-				for (var j = 0; j < iGadgetList[gadgetKeys[i]].list.length; j++){
-					var connectablejson = "{\"name\": \"" + iGadgetList[gadgetKeys[i]].list[j].name + "\", \"variable\": \"/igadget/" + gadgetKeys[i] + "/var/" + iGadgetList[gadgetKeys[i]].list[j].name + "/\"},";
-					if (iGadgetList[gadgetKeys[i]].list[j].aspect == "SLOT"){
-						ins += connectablejson;
-					}
-					else{
-						outs += connectablejson;		
-					}
-					
-				}
-
-				outs = outs.substring(0, (outs.length-1));
-				ins = ins.substring(0, (ins.length-1));
-				
-
-				var itemjson = "{\"uri\": \"/user/admin/igadget/" + iGadgetList[gadgetKeys[i]].vendor + "/" + iGadgetList[gadgetKeys[i]].id + "/" + iGadgetList[gadgetKeys[i]].version + "/\", \"ins\":[" + ins + "], \"outs\":[" + outs + "]}" ;			
-
-				if (i != (gadgetKeys.length-1)){		
-					itemjson += ", " ;					
-				}
-				gadgets += itemjson;
-			}
-			/////////////////////////////////////////////////////
-			for(var t = 0; t < inOutKeys.length; t++){
-				var connectable = copyList[inOutKeys[t]].ref;
-				var ins = "", outs = "";
-				var connectTo = copyList[inOutKeys[t]].ref.connections();
-				if (connectTo["input"].length > 0){
-					for (var z = 0; z < (connectTo["input"].length-1); z++){
-						ins += "{\"variable\": \"/igadget/" + connectTo["input"][z].id + "/var/" + connectTo["input"][z].name + "/\"},";		
-					}
-					ins += "{\"variable\": \"/igadget/" + connectTo["input"][(connectTo["input"].length-1)].id + "/var/" + connectTo["input"][(connectTo["input"].length-1)].name + "/\"}";		
-				}
-				if (connectTo["output"].length > 0){
-					for (var h = 0; h < (connectTo["output"].length-1); h++){
-						outs += "{\"variable\": \"/igadget/" + connectTo["output"][h].id + "/var/" + connectTo["output"][h].name + "/\"},";		
-					}
-					outs += "{\"variable\": \"/igadget/" + connectTo["output"][(connectTo["output"].length-1)].id + "/var/" + connectTo["output"][(connectTo["output"].length-1)].name + "/\"}";		
-				}
-
-				inouts += "{\"uri\": \"/user/admin/connectable/" + copyList[inOutKeys[t]].ref.getName() + "/\", \"friend_code\":" + copyList[inOutKeys[t]].ref.getType()+ ", \"value\":" + copyList[inOutKeys[t]].ref.getValue()+", \"name\":"+ copyList[inOutKeys[t]].ref.getName() + "\", \"ins\": ["+ins+"], \"outs\": ["+outs+"]}";					
-				if (t != (inOutKeys.length - 1)){
-				inouts += ",";					
-				}
-			}
-			return "{\"igadgets\": [" + gadgets + "], " + "\"inouts\": [" + inouts + "]}";
+		Wiring.prototype.serializationSuccess = function (){
+		    alert("Serialization success");
 		}
-	}
+
+		Wiring.prototype.serializationError = function (){
+		    alert("Serialization error");		
+		}
+
+		Wiring.prototype.serialize = function (){
+		    var gadgetKeys = iGadgetList.keys();
+		    var inOutKeys = copyList.keys();
+		    
+		    var channels = [];
+
+		    var json = new Object();
+		    
+		    for(var t = 0; t < inOutKeys.length; t++){
+			var connectable = copyList[inOutKeys[t]].ref;
+			
+			var channel = new Object();
+
+			// Loading channel data
+
+			channel ['uri'] = 'uri';
+			channel ['value'] = connectable.getValue();
+			channel ['name'] = connectable.getName();
+			channel ['friendCode'] = connectable.getFriendCode();
+			
+			
+			var ins = [];
+			var outs = [];
+			
+			var connectTo = copyList[inOutKeys[t]].ref.connections();
+
+			// Channel Input
+			for (var z = 0; z < connectTo["input"].length; z++){
+			    var input = new Object();
+			    
+			    input['uri'] = "kk"
+			    ins[z] = input;
+			}
+			
+			// Channel input assignment
+			channel ['ins'] = ins;
+
+			
+			// Channel output
+			for (var z = 0; z < connectTo["output"].length; z++){
+			    var output = new Object();
+			    
+			    input['uri'] = "kk"
+			    ins[z] = input;
+
+			}
+			
+			// Channel output assignment
+			channel ['outs'] = outs;
+
+
+			// Channel assignment
+			channels[t] = channel;
+		    }
+
+		    json ['inouts'] = channels;
+		    
+		    var param = Object.toJSON(json);
+		    param = "json=" + param;
+		    
+		    PersistenceEngineFactory.getInstance().send_post(URIConstants.prototype.POST_WIRING, param, this, this.serializationSuccess, this.serializationError); 
+		    
+		}
+
+	}	
 	
 	
 	// *********************************

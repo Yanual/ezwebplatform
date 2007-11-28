@@ -54,6 +54,10 @@ wConnectable.prototype.serialize = function(){ //this method will be overriden i
    return "{\"id\":\""+this.id+"\",\"type\":\""+this.type+"\",\"value\":\""+this.value+"\",\"name\":\""+this.name+"\"}";
 }
 
+wConnectable.prototype.getConnectionUris = function(){ //this method will be overriden in each class 			
+   
+}
+
 wConnectable.prototype.refresh = function(){ //this method will be overriden in each class
    null;
 }
