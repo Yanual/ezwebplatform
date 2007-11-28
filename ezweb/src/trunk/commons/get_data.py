@@ -10,7 +10,7 @@ def get_gadget_data(data):
     data_fields = data['fields']
 
     data_template = get_object_or_404(Template, id=data_fields['template'])
-    data_variabledef = VariableDef.objects.filter(template=data_template.id).values('aspect', 'name', 'type')
+    data_variabledef = VariableDef.objects.filter(template=data_template.id).values('aspect', 'name', 'type', 'label', 'description', 'friend_code', 'default_value')
     data_code = get_object_or_404(XHTML.objects.all().values('uri'), id=data_fields['xhtml'])
     data_elements = UserEventsInfo.objects.filter(xhtml=data_fields['xhtml']).values('event', 'handler', 'html_element')
 
