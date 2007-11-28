@@ -15,9 +15,9 @@ ADMINS = (
 MANAGERS = ADMINS
 
 DATABASE_ENGINE = 'postgresql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = 'EzWeb'             # Or path to database file if using sqlite3.
-DATABASE_USER = 'EzWeb'             # Not used with sqlite3.
-DATABASE_PASSWORD = 'EzWeb'         # Not used with sqlite3.
+DATABASE_NAME = 'ezweb'             # Or path to database file if using sqlite3.
+DATABASE_USER = 'ezweb'             # Not used with sqlite3.
+DATABASE_PASSWORD = 'ezweb'         # Not used with sqlite3.
 DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
