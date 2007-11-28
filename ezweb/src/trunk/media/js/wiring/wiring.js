@@ -655,7 +655,9 @@ var WiringFactory = function () {
 
 			var iGadget = new Object();	
 		
-			iGadget.uri = URIConstants.prototype.POST_IGADGET.template.eval(iGadgetList[gadgetKeys[i]].vendor, iGadgetList[gadgetKeys[i]].id, iGadgetList[gadgetKeys[i]].version);
+			var iGadgetId = {iGadgetId: iGadgetList[gadgetKeys[i]].id};
+
+			iGadget.uri = URIConstants.prototype.POST_IGADGET.evaluate(iGadgetId);
 			iGadget.ins = ins;
 			iGadget.outs = outs;
 			gadgets.push(iGadget);
