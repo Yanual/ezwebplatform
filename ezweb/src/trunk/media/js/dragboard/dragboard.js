@@ -804,11 +804,12 @@ IGadget.prototype.save = function() {
 	data['iGadget']['top'] = this.position.y;
 	data['iGadget']['width'] = this.width;
 	data['iGadget']['height'] = this.height;
-	data['iGadget']['uri'] = URIConstants.prototype.GET_IGADGET.template.eval(this.id);
-	data['iGadget']['uri'] = "/user/admin/igadgets/" + this.id;
-	data['iGadget']['gadget'] = "/user/admin/gadgets/" + this.gadget.getVendor() + "/" +
-			this.gadget.getName() + "/" +
-			this.gadget.getVersion();
+	data['iGadget']['uri'] = URIConstants.prototype.GET_IGADGET.template.evaluate({id: this.id});
+//	data['iGadget']['uri'] = "/user/admin/igadgets/" + this.id;
+	data['iGadget']['gadget'] = URIConstants.prototype.GET_GADGETS + this.gadget.getVendor() + '/' + this.gadget.getName() + '/' this.gadget.getVersion();
+//	data['iGadget']['gadget'] = "/user/admin/gadgets/" + this.gadget.getVendor() + "/" +
+//			this.gadget.getName() + "/" +
+//			this.gadget.getVersion();
 	data = "igadget=" + data.toJSON();
 //	persistenceEngine.send_post(URIConstantes.prototype.POST_IGADGET.evaluate(vendor, nam, version Mira la sinxtamis please!!!), data, this, onSuccess, onError);
 }
