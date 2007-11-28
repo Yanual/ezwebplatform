@@ -72,3 +72,13 @@ def get_igadget_data(data):
     data_ret['height'] = position.height
        
     return data_ret
+
+def get_variable_data(var_name, data):
+    data_ret = {}
+    data_fields = data['fields']
+    
+    data_ret['name'] = var_name 
+    data_ret['value'] = data_fields['uri']
+       
+    return data_ret
+

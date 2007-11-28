@@ -172,17 +172,33 @@ class IGadgetEntry(Resource):
         igadget = get_object_or_404(IGadget, user=user, id=igadget_id)
         igadget.delete()
         
-class GadgetVariable(Resource):
+class IGadgetVariable(Resource):
     def read(self, request, user_name, igadget_id, var_name, screen_id=None):
         user = user_authentication(user_name)
-        igadget = IGadget.objects.get(id=igadget_id, user=user)
-        data = serializers.serialize('python', igadget, ensure_ascii=False)
-        print data
-        #return HttpResponse(json_encode(data_fields), mimetype='application/json; charset=UTF-8')
-        return HttpResponse('')
+        
+        #TODO by default. Remove in final release
+        if not screen_id:
+            screen_id = 1
+        
+        variable = get_object_or_404(Variable, igadget__screen=screen_id, igadget__id=igadget_id, varderf__name=var_name)
+        data = serializers.serialize('python', Variable, ensure_ascii=False)
+        var_data = get_variable_data(var_name, data[0])
+        return HttpResponse(json_encode(var_data), mimetype='application/json; charset=UTF-8')
     
     def update(self, request, user_name, igadget_id, var_name, screen_id=None):
         user = user_authentication(user_name)
-        gadget = get_object_or_404(Gadget, user=user, vendor=vendor, name=name, version=version)
-        gadget.save()
-        return HttpResponse('')
+        
+        # Gets value parameter from request
+        if not request.has_key('value'):
+            return HttpResponseBadRequest('<error>iGadget JSON expected</error>')
+        new_value = request['value']
+        
+        #TODO by default. Remove in final release
+        if not screen_id:
+            screen_id = 1
+        
+        variable = get_object_or_404(Variable, igadget__screen=screen_id, igadget__id=igadget_id, varderf__name=var_name)
+        variable.value = new_value
+        variable.save()
+        var = Variable (uri=uri + '/variable/' + varDef.name, vardef=varDef, igadget=new_igadget, value=var_value)
+        return HttpResponse('ok')
