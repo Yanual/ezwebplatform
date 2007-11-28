@@ -62,19 +62,19 @@ function Template(template_) {
 				if (rawVar.aspect == Variable.prototype.USER_PREF) {
 					switch (rawVar.type) {
 						case UserPref.prototype.TEXT:  
-							this.prefs.push(new TextUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.defaultValue));
+							this.prefs.push(new TextUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.default_value));
 							break;
 						case UserPref.prototype.INTEGER:  
-							this.prefs.push(new IntUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.defaultValue));
+							this.prefs.push(new IntUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.default_value));
 							break;
 						case UserPref.prototype.BOOLEAN:
-							this.prefs.push(new BoolUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.defaultValue));
+							this.prefs.push(new BoolUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.default_value));
 							break;
 						case UserPref.prototype.DATE:
-							this.prefs.push(new DateUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.defaultValue));
+							this.prefs.push(new DateUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.default_value));
 							break;
 						case UserPref.prototype.LIST:
-							this.prefs.push(new ListUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.defaultValue));
+							this.prefs.push(new ListUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.default_value));
 							break;
 					}
 				}
