@@ -13,7 +13,11 @@ UserPref.prototype.UserPref = function (varName_, label_, desc_, defaultValue_) 
     this.varName = varName_;
 	this.label = label_;
 	this.desc = desc_;
-	this.defaultValue = defaultValue_;
+
+	if ((defaultValue_ == null) || (defaultValue == undefined))
+		this.defaultValue = "";
+	else
+		this.defaultValue = defaultValue_;
 }
 
 UserPref.prototype.validate = function (newValue) {
@@ -21,8 +25,7 @@ UserPref.prototype.validate = function (newValue) {
 }
 
 UserPref.prototype.getCurrentValue = function (iGadgetId) {
-//  return "ValorInicial" // For testing
-	var variable = VarManagerFactory.getInstance().getVariable(this.iGadgetId, this.varName);
+	var variable = VarManagerFactory.getInstance().getVariable(iGadgetId, this.varName);
 
 	if (variable != null)
 		return variable.get();
@@ -34,18 +37,23 @@ UserPref.prototype.setValue = function (iGadgetId, newValue) {
 	if (this.validate(newValue)) {
 
 	    var varManager = VarManagerFactory.getInstance();
-		varManager.getVariable(iGadgetId, name).set(newValue);
+		varManager.setVariable(iGadgetId, this.varName, this.newValue);
 	}
+}
+
+UserPref.prototype.setToDefault = function (iGadgetId) {
+    var varManager = VarManagerFactory.getInstance();
+	varManager.setVariable(iGadgetId, this.varName, this.defaultValue);
 }
 
 //////////////////////////////////////////////
 // PUBLIC CONSTANTS
 //////////////////////////////////////////////
-UserPref.prototype.TEXT = "TEXT";  
-UserPref.prototype.INTEGER = "INT";  
-UserPref.prototype.DATE = "DATE";
-UserPref.prototype.LIST = "LIST";
-
+UserPref.prototype.TEXT    = "S"; // "S"tring
+UserPref.prototype.INTEGER = "N"; // "N"umber
+UserPref.prototype.DATE    = "D"; // "D"ate
+UserPref.prototype.LIST    = "L"; // "L"ist
+UserPref.prototype.BOOLEAN = "B"; // "B"oolean
 
 /**
  * extends UserPref
@@ -76,18 +84,20 @@ ListUserPref.prototype.validate = function (newValue) {
  * extends UserPref
  * @autor aarranz
  */
-function IntUserPref(name_, label_, _desc, defaultValue_) {
+function IntUserPref(name_, label_, desc_, defaultValue_) {
 	UserPref.prototype.UserPref.call(this, name_, label_, desc_, defaultValue_);
 }
+
+IntUserPref.prototype = new UserPref();
 
 IntUserPref.prototype.makeInterface = function (IGadgetId) {
 	var output = "";
 
-	output += "<input type=\"text\" ";
-	var currentValue =this.getCurrentValue();
+	output += "<label>" + this.label + "<input type=\"text\" ";
+	var currentValue =this.getCurrentValue(IGadgetId);
 	if (currentValue != null)
 		output += "value=\"" + currentValue + "\" ";
-	output += "/>";
+	output += "/></label>";
 
 	return output;
 }
@@ -108,37 +118,13 @@ TextUserPref.prototype = new UserPref();
 TextUserPref.prototype.makeInterface = function (IGadgetId) {
 	var output = "";
 
-	output += "<input type=\"text\" ";
+	output += "<label>" + this.label + "<input type=\"text\" ";
 
-	var currentValue = this.getCurrentValue();
+	var currentValue = this.getCurrentValue(IGadgetId);
 	if (currentValue != null)
 		output += "value=\"" + currentValue + "\" ";
 
-	output += "/>";
-
-	return output;
-}
-
-/**
- * extends UserPref
- * @autor aarranz
- */
-function TextUserPref(name_, label_, desc_, defaultValue_) {
-	UserPref.prototype.UserPref.call(this, name_, label_, desc_, defaultValue_);
-}
-
-TextUserPref.prototype = new UserPref();
-
-TextUserPref.prototype.makeInterface = function (IGadgetId) {
-	var output = "";
-
-	output += "<input type=\"text\" ";
-
-	var currentValue = this.getCurrentValue();
-	if (currentValue != null)
-		output += "value=\"" + currentValue + "\" ";
-
-	output += "/>";
+	output += "/></label>";
 
 	return output;
 }
@@ -158,7 +144,31 @@ DateUserPref.prototype.makeInterface = function (IGadgetId) {
 
 	output += "<input type=\"text\" ";
 
-	var currentValue = this.getCurrentValue();
+	var currentValue = this.getCurrentValue(IGadgetId);
+	if (currentValue != null)
+		output += "value=\"" + currentValue + "\" ";
+
+	output += "/>";
+
+	return output;
+}
+
+/**
+ * extends UserPref
+ * @autor aarranz
+ */
+function BoolUserPref(name_, label_, desc_, defaultValue_) {
+	UserPref.prototype.UserPref.call(this, name_, label_, desc_, defaultValue_);
+}
+
+BoolUserPref.prototype = new UserPref();
+
+BoolUserPref.prototype.makeInterface = function (IGadgetId) {
+	var output = "";
+
+	output += "<input type=\"text\" ";
+
+	var currentValue = this.getCurrentValue(IGadgetId);
 	if (currentValue != null)
 		output += "value=\"" + currentValue + "\" ";
 

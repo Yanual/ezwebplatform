@@ -50,33 +50,38 @@ function Template(template_) {
     }
 	
 	this.getUserPrefs = function () {
-		
-		// JSON-coded Template-Variables mapping	
-		// Constructing the structure 
+
+		if (this.prefs == null) {
+			// JSON-coded Template-Variables mapping	
+			// Constructing the structure 
 		 
-		var objVars = [];
-		var rawVars = variableList;
-		var rawVar = null;
-		for (i = 0; i<rawVars.length; i++) {
-			rawVar = rawVars[i];
-			if (rawVar.aspect == Variable.prototype.PROPERTY) {
-				switch (rawVar.type) {
-					case UserPref.prototype.TEXT:  
-						objVars[rawVar.name] = new TextUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.defaultValue);
-						break;
-					case UserPref.prototype.INTEGER:  
-						objVars[rawVar.name] = new IntUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.defaultValue);
-						break;
-					case UserPref.prototype.DATE:
-						objVars[rawVar.name] = new DateUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.defaultValue);
-						break;
-					case UserPref.prototype.LIST:
-						objVars[rawVar.name] = new ListUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.defaultValue);
-						break;
+			this.prefs = new Array();
+			var rawVar = null;
+			for (i = 0; i < variableList.length; i++) {
+				rawVar = variableList[i];
+				if (rawVar.aspect == Variable.prototype.USER_PREF) {
+					switch (rawVar.type) {
+						case UserPref.prototype.TEXT:  
+							this.prefs.push(new TextUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.defaultValue));
+							break;
+						case UserPref.prototype.INTEGER:  
+							this.prefs.push(new IntUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.defaultValue));
+							break;
+						case UserPref.prototype.BOOLEAN:
+							this.prefs.push(new BoolUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.defaultValue));
+							break;
+						case UserPref.prototype.DATE:
+							this.prefs.push(new DateUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.defaultValue));
+							break;
+						case UserPref.prototype.LIST:
+							this.prefs.push(new ListUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.defaultValue));
+							break;
+					}
 				}
 			}
 		}
-        return objVars;
+
+		return this.prefs;
 	}
 	
 	this.getUserPrefsId = function () {
