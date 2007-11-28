@@ -10,6 +10,6 @@ urlpatterns = patterns('igadget.views',
     # IGadgets
     (r'^$', IGadgetCollection(permitted_methods=('GET', 'POST'))),
     (r'^(?P<igadget_id>\d+)/$',
-        IGadgetEntry(permitted_methods=('GET', 'POST', 'DELETE'))),
+        IGadgetEntry(permitted_methods=('GET', 'POST')))
 
 )
