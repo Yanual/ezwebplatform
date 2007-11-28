@@ -9,4 +9,4 @@ URIConstants.prototype.POST_RESOURCE_TAGS = '/user/admin/catalogue/tags/';
 
 URIConstants.prototype.POST_IGADGET = new Template ('/user/admin/igadgets/#{vendor}/#{name}/#{version}/');	
 
-
+URIConstant.prototype.PROXY = '/proxy/';
