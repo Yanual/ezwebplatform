@@ -90,7 +90,16 @@ var VarManagerFactory = function () {
 			
 			var variable = findVariable(iGadgetId, slotName);
 			
-			variable.writeSlot(value);
+			variable.notifyChange(value);
+		} 
+
+		VarManager.prototype.updateUserPref = function (iGadgetId, slotName, value) {
+			if (! loaded)
+				return;
+			
+			var variable = findVariable(iGadgetId, slotName);
+			
+			variable.notifyChange(value);
 		} 
 		
 		VarManager.prototype.registerVariable = function (iGadgetId, variableName, handler) {

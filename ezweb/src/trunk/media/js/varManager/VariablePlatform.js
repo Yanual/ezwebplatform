@@ -61,9 +61,10 @@ RVariable.prototype = new Variable;
 // PUBLIC METHODS TO BE INHERITANCED
 ////////////////////////////////////////////// 
 
-RVariable.prototype.writeSlot = function (newValue) { 
+RVariable.prototype.notifyChange = function (newValue) { 
 	switch (this.aspect){
 		case Variable.prototype.SLOT:
+		case Variable.prototype.PREF:
 			this.value = newValue;
 			this.handler(newValue);
 			break;
