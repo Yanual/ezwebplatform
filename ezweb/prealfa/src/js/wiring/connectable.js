@@ -54,16 +54,16 @@ wConnectable.prototype.serialize = function(){ //this method will be overriden i
    return "{\"id\":\""+this.id+"\",\"type\":\""+this.type+"\",\"value\":\""+this.value+"\",\"name\":\""+this.name+"\"}";
 }
 
-wConnectable.prototype.getConnectionUris = function(){ //this method will be overriden in each class 			
-   
-}
-
 wConnectable.prototype.refresh = function(){ //this method will be overriden in each class
    null;
 }
 
 wConnectable.prototype.connections = function(){ //this method will be overriden in each class
    null;
+}
+
+wConnectable.prototype.getURI = function(){ //this method will be overriden in wInOut
+   return "/igadget/" + this.id + "/" + this.name;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // This class represents every object which may be placed in the middle of a connection between a In object and wOut object //
@@ -133,7 +133,6 @@ wOut.prototype.refresh = function (channelRef){
 wOut.prototype.eraseConnections = function (){
 	this.inputHash = [];
 }
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 // This class represents every object which may initialize one transmission through the wiring module //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -530,7 +529,30 @@ wInOut.prototype.delConnections = function () {
 	}
 }
 
+wInOut.prototype.getURI = function(){ 
+   return "/channel/"+this.name;
+}
 
+wInOut.prototype.getPersistence = function(){
+	var json = new Object();
+	json.name = this.name;
+	json.value = this.value;
+	json.friendcode = this.type;
+	json.uri = this.getURI();
+	json.ins = [];
+	json.outs = [];
+	for (var i = 0; i < this.inputCounter; i++){
+		var element = new Object();
+		element.variable = inputList[i].getURI();
+		json.ins.push(element);
+	}
+	for (var i=0;i<this.outputCounter;i++){
+		var element = new Object();
+		element.variable = outputList[i].getURI();
+		json.outs.push(element);
+	}
+	return json;
+}
 //////////////////////////////////////////////////////////////////////////
 // This class represents a iGadget variable which may produce some data //
 //////////////////////////////////////////////////////////////////////////

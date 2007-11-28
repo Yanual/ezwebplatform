@@ -576,7 +576,7 @@ var WiringFactory = function () {
 		}
 
 		Wiring.prototype.serialize = function (){
-		    var gadgetKeys = iGadgetList.keys();
+		    /*		    var gadgetKeys = iGadgetList.keys();
 		    var inOutKeys = copyList.keys();
 		    
 		    var channels = [];
@@ -630,7 +630,46 @@ var WiringFactory = function () {
 			channels[t] = channel;
 		    }
 
-		    json ['inouts'] = channels;
+		    json ['inouts'] = channels; */
+
+
+		    var gadgets = [], inouts = [];
+		    var gadgetKeys = iGadgetList.keys();
+		    var inOutKeys = copyList.keys();
+		    
+		    // IGadgets
+		    for (var i = 0; i < gadgetKeys.length; i++){
+			var ins = [], outs = [];
+			for (var j = 0; j < iGadgetList[gadgetKeys[i]].list.length; j++){
+			    var connectablejson = new Object()
+;
+			    connectablejson.name = iGadgetList[gadgetKeys[i]].list[j].name;
+			    connectablejson.variable =  iGadgetList[gadgetKeys[i]].list[j].ref.getURI();
+
+			    if (iGadgetList[gadgetKeys[i]].list[j].aspect == "SLOT"){
+				ins.push(connectablejson);
+			    } else{
+				outs.push(connectablejson);
+			    }
+			}
+
+			var iGadget = new Object();	
+		
+			iGadget.uri = "/user/admin/igadget/" + iGadgetList[gadgetKeys[i]].vendor + "/" + iGadgetList[gadgetKeys[i]].id + "/" + iGadgetList[gadgetKeys[i]].version + "/";
+			iGadget.ins = ins;
+			iGadget.outs = outs;
+			gadgets.push(iGadget);
+		    }
+
+		    // Channels
+		    for(var t = 0; t < inOutKeys.length; t++){
+			inouts[t] = copyList[inOutKeys[t]].ref.getPersistence();
+		    }
+
+		    var json = new Object();
+
+		    json['igadgets'] = gadgets;
+		    json['inouts'] = inouts;
 		    
 		    var param = Object.toJSON(json);
 		    param = "json=" + param;
