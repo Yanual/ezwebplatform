@@ -12,17 +12,38 @@ _EzWebAPI.prototype.getId = function() {
 }
 
 _EzWebAPI.prototype.createRWGadgetVariable = function(name) {
-	var variable = new EzWebAPI.platform.RWGadgetVariable(EzWebAPI.id, name);
-	variable.register();
-
-	return variable;
+	return new EzWebAPI.platform.RWGadgetVariable(EzWebAPI.id, name);
 }
 
 _EzWebAPI.prototype.createRGadgetVariable = function(name, handler) {
-	var variable = new EzWebAPI.platform.RGadgetVariable(EzWebAPI.id, name, handler);
-//	variable.register(handler);
+	return new EzWebAPI.platform.RGadgetVariable(EzWebAPI.id, name, handler);
+}
 
-	return variable;
+_EzWebAPI.prototype.send_get = function(url, context, successHandler, errorHandler) {
+	var params = 'url=';
+	params += url;
+	params += '&method=GET';
+	new Ajax.Request(this.platform.URIConstants.prototype.PROXY, {
+			method: 'post',
+			parameters: params,
+                        onSuccess: successHandler.bind(context),
+                        onFailure: errorHandler.bind(context),
+                        onException: errorHandler.bind(context)
+	});
+}
+
+_EzWebAPI.prototype.send_post = function(url, parameters, context, successHandler, errorHandler) {
+	var params = 'url=';
+        params += url;
+        params += '&method=POST';
+	params += '&params=' + parameters;
+        new Ajax.Request(this.platform.URIConstants.prototype.PROXY, {
+                        method: 'post',
+                        parameters: params,
+                        onSuccess: successHandler.bind(context),
+                        onFailure: errorHandler.bind(context),
+                        onException: errorHandler.bind(context)
+        });
 }
 
 var EzWebAPI = new _EzWebAPI();
