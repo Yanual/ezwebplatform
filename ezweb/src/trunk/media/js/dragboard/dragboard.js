@@ -756,9 +756,18 @@ IGadget.prototype.paint = function(where, style) {
 
 IGadget.prototype.destroy = function() {
 	if (this.element != null) {
+		function onSuccess() {
+//			alert ("v success");
+		}
+		function onError() {
+//			alert ("x error");
+		}
 		this.element.parentNode.removeChild(this.element);
 		this.element = null;
-	}	
+		var persistenceEngine = PersistenceEngineFactory.getInstance();
+		persistenceEngine.send_delete(URIs.GET_IGADGET.evaluate({"id": this.id}),
+		                              this, onSuccess, onError);
+	}
 }
 
 /**
@@ -799,19 +808,18 @@ IGadget.prototype.save = function() {
 
 	var persistenceEngine = PersistenceEngineFactory.getInstance();
 	var data = new Hash();
-	data['iGadget'] = new Hash();
-	data['iGadget']['left'] = this.position.x;
-	data['iGadget']['top'] = this.position.y;
-	data['iGadget']['width'] = this.width;
-	data['iGadget']['height'] = this.height;
-	data['iGadget']['uri'] = URIs.GET_IGADGET.evaluate({id: this.id});
-//	data['iGadget']['uri'] = "/user/admin/igadgets/" + this.id;
-	data['iGadget']['gadget'] = URIs.GET_GADGETS + this.gadget.getVendor() + '/' + this.gadget.getName() + '/' + this.gadget.getVersion();
-//	data['iGadget']['gadget'] = "/user/admin/gadgets/" + this.gadget.getVendor() + "/" +
-//			this.gadget.getName() + "/" +
-//			this.gadget.getVersion();
+	data
+	data['left'] = this.position.x;
+	data['top'] = this.position.y;
+	data['width'] = this.width;
+	data['height'] = this.height;
+ 	var uri = URIs.GET_IGADGET.evaluate({"id": this.id});
+ 	data['uri'] = uri;
+	data['gadget'] = URIs.GET_GADGET.evaluate({"vendor": this.gadget.getVendor(),
+	                                           "name": this.gadget.getName(),
+	                                           "version": this.gadget.getVersion()});
 	data = "igadget=" + data.toJSON();
-//	persistenceEngine.send_post(URIConstantes.prototype.POST_IGADGET.evaluate(vendor, nam, version Mira la sinxtamis please!!!), data, this, onSuccess, onError);
+	persistenceEngine.send_post(uri , data, this, onSuccess, onError);
 }
 
 /////////////////////////////////////

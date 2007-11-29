@@ -12,8 +12,9 @@
 <script type="text/javascript" language="javascript">
 _URIConstants = function(){}
 _URIConstants.prototype.USER = '/user/{{ user.username }}/';
-_URIConstants.prototype.GET_IGADGET = new Template ('/user/{{ user.username }}/igadgets/#{id}/');
+_URIConstants.prototype.GET_IGADGET = new Template ('/user/{{ user.username }}/igadgets/#{id}');
 _URIConstants.prototype.GET_IGADGETS = '/user/{{ user.username }}/igadgets/';
+_URIConstants.prototype.GET_GADGET = new Template ('/user/{{ user.username }}/gadgets/#{vendor}/#{name}/#{version}');
 _URIConstants.prototype.GET_GADGETS = '/user/{{ user.username }}/gadgets/';
 _URIConstants.prototype.GET_POST_WIRING = '/user/{{ user.username }}/connectables/';
 _URIConstants.prototype.GET_POST_RESOURCES = '/user/{{ user.username }}/catalogue/resources/';
@@ -145,7 +146,7 @@ var URIs = new _URIConstants();
 			<div id="head" class="head">
 				<div id="new_resource" class="search">
 				<div class="simple_search">
-				        <form action="#" onSubmit="UIUtils.addResource(URIs.GET_POST_RESOURCES, 'template_uri', this.template_uri.value)">
+				        <form action="#" onsubmit="UIUtils.addResource(URIs.GET_POST_RESOURCES, 'template_uri', this.template_uri.value); return false;">
 					<label for="new_resource_text">URL del Template: </label>
 					<input id="new_resource_text" name="template_uri" type="text" />
 					<button>Crear recurso</button>
