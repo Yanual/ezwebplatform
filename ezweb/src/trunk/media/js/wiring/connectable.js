@@ -50,10 +50,6 @@ wConnectable.prototype.clear = function(){ //this method will be overriden in ea
    null; // it does not have any connection to clear
 }
 
-wConnectable.prototype.serialize = function(){ //this method will be overriden in each class
-   return "{\"id\":\""+this.id+"\",\"type\":\""+this.type+"\",\"value\":\""+this.value+"\",\"name\":\""+this.name+"\"}";
-}
-
 wConnectable.prototype.refresh = function(){ //this method will be overriden in each class
    null;
 }
@@ -121,10 +117,6 @@ wOut.prototype.connections = function(){
       }
    }
    return result;
-}
-
-wOut.prototype.serialize = function(){
-   return "{\"aspect\":\"SLOT\",\"id\":\""+this.id+"\",\"type\":\""+this.type+"\",\"value\":\""+this.value+"\",\"name\":\""+this.name+"\"}";
 }
 
 wOut.prototype.refresh = function (channelRef){
@@ -206,10 +198,6 @@ wIn.prototype.clear = function(){
          this.outputHash[i].removeInput(this);
       }
    }
-}
-
-wIn.prototype.serialize = function(){
-   return "{\"aspect\":\"EVENT\",\"id\":\""+this.id+"\",\"type\":\""+this.type+"\",\"value\":\""+this.value+"\",\"name\":\""+this.name+"\"}";
 }
 
 wIn.prototype.refresh = function (channelRef){
@@ -463,25 +451,6 @@ wInOut.prototype.connections = function(){
 		 result["output"].push(connection);
       }
    }
-   return result;
-}
-
-wInOut.prototype.serialize = function(){
-   var result = "{\"id\":\""+this.id+"\",\"type\":\""+this.type+"\",\"value\":\""+this.value+"\",\"name\":\""+this.name+"\",\"inputList\":[";
-   if (this.inputCounter != 0){
-      for (var i=0;i<(this.inputCounter-1);i++){
-         result+="{\"id\":\""+this.inputList[i].getId()+"\",\"name\":\""+this.inputList[i].getName()+"\"},";
-      }
-      result+="{\"id\":\""+this.inputList[this.inputCounter-1].getId()+"\",\"name\":\""+this.inputList[this.inputCounter-1].getName()+"\"}";
-   }
-   result+="],\"outputList\":[";
-   if (this.outputList.length != 0){
-      for (var i=0;i<(this.outputCounter-1);i++){
-         result+="{\"id\":\""+this.outputList[i].getId()+"\",\"name\":\""+this.outputList[i].getName()+"\"},";
-      }
-      result+="{\"id\":\""+this.outputList[this.outputCounter-1].getId()+"\",\"name\":\""+this.outputList[this.outputCounter-1].getName()+"\"}";
-   }
-   result+="]}";
    return result;
 }
 
