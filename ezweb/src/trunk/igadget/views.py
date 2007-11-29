@@ -174,13 +174,15 @@ class IGadgetEntry(Resource):
         if not screen_id:
             screen_id = 1
 
+        # Gets Igadget, if it does not exist, a http 404 error is returned
+        igadget = get_object_or_404(IGadget, screen__user=user, screen=screen_id, id=igadget_id)
+        
         # Delete all IGadget's variables
-        variables = Variable.objects.filter(igadget__screen=screen_id, igadget__screen__user=user, igadget__id=igadget_id)
+        variables = Variable.objects.filter(igadget=igadget)
         for var in variables:
             var.delete()
         
         # Delete IGadget and its position
-        igadget = get_object_or_404(IGadget, user=user, screen=screen_id, id=igadget_id)
         position = igadget.position
         igadget.delete()
         position.delete()
@@ -194,7 +196,7 @@ class IGadgetVariableCollection(Resource):
         if not screen_id:
             screen_id = 1
         
-        variables = get_list_or_404(Variable, igadget__screen=screen_id, igadget__id=igadget_id)
+        variables = get_list_or_404(Variable, screen__user=user, igadget__screen=screen_id, igadget__id=igadget_id)
         print variables
         print 'hola'
         data = serializers.serialize('python', variables, ensure_ascii=False)
