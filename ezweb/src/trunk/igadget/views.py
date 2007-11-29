@@ -174,7 +174,7 @@ class IGadgetEntry(Resource):
             screen_id = 1
 
         # Delete all IGadget's variables
-        variables = get_list_or_404(Variable, igadget__screen=screen_id, igadget__screen__user=user, igadget__id=igadget_id)
+        variables = Variable.objects.filter(igadget__screen=screen_id, igadget__screen__user=user, igadget__id=igadget_id)
         for var in variables:
             var.delete()
         

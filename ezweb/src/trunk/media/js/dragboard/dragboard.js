@@ -108,7 +108,7 @@ var DragboardFactory = function () {
 				curIGadget.id = parseInt(curIGadget.id[curIGadget.id.length - 1]);
 
 				// Create instance model
-				igadget = new IGadget(gadget, curIGadget.id, position, width, height);
+				igadget = new IGadget(gadget, curIGadget.id, position, width, height, true);
 				iGadgets[curIGadget.id] = igadget;
 
 				if (curIGadget.id >= currentId) // TODO remove, persistenceEngine will manage ids
@@ -395,13 +395,10 @@ var DragboardFactory = function () {
 			var position = _searchFreeSpace(width, height + 2);
 
 			// Create the instance
-			var iGadget = new IGadget(gadget, currentId, position, width, height);
+			var iGadget = new IGadget(gadget, currentId, position, width, height, false);
 			iGadget.save();
 			iGadgets[currentId] = iGadget;
 			currentId++;
-
-			// Configure it
-			iGadget.setDefaultPrefs();
 
 			// Reserve the cells for the gadget instance
 			_reserveSpace(matrix, iGadget);
@@ -439,7 +436,18 @@ var DragboardFactory = function () {
 		}
 
 		Dragboard.prototype.configure = function (iGadgetId) {
-			
+			var igadget = iGadgets[iGadgetId];
+			igadget.setConfigurationVisible(true);
+		}
+
+		// TODO better implementation of toggle functionality
+		Dragboard.prototype.setConfigurationVisible = function (iGadgetId, newStatus) {
+			var igadget = iGadgets[iGadgetId];
+			if (newStatus == 'toggle') {
+				igadget.setConfigurationVisible(!igadget.isConfigurationVisible());
+			} else {
+				igadget.setConfigurationVisible(newStatus);
+			}
 		}
 
 		Dragboard.prototype.repaint = function (iGadgetId) {
@@ -567,7 +575,6 @@ var DragboardFactory = function () {
 		_clearMatrix();
 
 		var persistenceEngine = PersistenceEngineFactory.getInstance();
-//		persistenceEngine.send_get("http://hercules.ls.fi.upm.es:8000/user/admin/igadgets/", this, _load, onError);
 		persistenceEngine.send_get(URIs.GET_IGADGETS, this, _load, onError);
 	}
 
@@ -594,13 +601,16 @@ var DragboardFactory = function () {
  * This class represents a instance of one Gadget.
  * @author aarranz
  */
-function IGadget(gadget, iGadgetId, position, width, height) {
+function IGadget(gadget, iGadgetId, position, width, height, initialized) {
 	this.id = iGadgetId;
 	this.gadget = gadget;
 	this.position = position;
 	this.width = width;
 	this.height = height;
+	this.initialized = initialized;
 	this.element = null;
+	this.configurationElement = null;
+	this.configurationVisible = false;
 }
 
 IGadget.prototype.getGadget = function() {
@@ -640,6 +650,9 @@ IGadget.prototype.setContentHeight = function(height) {
 	this.height = height;
 }
 
+/**
+ * Return the content height.
+ */
 IGadget.prototype.getContentHeight = function() {
 	return this.height;
 }
@@ -665,8 +678,13 @@ IGadget.prototype.isVisible = function() {
 }
 
 IGadget.prototype.paint = function(where, style) {
-	if (this.element != null) // if visible
+	if (this.element != null) // exit if the igadgets is already visible
 		return; // TODO exception
+
+	if (!this.initialized) {
+		this.setDefaultPrefs();
+		this.initialized = true;
+	}
 
 	var gadgetElement, gadgetMenu, gadgetContent;
 
@@ -680,12 +698,16 @@ IGadget.prototype.paint = function(where, style) {
 
 	// buttons. Inserted from right to left
 	gadgetMenu.innerHTML = "<div class=\"floatright button\" onclick=\"javascript:OpManagerFactory.getInstance().removeInstance(" + this.id + ")\" >X</div>"	// close button
-						 + "<div class=\"floatright button\" onclick=\"javascript:DragboardFactory.getInstance().configure(" + this.id + ")\" >P</div>"	// settings button
+						 + "<div class=\"floatright button\" onclick=\"javascript:DragboardFactory.getInstance().setConfigurationVisible(" + this.id + ", 'toggle');\" >P</div>"	// settings button
 						 + "<div class=\"floatright button\" onclick=\"javascript:DragboardFactory.getInstance().minimize(" + this.id + ")\" >-</div>"	// minimize button
 	                     + this.gadget.getName()
 	                     + " (Gadget " + this.id + ")";	// TODO Gadget Title
-
 	gadgetElement.appendChild(gadgetMenu);
+
+	// Gadget configuration (Initially empty)
+	this.configurationElement = document.createElement("div");
+	this.configurationElement.setAttribute("class", "config_interface");
+	gadgetElement.appendChild(this.configurationElement);
 
 	// Gadget Content
 	gadgetContent = document.createElement("object");
@@ -721,6 +743,7 @@ IGadget.prototype.paint = function(where, style) {
 	}
 
 	var updateFunc = function (draggable, event) {
+		// TODO change Event.pointerX and Event.pointerY
 		var position = DragboardFactory.getInstance().getCellAt(Event.pointerX(event), Event.pointerY(event));
 
 		// If the mouse is inside of the dragboard and we have enought columns =>
@@ -774,28 +797,46 @@ IGadget.prototype.destroy = function() {
  * Set all preferences of this gadget instance to their default value
  */
 IGadget.prototype.setDefaultPrefs = function() {
-//	var prefs = this.gadget.getTemplate().getUserPrefs(); // TODO valid line, commented for testing
-	var prefs = new Array();
+	var prefs = this.gadget.getTemplate().getUserPrefs(); // TODO valid line, commented for testing
 
 	for (var i = 0; i < prefs.length; i++)
 		prefs[i].setToDefault(this.id);
 }
 
-IGadget.prototype.makeConfigureInterface = function() {
-//	var prefs = this.gadget.getTemplate().getUserPrefs(); // TODO valid line, commented for testing
-	var prefs = new Array(); // TODO for testing
-	var interface = "<form><div>";
+IGadget.prototype._makeConfigureInterface = function() {
+	var prefs = this.gadget.getTemplate().getUserPrefs();
+
+	var interface = "<form onsubmit=\"return false;\"><div>";
 
 	for (var i = 0; i < prefs.length; i++)
 		interface += prefs[i].makeInterface(this.id);
 
 	interface += "<div class=\"buttons\">" +
-                 "<input type=\"submit\" name=\"op\" value=\"Save\" />" +
-                 "<input type=\"submit\" name=\"op\" value=\"Cancel\" />" +
+                 "<input type=\"submit\" name=\"op\" value=\"Save\" onclick=\"DragboardFactory.getInstance().saveConfig(" + this.id + ")\"/>" +
+                 "<input type=\"submit\" name=\"op\" value=\"Cancel\" onclick=\"DragboardFactory.getInstance().setConfigurationVisible(" + this.id + ", false);\"/>" +
                  "</div>" +
                  "</div></form>";
 
 	return interface;
+}
+
+IGadget.prototype.isConfigurationVisible = function() {
+	return this.configurationVisible;
+}
+
+IGadget.prototype.setConfigurationVisible = function(newValue) {
+	if (this.configurationVisible == newValue)
+		return;
+
+	if (newValue == true) {
+		this.configurationVisible = true;
+		this.configurationElement.innerHTML = this._makeConfigureInterface();
+		this.configurationElement.setStyle({"display": "block"});
+	} else {
+		this.configurationElement.innerHTML = "";
+		this.configurationElement.hide();
+		this.configurationVisible = false;
+	}
 }
 
 IGadget.prototype.save = function() {

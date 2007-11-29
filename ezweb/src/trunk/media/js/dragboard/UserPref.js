@@ -14,7 +14,7 @@ UserPref.prototype.UserPref = function (varName_, label_, desc_, defaultValue_) 
 	this.label = label_;
 	this.desc = desc_;
 
-	if ((defaultValue_ == null) || (defaultValue == undefined))
+	if ((defaultValue_ == null) || (defaultValue_ == undefined))
 		this.defaultValue = "";
 	else
 		this.defaultValue = defaultValue_;
@@ -37,13 +37,13 @@ UserPref.prototype.setValue = function (iGadgetId, newValue) {
 	if (this.validate(newValue)) {
 
 	    var varManager = VarManagerFactory.getInstance();
-		varManager.setVariable(iGadgetId, this.varName, this.newValue);
+		varManager.updateUserPref(iGadgetId, this.varName, this.newValue);
 	}
 }
 
 UserPref.prototype.setToDefault = function (iGadgetId) {
     var varManager = VarManagerFactory.getInstance();
-	varManager.setVariable(iGadgetId, this.varName, this.defaultValue);
+	varManager.updateUserPref(iGadgetId, this.varName, this.defaultValue);
 }
 
 //////////////////////////////////////////////
