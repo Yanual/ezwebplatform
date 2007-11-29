@@ -76,7 +76,7 @@ def get_variable_data(var_name, data):
     data_fields = data['fields']
     
     data_ret['name'] = var_name 
-    data_ret['value'] = data_fields['uri']
+    data_ret['value'] = data_fields['value']
        
     return data_ret
 
