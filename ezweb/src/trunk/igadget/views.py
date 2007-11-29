@@ -169,6 +169,7 @@ class IGadgetEntry(Resource):
     def delete(self, request, user_name, igadget_id, screen_id=None):
         user = user_authentication(user_name)
 
+        print 'delete igadget'
         #TODO by default. Remove in final release
         if not screen_id:
             screen_id = 1
@@ -212,6 +213,10 @@ class IGadgetVariable(Resource):
         data = serializers.serialize('python', variable, ensure_ascii=False)
         var_data = get_variable_data(var_name, data[0])
         return HttpResponse(json_encode(var_data), mimetype='application/json; charset=UTF-8')
+    
+    def create(self, request, user_name, igadget_id, var_name, screen_id=None):
+        igadget = IGadgetEntry()
+        return igadget.delete(request, user_name, igadget_id, screen_id)
     
     def update(self, request, user_name, igadget_id, var_name, screen_id=None):
         user = user_authentication(user_name)
