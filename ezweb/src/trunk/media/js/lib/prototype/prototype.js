@@ -1011,11 +1011,12 @@ Ajax.Request.prototype = Object.extend(new Ajax.Base(), {
     this.method = this.options.method;
     var params = Object.clone(this.options.parameters);
 
-    if (!['get', 'post'].include(this.method)) {
-      // simulate other verbs over post
-      params['_method'] = this.method;
-      this.method = 'post';
-    }
+//    Hack por right HTTP verbs
+//    if (!['get', 'post'].include(this.method)) {
+//      // simulate other verbs over post
+//      params['_method'] = this.method;
+//      this.method = 'post';
+//    }
 
     this.parameters = params;
 
@@ -1040,7 +1041,9 @@ Ajax.Request.prototype = Object.extend(new Ajax.Base(), {
       this.transport.onreadystatechange = this.onStateChange.bind(this);
       this.setRequestHeaders();
 
-      this.body = this.method == 'post' ? (this.options.postBody || params) : null;
+//      Hack por right HTTP verbs
+      this.body = ['put', 'post'].include(this.method) ? (this.options.postBody || params) : null;
+//      this.body = this.method == 'post' ? (this.options.postBody || params) : null;
       this.transport.send(this.body);
 
       /* Force Firefox to handle ready state 4 for synchronous requests */
