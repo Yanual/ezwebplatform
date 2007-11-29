@@ -1,9 +1,43 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import get_object_or_404, get_list_or_404
 
+from django.core import serializers
+
 from gadget.models import Template, Gadget, XHTML, Tag, UserEventsInfo
 from igadget.models import Variable, VariableDef, Position
 from connectable.models import In, Out
+
+def get_wiring_variable(variable):
+    pass
+
+def get_wiring_data(igadgets):
+    input = []
+    output = []
+
+    res_data = {}
+ 
+    for ig in igadgets:
+        variables = Variable.objects.filter(igadget=ig)
+
+        #Looking for IN or OUT wiring objets corresponding to igadget Variables
+        #If a SELECT finds no elements, raises a DoesNotExists exception
+        for var in variables:
+            try:
+                inConnectable = In.objects.get(variable=var)
+                input.append(get_wiring_variable(inConnectable))
+                continue
+            except In.DoesNotExist:
+                try:
+                    outConnectable = Out.objects.get(variable=var)
+                    output.append(get_wiring_variable(outConnectable))
+                except Out.DoesNotExist:
+                    pass
+
+    res_data['input'] = input
+    res_data['output'] = output
+       
+    return res_data
+
 
 def get_gadget_data(data):
     data_ret = {}
@@ -79,4 +113,6 @@ def get_variable_data(var_name, data):
     data_ret['value'] = data_fields['value']
        
     return data_ret
+
+
 

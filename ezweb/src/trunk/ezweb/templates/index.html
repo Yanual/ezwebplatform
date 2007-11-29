@@ -12,7 +12,7 @@
 <script type="text/javascript" language="javascript">
 _URIConstants = function(){}
 _URIConstants.prototype.USER = '/user/{{ user.username }}/';
-_URIConstants.prototype.GET_IGADGET = new Template ('/user/{{ user.username }}/igadgets/#{id}');
+_URIConstants.prototype.GET_IGADGET = new Template ('/user/{{ user.username }}/igadgets/#{id}/');
 _URIConstants.prototype.GET_IGADGETS = '/user/{{ user.username }}/igadgets/';
 _URIConstants.prototype.GET_GADGET = new Template ('/user/{{ user.username }}/gadgets/#{vendor}/#{name}/#{version}');
 _URIConstants.prototype.GET_GADGETS = '/user/{{ user.username }}/gadgets/';
@@ -21,7 +21,7 @@ _URIConstants.prototype.GET_POST_RESOURCES = '/user/{{ user.username }}/catalogu
 _URIConstants.prototype.POST_RESOURCE_TAGS = '/user/{{ user.username }}/catalogue/tags/';
 _URIConstants.prototype.POST_IGADGET = new Template ('/user/{{ user.username }}/igadgets/#{iGadgetId}/');
 _URIConstants.prototype.PROXY = '/proxy/';
-_URIConstants.prototype.GET_POST_GADGET_VARIABLE = new Template ('/user/{{ user.username }}/igadgets/#{iGadgetId}/variables/#{varName}/');
+_URIConstants.prototype.GET_POST_GADGET_VARIABLE = new Template ('/user/{{ user.username }}/igadgets/#{iGadgetId}/variables/#{varName}');
 _URIConstants.prototype.GET_POST_CHANNEL = new Template ('/user/{{ user.username }}/channel/#{channelName}/');
 var URIs = new _URIConstants();
 </script>

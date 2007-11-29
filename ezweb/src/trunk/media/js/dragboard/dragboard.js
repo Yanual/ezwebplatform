@@ -841,10 +841,10 @@ IGadget.prototype.setConfigurationVisible = function(newValue) {
 
 IGadget.prototype.save = function() {
 	function onSuccess() {
-//		alert ("v success");
+
 	}
-	function onError() {
-//		alert ("x error");
+	function onError(transport) {
+		alert ("x error");
 	}
 
 	var persistenceEngine = PersistenceEngineFactory.getInstance();
