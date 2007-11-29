@@ -79,13 +79,6 @@ class IGadgetCollection(Resource):
             screen_id = 1
         
         data_list = {}
-#        if not screen_id:
-#            screens = Screen.objects.filter(user=user)
-#            for screen in screens:
-#                igadget = IGadget.objects.filter(screen=screen.id)
-#                data = serializers.serialize('python', igadget, ensure_ascii=False)
-#                data_list = [get_igadget_data(d) for d in  data]
-#        else:
         igadget = IGadget.objects.filter(screen__user=user, screen__id=screen_id)
         data = serializers.serialize('python', igadget, ensure_ascii=False)
         data_list['iGadgets'] = [get_igadget_data(d) for d in  data]
@@ -129,13 +122,6 @@ class IGadgetEntry(Resource):
             screen_id = 1
         
         data_list = {}
-#        if not screen_id:
-#            screens = Screen.objects.filter(user=user)
-#            for screen in screens:
-#                igadget = IGadget.objects.filter(id=igadget_id, screen=screen.id)
-#                data = serializers.serialize('python', igadget, ensure_ascii=False)
-#                data_list = [get_igadget_data(d) for d in  data]
-#        else:
         igadget = IGadget.objects.filter(screen__user=user, screen__id=screen_id)
         data = serializers.serialize('python', igadget, ensure_ascii=False)
         igadget_data = get_igadget_data(data[0])
@@ -186,12 +172,14 @@ class IGadgetEntry(Resource):
         position = igadget.position
         igadget.delete()
         position.delete()
+        return HttpResponse('ok')
         
 
 class IGadgetVariableCollection(Resource):
     def read(self, request, user_name, igadget_id, screen_id=None):
         user = user_authentication(user_name)
         
+        print 'hola1'
         #TODO by default. Remove in final release
         if not screen_id:
             screen_id = 1
@@ -211,14 +199,10 @@ class IGadgetVariable(Resource):
         if not screen_id:
             screen_id = 1
         
-        variable = get_list_or_404(Variable, igadget__screen=screen_id, igadget__id=igadget_id, vardef__name=var_name)
+        variable = get_list_or_404(Variable, igadget__screen__user=user, igadget__screen=screen_id, igadget__id=igadget_id, vardef__name=var_name)
         data = serializers.serialize('python', variable, ensure_ascii=False)
         var_data = get_variable_data(var_name, data[0])
         return HttpResponse(json_encode(var_data), mimetype='application/json; charset=UTF-8')
-    
-    def create(self, request, user_name, igadget_id, var_name, screen_id=None):
-        igadget = IGadgetEntry()
-        return igadget.delete(request, user_name, igadget_id, screen_id)
     
     def update(self, request, user_name, igadget_id, var_name, screen_id=None):
         user = user_authentication(user_name)
@@ -232,7 +216,7 @@ class IGadgetVariable(Resource):
         if not screen_id:
             screen_id = 1
         
-        variable = get_object_or_404(Variable, igadget__screen=screen_id, igadget__id=igadget_id, vardef__name=var_name)
+        variable = get_object_or_404(Variable, igadget__screen__user=user, igadget__screen=screen_id, igadget__id=igadget_id, vardef__name=var_name)
         variable.value = new_value
         variable.save()
         var = Variable (uri=uri + '/variable/' + varDef.name, vardef=varDef, igadget=new_igadget, value=var_value)

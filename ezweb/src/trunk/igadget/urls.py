@@ -14,6 +14,6 @@ urlpatterns = patterns('igadget.views',
     (r'^((?P<igadget_id>\d+)/variables/)?$',
         IGadgetVariableCollection(permitted_methods=('GET'))),
     (r'^((?P<igadget_id>\d+)/variables/(?P<var_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/)?$',
-        IGadgetVariable(permitted_methods=('GET', 'POST','UPDATE'))),
+        IGadgetVariable(permitted_methods=('GET', 'UPDATE'))),
 
 )
