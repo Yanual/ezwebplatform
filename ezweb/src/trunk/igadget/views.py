@@ -31,9 +31,9 @@ def SaveIGadget(igadget, user, screen_id, igadget_id):
     height = igadget.get('height')
     top = igadget.get('top')
     left = igadget.get('left')
-   
-    if not igadget_id or not uri or not gadget_uri or not width or not height or not top or not left:
-        raise Exception('Malformed iGadget JSON')   
+
+    if not igadget_id or not uri or not gadget_uri or width <= 0 or height <= 0 or top < 0 or left < 0:
+        raise Exception('Malformed iGadget JSON')
 
     #Gets current user screen
     try:
@@ -53,14 +53,14 @@ def SaveIGadget(igadget, user, screen_id, igadget_id):
         new_igadget.save()
         variableDefs = VariableDef.objects.filter(template=gadget.template)
         for varDef in variableDefs:
-            if not gadget.default_value:
-                var_value = gadget.default_value
+            if varDef.default_value:
+                var_value = varDef.default_value
             else:
                 var_value = ''
             var = Variable (uri=uri + '/variable/' + varDef.name, vardef=varDef, igadget=new_igadget, value=var_value)
             var.save() 
     except Gadget.DoesNotExist:
-        raise Gadget.DoesNotExist('iGadget without associated gadget')
+        raise Gadget.DoesNotExist('refered gadget (' + gadget_uri + ') don\'t exists.')
     except VariableDef.DoesNotExist:
         #iGadget has no variables
         pass
