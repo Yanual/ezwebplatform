@@ -14,7 +14,7 @@ UIUtils.isInfoResourcesOpen = false;
 
 UIUtils.addResource = function(url, paramName, paramValue) {
 	var newResourceOnSuccess = function (response) {
-		OpManagerFactory.getInstance().repaintCatalogue(URIConstants.prototype.GET_RESOURCES);
+		OpManagerFactory.getInstance().repaintCatalogue(URIs.GET_RESOURCES);
 	}
 	
 	var newResourceOnError = function (response) {
@@ -102,7 +102,7 @@ UIUtils.sendTags = function() {
 	var tagger = resource.getTagger();
 	var resourceURI = resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion() + "/";
 
-	tagger.sendTags(URIConstants.prototype.POST_RESOURCE_TAGS, resourceURI);
+	tagger.sendTags(URIs.POST_RESOURCE_TAGS, resourceURI);
 }
 
 UIUtils.addTag = function(inputText_) {

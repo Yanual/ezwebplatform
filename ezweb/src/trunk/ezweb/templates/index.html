@@ -10,16 +10,17 @@
 
 <script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/lib/prototype/prototype.js"></script>
 <script type="text/javascript" language="javascript">
-URIConstants = function(){}
-URIConstants.prototype.USER = '/user/{{ user.username }}/';
-URIConstants.prototype.GET_IGADGET = new Template ('/user/{{ user.username }}/igadgets/#{id}/');
-URIConstants.prototype.GET_IGADGETS = '/user/{{ user.username }}/igadgets/';
-URIConstants.prototype.GET_GADGETS = '/user/{{ user.username }}/gadgets/';
-URIConstants.prototype.GET_POST_WIRING = '/user/{{ user.username }}/connectables/';
-URIConstants.prototype.GET_POST_RESOURCES = '/user/{{ user.username }}/catalogue/resources/';
-URIConstants.prototype.POST_RESOURCE_TAGS = '/user/{{ user.username }}/catalogue/tags/';
-URIConstants.prototype.POST_IGADGET = new Template ('/user/{{ user.username }}/igadgets/#{iGadgetId}/');
+_URIConstants = function(){}
+_URIConstants.prototype.USER = '/user/{{ user.username }}/';
+_URIConstants.prototype.GET_IGADGET = new Template ('/user/{{ user.username }}/igadgets/#{id}/');
+_URIConstants.prototype.GET_IGADGETS = '/user/{{ user.username }}/igadgets/';
+_URIConstants.prototype.GET_GADGETS = '/user/{{ user.username }}/gadgets/';
+_URIConstants.prototype.GET_POST_WIRING = '/user/{{ user.username }}/connectables/';
+_URIConstants.prototype.GET_POST_RESOURCES = '/user/{{ user.username }}/catalogue/resources/';
+_URIConstants.prototype.POST_RESOURCE_TAGS = '/user/{{ user.username }}/catalogue/tags/';
+_URIConstants.prototype.POST_IGADGET = new Template ('/user/{{ user.username }}/igadgets/#{iGadgetId}/');
 URIConstants.prototype.PROXY = '/proxy/';
+var URIs = new _URIConstants();
 </script>
 <!--<script language="JavaScript" src="{{ MEDIA_URL }}js/common/uris.js"></script>-->
 <script language="JavaScript" src="{{ MEDIA_URL }}js/common/modules.js"></script>
@@ -75,7 +76,7 @@ URIConstants.prototype.PROXY = '/proxy/';
 
 	function show_showcase() {
 		wI.unloaded();
-	    opManager.repaintCatalogue(URIConstants.prototype.GET_POST_RESOURCES);
+	    opManager.repaintCatalogue(URIsGET_POST_RESOURCES);
 		showInterface('showcase');
 		UIUtils.setResourcesWidth();
 		document.getElementById('simple_search_text').focus();
@@ -140,7 +141,7 @@ URIConstants.prototype.PROXY = '/proxy/';
 			<div id="head" class="head">
 				<div id="new_resource" class="search">
 				<div class="simple_search">
-				        <form action="#" onSubmit="UIUtils.addResource(URIConstants.prototype.GET_POST_RESOURCES, 'template_uri', this.template_uri.value)">
+				        <form action="#" onSubmit="UIUtils.addResource(URIsGET_POST_RESOURCES, 'template_uri', this.template_uri.value)">
 					<label for="new_resource_text">URL del Template: </label>
 					<input id="new_resource_text" name="template_uri" type="text" />
 					<button>Crear recurso</button>
@@ -155,13 +156,13 @@ URIConstants.prototype.PROXY = '/proxy/';
 						<div id="advanced_search_bottom" class="advanced_search_bottom" style="display:none;">
 							<label for="advanced_search_text">B&uacute;squeda:</label>
 							<input type="text" id="advanced_search_text" name="advanced_search_text" class="text" autocomplete="on"></input>
-							<button onclick="UIUtils.searchByTag(URIConstants.prototype.GET_POST_RESOURCES, this.form.advanced_search_text.value);">Buscar</button><br/>
+							<button onclick="UIUtils.searchByTag(URIsGET_POST_RESOURCES, this.form.advanced_search_text.value);">Buscar</button><br/>
 							<a href="#" onclick="UIUtils.SlideAdvancedSearchOutOfView('advanced_search_top');">Mostrar b&uacute;squeda simple</a>
 						</div>
 						<div id="simple_search" class="simple_search">
 							<label for="simple_search_text">B&uacute;squeda:</label>
 							<input type="text" id="simple_search_text" name="simple_search_text" class="text" autocomplete="on"></input>
-							<button onclick="UIUtils.searchByTag(URIConstants.prototype.GET_POST_RESOURCES, this.form.simple_search_text.value);">Buscar</button><br/>
+							<button onclick="UIUtils.searchByTag(URIsGET_POST_RESOURCES, this.form.simple_search_text.value);">Buscar</button><br/>
 							<a href="#" onclick="UIUtils.SlideAdvancedSearchIntoView('advanced_search_top');">Mostrar b&uacute;squeda avanzada</a>
 						</div>
 					</form>

@@ -657,7 +657,7 @@ var WiringFactory = function () {
 		
 			var iGadgetId = {iGadgetId: iGadgetList[gadgetKeys[i]].id};
 
-			iGadget.uri = URIConstants.prototype.POST_IGADGET.evaluate(iGadgetId);
+			iGadget.uri = URIs.POST_IGADGET.evaluate(iGadgetId);
 			iGadget.ins = ins;
 			iGadget.outs = outs;
 			gadgets.push(iGadget);
@@ -676,7 +676,7 @@ var WiringFactory = function () {
 		    var param = Object.toJSON(json);
 		    param = "json=" + param;
 		    
-		    PersistenceEngineFactory.getInstance().send_post(URIConstants.prototype.POST_WIRING, param, this, this.serializationSuccess, this.serializationError); 
+		    PersistenceEngineFactory.getInstance().send_post(URIs.POST_WIRING, param, this, this.serializationSuccess, this.serializationError); 
 		    
 		}
 

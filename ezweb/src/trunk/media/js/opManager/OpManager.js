@@ -104,7 +104,7 @@ var OpManagerFactory = function () {
 			
 			if (module == Modules.prototype.WIRING) {
 				this.catalogue = CatalogueFactory.getInstance();
-				this.catalogue.loadCatalogue(URIConstants.prototype.GET_POST_RESOURCES);
+				this.catalogue.loadCatalogue(URIs.GET_POST_RESOURCES);
 
 				this.loadCompleted = true;
 				delete this.notifyInstance;

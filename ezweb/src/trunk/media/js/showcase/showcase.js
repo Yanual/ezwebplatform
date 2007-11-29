@@ -61,7 +61,7 @@ var ShowcaseFactory = function () {
 		var _persistenceEngine = PersistenceEngineFactory.getInstance();			
 		
 		// Initial load from persitence system
-		_persistenceEngine.send_get(URIConstants.prototype.GET_GADGETS, this, loadGadgets, onErrorCallback);
+		_persistenceEngine.send_get(URIs.GET_GADGETS, this, loadGadgets, onErrorCallback);
 						
 
 		// ****************

@@ -51,7 +51,7 @@ function Gadget(gadget_, url_) {
 		var persistenceEngine = PersistenceEngineFactory.getInstance();
 		// Post Gadget to PersistenceEngine. Asyncrhonous call!
 		var param = 'url=' + url_
-		persistenceEngine.send_post(URIConstants.prototype.GET_GADGETS, param, this, loadGadget, onError);
+		persistenceEngine.send_post(URIs.GET_GADGETS, param, this, loadGadget, onError);
 	}
 	
 	// *******************

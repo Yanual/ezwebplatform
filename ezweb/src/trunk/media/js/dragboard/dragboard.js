@@ -568,7 +568,7 @@ var DragboardFactory = function () {
 
 		var persistenceEngine = PersistenceEngineFactory.getInstance();
 //		persistenceEngine.send_get("http://hercules.ls.fi.upm.es:8000/user/admin/igadgets/", this, _load, onError);
-		persistenceEngine.send_get(URIConstants.prototype.GET_IGADGETS, this, _load, onError);
+		persistenceEngine.send_get(URIs.GET_IGADGETS, this, _load, onError);
 	}
 
 	// *********************************
@@ -804,9 +804,9 @@ IGadget.prototype.save = function() {
 	data['iGadget']['top'] = this.position.y;
 	data['iGadget']['width'] = this.width;
 	data['iGadget']['height'] = this.height;
-	data['iGadget']['uri'] = URIConstants.prototype.GET_IGADGET.template.evaluate({id: this.id});
+	data['iGadget']['uri'] = URIs.GET_IGADGET.evaluate({id: this.id});
 //	data['iGadget']['uri'] = "/user/admin/igadgets/" + this.id;
-	data['iGadget']['gadget'] = URIConstants.prototype.GET_GADGETS + this.gadget.getVendor() + '/' + this.gadget.getName() + '/' + this.gadget.getVersion();
+	data['iGadget']['gadget'] = URIs.GET_GADGETS + this.gadget.getVendor() + '/' + this.gadget.getName() + '/' + this.gadget.getVersion();
 //	data['iGadget']['gadget'] = "/user/admin/gadgets/" + this.gadget.getVendor() + "/" +
 //			this.gadget.getName() + "/" +
 //			this.gadget.getVersion();
