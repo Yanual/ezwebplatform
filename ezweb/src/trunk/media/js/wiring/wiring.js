@@ -576,63 +576,6 @@ var WiringFactory = function () {
 		}
 
 		Wiring.prototype.serialize = function (){
-		    /*		    var gadgetKeys = iGadgetList.keys();
-		    var inOutKeys = copyList.keys();
-		    
-		    var channels = [];
-
-		    var json = new Object();
-		    
-		    for(var t = 0; t < inOutKeys.length; t++){
-			var connectable = copyList[inOutKeys[t]].ref;
-			
-			var channel = new Object();
-
-			// Loading channel data
-
-			channel ['uri'] = 'uri';
-			channel ['value'] = connectable.getValue();
-			channel ['name'] = connectable.getName();
-			channel ['friendCode'] = connectable.getFriendCode();
-			
-			
-			var ins = [];
-			var outs = [];
-			
-			var connectTo = copyList[inOutKeys[t]].ref.connections();
-
-			// Channel Input
-			for (var z = 0; z < connectTo["input"].length; z++){
-			    var input = new Object();
-			    
-			    input['uri'] = "kk"
-			    ins[z] = input;
-			}
-			
-			// Channel input assignment
-			channel ['ins'] = ins;
-
-			
-			// Channel output
-			for (var z = 0; z < connectTo["output"].length; z++){
-			    var output = new Object();
-			    
-			    input['uri'] = "kk"
-			    ins[z] = input;
-
-			}
-			
-			// Channel output assignment
-			channel ['outs'] = outs;
-
-
-			// Channel assignment
-			channels[t] = channel;
-		    }
-
-		    json ['inouts'] = channels; */
-
-
 		    var gadgets = [], inouts = [];
 		    var gadgetKeys = iGadgetList.keys();
 		    var inOutKeys = copyList.keys();

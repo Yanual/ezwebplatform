@@ -63,7 +63,9 @@ wConnectable.prototype.connections = function(){ //this method will be overriden
 }
 
 wConnectable.prototype.getURI = function(){ //this method will be overriden in wInOut
-   return "/igadget/" + this.id + "/" + this.name;
+    var values = {'iGadgetId': this.id, 'varName': this.name};
+
+    return URIs.GET_POST_GADGET_VARIABLE.evaluate(values);
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // This class represents every object which may be placed in the middle of a connection between a In object and wOut object //
@@ -530,7 +532,9 @@ wInOut.prototype.delConnections = function () {
 }
 
 wInOut.prototype.getURI = function(){ 
-   return "/channel/"+this.name;
+    var values = {'channelName' : this.name};
+
+    return URIs.GET_POST_CHANNEL.evaluate(values);
 }
 
 wInOut.prototype.getPersistence = function(){
