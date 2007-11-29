@@ -543,12 +543,12 @@ wInOut.prototype.getPersistence = function(){
 	json.outs = [];
 	for (var i = 0; i < this.inputCounter; i++){
 		var element = new Object();
-		element.variable = inputList[i].getURI();
+		element.variable = this.inputList[i].getURI();
 		json.ins.push(element);
 	}
 	for (var i=0;i<this.outputCounter;i++){
 		var element = new Object();
-		element.variable = outputList[i].getURI();
+		element.variable = this.outputList[i].getURI();
 		json.outs.push(element);
 	}
 	return json;

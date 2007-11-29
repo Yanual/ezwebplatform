@@ -641,8 +641,8 @@ var WiringFactory = function () {
 		    for (var i = 0; i < gadgetKeys.length; i++){
 			var ins = [], outs = [];
 			for (var j = 0; j < iGadgetList[gadgetKeys[i]].list.length; j++){
-			    var connectablejson = new Object()
-;
+			    var connectablejson = new Object();
+
 			    connectablejson.name = iGadgetList[gadgetKeys[i]].list[j].name;
 			    connectablejson.variable =  iGadgetList[gadgetKeys[i]].list[j].ref.getURI();
 
