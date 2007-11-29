@@ -167,6 +167,19 @@ function do_post(url, json) {
     });
 }
 
+function do_put(url, json) {
+    new Ajax.Request(url, {
+        method: 'put',
+        parameters: "json="+Object.toJSON(json),
+        onSuccess: function (transport) {
+            alert(transport.responseText);
+        },
+        onError: function () {
+            alert('Error');
+        }
+    });
+}
+
 /** 
 *
 *  UTF-8 data encode / decode
