@@ -7,34 +7,38 @@ from gadget.models import Template, Gadget, XHTML, Tag, UserEventsInfo
 from igadget.models import Variable, VariableDef, Position
 from connectable.models import In, Out
 
-def get_wiring_variable(variable):
-    pass
+def get_wiring_variable_data(var):
+    res_data = {}
+
+    res_data['name'] = var.vardef.name
+    res_data['uri'] = var.uri
+
+    return res_data
+
 
 def get_wiring_data(igadgets):
-    input = []
-    output = []
+    list = []
 
-    res_data = {}
- 
+    res_data = [] 
+
     for ig in igadgets:
         variables = Variable.objects.filter(igadget=ig)
 
-        #Looking for IN or OUT wiring objets corresponding to igadget Variables
-        #If a SELECT finds no elements, raises a DoesNotExists exception
-        for var in variables:
-            try:
-                inConnectable = In.objects.get(variable=var)
-                input.append(get_wiring_variable(inConnectable))
-                continue
-            except In.DoesNotExist:
-                try:
-                    outConnectable = Out.objects.get(variable=var)
-                    output.append(get_wiring_variable(outConnectable))
-                except Out.DoesNotExist:
-                    pass
+        igObject = {}
 
-    res_data['input'] = input
-    res_data['output'] = output
+        igObject['id'] = ig.id
+        igObject['uri'] = ig.uri
+
+        #Searching wiring variables
+        for var in variables:
+            varDef = var.vardef
+
+            if varDef.aspect == 'SLOT' or varDef.aspect == 'EVEN':
+                list.append(get_wiring_variable_data(var))
+
+        igObject['list'] = list
+
+        res_data.append(igObject)
        
     return res_data
 

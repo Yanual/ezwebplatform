@@ -8,7 +8,7 @@ from connectable.views import *
 urlpatterns = patterns('connectables.views',
 
     # Connectables
-    (r'^(screen/(?P<screen_id>\d+)/)?$',
-        ConnectableEntry(permitted_methods=('GET', 'POST'))),
+    (r'^$', ConnectableEntry(permitted_methods=('GET', 'POST'))),
+    (r'^/(screen/(?P<screen_id>\d+))?$', ConnectableEntry(permitted_methods=('GET', 'POST'))),
 
 )

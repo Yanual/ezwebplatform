@@ -17,7 +17,7 @@ from igadget.models import IGadget, Screen, Variable
 from connectable.models import InOut
 
 class ConnectableEntry(Resource):
-    def read(self, request, user_name, screen_id):
+    def read(self, request, user_name, screen_id=1):
         user = user_authentication(user_name)
         wiring = {}
         
@@ -30,18 +30,23 @@ class ConnectableEntry(Resource):
                 #igadget_data = serializers.serialize('python', igadgets, ensure_ascii=False)
                 #igadget_data_list = [get_igadget_data(d) for d in igadget_data]
         #else:
-        screen = Screen.objects.get(user=user, id=screen_id)
-        igadgets = IGadget.objects.filter(screen=screen)
+        try:
+            screen = Screen.objects.get(user=user, id=screen_id)
 
-        igadget_data_list = get_wiring_data(igadgets)
-
-        wiring['igadgets'] = igadget_data_list
+            igadgets = IGadget.objects.filter(screen=screen)
+            
+            igadget_data_list = get_wiring_data(igadgets)
+            
+            wiring['iGadgetList'] = igadget_data_list
+        except Screen.DoesNotExist:
+            wiring['iGadgetList'] = []
+            
         
         # InOut list
         inouts = InOut.objects.filter(user=user)
         inout_data = serializers.serialize('python', inouts, ensure_ascii=False)
         inout_data_list = [get_inout_data(d) for d in inout_data]
-        wiring['inouts'] = inout_data_list
+        wiring['inOutList'] = inout_data_list
         
         return HttpResponse(json_encode(wiring), mimetype='application/json; charset=UTF-8')
     

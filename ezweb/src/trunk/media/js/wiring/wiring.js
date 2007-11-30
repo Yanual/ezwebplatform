@@ -85,7 +85,8 @@ var WiringFactory = function () {
 		var inOutList = new Hash();
 		// copy is the list that is used for making new connections or disconnections with the interface.
 		var copyList = new Hash(); 
-		persistenceEngine.send_get('/ezweb/json/wiring.json', this, loadWiring, onError);
+
+		persistenceEngine.send_get(URIs.GET_POST_WIRING, this, loadWiring, onError);
 		
 		
 		// ****************
