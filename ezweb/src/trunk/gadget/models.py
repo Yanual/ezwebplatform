@@ -130,7 +130,7 @@ class Gadget(models.Model):
     last_update = models.DateTimeField(_('Last update'), null=True)
 
     class Meta:
-        unique_together = ('vendor', 'name', 'version')
+        unique_together = ('vendor', 'name', 'version', 'user')
 
     class Admin:
         pass

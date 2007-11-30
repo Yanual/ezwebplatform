@@ -56,6 +56,7 @@ class GadgetCollection(Resource):
             transaction.commit()
         except IntegrityError:
             # Gadget already exists. Rollback transaction
+            print "integrity error"
             transaction.rollback()
         except Exception, e:
             # Internal error
@@ -101,8 +102,8 @@ class GadgetTemplateEntry(Resource):
 
 class GadgetCodeEntry(Resource):
     def read(self, request, user_name, vendor, name, version):
-        user_authentication(user_name)
-        gadget = get_object_or_404(Gadget, vendor=vendor, name=name, version=version)
+        user = user_authentication(user_name)
+        gadget = get_object_or_404(Gadget, vendor=vendor, name=name, version=version, user=user)
         code = get_object_or_404(gadget.xhtml, id=gadget.xhtml.id)
         return HttpResponse(code.code, mimetype='text/html; charset=UTF-8')
 

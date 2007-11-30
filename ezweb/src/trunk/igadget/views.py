@@ -128,7 +128,9 @@ class IGadgetEntry(Resource):
         return HttpResponse(json_encode(igadget_data), mimetype='application/json; charset=UTF-8')
     
     def create(self, request, user_name, igadget_id, screen_id=None):
+        print "empiezo saveIGadget1111"
         user = user_authentication(user_name)
+        print "empiezo saveIGadget2222"
 
         #TODO by default. Remove in final release
         if not screen_id:
@@ -139,11 +141,15 @@ class IGadgetEntry(Resource):
 
         #TODO we can make this with deserializers (simplejson)
         received_json = request.POST['igadget']
+
+        print "paso serializacion"
         
         try:
             igadget = eval(received_json)
         except Exception, e:
             return HttpResponseBadRequest('<error>%s</error>' % e)
+
+        print "empiezo saveIGadget"
 
         try:
             SaveIGadget(igadget, user, screen_id, igadget_id)
