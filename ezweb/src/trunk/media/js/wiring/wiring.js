@@ -155,7 +155,7 @@ var WiringFactory = function () {
 					for (var i = 0; i < events.length; i++){
 						var item = new Object();
 						item["name"] = events[i];
-						item["aspect"] = "EVENT";
+						item["aspect"] = "EVEN";
 						item["ref"] = new wEvent(iGadgetId, item["name"]);
 						itemList.push(item);
 								
@@ -193,7 +193,7 @@ var WiringFactory = function () {
 					connectable.name = list[j].name;
 					connectable.aspect = list[j].aspect;
 					switch (connectable.aspect) {
-						case "EVENT":
+						case "EVEN":
 							connectable.ref = new wEvent(null, null, list[j]);							
 							break;
 						case "SLOT":
@@ -290,7 +290,7 @@ var WiringFactory = function () {
 				
 				// Find the EVENT in the gadget which name is channelName
 				for (var i = 0; i < list.length; i++){
-					if ((list[i].name == event) && (list[i].aspect == "EVENT")){
+					if ((list[i].name == event) && (list[i].aspect == "EVEN")){
 						list = list[i].ref;
 						// Now the variable list has the event's reference.
 						break;
@@ -320,7 +320,7 @@ var WiringFactory = function () {
 
 					// Find the EVENT in the gadget which name is channelName
 					for (var i = 0; i < list.length; i++){
-						if ((list[i].name == arguments[1]) && (list[i].aspect == "EVENT")){
+						if ((list[i].name == arguments[1]) && (list[i].aspect == "EVEN")){
 							list = list[i].ref;
 							// Now the variable list has the event's reference.
 							break;
@@ -370,7 +370,7 @@ var WiringFactory = function () {
 				if ((channel != undefined) && (gadget != undefined)){
 					// The channel and the gadget selected exist.
 					var list = gadget.list;
-					// Find the EVENT in the gadget which name is channelName
+					// Find the EVEN in the gadget which name is channelName
 					for (var i = 0; i < list.length; i++){
 						if ((list[i].name == arguments[1]) && (list[i].aspect == "SLOT")){
 							list = list[i].ref;
@@ -418,9 +418,9 @@ var WiringFactory = function () {
 					// The channel and the gadget selected exist.
 					var list = gadget.list;
 					
-					// Find the EVENT in the gadget which name is channelName
+					// Find the EVEN in the gadget which name is channelName
 					for (var i = 0; i < list.length; i++){
-						if ((list[i].name == arguments[1]) && (list[i].aspect == "EVENT")){
+						if ((list[i].name == arguments[1]) && (list[i].aspect == "EVEN")){
 							list = list[i].ref;
 							// Now the variable list has the event's reference.
 							break;
@@ -468,7 +468,7 @@ var WiringFactory = function () {
 					// The channel and the gadget selected exist.
 					var list = gadget.list;
 					
-					// Find the EVENT in the gadget which name is channelName
+					// Find the EVEN in the gadget which name is channelName
 					for (var i = 0; i < list.length; i++){
 						if ((list[i].name == arguments[1]) && (list[i].aspect == "SLOT")){
 							list = list[i].ref;

@@ -7,24 +7,29 @@ from gadget.models import Template, Gadget, XHTML, Tag, UserEventsInfo
 from igadget.models import Variable, VariableDef, Position
 from connectable.models import In, Out
 
-def get_wiring_variable_data(var):
+def get_wiring_variable_data(var, ig):
     res_data = {}
 
     res_data['name'] = var.vardef.name
+    res_data['aspect'] = var.vardef.aspect
+    res_data['type'] = var.vardef.type
     res_data['uri'] = var.uri
+    res_data['value'] = var.value
+    res_data['id'] = ig.id
 
     return res_data
 
 
 def get_wiring_data(igadgets):
-    list = []
-
     res_data = [] 
 
     for ig in igadgets:
         variables = Variable.objects.filter(igadget=ig)
 
+        print variables
+
         igObject = {}
+        list = []
 
         igObject['id'] = ig.id
         igObject['uri'] = ig.uri
@@ -34,7 +39,7 @@ def get_wiring_data(igadgets):
             varDef = var.vardef
 
             if varDef.aspect == 'SLOT' or varDef.aspect == 'EVEN':
-                list.append(get_wiring_variable_data(var))
+                list.append(get_wiring_variable_data(var, ig))
 
         igObject['list'] = list
 
