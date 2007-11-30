@@ -38,8 +38,8 @@ urlpatterns = patterns('',
     (r'^proxy/', include('proxy.urls')),
    
     # Django contrib
-    (r'^accounts/login/$', 'django.contrib.auth.views.login'),
-    (r'^logout/$', 'django.contrib.auth.views.logout'),
-    (r'^admin/', include('django.contrib.admin.urls')),
+    (r'^accounts/login$', 'django.contrib.auth.views.login'),
+    (r'^logout$', 'django.contrib.auth.views.logout'),
+    (r'^admin', include('django.contrib.admin.urls')),
 
 )
