@@ -26,7 +26,11 @@ class Screen(models.Model):
     uri = models.CharField(_('URI'), max_length=500, unique=True)
     
     name = models.CharField(_('Name'), max_length=30)
+    code = models.IntegerField(_('Code'))
     user = models.ForeignKey(User, verbose_name=_('User'))
+
+    class Meta:
+        unique_together = ('user', 'code')
 
     class Admin:
         pass
@@ -36,13 +40,15 @@ class Screen(models.Model):
 
 class IGadget(models.Model):
     uri = models.CharField(_('URI'), max_length=500)
+
+    code = models.IntegerField(_('Code'))
         
     gadget = models.ForeignKey(Gadget, verbose_name=_('Gadget'))
     screen = models.ForeignKey(Screen, verbose_name=_('Screen'))
     position = models.ForeignKey(Position, verbose_name=_('Position'))
     
     class Meta:
-        unique_together = ('uri', 'gadget', 'screen')
+        unique_together = ('gadget', 'screen', 'code')
     
     class Admin:
         pass

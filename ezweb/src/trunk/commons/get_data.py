@@ -15,7 +15,7 @@ def get_wiring_variable_data(var, ig):
     res_data['type'] = var.vardef.type
     res_data['uri'] = var.uri
     res_data['value'] = var.value
-    res_data['id'] = ig.id
+    res_data['id'] = ig.code
 
     return res_data
 
@@ -31,7 +31,7 @@ def get_wiring_data(igadgets):
         igObject = {}
         list = []
 
-        igObject['id'] = ig.id
+        igObject['id'] = ig.code
         igObject['uri'] = ig.uri
 
         #Searching wiring variables
@@ -101,10 +101,14 @@ def get_inout_data(data):
 def get_igadget_data(data):
     data_ret = {}
     data_fields = data['fields']
+
+    print "hola"
+    print data_fields
+
     gadget = Gadget.objects.get(pk=data_fields['gadget'])
     position = Position.objects.get(pk=data_fields['position'])
 
-    data_ret['id'] = data['pk']
+    data_ret['id'] = data_fields['code']
     data_ret['uri'] = data_fields['uri']
     data_ret['gadget'] = gadget.uri
     data_ret['top'] = position.posY 
@@ -112,6 +116,8 @@ def get_igadget_data(data):
     data_ret['width'] = position.width
     data_ret['height'] = position.height
        
+    print data_fields
+
     return data_ret
 
 def get_variable_data(var_name, data):

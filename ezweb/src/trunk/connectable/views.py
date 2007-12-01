@@ -31,7 +31,7 @@ class ConnectableEntry(Resource):
                 #igadget_data_list = [get_igadget_data(d) for d in igadget_data]
         #else:
         try:
-            screen = Screen.objects.get(user=user, id=screen_id)
+            screen = Screen.objects.get(user=user, code=screen_id)
 
             igadgets = IGadget.objects.filter(screen=screen)
             
@@ -54,14 +54,13 @@ class ConnectableEntry(Resource):
         user = user_authentication(user_name)
 
         if request.POST.has_key('json'):
-            print request.POST['json']
             json = simplejson.loads(request.POST['json'])
         else:
             raise Http404
         if not screen_id:
             screen_id = 1
 
-        screen = get_object_or_404(Screen, user=user, id=screen_id)
+        screen = get_object_or_404(Screen, user=user, code=screen_id)
 
         InOut.objects.filter(user=user).delete()
         #Out.objects.filter(variable.igadget.gadget.user=user).delete()
