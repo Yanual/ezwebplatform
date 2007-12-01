@@ -26,8 +26,6 @@ def get_wiring_data(igadgets):
     for ig in igadgets:
         variables = Variable.objects.filter(igadget=ig)
 
-        print variables
-
         igObject = {}
         list = []
 
@@ -102,9 +100,6 @@ def get_igadget_data(data):
     data_ret = {}
     data_fields = data['fields']
 
-    print "hola"
-    print data_fields
-
     gadget = Gadget.objects.get(pk=data_fields['gadget'])
     position = Position.objects.get(pk=data_fields['position'])
 
@@ -116,8 +111,6 @@ def get_igadget_data(data):
     data_ret['width'] = position.width
     data_ret['height'] = position.height
        
-    print data_fields
-
     return data_ret
 
 def get_variable_data(var_name, data):
