@@ -206,9 +206,9 @@ class IGadgetVariableCollection(Resource):
         screen = Screen.objects.get(user=user, code=screen_id)
         variables = Variable.objects.filter(igadget__screen=screen, igadget__code=igadget_id)
 
-        data = serializers.serialize('python', variables, ensure_ascii=False)
-        var_data = [get_variable_data(var_name, var) for var in data]
-        return HttpResponse(json_encode(var_data), mimetype='application/json; charset=UTF-8')
+        vars_serial = serializers.serialize('python', variables, ensure_ascii=False)
+        vars_data = [get_variable_data(var.name, var_serial) for (var, var_serial)  in (variables, vars_serial)]
+        return HttpResponse(json_encode(vars_data), mimetype='application/json; charset=UTF-8')
 
 class IGadgetVariable(Resource):
     def read(self, request, user_name, igadget_id, var_name, screen_id=None):
