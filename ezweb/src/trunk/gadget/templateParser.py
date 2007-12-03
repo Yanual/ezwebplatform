@@ -113,6 +113,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
         _type = ''
         _description = ''
         _label = ''
+        _default_value = ''
 
         if (attrs.has_key('name')==True):
             _name = attrs.get('name')
@@ -126,11 +127,15 @@ class TemplateHandler(saxutils.handler.ContentHandler):
         if (attrs.has_key('label')==True):
             _label = attrs.get('label')
 
+        if (attrs.has_key('default')==True):
+            _default_value = attrs.get('default')
+
         if (_name != '' and _type != '' and _description != '' and _label != ''):
             vDef = VariableDef( name=_name, description =_description,
                                 type=self.typeText2typeCode(_type), 
                                 aspect='PREF', friend_code=None,
                                 label = _label,
+                                default_value = _default_value,
                                 template=self._template )
     
             vDef.save()

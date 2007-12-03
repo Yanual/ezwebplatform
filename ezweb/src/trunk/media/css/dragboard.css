@@ -49,12 +49,22 @@ form.config_interface div.buttons {
 }
 
 form.config_interface label {
-  margin: 1ex 0px;
+  margin: 1ex;
   display: block;
 }
 
 form.config_interface input {
+  border: 1px solid #4c5054;
   margin: 0px 1ex;
+  padding: 0px 0.5ex;
+}
+
+form.config_interface label.invalid {
+  color: red;
+}
+
+form.config_interface label.invalid input {
+  border: 1px solid red;
 }
 
 /***

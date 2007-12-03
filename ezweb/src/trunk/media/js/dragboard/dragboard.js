@@ -447,9 +447,10 @@ var DragboardFactory = function () {
 
 		Dragboard.prototype.saveConfig = function (iGadgetId) {
 			var igadget = iGadgets[iGadgetId];
-			if (igadget.isConfigurationVisible()) {
+			try {
 				igadget.saveConfig();
 				igadget.setConfigurationVisible(false);
+			} catch (e) {
 			}
 		}
 
@@ -812,17 +813,26 @@ IGadget.prototype.setDefaultPrefs = function() {
 IGadget.prototype._makeConfigureInterface = function() {
 	var prefs = this.gadget.getTemplate().getUserPrefs();
 
-	var interface = "<div>";
+	if (prefs.length == 0) {
+		return "<div>This IGadget don't have user prefs</div>";
+	}
 
-	for (var i = 0; i < prefs.length; i++)
-		interface += prefs[i].makeInterface(this.id);
+	var interface = document.createElement("<div>");
+	this.prefElements = new Array();
 
-	interface += "<div class=\"buttons\">" +
+	for (var i = 0; i < prefs.length; i++) {
+		curPrefInterface = prefs[i].makeInterface(this.id);
+		this.prefElements[i] = curPrefInterface;
+		interface.appendChild(curPrefInterface);
+	}
+
+	var buttons = document.createElement("div");
+	buttons.setAttribute("class", "buttons");
+	buttons.innerHTML =
                  "<input type=\"button\" value=\"Set Defaults\" onclick=\"javascript:DragboardFactory.getInstance().setDefaultPrefs(" + this.id + ");\"/>" +
-                 "<input type=\"button\" value=\"Save\" onclick=\"javascript:DragboardFactory.getInstance().saveConfig(" + this.id + ");\"/>" +
-                 "<input type=\"button\" value=\"Cancel\" onclick=\"javascript:DragboardFactory.getInstance().setConfigurationVisible(" + this.id + ", false);\"/>" +
-                 "</div>" +
-                 "</div>";
+                 "<input type=\"submit\" value=\"Save\" onclick=\"javascript:DragboardFactory.getInstance().saveConfig(" + this.id + ");\"/>" +
+                 "<input type=\"button\" value=\"Cancel\" onclick=\"javascript:DragboardFactory.getInstance().setConfigurationVisible(" + this.id + ", false);\"/>";
+	interface.appendChild(buttons);
 
 	return interface;
 }
@@ -837,7 +847,7 @@ IGadget.prototype.setConfigurationVisible = function(newValue) {
 
 	if (newValue == true) {
 		this.configurationVisible = true;
-		this.configurationElement.innerHTML = this._makeConfigureInterface();
+		this.configurationElement.appendChild(this._makeConfigureInterface());
 		this.configurationElement.setStyle({"display": "block"});
 	} else {
 		this.configurationElement.innerHTML = "";
@@ -848,14 +858,34 @@ IGadget.prototype.setConfigurationVisible = function(newValue) {
 
 IGadget.prototype.saveConfig = function() {
 	if (this.configurationVisible == false)
-		return;
+		throw new Error(""); // TODO
 
-	var curPref;
+	var i, curPref, prefElement, validData = true;
 	var prefs = this.gadget.getTemplate().getUserPrefs();
 
-	for (var i = 0; i < prefs.length; i++) {
+	for (i = 0; i < prefs.length; i++) {
 		curPref = prefs[i];
-		curPref.setValue(this.id, this.configurationElement[curPref.getVarName()].value);
+		prefElement = this.configurationElement[curPref.getVarName()];
+		if (!curPref.validate(curPref.getValueFromInterface(prefElement))) {
+			validData = false;
+			this.prefElements[i].addClassName("invalid");
+		} else {
+			this.prefElements[i].removeClassName("invalid");
+		}
+	}
+
+	if (!validData)
+		throw new Error("Invalid data found"); // Don't save if the data is invalid
+
+	var oldValue, newValue;
+	for (i = 0; i < prefs.length; i++) {
+		curPref = prefs[i];
+		prefElement = this.configurationElement[curPref.getVarName()];
+		var oldValue = curPref.getCurrentValue(this.id);
+		var newValue = curPref.getValueFromInterface(prefElement);
+
+		if (newValue != oldValue)
+			curPref.setValue(this.id, newValue);
 	}
 }
 

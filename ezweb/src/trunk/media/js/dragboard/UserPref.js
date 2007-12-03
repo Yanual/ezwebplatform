@@ -44,6 +44,10 @@ UserPref.prototype.setToDefault = function (iGadgetId) {
 	varManager.updateUserPref(iGadgetId, this.varName, this.defaultValue);
 }
 
+UserPref.prototype.getValueFromInterface = function (element) {
+	return element.value;
+}
+
 //////////////////////////////////////////////
 // PUBLIC CONSTANTS
 //////////////////////////////////////////////
@@ -90,9 +94,12 @@ function IntUserPref(name_, label_, desc_, defaultValue_) {
 IntUserPref.prototype = new UserPref();
 
 IntUserPref.prototype.makeInterface = function (IGadgetId) {
-	var output = "";
+	var element;
 
-	output += "<label title=\"" + this.desc + "\">" + this.label;
+	element = document.createElement("label");
+	element.setAttribute("title", this.desc);
+
+	var output = this.label;
 	output += "<input name=\"" + this.varName + "\" type=\"text\" ";
 
 	var currentValue =this.getCurrentValue(IGadgetId);
@@ -100,11 +107,12 @@ IntUserPref.prototype.makeInterface = function (IGadgetId) {
 		output += "value=\"" + currentValue + "\" ";
 	output += "/></label>";
 
-	return output;
+	element.innerHTML = output;
+	return element;
 }
 
 IntUserPref.prototype.validate = function (newValue) {
-	return !isNaN(parseInt(newValue));
+	return !isNaN(Number(newValue));
 }
 
 /**
@@ -118,18 +126,22 @@ function TextUserPref(name_, label_, desc_, defaultValue_) {
 TextUserPref.prototype = new UserPref();
 
 TextUserPref.prototype.makeInterface = function (IGadgetId) {
-	var output = "";
+	var element;
 
-	output += "<label title=\"" + this.desc + "\">" + this.label;
+	element = document.createElement("label");
+	element.setAttribute("title", this.desc);
+
+	var output = this.label;
 	output += "<input name=\"" + this.varName + "\" type=\"text\" ";
 
 	var currentValue = this.getCurrentValue(IGadgetId);
 	if (currentValue != null)
 		output += "value=\"" + currentValue + "\" ";
 
-	output += "/></label>";
+	output += "/>";
 
-	return output;
+	element.innerHTML = output;
+	return element;
 }
 
 /**
@@ -168,17 +180,25 @@ function BoolUserPref(name_, label_, desc_, defaultValue_) {
 BoolUserPref.prototype = new UserPref();
 
 BoolUserPref.prototype.makeInterface = function (IGadgetId) {
-	var output = "";
+	var element;
 
-	output += "<label title=\"" + this.desc + "\">" + this.label;
+	element = document.createElement("label");
+	element.setAttribute("title", this.desc);
+
+	var output = this.label;
 	output += "<input name=\"" + this.varName +"\" type=\"checkbox\" ";
 
 	var currentValue = this.getCurrentValue(IGadgetId);
 	if (currentValue)
 		output += "checked=\"true\" ";
 
-	output += "/></label>";
+	output += "/>";
 
-	return output;
+	element.innerHTML = output;
+	return element;
+}
+
+BoolUserPref.prototype.getValueFromInterface = function(element) {
+	return element.checked ? true : false;
 }
 
