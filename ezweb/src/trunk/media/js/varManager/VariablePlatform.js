@@ -64,7 +64,7 @@ RVariable.prototype = new Variable;
 RVariable.prototype.notifyChange = function (newValue) { 
 	switch (this.aspect){
 		case Variable.prototype.SLOT:
-		case Variable.prototype.PREF:
+		case Variable.prototype.USER_PREF:
 			this.value = newValue;
 			this.handler(newValue);
 			break;
