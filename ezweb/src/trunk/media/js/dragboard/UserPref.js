@@ -10,7 +10,7 @@ function UserPref(varName_, label_, desc_, defaultValue_) {
 }
 
 UserPref.prototype.UserPref = function (varName_, label_, desc_, defaultValue_) {
-    this.varName = varName_;
+	this.varName = varName_;
 	this.label = label_;
 	this.desc = desc_;
 
@@ -20,24 +20,22 @@ UserPref.prototype.UserPref = function (varName_, label_, desc_, defaultValue_) 
 		this.defaultValue = defaultValue_;
 }
 
+UserPref.prototype.getVarName = function () {
+	return this.varName;
+}
+
 UserPref.prototype.validate = function (newValue) {
 	return true;
 }
 
 UserPref.prototype.getCurrentValue = function (iGadgetId) {
-	var variable = VarManagerFactory.getInstance().getVariable(iGadgetId, this.varName);
-
-	if (variable != null)
-		return variable.get();
-	else
-		return "";
+	return VarManagerFactory.getInstance().getVariable(iGadgetId, this.varName);
 }
 
 UserPref.prototype.setValue = function (iGadgetId, newValue) {
 	if (this.validate(newValue)) {
-
-	    var varManager = VarManagerFactory.getInstance();
-		varManager.updateUserPref(iGadgetId, this.varName, this.newValue);
+		var varManager = VarManagerFactory.getInstance();
+		varManager.updateUserPref(iGadgetId, this.varName, newValue);
 	}
 }
 
@@ -78,6 +76,7 @@ ListUserPref.prototype.makeInterface = function (iGadgetId) {
 }
 
 ListUserPref.prototype.validate = function (newValue) {
+    return this.options[newValue] != undefined;
 }
 
 /**
@@ -93,7 +92,9 @@ IntUserPref.prototype = new UserPref();
 IntUserPref.prototype.makeInterface = function (IGadgetId) {
 	var output = "";
 
-	output += "<label>" + this.label + "<input type=\"text\" ";
+	output += "<label title=\"" + this.desc + "\">" + this.label;
+	output += "<input name=\"" + this.varName + "\" type=\"text\" ";
+
 	var currentValue =this.getCurrentValue(IGadgetId);
 	if (currentValue != null)
 		output += "value=\"" + currentValue + "\" ";
@@ -103,6 +104,7 @@ IntUserPref.prototype.makeInterface = function (IGadgetId) {
 }
 
 IntUserPref.prototype.validate = function (newValue) {
+	return !isNaN(parseInt(newValue));
 }
 
 /**
@@ -118,7 +120,8 @@ TextUserPref.prototype = new UserPref();
 TextUserPref.prototype.makeInterface = function (IGadgetId) {
 	var output = "";
 
-	output += "<label>" + this.label + "<input type=\"text\" ";
+	output += "<label title=\"" + this.desc + "\">" + this.label;
+	output += "<input name=\"" + this.varName + "\" type=\"text\" ";
 
 	var currentValue = this.getCurrentValue(IGadgetId);
 	if (currentValue != null)
@@ -142,13 +145,14 @@ DateUserPref.prototype = new UserPref();
 DateUserPref.prototype.makeInterface = function (IGadgetId) {
 	var output = "";
 
-	output += "<input type=\"text\" ";
+	output += "<label title=\"" + this.desc + "\">" + this.label;
+	output += "<input name=\"" + this.varName + "\" type=\"text\" ";
 
 	var currentValue = this.getCurrentValue(IGadgetId);
 	if (currentValue != null)
 		output += "value=\"" + currentValue + "\" ";
 
-	output += "/>";
+	output += "/></label>";
 
 	return output;
 }
@@ -166,13 +170,14 @@ BoolUserPref.prototype = new UserPref();
 BoolUserPref.prototype.makeInterface = function (IGadgetId) {
 	var output = "";
 
-	output += "<input type=\"text\" ";
+	output += "<label title=\"" + this.desc + "\">" + this.label;
+	output += "<input name=\"" + this.varName +"\" type=\"checkbox\" ";
 
 	var currentValue = this.getCurrentValue(IGadgetId);
-	if (currentValue != null)
-		output += "value=\"" + currentValue + "\" ";
+	if (currentValue)
+		output += "checked=\"true\" ";
 
-	output += "/>";
+	output += "/></label>";
 
 	return output;
 }

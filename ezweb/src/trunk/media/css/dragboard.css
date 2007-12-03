@@ -34,31 +34,26 @@ div.gadget_window div.gadget_menu div.button:hover {
  * config_interface
  */
  
-div.gadget_window div.config_interface {
+div.gadget_window form.config_interface {
   background: #DDD;
   border-bottom: 1px solid #4c5054;
   display: none;
-  padding: 1ex;
-}
-
-div.config_interface form {
+  padding: 1px 1ex;
   margin: 0px;
-  padding: 0px;
 }
 
-div.config_interface div.buttons {
-//  float: right;
-  margin-top: 1ex;
+form.config_interface div.buttons {
+  margin: 1ex 0px;
   position: relative;
   right: 0px;
 }
 
-div.config_interface label {
+form.config_interface label {
   margin: 1ex 0px;
   display: block;
 }
 
-div.config_interface input {
+form.config_interface input {
   margin: 0px 1ex;
 }
 
