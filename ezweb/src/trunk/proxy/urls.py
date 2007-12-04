@@ -7,6 +7,6 @@ from django_restapi.responder import *
 urlpatterns = patterns('proxy.views',
 
     # Proxy
-    (r'^$', Proxy(permitted_methods=('POST', ))),
+    (r'^[/]?$', Proxy(permitted_methods=('POST', ))),
 )
 
