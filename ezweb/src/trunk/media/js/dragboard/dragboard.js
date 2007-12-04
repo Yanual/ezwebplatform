@@ -60,7 +60,7 @@ var DragboardFactory = function () {
 				position = iGadget.getPosition();
 				// height + 2 for check that there is space with margins (1 cell at top and another at bottom)
 				if (_hasSpaceFor(matrix, position.x, position.y - 1, iGadget.getContentWidth(), iGadget.getHeight() + 2)) {
-					iGadget.paint(dragboard, dragboardStyle);
+					iGadget.paint(dragboard);
 					_reserveSpace(matrix, iGadget);
 				} else {
 					iGadgetsToReinsert.push(iGadget);
@@ -71,7 +71,7 @@ var DragboardFactory = function () {
 				position = _searchFreeSpace(iGadgetsToReinsert[i].getContentWidth(),
 				                            iGadgetsToReinsert[i].getHeight());
 				iGadgetsToReinsert[i].setPosition(position);
-				iGadgetsToReinsert[i].paint(dragboard, dragboardStyle);
+				iGadgetsToReinsert[i].paint(dragboard);
 				_reserveSpace(matrix, iGadgetsToReinsert[i]);
 			}
 		}
@@ -108,7 +108,7 @@ var DragboardFactory = function () {
 				curIGadget.id = parseInt(curIGadget.id[curIGadget.id.length - 1]);
 
 				// Create instance model
-				igadget = new IGadget(gadget, curIGadget.id, position, width, height);
+				igadget = new IGadget(gadget, curIGadget.id, dragboardStyle, position, width, height);
 				iGadgets[curIGadget.id] = igadget;
 
 				if (curIGadget.id >= currentId) // TODO remove, persistenceEngine will manage ids
@@ -135,7 +135,7 @@ var DragboardFactory = function () {
 
 		function _setPositionOn(_matrix, gadget, position) {
 			if (_matrix == matrix)
-				gadget.setPosition(position, dragboardStyle);
+				gadget.setPosition(position);
 			else
 				shadowPositions[gadget.getId()] = position;
 		}
@@ -335,6 +335,64 @@ var DragboardFactory = function () {
 			}
 		}
 
+		function _reserveSpace2(_matrix, iGadget, positionX, positionY, width, height) {
+			var x, y;
+
+			for (x = 0; x < width; x++)
+				for (y = 0; y < height; y++)
+					_matrix[positionX + x][positionY + y] = iGadget;
+		}
+
+		function _clearSpace2(_matrix, positionX, positionY, width, height) {
+			var x, y;
+
+			for (x = 0; x < width; x++)
+				for (y = 0; y < height; y++)
+					delete _matrix[positionX + x][positionY + y];
+		}
+
+		function _resize(iGadget, oldWidth, oldHeight, newWidth, newHeight) {
+			var x, y, step2Width = oldWidth;
+			var position = iGadget.getPosition();
+
+			// First Step
+			if (newWidth > oldWidth) {
+				// TODO implement this
+				// Calculate the width for the next step
+//				step2Width = oldWidth; // don't needed (default value)
+			} else if (newWidth < oldWidth) {
+				_clearSpace2(matrix, position.x + newWidth, position.y, oldWidth - newWidth, oldHeight);
+				// TODO implement this
+				// Calculate the width for the next step
+				step2Width = newWidth;
+			}// else {
+				// Calculate the width for the next step
+//				step2Width = oldWidth; // don't needed (default value)
+//			}
+
+			// Second Step
+			if (newHeight > oldHeight) {
+				var limitY = position.y + newHeight + 1;
+				var limitX = position.x + step2Width;
+				for (y = position.y + oldHeight + 1; y < limitY; y++)
+					for (x = position.x; x < limitX; x++)
+						if (matrix[x][y] != null)
+							_moveSpaceDown(matrix, matrix[x][y], limitY - y);
+
+				// Reserve Space
+				_reserveSpace2(matrix, iGadget, position.x, position.y + oldHeight, step2Width, newHeight - oldHeight);
+			} else if (newHeight < oldHeight) {
+				// Clear freed space
+				_clearSpace2(matrix, position.x, position.y + newHeight, step2Width, oldHeight - newHeight);
+
+				y = position.y + oldHeight + 1; // Search in the edge of the gadget
+				var limitX = position.x + step2Width;
+				for (x = position.x; x < limitX; x++)
+					if (matrix[x][y] != null)
+						_moveSpaceUp(matrix, matrix[x][y]);
+			}
+		}
+
 		function _insertAt(iGadget, x, y) {
 			var newPosition = new DragboardPosition(x, y);
 
@@ -361,11 +419,10 @@ var DragboardFactory = function () {
 				}
 
 			// Change Gadget instance position (insert it)
-			iGadget.setPosition(newPosition, dragboardStyle);
+			iGadget.setPosition(newPosition);
 
 			_reserveSpace(matrix, iGadget);
 		}
-
 
 		function _searchFreeSpace(width, height) {
 			var positionX = 0, positionY = 0;
@@ -395,7 +452,7 @@ var DragboardFactory = function () {
 			var position = _searchFreeSpace(width, height + 2);
 
 			// Create the instance
-			var iGadget = new IGadget(gadget, currentId, position, width, height);
+			var iGadget = new IGadget(gadget, currentId, dragboardStyle, position, width, height);
 			iGadget.save();
 			iGadgets[currentId] = iGadget;
 			currentId++;
@@ -439,7 +496,10 @@ var DragboardFactory = function () {
 		Dragboard.prototype.setConfigurationVisible = function (iGadgetId, newStatus) {
 			var igadget = iGadgets[iGadgetId];
 			if (newStatus == 'toggle') {
+				var oldWidth = igadget.getContentWidth();
+				var oldHeight = igadget.getHeight();
 				igadget.setConfigurationVisible(!igadget.isConfigurationVisible());
+				_resize(igadget, oldWidth, oldHeight, oldWidth, igadget.getHeight());
 			} else {
 				igadget.setConfigurationVisible(newStatus);
 			}
@@ -565,7 +625,7 @@ var DragboardFactory = function () {
 			var newposition = dragboardCursor.getPosition();
 			_destroyCursor(false);
 
-			gadgetToMove.setPosition(newposition, dragboardStyle);
+			gadgetToMove.setPosition(newposition);
 			_reserveSpace(matrix, gadgetToMove);
 			gadgetToMove = null;
 			shadowMatrix = null;
@@ -611,9 +671,10 @@ var DragboardFactory = function () {
  * This class represents a instance of one Gadget.
  * @author aarranz
  */
-function IGadget(gadget, iGadgetId, position, width, height) {
+function IGadget(gadget, iGadgetId, screen, position, width, height) {
 	this.id = iGadgetId;
 	this.gadget = gadget;
+	this.screen = screen;
 	this.position = position;
 	this.width = width;
 	this.height = height;
@@ -630,12 +691,12 @@ IGadget.prototype.getGadget = function() {
  * Sets the position of a gadget instance. The position is calculated relative
  * to the top-left square of the gadget instance box using cells units.
  */
-IGadget.prototype.setPosition = function(position, style) {
+IGadget.prototype.setPosition = function(position) {
 	this.position = position;
 
 	if (this.element != null) { // if visible
-		this.element.style.left = style.getColumnOffsetLeft(position.x);
-		this.element.style.top = style.fromVCellsToPixels(position.y) + "px";
+		this.element.style.left = this.screen.getColumnOffsetLeft(position.x);
+		this.element.style.top = this.screen.fromVCellsToPixels(position.y) + "px";
 	}
 }
 
@@ -671,7 +732,11 @@ IGadget.prototype.getContentHeight = function() {
  * gadget (minimized, with the configuration dialog, etc...)
  */
 IGadget.prototype.getHeight = function() {
-	return this.height + 2; // TODO assumed that the menu of the gadget has an height of 2
+	if (this.element == null)
+		return 0;
+
+	return this.screen.fromPixelsToVCells(this.element.offsetHeight);
+//	return this.height + 2; // TODO assumed that the menu of the gadget has an height of 2
 }
 
 IGadget.prototype.getId = function() {
@@ -686,7 +751,7 @@ IGadget.prototype.isVisible = function() {
 	return this.element != null;
 }
 
-IGadget.prototype.paint = function(where, style) {
+IGadget.prototype.paint = function(where) {
 	if (this.element != null) // exit if the igadgets is already visible
 		return; // TODO exception
 
@@ -727,16 +792,13 @@ IGadget.prototype.paint = function(where, style) {
 	gadgetElement.appendChild(gadgetContent);
 
 	// Position
-	gadgetElement.style.left = style.getColumnOffsetLeft(this.position.x);
-	gadgetElement.style.top = style.fromVCellsToPixels(this.position.y) + "px";
+	gadgetElement.style.left = this.screen.getColumnOffsetLeft(this.position.x);
+	gadgetElement.style.top = this.screen.fromVCellsToPixels(this.position.y) + "px";
 
 	// Sizes
-	var width = this.getContentWidth();
-	gadgetElement.style.width = ((30 * width) + (2 * (width - 1))) + "%";  // TODO
-	gadgetContent.style.height = style.fromVCellsToPixels(this.height) + "px";
+	gadgetElement.style.width = this.screen.fromHCellsToPercentage(this.width) + "%";
+	gadgetContent.style.height = this.screen.fromVCellsToPixels(this.height) + "px";
 	gadgetContent.style.width = "100%";
-//	gadgetMenu.style.height = (style.fromVCellsToPixels(2) - 8) + "px"; // borders and margins
-//(cellHeight - gadgetMenu.style.marginTop - gadgetMenu.style.marginBottom - gadgetMenu.style.borderTopWidth - gadgetMenu.style.borderBottomWidth) + "px";
 
 	// References
 	gadgetElement.iGadgetId = this.id;
@@ -944,6 +1006,10 @@ DragboardStyle.prototype.getCellHeight = function() {
 	return this.cellHeight;
 }
 
+DragboardStyle.prototype.fromPixelsToVCells = function(pixels) {
+	return Math.ceil(pixels / this.cellHeight);
+}
+
 DragboardStyle.prototype.fromVCellsToPixels = function(cells) {
 	return (cells * this.cellHeight);
 }
@@ -980,20 +1046,32 @@ function DragboardCursor(iGadget, position) {
 	var positiontmp = iGadget.getPosition();
 	this.position = positiontmp.clone();
 
+	this.screen = iGadget.screen;
 	this.width = iGadget.getContentWidth();
-	this.height = iGadget.getContentHeight();
+	this.height = iGadget.getHeight();
 }
 
 DragboardCursor.prototype = new IGadget();
+
+DragboardCursor.prototype.getContentWidth = function() {
+	return this.width;
+}
+
+DragboardCursor.prototype.getHeight = function() {
+	return this.height;
+}
 
 DragboardCursor.prototype.paint = function(dragboard, style) {
 	var dragboardCursor = document.createElement("div");
 	dragboardCursor.setAttribute("id", "dragboardcursor");
 	dragboard.appendChild(dragboardCursor);
 
+	// assign the created element
+	this.element = dragboardCursor;
+
 	// Set width and height
-	dragboardCursor.style.height = style.fromVCellsToPixels(this.getHeight()) + "px";
-	dragboardCursor.style.width = (style.fromHCellsToPixels(this.getContentWidth()) - 2) + "px"; // -2 px for borders
+	dragboardCursor.style.height = style.fromVCellsToPixels(this.height) + "px";
+	dragboardCursor.style.width = (style.fromHCellsToPixels(this.width) - 2) + "px"; // -2 px for borders
 
 	// Set position
 	dragboardCursor.style.left = style.getColumnOffsetLeft(this.position.x);
@@ -1009,9 +1087,6 @@ DragboardCursor.prototype.paint = function(dragboard, style) {
 			DragboardFactory.getInstance().acceptMove(element.iGadgetId); // TODO
 		}
 	});
-
-	// assign the created element
-	this.element = dragboardCursor;
 }
 
 DragboardCursor.prototype.destroy = function() {
