@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import get_object_or_404, get_list_or_404
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.core import serializers
 from django.utils import simplejson 
  
 from django_restapi.resource import Resource
 from django_restapi.model_resource import Collection, Entry
 from django_restapi.responder import *
+
+from django.db import transaction
 
 from commons.authentication import user_authentication
 from commons.get_data import get_inout_data, get_igadget_data, get_wiring_data
@@ -50,62 +52,74 @@ class ConnectableEntry(Resource):
         
         return HttpResponse(json_encode(wiring), mimetype='application/json; charset=UTF-8')
     
+    @transaction.commit_manually
     def create(self, request, user_name, screen_id=None):
         user = user_authentication(user_name)
 
+        # Gets all needed parameters from request
         if request.POST.has_key('json'):
             json = simplejson.loads(request.POST['json'])
         else:
-            raise Http404
+            return HttpResponseBadRequest ('json parameter expected')
+        
         if not screen_id:
             screen_id = 1
 
-        screen = get_object_or_404(Screen, user=user, code=screen_id)
-
-        InOut.objects.filter(user=user).delete()
+        #InOut.objects.filter(user=user).delete()
         #Out.objects.filter(variable.igadget.gadget.user=user).delete()
         #In.objects.filter(user=user).delete() 
-        
-        igadgets = json['igadgets']
-        for ig in igadgets:
-            igadget = get_object_or_404(IGadget, screen=screen, uri=ig['uri'])
-            for ins in ig['ins']:
-                variable = get_object_or_404(Variable, uri=ins['variable'], igadget=igadget)
-                uri_in = "/user/%s/igadget/%s/variable/%s/in/%s" % (user_name, igadget.id, variable.id, ins['name'])
-                in_object = In(uri=uri_in, name=ins['name'], variable=variable)
-            for inout in ins['inouts']:
-                inout = get_object_or_404(InOut, uri=inout)
-                in_object.inout.add(inout)
-                in_object.save()
-            for outs in ig['outs']:            
-                variable = get_object_or_404(Variable, uri=outs['variable'], igadget=igadget)
-                uri_out = "/user/%s/igadget/%s/variable/%s/out/%s" % (user_name, igadget.id, variable.id, outs['name'])
-                out_object = In(uri=uri_in, name=out['name'], variable=variable)
-            for inout in outs['inouts']:
-                inout = get_object_or_404(InOut, uri=inout)
-                out_object.inout.add(inout)
-                out_object.save()
-                
-        inouts = json['inouts']
-        for io in inouts:
-
-            inout = InOut(user=user, uri=io['uri'], name=io['name'], friend_code=io['friend_code'], value=io['value'])
-            inout.save()
-            for ins in io['ins']:
-                variable = get_object_or_404(Variable, uri=ins['variable'], igadget=igadget)
-                uri_in = "/user/%s/igadget/%s/variable/%s/in/%s" % (user_name, igadget.id, variable.id, ins['name'])
-                in_object = In(uri=uri_in, name=ins['name'], variable=variable)
-                in_object.inout.add(inout)
-                in_object.save()
-            for outs in io['outs']:
-                variable = get_object_or_404(Variable, uri=outs['variable'], igadget=igadget)
-                uri_out = "/user/%s/igadget/%s/variable/%s/out/%s" % (user_name, igadget.id, variable.id, outs['name'])
-                out_object = In(uri=uri_in, name=out['name'], variable=variable)
-                out_object.inout.add(inout)
-                out_object.save()  
-        
+        try:
+            screen = Screen.objects.get(user=user, code=screen_id)
             
-        print "fin for"
+            igadgets = json['iGadgetList']
+            for igadget in igadgets:
+                igadget_object = IGadget.objects.get(screen=screen, code=igadget['id'])
+                
+                # Save all IGadget variables (in and out)
+                for var in igadget['list']:
+                    var_object = Variable.objects.get(uri=var['uri'], vardef__name=var['name'], igadget=igadget)
+                    # IN Variable
+                    if var['aspect'] == 'EVEN':
+                        uri_in = "/user/%s/igadgets/%s/in/%s" % (user_name, igadget.code, var['name'])
+                        in_object = In(uri=uri_in, name=var['name'], variable=var_object)
+                        in_object.save()
+                    # OUT Variable
+                    if var['aspect'] == 'SLOT':
+                        uri_out = "/user/%s/igadgets/%s/out/%s" % (user_name, igadget.code, var['name'])
+                        out_object = Out(uri=uri_out, name=var['name'], variable=var_object)
+                        out_object.save()
+    
+            # Save all inouts
+            for inout in json['inOutList']:
+                inout_uri = InOut(user=user, uri=inout['uri'], name=inout['name'], friend_code=inout['friend_code'], value=inout['value'])
+                inout_object = InOut.objects.get(user=user, name=inout['name'])
+                in_object.save()
+                
+                for out in inout['outs']:            
+                    igadget_object = IGadget.objects.filter(screen=screen, code=out['id'])
+                    var_object = Variable.objects.get(uri=out['uri'], vardef__name=ins['name'], igadget=igadget_object) 
+                    out_object = Out.objects.get(uri=out['uri'], variable=var_object)
+                    out_object.inout.add(inout)
+                
+                for ins in inout['ins']:            
+                    igadget_object = IGadget.objects.filter(screen=screen, code=ins['id'])
+                    var_object = Variable.objects.get(uri=ins['uri'], vardef__name=ins['name'], igadget=igadget_object) 
+                    ins_object = ins.objects.get(uri=out['uri'], variable=var_object)
+                    ins_object.inout.add(inout)
+                      
+            transaction.commit()
+        except IGadget.DoesNotExist:
+            transaction.rollback()
+            return HttpResponseBadRequest('refered screen (' + screen_id + ') doesn\'t exists.')
+        except IGadget.DoesNotExist:
+            transaction.rollback()
+            return HttpResponseBadRequest('refered igadget (' + gadget_uri + ') doesn\'t exists.')
+        except Variable.DoesNotExist:
+            transaction.rollback()
+            return HttpResponseBadRequest('refered variable (' + gadget_uri + ') doesn\'t exists.')
+        except Exception, e:
+            transaction.rollback()
+            return HttpResponseBadRequest('connectables cannot be save: %s' % e)
 
-        return HttpResponse('')
+        return HttpResponse('ok')
 
