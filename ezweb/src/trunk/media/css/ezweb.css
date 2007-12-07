@@ -181,6 +181,7 @@ a:hover
 /* dragboard ---------------------------------------------------------------------------------------- */
 
 #dragboard_container {
+  overflow-x: hidden;
   z-index: 2;
 }
 

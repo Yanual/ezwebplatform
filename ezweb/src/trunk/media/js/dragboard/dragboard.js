@@ -27,7 +27,9 @@ var DragboardFactory = function () {
 		// PRIVATED FUNCTIONS 
 		// ***********************
 		function _repaint(receivedData) {
-			var iGadget, position, iGadgetsToReinsert = new Array();
+			var iGadget, position, iGadgetsToReinsert = new Array(); // oldWidth, oldHeight
+
+			// Clear dragboard
 			iGadgets.each( function (pair) {
 				iGadget = pair.value;
 
@@ -36,24 +38,9 @@ var DragboardFactory = function () {
 
 			dragboard.innerHTML = "";
 
-/*			// TODO debug
-			var x, y, tmp, posX;
-			var grid = document.createElement("div");
-			grid.setAttribute("id", "grid");
-			dragboard.appendChild(grid);
-			for (x = 0; x < dragboardStyle.getColumns(); x++)
-				for (y = 0; y < 15; y++) {
-					tmp = document.createElement("div");
-					tmp.setAttribute("class", "cell");
-					grid.appendChild(tmp);
-					tmp.style.top = dragboardStyle.fromVCellsToPixels((y * 2) + 1) + "px";
-					posX = 3 + (x * 32);
-					tmp.style.left = posX + "%";
-				}
-			// TODO end debug*/
-
 			_clearMatrix();
 
+			// Insert igadgets
 			iGadgets.each( function (pair) {
 				iGadget = pair.value;
 
@@ -67,6 +54,7 @@ var DragboardFactory = function () {
 				}
 			});
 
+			// Reinsert the igadgets that didn't fit in their positions
 			for (i = 0; i < iGadgetsToReinsert.length; i++) {
 				position = _searchFreeSpace(iGadgetsToReinsert[i].getContentWidth(),
 				                            iGadgetsToReinsert[i].getHeight());
@@ -74,6 +62,17 @@ var DragboardFactory = function () {
 				iGadgetsToReinsert[i].paint(dragboard);
 				_reserveSpace(matrix, iGadgetsToReinsert[i]);
 			}
+
+			// remove holes moving igadgets to the topmost positions
+			iGadgets.each( function (pair) {
+				iGadget = pair.value;
+
+//				oldWidth = iGadget.getContentWidth();
+//				oldHeight = iGadget.getHeight();
+//				iGadget.height = null;
+//				_resize(iGadget, oldWidth, oldHeight, iGadget.getContentWidth(), iGadget.getHeight());
+				_moveSpaceUp(matrix, iGadget);
+			});
 		}
 
 		/**
@@ -114,7 +113,7 @@ var DragboardFactory = function () {
 				if (curIGadget.id >= currentId) // TODO remove, persistenceEngine will manage ids
 					currentId =  curIGadget.id + 1;
 
-				_reserveSpace(matrix, igadget);
+//				_reserveSpace(matrix, igadget);
 				opManager.notifyInstance(curIGadget.id);
 			}
 
@@ -529,25 +528,14 @@ var DragboardFactory = function () {
 		 * Calculate what cell is at a given position
 		 */
 		Dragboard.prototype.getCellAt = function (x, y) {
-			x = x - dragboard.offsetLeft;
-			var curParent = dragboard.parentNode;
-			while (curParent.tagName != 'BODY') { // TODO case sensitive => IE, opera .... ?
-			    x -= curParent.offsetLeft;
-			    y -= curParent.offsetTop;
-			    curParent = curParent.parentNode;
-			}
-
-			if ((x < 0) || (x > dragboard.offsetWidth))
+			var dragboardWidth = dragboardStyle.getWidth();
+			if ((x < 0) || (x > dragboardWidth) || (y < 0))
 				return null;
 
-			y = y - dragboard.offsetTop;
-			if (y < 0)
-				return null;
-
-			var columnWidth = dragboard.offsetWidth / dragboardStyle.getColumns();
+			var columnWidth = dragboardWidth / dragboardStyle.getColumns();
 
 			return new DragboardPosition(Math.floor(x / columnWidth),
-			                    Math.floor(y / dragboardStyle.getCellHeight()));
+				                    Math.floor(y / dragboardStyle.getCellHeight()));
 		}
 
 
@@ -558,7 +546,7 @@ var DragboardFactory = function () {
 
 		Dragboard.prototype.initializeMove = function (iGadgetId) {
 			if (gadgetToMove != null) {
-				alert("exception at initializeMove"); // TODO
+//				alert("exception at initializeMove"); // TODO
 				this.cancelMove();
 			}
 
@@ -677,7 +665,8 @@ function IGadget(gadget, iGadgetId, screen, position, width, height) {
 	this.screen = screen;
 	this.position = position;
 	this.width = width;
-	this.height = height;
+	this.contentHeight = height;
+	this.height = height + 2; // TODO this is a estimation
 	this.element = null;
 	this.configurationElement = null;
 	this.configurationVisible = false;
@@ -717,14 +706,14 @@ IGadget.prototype.getContentWidth = function() {
 }
 
 IGadget.prototype.setContentHeight = function(height) {
-	this.height = height;
+	this.contentHeight = height;
 }
 
 /**
  * Return the content height.
  */
 IGadget.prototype.getContentHeight = function() {
-	return this.height;
+	return this.contentHeight;
 }
 
 /**
@@ -732,10 +721,14 @@ IGadget.prototype.getContentHeight = function() {
  * gadget (minimized, with the configuration dialog, etc...)
  */
 IGadget.prototype.getHeight = function() {
-	if (this.element == null)
-		return 0;
+	if (this.height == null) {
+		if (this.element == null)
+			this.height = 0;
+		else
+			this.height = this.screen.fromPixelsToVCells(this.element.offsetHeight);
+	}
 
-	return this.screen.fromPixelsToVCells(this.element.offsetHeight);
+	return this.height;
 //	return this.height + 2; // TODO assumed that the menu of the gadget has an height of 2
 }
 
@@ -797,21 +790,19 @@ IGadget.prototype.paint = function(where) {
 
 	// Sizes
 	gadgetElement.style.width = this.screen.fromHCellsToPercentage(this.width) + "%";
-	gadgetContent.style.height = this.screen.fromVCellsToPixels(this.height) + "px";
+	gadgetContent.style.height = this.screen.fromVCellsToPixels(this.contentHeight) + "px";
 	gadgetContent.style.width = "100%";
 
 	// References
 	gadgetElement.iGadgetId = this.id;
 	gadgetContent.iGadgetId = this.id;
 
-	var startFunc = function (draggable) {
-		draggable.element.style.zIndex = 200;
-		DragboardFactory.getInstance().initializeMove(draggable.element.iGadgetId);
+	var startFunc = function (iGadgetId) {
+		DragboardFactory.getInstance().initializeMove(iGadgetId);
 	}
 
-	var updateFunc = function (draggable, event) {
-		// TODO change Event.pointerX and Event.pointerY
-		var position = DragboardFactory.getInstance().getCellAt(Event.pointerX(event), Event.pointerY(event));
+	var updateFunc = function (iGadgetId, x, y) {
+		var position = DragboardFactory.getInstance().getCellAt(x, y);
 
 		// If the mouse is inside of the dragboard and we have enought columns =>
 		// check if we have to change the cursor position
@@ -819,23 +810,12 @@ IGadget.prototype.paint = function(where) {
 			DragboardFactory.getInstance().moveTemporally(position.x, position.y);
 	};
 
-	var revertFunc = function (element) {
-		if (element.revert == false) {
-			delete element.revert;
-			return false;
-		} else {
-			DragboardFactory.getInstance().cancelMove(); // TODO
-			return true;
-		}
+	var finishFunc = function (iGadgetId) {
+		DragboardFactory.getInstance().acceptMove(iGadgetId);
 	};
 
 	// Mark as draggable
-	var drag = new Draggable(gadgetElement, {
-	                            handle: gadgetMenu,
-	                            revert: revertFunc,
-	                            onStart: startFunc,
-	                            onDrag: updateFunc
-	                         });
+	new Draggable(gadgetElement, gadgetMenu, this.id, startFunc, updateFunc, finishFunc);
 
 	// Commit it
 	where.appendChild(gadgetElement);
@@ -913,10 +893,12 @@ IGadget.prototype.setConfigurationVisible = function(newValue) {
 		this.configurationVisible = true;
 		this.configurationElement.appendChild(this._makeConfigureInterface());
 		this.configurationElement.setStyle({"display": "block"});
+		this.height = null; // force refreshing sizes (see getHeight function)
 	} else {
 		this.configurationElement.innerHTML = "";
 		this.configurationElement.hide();
 		this.configurationVisible = false;
+		this.height = null; // force refreshing sizes (see getHeight function)
 	}
 }
 
@@ -996,6 +978,19 @@ function DragboardStyle(dragboardElement, columns, cellHeight) {
 	this.columns = columns;
 	this.cellHeight = cellHeight;
 	this.dragboardElement = dragboardElement;
+	this.dragboardWidth = parseInt(dragboardElement.offsetWidth);
+
+	var dragboardStyle = this;
+
+	var updateColumnSize = function(e) {
+		dragboardStyle.dragboardWidth = parseInt(dragboardElement.offsetWidth);
+	}
+
+	window.onresize = updateColumnSize;
+}
+
+DragboardStyle.prototype.getWidth = function() {
+	return this.dragboardWidth;
 }
 
 DragboardStyle.prototype.getColumns = function() {
@@ -1032,7 +1027,7 @@ DragboardStyle.prototype.fromHCellsToPercentage = function(cells) {
 
 DragboardStyle.prototype.getColumnOffsetLeftInPixels = function(column) {
 	var percentage = 3 + (column * 32); // TODO this is only for 3 columns
-	return ((this.dragboardElement.offsetWidth * percentage) / 100) + "px";
+	return ((this.dragboardElement.offsetWidth * percentage) / 100);
 }
 
 DragboardStyle.prototype.getColumnOffsetLeft = function(column) {
@@ -1049,6 +1044,7 @@ function DragboardCursor(iGadget, position) {
 	this.screen = iGadget.screen;
 	this.width = iGadget.getContentWidth();
 	this.height = iGadget.getHeight();
+	this.heightInPixels = iGadget.element.offsetHeight;
 }
 
 DragboardCursor.prototype = new IGadget();
@@ -1064,29 +1060,21 @@ DragboardCursor.prototype.getHeight = function() {
 DragboardCursor.prototype.paint = function(dragboard, style) {
 	var dragboardCursor = document.createElement("div");
 	dragboardCursor.setAttribute("id", "dragboardcursor");
-	dragboard.appendChild(dragboardCursor);
-
-	// assign the created element
-	this.element = dragboardCursor;
 
 	// Set width and height
-	dragboardCursor.style.height = style.fromVCellsToPixels(this.height) + "px";
-	dragboardCursor.style.width = (style.fromHCellsToPixels(this.width) - 2) + "px"; // -2 px for borders
+	dragboardCursor.style.height = this.heightInPixels + "px";
+	dragboardCursor.style.width = style.fromHCellsToPixels(this.width) + "px";
 
 	// Set position
-	dragboardCursor.style.left = style.getColumnOffsetLeft(this.position.x);
-	dragboardCursor.style.top = style.fromVCellsToPixels(this.position.y) + "px";
+	dragboardCursor.style.left = (style.getColumnOffsetLeftInPixels(this.position.x) - 2) + "px"; // TODO -2 px for borders
+	dragboardCursor.style.top = (style.fromVCellsToPixels(this.position.y) - 2) + "px"; // TODO -2 px for borders
 
-	// Add as a droppable
-	Droppables.add(dragboardCursor, {
-		onDrop: function(element, cursor, event) {
-			// Cancel revert effect
-			element.revert = false; // see revert function in draggable
+	// assign the created element
+	dragboard.appendChild(dragboardCursor);
+	this.element = dragboardCursor;
 
-			// Accept the new position
-			DragboardFactory.getInstance().acceptMove(element.iGadgetId); // TODO
-		}
-	});
+	// Ajust sizes
+//	dragboardCursor.style.height -= 2 * (dragboardCursor.style.borderWidth);
 }
 
 DragboardCursor.prototype.destroy = function() {
@@ -1097,3 +1085,80 @@ DragboardCursor.prototype.destroy = function() {
 	}
 }
 
+/////////////////////////////////////
+// Drag and drop support
+/////////////////////////////////////
+function Draggable(el, handler, data, onStart, onDrag, onFinish) {
+	var xDelta = 0, yDelta = 0;
+	var xStart = 0, yStart = 0;
+	var xOffset = 0, yOffset = 0;
+	var x, y;
+	var objects;
+
+	// remove the events
+	function enddrag(e) {
+		document.removeEventListener("mouseup", enddrag, false);
+		document.removeEventListener("mousemove", drag, false);
+
+		for (var i = 0; i < objects.length; i++) {
+			objects[i].contentDocument.onmouseup = null;
+			objects[i].contentDocument.onmousemove = null;
+		}
+
+		onFinish(data);
+		el.style.zIndex = "";
+
+		handler.addEventListener("mousedown", startdrag, false);
+	}
+
+	// fire each time it's dragged
+	function drag(e) {
+//		e = e || window.event;
+		xDelta = xStart - parseInt(e.screenX);
+		yDelta = yStart - parseInt(e.screenY);
+		xStart = parseInt(e.screenX);
+		yStart = parseInt(e.screenY);
+		y = el.offsetTop - yDelta;
+		x = el.offsetLeft - xDelta;
+		el.style.top = y + 'px';
+		el.style.left = x + 'px';
+
+		onDrag(data, x + xOffset, y + yOffset);
+	}
+
+	// initiate the drag
+	function startdrag(e) {
+		handler.removeEventListener("mousedown", startdrag, false);
+
+		xOffset = 100; // TODO we must calculate this value (half column)
+		yOffset = 100; // TODO must we calculate this value? is 100 a good number for this value?
+		xStart = parseInt(e.screenX);
+		yStart = parseInt(e.screenY);
+		el.style.top = el.offsetTop + 'px';
+		el.style.left = el.offsetLeft + 'px';
+		document.addEventListener("mouseup", enddrag, false);
+		document.addEventListener("mousemove", drag, false);
+
+		objects = document.getElementsByTagName("object");
+		for (var i = 0; i < objects.length; i++) {
+			objects[i].contentDocument.onmouseup = enddrag;
+			objects[i].contentDocument.onmousemove = drag;
+		}
+
+		el.style.zIndex = "200"; // TODO
+		onStart(data);
+
+		return false;
+	}
+
+	// cancels the call to startdrag function
+	function cancelbubbling(e) {
+		if (e.stopPropagation) e.stopPropagation();
+	}
+
+	// add mousedown event listener
+	handler.addEventListener("mousedown", startdrag, false);
+	var children = handler.childElements();
+	for (var i = 0; i < children.length; i++)
+		children[i].addEventListener("mousedown", cancelbubbling, false);
+}

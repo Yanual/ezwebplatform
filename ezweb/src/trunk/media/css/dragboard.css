@@ -79,24 +79,8 @@ form.config_interface label.invalid input {
 }
 
 #dragboardcursor {
-  position:absolute;
-  border: 3px dashed #AAA;
+  position: absolute;
+  border: 2px dashed #97A0A8;
+  background: #F2F9FF;
   z-index: 1;
-}
-
-#grid {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  right: 0px;
-  height: 100%;
-  width: 100%;
-}
-
-div.cell {
-  position: absolute;
-  width: 30%;
-  height: 15px;
-  border: 1px dashed gray;
-  z-indez: 0;
 }
