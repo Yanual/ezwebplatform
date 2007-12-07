@@ -1118,8 +1118,8 @@ function Draggable(el, handler, data, onStart, onDrag, onFinish) {
 		yDelta = yStart - parseInt(e.screenY);
 		xStart = parseInt(e.screenX);
 		yStart = parseInt(e.screenY);
-		y = el.offsetTop - yDelta;
-		x = el.offsetLeft - xDelta;
+		y = y - yDelta;
+		x = x - xDelta;
 		el.style.top = y + 'px';
 		el.style.left = x + 'px';
 
@@ -1134,8 +1134,10 @@ function Draggable(el, handler, data, onStart, onDrag, onFinish) {
 		yOffset = 100; // TODO must we calculate this value? is 100 a good number for this value?
 		xStart = parseInt(e.screenX);
 		yStart = parseInt(e.screenY);
-		el.style.top = el.offsetTop + 'px';
-		el.style.left = el.offsetLeft + 'px';
+		y = el.offsetTop;
+		x = el.offsetLeft;
+		el.style.top = y + 'px';
+		el.style.left = x + 'px';
 		document.addEventListener("mouseup", enddrag, false);
 		document.addEventListener("mousemove", drag, false);
 
