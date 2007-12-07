@@ -5,7 +5,7 @@ from django_restapi.resource import Resource
 
 from connectable.views import *
 
-urlpatterns = patterns('connectables.views',
+urlpatterns = patterns('connectable.views',
 
     # Connectables
     (r'^$', ConnectableEntry(permitted_methods=('GET', 'POST'))),
