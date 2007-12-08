@@ -5,8 +5,6 @@ from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 
-from views import *
-
 from django_restapi.resource import Resource
 
 from resource.views import addToPlatform
