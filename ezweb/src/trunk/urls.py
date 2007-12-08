@@ -5,6 +5,8 @@ from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 
+from views import *
+
 from django_restapi.resource import Resource
 
 from resource.views import addToPlatform
@@ -33,7 +35,7 @@ urlpatterns = patterns('',
     (r'^user/(?P<user_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/platform/$', addToPlatform),
 
     # Catalogue Tag
-    (r'^user/(?P<user_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/catalogue/tag(s)/?',include('tag.urls')),
+    (r'^user/(?P<user_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/catalogue/tag/',include('tag.urls')),
     # Proxy
     (r'^proxy', include('proxy.urls')),
    
