@@ -84,7 +84,7 @@ UIUtils.searchByTag = function(url, tag) {
 	this.closeInfoResource();
 	var opManager = OpManagerFactory.getInstance();
 
-	opManager.repaintCatalogue(url + tag + "/");
+	opManager.repaintCatalogue(url + "/" + tag );
 }
 
 UIUtils.removeTag = function(id_) {
@@ -100,7 +100,7 @@ UIUtils.removeAllTags = function() {
 UIUtils.sendTags = function() {
 	var resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
 	var tagger = resource.getTagger();
-	var resourceURI = resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion() + "/";
+	var resourceURI = "/" + resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion();
 
 	tagger.sendTags(URIs.POST_RESOURCE_TAGS, resourceURI);
 }

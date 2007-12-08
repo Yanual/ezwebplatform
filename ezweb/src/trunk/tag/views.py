@@ -20,7 +20,6 @@ class GadgetTagsCollection(Resource):
 
 
     def create(self,request, user_name, vendor, name, version):
-
         # Get the xml containing the tags from the request
         tags_xml = request.__getitem__('tags_xml')
 	print(tags_xml)
