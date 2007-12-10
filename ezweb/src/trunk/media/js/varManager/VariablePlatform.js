@@ -66,7 +66,11 @@ RVariable.prototype.notifyChange = function (newValue) {
 		case Variable.prototype.SLOT:
 		case Variable.prototype.USER_PREF:
 			this.value = newValue;
-			this.handler(newValue);
+			try {
+				this.handler(newValue);
+			} catch (e) {
+				// TODO log this event
+			}
 			break;
 	}
 }

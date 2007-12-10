@@ -55,7 +55,7 @@ RGadgetVariable.prototype = new GadgetVariable;
 // OVERWRITTEN METHODS
 //////////////////////////////////////////////
 
-GadgetVariable.prototype.register = function (handler) { 
+RGadgetVariable.prototype.register = function (handler) { 
 	this.varManager.registerVariable(this.iGadgetId, this.name, handler);
 } 
 
