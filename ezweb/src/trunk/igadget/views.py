@@ -69,11 +69,7 @@ def SaveIGadget(igadget, user, screen_id, igadget_id):
                 
 
             var = Variable (uri=uri + '/variables/' + varDef.name, vardef=varDef, igadget=new_igadget, value=var_value)
-            try:
-                var.save() 
-            except Exception, e:
-                print e
-
+            var.save() 
 
     except Gadget.DoesNotExist:
         raise Gadget.DoesNotExist('refered gadget (' + gadget_uri + ') don\'t exists.')
@@ -81,6 +77,30 @@ def SaveIGadget(igadget, user, screen_id, igadget_id):
         #iGadget has no variables. It's normal
         pass
 
+@transaction.commit_on_success
+def UpdateIGadget(igadget, user, screen_id, igadget_id):
+    # Gets all needed parameters of the IGadget
+    width = igadget.get('width')
+    height = igadget.get('height')
+    top = igadget.get('top')
+    left = igadget.get('left')
+    
+    # Checks all mandatary parameters 
+    if not igadget_id or width <= 0 or height <= 0 or top < 0 or left < 0:
+        raise Exception('Malformed iGadget JSON')
+    
+    # Creates IGadget's new position
+    position = Position (uri=uri + '/position', posX=left, posY=top, height=height, width=width)
+    position.save()
+    
+    #Gets current user screen
+    screen = Screen.objects.get(user=user, code=screen_id)
+    igadget = get_object_or_404(IGadget, screen=screen, code=igadget_id)
+    
+    old_position = igadget.position; 
+    igadget.position = position;
+    igadget.save();
+    old_position.delete();
 
 class IGadgetCollection(Resource):
     def read(self, request, user_name, screen_id=None):
@@ -142,7 +162,10 @@ class IGadgetEntry(Resource):
             screen_id = 1
         
         data_list = {}
-        igadget = get_list_or_404(IGadget, screen__user=user, screen__code=screen_id)
+        #Gets current user screen
+        screen = Screen.objects.get(user=user, code=screen_id)
+        
+        igadget = get_list_or_404(IGadget, screen=screen, code=igadget_id)
         data = serializers.serialize('python', igadget, ensure_ascii=False)
         igadget_data = get_igadget_data(data[0])
         return HttpResponse(json_encode(igadget_data), mimetype='application/json; charset=UTF-8')
@@ -170,6 +193,31 @@ class IGadgetEntry(Resource):
             return HttpResponse('ok')
         except Exception, e:
             return HttpResponseServerError('<error>iGadget cannot be saved: %s</error>' % e)
+
+
+    def update(self, request, user_name, igadget_id, screen_id=None):
+        user = user_authentication(user_name)
+
+        #TODO by default. Remove in final release
+        if not screen_id:
+            screen_id = 1
+
+        if not request.has_key('igadget'):
+            return HttpResponseBadRequest('<error>iGadget JSON expected</error>')
+
+        #TODO we can make this with deserializers (simplejson)
+        received_json = request['igadget']
+
+        try:
+            igadget = eval(received_json)
+        except Exception, e:
+            return HttpResponseBadRequest('<error>%s</error>' % e)
+
+        try:
+            UpdateIGadget(igadget, user, screen_id, igadget_id)
+            return HttpResponse('ok')
+        except Exception, e:
+            return HttpResponseServerError('<error>iGadget cannot be updated: %s</error>' % e)
 
 
     def delete(self, request, user_name, igadget_id, screen_id=None):
