@@ -87,28 +87,42 @@ def UpdateIGadget(igadget, user, screen_id, igadget_id):
             igadget_id = uri.partition('/igadgets/')[2]
         else:
             igadget_id = uri.partition('/igadget/')[2]
+
+    # get IGadget's position
+    position = Position.objects.get(uri=uri + '/position')
+
+    # update the requested attributes
+    if igadget.has_key('width'):
+        width = igadget.get('width')
+        if width <= 0:
+            raise Exception('Malformed iGadget JSON')
+        position.width = width
+
+    if igadget.has_key('height'):
+        height = igadget.get('height')
+        if height <= 0:
+            raise Exception('Malformed iGadget JSON')
+        position.height = height
+
+    if igadget.has_key('top'):
+        top = igadget.get('top')
+        if top < 0:
+            raise Exception('Malformed iGadget JSON')
+        position.posY = top
     
-    width = igadget.get('width')
-    height = igadget.get('height')
-    top = igadget.get('top')
-    left = igadget.get('left')
-    
-    # Checks all mandatary parameters 
-    if not igadget_id or width <= 0 or height <= 0 or top < 0 or left < 0:
-        raise Exception('Malformed iGadget JSON')
-    
-    # Creates IGadget's new position
-    position = Position (uri=uri + '/position', posX=left, posY=top, height=height, width=width)
+    if igadget.has_key('left'):
+        left = igadget.get('left')
+        if left < 0:
+            raise Exception('Malformed iGadget JSON')
+        position.posX = left
+
+    # Checks
+    screen = Screen.objects.get(user=user, code=screen_id)
+    igadget = get_object_or_404(IGadget, screen=screen, code=igadget_id)  
+
+    # save the changes
     position.save()
     
-    #Gets current user screen
-    screen = Screen.objects.get(user=user, code=screen_id)
-    igadget = get_object_or_404(IGadget, screen=screen, code=igadget_id)
-    
-    old_position = igadget.position; 
-    igadget.position = position;
-    igadget.save();
-    old_position.delete();
 
 class IGadgetCollection(Resource):
     def read(self, request, user_name, screen_id=None):

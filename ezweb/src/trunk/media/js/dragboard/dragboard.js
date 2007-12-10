@@ -122,7 +122,13 @@ var DragboardFactory = function () {
 		}
 
 		function onError(receivedData) {
-			alert("Error receiving dragboard data");
+			var msg;
+			if (e)
+				msg = e;
+			else
+				msg = transport.status + " " + transport.statusText;
+
+			alert ("Error receiving dragboard data: " + msg);
 		}
 
 		function _getPositionOn(_matrix, gadget) {
@@ -617,6 +623,36 @@ var DragboardFactory = function () {
 			_reserveSpace(matrix, gadgetToMove);
 			gadgetToMove = null;
 			shadowMatrix = null;
+
+			// Update igadgets positions in persistence
+			function onSuccess() {}
+
+			function onError(transport, e) {
+				var msg;
+				if (e)
+					msg = e;
+				else
+					msg = transport.status + " " + transport.statusText;
+
+				alert ("Error updating igadgets positions: " + msg);
+			}
+
+			var iGadgetInfo, uri, position;
+			var data = new Hash();
+			data['iGadgets'] = new Array();
+			iGadgets.each( function (pair) {
+				iGadget = pair.value;
+				iGadgetInfo = new Hash();
+ 				uri = URIs.GET_IGADGET.evaluate({id: iGadget.getId()});
+				iGadgetInfo['uri'] = uri;
+				position = iGadget.getPosition();
+				iGadgetInfo['top'] = position.y;
+				iGadgetInfo['left'] = position.x;
+				data['iGadgets'].push(iGadgetInfo);
+			});
+
+			data = "igadgets=" + data.toJSON();
+			persistenceEngine.send_update(URIs.GET_IGADGETS, data, this, onSuccess, onError);
 		}
 
 		// TODO rename this method to something like getGadgetFromIGadget
@@ -830,12 +866,18 @@ IGadget.prototype.destroy = function() {
 //			alert ("v success");
 		}
 		function onError() {
-//			alert ("x error");
+			var msg;
+			if (e)
+				msg = e;
+			else
+				msg = transport.status + " " + transport.statusText;
+
+			alert ("Error removing igadget from persistence: " + msg);
 		}
 		this.element.parentNode.removeChild(this.element);
 		this.element = null;
 		var persistenceEngine = PersistenceEngineFactory.getInstance();
-		persistenceEngine.send_delete(URIs.GET_IGADGET.evaluate({"id": this.id}),
+		persistenceEngine.send_delete(URIs.GET_IGADGET.evaluate({id: this.id}),
 		                              this, onSuccess, onError);
 	}
 }
@@ -936,25 +978,28 @@ IGadget.prototype.saveConfig = function() {
 }
 
 IGadget.prototype.save = function() {
-	function onSuccess() {
-
-	}
+	function onSuccess() {}
 	function onError(transport) {
-		alert ("x error");
+			var msg;
+			if (e)
+				msg = e;
+			else
+				msg = transport.status + " " + transport.statusText;
+
+			alert ("Error adding igadget to persistence: " + msg);
 	}
 
 	var persistenceEngine = PersistenceEngineFactory.getInstance();
 	var data = new Hash();
-	data
 	data['left'] = this.position.x;
 	data['top'] = this.position.y;
 	data['width'] = this.width;
 	data['height'] = this.height;
- 	var uri = URIs.GET_IGADGET.evaluate({"id": this.id});
+ 	var uri = URIs.GET_IGADGET.evaluate({id: this.id});
  	data['uri'] = uri;
-	data['gadget'] = URIs.GET_GADGET.evaluate({"vendor": this.gadget.getVendor(),
-	                                           "name": this.gadget.getName(),
-	                                           "version": this.gadget.getVersion()});
+	data['gadget'] = URIs.GET_GADGET.evaluate({vendor: this.gadget.getVendor(),
+	                                           name: this.gadget.getName(),
+	                                           version: this.gadget.getVersion()});
 	data = "igadget=" + data.toJSON();
 	persistenceEngine.send_post(uri , data, this, onSuccess, onError);
 }
@@ -986,7 +1031,7 @@ function DragboardStyle(dragboardElement, columns, cellHeight) {
 		dragboardStyle.dragboardWidth = parseInt(dragboardElement.offsetWidth);
 	}
 
-	window.onresize = updateColumnSize;
+	window.addEventListener("resize", updateColumnSize, true); // TODO w3c compilant navigator dependent (this don't work in ie)
 }
 
 DragboardStyle.prototype.getWidth = function() {
