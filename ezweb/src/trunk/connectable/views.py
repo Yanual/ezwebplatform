@@ -16,7 +16,7 @@ from commons.utils import json_encode
 
 from gadget.models import VariableDef
 from igadget.models import IGadget, Screen, Variable
-from connectable.models import InOut
+from connectable.models import In, Out, InOut
 
 class ConnectableEntry(Resource):
     def read(self, request, user_name, screen_id=1):
@@ -52,63 +52,75 @@ class ConnectableEntry(Resource):
         
         return HttpResponse(json_encode(wiring), mimetype='application/json; charset=UTF-8')
     
-    @transaction.commit_manually
+    @transaction.commit_on_success
     def create(self, request, user_name, screen_id=None):
         user = user_authentication(user_name)
 
         # Gets all needed parameters from request
         if request.POST.has_key('json'):
+            print request.POST['json']
             json = simplejson.loads(request.POST['json'])
         else:
             return HttpResponseBadRequest ('json parameter expected')
         
+        #TODO Remove this. Sets user screen by default 
         if not screen_id:
             screen_id = 1
 
-        #InOut.objects.filter(user=user).delete()
-        #Out.objects.filter(variable.igadget.gadget.user=user).delete()
-        #In.objects.filter(user=user).delete() 
         try:
+            #Gets current user screen
             screen = Screen.objects.get(user=user, code=screen_id)
             
             igadgets = json['iGadgetList']
             for igadget in igadgets:
                 igadget_object = IGadget.objects.get(screen=screen, code=igadget['id'])
                 
-                # Save all IGadget variables (in and out)
+                # Save all IGadget connections (in and out variables)
                 for var in igadget['list']:
-                    var_object = Variable.objects.get(uri=var['uri'], vardef__name=var['name'], igadget=igadget)
-                    # IN Variable
+                    var_object = Variable.objects.get(uri=var['uri'], vardef__name=var['name'], igadget=igadget_object)
+                    # Remove existed connections
+                    Out.objects.filter(variable=var_object).delete()
+                    In.objects.filter(variable=var_object).delete()
+                    
+                    # Saves IN connection
                     if var['aspect'] == 'EVEN':
-                        uri_in = "/user/%s/igadgets/%s/in/%s" % (user_name, igadget.code, var['name'])
+                        uri_in = "/user/%s/igadgets/%s/in/%s" % (user_name, igadget_object.code, var['name'])
                         in_object = In(uri=uri_in, name=var['name'], variable=var_object)
                         in_object.save()
-                    # OUT Variable
+
+                    # Saves OUT connection
                     if var['aspect'] == 'SLOT':
-                        uri_out = "/user/%s/igadgets/%s/out/%s" % (user_name, igadget.code, var['name'])
+                        print 'SLOT %s' % var['name']
+                        uri_out = "/user/%s/igadgets/%s/out/%s" % (user_name, igadget_object.code, var['name'])
                         out_object = Out(uri=uri_out, name=var['name'], variable=var_object)
                         out_object.save()
     
-            # Save all inouts
+            # Saves all channels
             for inout in json['inOutList']:
-                inout_uri = InOut(user=user, uri=inout['uri'], name=inout['name'], friend_code=inout['friend_code'], value=inout['value'])
-                inout_object = InOut.objects.get(user=user, name=inout['name'])
-                in_object.save()
+                inout_object = None
+                try:
+                    # If inout (channel) doesn`t exist, it will be created
+                    inout_object = InOut.objects.get(user=user, name=inout['name'])
+                except InOut.DoesNotExist:
+                    inout_object = InOut(user=user, uri=inout['uri'], name=inout['name'], friend_code=inout['friend_code'], value=inout['value'])
+                    inout_object.save()
                 
-                for out in inout['outs']:            
-                    igadget_object = IGadget.objects.filter(screen=screen, code=out['id'])
-                    var_object = Variable.objects.get(uri=out['uri'], vardef__name=ins['name'], igadget=igadget_object) 
-                    out_object = Out.objects.get(uri=out['uri'], variable=var_object)
-                    out_object.inout.add(inout)
-                
+                # Saves all channel inputs
                 for ins in inout['ins']:            
-                    igadget_object = IGadget.objects.filter(screen=screen, code=ins['id'])
-                    var_object = Variable.objects.get(uri=ins['uri'], vardef__name=ins['name'], igadget=igadget_object) 
-                    ins_object = ins.objects.get(uri=out['uri'], variable=var_object)
-                    ins_object.inout.add(inout)
-                      
+                    igadget_object = IGadget.objects.get(screen=screen, code=ins['igadget'])
+                    var_object = Variable.objects.get(vardef__name=ins['name'], igadget=igadget_object)
+                    connected_in = In.objects.get(variable=var_object)
+                    connected_in.inout.add(inout_object)
+                    
+                # Saves all channel outputs
+                for out in inout['outs']:            
+                    igadget_object = IGadget.objects.get(screen=screen, code=out['igadget'])
+                    var_object = Variable.objects.get(vardef__name=out['name'], igadget=igadget_object)
+                    connected_out = Out.objects.get(variable=var_object)
+                    connected_out.inout.add(inout_object)
+                                          
             transaction.commit()
-        except IGadget.DoesNotExist:
+        except Screen.DoesNotExist:
             transaction.rollback()
             return HttpResponseBadRequest('refered screen (' + screen_id + ') doesn\'t exists.')
         except IGadget.DoesNotExist:
