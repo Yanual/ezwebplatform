@@ -80,6 +80,14 @@ def SaveIGadget(igadget, user, screen_id, igadget_id):
 @transaction.commit_on_success
 def UpdateIGadget(igadget, user, screen_id, igadget_id):
     # Gets all needed parameters of the IGadget
+    uri = igadget.get('uri')
+
+    if not igadget_id:
+        if uri.find('igadgets'):
+            igadget_id = uri.partition('/igadgets/')[2]
+        else:
+            igadget_id = uri.partition('/igadget/')[2]
+    
     width = igadget.get('width')
     height = igadget.get('height')
     top = igadget.get('top')
@@ -152,6 +160,35 @@ class IGadgetCollection(Resource):
             transaction.rollback()
             return HttpResponseServerError('<error>iGadgets cannot be saved: %s</error>' % e)
 
+
+    @transaction.commit_manually
+    def update(self, request, user_name, screen_id=None):
+        user = user_authentication(user_name)
+
+        #TODO by default. Remove in final release
+        if not screen_id:
+            screen_id = 1
+        
+        if not request.has_key('igadgets'):
+            return HttpResponseBadRequest('<error>iGadget JSON expected</error>')
+
+        #TODO we can make this with deserializers (simplejson)      
+        received_json = request['igadgets']
+        
+        try:
+            received_data = eval(received_json)
+        except Exception, e:
+            return HttpResponseBadRequest('<error>%s</error>' % e)
+        
+        igadgets = received_data.get('iGadgets')
+        try:
+            for igadget in igadgets:
+                UpdateIGadget(igadget, user, screen_id, igadget_id=None)
+            transaction.commit()
+            return HttpResponse('ok')
+        except Exception, e:
+            transaction.rollback()
+            return HttpResponseServerError('<error>iGadgets cannot be updated: %s</error>' % e)
 
 class IGadgetEntry(Resource):
     def read(self, request, user_name, igadget_id, screen_id=None):

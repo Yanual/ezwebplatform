@@ -8,9 +8,9 @@ from igadget.views import *
 urlpatterns = patterns('igadget.views',
 
     # IGadgets
-    (r'^$', IGadgetCollection(permitted_methods=('GET', 'POST'))),
+    (r'^$', IGadgetCollection(permitted_methods=('GET', 'POST', 'UPDATE'))),
     (r'^/((?P<igadget_id>\d+))?$',
-	    IGadgetEntry(permitted_methods=('GET', 'POST', 'DELETE'))),
+	    IGadgetEntry(permitted_methods=('GET', 'POST', 'UPDATE', 'DELETE'))),
     (r'^/((?P<igadget_id>\d+)/variables)?$',
         IGadgetVariableCollection(permitted_methods=('GET', ))),
     (r'^/((?P<igadget_id>\d+)/variables/(?P<var_name>[-ÑñáéíóúÁÉÍÓÚ\w]+))?$',
