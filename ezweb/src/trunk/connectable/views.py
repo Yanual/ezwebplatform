@@ -42,7 +42,6 @@ class ConnectableEntry(Resource):
             wiring['iGadgetList'] = igadget_data_list
         except Screen.DoesNotExist:
             wiring['iGadgetList'] = []
-            
         
         # InOut list
         inouts = InOut.objects.filter(user=user)
@@ -73,7 +72,7 @@ class ConnectableEntry(Resource):
             
             igadgets = json['iGadgetList']
             for igadget in igadgets:
-                igadget_object = IGadget.objects.get(screen=screen, code=igadget['id'])
+                igadget_object = IGadget.objects.get(screen=screen, code=igadget['igadget'])
                 
                 # Save all IGadget connections (in and out variables)
                 for var in igadget['list']:

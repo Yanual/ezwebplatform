@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, get_list_or_404
 from django.core import serializers
 
 from gadget.models import Template, Gadget, XHTML, Tag, UserEventsInfo
-from igadget.models import Variable, VariableDef, Position
+from igadget.models import Variable, VariableDef, Position, IGadget
 from connectable.models import In, Out
 
 def get_wiring_variable_data(var, ig):
@@ -78,6 +78,10 @@ def get_gadget_data(data):
 
     return data_ret
 
+
+
+def get_in_data (inout):
+    pass
 
 def get_inout_data(data):
     data_ret = {}

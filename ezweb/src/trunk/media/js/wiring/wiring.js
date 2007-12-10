@@ -35,8 +35,8 @@ var WiringFactory = function () {
 			
 				this.createChannel(inOuts[i]);	
 				inputs["from"] = inOuts[i].name; 
-				inputs.inputHash = inOuts[i].inputHash;
-				inputs.outputHash = inOuts[i].outputHash;
+				inputs.inputHash = inOuts[i].ins;
+				inputs.outputHash = inOuts[i].outs;
 				connections.push(inputs);	
 			}
 			// reconnecting every thing at this moment
@@ -583,18 +583,18 @@ var WiringFactory = function () {
 		    
 		    // IGadgets
 		    for (var i = 0; i < gadgetKeys.length; i++){
-			var ins = [], outs = [];
+			var list = [];
 			for (var j = 0; j < iGadgetList[gadgetKeys[i]].list.length; j++){
 			    var connectablejson = new Object();
 
 			    connectablejson.name = iGadgetList[gadgetKeys[i]].list[j].name;
-			    connectablejson.variable =  iGadgetList[gadgetKeys[i]].list[j].ref.getURI();
+			    connectablejson.uri =  iGadgetList[gadgetKeys[i]].list[j].ref.getURI();
+				connectablejson.value =  iGadgetList[gadgetKeys[i]].list[j].ref.getValue();
+				connectablejson.aspect =  iGadgetList[gadgetKeys[i]].list[j].aspect;
+				connectablejson.type =  iGadgetList[gadgetKeys[i]].list[j].ref.getType();
+				connectablejson.igadget =  iGadgetList[gadgetKeys[i]].list[j].ref.getId();
 
-			    if (iGadgetList[gadgetKeys[i]].list[j].aspect == "SLOT"){
-				ins.push(connectablejson);
-			    } else{
-				outs.push(connectablejson);
-			    }
+				list.push(connectablejson);
 			}
 
 			var iGadget = new Object();	
@@ -602,25 +602,50 @@ var WiringFactory = function () {
 			var iGadgetId = {iGadgetId: iGadgetList[gadgetKeys[i]].id};
 
 			iGadget.uri = URIs.POST_IGADGET.evaluate(iGadgetId);
-			iGadget.ins = ins;
-			iGadget.outs = outs;
+			iGadget.id = iGadgetList[gadgetKeys[i]].id;
+			iGadget.list = list;
 			gadgets.push(iGadget);
 		    }
 
 		    // Channels
 		    for(var t = 0; t < inOutKeys.length; t++){
-			inouts[t] = copyList[inOutKeys[t]].ref.getPersistence();
+				inouts[t] = new Object();
+				inouts[t].uri = copyList[inOutKeys[t]].ref.getURI();
+    			inouts[t].friend_code = ''
+    			inouts[t].value = copyList[inOutKeys[t]].ref.getValue();
+    			inouts[t].name = copyList[inOutKeys[t]].ref.getName();
+    			
+				inouts[t].ins = [];
+				for (var v = 0; v < copyList[inOutKeys[t]].ref.inputList.length; v++){
+					var nextIn = copyList[inOutKeys[t]].ref.inputList[v];
+					inouts[t].ins[v] = new Object();
+					inouts[t].ins[v].name = nextIn.getName();
+					inouts[t].ins[v].uri = nextIn.getURI();
+					inouts[t].ins[v].igadget = nextIn.getId();
+				}
+
+				inouts[t].outs = [];
+				for (var v = 0; v < copyList[inOutKeys[t]].ref.outputList.length; v++){
+					var nextOut = copyList[inOutKeys[t]].ref.outputList[v];
+					inouts[t].outs[v] = new Object();
+					inouts[t].outs[v].name = nextOut.getName();
+					inouts[t].outs[v].uri = nextOut.getURI();
+					inouts[t].outs[v].igadget = nextOut.getId();
+				}
+
 		    }
 
 		    var json = new Object();
 
-		    json['igadgets'] = gadgets;
-		    json['inouts'] = inouts;
+		    json['iGadgetList'] = gadgets;
+		    json['inOutList'] = inouts;
 		    
 		    var param = Object.toJSON(json);
-		    param = "json=" + param;
 		    
-		    PersistenceEngineFactory.getInstance().send_post(URIs.POST_WIRING, param, this, this.serializationSuccess, this.serializationError); 
+			alert (param)
+			param = "json=" + param;
+		    
+		    PersistenceEngineFactory.getInstance().send_post(URIs.GET_POST_WIRING, param, this, this.serializationSuccess, this.serializationError); 
 		    
 		}
 
