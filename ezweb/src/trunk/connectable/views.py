@@ -26,12 +26,7 @@ class ConnectableEntry(Resource):
         # IGadgets list
         if not screen_id:
             screen_id=1
-            #screens = get_list_or_404(Screen, user=user)
-            #for screen in screens:
-                #igadgets = get_list_or_404(IGadget, screen=screen.id)
-                #igadget_data = serializers.serialize('python', igadgets, ensure_ascii=False)
-                #igadget_data_list = [get_igadget_data(d) for d in igadget_data]
-        #else:
+
         try:
             screen = Screen.objects.get(user=user, code=screen_id)
 
@@ -51,13 +46,12 @@ class ConnectableEntry(Resource):
         
         return HttpResponse(json_encode(wiring), mimetype='application/json; charset=UTF-8')
     
-    @transaction.commit_on_success
+    @transaction.commit_manually
     def create(self, request, user_name, screen_id=None):
         user = user_authentication(user_name)
 
         # Gets all needed parameters from request
         if request.POST.has_key('json'):
-            print request.POST['json']
             json = simplejson.loads(request.POST['json'])
         else:
             return HttpResponseBadRequest ('json parameter expected')
@@ -72,15 +66,14 @@ class ConnectableEntry(Resource):
             
             igadgets = json['iGadgetList']
             for igadget in igadgets:
-                igadget_object = IGadget.objects.get(screen=screen, code=igadget['igadget'])
-                
+                igadget_object = IGadget.objects.get(screen=screen, code=igadget['id'])
+
                 # Save all IGadget connections (in and out variables)
                 for var in igadget['list']:
                     var_object = Variable.objects.get(uri=var['uri'], vardef__name=var['name'], igadget=igadget_object)
                     # Remove existed connections
                     Out.objects.filter(variable=var_object).delete()
                     In.objects.filter(variable=var_object).delete()
-                    
                     # Saves IN connection
                     if var['aspect'] == 'EVEN':
                         uri_in = "/user/%s/igadgets/%s/in/%s" % (user_name, igadget_object.code, var['name'])
@@ -93,8 +86,9 @@ class ConnectableEntry(Resource):
                         uri_out = "/user/%s/igadgets/%s/out/%s" % (user_name, igadget_object.code, var['name'])
                         out_object = Out(uri=uri_out, name=var['name'], variable=var_object)
                         out_object.save()
-    
+            
             # Saves all channels
+            print 'channels %s' % json['inOutList']
             for inout in json['inOutList']:
                 inout_object = None
                 try:

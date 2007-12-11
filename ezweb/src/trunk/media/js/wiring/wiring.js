@@ -44,24 +44,24 @@ var WiringFactory = function () {
 				var item = connections[r];
 				for (var i = 0; i < item.inputHash.length; i++){
 					var input = item.inputHash[i];		
-					if (input["id"] == "null"){
+					if (input["igadget"] == "null"){
 						//the input is a channel
 						this.addChannelInput(input["name"],item["from"]);
 					}
 					else{
 						// the input is an event
-						this.addChannelInput(input["id"],input["name"],item["from"]);
+						this.addChannelInput(input["igadget"],input["name"],item["from"]);
 					}
 				}
 				for (var j = 0; j < item.outputHash.length; j++){
 					var output = item.outputHash[j];
-					if (output["id"] == "null"){
+					if (output["igadget"] == "null"){
 						//the output is a channel
 						this.addChannelOutput(output["name"], item["from"]);
 					}
 					else{
 						//the output is a slot
-						this.addChannelOutput(output["id"], output["name"],item["from"]);
+						this.addChannelOutput(output["igadget"], output["name"],item["from"]);
 					}
 				}
 			}

@@ -79,9 +79,28 @@ def get_gadget_data(data):
     return data_ret
 
 
-
-def get_in_data (inout):
-    pass
+def get_input_data (inout):
+    all_inputs = []
+    inputs = In.objects.filter(inout=inout)    
+    for ins in inputs:
+        input_data = {}
+        input_data['uri'] = ins.uri
+        input_data['name'] = ins.name
+        input_data['igadget'] = ins.variable.igadget.id
+        all_inputs.append(input_data)
+    return all_inputs
+    
+def get_output_data (inout):
+    all_outputs = []
+    outputs = Out.objects.filter(inout=inout)    
+    for outs in outputs:
+        output_data = {}
+        output_data['uri'] = outs.uri
+        output_data['name'] = outs.name
+        output_data['igadget'] = outs.variable.igadget.id
+        all_outputs.append(output_data)
+    return all_outputs    
+    
 
 def get_inout_data(data):
     data_ret = {}
@@ -91,10 +110,10 @@ def get_inout_data(data):
     data_ret['value'] = data_fields['value']
     data_ret['name'] = data_fields['name']
     
-    data_ins = get_list_or_404(In.objects.all().values('uri', 'name'), inout=data['pk'])
+    data_ins = get_input_data(inout=data['pk'])
     data_ret['ins'] = [d for d in data_ins]
     
-    data_outs = get_list_or_404(Out.objects.all().values('uri', 'name'), inout=data['pk'])
+    data_outs = get_output_data(inout=data['pk'])
     data_ret['outs'] = [d for d in data_outs]
         
     return data_ret
@@ -117,11 +136,13 @@ def get_igadget_data(data):
        
     return data_ret
 
-def get_variable_data(var_name, data):
+def get_variable_data(data):
     data_ret = {}
     data_fields = data['fields']
     
-    data_ret['name'] = var_name 
+    var_def = VariableDef.objects.get(id=data_fields['vardef'])
+   
+    data_ret['name'] = var_def.name
     data_ret['value'] = data_fields['value']
        
     return data_ret

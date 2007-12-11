@@ -268,7 +268,7 @@ var URIs = new _URIConstants();
 						</div>
 					</div>
 					<div>
-						<input id = "refreshbutton" type="image" src="{{ MEDIA_URL }}js/wiring/disk.png" title = "Save data" alt = "Save changes" onClick = "opManager.restaure()">	
+						<input id = "refreshbutton" type="image" src="{{ MEDIA_URL }}js/wiring/disk.png" title = "Save data" alt = "Save changes" onClick = "opManager.restaure();WiringFactory.getInstance().serialize()">	
 					</div>
 				</div><!--items_panel-->
 		</div>
