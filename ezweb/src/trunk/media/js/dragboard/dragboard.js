@@ -121,7 +121,7 @@ var DragboardFactory = function () {
 			OpManagerFactory.getInstance().continueLoading(Modules.prototype.DRAGBOARD);
 		}
 
-		function onError(receivedData, e) {
+		function onError(transport, e) {
 			var msg;
 			if (e)
 				msg = e;
