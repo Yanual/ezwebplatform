@@ -112,17 +112,29 @@ RWVariable.prototype = new Variable;
 //////////////////////////////////////////////
 
 RWVariable.prototype.set = function (value_, wiring) {  
-  // Error control needed here!!!!!!!!
+
+	// Asynchronous handlers 
+	function onSuccess() {alert ("var saved");}
+	function onError(transport) {alert ("error: var not saved");}
+
+    // Saves the new state of variable
+	var persistenceEngine = PersistenceEngineFactory.getInstance();
+	put_variable_uri = URIs.GET_POST_GADGET_VARIABLE.evaluate({
+		"iGadgetId": this.iGadget,
+    	"varName": this.name});
+	var param = 'value=' + value_;
+	PersistenceEngineFactory.getInstance().send_put(put_variable_uri, param, this, onSuccess, onError);
+	
+	// Error control needed here!!!!!!!!
 	switch (this.aspect){
 		case Variable.prototype.PROPERTY:
-		// PersistentEngine.guardar
-		break;
+			break;
 		case Variable.prototype.EVENT:
 		// PersistentEngine.guardar
 			if (this.value != value_){
 				wiring.sendEvent(this.iGadget, this.name, value_);
 			}
-		break;
+			break;
 	}
 	this.value = value_;
 }  

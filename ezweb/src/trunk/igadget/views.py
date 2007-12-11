@@ -304,9 +304,8 @@ class IGadgetVariableCollection(Resource):
         
         screen = Screen.objects.get(user=user, code=screen_id)
         variables = Variable.objects.filter(igadget__screen=screen, igadget__code=igadget_id)
-
-        vars_serial = serializers.serialize('python', variables, ensure_ascii=False)
-        vars_data = [get_variable_data(var.name, var_serial) for (var, var_serial)  in (variables, vars_serial)]
+        data = serializers.serialize('python', variables, ensure_ascii=False)
+        vars_data = [get_variable_data(d) for d in data]
         return HttpResponse(json_encode(vars_data), mimetype='application/json; charset=UTF-8')
 
 class IGadgetVariable(Resource):
@@ -320,7 +319,7 @@ class IGadgetVariable(Resource):
         screen = Screen.objects.get(user=user, code=screen_id)
         variable = get_list_or_404(Variable, igadget__screen=screen, igadget__code=igadget_id, vardef__name=var_name)
         data = serializers.serialize('python', variable, ensure_ascii=False)
-        var_data = get_variable_data(var_name, data[0])
+        var_data = get_variable_data(data[0])
         return HttpResponse(json_encode(var_data), mimetype='application/json; charset=UTF-8')
     
     def create(self, request, user_name, igadget_id, var_name, screen_id=None):

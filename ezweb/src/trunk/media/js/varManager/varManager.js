@@ -18,7 +18,7 @@ var VarManagerFactory = function () {
 			var tempList = eval ('(' + response + ')');
 			
 			// Constructing the structure
-			tempList = tempList.igadgets;
+			tempList = tempList.iGadgets;
 			
 			var objVars = [];
 			var id = -1;
@@ -78,7 +78,7 @@ var VarManagerFactory = function () {
 		// Getting IGadgets from PersistenceEngine. Asyncrhonous call!
 		//persistenceEngine.send_get(URIs.IGADGETS_VARIABLES, loadIGadgets, onError);
 		//persistenceEngine.send_get('http://europa.ls.fi.upm.es:8000/user/admin/igadgets/', this, loadIGadgets, onError);
-		persistenceEngine.send_get('/ezweb/json/igadgets.json', this, loadIGadgets, onError);
+		persistenceEngine.send_get(URIs.GET_IGADGETS, this, loadIGadgets, onError);
 		
 		// ****************
 		// PUBLIC METHODS 
