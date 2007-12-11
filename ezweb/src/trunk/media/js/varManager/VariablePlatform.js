@@ -123,7 +123,7 @@ RWVariable.prototype.set = function (value_, wiring) {
 		"iGadgetId": this.iGadget,
     	"varName": this.name});
 	var param = 'value=' + value_;
-	PersistenceEngineFactory.getInstance().send_put(put_variable_uri, param, this, onSuccess, onError);
+	PersistenceEngineFactory.getInstance().send_update(put_variable_uri, param, this, onSuccess, onError);
 	
 	// Error control needed here!!!!!!!!
 	switch (this.aspect){

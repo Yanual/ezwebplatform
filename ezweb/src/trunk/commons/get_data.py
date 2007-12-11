@@ -133,7 +133,10 @@ def get_igadget_data(data):
     data_ret['left'] = position.posX
     data_ret['width'] = position.width
     data_ret['height'] = position.height
-       
+    variables = Variable.objects.filter (igadget__id=data['pk'])
+    data = serializers.serialize('python', variables, ensure_ascii=False)
+    data_ret['variables'] = [get_variable_data(d) for d in data]
+   
     return data_ret
 
 def get_variable_data(data):
@@ -143,6 +146,7 @@ def get_variable_data(data):
     var_def = VariableDef.objects.get(id=data_fields['vardef'])
    
     data_ret['name'] = var_def.name
+    data_ret['aspect'] = var_def.aspect
     data_ret['value'] = data_fields['value']
        
     return data_ret

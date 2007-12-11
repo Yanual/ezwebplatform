@@ -76,8 +76,6 @@ var VarManagerFactory = function () {
 		var iGadgets = [];
 		
 		// Getting IGadgets from PersistenceEngine. Asyncrhonous call!
-		//persistenceEngine.send_get(URIs.IGADGETS_VARIABLES, loadIGadgets, onError);
-		//persistenceEngine.send_get('http://europa.ls.fi.upm.es:8000/user/admin/igadgets/', this, loadIGadgets, onError);
 		persistenceEngine.send_get(URIs.GET_IGADGETS, this, loadIGadgets, onError);
 		
 		// ****************
