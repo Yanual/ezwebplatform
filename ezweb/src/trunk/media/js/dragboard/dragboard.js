@@ -121,7 +121,7 @@ var DragboardFactory = function () {
 			OpManagerFactory.getInstance().continueLoading(Modules.prototype.DRAGBOARD);
 		}
 
-		function onError(receivedData) {
+		function onError(receivedData, e) {
 			var msg;
 			if (e)
 				msg = e;
@@ -865,7 +865,7 @@ IGadget.prototype.destroy = function() {
 		function onSuccess() {
 //			alert ("v success");
 		}
-		function onError() {
+		function onError(transport, e) {
 			var msg;
 			if (e)
 				msg = e;
@@ -979,7 +979,7 @@ IGadget.prototype.saveConfig = function() {
 
 IGadget.prototype.save = function() {
 	function onSuccess() {}
-	function onError(transport) {
+	function onError(transport, e) {
 			var msg;
 			if (e)
 				msg = e;
