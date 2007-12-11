@@ -35,8 +35,8 @@ def SaveIGadget(igadget, user, screen_id, igadget_id):
     left = igadget.get('left')
     
     # Checks all mandatary parameters 
-    if not igadget_id or not uri or not gadget_uri or width <= 0 or height <= 0 or top < 0 or left < 0:
-        raise Exception('Malformed iGadget JSON')
+#    if not igadget_id or not uri or not gadget_uri or width <= 0 or height <= 0 or top < 0 or left < 0:
+#        raise Exception('Malformed iGadget JSON')
 
     #Gets current user screen
     try:
@@ -182,12 +182,12 @@ class IGadgetCollection(Resource):
         #TODO by default. Remove in final release
         if not screen_id:
             screen_id = 1
-        
-        if not request.has_key('igadgets'):
+
+        if not request.PUT.has_key('igadgets'):
             return HttpResponseBadRequest('<error>iGadget JSON expected</error>')
 
         #TODO we can make this with deserializers (simplejson)      
-        received_json = request['igadgets']
+        received_json = request.PUT['igadgets']
         
         try:
             received_data = eval(received_json)
