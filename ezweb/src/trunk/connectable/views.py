@@ -86,17 +86,15 @@ class ConnectableEntry(Resource):
                         out_object = Out(uri=uri_out, name=var['name'], variable=var_object)
                         out_object.save()
             
+            # Delete channels
+
+            InOut.objects.filter(user=user).delete()
+
             # Saves all channels
             for inout in json['inOutList']:
                 inout_object = None
-                try:
-                    # If inout (channel) doesn`t exist, it will be created
-                    inout_object = InOut.objects.get(user=user, name=inout['name'])
-                    inout_object.value = value=inout['value']
-                    inout_object.save()
-                except InOut.DoesNotExist:
-                    inout_object = InOut(user=user, uri=inout['uri'], name=inout['name'], friend_code=inout['friend_code'], value=inout['value'])
-                    inout_object.save()
+                inout_object = InOut(user=user, uri=inout['uri'], name=inout['name'], friend_code=inout['friend_code'], value=inout['value'])
+                inout_object.save()
                 
                 # Saves all channel inputs
                 for ins in inout['ins']:            
