@@ -92,6 +92,7 @@ class ConnectableEntry(Resource):
                 try:
                     # If inout (channel) doesn`t exist, it will be created
                     inout_object = InOut.objects.get(user=user, name=inout['name'])
+                    inout_object.value = value=inout['value']
                 except InOut.DoesNotExist:
                     inout_object = InOut(user=user, uri=inout['uri'], name=inout['name'], friend_code=inout['friend_code'], value=inout['value'])
                     inout_object.save()
