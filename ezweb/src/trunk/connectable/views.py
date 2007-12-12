@@ -128,3 +128,23 @@ class ConnectableEntry(Resource):
 
         return HttpResponse('ok')
 
+class InOutCollection(Resource):
+    def delete(self, request, user_name):
+        user = user_authentication(user_name)
+
+        # Gets all needed parameters from request
+        if request.DELETE.has_key('channels'):
+            print "founded"
+            json = simplejson.loads(request.DELETE['channels'])
+        else:
+            return HttpResponseBadRequest ('json parameter expected')        
+
+        return HttpResponse('<ok />')
+
+class InOutEntry(Resource):
+    def delete(self, request, user_name, name):
+        user = user_authentication(user_name)
+
+        InOut.objects.get_object_or_404(user=user, name=name).delete()
+
+        return HttpResponse('<ok />')
