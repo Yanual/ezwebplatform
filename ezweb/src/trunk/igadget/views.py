@@ -253,11 +253,11 @@ class IGadgetEntry(Resource):
         if not screen_id:
             screen_id = 1
 
-        if not request.has_key('igadget'):
+        if not request.PUT.has_key('igadget'):
             return HttpResponseBadRequest('<error>iGadget JSON expected</error>')
 
         #TODO we can make this with deserializers (simplejson)
-        received_json = request['igadget']
+        received_json = request.PUT['igadget']
 
         try:
             igadget = eval(received_json)
@@ -329,17 +329,16 @@ class IGadgetVariable(Resource):
         user = user_authentication(user_name)
         
         # Gets value parameter from request
-        if not request.has_key('value'):
+        if not request.PUT.has_key('value'):
             return HttpResponseBadRequest('<error>iGadget JSON expected</error>')
-        new_value = request['value']
+        new_value = request.PUT['value']
         
         #TODO by default. Remove in final release
         if not screen_id:
             screen_id = 1
-        
+
         screen = Screen.objects.get(user=user, code=screen_id)
         variable = get_object_or_404(Variable, igadget__screen=screen, igadget__code=igadget_id, vardef__name=var_name)
         variable.value = new_value
         variable.save()
-        var = Variable (uri=uri + '/variable/' + varDef.name, vardef=varDef, igadget=new_igadget, value=var_value)
         return HttpResponse('ok')
