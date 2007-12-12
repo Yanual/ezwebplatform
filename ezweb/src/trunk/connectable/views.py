@@ -82,13 +82,11 @@ class ConnectableEntry(Resource):
 
                     # Saves OUT connection
                     if var['aspect'] == 'SLOT':
-                        print 'SLOT %s' % var['name']
                         uri_out = "/user/%s/igadgets/%s/out/%s" % (user_name, igadget_object.code, var['name'])
                         out_object = Out(uri=uri_out, name=var['name'], variable=var_object)
                         out_object.save()
             
             # Saves all channels
-            print 'channels %s' % json['inOutList']
             for inout in json['inOutList']:
                 inout_object = None
                 try:
