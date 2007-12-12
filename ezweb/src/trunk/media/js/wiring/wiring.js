@@ -26,8 +26,6 @@ var WiringFactory = function () {
 			var connections = [];
 			var list = null;
 	
-			this.erasedChannels = [];
-
 			// restauring the iGadget structure
 			for (var i = 0; i < gadgets.length; i++) {
 				this.addInstance(gadgets[i]);
@@ -258,13 +256,9 @@ var WiringFactory = function () {
 
 			if (channel != undefined){
 				// The selected channel exists
-				channel.ref.clear();			       				
-
-				copyList.remove(channelName);
+				channel.ref.clear();
 				
-				// Writing out channel uri for further erase (when serialization is carried out)
-				this.erasedChannels.push(URIs.GET_POST_CHANNEL.evaluate({channelName: channelName}));
-
+				copyList.remove(channelName);
 				alert("Channel deleted")
 				return 0;
 			}
@@ -587,21 +581,6 @@ var WiringFactory = function () {
 		    var gadgetKeys = iGadgetList.keys();
 		    var inOutKeys = copyList.keys();
 		    
-		    // First of all, it's neccesary to delete from DB those channels selected by user
-		    var channels = new Object();
-		    channels['channels'] = this.erasedChannels;
-
-		    var param = "channels=" + Object.toJSON(channels);
-
-		    this.erasedChannels = [];
-
-		    function onError(transport) {alert("error")}
-		    function onSuccess(transport) {alert("success")}
-
-		    PersistenceEngineFactory.getInstance().send_delete(URIs.DELETE_CHANNELS, param, this, onSuccess, onError); 
-
-		    return;
-
 		    // IGadgets
 		    for (var i = 0; i < gadgetKeys.length; i++){
 			var list = [];

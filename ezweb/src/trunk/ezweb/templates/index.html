@@ -23,8 +23,7 @@ _URIConstants.prototype.POST_IGADGET = new Template ('/user/{{ user.username }}/
 _URIConstants.prototype.PROXY = '/proxy';
 _URIConstants.prototype.GET_IGADGET_VARIABLES = new Template ('/user/{{ user.username }}/igadgets/#{iGadgetId}/variables');
 _URIConstants.prototype.GET_POST_GADGET_VARIABLE = new Template ('/user/{{ user.username }}/igadgets/#{iGadgetId}/variables/#{varName}');
-_URIConstants.prototype.GET_POST_CHANNEL = new Template ('/user/{{ user.username }}/connectable/channel/#{channelName}');
-_URIConstants.prototype.DELETE_CHANNELS = '/user/{{ user.username }}/connectable/channel';
+_URIConstants.prototype.GET_POST_CHANNEL = new Template ('/user/{{ user.username }}/channel/#{channelName}');
 
 var URIs = new _URIConstants();
 </script>

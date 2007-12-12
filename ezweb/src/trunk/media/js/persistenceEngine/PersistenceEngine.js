@@ -29,10 +29,9 @@ var PersistenceEngineFactory = function () {
 			});
 		}
 		
-		PersitenceEngine.prototype.send_delete = function (url, params, context, successHandler, errorHandler){
+		PersitenceEngine.prototype.send_delete = function (url, context, successHandler, errorHandler){
 			new Ajax.Request(url, {
 				method: 'delete',
-				parameters: params,
 				onSuccess: successHandler.bind(context),
 				onFailure: errorHandler.bind(context),
 				onException: errorHandler.bind(context)
