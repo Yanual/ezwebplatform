@@ -114,7 +114,6 @@ var DragboardFactory = function () {
 					currentId =  curIGadget.id + 1;
 
 //				_reserveSpace(matrix, igadget);
-				opManager.notifyInstance(curIGadget.id);
 			}
 
 			loaded = true;
