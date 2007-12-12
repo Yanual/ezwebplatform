@@ -569,11 +569,10 @@ var WiringFactory = function () {
 		}
 
 		Wiring.prototype.serializationSuccess = function (){
-		    alert("Serialization success");
 		}
 
 		Wiring.prototype.serializationError = function (){
-		    alert("Serialization error");		
+		    alert("ERROR: Channel and its connections cannot be saved");		
 		}
 
 		Wiring.prototype.serialize = function (){
@@ -642,7 +641,6 @@ var WiringFactory = function () {
 		    
 		    var param = Object.toJSON(json);
 		    
-			alert (param)
 			param = "json=" + param;
 		    
 		    PersistenceEngineFactory.getInstance().send_post(URIs.GET_POST_WIRING, param, this, this.serializationSuccess, this.serializationError); 
