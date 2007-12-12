@@ -114,8 +114,8 @@ RWVariable.prototype = new Variable;
 RWVariable.prototype.set = function (value_, wiring) {  
 
 	// Asynchronous handlers 
-	function onSuccess() {alert ("var saved");}
-	function onError(transport) {alert ("error: var not saved");}
+	function onSuccess() {}
+	function onError(transport) {alert ("ERROR: variable cannot be saved");}
 
     // Saves the new state of variable
 	var persistenceEngine = PersistenceEngineFactory.getInstance();
