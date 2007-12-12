@@ -15,6 +15,6 @@ urlpatterns = patterns('connectable.views',
     (r'^/(channel/(?P<name>\w+)[/]?)?$',
          InOutEntry(permitted_methods=('','DELETE'))),
     (r'^/(channel[/]?)?$',
-         InOutCollection(permitted_methods=('', 'DELETE'))),
+         InOutCollection(permitted_methods=('GET', 'DELETE'))),
 
 )

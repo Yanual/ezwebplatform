@@ -129,6 +129,10 @@ class ConnectableEntry(Resource):
         return HttpResponse('ok')
 
 class InOutCollection(Resource):
+    def read(self, request, user_name):
+        print 'read'
+        return HttpResponse('<ok />')
+        
     def delete(self, request, user_name):
         user = user_authentication(user_name)
 
