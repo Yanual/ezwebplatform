@@ -96,4 +96,20 @@
         <field type="CharField" name="wiki_page_uri">http://piccolo.ls.fi.upm.es:7000/LocalizadorPequeno</field>
         <field type="CharField" name="template_uri">http://europa.ls.fi.upm.es/ezweb/gadgets/localizadorPequeno.xml</field>
     </object>
+    <object pk="18" model="resource.gadgetresource">
+        <field type="CharField" name="short_name">SimpleNotepad</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field to="auth.user" name="added_by_user" rel="ManyToOneRel">1</field>
+        <field type="CharField" name="author">jmartin</field>
+        <field type="CharField" name="size"><None></None></field>
+        <field type="CharField" name="license"><None></None></field>
+        <field type="CharField" name="version">1.0</field>
+        <field type="CharField" name="mail">jjmr@tid.es</field>
+        <field type="CharField" name="description">Este gadget permite anadir una nota personal</field>
+        <field type="CharField" name="gadget_uri"><None></None></field>
+        <field type="DateTimeField" name="creation_date">2007-12-13 17:16:19</field>
+        <field type="CharField" name="image_uri">http://europa.ls.fi.upm.es/ezweb/gadgets/postit.gif</field>
+        <field type="CharField" name="wiki_page_uri">http://piccolo.ls.fi.upm.es:7000/Notepad</field>
+        <field type="CharField" name="template_uri">http://europa.ls.fi.upm.es/ezweb/gadgets/notepad.xml</field>
+    </object>
 </django-objects>
