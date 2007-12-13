@@ -505,7 +505,10 @@ var DragboardFactory = function () {
 				igadget.setConfigurationVisible(!igadget.isConfigurationVisible());
 				_resize(igadget, oldWidth, oldHeight, oldWidth, igadget.getHeight());
 			} else {
+				var oldWidth = igadget.getContentWidth();
+				var oldHeight = igadget.getHeight();
 				igadget.setConfigurationVisible(newStatus);
+				_resize(igadget, oldWidth, oldHeight, oldWidth, igadget.getHeight());
 			}
 		}
 
@@ -513,7 +516,8 @@ var DragboardFactory = function () {
 			var igadget = iGadgets[iGadgetId];
 			try {
 				igadget.saveConfig();
-				igadget.setConfigurationVisible(false);
+
+				this.setConfigurationVisible(igadget.getId(), false);
 			} catch (e) {
 			}
 		}
@@ -1141,6 +1145,9 @@ function Draggable(el, handler, data, onStart, onDrag, onFinish) {
 
 	// remove the events
 	function enddrag(e) {
+		if (e.button != 0)  // Only attend to left button (or right button for left-handed persons) events
+			return false;
+
 		document.removeEventListener("mouseup", enddrag, false);
 		document.removeEventListener("mousemove", drag, false);
 
@@ -1153,6 +1160,10 @@ function Draggable(el, handler, data, onStart, onDrag, onFinish) {
 		el.style.zIndex = "";
 
 		handler.addEventListener("mousedown", startdrag, false);
+
+		document.onmousedown = null;
+		document.oncontextmenu = null;
+		return false;
 	}
 
 	// fire each time it's dragged
@@ -1172,6 +1183,11 @@ function Draggable(el, handler, data, onStart, onDrag, onFinish) {
 
 	// initiate the drag
 	function startdrag(e) {
+		if (e.button != 0)  // Only attend to left button (or right button for left-handed persons) events
+			return false;
+
+		document.oncontextmenu = function() { return false; }; // disable context menu
+		document.onmousedown = function() { return false; }; // disable text selection
 		handler.removeEventListener("mousedown", startdrag, false);
 
 		xOffset = 100; // TODO we must calculate this value (half column)
