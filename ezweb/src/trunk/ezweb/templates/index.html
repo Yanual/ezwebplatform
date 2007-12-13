@@ -75,9 +75,11 @@ var URIs = new _URIConstants();
 		for (var i = 0; i < tabs.length; i++) {
 			$(tabs[i] + "_container").style.zIndex = 1;
 			$(tabs[i] + "_tab").className = "tab";
+                        if (tabs[i] != "dragboard")
+                                $(tabs[i] + "_container").setStyle({"display": "none"});
 		}
 
-		$(element + "_container").setStyle({"zIndex" : 2});
+		$(element + "_container").setStyle({"display": "block", "zIndex" : "2"});
 		$(element + "_tab").className = "tab current";
 	}
 

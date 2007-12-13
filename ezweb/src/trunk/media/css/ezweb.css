@@ -169,6 +169,7 @@ a:hover
   overflow-x: auto;
   overflow-y: auto;
   z-index: 1;
+  display: none;
 }
 
 .container_content {
@@ -183,6 +184,7 @@ a:hover
 #dragboard_container {
   overflow-x: hidden;
   z-index: 2;
+  display: block;
 }
 
 /* showcase ---------------------------------------------------------------------------------------- */
