@@ -28,6 +28,7 @@ var VarManagerFactory = function () {
 			for (i = 0; i<tempList.length; i++) {
 				id = tempList[i].id;
 				rawVars = tempList[i].variables;
+				objVars = []
 				
 				for (j = 0; j<rawVars.length; j++) {
 					rawVar = rawVars[j];
@@ -88,7 +89,7 @@ var VarManagerFactory = function () {
 			
 			var variable = findVariable(iGadgetId, slotName);
 			
-			variable.notifyChange(value);
+			variable.set(value);
 		} 
 
 		VarManager.prototype.updateUserPref = function (iGadgetId, slotName, value) {
@@ -97,7 +98,7 @@ var VarManagerFactory = function () {
 			
 			var variable = findVariable(iGadgetId, slotName);
 			
-			variable.notifyChange(value);
+			variable.set(value);
 		} 
 		
 		VarManager.prototype.registerVariable = function (iGadgetId, variableName, handler) {
