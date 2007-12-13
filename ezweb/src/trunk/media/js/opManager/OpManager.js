@@ -44,18 +44,6 @@ var OpManagerFactory = function () {
 			show_dragboard()
 		}
 
-		/**
-		 * TODO search a better name for this method
-		 * This method is used by the dragboard at init and will be removed when
-		 * the load is completed.
-		 */
-		OpManager.prototype.notifyInstance = function (iGadgetId) {
-			var gadget = this.dragboardModule.getGadget(iGadgetId);
-
-			this.varManagerModule.addInstance(iGadgetId, gadget.getTemplate());
-			// Wiring will ask dragboard for the inital instances
-		}
-		 
 		OpManager.prototype.removeInstance = function (iGadgetId) {
 			if (!this.loadCompleted)
 				return;
@@ -107,7 +95,6 @@ var OpManagerFactory = function () {
 				this.catalogue.loadCatalogue(URIs.GET_POST_RESOURCES);
 
 				this.loadCompleted = true;
-				delete this.notifyInstance;
 				environmentLoadedCallback();
 				return;
 			}
