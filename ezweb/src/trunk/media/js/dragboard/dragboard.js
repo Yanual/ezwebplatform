@@ -900,7 +900,7 @@ IGadget.prototype.setDefaultPrefs = function() {
 IGadget.prototype._makeConfigureInterface = function() {
 	var prefs = this.gadget.getTemplate().getUserPrefs();
 
-	var interface = document.createElement("<div>");
+	var interface = document.createElement("div");
 
 	if (prefs.length == 0) {
 		interface.innerHTML = "This IGadget don't have user prefs";
