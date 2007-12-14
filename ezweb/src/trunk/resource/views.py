@@ -57,10 +57,10 @@ class GadgetsCollection(Resource):
 	    <description>'+value+'</description>\n\
 	    </fault>'
 	    #+sys.exc_info()[2]'+</description></fault>'
-	    return HttpResponseServerError(xml_error,mimetype='text/xml; charset=UTF-8')
+	    return HttpResponseServerError(xml_error,mimetype='application/xml; charset=UTF-8')
 			
 	xml_ok = '<ResponseOK>OK</ResponseOK>'
-	return HttpResponse(xml_ok,mimetype='text/xml; charset=UTF-8')
+	return HttpResponse(xml_ok,mimetype='application/xml; charset=UTF-8')
 
 
     def read(self,request, user_name, offset=0,pag=0):
@@ -85,7 +85,7 @@ class GadgetsCollection(Resource):
 	response = '<?xml version="1.0" encoding="UTF-8" ?>\n\
 	<resources>'+response+'</resources>'
 		
-	return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
+	return HttpResponse(response,mimetype='application/xml; charset=UTF-8')
 
 
 class TagGadgetsCollection(Resource):
@@ -105,7 +105,7 @@ class TagGadgetsCollection(Resource):
 	response = '<?xml version="1.0" encoding="UTF-8" ?>\n\
 	<resources>'+response+'</resources>'
 
-        return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
+        return HttpResponse(response,mimetype='application/xml; charset=UTF-8')
 
 
 def addToPlatform(request, user_name):
@@ -122,5 +122,5 @@ def addToPlatform(request, user_name):
 
     response = urlopen(url, urlencode(parameters)).read()
 	
-    return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
+    return HttpResponse(response,mimetype='application/xml; charset=UTF-8')
 

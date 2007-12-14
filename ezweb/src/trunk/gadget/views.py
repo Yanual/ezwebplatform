@@ -61,7 +61,7 @@ class GadgetCollection(Resource):
         except Exception, e:
             # Internal error
             transaction.rollback()
-            return HttpResponseServerError("<error>%s</error>" % e, mimetype='text/xml; charset=UTF-8')
+            return HttpResponseServerError("<error>%s</error>" % e, mimetype='application/xml; charset=UTF-8')
         
         gadgetName = templateParser.getGadgetName()
         gadgetVendor = templateParser.getGadgetVendor()
