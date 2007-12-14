@@ -328,7 +328,8 @@ var WiringFactory = function () {
 					}
 					
 					// we need to connect both parts: the In connection and InOut connection
-					// list.addOutput(channel.ref);
+                                        if (!loaded)
+        					list.addOutput(channel.ref);
 					channel.ref.addInput(list);
 					return 1;
 				}			
@@ -380,7 +381,8 @@ var WiringFactory = function () {
 					}
 					
 					//  we need to connect both parts to make the doubled linked list 
-					//list.addInput(channel.ref);
+                                        if (!loaded)
+					        list.addInput(channel.ref);
 					channel.ref.addOutput(list);
 					return 1;
 				}			
