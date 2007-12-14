@@ -212,20 +212,16 @@ a:hover
 
 #wiring .wContainer #selector {
 	position: relative;
-	left: 40%;
-	width: 35%;
 }
 
 #wiring .wContainer #selector select {
 	position:relative;
-	left: 1%;
 }
 
 #wiring .wContainer #view {
 	border-style:dotted;
 	position:absolute;
 	top: 38%;
-	left: 41%;
 	/*height: 140px;*/
 	width: 160px;
 }
@@ -294,8 +290,7 @@ a:hover
 	height: 16px;
 	font-family:"Book Antiqua";
 	font-size:smaller;
-	border-style:inset;
-	border-color: #FFCCCC;
+	border-color: #FF00CC;
 	background-color:#AABBAA;
 }
 
@@ -323,6 +318,17 @@ a:hover
 	height: 30px;
 	width: 30px;
 }
+
+#wiring .tableCell {
+	border-collapse: collapse;
+	width: 100%;	
+}
+
+#wiring .columnCell {
+	width: 33%;
+	vertical-align: top;
+}
+
 
 
 /* footer ------------------------------------------------------------------------------------------ */

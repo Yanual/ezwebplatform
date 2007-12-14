@@ -1,0 +1,49 @@
+{% load i18n %}
+<div id="catalogue" class="container_content" onresize="UIUtils.setResourcesWidth();">
+	<div id="head" class="head">
+		<div id="new_resource" class="search">
+		<div class="simple_search">
+		        <form action="#" onsubmit="UIUtils.addResource(URIs.GET_POST_RESOURCES, 'template_uri', this.template_uri.value); return false;">
+			<label for="new_resource_text">URL del Template: </label>
+			<input id="new_resource_text" name="template_uri" type="text" />
+			<button>Crear recurso</button>
+			</form>
+		</div>
+		</div>
+		<div id="search" class="search">
+			<form onsubmit="return false;">
+				<div id="advanced_search_top" class="advanced_search_top" style="display:none;">
+					<span>Opciones avanzadas</span>
+				</div>
+				<div id="advanced_search_bottom" class="advanced_search_bottom" style="display:none;">
+					<label for="advanced_search_text">B&uacute;squeda:</label>
+					<input type="text" id="advanced_search_text" name="advanced_search_text" class="text" autocomplete="on"></input>
+					<button onclick="UIUtils.searchByTag(URIs.GET_POST_RESOURCES, this.form.advanced_search_text.value);">Buscar</button><br/>
+					<a href="#" onclick="UIUtils.SlideAdvancedSearchOutOfView('advanced_search_top');">Mostrar b&uacute;squeda simple</a>
+				</div>
+				<div id="simple_search" class="simple_search">
+					<label for="simple_search_text">B&uacute;squeda:</label>
+					<input type="text" id="simple_search_text" name="simple_search_text" class="text" autocomplete="on"></input>
+					<button onclick="UIUtils.searchByTag(URIs.GET_POST_RESOURCES, this.form.simple_search_text.value);">Buscar</button><br/>
+					<a href="#" onclick="UIUtils.SlideAdvancedSearchIntoView('advanced_search_top');">Mostrar b&uacute;squeda avanzada</a>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div id="center" class="center">
+		<div id="resources" class="resources"></div>
+		<div id="info_resource" class="info_resource" style="display:none;"><div>
+			<div class="top"></div>
+			<div id="info_resource_content" class="content"></div>
+			<div class="bottom"></div>
+		</div></div>
+		<div id="tab_info_resource" class="tab_info_resource">
+			<a id="tab_info_resource_open" title="Mostrar informaci&oacute;n del recurso" href="javascript:UIUtils.openInfoResource();" onmouseover="UIUtils.changeImage('tab_info_resource_open_img', '{{ MEDIA_URL }}images/info_resource_open_selected.png');" onmouseout="UIUtils.changeImage('tab_info_resource_open_img', '{{ MEDIA_URL }}images/info_resource_open.png');">
+				<img  id="tab_info_resource_open_img" src="{{ MEDIA_URL }}images/info_resource_open.png"></img>
+			</a>
+			<a id="tab_info_resource_close" title="Ocultar informaci&oacute;n del recurso" href="javascript:UIUtils.closeInfoResource();" onmouseover="UIUtils.changeImage('tab_info_resource_close_img', '{{ MEDIA_URL }}images/info_resource_close_selected.png');" onmouseout="UIUtils.changeImage('tab_info_resource_close_img', '{{ MEDIA_URL }}images/info_resource_close.png');" style="display:none;">
+				<img  id="tab_info_resource_close_img" src="{{ MEDIA_URL }}images/info_resource_close.png"></img>
+			</a>
+		</div>
+	</div>
+</div>
