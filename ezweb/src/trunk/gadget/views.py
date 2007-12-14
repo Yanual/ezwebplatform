@@ -4,7 +4,7 @@ from xml.dom.ext import Print
 from xml.sax._exceptions import SAXParseException
 from StringIO import StringIO
 
-from django.db import IntegrityError
+from psycopg import IntegrityError
 
 from django.shortcuts import get_object_or_404, get_list_or_404
 from django.http import Http404, HttpResponse, HttpResponseServerError
@@ -56,9 +56,8 @@ class GadgetCollection(Resource):
             transaction.commit()
         except IntegrityError:
             # Gadget already exists. Rollback transaction
+            print "integrity error"
             transaction.rollback()
-            gadgetName = templateParser.getGadgetName()
-            return HttpResponseServerError("<error>Gadget \"%s\" (%s) already exists.</error>" % gadgetName % templateURL, mimetype='application/xml; charset=UTF-8')
         except Exception, e:
             # Internal error
             transaction.rollback()

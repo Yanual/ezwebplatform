@@ -27,9 +27,8 @@ var WiringFactory = function () {
 			var list = null;
 	
 			// restauring the iGadget structure
-			var dragboard = DragboardFactory.getInstance();
 			for (var i = 0; i < gadgets.length; i++) {
-				this.addInstance(gadgets[i].id, dragboard.getGadget(gadgets[i].id).getTemplate());
+				this.addInstance(gadgets[i]);
 				}		
 			for (var i = 0; i < inOuts.length; i++) {
 				var inputs = new Object();

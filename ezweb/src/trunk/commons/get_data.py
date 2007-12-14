@@ -86,7 +86,7 @@ def get_input_data (inout):
         input_data = {}
         input_data['uri'] = ins.uri
         input_data['name'] = ins.name
-        input_data['igadget'] = ins.variable.igadget.code
+        input_data['igadget'] = ins.variable.igadget.id
         all_inputs.append(input_data)
     return all_inputs
     
@@ -97,7 +97,7 @@ def get_output_data (inout):
         output_data = {}
         output_data['uri'] = outs.uri
         output_data['name'] = outs.name
-        output_data['igadget'] = outs.variable.igadget.code
+        output_data['igadget'] = outs.variable.igadget.id
         all_outputs.append(output_data)
     return all_outputs    
     

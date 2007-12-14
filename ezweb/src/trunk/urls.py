@@ -16,8 +16,8 @@ urlpatterns = patterns('',
 
     # EzWeb
     (r'^', include('ezweb.urls')),
-    (r'^user/(?P<user_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)$', include('ezweb.urls')),
-    (r'^trial', include('trial.urls')),
+    (r'^user/(?P<user_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/$', include('ezweb.urls')),
+    (r'^trial/', include('trial.urls')),
 
     # Gadgets
     (r'^user/(?P<user_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/gadget(s)?', include('gadget.urls')),
@@ -30,16 +30,16 @@ urlpatterns = patterns('',
     
     # Catalogue Resource
     (r'^user/(?P<user_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/catalogue/resource(s)?',include('resource.urls')),
-    (r'^user/(?P<user_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/platform$', addToPlatform),
+    (r'^user/(?P<user_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/platform/$', addToPlatform),
 
     # Catalogue Tag
-    (r'^user/(?P<user_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/catalogue/tag(s)?',include('tag.urls')),
+    (r'^user/(?P<user_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/catalogue/tag/',include('tag.urls')),
     # Proxy
     (r'^proxy', include('proxy.urls')),
    
     # Django contrib
-    (r'^accounts/login[/]?$', 'django.contrib.auth.views.login'),
-    (r'^logout[/]?$', 'django.contrib.auth.views.logout'),
+    (r'^accounts/login$', 'django.contrib.auth.views.login'),
+    (r'^logout$', 'django.contrib.auth.views.logout'),
     (r'^admin/', include('django.contrib.admin.urls')),
 
 )

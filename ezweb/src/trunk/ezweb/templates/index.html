@@ -110,11 +110,7 @@ var URIs = new _URIConstants();
 	}
 	
 	function resizeWrapper() {
-		var wrapper = $("wrapper");
-		var newSize = window.innerHeight - $("header").offsetHeight - 20; // getStyle don't work with margins :S | wrapper.getStyle("margin-bottom") = 20
-		if (newSize < 400)
-			newSize = 400;
-		wrapper.setStyle({"height" :  newSize + "px"});
+		$("wrapper").setStyle({"height" : (window.innerHeight - $("header").offsetHeight - 20) + "px"});
 	}
 
 	var wI;

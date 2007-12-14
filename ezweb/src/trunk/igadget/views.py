@@ -183,11 +183,11 @@ class IGadgetCollection(Resource):
         if not screen_id:
             screen_id = 1
 
-        if not request.PUT.has_key('igadgets'):
+        if not request.has_key('igadgets'):
             return HttpResponseBadRequest('<error>iGadget JSON expected</error>')
 
         #TODO we can make this with deserializers (simplejson)      
-        received_json = request.PUT['igadgets']
+        received_json = request['igadgets']
         
         try:
             received_data = eval(received_json)
