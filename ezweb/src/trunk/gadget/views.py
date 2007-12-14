@@ -4,7 +4,7 @@ from xml.dom.ext import Print
 from xml.sax._exceptions import SAXParseException
 from StringIO import StringIO
 
-from psycopg import IntegrityError
+from django.db import IntegrityError
 
 from django.shortcuts import get_object_or_404, get_list_or_404
 from django.http import Http404, HttpResponse, HttpResponseServerError
