@@ -9,6 +9,7 @@ TEMPLATE_DEBUG = DEBUG
 APPEND_SLASH=False
 
 BASEDIR = path.dirname(path.abspath(__file__))
+APPEND_SLASH = False
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
@@ -16,8 +17,8 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASE_ENGINE = 'postgresql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = 'ezweb'             # Or path to database file if using sqlite3.
+DATABASE_ENGINE = 'mysql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+DATABASE_NAME = 'ezweb2'             # Or path to database file if using sqlite3.
 DATABASE_USER = 'ezweb'             # Not used with sqlite3.
 DATABASE_PASSWORD = 'ezweb'         # Not used with sqlite3.
 DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.

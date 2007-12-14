@@ -8,8 +8,8 @@ urlpatterns = patterns('resource.views',
 
     # Gadgets
 
-    (r'^/(?P<tag>\w+)$', TagGadgetsCollection(permitted_methods=('GET', ))),
-    (r'^/(?P<offset>\d+)/(?P<pag>\d+)$', GadgetsCollection(permitted_methods=('GET', ))),
-    (r'^$', GadgetsCollection(permitted_methods=('POST', 'GET'))),
+    (r'^/(?P<tag>\w+)[/]?$', TagGadgetsCollection(permitted_methods=('GET', ))),
+    (r'^/(?P<offset>\d+)/(?P<pag>\d+)[/]?$', GadgetsCollection(permitted_methods=('GET', ))),
+    (r'^[/]?$', GadgetsCollection(permitted_methods=('POST', 'GET'))),
    
 )

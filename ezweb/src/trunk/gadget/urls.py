@@ -8,14 +8,14 @@ from gadget.views import *
 urlpatterns = patterns('gadget.views',
 
     # Gadgets
-    (r'^$', GadgetCollection(permitted_methods=('GET', 'POST'))),
-    (r'^/(?P<vendor>[-ÑñáéíóúÁÉÍÓÚ\w]+)/(?P<name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/(?P<version>[\._-ÑñáéíóúÁÉÍÓÚ\w]+)$',
+    (r'^[/]?$', GadgetCollection(permitted_methods=('GET', 'POST'))),
+    (r'^/(?P<vendor>[-ÑñáéíóúÁÉÍÓÚ\w]+)/(?P<name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/(?P<version>[\._-ÑñáéíóúÁÉÍÓÚ\w]+)[/]?$',
         GadgetEntry(permitted_methods=('GET', 'DELETE', 'PUT'))),
-    (r'^/(?P<vendor>[-ÑñáéíóúÁÉÍÓÚ\w]+)/(?P<name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/(?P<version>[\._-ÑñáéíóúÁÉÍÓÚ\w]+)/template$',
+    (r'^/(?P<vendor>[-ÑñáéíóúÁÉÍÓÚ\w]+)/(?P<name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/(?P<version>[\._-ÑñáéíóúÁÉÍÓÚ\w]+)/template[/]?$',
         GadgetTemplateEntry(permitted_methods=('GET', ))),
-    (r'^/(?P<vendor>[-ÑñáéíóúÁÉÍÓÚ\w]+)/(?P<name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/(?P<version>[\._-ÑñáéíóúÁÉÍÓÚ\w]+)/xhtml$',
+    (r'^/(?P<vendor>[-ÑñáéíóúÁÉÍÓÚ\w]+)/(?P<name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/(?P<version>[\._-ÑñáéíóúÁÉÍÓÚ\w]+)/xhtml[/]?$',
         GadgetCodeEntry(permitted_methods=('GET', ))),
-    (r'^/(?P<vendor>[-ÑñáéíóúÁÉÍÓÚ\w]+)/(?P<name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/(?P<version>[\._-ÑñáéíóúÁÉÍÓÚ\w]+)/tags$',
+    (r'^/(?P<vendor>[-ÑñáéíóúÁÉÍÓÚ\w]+)/(?P<name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/(?P<version>[\._-ÑñáéíóúÁÉÍÓÚ\w]+)/tags[/]?$',
         GadgetTagsEntry(permitted_methods=('GET', ))),
    
 )

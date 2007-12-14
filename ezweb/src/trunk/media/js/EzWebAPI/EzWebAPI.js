@@ -5,6 +5,50 @@ function _EzWebAPI() {
 	var tmp = document.URL.split("?");
 	tmp = tmp[1].split("=");
 	this.id = tmp[1];
+
+	function resizeEvent() {
+		alert ("hola");
+	}
+
+	document.addEventListener("resize", resizeEvent, true);
+
+	// overwrite open and send methods of XMLHttpRequest
+	var _open = XMLHttpRequest.prototype.open;
+	var _send = XMLHttpRequest.prototype.send;
+
+	XMLHttpRequest.prototype.open = function (method, URL, async) {
+		this.ezwebproxy_method = method;
+		this.ezwebproxy_url = URL;
+		_open("POST", EzWebAPI.platform.URIs.PROXY, async);
+	}
+
+	XMLHttpRequest.prototype.send = function (content) {
+		content = {url: this.ezwebproxy_url, method: this.ezwebproxy_method, params: content};
+		_send("POST", EzWebAPI.platform.URIs.PROXY, async);
+	}
+
+//	XMLHttpRequest = function () {
+//		this.method = null;
+//		this.URL = null;
+//	}
+
+////	XMLHttpRequest.prototype = new _XMLHttpRequest();
+//	XMLHttpRequest.prototype.open = function(method, URL, async) {
+//		this.method = method;
+//		this.URL = URL;
+//	}
+
+//	XMLHttpRequest.prototype.send = function(content) {
+//		switch (this.method) {
+//		case 'GET':
+//			var params = {url: this.URL, method: 'GET'};
+//			this.onreadystatechange.bind = EzWebAPI.platform.Function.prototype.bind;
+//			EzWebAPI.platform.PersistenceEngineFactory.getInstance().send_post(EzWebAPI.platform.URIs.PROXY, params, null, this.onreadystatechange, null);
+//			break;
+//		case 'POST':
+//			break;
+//		}
+//	}
 }
 
 _EzWebAPI.prototype.getId = function() {
@@ -38,5 +82,4 @@ _EzWebAPI.prototype.send_post = function(url, parameters, context, successHandle
 }
 
 var EzWebAPI = new _EzWebAPI();
-
 

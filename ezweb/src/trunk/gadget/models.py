@@ -25,6 +25,7 @@ class VariableDef(models.Model):
         ('S', _('String')),
         ('D', _('Date')),
         ('B', _('Boolean')),
+        ('L', _('List')),
     )
     type = models.CharField(_('Type'), max_length=1, choices=TYPES)
     ASPECTS = (
