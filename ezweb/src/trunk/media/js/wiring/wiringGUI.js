@@ -4,6 +4,7 @@ function wiringInterface(){
 	this.loaded = false;
 	w = WiringFactory.getInstance();
 	wiringInterface.prototype.friend_codes = {};
+	this.friend_codes_counter = 0;
 //    wiringInterface.prototype.friend_codes["ins"] = {};
 //    wiringInterface.prototype.friend_codes["outs"] = {};
 }
@@ -79,7 +80,7 @@ wiringInterface.prototype.addGadgetInterface = function (object,selector){
 			    if (!wiringInterface.prototype.friend_codes[connections[i].friend_code]) {
 			        wiringInterface.prototype.friend_codes[connections[i].friend_code] = {};
 			        wiringInterface.prototype.friend_codes[connections[i].friend_code].list = [];
-			        wiringInterface.prototype.friend_codes[connections[i].friend_code].color = wiringInterface.prototype.color_scheme[wiringInterface.prototype.friend_codes.length];
+                                wiringInterface.prototype.friend_codes[connections[i].friend_code].color = wiringInterface.prototype.color_scheme[this.friend_codes_counter++];
 			    }
                 wiringInterface.prototype.friend_codes[connections[i].friend_code].list.push(idItem);
 				liItem.setAttribute("onclick", "javascript:{wiringInterface.prototype._highlight('"+ idItem +"', '"+ connections[i].friend_code +"');}");
