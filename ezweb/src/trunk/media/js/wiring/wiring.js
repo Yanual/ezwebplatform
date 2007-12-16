@@ -126,6 +126,7 @@ var WiringFactory = function () {
 					var item = new Object();
 					item.name = iGadgetList[gadgetId].list[i].name;
 					item.aspect = iGadgetList[gadgetId].list[i].aspect;
+                    item.friend_code = iGadgetList[gadgetId].list[i].friend_code;
 					list.push(item);
 				}
 				return list;
@@ -192,6 +193,7 @@ var WiringFactory = function () {
 
 					connectable.name = list[j].name;
 					connectable.aspect = list[j].aspect;
+                    connectable.friend_code = list[j].friend_code;
 					switch (connectable.aspect) {
 						case "EVEN":
 							connectable.ref = new wEvent(null, null, list[j]);							

@@ -15,6 +15,7 @@ def get_wiring_variable_data(var, ig):
     res_data['type'] = var.vardef.type
     res_data['uri'] = var.uri
     res_data['value'] = var.value
+    res_data['friend_code'] = var.vardef.friend_code
     res_data['id'] = ig.code
 
     return res_data

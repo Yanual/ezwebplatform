@@ -1,8 +1,25 @@
 {% load i18n %}
-<div id="wiring" class="container_content">
-    <input type = button value = "serializa" id = "serializa" onClick ="WiringFactory.getInstance().serialize()">
+<div id="wiring" class="container_content" style="display: none;">
+    <div id="channel_list">
+    <table class="tableCell"><tr>
+        <td class="columnCell">
+            {% trans "Wires list" %}:
+            <ul id="channels_list"></ul>
 
-    <div class = "wContainer">
+        </td class="columnCell"><td>
+            {% trans "Ins list" %}:
+            <ul id="events_list"></ul>
+
+        </td class="columnCell"><td>
+            {% trans "Outs list" %}:
+            <ul id="slots_list"></ul>
+
+        </td></tr>
+    </tr></table>
+    </div>
+
+
+    <div class = "wContainer" style="display: block;">
 		    <div id ="selector_panel">
 			    <div id = "selector">
 				    <em>Seleccione un canal:</em>
