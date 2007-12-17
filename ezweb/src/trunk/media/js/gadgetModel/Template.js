@@ -41,8 +41,10 @@ function Template(template_) {
 					objVars[rawVar.name] = new RWVariable(igadget_, rawVar.name, rawVar.aspect, null);
 					break;
 				case Variable.prototype.SLOT:
-				case Variable.prototype.USER_PREF:
 					objVars[rawVar.name] = new RVariable(igadget_, rawVar.name, rawVar.aspect, null);
+					break;
+				case Variable.prototype.USER_PREF:
+					objVars[rawVar.name] = new RVariable(igadget_, rawVar.name, rawVar.aspect, rawVar.default_value);
 					break;
 			}
 		}
