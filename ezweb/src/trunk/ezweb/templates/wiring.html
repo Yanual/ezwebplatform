@@ -1,93 +1,23 @@
 {% load i18n %}
 <div id="wiring" class="container_content">
-    <div id="channel_list" style="display: none;">
+    <div id="channel_list" style="display: block;">
     <table class="tableCell"><tr>
         <td class="columnCell">
-            {% trans "Wires list" %}:
-            <ul id="channels_list"></ul>
-
-        </td class="columnCell"><td>
             {% trans "Ins list" %}:
             <ul id="events_list"></ul>
 
-        </td class="columnCell"><td>
+        </td><td class="columnCell">
+            {% trans "New wire" %}:
+            <input type="text" id="channel_name" name="channel_name"/>
+            <input id="add_channel" type="image" src="{{ MEDIA_URL }}js/wiring/add.png" title="Create channel" alt= "create channel" onclick="javascript:{wI.addChannel(); opManager.restaure(); WiringFactory.getInstance().serialize();}"/>
+<!--		    <input id="refreshbutton" type="image" src="{{ MEDIA_URL }}js/wiring/disk.png" title="Save data" alt="Save changes" onclick="javascript:{opManager.restaure(); WiringFactory.getInstance().serialize();}">-->
+            <ul id="channels_list"></ul>
+
+        </td><td class="columnCell">
             {% trans "Outs list" %}:
             <ul id="slots_list"></ul>
 
         </td></tr>
     </tr></table>
-    </div>
-
-
-    <div class = "wContainer" style="display: block;">
-		    <div id ="selector_panel">
-			    <div id = "selector">
-				    <em>Seleccione un canal:</em>
-				    <select id = "selectCanal"  onChange = "wI.renewChannel(w,$F($('selectCanal')),$('slotsConnection'),$('eventsConnection'))">
-					    <option value = "" selected>----</option>
-				    </select>
-			    </div>
-			
-			    <div class = "connections_tab left_tab">
-				    <table class = "header">
-					    <tr><td id="input_header"> </td><td>Inputs</td></tr>
-				    </table>
-				    <div class = "contents">
-        					<table class = "bodier" id = "eventsConnection">
-					    </table>
-				    </div>
-			    </div>
-			    <div class = "connections_tab right_tab">
-				    <table class = "header">
-					    <tr><td id="output_header"> </td><td>Outputs</td></tr>
-				    </table>
-				    <div class = "contents">
-        					<table class = "bodier" id = "slotsConnection">
-					    </table>
-				    </div>
-			    </div>
-			    <fieldset id = "view">
-				    <legend>Gestionar Canales</legend>
-				    <center><em>Valor del canal:</em></center><br/>
-				    <input id = "valor" type = "text" value = "" disabled>
-				    <input id = "addChannel" type="image" src="{{ MEDIA_URL }}js/wiring/add.png" title="Create Channel" alt= "create channel"
-				        onclick = "wI.addChannel(w,$('selectCanal'),$('wCanales'),$('slotsConnection'),$('eventsConnection'))">
-				    <input id = "deleteChannel" type="image" src="{{ MEDIA_URL }}js/wiring/delete.png" title="Delete Channel" alt= "Delete Channel"
-				        onclick = "wI.deleteChannel(w,$('selectCanal').value,$('selectCanal'),$('wCanales'),$('slotsConnection'),$('eventsConnection'))">
-			    </fieldset>
-		    </div>
-		    <div id ="items_panel">
-			    <div id = "selector">
-				    <em>Seleccione un item:</em>
-				    <select id = "itemizer"  onChange = "wI.renewItem(w,$F($('itemizer')),$('slots'),$('events'))">
-					    <option value = "" selected>----</option>
-				    <optgroup id="wCanales" label="Canales">
-				    </optgroup>
-				    <optgroup id ="wGadgets" label="Gadgets">
-				    </optgroup>
-				    </select>
-			    </div>
-			    <div class = "connectables_tab left_tab">
-				    <table class = "header">
-					    <tr><td> </td><td>Outputs</td></tr>
-				    </table>
-				    <div class = "contents">
-        					<table class = "bodier" id = "events">
-					    </table>
-				    </div>
-			    </div>
-			    <div class = "connectables_tab right_tab">
-				    <table class = "header">
-					    <tr><td> </td><td>Inputs</td></tr>
-				    </table>
-				    <div class = "contents">
-        					<table class = "bodier" id = "slots">
-					    </table>
-				    </div>
-			    </div>
-			    <div>
-				    <input id = "refreshbutton" type="image" src="{{ MEDIA_URL }}js/wiring/disk.png" title = "Save data" alt = "Save changes" onClick = "opManager.restaure();WiringFactory.getInstance().serialize()">	
-			    </div>
-		    </div><!--items_panel-->
     </div>
 </div>

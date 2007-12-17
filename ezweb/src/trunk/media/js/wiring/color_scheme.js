@@ -1,7 +1,7 @@
 
 wiringInterface.prototype.color_scheme = [];
-//wiringInterface.prototype.color_scheme.push("#ffb0a1");
-wiringInterface.prototype.color_scheme.push("#5c2c00");
+wiringInterface.prototype.color_scheme.push("#ffb0a1");
+//wiringInterface.prototype.color_scheme.push("#5c2c00");
 
 wiringInterface.prototype.color_scheme.push("#a6ffbf");
 wiringInterface.prototype.color_scheme.push("#7a5e85");

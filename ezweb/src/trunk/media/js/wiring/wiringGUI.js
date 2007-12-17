@@ -5,63 +5,54 @@ function wiringInterface(){
 	w = WiringFactory.getInstance();
 	wiringInterface.prototype.friend_codes = {};
 	this.friend_codes_counter = 0;
-//    wiringInterface.prototype.friend_codes["ins"] = {};
-//    wiringInterface.prototype.friend_codes["outs"] = {};
+    this.channels_counter = 1;
+    this.last_checked = null;
+    this.disabled_all = true;
 }
 
 wiringInterface.prototype.unloaded = function (){
+    this.disabled_all = true;
 	this.loaded = false;
-	this._hideItems();
-	$("eventsConnection").innerHTML = "";
-	$("slotsConnection").innerHTML = "";
-	$("events").innerHTML = "";
-	$("slots").innerHTML = "";
-	
-	$("selectCanal").innerHTML = "";
-	$("wCanales").innerHTML = "";
-	$("wGadgets").innerHTML = "";
-	var element = document.createElement("option");
-	element.setAttribute("value","")
-	element.setAttribute("selected", true)
-	var text = document.createTextNode("----");
-	element.appendChild(text);
-	$("selectCanal").appendChild(element);
-	this.renewItem(WiringFactory.getInstance(),"","eventsConnection","slotsConnection")
-	
+
 	$("events_list").innerHTML = "";
 	$("slots_list").innerHTML = "";
 	$("channels_list").innerHTML = "";
+	$("channel_name").value = "Channel_"+ this.channels_counter;
 }
 
-wiringInterface.prototype.addChannelInterface = function(name, selector, itemize){
-	var element = document.createElement("option");
-	element.setAttribute("id","option_select_"+name)
-	element.setAttribute("selected", true)
-	var text = document.createTextNode(name);
-	element.appendChild(text);
-	selector.appendChild(element);
-	var element = document.createElement("option");
-	var text = document.createTextNode(name);
-	element.setAttribute("id", "option_itemize_"+name)
-	element.appendChild(text);
-	itemize.appendChild(element);
-
-
+wiringInterface.prototype.addChannelInterface = function (name){
+    var idChannel = "channel_"+ name;
     var li = document.createElement("li");
+	var inputDel = document.createElement("input");
+	inputDel.setAttribute("type", "image");
+	inputDel.setAttribute("onclick", "wiringInterface.prototype.deleteChannel('"+ name +"'); opManager.restaure(); WiringFactory.getInstance().serialize();");
+    inputDel.setAttribute("src", "/ezweb/js/wiring/delete.png");
+    li.appendChild(inputDel);
+    var chkChannel = document.createElement("input");
+    chkChannel.setAttribute("type", "radio");
+    chkChannel.setAttribute("name", "channels_options");
+    chkChannel.setAttribute("id", "chk_"+ idChannel);
+    chkChannel.setAttribute("onclick", "javascript:{wiringInterface.prototype._highlight_channel('chk_"+ idChannel +"', '"+ name +"');}");
     var textNode = document.createTextNode(name);
-    li.appendChild(textNode);
+    chkChannel.appendChild(textNode);
+    li.appendChild(chkChannel);
+	var labelItem = document.createElement("label");
+	labelItem.setAttribute("for", "chk_"+ idChannel);
+	labelItem.appendChild(textNode);
+	li.appendChild(labelItem);
+	li.setAttribute("id", idChannel);
+
+    var ulVal = document.createElement("ul");
+    var textNodeValue = document.createTextNode("Value: "+ w.viewValue(name));
+    var liVal = document.createElement("li");
+    liVal.appendChild(textNodeValue);
+    ulVal.appendChild(liVal);
+    li.appendChild(ulVal);
+
     $("channels_list").appendChild(li);
 }
 
-wiringInterface.prototype.addGadgetInterface = function (object,selector){
-	var element = document.createElement("option");
-	element.setAttribute("id", object.id)
-	element.setAttribute("value", object.id)
-	var text = document.createTextNode(object.name+"_"+object.id);
-	element.appendChild(text);
-	selector.appendChild(element);
-	
-
+wiringInterface.prototype.addGadgetInterface = function (object){
     var ulEvents = document.createElement("ul");
     var ulSlots = document.createElement("ul");
     var connections = w.gadgetConnections(object.id);
@@ -69,12 +60,14 @@ wiringInterface.prototype.addGadgetInterface = function (object,selector){
 		for (var i = 0; i < connections.length; i++) {
             var liItem = document.createElement("li");
             var chkItem = document.createElement("input");
-            var idItem = "gadget_"+ connections[i].aspect +"_"+ object.id +"_"+ i;
+            var idItem = "gadget_"+ object.id +"_"+ connections[i].name;
             chkItem.setAttribute("id", "chk_"+ idItem);
+            chkItem.setAttribute("disabled", "disabled");
             chkItem.setAttribute("type", "checkbox");
             liItem.appendChild(chkItem);
 			var labelItem = document.createElement("label");
 			labelItem.setAttribute("for", "chk_"+ idItem);
+			labelItem.setAttribute("id", "lbl_chk_"+ idItem);
 			var textNodeItem = document.createTextNode(connections[i].name);
 			if (connections[i].friend_code != "undefined") {
 			    if (!wiringInterface.prototype.friend_codes[connections[i].friend_code]) {
@@ -83,7 +76,7 @@ wiringInterface.prototype.addGadgetInterface = function (object,selector){
                                 wiringInterface.prototype.friend_codes[connections[i].friend_code].color = wiringInterface.prototype.color_scheme[this.friend_codes_counter++];
 			    }
                 wiringInterface.prototype.friend_codes[connections[i].friend_code].list.push(idItem);
-				liItem.setAttribute("onclick", "javascript:{wiringInterface.prototype._highlight('"+ idItem +"', '"+ connections[i].friend_code +"');}");
+				liItem.setAttribute("onclick", "javascript:{wiringInterface.prototype._highlight('chk_"+ idItem +"', '"+ connections[i].friend_code +"'); wiringInterface.prototype._changeChannel('chk_"+ idItem +"', '"+ object.id +"', '"+ connections[i].name +"', '"+ connections[i].aspect +"'); opManager.restaure(); WiringFactory.getInstance().serialize();}");
 
             }
 			labelItem.appendChild(textNodeItem);
@@ -117,170 +110,69 @@ wiringInterface.prototype.addGadgetInterface = function (object,selector){
     }
 }
 
-wiringInterface.prototype.renewInterface = function (w,selector,sGadgets,itemize){
-//wiringInterface.prototype.renewInterface = function (){
+wiringInterface.prototype.renewInterface = function (w){
 	w.edition();
 	if (!this.loaded){
 		var iGadgets = w.getGadgetsId();
-		var channels = w.getInOutId();
+		var channels = w.getInOutsId();
 		for (var i = 0; i<iGadgets.length; i++){
-			this.addGadgetInterface(iGadgets[i],sGadgets);
+			this.addGadgetInterface(iGadgets[i]);
 		}
 		for (var j = 0; j<channels.length; j++){
-			this.addChannelInterface(channels[j],selector,itemize)
+			this.addChannelInterface(channels[j])
 		}
-		selector.value = ""
-		this.loaded = true
+        this.channels_counter = channels.length + 1;
+	    $("channel_name").value = "Channel_"+ this.channels_counter;
+		this.loaded = true;
 	}
 }
 
-wiringInterface.prototype.addChannel = function (w,selector,itemize,slots,events){
+wiringInterface.prototype.addChannel = function () {
 	var result = null;
-	var name = prompt("Insert Channel Name:","Channel Name...");
-	if (name != null){
+	var name = $("channel_name").value;
+	name = name.strip();
+	if (!name.empty()) {
 		if (!(result = w.createChannel(name))){	
-			this.addChannelInterface(name,selector,itemize);
-			this.renewChannel(w,name,slots,events)
+			this.addChannelInterface(name);
+            this.channels_counter += 1;
+	        $("channel_name").value = "Channel_"+ this.channels_counter;
 		}
 	}
 }
 
-wiringInterface.prototype.deleteChannel = function (w,object,selector,itemize,slots,events){
+wiringInterface.prototype.deleteChannel = function (object){
 	var result = null;
 	if (!(result = w.removeChannel(object))){
-		//the first id is from the channel list	
-		var hijo = $('option_select_' + object);
-		selector.removeChild(hijo);
-		// the new identifier is from the item list
-		var hijo = $('option_itemize_' + object);
-		itemize.removeChild(hijo);
-		this.renewChannel(w,"",slots,events)
+        var idChannel = "channel_"+ object;
+        $(idChannel).remove();
+        wiringInterface.prototype._enable_all(false);
 	}
 }
 
-wiringInterface.prototype.renewChannel = function (w,channel,slots,events){
-	slots.innerHTML = "";
-	events.innerHTML = "";
-	if (channel != ""){
-		this._nameChannel(channel);
-		var connections = w.connections(channel);
-		var inputs = connections["input"];
-		var outputs = connections["output"];
-		$("valor").value = w.viewValue(channel);
-		for (var i = 0; i < inputs.length; i++){
-			this.addChannelLine (w,events, "w.removeChannelInput",inputs[i].gadgetName,inputs[i].id, inputs[i].name)
-		}
-		for (var j = 0; j < outputs.length; j++){
-			this.addChannelLine (w, slots, "w.removeChannelOutput", outputs[j].gadgetName,outputs[j].id, outputs[j].name)
-		}
-		this._showItems();
-	}
+wiringInterface.prototype._changeChannel = function(chk_id, gadget_id, event_name, aspect) {
+    channel_name = this.last_checked;
+    if ($(chk_id).checked) {
+        if (aspect == "EVEN") {
+            w.addChannelInput(gadget_id, event_name, channel_name);
+        } else {
+            w.addChannelOutput(gadget_id, event_name, channel_name);
+        }
+    } else {
+        if (aspect == "EVEN") {
+            w.removeChannelInput(gadget_id, event_name, channel_name);
+        } else {
+            w.removeChannelOutput(gadget_id, event_name, channel_name);
+        }
+
+    }
+
 }
 
-wiringInterface.prototype.renewItem = function (w,object,slots,events){
-	slots.innerHTML = "";
-	events.innerHTML = "";
-	if (object != ""){
-		var connections = w.gadgetConnections(object);
-		if (connections){
-			for (var i = 0; i < connections.length; i++){
-				if (connections[i].aspect == "SLOT"){
-					this.addLine(w, slots,  "w.addChannelOutput", object, connections[i].name);
-				}
-				else{
-					this.addLine(w, events,  "w.addChannelInput", object, connections[i].name);
-				}
-			}
-		}
-		else{
-			this.addLine(w, events,  "w.addChannelInput", "null", object);
-			this.addLine(w, slots,  "w.addChannelOutput", "null", object);
-		}
-	}
-}
-
-wiringInterface.prototype.addLine = function (w, table, operation, gadget, name){	
-	// This function is used to actualize the  tables of connections of any channel
-	var line = document.createElement("tr");
-	var col1 = document.createElement("td");
-	var col2 = document.createElement("td");
-	var button = document.createElement("input");
-	var text;
-	if (gadget == "null" || gadget == null){
-		text = document.createTextNode(name);
-		button.setAttribute("onClick", operation + "('" + name + "', $F('selectCanal'));wI.renewChannel(w,$F('selectCanal'),$('slotsConnection'),$('eventsConnection'))");
-	}
-	else{
-		text = document.createTextNode(gadget + "::" + name);
-		button.setAttribute("onClick", operation + "('" + gadget+ "','" +name+"', $F('selectCanal'));wI.renewChannel(w,$F('selectCanal'),$('slotsConnection'),$('eventsConnection'))");
-	}
-	button.setAttribute("type", "image");
-	button.setAttribute("src", "/ezweb/js/wiring/tick.png");
-	button.setAttribute("title", "add connection");
-	col1.appendChild(button);
-	col2.appendChild(text);
-	line.setAttribute("class", gadget)
-	line.setAttribute("id", name)
-	line.appendChild(col1);
-	line.appendChild(col2);
-	table.appendChild(line);
-}
-
-wiringInterface.prototype.addChannelLine = function (w,table, operation,gadgetName, gadget, name){	
-	// This function is used to actualize the  tables of connections of any channel
-	var line = document.createElement("tr");
-	var col1 = document.createElement("td");
-	var col2 = document.createElement("td");
-	var button = document.createElement("input");
-	var text;
-	if (gadget == "null" || gadget == null){
-		text = document.createTextNode(name);
-		button.setAttribute("onClick", operation + "('" + name + "', $F('selectCanal'));wI.renewChannel(w,$F('selectCanal'),$('slotsConnection'),$('eventsConnection'))");
-	}
-	else{
-		text = document.createTextNode(gadgetName+"_"+gadget + "::" + name);
-		button.setAttribute("onClick", operation + "('" + gadget+ "','" +name+"', $F('selectCanal'));wI.renewChannel(w,$F('selectCanal'),$('slotsConnection'),$('eventsConnection'))");
-	}
-	button.setAttribute("type", "image");
-	button.setAttribute("src", "/ezweb/js/wiring/cross.png");
-	button.setAttribute("title", "delete connection");
-	col1.appendChild(button);
-	col2.appendChild(text);
-	line.setAttribute("class", gadget)
-	line.setAttribute("id", name)
-	line.appendChild(col1);
-	line.appendChild(col2);
-	table.appendChild(line);
-}
-
-wiringInterface.prototype._showItems = function (){
-	$("items_panel").style.visibility = "visible";
-}
-
-wiringInterface.prototype._hideItems = function (){
-	$("items_panel").style.visibility = "hidden";
-}
-
-wiringInterface.prototype._nameChannel = function(channelName){
-	var inputHeader = $("input_header");
-	var outputHeader = $("output_header");
-	var firstChild = inputHeader.firstChild;
-	
-	if (firstChild != undefined){
-		inputHeader.removeChild(firstChild);
-		outputHeader.removeChild(outputHeader.firstChild);
-	}
-	channelName1 = document.createTextNode(channelName);
-	channelName2 = document.createTextNode(channelName);
-	inputHeader.appendChild(channelName1);
-	outputHeader.appendChild(channelName2);
-}
-
-wiringInterface.prototype._highlight = function (id_item, friend_code) {
+wiringInterface.prototype._highlight = function (chk_id, friend_code) {
     if (this.friend_codes[friend_code]) {
         var fcList = this.friend_codes[friend_code].list;
         var fcColor = this.friend_codes[friend_code].color;
-        if ($("chk_"+ id_item).checked) {
+        if ($(chk_id).checked) {
             for (var i = 0; i < fcList.length; i++) {
                 $(fcList[i]).style.backgroundColor = fcColor;
             }
@@ -296,4 +188,46 @@ wiringInterface.prototype._highlight = function (id_item, friend_code) {
             }
         }
     }
+}
+
+wiringInterface.prototype._highlight_channel = function (chk_id, channel_name) {
+    wiringInterface.prototype._enable_all();
+    if (this.last_checked) {
+        channels = w.connections(this.last_checked);
+        if (channels) {
+            channel_list = channels["input"].concat(channels["output"]);
+            for(var i = 0; i < channel_list.length; i++) {
+                var chk_gadget_id = "chk_gadget_"+ channel_list[i].id +"_"+ channel_list[i].name;
+                $(chk_gadget_id).checked = false;
+                $("lbl_"+ chk_gadget_id).style.fontWeight = "normal";
+            }
+        }
+    }
+    channels = w.connections(channel_name);
+    if (channels) {
+        channel_list = channels["input"].concat(channels["output"]);
+        for(var i = 0; i < channel_list.length; i++) {
+            var chk_gadget_id = "chk_gadget_"+ channel_list[i].id +"_"+ channel_list[i].name;
+            $(chk_gadget_id).checked = $(chk_id).checked;
+            $("lbl_"+ chk_gadget_id).style.fontWeight = "bold";
+        }
+    }
+    this.last_checked = channel_name;
+}
+
+wiringInterface.prototype._enable_all = function(enabled) {
+    var iGadgets = w.getGadgetsId();
+	for (var i = 0; i<iGadgets.length; i++){
+        var connections = w.gadgetConnections(iGadgets[i].id);
+        for (var j = 0; j < connections.length; j++) {
+            var idItem = "gadget_"+ iGadgets[i].id +"_"+ connections[j].name; 
+            if ((enabled == null) || (enabled)) {
+                $("chk_"+ idItem).removeAttribute("disabled");
+            } else {
+                $("chk_"+ idItem).setAttribute("disabled", "disabled");
+            }
+            $(idItem).style.backgroundColor = null;
+        }
+	}
+    this.disabled_all = false;
 }

@@ -108,7 +108,7 @@ var WiringFactory = function () {
 			return result;
 		}
 		
-		Wiring.prototype.getInOutId = function (){
+		Wiring.prototype.getInOutsId = function (){
 			return copyList.keys();
 		}
 		
@@ -240,7 +240,7 @@ var WiringFactory = function () {
 					return 0;
 				}
 				else{
-					alert("channel already exist")
+					// alert("Channel already exist")
 					return -1;
 				}
 			}
@@ -261,11 +261,11 @@ var WiringFactory = function () {
 				channel.ref.clear();
 				
 				copyList.remove(channelName);
-				alert("Channel deleted")
+				// alert("Channel deleted")
 				return 0;
 			}
 			else {
-				alert("Channel doesn't exist")
+				// alert("Channel doesn't exist")
 				return 1;
 			}
 		}

@@ -53,7 +53,7 @@ wiringInterface.prototype.renewInterface = function (w,selector,sGadgets,itemize
 	w.edition();
 	if (!this.loaded){
 		var iGadgets = w.getGadgetsId();
-		var channels = w.getInOutId();
+		var channels = w.getInOutsId();
 		for (var i = 0; i<iGadgets.length; i++){
 			this.addGadgetInterface(iGadgets[i],sGadgets);
 		}
