@@ -885,6 +885,15 @@ IGadget.prototype.destroy = function() {
 	}
 }
 
+IGadget.prototype._setDefaultPrefsInInterface = function() {
+	var prefs = this.gadget.getTemplate().getUserPrefs();
+	var curPref;
+	for (var i = 0; i < prefs.length; i++) {
+		curPref = prefs[i];
+		curPref.setDefaultValueInInterface(this.configurationElement[curPref.getVarName()]);
+	}		
+}
+
 /**
  * Set all preferences of this gadget instance to their default value
  */
@@ -894,7 +903,8 @@ IGadget.prototype.setDefaultPrefs = function() {
 	for (var i = 0; i < prefs.length; i++)
 		prefs[i].setToDefault(this.id);
 
-	this.setConfigurationVisible(false);
+	if (this.configurationVisible)
+		this._setDefaultPrefsInInterface();
 }
 
 IGadget.prototype._makeConfigureInterface = function() {
@@ -917,10 +927,32 @@ IGadget.prototype._makeConfigureInterface = function() {
 
 	var buttons = document.createElement("div");
 	buttons.setAttribute("class", "buttons");
-	buttons.innerHTML =
-                 "<input type=\"button\" value=\"Set Defaults\" onclick=\"javascript:DragboardFactory.getInstance().setDefaultPrefs(" + this.id + ");\"/>" +
-                 "<input type=\"submit\" value=\"Save\" onclick=\"javascript:DragboardFactory.getInstance().saveConfig(" + this.id + ");\"/>" +
-                 "<input type=\"button\" value=\"Cancel\" onclick=\"javascript:DragboardFactory.getInstance().setConfigurationVisible(" + this.id + ", false);\"/>";
+	var button;
+
+	// "Set Defaults" button
+	button = document.createElement("input");
+	button.setAttribute("type", "button");
+	button.setAttribute("value", "Set Defaults");
+	button.addEventListener("click", this._setDefaultPrefsInInterface.bind(this), true);
+	buttons.appendChild(button);
+
+	// "Save" button
+	button = document.createElement("input");
+	button.setAttribute("type", "button");
+	button.setAttribute("value", "Save");
+	button.addEventListener("click",
+	                        function () {DragboardFactory.getInstance().saveConfig(this.id)}.bind(this),
+	                        true);
+	buttons.appendChild(button);
+
+	// "Cancel" button
+	button = document.createElement("input");
+	button.setAttribute("type", "button");
+	button.setAttribute("value", "Cancel");
+	button.addEventListener("click",
+	                        function () {DragboardFactory.getInstance().setConfigurationVisible(this.id, false)}.bind(this),
+	                        true);
+	buttons.appendChild(button);
 	interface.appendChild(buttons);
 
 	return interface;

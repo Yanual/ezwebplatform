@@ -48,6 +48,10 @@ UserPref.prototype.getValueFromInterface = function (element) {
 	return element.value;
 }
 
+UserPref.prototype.setDefaultValueInInterface = function (element) {
+	element.value = this.defaultValue;
+}
+
 //////////////////////////////////////////////
 // PUBLIC CONSTANTS
 //////////////////////////////////////////////
