@@ -97,15 +97,22 @@ var URIs = new _URIConstants();
 		showInterface('showcase');
 		UIUtils.setResourcesWidth();
 		document.getElementById('simple_search_text').focus();
+
+    	opManager.restaure();
+    	WiringFactory.getInstance().serialize();
 	}
 
 	function show_dragboard() {
 		wI.unloaded();
 		showInterface('dragboard');
+
+    	opManager.restaure();
+    	WiringFactory.getInstance().serialize();
+
 	}
 
 	function show_wiring() {
-		wI.renewInterface(WiringFactory.getInstance(),$('selectCanal'),$('wGadgets'),$('wCanales'));
+		wI.renewInterface(WiringFactory.getInstance());
 		//wI.renewInterface();
 		showInterface('wiring');
 	}

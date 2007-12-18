@@ -329,7 +329,9 @@ a:hover
 	vertical-align: top;
 }
 
-
+#wiring .columnCell ul input[type="radio"] {
+	display: none;
+}
 
 /* footer ------------------------------------------------------------------------------------------ */
 

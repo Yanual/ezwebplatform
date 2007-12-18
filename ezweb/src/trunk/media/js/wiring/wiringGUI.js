@@ -31,8 +31,9 @@ wiringInterface.prototype.addChannelInterface = function (name){
     var chkChannel = document.createElement("input");
     chkChannel.setAttribute("type", "radio");
     chkChannel.setAttribute("name", "channels_options");
+//    chkChannel.setAttribute("style", "display: none;");
     chkChannel.setAttribute("id", "chk_"+ idChannel);
-    chkChannel.setAttribute("onclick", "javascript:{wiringInterface.prototype._highlight_channel('chk_"+ idChannel +"', '"+ name +"');}");
+    chkChannel.setAttribute("onclick", "javascript:{wiringInterface.prototype._highlight_channel('chk_"+ idChannel +"', '"+ name +"'); opManager.restaure(); WiringFactory.getInstance().serialize();}");
     var textNode = document.createTextNode(name);
     chkChannel.appendChild(textNode);
     li.appendChild(chkChannel);
@@ -69,14 +70,16 @@ wiringInterface.prototype.addGadgetInterface = function (object){
 			labelItem.setAttribute("for", "chk_"+ idItem);
 			labelItem.setAttribute("id", "lbl_chk_"+ idItem);
 			var textNodeItem = document.createTextNode(connections[i].name);
-			if (connections[i].friend_code != "undefined") {
+			if ((connections[i].friend_code != "undefined") || (connections[i].friend_code != undefined)) {
 			    if (!wiringInterface.prototype.friend_codes[connections[i].friend_code]) {
 			        wiringInterface.prototype.friend_codes[connections[i].friend_code] = {};
 			        wiringInterface.prototype.friend_codes[connections[i].friend_code].list = [];
                                 wiringInterface.prototype.friend_codes[connections[i].friend_code].color = wiringInterface.prototype.color_scheme[this.friend_codes_counter++];
 			    }
                 wiringInterface.prototype.friend_codes[connections[i].friend_code].list.push(idItem);
-				liItem.setAttribute("onclick", "javascript:{wiringInterface.prototype._highlight('chk_"+ idItem +"', '"+ connections[i].friend_code +"'); wiringInterface.prototype._changeChannel('chk_"+ idItem +"', '"+ object.id +"', '"+ connections[i].name +"', '"+ connections[i].aspect +"'); opManager.restaure(); WiringFactory.getInstance().serialize();}");
+				liItem.setAttribute("onclick", "javascript:{wiringInterface.prototype._changeChannel('chk_"+ idItem +"', '"+ object.id +"', '"+ connections[i].name +"', '"+ connections[i].aspect +"');}");
+                liItem.setAttribute("onmouseover", "wiringInterface.prototype._highlight_friend_code('"+ connections[i].friend_code +"');");
+                liItem.setAttribute("onmouseout", "wiringInterface.prototype._highlight_friend_code('"+ connections[i].friend_code +"');");
 
             }
 			labelItem.appendChild(textNodeItem);
@@ -190,25 +193,42 @@ wiringInterface.prototype._highlight = function (chk_id, friend_code) {
     }
 }
 
+wiringInterface.prototype._highlight_friend_code = function (friend_code, highlight) {
+    if (this.friend_codes[friend_code]) {
+        var fcList = this.friend_codes[friend_code].list;
+        var fcColor = this.friend_codes[friend_code].color;
+        for (var i = 0; i < fcList.length; i++) {
+            tmp_color = $(fcList[i]).style.backgroundColor;
+            $(fcList[i]).style.backgroundColor = fcColor;
+            this.friend_codes[friend_code].color = tmp_color;
+        }
+    }
+}
+
+
 wiringInterface.prototype._highlight_channel = function (chk_id, channel_name) {
     wiringInterface.prototype._enable_all();
     if (this.last_checked) {
+        $("channel_"+ this.last_checked).style.backgroundColor = null;
         channels = w.connections(this.last_checked);
         if (channels) {
             channel_list = channels["input"].concat(channels["output"]);
             for(var i = 0; i < channel_list.length; i++) {
                 var chk_gadget_id = "chk_gadget_"+ channel_list[i].id +"_"+ channel_list[i].name;
                 $(chk_gadget_id).checked = false;
+                $("gadget_"+ channel_list[i].id +"_"+ channel_list[i].name).style.backgroundColor = null;
                 $("lbl_"+ chk_gadget_id).style.fontWeight = "normal";
             }
         }
     }
+    $("channel_"+ channel_name).style.backgroundColor = "#FFFFE0";
     channels = w.connections(channel_name);
     if (channels) {
         channel_list = channels["input"].concat(channels["output"]);
         for(var i = 0; i < channel_list.length; i++) {
             var chk_gadget_id = "chk_gadget_"+ channel_list[i].id +"_"+ channel_list[i].name;
             $(chk_gadget_id).checked = $(chk_id).checked;
+            $("gadget_"+ channel_list[i].id +"_"+ channel_list[i].name).style.backgroundColor = "#FFFFE0";
             $("lbl_"+ chk_gadget_id).style.fontWeight = "bold";
         }
     }
