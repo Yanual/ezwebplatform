@@ -33,7 +33,11 @@ urlpatterns = patterns('',
     (r'^user/(?P<user_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/platform/$', addToPlatform),
 
     # Catalogue Tag
-    (r'^user/(?P<user_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/catalogue/tag/',include('tag.urls')),
+    (r'^user/(?P<user_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/catalogue/tag(s)?/',include('tag.urls')),
+    
+    # Catalogue Search
+    (r'^user/(?P<user_name>\w+)/catalogue/search/',include('searching.urls')),
+    
     # Proxy
     (r'^proxy', include('proxy.urls')),
    

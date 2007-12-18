@@ -3,16 +3,23 @@ from xml.sax import make_parser
 
 from tag.models import UserTag
 
-
-def get_tags_by_resource(gadget_id):
-
+def get_tags_by_resource(gadget_id, user_id):
 		
     xml_tag=''
 		
-    for e in UserTag.objects.filter(idResource=gadget_id):
-        xml_tag +='<tag>'+e.tag+'</tag>\n'
-        			
-    response='<tags>'+xml_tag+'</tags>'
+    for e in UserTag.objects.filter(idResource=gadget_id, idUser=user_id):
+        xml_tag +='<Tag>\n\
+        <Value>'+e.tag+'</Value>\n\
+	<Added_by>Yes</Added_by>\n\
+        </Tag>'
+   
+    for e in UserTag.objects.filter(idResource=gadget_id).exclude(idUser=user_id):
+        xml_tag +='<Tag>\n\
+        <Value>'+e.tag+'</Value>\n\
+	<Added_by>No</Added_by>\n\
+        </Tag>'
+	
+    response='<Tags>'+xml_tag+'</Tags>'
     return response
 
 
@@ -22,7 +29,6 @@ class TagsXMLHandler(saxutils.handler.ContentHandler):
 
     def resetTags(self):
         self._tags = []
-
 
     def characters(self, text):
 	self._tags.append(text)

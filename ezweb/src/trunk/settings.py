@@ -92,6 +92,7 @@ INSTALLED_APPS = (
     'connectable',
     'resource',
     'tag',
+    'searching',
 )
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
