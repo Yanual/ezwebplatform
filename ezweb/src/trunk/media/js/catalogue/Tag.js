@@ -6,7 +6,7 @@ function Tag(tagXML_)
 	this.getAppearances = function() { return state.getAppearances(); }
 	
 	this.tagToHTML = function() {
-		var jsCall = 'javascript:UIUtils.searchByTag(URIs.GET_POST_RESOURCES, "' + state.getValue() + '");';
+		var jsCall = 'javascript:UIUtils.searchByTag(URIs.GET_RESOURCES_BY_TAG, "' + state.getValue() + '");';
 
 		return "<a title='Buscar " + state.getValue() +"' href='" + jsCall + "'>" + state.getValue() + "</a>";
 	}
@@ -18,7 +18,7 @@ function Tag(tagXML_)
 		else if (state.getAppearances()<25) classAux = 'tag_type_3';
 		else classAux = 'tag_type_4';
 		
-		var jsCall = 'javascript:UIUtils.searchByTag(URIs.GET_POST_RESOURCES, "' + state.getValue() + '");';
+		var jsCall = 'javascript:UIUtils.searchByTag(URIs.GET_RESOURCES_BY_TAG, "' + state.getValue() + '");';
 
 		var result = "<a class='" + classAux + "' title='Buscar "+ state.getValue() +"' href='" + jsCall + "'>" + state.getValue() + "</a>";
 
@@ -38,7 +38,7 @@ function Tag(tagXML_)
 
 function StateTag(tagXML_) 
 {
-	var value = tagXML_.firstChild.nodeValue;
+    var value = tagXML_.getElementsByTagName('Value')[0].firstChild.nodeValue;
 	var appearances = 1;
 	//var value = tagXML_.getElementsByTagName("value")[0].firstChild.nodeValue;
 	//var appearances = parseInt(tagXML_.getElementsByTagName("appearances")[0].firstChild.nodeValue);

@@ -265,7 +265,7 @@ function ResourceState(resourceXML_) {
 
 	this.setTags = function(tagsXML_) {
 		tags.clear();
-		var tagsXMLList = tagsXML_.getElementsByTagName("tag");
+		var tagsXMLList = tagsXML_.getElementsByTagName("Tag");
 		for (var i=0; i<tagsXMLList.length; i++)
 		{
 			tags.push(new Tag(tagsXMLList[i]));
@@ -284,5 +284,5 @@ function ResourceState(resourceXML_) {
 	uriImage = resourceXML_.getElementsByTagName("uriImage")[0].firstChild.nodeValue;
 	uriWiki = resourceXML_.getElementsByTagName("uriWiki")[0].firstChild.nodeValue;
 	uriTemplate = resourceXML_.getElementsByTagName("uriTemplate")[0].firstChild.nodeValue;
-	this.setTags(resourceXML_.getElementsByTagName("tags")[0]);
+	this.setTags(resourceXML_.getElementsByTagName("Tags")[0]);
 }

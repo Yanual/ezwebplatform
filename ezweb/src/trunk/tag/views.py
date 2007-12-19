@@ -7,6 +7,8 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User 
 from django_restapi.resource import Resource
 
+from commons.authentication import user_authentication
+
 from xml.sax import make_parser
 from xml.sax.xmlreader import InputSource
 
@@ -18,6 +20,7 @@ from resource.models import GadgetResource
 class GadgetTagsCollection(Resource):
 
     def create(self,request, user_name, vendor, name, version):
+        user = user_authentication(user_name)
 
         # Get the xml containing the tags from the request
         tags_xml = request.__getitem__('tags_xml')
@@ -39,15 +42,12 @@ class GadgetTagsCollection(Resource):
         parser.parse(inpsrc)
 	
         # Get the gadget's id for those vendor, name and version
-        gadget_id = get_object_or_404(GadgetResource, short_name=name,vendor=vendor,version=version).id
-
-	# Get the user's id for that user_name
-	user_id = get_object_or_404(User, username=user_name).id
+        gadget = get_object_or_404(GadgetResource, short_name=name,vendor=vendor,version=version)
 	
 	# Insert the tags for these resource and user in the database
 	for e in handler._tags:
 	    try:
-	        UserTag.objects.get_or_create(tag=e, idUser=user_id, idResource=gadget_id)
+	        UserTag.objects.get_or_create(tag=e, idUser=user, idResource=gadget)
 	    except:
 	        value = str(sys.exc_info()[1])
 	        xml_error = '<fault>\n\
@@ -58,7 +58,7 @@ class GadgetTagsCollection(Resource):
 	        return HttpResponseServerError(xml_error,mimetype='text/xml; charset=UTF-8')
 
         response = '<?xml version="1.0" encoding="UTF-8" ?>\n'
-	response += get_tags_by_resource(gadget_id, user_id)
+	response += get_tags_by_resource(gadget, user)
 	return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
 
 	

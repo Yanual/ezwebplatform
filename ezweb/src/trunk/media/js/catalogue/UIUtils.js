@@ -14,7 +14,7 @@ UIUtils.isInfoResourcesOpen = false;
 
 UIUtils.addResource = function(url, paramName, paramValue) {
 	var newResourceOnSuccess = function (response) {
-		OpManagerFactory.getInstance().repaintCatalogue(URIs.GET_RESOURCES);
+		OpManagerFactory.getInstance().repaintCatalogue(URIs.GET_POST_RESOURCES);
 	}
 	
 	var newResourceOnError = function (response) {

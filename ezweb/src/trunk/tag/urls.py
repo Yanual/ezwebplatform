@@ -7,6 +7,6 @@ from django_restapi.responder import *
 urlpatterns = patterns('tag.views',
 
     # Tags
-    (r'^(?P<vendor>\w+)/(?P<name>\w+)/(?P<version>[\._\w]+)/$', 
+    (r'^(?P<vendor>\w+)/(?P<name>\w+)/(?P<version>[\._\w]+)$', 
         GadgetTagsCollection(permitted_methods=('GET','POST','DELETE', ))),
 )

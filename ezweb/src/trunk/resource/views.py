@@ -27,6 +27,7 @@ class GadgetsCollection(Resource):
 
 	try:
             templateParser = TemplateParser(template_uri, user_name)
+
             templateParser.parse()
             transaction.commit()
         except IntegrityError:

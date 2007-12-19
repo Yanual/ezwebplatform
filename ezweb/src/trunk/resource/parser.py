@@ -13,7 +13,6 @@ from resource.models import GadgetWiring
 
 
 class TemplateParser:
-
     def __init__(self, uri, user):
 
         self.parser = make_parser()
@@ -24,6 +23,10 @@ class TemplateParser:
         # Tell the parser to use our handler
         self.parser.setContentHandler(self.handler)
 
+    def parse(self):
+        # Parse the input
+        self.parser.parse(self.uri)
+        
 
 class TemplateHandler(saxutils.handler.ContentHandler): 
 	

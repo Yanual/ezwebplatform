@@ -45,12 +45,12 @@ function Tagger(){
 			
 			var elements = tags.getValues();
 			var tagsXML = 	//"<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + 
-								"<tags>";
+								"<Tags>";
 			for (var i=0; i<elements.size(); i++)
 			{
-				tagsXML += ("<tag>" + elements[i] + "</tag>");
+				tagsXML += ("<Tag>" + elements[i] + "</Tag>");
 			}
-			tagsXML += "</tags>"
+			tagsXML += "</Tags>"
 	
 			var param = "tags_xml=" + tagsXML;
 	

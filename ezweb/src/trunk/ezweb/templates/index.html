@@ -24,6 +24,7 @@ _URIConstants.prototype.GET_GADGET = new Template ('/user/{{ user.username }}/ga
 _URIConstants.prototype.GET_GADGETS = '/user/{{ user.username }}/gadgets';
 _URIConstants.prototype.GET_POST_WIRING = '/user/{{ user.username }}/connectable';
 _URIConstants.prototype.GET_POST_RESOURCES = '/user/{{ user.username }}/catalogue/resource';
+_URIConstants.prototype.GET_RESOURCES_BY_TAG = '/user/{{ user.username }}/catalogue/search/tag';
 _URIConstants.prototype.POST_RESOURCE_TAGS = '/user/{{ user.username }}/catalogue/tag';
 _URIConstants.prototype.POST_IGADGET = new Template ('/user/{{ user.username }}/igadgets/#{iGadgetId}');
 _URIConstants.prototype.PROXY = '/proxy';
@@ -93,7 +94,7 @@ var URIs = new _URIConstants();
 
 	function show_showcase() {
 		wI.unloaded();
-	    opManager.repaintCatalogue(URIs.GET_POST_RESOURCES);
+		opManager.repaintCatalogue(URIs.GET_POST_RESOURCES);
 		showInterface('showcase');
 		UIUtils.setResourcesWidth();
 		document.getElementById('simple_search_text').focus();
