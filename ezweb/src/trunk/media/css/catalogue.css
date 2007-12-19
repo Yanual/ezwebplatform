@@ -8,15 +8,15 @@
 	text-decoration:underline;
 }
 
-#catalogue .head
-{
+#catalogue .head{
 	position:relative;
 	width:100%;
 	height:auto;
 	padding:0px;
 	margin:0px;
 	background: #e6f3ff;
-	height: 60px; // workaround 
+	background: url("/ezweb/images/search_fond.gif") repeat-x bottom left;
+	height: 45px; // workaround
 }
 
 #catalogue .head .search
@@ -76,8 +76,7 @@
 	font-size:11px;
 }
 
-#catalogue .center
-{
+#catalogue .center{
 	width:100%;
 	height:100%;
 	position:relative;
@@ -85,7 +84,7 @@
 	margin:0px;
 	padding:0px;
 	background: #FFF;
-	border-top: 1px solid #4c5054;
+	border-top: 1px solid #efefef;
 }
 
 #catalogue .center .resources
@@ -129,14 +128,14 @@
 	height: 11px;
 	padding: 0px;
 	bottom: 5px;
-	background: url(../images/resource-left-bottom.png) no-repeat bottom right;
+	background: url("/ezweb/images/resource-left-bottom.gif") no-repeat bottom right;
 }
 
 #catalogue .center .resources .resource .toolbar
 {
 	display:block;
 	width: 192px;
-	height: 30px;
+	height: 22px;
 	padding: 0px;
     margin: 0px;
 	text-align:right;
@@ -174,7 +173,7 @@
 	width:192px;
 	height:154px;
     margin: 0px;
-	background: url(../images/resource-left-fill.png) repeat-y top right;
+	background: url("/ezweb/images/resource-left-fill.gif") repeat-y top right;
 	text-align:center;
 	color:#000000;
 }
@@ -182,7 +181,7 @@
 #catalogue .center .resources .resource .content .title
 {
 	overflow:hidden;
-	font-size:15px;
+	font-size:12px;
 	font-weight:bold;
 	height:20px;
 }
@@ -246,6 +245,12 @@
 #catalogue .center .resources .resource .content .tags .more_tags img
 {
 	border:none;
+}
+#catalogue .center .resources .resource .content button{
+	background: url("/ezweb/images/button.gif") top left;
+	color:white;
+	border:none;
+	font-size:100%;
 }
 
 .description_balloon
