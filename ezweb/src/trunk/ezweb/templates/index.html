@@ -141,8 +141,8 @@ var URIs = new _URIConstants();
 
 <!-- HEADER -->
 <div id="header">
-  <div>{% trans "Welcome" %}, {{ user.username }} / <a href="/logout">{% trans "Exit" %}</a></div>
-  <img id="logo" src="{{ MEDIA_URL }}images/Ezweb.png" alt="EzWeb Logo">
+  <div id="greeting">{% trans "Welcome" %}, {{ user.username }} / <a href="/logout">{% trans "Exit" %}</a></div>
+  <img id="logo" src="{{ MEDIA_URL }}images/logo.gif" alt="EzWeb Logo">
   <div class="tab_section">
     <span id="wiring_tab" class="tab" onclick="show_wiring();">{% trans "My Wires" %}</span>
     <span id="showcase_tab" class="tab" onclick="show_showcase();">{% trans "My Catalogue" %}</span>
