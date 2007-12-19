@@ -1,41 +1,44 @@
-body
-{
- margin:0px;
- padding: 0px 2%;
- height: 100%;
- color:#000;
- font-size:0.8125em;
- font-family: "Trebuchet MS","Bitstream Vera Sans",Verdana,Helvetica,sans-serif;
- font-size-adjust:none;
- font-style:normal;
- font-variant:normal;
- font-weight:normal;
- line-height:normal;
+body{
+	 margin:0;
+	 padding:0;
+	 color:#000;
+	 font-size:80%;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	background: url("/ezweb/images/fond.gif") top left;
 }
 
-a
-{
- text-decoration: none;
- color:#00688b
+a{
+	 color:red;
 }
 
-a:hover
-{
- text-decoration:underline;
- color:#00688b
+a:hover{
+	 color:red;
 }
 
 /* header ------------------------------------------------------------------------------------------ */
 /* testing from codesyntax */
 
 #header {
-  position: relative;
-  width: 100%;
-//  height: 75px;
+	position: relative;
+	width:100%;
+	background: url("/ezweb/images/header.gif") repeat-x top left;
+	color:white;
+	text-align:right;
+	height:55px;
 }
-
+#greeting{
+	float:right;
+	width:200px;
+	margin-right:15px;
+	margin-top:5px;
+}
+#greeting a{
+	color:white;
+}
 #logo {
-//  height: 40px;
+	float:left;
+	margin-top:0;
+	margin-left:10px;
 }
 
 #toolbar {}
@@ -66,7 +69,7 @@ a:hover
 
 #header .tab_section .current {
   color: #4c5054;
-  background: #e6f3ff;
+  background: #E0E0E0;
   border-bottom: 0px none;
   padding-bottom: 4px;
 }
@@ -167,6 +170,7 @@ a:hover
   width:100%;
   height:100%;
   background: #e6f3ff;
+  background-color:#e0e0e0;
   overflow-x: auto;
   overflow-y: auto;
   z-index: 1;
