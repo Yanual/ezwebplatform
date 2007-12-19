@@ -72,4 +72,36 @@
         <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
         <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">12</field>
     </object>
+    <object pk="12" model="tag.usertag">
+        <field type="CharField" name="tag">esquema</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">2</field>
+    </object>
+    <object pk="13" model="tag.usertag">
+        <field type="CharField" name="tag">tag</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">1</field>
+    </object>
+    <object pk="14" model="tag.usertag">
+        <field type="CharField" name="tag">datos</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">11</field>
+    </object>
+    <object pk="15" model="tag.usertag">
+        <field type="CharField" name="tag">datos</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">12</field>
+    </object>
 </django-objects>
