@@ -10,11 +10,6 @@ function Gadget(gadget_, url_) {
 	// ******************
 	var _this = this;
 	
-	this.setTags = function(tags_) { state.setTags(tags_); }
-	this.getTags = function() { return state.getTags(); }
-	this.addTag = function(tag_) { state.addTag(tag_); }
-	this.removeTag = function(tag_) { state.removeTag(tag_) }
-	
 	this.getVendor = function() { return state.getVendor(); }
 	this.getName = function() { return state.getName(); }
 	this.getVersion = function() { return state.getVersion(); }
@@ -81,7 +76,6 @@ function GadgetState(gadget_) {
 	var vendor = null;
 	var name = null;
 	var version = null;
-	var tags = [];
 	var template = null;
 	var xhtml = null;
 	var image = null;
@@ -95,18 +89,10 @@ function GadgetState(gadget_) {
 	xhtml = new XHtml(gadget_.xhtml);
 	image = gadget_.image;
 	
-	for (i = 0; i<gadget_.tags.length; i++) {
-		tags.push(gadget_.tags[i]);
-	}
 	
 	// ******************
 	//  PUBLIC FUNCTIONS
 	// ******************
-	
-	this.setTags = function(tags_) { tags = tags_; }
-	this.getTags = function() { return tags; }
-	this.addTag = function(tag_) { tags.push(tag_); }
-	this.removeTag = function(tag_) { tags = tags.without(tag_); }
 	
 	this.getVendor = function() { return vendor; }
 	this.getName = function() { return name; }

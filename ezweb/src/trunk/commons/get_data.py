@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, get_list_or_404
 
 from django.core import serializers
 
-from gadget.models import Template, Gadget, XHTML, Tag, UserEventsInfo
+from gadget.models import Template, Gadget, XHTML
 from igadget.models import Variable, VariableDef, Position, IGadget
 from connectable.models import In, Out
 
@@ -54,12 +54,10 @@ def get_gadget_data(data):
     data_template = get_object_or_404(Template, id=data_fields['template'])
     data_variabledef = VariableDef.objects.filter(template=data_template.id).values('aspect', 'name', 'type', 'label', 'description', 'friend_code', 'default_value')
     data_code = get_object_or_404(XHTML.objects.all().values('uri'), id=data_fields['xhtml'])
-    data_elements = UserEventsInfo.objects.filter(xhtml=data_fields['xhtml']).values('event', 'handler', 'html_element')
 
     data_ret['name'] = data_fields['name']
     data_ret['vendor'] = data_fields['vendor']
     data_ret['description'] = data_fields['description']
-    data_ret['tags'] = data_fields['tags']
     data_ret['uri'] = data_fields['uri']
     data_ret['wikiURI'] = data_fields['wikiURI']
     data_ret['imageURI'] = data_fields['imageURI']
@@ -75,7 +73,6 @@ def get_gadget_data(data):
     data_ret['template']['variables'] = data_variabledef
     data_ret['image'] = data_template.image
     data_ret['xhtml'] = data_code
-    data_ret['xhtml']['elements'] = data_elements
 
     return data_ret
 

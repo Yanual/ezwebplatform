@@ -82,30 +82,6 @@ class XHTML(models.Model):
         return self.uri
 
 
-class UserEventsInfo(models.Model):
-    event = models.CharField(_('Event'), max_length=20)
-    handler = models.CharField(_('Handler'), max_length=50)
-    html_element = models.CharField(_('HtmlElement'), max_length=20)
-    xhtml = models.ForeignKey(XHTML)
-
-    class Admin:
-        pass
-
-    def __unicode__(self):
-        return self.xhtml.uri
-
-
-class Tag(models.Model):
-    uri = models.CharField(_('URI'), max_length=500)
-    value = models.CharField(_('Value'), max_length=50)
-
-    class Admin:
-        pass
-
-    def __unicode__(self):
-        return self.uri  
-
-
 class Gadget(models.Model):
     uri = models.CharField(_('URI'), max_length=500)
     
@@ -123,7 +99,6 @@ class Gadget(models.Model):
     imageURI = models.URLField(_('imageURI'))
 
     description = models.CharField(_('Description'), max_length=250)
-    tags = models.ManyToManyField(Tag, verbose_name=_('Tags'), null=True)
     
     shared = models.BooleanField(_('Shared'), default=False, null=True)
     user = models.ForeignKey(User, verbose_name=_('User'))

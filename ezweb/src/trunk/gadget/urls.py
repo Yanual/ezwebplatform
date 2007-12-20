@@ -14,8 +14,5 @@ urlpatterns = patterns('gadget.views',
     (r'^/(?P<vendor>[-ÑñáéíóúÁÉÍÓÚ\w]+)/(?P<name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/(?P<version>[\._-ÑñáéíóúÁÉÍÓÚ\w]+)/template$',
         GadgetTemplateEntry(permitted_methods=('GET', ))),
     (r'^/(?P<vendor>[-ÑñáéíóúÁÉÍÓÚ\w]+)/(?P<name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/(?P<version>[\._-ÑñáéíóúÁÉÍÓÚ\w]+)/xhtml$',
-        GadgetCodeEntry(permitted_methods=('GET', ))),
-    (r'^/(?P<vendor>[-ÑñáéíóúÁÉÍÓÚ\w]+)/(?P<name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/(?P<version>[\._-ÑñáéíóúÁÉÍÓÚ\w]+)/tags$',
-        GadgetTagsEntry(permitted_methods=('GET', ))),
-   
+        GadgetCodeEntry(permitted_methods=('GET', ))),   
 )

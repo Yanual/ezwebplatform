@@ -26,7 +26,7 @@ from django.db import transaction
 
 from commons.utils import *
 
-from gadget.models import Gadget, Tag, Template
+from gadget.models import Gadget, Template
 
 class GadgetCollection(Resource):
     def read(self, request, user_name):
@@ -56,7 +56,6 @@ class GadgetCollection(Resource):
             transaction.commit()
         except IntegrityError:
             # Gadget already exists. Rollback transaction
-            print "integrity error"
             transaction.rollback()
         except Exception, e:
             # Internal error
@@ -106,12 +105,4 @@ class GadgetCodeEntry(Resource):
         gadget = get_object_or_404(Gadget, vendor=vendor, name=name, version=version, user=user)
         code = get_object_or_404(gadget.xhtml, id=gadget.xhtml.id)
         return HttpResponse(code.code, mimetype='text/html; charset=UTF-8')
-
-
-class GadgetTagsEntry(Resource):
-    def read(self, request, user_name, vendor, name, version):
-        user = user_authentication(user_name)
-        gadget = get_object_or_404(Gadget, user=user, vendor=vendor, name=name, version=version)
-        tags = get_list_or_404(Tag, gadget=gadget)
-        return HttpResponse(json_encode(tags), mimetype='application/json; charset=UTF-8')
 
