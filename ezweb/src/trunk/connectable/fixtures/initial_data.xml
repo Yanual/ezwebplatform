@@ -1,3 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <django-objects version="1.0">
+    <object pk="169" model="connectable.out">
+        <field type="CharField" name="uri">/user/admin/igadgets/8/out/phoneNumber</field>
+        <field type="CharField" name="name">phoneNumber</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">14</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="170" model="connectable.out">
+        <field type="CharField" name="uri">/user/admin/igadgets/5/out/address</field>
+        <field type="CharField" name="name">address</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">6</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="171" model="connectable.out">
+        <field type="CharField" name="uri">/user/admin/igadgets/1/out/RSSYurl</field>
+        <field type="CharField" name="name">RSSYurl</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">1</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="191" model="connectable.in">
+        <field type="CharField" name="uri">/user/admin/igadgets/9/in/rssUrl</field>
+        <field type="CharField" name="name">rssUrl</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">16</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="192" model="connectable.in">
+        <field type="CharField" name="uri">/user/admin/igadgets/8/in/address</field>
+        <field type="CharField" name="name">address</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">15</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="193" model="connectable.in">
+        <field type="CharField" name="uri">/user/admin/igadgets/2/in/serviceHired</field>
+        <field type="CharField" name="name">serviceHired</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">2</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="194" model="connectable.in">
+        <field type="CharField" name="uri">/user/admin/igadgets/2/in/phoneNumber</field>
+        <field type="CharField" name="name">phoneNumber</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">3</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"></field>
+    </object>
 </django-objects>
