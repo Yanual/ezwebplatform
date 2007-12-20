@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<script language="javascript" src="http://www.prototypejs.org/assets/2007/11/6/prototype.js"></script>
+<script language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"></script>
+<script language="JavaScript">
+			var Prueba = function()
+			{
+				var success = function(transport)
+				{
+					$('response').value = transport.responseText;
+					//alert(transport.responseText);
+				}
+				
+				var error = function(transport)
+				{
+					$('response').value = transport.responseText;
+					//alert(transport.responseText);
+				}
+				
+				this.realizarPeticion = function(formulario)
+				{
+					if (formulario.method.value == 'GET')
+					{
+						EzWebAPI.send_get(formulario.url.value, this, success, error);
+
+					}
+					else
+					{
+						EzWebAPI.send_post(formulario.url.value, formulario.params.value, this, success, error);
+					}
+				}
+			}
+			var prueba = new Prueba();
+		</script>
+	</head>
+	<body>
+		<br/>
+		<form onsubmit="return false;">
+			<label for="url">URL:</label>
+			<input id="url" name="url" type="text"/>
+			<label for="params">Params:</label>
+			<input id="params" name="params" type="text"/>
+			<select id="method" name="method">
+				<option value="GET">GET</option>
+				<option value="POST">POST</option>
+			</select>
+			<button onclick="prueba.realizarPeticion(this.form)">Enviar</button>
+		</form>
+		<br/><b>Response:</b><br/>
+		<textarea id="response" style="display:block;border:1px solid black;color:black;width:100%;height:180px;background: #e6f3ff;">
+		</textarea>
+	</body>
+</html>

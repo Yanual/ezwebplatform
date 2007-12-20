@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Template schemaLocation="http://morfeo-project.org/2007/Template">
+<!-- Meta tags define gadgets properties -->
+	<Catalog.ResourceDescription>
+		<Vendor>Morfeo</Vendor>
+		<Name>Reproductor_Youtube</Name>
+		<Version>1.3</Version>
+		<Author>jmartin</Author>
+		<Mail>jjmr@tid.es</Mail>
+		<Description>Reproductor de videos de Youtube</Description>
+		<ImageURI>http://europa.ls.fi.upm.es/ezweb/gadgets/tuberep.png</ImageURI>
+		<WikiURI>http://piccolo.ls.fi.upm.es:7000/reproductor_youtube</WikiURI>
+	</Catalog.ResourceDescription>
+	<!-- EzWeb Gadgets Tags -->
+	<Platform.Preferences>
+
+	</Platform.Preferences>
+		<!--<Preference name="url" type="text" description="descripcion" label="url" />-->
+	<!-- EzWeb Gadget Persistent State -->
+	<Platform.StateProperties>
+	</Platform.StateProperties>
+	<!-- EzWeb Gadget Data Wiring -->
+	<Platform.Wiring>
+		<Wire name="RSSYurl" type="text" label="url" friendcode="youtube_url" wiring="out"/>
+	</Platform.Wiring>
+	<Platform.Link>
+		<XHTML href="http://europa.ls.fi.upm.es/ezweb/gadgets/tuberep.html"/>
+	</Platform.Link>
+	<Platform.Rendering width="1" height="20"/>
+</Template>
+

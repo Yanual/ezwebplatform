@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Template schemaLocation="http://morfeo-project.org/2007/Template">
+<!-- Meta tags define gadgets properties -->
+	<Catalog.ResourceDescription>
+		<Vendor>Morfeo</Vendor>
+		<Name>Visor_Datos_Usuario</Name>
+		<Version>1.0</Version>
+		<Author>miglesia</Author>
+		<Mail>miglesia@pegaso.ls.fi.upm.es</Mail>
+		<Description>Este gadget presenta la informacion relativa a un usuario para el cual se ha detectado una averia</Description>
+		<ImageURI>http://europa.ls.fi.upm.es/ezweb/gadgets/person.jpg</ImageURI>
+		<WikiURI>http://piccolo.ls.fi.upm.es:7000//Visor_Datos_Usuario</WikiURI>
+	</Catalog.ResourceDescription>
+	<!-- EzWeb Gadgets Tags -->
+	<Platform.Preferences>
+	</Platform.Preferences>
+	<!-- EzWeb Gadget Persistent State -->
+	<Platform.StateProperties>
+	</Platform.StateProperties>
+	<!-- EzWeb Gadget Data Wiring -->
+	<Platform.Wiring>
+		<Wire name="address" type="text" label="Address" friendcode = "address" wiring="in"/>
+		<Wire name="phoneNumber" type="text" label="PhoneNumber" friendcode = "phone" wiring="out"/>
+	</Platform.Wiring>
+	<Platform.Link>
+		<XHTML href="http://europa.ls.fi.upm.es/ezweb/gadgets/visorDatosUsuario.html"/>
+	</Platform.Link>
+	<Platform.Rendering width="1" height="11"/>
+</Template>

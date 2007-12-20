@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Template schemaLocation="http://morfeo-project.org/2007/Template">
+<!-- Meta tags define gadgets properties -->
+	<Catalog.ResourceDescription>
+		<Vendor>Morfeo</Vendor>
+		<Name>RSSList</Name>
+		<Version>1.0</Version>
+		<Author>jlopez</Author>
+		<Mail>jlopez@pegaso.ls.fi.upm.es</Mail>
+		<Description>Este gadget muestra un Lista de Feeds RSS</Description>
+		<ImageURI>http://europa.ls.fi.upm.es/ezweb/gadgets/rss.jpg</ImageURI>
+		<WikiURI>http://piccolo.ls.fi.upm.es:7000/RSSList</WikiURI>
+	</Catalog.ResourceDescription>
+	<!-- EzWeb Gadgets Tags -->
+	<Platform.Preferences>
+	</Platform.Preferences>
+	<!-- EzWeb Gadget Persistent State -->
+	<Platform.StateProperties>
+	</Platform.StateProperties>
+	<!-- EzWeb Gadget Data Wiring -->
+	<Platform.Wiring>
+		<Wire name="rssUrl" type="text" label="rssUrl" friendcode = "rssUrl" wiring="in"/>
+	</Platform.Wiring>
+	<Platform.Link>
+		<XHTML href="http://europa.ls.fi.upm.es/ezweb/gadgets/rssList.html"/>
+	</Platform.Link>
+	<Platform.Rendering width="1" height="10"/>
+</Template>

@@ -1,0 +1,31 @@
+<html>
+<head>
+</head>
+<body>
+<script language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"></script>
+<script>
+var url = EzWebAPI.createRGadgetVariable("RSSYurl", loadVideo);
+
+
+function loadVideo(url_){
+
+ var embed = document.createElement('embed');
+ embed.setAttribute('src',url_);
+ embed.setAttribute('width',340);
+ embed.setAttribute('height',260);
+ embed.id="rep";
+
+ var divAnt = document.getElementById("video");
+ var divVideo = document.createElement("div");
+ divVideo.id="video";
+ divVideo.appendChild(embed);
+ document.body.replaceChild(divVideo,divAnt);
+ }
+
+
+</script>
+
+<div id="video"><embed id="rep" width="340" height="260" src="http://www.youtube.com/v/d6C0bNDqf3Y&rel=1" type="application/x-shockwave-flash" wmode="transparent"></embed></div>
+</body>
+</html>
+
