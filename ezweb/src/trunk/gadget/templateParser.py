@@ -39,6 +39,9 @@ class TemplateParser:
 class TemplateHandler(saxutils.handler.ContentHandler):
     # XML parsing
 
+    _SLOT = "SLOT"
+    _EVENT = "EVEN"
+
     _accumulator = []
     _link = []
     _gadgetName = ""
@@ -73,15 +76,6 @@ class TemplateHandler(saxutils.handler.ContentHandler):
                 return 'L'
         else:
             print "ERROR in TEXT TYPE"
-
-
-    def getWiringAspect(self, wiring):
-        if wiring == 'in':
-            return 'EVEN'
-        elif wiring == 'out':
-            return 'SLOT'
-        else:
-            print "ERROR in WIRING ASPECT"
 
 
     def processProperty(self, attrs):
@@ -146,13 +140,12 @@ class TemplateHandler(saxutils.handler.ContentHandler):
             print "Needed attributed missed in processPreference"
 
 
-    def processWire(self, attrs):
+    def processEvent(self, attrs):
         _name = ''
         _type = ''
         _description = ''
         _label = ''
         _friendCode = ''
-        _wiring = ''
 
 
         if (attrs.has_key('name')==True):
@@ -170,21 +163,55 @@ class TemplateHandler(saxutils.handler.ContentHandler):
         if (attrs.has_key('friendcode')==True):
             _friendCode = attrs.get('friendcode')
 
-        if (attrs.has_key('wiring')==True):
-            _wiring = attrs.get('wiring')
-
-        if (_name != '' and _type != '' and _friendCode != '' and _wiring != ''):
+        if (_name != '' and _type != '' and _friendCode != ''):
 
             vDef = VariableDef( name = _name, description = _description, 
                                 type = self.typeText2typeCode(_type), 
-                                aspect = self.getWiringAspect(_wiring), 
+                                aspect = self._EVENT, 
                                 friend_code = _friendCode, 
                                 label = _label,
                                 template = self._template)
 
             vDef.save()
         else:
-            print "Needed attributed missed in processWire!"
+            print "Needed attributed missed in processEvent!"
+
+
+    def processSlot(self, attrs):
+        _name = ''
+        _type = ''
+        _description = ''
+        _label = ''
+        _friendCode = ''
+
+
+        if (attrs.has_key('name')==True):
+            _name = attrs.get('name')
+
+        if (attrs.has_key('type')==True):
+            _type = attrs.get('type')
+
+        if (attrs.has_key('description')==True):
+            _description = attrs.get('description')
+
+        if (attrs.has_key('label')==True):
+            _label = attrs.get('label')
+
+        if (attrs.has_key('friendcode')==True):
+            _friendCode = attrs.get('friendcode')
+
+        if (_name != '' and _type != '' and _friendCode != ''):
+
+            vDef = VariableDef( name = _name, description = _description, 
+                                type = self.typeText2typeCode(_type), 
+                                aspect = self._SLOT, 
+                                friend_code = _friendCode, 
+                                label = _label,
+                                template = self._template)
+
+            vDef.save()
+        else:
+            print "Needed attributed missed in processSlot!"
 
     def processXHTML (self, attrs):
         _href=""
@@ -247,8 +274,12 @@ class TemplateHandler(saxutils.handler.ContentHandler):
             self.processProperty(attrs)
             return
 
-        if (name == 'Wire'):
-            self.processWire(attrs)
+        if (name == 'Slot'):
+            self.processSlot(attrs)
+            return
+
+        if (name == 'Event'):
+            self.processEvent(attrs)
             return
 
         if (name == 'XHTML'):
