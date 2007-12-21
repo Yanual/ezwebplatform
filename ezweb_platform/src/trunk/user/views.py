@@ -1,3 +1,4 @@
+"""
 /* 
  * MORFEO Project 
  * http://morfeo-project.org 
@@ -34,6 +35,6 @@
  * 
  *   http://morfeo-project.org/
  */
-
+"""
 
 # Create your views here.

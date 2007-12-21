@@ -1,3 +1,4 @@
+"""
 /* 
  * MORFEO Project 
  * http://morfeo-project.org 
@@ -34,7 +35,7 @@
  * 
  *   http://morfeo-project.org/
  */
-
+"""
 
 # Implements a Full Text Search over a model
 from django.db import models, backend

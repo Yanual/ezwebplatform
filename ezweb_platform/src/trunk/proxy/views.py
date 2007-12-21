@@ -1,3 +1,4 @@
+"""
 /* 
  * MORFEO Project 
  * http://morfeo-project.org 
@@ -34,7 +35,7 @@
  * 
  *   http://morfeo-project.org/
  */
-
+"""
 
 from urllib2 import *
 from django_restapi.resource import Resource

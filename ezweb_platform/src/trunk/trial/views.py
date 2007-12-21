@@ -1,3 +1,4 @@
+"""
 /* 
  * MORFEO Project 
  * http://morfeo-project.org 
@@ -34,7 +35,7 @@
  * 
  *   http://morfeo-project.org/
  */
-
+"""
 
 # -*- coding: utf-8 -*-
 from django.shortcuts import get_object_or_404, render_to_response
