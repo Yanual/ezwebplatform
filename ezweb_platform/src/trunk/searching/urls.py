@@ -45,8 +45,8 @@ from django_restapi.responder import *
 urlpatterns = patterns('searching.views',
     
     # Search Gadgets
-    (r'^generic/(?P<value>[\@_\%_\._\!_\s_\|_\&_\(_\)_\w]+)/(?P<criteria>\w+)$', GadgetsCollectionByGenericSearch(permitted_methods=('GET', ))),
-    (r'^(?P<criteria>\w+)/(?P<value>[\@_\%_\._\!_\s_\|_\&_\(_\)_\w]+)$', GadgetsCollectionByCriteria(permitted_methods=('GET', ))),
+    (r'^generic/(?P<value>[\@_\%_\._\!_\s_\-_\|_\&_\(_\)_\w]+)/(?P<criteria>\w+)$', GadgetsCollectionByGenericSearch(permitted_methods=('GET', ))),
+    (r'^(?P<criteria>\w+)/(?P<value>[\@_\%_\._\-_\!_\s_\|_\&_\(_\)_\w]+)$', GadgetsCollectionByCriteria(permitted_methods=('GET', ))),
     #(r'^advanced$', GadgetsCollectionByCriteria(permitted_methods=('GET', ))),
     
  )
