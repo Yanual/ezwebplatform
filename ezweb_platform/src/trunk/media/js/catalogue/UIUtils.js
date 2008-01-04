@@ -1,4 +1,4 @@
-/* 
+﻿/* 
  * MORFEO Project 
  * http://morfeo-project.org 
  * 
@@ -125,6 +125,27 @@ UIUtils.searchByTag = function(url, tag) {
 	opManager.repaintCatalogue(url + "/" + tag );
 }
 
+UIUtils.searchByWiring = function(url, value, wiring) {
+	this.closeInfoResource();
+	var opManager = OpManagerFactory.getInstance();
+  
+	opManager.repaintCatalogue(url + "/" + wiring + "/" + value );
+}
+
+UIUtils.searchBySlot = function(url, slot) {
+	this.closeInfoResource();
+	var opManager = OpManagerFactory.getInstance();
+
+	opManager.repaintCatalogue(url + "/" + slot );
+}
+
+UIUtils.searchGeneric = function(url, param, criteria) {
+	this.closeInfoResource();
+	var opManager = OpManagerFactory.getInstance();
+
+	opManager.repaintCatalogue(url + "/" + param + "/" + criteria );
+}
+
 UIUtils.removeTag = function(id_) {
 	var tagger = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).getTagger();
 	tagger.removeTag(id_);
@@ -237,7 +258,7 @@ UIUtils.SlideAdvancedSearchIntoView = function(element) {
 	afterFinish: function(effect) {
 		UIUtils.hidde('simple_search');
 	  	UIUtils.show('advanced_search_bottom');
-	  	document.getElementById('advanced_search_text').focus();
+	  	document.getElementById('advanced_search_text_and').focus();
 	}
     }, arguments[1] || {})
   );

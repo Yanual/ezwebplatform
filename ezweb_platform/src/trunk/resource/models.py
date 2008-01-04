@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 
 # MORFEO Project 
 # http://morfeo-project.org 
@@ -57,7 +57,7 @@ class GadgetResource(models.Model):
      wiki_page_uri = models.CharField(max_length=500, null=True) 
      template_uri= models.CharField(max_length=500, null=True)
 
-     objects = SearchManager(['short_name_fti', 'vendor_fti', 'version_fti', 'author_fti', 'license_fti', 'size_fti', 'description_fti', 'mail_fti'])
+     objects = SearchManager('resource_gadgetresource',['short_name', 'vendor', 'version', 'author', 'description', 'mail'])
     
      class Meta:
 	 unique_together = ("short_name", "vendor","version")
@@ -74,7 +74,7 @@ class GadgetWiring(models.Model):
      wiring  = models.CharField(max_length=20)
      idResource = models.ForeignKey(GadgetResource)
 
-     objects = SearchManager(['friendcode_fti', 'wiring_fti'])
+     objects = SearchManager('resource_gadgetwiring',['friendcode', 'wiring'])
 
      class Admin: 
          pass 

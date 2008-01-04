@@ -1,45 +1,6 @@
-/* 
- * MORFEO Project 
- * http://morfeo-project.org 
- * 
- * Component: EzWeb
- * 
- * (C) Copyright 2004 Telefónica Investigación y Desarrollo 
- *     S.A.Unipersonal (Telefónica I+D) 
- * 
- * Info about members and contributors of the MORFEO project 
- * is available at: 
- * 
- *   http://morfeo-project.org/
- * 
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License as published by 
- * the Free Software Foundation; either version 2 of the License, or 
- * (at your option) any later version. 
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
- * GNU General Public License for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
- * 
- * If you want to use this software an plan to distribute a 
- * proprietary application in any way, and you are not licensing and 
- * distributing your source code under GPL, you probably need to 
- * purchase a commercial license of the product.  More info about 
- * licensing options is available at: 
- * 
- *   http://morfeo-project.org/
- */
-
-
-
-//////////////////////////////////////////////
-//                RESOURCE                  //
-//////////////////////////////////////////////
+	//////////////////////////////////////////////
+  //                RESOURCE                  //
+  //////////////////////////////////////////////
 
 function Resource( id_, resourceXML_, urlTemplate_) {
 	
@@ -56,6 +17,10 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 	this.getUriWiki = function() { return state.getUriWiki(); }
 	this.getTags = function() { return state.getTags(); }
 	this.setTags = function(tags_) { state.setTags(tags_); }
+	this.getSlots = function() { return state.getSlots(); }
+	this.setSlots = function(slots_) { state.setSlots(slots_); }
+	this.getEvents = function() { return state.getEvents(); }
+	this.setEvents = function(events_) { state.setEvents(events_); }
 	this.getTagger = function() { return tagger; }
 	
 	this.paint = function(){
@@ -106,7 +71,9 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 									"<span class='version'>" + state.getVersion() + "</span></div>" +
 									"<div class='vendor'>" + state.getVendor() + "</div>" +
 									"<div class='image'><img src='" + state.getUriImage() + "' alt='" + state.getName()+ "&nbsp;" + state.getVersion() + "'/></div>" +
-									"<div class='description'>Descripci&oacute;n:<br/><div class='text'>" + state.getDescription() + "</div></div>" +
+									"<div class='description'>Descripci&oacute;n:<br/><div class='text'>" + state.getDescription() + "</div></div><br/>" +
+									"<div class='Events'>Events:" +_events()+ "</div>" +
+									"<div class='Slots'>Slots:" +_slots()+ "</div>" +
 									"<div class='tagcloud'>Tagcloud:<br/><div id='" + id + "_tagcloud' class='tags'>" + _tagsToTagcloud() + "</div></div>" +
 									"<div id='add_tags_panel' class='new_tags' style='display:none;'>" +
 										"<div class='title'>Nuevas Etiquetas:</div>" +
@@ -187,6 +154,32 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 		return tagsHTML;
 	}
 	
+	var _events = function(){
+		var eventsHTML = '';
+		var eventsAux = state.getEvents();
+		
+		for (var i=0; i<eventsAux.length; i++)
+		{
+			
+			var jsCall = 'javascript:UIUtils.searchByWiring(URIs.GET_RESOURCES_BY_WIRING, "' + eventsAux[i] + '", "' + 'event' + '");';
+			eventsHTML += ("<span class='multiple_size_tag'>"+"<a title='Buscar " + eventsAux[i] +"' href='" + jsCall + "'>" + eventsAux[i] + "</a>" + ((i<(eventsAux.length-1))?",":"") + "</span> ");
+		}
+		return eventsHTML;
+	}
+	
+	var _slots = function(){
+		var slotsHTML = '';
+		var slotsAux = state.getSlots();
+		
+		for (var i=0; i<slotsAux.length; i++)
+		{
+			
+			var jsCall = 'javascript:UIUtils.searchByWiring(URIs.GET_RESOURCES_BY_WIRING, "' + slotsAux[i] + '", "' + 'event' + '");';
+			slotsHTML += ("<span class='multiple_size_tag'>"+"<a title='Buscar " + slotsAux[i] +"' href='" + jsCall + "'>" + slotsAux[i] + "</a>" + ((i<(slotsAux.length-1))?",":"") + "</span> ");
+		}
+		return slotsHTML;
+	}
+	
 	var _tagsToTagcloud = function(){
 		var tagsHTML = '';
 		var tagsAux = state.getTags();
@@ -251,6 +244,10 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 		persistenceEngine.send_post(url_Server, url_, this, loadResource, onError);
 	}
 	
+	
+	
+	
+	
 	// *******************
 	//  PRIVATE VARIABLES
 	// *******************
@@ -270,11 +267,11 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 	}
 }
 
-//////////////////////////////////////////////
-//       RESOURCESTATE (State Object)       //
-//////////////////////////////////////////////
-
-function ResourceState(resourceXML_) {
+  //////////////////////////////////////////////
+  //       RESOURCESTATE (State Object)       //
+  //////////////////////////////////////////////
+  
+	function ResourceState(resourceXML_) {
 
 	// *******************
 	//  PRIVATE VARIABLES
@@ -288,6 +285,8 @@ function ResourceState(resourceXML_) {
 	var uriWiki = null;
 	var uriTemplate = null;
 	var tags = [];
+	var slots = [];
+	var events = [];
 	
 	// ******************
 	//  PUBLIC FUNCTIONS
@@ -310,7 +309,27 @@ function ResourceState(resourceXML_) {
 		}
 	}
 	
+	this.setSlots = function(slotsXML_) {
+		slots.clear();
+		var slotsXMLList = slotsXML_.getElementsByTagName("Slot");
+		for (var i=0; i<slotsXMLList.length; i++)
+		{
+			slots.push(slotsXMLList[i].firstChild.nodeValue);
+		}
+	}
+	
+	this.setEvents = function(eventsXML_) {
+		events.clear();
+		var eventsXMLList = eventsXML_.getElementsByTagName("Event");
+		for (var i=0; i<eventsXMLList.length; i++)
+		{
+			events.push(eventsXMLList[i].firstChild.nodeValue);
+		}
+	}
+	
 	this.getTags = function() { return tags; }
+	this.getSlots = function() { return slots; }
+	this.getEvents = function() { return events; }
 	
 	// Parsing XML Resource
 	// Constructing the structure
@@ -323,4 +342,7 @@ function ResourceState(resourceXML_) {
 	uriWiki = resourceXML_.getElementsByTagName("uriWiki")[0].firstChild.nodeValue;
 	uriTemplate = resourceXML_.getElementsByTagName("uriTemplate")[0].firstChild.nodeValue;
 	this.setTags(resourceXML_.getElementsByTagName("Tags")[0]);
+	this.setSlots(resourceXML_.getElementsByTagName("Slots")[0]);
+	this.setEvents(resourceXML_.getElementsByTagName("Events")[0]);
+
 }

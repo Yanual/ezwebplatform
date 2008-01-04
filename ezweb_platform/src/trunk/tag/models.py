@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 
 # MORFEO Project 
 # http://morfeo-project.org 
@@ -53,7 +53,7 @@ class UserTag(models.Model):
      idResource = models.ForeignKey(GadgetResource)
  
      
-     objects = SearchManager(['tag_fti', 'value_fti', 'weight_fti', 'criteria_fti'])
+     objects = SearchManager('tag_usertag',['tag', 'value', 'weight', 'criteria'])
          
      class Meta:
 	 unique_together = ("tag", "idUser","idResource")

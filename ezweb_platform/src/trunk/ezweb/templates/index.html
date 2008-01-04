@@ -1,4 +1,4 @@
-{% load i18n %}
+﻿{% load i18n %}
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -25,7 +25,9 @@ _URIConstants.prototype.GET_GADGETS = '/user/{{ user.username }}/gadgets';
 _URIConstants.prototype.GET_POST_WIRING = '/user/{{ user.username }}/connectable';
 _URIConstants.prototype.GET_POST_RESOURCES = '/user/{{ user.username }}/catalogue/resource';
 _URIConstants.prototype.GET_RESOURCES_BY_TAG = '/user/{{ user.username }}/catalogue/search/tag';
+_URIConstants.prototype.GET_RESOURCES_BY_WIRING = '/user/{{ user.username }}/catalogue/search';
 _URIConstants.prototype.POST_RESOURCE_TAGS = '/user/{{ user.username }}/catalogue/tag';
+_URIConstants.prototype.GET_RESOURCES_SEARCH_GENERIC = '/user/{{ user.username }}/catalogue/search/generic';
 _URIConstants.prototype.POST_IGADGET = new Template ('/user/{{ user.username }}/igadgets/#{iGadgetId}');
 _URIConstants.prototype.PROXY = '/proxy';
 _URIConstants.prototype.GET_IGADGET_VARIABLES = new Template ('/user/{{ user.username }}/igadgets/#{iGadgetId}/variables');

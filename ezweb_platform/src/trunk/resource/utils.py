@@ -5,8 +5,8 @@
 # 
 # Component: EzWeb
 # 
-# (C) Copyright 2004 TelefÃ³nica InvestigaciÃ³n y Desarrollo 
-#     S.A.Unipersonal (TelefÃ³nica I+D) 
+# (C) Copyright 2004 Telefónica Investigación y Desarrollo 
+#     S.A.Unipersonal (Telefónica I+D) 
 # 
 # Info about members and contributors of the MORFEO project 
 # is available at: 
@@ -79,13 +79,10 @@ def get_xml_description(gadgetlist):
 
 def get_events_by_resource(gadget_id):
 
-    xml_tag=''	
     xml_event=''
 		
     for e in GadgetWiring.objects.filter(idResource=gadget_id, wiring='out'):
-        xml_tag +='<Event>\n\
-        <FriendCode>'+e.friendcode+'</FriendCode>\n\
-	</Event>'
+        xml_event +='<Event>'+e.friendcode+'</Event>'
 
     response='<Events>'+xml_event+'</Events>'
     return response
@@ -97,9 +94,7 @@ def get_slots_by_resource(gadget_id):
     xml_slot=''
 		
     for e in GadgetWiring.objects.filter(idResource=gadget_id, wiring='in'):
-        xml_slot +='<Slot>\n\
-        <FriendCode>'+e.friendcode+'</FriendCode>\n\
-	</Slot>'
+        xml_slot +='<Slot>'+e.friendcode+'</Slot>'
    
     response='<Slots>'+xml_slot+'</Slots>'
     return response
