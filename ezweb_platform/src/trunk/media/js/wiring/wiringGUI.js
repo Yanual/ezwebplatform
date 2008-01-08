@@ -65,7 +65,7 @@ wiringInterface.prototype.addChannelInterface = function (name){
 	var inputDel = document.createElement("input");
 	inputDel.setAttribute("type", "image");
 	inputDel.setAttribute("onclick", "wiringInterface.prototype.deleteChannel('"+ name +"'); opManager.restaure(); WiringFactory.getInstance().serialize();");
-    inputDel.setAttribute("src", "/ezweb/images/cancel.png");
+    inputDel.setAttribute("src", "/ezweb/images/dialog-cancel.png");
 //    inputDel.setAttribute("style", "padding-right: 2px;");
     li.appendChild(inputDel);
     var chkChannel = document.createElement("input");
@@ -85,7 +85,8 @@ wiringInterface.prototype.addChannelInterface = function (name){
 	li.setAttribute("id", idChannel);
 
     var ulVal = document.createElement("ul");
-    var textNodeValue = document.createTextNode("Value: "+ w.viewValue(name));
+//    var textNodeValue = document.createTextNode("Value: "+ w.viewValue(name));
+    var textNodeValue = document.createTextNode(w.viewValue(name));
     var liVal = document.createElement("li");
     liVal.appendChild(textNodeValue);
     ulVal.appendChild(liVal);
@@ -99,7 +100,6 @@ wiringInterface.prototype.addChannelInterface = function (name){
 wiringInterface.prototype.addGadgetInterface = function (object){
     var ulEvents = document.createElement("ul");
     ulEvents.setAttribute("id", "events_ul_gadget_"+ object.id);
-    ulEvents.setAttribute("class", "on");
     var ulSlots = document.createElement("ul");
     ulSlots.setAttribute("id", "slots_ul_gadget_"+ object.id);
     var connections = w.gadgetConnections(object.id);
@@ -135,7 +135,6 @@ wiringInterface.prototype.addGadgetInterface = function (object){
 			divItem.appendChild(labelItem);
 			liItem.appendChild(divItem);
 			liItem.setAttribute("id", idItem);
-			
 
 			if (connections[i].aspect == "EVEN") {
                 ulEvents.appendChild(liItem);
@@ -148,6 +147,7 @@ wiringInterface.prototype.addGadgetInterface = function (object){
     var li = document.createElement("li");
     li.id = "events_list_gadget_"+ object.id;
     var textNode = document.createTextNode(object.name+ " [" +object.id+ "]");
+    li.setAttribute("onclick", "javascript:{wiringInterface.prototype._toggle('EVEN', '"+ object.id +"');}");
     li.appendChild(textNode);
     if (ulEvents.childNodes.length > 0) {
         li.appendChild(ulEvents);
@@ -155,6 +155,7 @@ wiringInterface.prototype.addGadgetInterface = function (object){
     }
 
     var li = document.createElement("li");
+    li.setAttribute("onclick", "javascript:{wiringInterface.prototype._toggle('SLOT', '"+ object.id +"');}");
     var textNode = document.createTextNode(object.name+ " [" +object.id+ "]");
     li.id = "slots_list_gadget_"+ object.id;
     li.appendChild(textNode);
@@ -164,7 +165,10 @@ wiringInterface.prototype.addGadgetInterface = function (object){
     }
 }
 
-wiringInterface.prototype.addChannelAsGadgetInterface = function (object) {
+wiringInterface.prototype.addChannelsAsGadgetInterface = function (channels) {
+    for (channel in channels) {
+        alert(channel);
+    }
 
 }
 
@@ -179,8 +183,8 @@ wiringInterface.prototype.renewInterface = function (wi) {
 		}
 		for (var j = 0; j<channels.length; j++){
 			this.addChannelInterface(channels[j])
-			this.addChannelAsGadgetInterface(channels[j])
 		}
+        this.addChannelsAsGadgetInterface(channels)
         this.channels_counter = channels.length + 1;
 	    $("channel_name").value = "Wire_"+ this.channels_counter;
 	    while(channels.include($("channel_name").value)) {
@@ -243,6 +247,19 @@ wiringInterface.prototype._changeChannel = function(item_id, gadget_id, event_na
     }
 }
 
+wiringInterface.prototype._toggle = function (aspect, id) {
+    if (aspect == "EVEN") {
+        list = $("events_list_gadget_"+ id);
+    } else {
+        list = $("slots_list_gadget_"+ id);
+    }
+    if (list.className == "off") {
+        list.className = "on";
+    } else {
+        list.className = "off";
+    }
+}
+
 wiringInterface.prototype._highlight = function (chk_id, friend_code) {
     if (this.friend_codes[friend_code]) {
         var fcList = this.friend_codes[friend_code].list;
@@ -273,8 +290,10 @@ wiringInterface.prototype._highlight_friend_code = function (friend_code, highli
         for (var i = 0; i < fcList.length; i++) {
             if (highlight) {
                 $(fcList[i]).style.backgroundColor = fcColor;
+                $(fcList[i]).parentNode.parentNode.className = "on";
             } else {
                 $(fcList[i]).style.backgroundColor = fcBgColor;            
+                $(fcList[i]).parentNode.parentNode.className = "on";
             }
         }
     }

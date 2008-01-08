@@ -222,21 +222,24 @@ a:hover{
 }
 
 #wiring .columnCell .outsTitle {
-    background-image: url(/ezweb/images/go-last.png);
-    background-repeat: no-repeat;
-    padding: 0 0 0 18px;
-}
-
-#wiring .columnCell .insTitle {
     background-image: url(/ezweb/images/go-first.png);
     background-repeat: no-repeat;
     padding: 0 0 0 18px;
+    font-weight: bold;
+}
+
+#wiring .columnCell .insTitle {
+    background-image: url(/ezweb/images/go-last.png);
+    background-repeat: no-repeat;
+    padding: 0 0 0 18px;
+    font-weight: bold;
 }
 
 #wiring .columnCell .wiresTitle {
     background-image: url(/ezweb/images/connect_creating.png);
     background-repeat: no-repeat;
     padding: 0 0 0 18px;
+    font-weight: bold;
 }
 
 #wiring .borderLeftCell {
@@ -260,20 +263,31 @@ a:hover{
     padding: 2px;
 }
 
+#wiring .columnCell .on {
+    background-repeat: no-repeat;
+    list-style-image: url(/ezweb/images/list-add.png);
+    background-position: 3px center;
+    list-style-position: inside;
+    list-style-type: none;
+    cursor: pointer;
+}
 
-/*#wiring .columnCell .on {*/
-/*    background-repeat: no-repeat;*/
-/*    list-style-image: url(/ezweb/images/list-add.png);*/
-/*    list-style-position: inside;*/
-/*    list-style-type: none;*/
-/*}*/
+#wiring .columnCell .off {
+    background-repeat: no-repeat;
+    list-style-image: url(/ezweb/images/list-remove.png);
+    background-position: 3px center;
+    list-style-position: inside;
+    list-style-type: none;
+    cursor: pointer;
+}
 
-/*#wiring .columnCell .off {*/
-/*    background-repeat: no-repeat;*/
-/*    list-style-image: url(/ezweb/images/list-remove.png);*/
-/*    list-style-position: inside;*/
-/*    list-style-type: none;*/
-/*}*/
+#wiring .columnCell .on ul {
+    display: block;
+}
+
+#wiring .columnCell .off ul {
+    display: none;
+}
 
 #wiring .columnCell #channels_list li {
     background-repeat: no-repeat;
@@ -289,19 +303,21 @@ a:hover{
 
 #wiring .columnCell #channels_list ul li {
     background-repeat: no-repeat;
-    list-style-image: url(/ezweb/images/applications-system.png);
+    list-style-image: url(/ezweb/images/pencil.png);
     list-style-position: inside;
 }
 
 #wiring .columnCell #slots_list ul li {
-    background-repeat: no-repeat;
-    list-style-image: url(/ezweb/images/energy.png);
+    list-style: none;
+/*    background-repeat: no-repeat;*/
+/*    list-style-image: url(/ezweb/images/energy.png);*/
 }
 
 
 #wiring .columnCell #events_list ul li {
-    background-repeat: no-repeat;
-    list-style-image: url(/ezweb/images/connect_no.png);
+    list-style: none;
+/*    background-repeat: no-repeat;*/
+/*    list-style-image: url(/ezweb/images/connect_no.png);*/
 }
 
 
