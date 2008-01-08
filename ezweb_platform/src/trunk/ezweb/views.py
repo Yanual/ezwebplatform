@@ -7,6 +7,6 @@ from django.contrib.admin.views.decorators import staff_member_required
 
 
 def index(request, user_name=None):
-    """ vista demostrador """
-    return render_to_response('index.html', {}, context_instance=RequestContext(request))
+    """ Vista principal """
+    return render_to_response('index.html', {'current_tab': 'dragboard'}, context_instance=RequestContext(request))
 index = staff_member_required(index)

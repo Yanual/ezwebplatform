@@ -42,6 +42,7 @@ function wiringInterface(){
 	this.loaded = false;
 	w = WiringFactory.getInstance();
 	wiringInterface.prototype.friend_codes = {};
+	wiringInterface.prototype.highlight_color = "#FFFFE0";
 	this.friend_codes_counter = 0;
     this.channels_counter = 1;
     this.last_checked = null;
@@ -55,7 +56,7 @@ wiringInterface.prototype.unloaded = function (){
 	$("events_list").innerHTML = "";
 	$("slots_list").innerHTML = "";
 	$("channels_list").innerHTML = "";
-	$("channel_name").value = "Channel_"+ this.channels_counter;
+	$("channel_name").value = "Wire_"+ this.channels_counter;
 }
 
 wiringInterface.prototype.addChannelInterface = function (name){
@@ -64,7 +65,8 @@ wiringInterface.prototype.addChannelInterface = function (name){
 	var inputDel = document.createElement("input");
 	inputDel.setAttribute("type", "image");
 	inputDel.setAttribute("onclick", "wiringInterface.prototype.deleteChannel('"+ name +"'); opManager.restaure(); WiringFactory.getInstance().serialize();");
-    inputDel.setAttribute("src", "/ezweb/js/wiring/delete.png");
+    inputDel.setAttribute("src", "/ezweb/images/cancel.png");
+//    inputDel.setAttribute("style", "padding-right: 2px;");
     li.appendChild(inputDel);
     var chkChannel = document.createElement("input");
     chkChannel.setAttribute("type", "radio");
@@ -77,6 +79,7 @@ wiringInterface.prototype.addChannelInterface = function (name){
     li.appendChild(chkChannel);
 	var labelItem = document.createElement("label");
 	labelItem.setAttribute("for", "chk_"+ idChannel);
+	labelItem.setAttribute("style", "cursor: pointer;");
 	labelItem.appendChild(textNode);
 	li.appendChild(labelItem);
 	li.setAttribute("id", idChannel);
@@ -87,23 +90,31 @@ wiringInterface.prototype.addChannelInterface = function (name){
     liVal.appendChild(textNodeValue);
     ulVal.appendChild(liVal);
     li.appendChild(ulVal);
-
+	
     $("channels_list").appendChild(li);
+    
+    wiringInterface.prototype._highlight_channel("chk_"+ idChannel, name);
 }
 
 wiringInterface.prototype.addGadgetInterface = function (object){
     var ulEvents = document.createElement("ul");
+    ulEvents.setAttribute("id", "events_ul_gadget_"+ object.id);
+    ulEvents.setAttribute("class", "on");
     var ulSlots = document.createElement("ul");
+    ulSlots.setAttribute("id", "slots_ul_gadget_"+ object.id);
     var connections = w.gadgetConnections(object.id);
 	if (connections) {
 		for (var i = 0; i < connections.length; i++) {
             var liItem = document.createElement("li");
+            var divItem = document.createElement("div");
             var chkItem = document.createElement("input");
             var idItem = "gadget_"+ object.id +"_"+ connections[i].name;
+            divItem.setAttribute("id", "div_"+ idItem);
             chkItem.setAttribute("id", "chk_"+ idItem);
             chkItem.setAttribute("disabled", "disabled");
             chkItem.setAttribute("type", "checkbox");
-            liItem.appendChild(chkItem);
+
+            divItem.appendChild(chkItem);
 			var labelItem = document.createElement("label");
 			labelItem.setAttribute("for", "chk_"+ idItem);
 			labelItem.setAttribute("id", "lbl_chk_"+ idItem);
@@ -112,17 +123,19 @@ wiringInterface.prototype.addGadgetInterface = function (object){
 			    if (!wiringInterface.prototype.friend_codes[connections[i].friend_code]) {
 			        wiringInterface.prototype.friend_codes[connections[i].friend_code] = {};
 			        wiringInterface.prototype.friend_codes[connections[i].friend_code].list = [];
-                                wiringInterface.prototype.friend_codes[connections[i].friend_code].color = wiringInterface.prototype.color_scheme[this.friend_codes_counter++];
+                    wiringInterface.prototype.friend_codes[connections[i].friend_code].color = wiringInterface.prototype.color_scheme[this.friend_codes_counter++];
 			    }
                 wiringInterface.prototype.friend_codes[connections[i].friend_code].list.push(idItem);
-				liItem.setAttribute("onclick", "javascript:{wiringInterface.prototype._changeChannel('chk_"+ idItem +"', '"+ object.id +"', '"+ connections[i].name +"', '"+ connections[i].aspect +"');}");
-                liItem.setAttribute("onmouseover", "wiringInterface.prototype._highlight_friend_code('"+ connections[i].friend_code +"');");
-                liItem.setAttribute("onmouseout", "wiringInterface.prototype._highlight_friend_code('"+ connections[i].friend_code +"');");
+				liItem.setAttribute("onclick", "javascript:{wiringInterface.prototype._changeChannel('"+ idItem +"', '"+ object.id +"', '"+ connections[i].name +"', '"+ connections[i].aspect +"', '"+ connections[i].friend_code +"');}");
+                liItem.setAttribute("onmouseover", "wiringInterface.prototype._highlight_friend_code('"+ connections[i].friend_code +"', true);");
+                liItem.setAttribute("onmouseout", "wiringInterface.prototype._highlight_friend_code('"+ connections[i].friend_code +"', false);");
 
-            }
+            }    
 			labelItem.appendChild(textNodeItem);
-			liItem.appendChild(labelItem);
+			divItem.appendChild(labelItem);
+			liItem.appendChild(divItem);
 			liItem.setAttribute("id", idItem);
+			
 
 			if (connections[i].aspect == "EVEN") {
                 ulEvents.appendChild(liItem);
@@ -151,7 +164,12 @@ wiringInterface.prototype.addGadgetInterface = function (object){
     }
 }
 
-wiringInterface.prototype.renewInterface = function (w){
+wiringInterface.prototype.addChannelAsGadgetInterface = function (object) {
+
+}
+
+wiringInterface.prototype.renewInterface = function (wi) {
+    w = wi;
 	w.edition();
 	if (!this.loaded){
 		var iGadgets = w.getGadgetsId();
@@ -161,9 +179,14 @@ wiringInterface.prototype.renewInterface = function (w){
 		}
 		for (var j = 0; j<channels.length; j++){
 			this.addChannelInterface(channels[j])
+			this.addChannelAsGadgetInterface(channels[j])
 		}
         this.channels_counter = channels.length + 1;
-	    $("channel_name").value = "Channel_"+ this.channels_counter;
+	    $("channel_name").value = "Wire_"+ this.channels_counter;
+	    while(channels.include($("channel_name").value)) {
+            this.channels_counter++;
+	        $("channel_name").value = "Wire_"+ this.channels_counter;
+        }
 		this.loaded = true;
 	}
 }
@@ -171,12 +194,16 @@ wiringInterface.prototype.renewInterface = function (w){
 wiringInterface.prototype.addChannel = function () {
 	var result = null;
 	var name = $("channel_name").value;
+    while(w.getInOutsId().include($("channel_name").value)) {
+        this.channels_counter++;
+        $("channel_name").value = "Wire_"+ this.channels_counter;
+    }
 	name = name.strip();
 	if (!name.empty()) {
 		if (!(result = w.createChannel(name))){	
 			this.addChannelInterface(name);
-            this.channels_counter += 1;
-	        $("channel_name").value = "Channel_"+ this.channels_counter;
+            this.channels_counter++;
+	        $("channel_name").value = "Wire_"+ this.channels_counter;
 		}
 	}
 }
@@ -187,26 +214,33 @@ wiringInterface.prototype.deleteChannel = function (object){
         var idChannel = "channel_"+ object;
         $(idChannel).remove();
         wiringInterface.prototype._enable_all(false);
+        this.channels_counter--;
 	}
 }
 
-wiringInterface.prototype._changeChannel = function(chk_id, gadget_id, event_name, aspect) {
+wiringInterface.prototype._changeChannel = function(item_id, gadget_id, event_name, aspect, friend_code) {
     channel_name = this.last_checked;
-    if ($(chk_id).checked) {
-        if (aspect == "EVEN") {
-            w.addChannelInput(gadget_id, event_name, channel_name);
+    chk_id = "chk_"+ item_id;
+    if ($(chk_id).getAttribute("disabled") != "disabled") {
+        if ($(chk_id).checked) {
+            $("div_"+ item_id).style.backgroundColor = wiringInterface.prototype.highlight_color;
+            $("lbl_"+ chk_id).style.fontWeight = "bold";
+            if (aspect == "EVEN") {
+                w.addChannelInput(gadget_id, event_name, channel_name);
+            } else {
+                w.addChannelOutput(gadget_id, event_name, channel_name);
+            }
         } else {
-            w.addChannelOutput(gadget_id, event_name, channel_name);
-        }
-    } else {
-        if (aspect == "EVEN") {
-            w.removeChannelInput(gadget_id, event_name, channel_name);
-        } else {
-            w.removeChannelOutput(gadget_id, event_name, channel_name);
-        }
+            $("div_"+ item_id).style.backgroundColor = "";
+            $("lbl_"+ chk_id).style.fontWeight = "normal";
+            if (aspect == "EVEN") {
+                w.removeChannelInput(gadget_id, event_name, channel_name);
+            } else {
+                w.removeChannelOutput(gadget_id, event_name, channel_name);
+            }
 
+        }
     }
-
 }
 
 wiringInterface.prototype._highlight = function (chk_id, friend_code) {
@@ -235,38 +269,40 @@ wiringInterface.prototype._highlight_friend_code = function (friend_code, highli
     if (this.friend_codes[friend_code]) {
         var fcList = this.friend_codes[friend_code].list;
         var fcColor = this.friend_codes[friend_code].color;
+        var fcBgColor = "";
         for (var i = 0; i < fcList.length; i++) {
-            tmp_color = $(fcList[i]).style.backgroundColor;
-            $(fcList[i]).style.backgroundColor = fcColor;
-            this.friend_codes[friend_code].color = tmp_color;
+            if (highlight) {
+                $(fcList[i]).style.backgroundColor = fcColor;
+            } else {
+                $(fcList[i]).style.backgroundColor = fcBgColor;            
+            }
         }
     }
 }
 
-
 wiringInterface.prototype._highlight_channel = function (chk_id, channel_name) {
     wiringInterface.prototype._enable_all();
-    if (this.last_checked) {
-        $("channel_"+ this.last_checked).style.backgroundColor = null;
+    if (this.last_checked && $("channel_"+ this.last_checked)) {
+        $("channel_"+ this.last_checked).style.backgroundColor = "";
         channels = w.connections(this.last_checked);
         if (channels) {
             channel_list = channels["input"].concat(channels["output"]);
             for(var i = 0; i < channel_list.length; i++) {
                 var chk_gadget_id = "chk_gadget_"+ channel_list[i].id +"_"+ channel_list[i].name;
                 $(chk_gadget_id).checked = false;
-                $("gadget_"+ channel_list[i].id +"_"+ channel_list[i].name).style.backgroundColor = null;
+                $("div_gadget_"+ channel_list[i].id +"_"+ channel_list[i].name).style.backgroundColor = "";
                 $("lbl_"+ chk_gadget_id).style.fontWeight = "normal";
             }
         }
     }
-    $("channel_"+ channel_name).style.backgroundColor = "#FFFFE0";
+    $("channel_"+ channel_name).style.backgroundColor = wiringInterface.prototype.highlight_color;
     channels = w.connections(channel_name);
     if (channels) {
         channel_list = channels["input"].concat(channels["output"]);
         for(var i = 0; i < channel_list.length; i++) {
             var chk_gadget_id = "chk_gadget_"+ channel_list[i].id +"_"+ channel_list[i].name;
-            $(chk_gadget_id).checked = $(chk_id).checked;
-            $("gadget_"+ channel_list[i].id +"_"+ channel_list[i].name).style.backgroundColor = "#FFFFE0";
+            $(chk_gadget_id).checked = true;
+            $("div_gadget_"+ channel_list[i].id +"_"+ channel_list[i].name).style.backgroundColor = wiringInterface.prototype.highlight_color;
             $("lbl_"+ chk_gadget_id).style.fontWeight = "bold";
         }
     }
@@ -284,8 +320,20 @@ wiringInterface.prototype._enable_all = function(enabled) {
             } else {
                 $("chk_"+ idItem).setAttribute("disabled", "disabled");
             }
-            $(idItem).style.backgroundColor = null;
+            $(idItem).style.backgroundColor = "";
+            $("div_"+ idItem).style.backgroundColor = "";
+            $("chk_"+ idItem).checked = false;
+            $("lbl_chk_"+ idItem).style.fontWeight = "normal";
         }
 	}
+    if (this.last_checked && $("channel_"+ this.last_checked)) {
+        $("channel_"+ this.last_checked).style.backgroundColor = "";
+    }
+
     this.disabled_all = false;
+}
+
+wiringInterface.prototype.currentTab = function(tab) {
+    var current_tab = {"tab": tab}
+    // alert(Object.toJSON(current_tab));
 }

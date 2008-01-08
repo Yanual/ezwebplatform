@@ -3,19 +3,19 @@
     <div id="channel_list" style="display: block;">
     <table class="tableCell"><tr>
         <td class="columnCell">
-            {% trans "Ins list" %}:
-            <ul id="events_list"></ul>
+            <div class="outsTitle">{% trans "Outs list" %}:</div>
+            <ul id="slots_list"></ul>
 
-        </td><td class="columnCell">
-            {% trans "New wire" %}:
-            <input type="text" id="channel_name" name="channel_name"/>
-            <input id="add_channel" type="image" src="{{ MEDIA_URL }}js/wiring/add.png" title="Create channel" alt= "create channel" onclick="javascript:{wI.addChannel(); opManager.restaure(); WiringFactory.getInstance().serialize();}"/>
+        </td><td class="columnCell borderLeftCell">
+            <div class="wiresTitle">{% trans "Wires list" %}:</div>
+            New: <input type="text" id="channel_name" name="channel_name"/>
+            <input id="add_channel" type="image" src="{{ MEDIA_URL }}js/wiring/add.png" title="Create channel" alt= "Create channel" onclick="javascript:{wI.addChannel(); opManager.restaure(); WiringFactory.getInstance().serialize();}"/>
 <!--		    <input id="refreshbutton" type="image" src="{{ MEDIA_URL }}js/wiring/disk.png" title="Save data" alt="Save changes" onclick="javascript:{opManager.restaure(); WiringFactory.getInstance().serialize();}">-->
             <ul id="channels_list"></ul>
 
-        </td><td class="columnCell">
-            {% trans "Outs list" %}:
-            <ul id="slots_list"></ul>
+        </td><td class="columnCell borderLeftCell">
+            <div class="insTitle">{% trans "Ins list" %}:</div>
+            <ul id="events_list"></ul>
 
         </td></tr>
     </tr></table>

@@ -83,6 +83,7 @@ var URIs = new _URIConstants();
 	function showInterface(element) {
 		var tabs = ["wiring", "showcase", "dragboard"];
 
+
 		for (var i = 0; i < tabs.length; i++) {
 			$(tabs[i] + "_container").style.zIndex = 1;
 			$(tabs[i] + "_tab").className = "tab";
@@ -99,7 +100,7 @@ var URIs = new _URIConstants();
 		opManager.repaintCatalogue(URIs.GET_POST_RESOURCES);
 		showInterface('showcase');
 		UIUtils.setResourcesWidth();
-		document.getElementById('simple_search_text').focus();
+		$('simple_search_text').focus();
 
     	opManager.restaure();
     	WiringFactory.getInstance().serialize();
@@ -116,7 +117,6 @@ var URIs = new _URIConstants();
 
 	function show_wiring() {
 		wI.renewInterface(WiringFactory.getInstance());
-		//wI.renewInterface();
 		showInterface('wiring');
 	}
 
@@ -143,7 +143,7 @@ var URIs = new _URIConstants();
 
 <!-- HEADER -->
 <div id="header">
-  <div id="greeting">{% trans "Welcome" %}, {{ user.username }} / <a href="/logout">{% trans "Exit" %}</a></div>
+  <div id="greeting"><!-- {{ current_tab }} -->{% trans "Welcome" %}, {{ user.username }} / <a href="/logout">{% trans "Exit" %}</a></div>
   <img id="logo" src="{{ MEDIA_URL }}images/logo.gif" alt="EzWeb Logo">
   <div class="tab_section">
     <span id="wiring_tab" class="tab" onclick="show_wiring();">{% trans "My Wires" %}</span>
