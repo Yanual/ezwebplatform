@@ -179,8 +179,8 @@ var WiringFactory = function () {
 			
 			if (arguments.length == 2){
 				if (iGadgetList[iGadgetId] == undefined) {
-					var events = template.getEventsId();
-					var slots = template.getSlotsId();
+					var events = template.getEvents();
+					var slots = template.getSlots();
 					
 					var itemList = [];
 					gadget["id"] = iGadgetId;
@@ -193,16 +193,18 @@ var WiringFactory = function () {
 					// The instance of the iGadget doesn't exist.
 					for (var i = 0; i < events.length; i++){
 						var item = new Object();
-						item["name"] = events[i];
-						item["aspect"] = "EVEN";
+						item["name"] = events[i].name;
+						item["aspect"] = events[i].aspect;
+						item["friend_code"] = events[i].friend_code;
 						item["ref"] = new wEvent(iGadgetId, item["name"]);
 						itemList.push(item);
 								
 					}
 					for (var j = 0; j < slots.length; j++){
 						var item = new Object();
-						item["name"] = slots[j];
-						item["aspect"] = "SLOT";
+						item["name"] = slots[j].name;
+						item["aspect"] = slots[j].aspect;
+						item["friend_code"] = slots[j].friend_code;
 						item["ref"] = new wSlot(iGadgetId, item["name"]);
 						itemList.push(item);
 					}
