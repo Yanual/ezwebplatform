@@ -695,8 +695,7 @@ serviceHired.set(rows[row*5+4].innerHTML);
 &lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;TV&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;&lt;/table&gt;
-&lt;/body&gt;&lt;/html&gt;
-</field>
+&lt;/body&gt;&lt;/html&gt;</field>
     </object>
     <object pk="2" model="gadget.xhtml">
         <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Visor_Datos_Equipo/1.0/xhtml</field>
@@ -768,105 +767,6 @@ address.set(devices[device][9]);
 &lt;/body&gt;
 &lt;/html&gt;</field>
     </object>
-    <object pk="5" model="gadget.xhtml">
-        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/yahoo_trip_search/1.1/xhtml</field>
-        <field type="TextField" name="code">&lt;html&gt;
-&lt;head&gt;
-&lt;style&gt;
-img {
-	border: 0px;
-}
-.res {
-	border: 0px solid;
-	padding: 5px;
-	margin: 4px 0 4px 0;
-	background: #D7E1E8;
-	clear:both;
-	overflow:hidden;
-}
-.res a{
-	float:left;
-	text-decoration:none;
-	padding-right:5px;
-}
-.info{
-	padding-left:5px;
-	vertical-align:top;
-}
-.info a{
-	font-size: 7pt;
-	text-align:right;
-}
-.title{
-	font-size: 11pt;
-	font-style: italic;
-        font-family: "Verdana";
-	padding-bottom: 3px;
-}
-.desc{
-	font-size: 8pt;
-	padding-bottom: 3px;
-}
-&lt;/style&gt;
-&lt;/head&gt;
-&lt;body&gt;
-&lt;script language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
-&lt;script&gt;
-var poi = EzWebAPI.createRGadgetVariable("poi", searchResults);
-var travel = EzWebAPI.createRWGadgetVariable("travel");
-
-function loadplan(idplan){
-
-	travel.set(idplan);
-}
-
-function searchResults(place){
-
-        var url=encodeURI("http://travel.yahooapis.com/TripService/V1.1/tripSearch?appid=YahooDemo&amp;query="+ place);
-	EzWebAPI.send_get(url,this,searchOk, searchFail);
- }
-
-function searchOk(res){
-//extract the search result information
-	var xml = res.responseXML.documentElement;
-	var result;
-	
-	divres = document.getElementById("resultados");
-	results = xml.getElementsByTagName('Result');
-	divres.innerHTML="";
-	for (i = 0; i &lt; results.length; i++){ 
-		result = results[i];
-		id = result.getAttribute("id");
-		thumbnail = result.getElementsByTagName("Image")[0].getElementsByTagName("Url")[0].firstChild.nodeValue;
-		title = result.getElementsByTagName("Title")[0].firstChild.nodeValue;
-		if (result.getElementsByTagName("Summary")[0].firstChild != null){
-			summary = result.getElementsByTagName("Summary")[0].firstChild.nodeValue;
-			summary = summary.substring(0,Math.min(summary.length, 150))+"...";
-			summary = "&lt;div class='desc'&gt;"+ summary + "&lt;/div&gt;";
-		}
-		else{
-			summary = "";
-		}
-
-		newdiv = document.createElement('div');
-		newdiv.className = "res";
-		newdiv.innerHTML= "&lt;a href='javascript:loadplan("+id+");'&gt;&lt;img src='"+thumbnail+"'/&gt;&lt;/a&gt;&lt;div class='info'&gt;&lt;div class='title'&gt;" + title + "&lt;/div&gt;"+summary+"&lt;a href='javascript:loadplan("+id+");'&gt;+ info&lt;/a&gt;&lt;/div&gt;";
-		divres.appendChild(newdiv);
-		 
-	}
-}
-
-function searchFail(res){
-	alert("fallo en el send_get");
-}
-
-&lt;/script&gt;
-&lt;img src="http://mac.hi.inet/~pruebas/trip_search.gif"/&gt;
-&lt;div id="resultados"&gt;A la espera...&lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-</field>
-    </object>
     <object pk="6" model="gadget.xhtml">
         <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Amazon/1.0/xhtml</field>
         <field type="TextField" name="code">&lt;html&gt;
@@ -936,8 +836,7 @@ function searchFail(res){
 &lt;img src="http://g-ecx.images-amazon.com/images/G/01/gno/images/general/navAmazonLogoFooter._V28232323_.gif"/&gt;
 &lt;div id="resultados"&gt;A la espera...&lt;/div&gt;
 &lt;/body&gt;
-&lt;/html&gt;
-</field>
+&lt;/html&gt;</field>
     </object>
     <object pk="3" model="gadget.xhtml">
         <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Reproductor_Youtube/1.3/xhtml</field>
@@ -1009,9 +908,7 @@ function loadVideo(url_){
 
 &lt;div id="video"&gt;&lt;embed id="rep" width="340" height="260" src="http://www.youtube.com/v/d6C0bNDqf3Y&amp;rel=1" type="application/x-shockwave-flash" wmode="transparent"&gt;&lt;/embed&gt;&lt;/div&gt;
 &lt;/body&gt;
-&lt;/html&gt;
-
-</field>
+&lt;/html&gt;</field>
     </object>
     <object pk="4" model="gadget.xhtml">
         <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/tube_iptv_search/1.4/xhtml</field>
@@ -2224,8 +2121,7 @@ alert("excepcion");
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/body&gt;
-&lt;/html&gt;
-</field>
+&lt;/html&gt;</field>
     </object>
     <object pk="7" model="gadget.xhtml">
         <field type="CharField" name="uri">/user/mru/gadgets/Morfeo/tube_iptv_search/1.4/xhtml</field>
@@ -3587,107 +3483,7 @@ function configureFail(res){
 &lt;img src="http://us.i1.yimg.com/us.yimg.com/i/us/nt/ma/ma_tr_1.gif"/&gt;
 &lt;div id="resultado"&gt;A la espera...&lt;/div&gt;
 &lt;/body&gt;
-&lt;/html&gt;
-</field>
-    </object>
-    <object pk="10" model="gadget.xhtml">
-        <field type="CharField" name="uri">/user/mru/gadgets/Morfeo/yahoo_trip_search/1.1/xhtml</field>
-        <field type="TextField" name="code">&lt;html&gt;
-&lt;head&gt;
-&lt;style&gt;
-img {
-	border: 0px;
-}
-.res {
-	border: 0px solid;
-	padding: 5px;
-	margin: 4px 0 4px 0;
-	background: #D7E1E8;
-	clear:both;
-	overflow:hidden;
-}
-.res a{
-	float:left;
-	text-decoration:none;
-	padding-right:5px;
-}
-.info{
-	padding-left:5px;
-	vertical-align:top;
-}
-.info a{
-	font-size: 7pt;
-	text-align:right;
-}
-.title{
-	font-size: 11pt;
-	font-style: italic;
-        font-family: "Verdana";
-	padding-bottom: 3px;
-}
-.desc{
-	font-size: 8pt;
-	padding-bottom: 3px;
-}
-&lt;/style&gt;
-&lt;/head&gt;
-&lt;body&gt;
-&lt;script language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
-&lt;script&gt;
-var poi = EzWebAPI.createRGadgetVariable("poi", searchResults);
-var travel = EzWebAPI.createRWGadgetVariable("travel");
-
-function loadplan(idplan){
-
-	travel.set(idplan);
-}
-
-function searchResults(place){
-
-        var url=encodeURI("http://travel.yahooapis.com/TripService/V1.1/tripSearch?appid=YahooDemo&amp;query="+ place);
-	EzWebAPI.send_get(url,this,searchOk, searchFail);
- }
-
-function searchOk(res){
-//extract the search result information
-	var xml = res.responseXML.documentElement;
-	var result;
-	
-	divres = document.getElementById("resultados");
-	results = xml.getElementsByTagName('Result');
-	divres.innerHTML="";
-	for (i = 0; i &lt; results.length; i++){ 
-		result = results[i];
-		id = result.getAttribute("id");
-		thumbnail = result.getElementsByTagName("Image")[0].getElementsByTagName("Url")[0].firstChild.nodeValue;
-		title = result.getElementsByTagName("Title")[0].firstChild.nodeValue;
-		if (result.getElementsByTagName("Summary")[0].firstChild != null){
-			summary = result.getElementsByTagName("Summary")[0].firstChild.nodeValue;
-			summary = summary.substring(0,Math.min(summary.length, 150))+"...";
-			summary = "&lt;div class='desc'&gt;"+ summary + "&lt;/div&gt;";
-		}
-		else{
-			summary = "";
-		}
-
-		newdiv = document.createElement('div');
-		newdiv.className = "res";
-		newdiv.innerHTML= "&lt;a href='javascript:loadplan("+id+");'&gt;&lt;img src='"+thumbnail+"'/&gt;&lt;/a&gt;&lt;div class='info'&gt;&lt;div class='title'&gt;" + title + "&lt;/div&gt;"+summary+"&lt;a href='javascript:loadplan("+id+");'&gt;+ info&lt;/a&gt;&lt;/div&gt;";
-		divres.appendChild(newdiv);
-		 
-	}
-}
-
-function searchFail(res){
-	alert("fallo en el send_get");
-}
-
-&lt;/script&gt;
-&lt;img src="http://mac.hi.inet/~pruebas/trip_search.gif"/&gt;
-&lt;div id="resultados"&gt;A la espera...&lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-</field>
+&lt;/html&gt;</field>
     </object>
     <object pk="11" model="gadget.xhtml">
         <field type="CharField" name="uri">/user/mru/gadgets/Morfeo/Amazon/1.0/xhtml</field>
@@ -3758,8 +3554,7 @@ function searchFail(res){
 &lt;img src="http://g-ecx.images-amazon.com/images/G/01/gno/images/general/navAmazonLogoFooter._V28232323_.gif"/&gt;
 &lt;div id="resultados"&gt;A la espera...&lt;/div&gt;
 &lt;/body&gt;
-&lt;/html&gt;
-</field>
+&lt;/html&gt;</field>
     </object>
     <object pk="12" model="gadget.xhtml">
         <field type="CharField" name="uri">/user/mru/gadgets/Morfeo/LocalizadorPequeno/1.0/xhtml</field>
@@ -3887,8 +3682,7 @@ function load(){
 			&lt;/center&gt;
 		&lt;/form&gt;	
 	&lt;/body&gt;
-&lt;/html&gt;
-</field>
+&lt;/html&gt;</field>
     </object>
     <object pk="14" model="gadget.xhtml">
         <field type="CharField" name="uri">/user/mru/gadgets/Morfeo/RSSReader/1.0/xhtml</field>
@@ -4246,10 +4040,7 @@ function RSS2Channel(rssxml)
         &lt;div id="chan_copyright"&gt;&lt;/div&gt;
     &lt;/div&gt;
 &lt;/body&gt;
-&lt;/html&gt;
-
-
-</field>
+&lt;/html&gt;</field>
     </object>
     <object pk="15" model="gadget.xhtml">
         <field type="CharField" name="uri">/user/mru/gadgets/Morfeo/Flickr/1.0/xhtml</field>
@@ -4314,8 +4105,7 @@ alert("error");
 &lt;body onload="javascript:displayMenu(vkey.get());"&gt;
 	&lt;div id="content_div" style="margin:0 auto; text-align: center;"&gt;&lt;/div&gt;
 &lt;/body&gt;
-&lt;/html&gt;
-</field>
+&lt;/html&gt;</field>
     </object>
     <object pk="8" model="gadget.xhtml">
         <field type="CharField" name="uri">/user/mru/gadgets/Morfeo/Reproductor_Youtube/1.3/xhtml</field>
@@ -4385,7 +4175,202 @@ function loadVideo(url_){
 
 &lt;div id="video"&gt;&lt;embed id="rep" width="340" height="260" src="http://www.youtube.com/v/d6C0bNDqf3Y&amp;rel=1" type="application/x-shockwave-flash" wmode="transparent"&gt;&lt;/embed&gt;&lt;/div&gt;
 &lt;/body&gt;
-&lt;/html&gt;
-</field>
+&lt;/html&gt;</field>
+    </object>
+    <object pk="5" model="gadget.xhtml">
+        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/yahoo_trip_search/1.1/xhtml</field>
+        <field type="TextField" name="code">&lt;html&gt;
+&lt;head&gt;
+&lt;style&gt;
+img {
+	border: 0px;
+}
+.res {
+	border: 0px solid;
+	padding: 5px;
+	margin: 4px 0 4px 0;
+	background: #D7E1E8;
+	clear:both;
+	overflow:hidden;
+}
+.res a{
+	float:left;
+	text-decoration:none;
+	padding-right:5px;
+}
+.info{
+	padding-left:5px;
+	vertical-align:top;
+}
+.info a{
+	font-size: 7pt;
+	text-align:right;
+}
+.title{
+	font-size: 11pt;
+	font-style: italic;
+        font-family: "Verdana";
+	padding-bottom: 3px;
+}
+.desc{
+	font-size: 8pt;
+	padding-bottom: 3px;
+}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;script language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+var poi = EzWebAPI.createRGadgetVariable("poi", searchResults);
+var travel = EzWebAPI.createRWGadgetVariable("travel");
+
+function loadplan(idplan){
+
+	travel.set(idplan);
+}
+
+function searchResults(place){
+
+        var url=encodeURI("http://travel.yahooapis.com/TripService/V1.1/tripSearch?appid=YahooDemo&amp;query="+ place);
+	EzWebAPI.send_get(url,this,searchOk, searchFail);
+ }
+
+function searchOk(res){
+//extract the search result information
+	var xml = res.responseXML.documentElement;
+	var result;
+	
+	divres = document.getElementById("resultados");
+	results = xml.getElementsByTagName('Result');
+	divres.innerHTML="";
+	for (i = 0; i &lt; results.length; i++){ 
+		result = results[i];
+		id = result.getAttribute("id");
+		thumbnail = result.getElementsByTagName("Image")[0].getElementsByTagName("Url")[0].firstChild.nodeValue;
+		title = result.getElementsByTagName("Title")[0].firstChild.nodeValue;
+		if (result.getElementsByTagName("Summary")[0].firstChild != null){
+			summary = result.getElementsByTagName("Summary")[0].firstChild.nodeValue;
+			summary = summary.substring(0,Math.min(summary.length, 150))+"...";
+			summary = "&lt;div class='desc'&gt;"+ summary + "&lt;/div&gt;";
+		}
+		else{
+			summary = "";
+		}
+
+		newdiv = document.createElement('div');
+		newdiv.className = "res";
+		newdiv.innerHTML= "&lt;a href='javascript:loadplan("+id+");'&gt;&lt;img src='"+thumbnail+"'/&gt;&lt;/a&gt;&lt;div class='info'&gt;&lt;div class='title'&gt;" + title + "&lt;/div&gt;"+summary+"&lt;a href='javascript:loadplan("+id+");'&gt;+ info&lt;/a&gt;&lt;/div&gt;";
+		divres.appendChild(newdiv);
+		 
+	}
+}
+
+function searchFail(res){
+	alert("fallo en el send_get");
+}
+
+&lt;/script&gt;
+&lt;img src="http://europa.ls.fi.upm.es/ezweb/gadgets/trip_search.gif"/&gt;
+&lt;div id="resultados"&gt;A la espera...&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</field>
+    </object>
+    <object pk="10" model="gadget.xhtml">
+        <field type="CharField" name="uri">/user/mru/gadgets/Morfeo/yahoo_trip_search/1.1/xhtml</field>
+        <field type="TextField" name="code">&lt;html&gt;
+&lt;head&gt;
+&lt;style&gt;
+img {
+	border: 0px;
+}
+.res {
+	border: 0px solid;
+	padding: 5px;
+	margin: 4px 0 4px 0;
+	background: #D7E1E8;
+	clear:both;
+	overflow:hidden;
+}
+.res a{
+	float:left;
+	text-decoration:none;
+	padding-right:5px;
+}
+.info{
+	padding-left:5px;
+	vertical-align:top;
+}
+.info a{
+	font-size: 7pt;
+	text-align:right;
+}
+.title{
+	font-size: 11pt;
+	font-style: italic;
+        font-family: "Verdana";
+	padding-bottom: 3px;
+}
+.desc{
+	font-size: 8pt;
+	padding-bottom: 3px;
+}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;script language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+var poi = EzWebAPI.createRGadgetVariable("poi", searchResults);
+var travel = EzWebAPI.createRWGadgetVariable("travel");
+
+function loadplan(idplan){
+
+	travel.set(idplan);
+}
+
+function searchResults(place){
+
+        var url=encodeURI("http://travel.yahooapis.com/TripService/V1.1/tripSearch?appid=YahooDemo&amp;query="+ place);
+	EzWebAPI.send_get(url,this,searchOk, searchFail);
+ }
+
+function searchOk(res){
+//extract the search result information
+	var xml = res.responseXML.documentElement;
+	var result;
+	
+	divres = document.getElementById("resultados");
+	results = xml.getElementsByTagName('Result');
+	divres.innerHTML="";
+	for (i = 0; i &lt; results.length; i++){ 
+		result = results[i];
+		id = result.getAttribute("id");
+		thumbnail = result.getElementsByTagName("Image")[0].getElementsByTagName("Url")[0].firstChild.nodeValue;
+		title = result.getElementsByTagName("Title")[0].firstChild.nodeValue;
+		if (result.getElementsByTagName("Summary")[0].firstChild != null){
+			summary = result.getElementsByTagName("Summary")[0].firstChild.nodeValue;
+			summary = summary.substring(0,Math.min(summary.length, 150))+"...";
+			summary = "&lt;div class='desc'&gt;"+ summary + "&lt;/div&gt;";
+		}
+		else{
+			summary = "";
+		}
+
+		newdiv = document.createElement('div');
+		newdiv.className = "res";
+		newdiv.innerHTML= "&lt;a href='javascript:loadplan("+id+");'&gt;&lt;img src='"+thumbnail+"'/&gt;&lt;/a&gt;&lt;div class='info'&gt;&lt;div class='title'&gt;" + title + "&lt;/div&gt;"+summary+"&lt;a href='javascript:loadplan("+id+");'&gt;+ info&lt;/a&gt;&lt;/div&gt;";
+		divres.appendChild(newdiv);
+		 
+	}
+}
+
+function searchFail(res){
+	alert("fallo en el send_get");
+}
+
+&lt;/script&gt;
+&lt;img src="http://europa.ls.fi.upm.es/ezweb/gadgets/trip_search.gif"/&gt;
+&lt;div id="resultados"&gt;A la espera...&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</field>
     </object>
 </django-objects>
