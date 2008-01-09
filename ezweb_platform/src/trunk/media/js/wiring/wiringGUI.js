@@ -166,9 +166,10 @@ wiringInterface.prototype.addGadgetInterface = function (object){
 }
 
 wiringInterface.prototype.addChannelsAsGadgetInterface = function (channels) {
-//    for (var j = 0; j<channels.length; j++) {
-//    
-//    }
+    for (channel in channels) {
+        alert(channel);
+    }
+
 }
 
 wiringInterface.prototype.renewInterface = function (wi) {
@@ -183,7 +184,7 @@ wiringInterface.prototype.renewInterface = function (wi) {
 		for (var j = 0; j<channels.length; j++){
 			this.addChannelInterface(channels[j])
 		}
-        this.addChannelsAsGadgetInterface(channels)
+        //this.addChannelsAsGadgetInterface(channels)
         this.channels_counter = channels.length + 1;
 	    $("channel_name").value = "Wire_"+ this.channels_counter;
 	    while(channels.include($("channel_name").value)) {

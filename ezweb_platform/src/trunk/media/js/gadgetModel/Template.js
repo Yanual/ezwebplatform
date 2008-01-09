@@ -78,6 +78,8 @@ function Template(template_) {
 				case Variable.prototype.EVENT:
 					objVars[rawVar.name] = new RWVariable(igadget_, rawVar.name, rawVar.aspect, null);
 					break;
+				case Variable.prototype.EXTERNAL_CONTEXT:
+				case Variable.prototype.GADGET_CONTEXT:
 				case Variable.prototype.SLOT:
 					objVars[rawVar.name] = new RVariable(igadget_, rawVar.name, rawVar.aspect, null);
 					break;
@@ -124,6 +126,30 @@ function Template(template_) {
 		return this.prefs;
 	}
 	
+	this.getContextVars = function () {
+
+		if (this.contextVars == null) {
+			// JSON-coded Template-Variables mapping	
+			// Constructing the structure 
+		 
+			this.contextVars = new Array();
+			var rVar = null;
+			for (i = 0; i < variableList.length; i++) {
+				rVar = variableList[i];
+				switch (rVar.aspect) {
+					case Variable.prototype.EXTERNAL_CONTEXT:
+					case Variable.prototype.GADGET_CONTEXT:
+						this.contextVars.push(new ContextVar(igadget_, rVar.name, rVar.concept)); 
+						break;
+					default:
+						break;
+				}
+			}
+		}
+		return this.contextVars;
+	}
+	
+	
 	this.getUserPrefsId = function () {
         
 		// JSON-coded Template-UserPrefs mapping	
@@ -159,25 +185,6 @@ function Template(template_) {
 		}
         return objVars;
     }
-
-	this.getEventsId = function () {
-        
-		// JSON-coded Template-UserPrefs mapping	
-		// Constructing the structure 
-		 
-		var objVars = [];
-		var rawVars = variableList;
-		var rawVar = null;
-		for (i = 0; i<rawVars.length; i++) {
-			rawVar = rawVars[i];
-			if (rawVar.aspect == Variable.prototype.EVENT)
-			{
-					objVars.push(rawVar.name);
-			}
-		}
-        return objVars;
-    }
-
 	
    this.getSlots = function () {
         

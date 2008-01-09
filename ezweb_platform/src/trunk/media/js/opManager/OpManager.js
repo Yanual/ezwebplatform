@@ -57,6 +57,7 @@ var OpManagerFactory = function () {
 		this.wiringModule = null;
 		this.dragboardModule = null;
 		this.showcaseModule = null;
+		this.contextManagerModule = null;
 		this.catalogue = null;
 		
 		this.loadCompleted = false;
@@ -75,6 +76,8 @@ var OpManagerFactory = function () {
 			
 			this.varManagerModule.addInstance(iGadgetId, gadget.getTemplate());
 			this.wiringModule.addInstance(iGadgetId, gadget.getTemplate());
+			
+			this.contextManagerModule.addInstance(gadget);
 			
 			this.dragboardModule.showInstance(iGadgetId);
 
@@ -128,7 +131,12 @@ var OpManagerFactory = function () {
 				return;
 			}
 			
-			if (module == Modules.prototype.WIRING) {
+						if (module == Modules.prototype.WIRING) {
+				this.contextManagerModule = ContextManagerFactory.getInstance();
+				return;
+			}
+			
+			if (module == Modules.prototype.CONTEXT_MANAGER) {
 				this.catalogue = CatalogueFactory.getInstance();
 				this.catalogue.loadCatalogue(URIs.GET_POST_RESOURCES);
 

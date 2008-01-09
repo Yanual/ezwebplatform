@@ -118,12 +118,14 @@ RVariable.prototype.setHandler = function (handler_) {
 
 RVariable.prototype.get = function () { 
 	switch (this.aspect){
+		case Variable.prototype.EXTERNAL_CONTEXT:
+		case Variable.prototype.GADGET_CONTEXT:
 		case Variable.prototype.USER_PREF:
-			return this.value;
 		case Variable.prototype.SLOT:
 			return this.value;
 	}
 }  
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

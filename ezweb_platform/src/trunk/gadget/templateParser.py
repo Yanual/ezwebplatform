@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 
 # MORFEO Project 
 # http://morfeo-project.org 
@@ -250,6 +250,71 @@ class TemplateHandler(saxutils.handler.ContentHandler):
         else:
             print "Needed attributed missed in processSlot!"
 
+            
+    def processGadgetContext(self, attrs):
+        _name = ''
+        _type = ''
+        _concept = ''
+        _description = ''
+
+        if (attrs.has_key('name')):
+            _name = attrs.get('name')
+
+        if (attrs.has_key('type')):
+            _type = attrs.get('type')
+        
+        if (attrs.has_key('concept')):
+            _concept = attrs.get('concept')
+            
+        if (attrs.has_key('description')):
+            _description = attrs.get('description')
+
+        if (_name != '' and _type != '' and _concept != ''):
+            vDef = VariableDef ( name = _name, description =_description,
+                                 type=self.typeText2typeCode(_type), 
+                                 aspect = 'GCTX', friend_code = None, 
+                                 template = self._template )
+            vDef.save()
+            context = GadgetContext ( concept = _concept,
+                                        varDef = vDef) 
+            context.save()
+            
+        else:
+            print "Needed attributed missed in processContext!"
+
+    def processExternalContext(self, attrs):
+        _name = ''
+        _type = ''
+        _concept = ''
+        _description = ''
+
+        if (attrs.has_key('name')):
+            _name = attrs.get('name')
+
+        if (attrs.has_key('type')):
+            _type = attrs.get('type')
+        
+        if (attrs.has_key('concept')):
+            _concept = attrs.get('concept')
+            
+        if (attrs.has_key('description')):
+            _description = attrs.get('description')
+
+        if (_name != '' and _type != '' and _concept != ''):
+            vDef = VariableDef ( name = _name, description =_description,
+                                 type=self.typeText2typeCode(_type), 
+                                 aspect = 'ECTX' , friend_code = None, 
+                                 template = self._template )
+            vDef.save()
+            context = ExternalContext ( concept = _concept,
+                                        varDef = vDef) 
+            context.save()
+            
+        else:
+            print "Needed attributed missed in processContext!"
+
+    
+    
     def processXHTML (self, attrs):
         _href=""
 
@@ -323,6 +388,14 @@ class TemplateHandler(saxutils.handler.ContentHandler):
             self.processEvent(attrs)
             return
 
+        if (name == 'GadgetContext'):
+            self.processGadgetContext(attrs)
+            return
+        
+        if (name == 'Context'):
+            self.processExternalContext(attrs)
+            return        
+        
         if (name == 'XHTML'):
             self.processXHTML(attrs)
             return

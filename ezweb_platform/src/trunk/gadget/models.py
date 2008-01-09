@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 
 # MORFEO Project 
 # http://morfeo-project.org 
@@ -70,6 +70,8 @@ class VariableDef(models.Model):
         ('EVEN', _('Event')),
         ('PREF', _('Preference')),
         ('PROP', _('Property')),
+        ('GCTX', _('GadgetContext')),
+        ('ECTX', _('ExternalContext')),
     )
     aspect = models.CharField(_('Aspect'), max_length=4, choices=ASPECTS)
     label = models.CharField(_('Label'), max_length=50, null=True)
@@ -108,6 +110,25 @@ class VariableDefAttr(models.Model):
     def __unicode__(self):
         return self.variableDef + self.name
 
+class GadgetContext(models.Model):
+    concept = models.CharField(_('Concept'), max_length=256)
+    varDef = models.ForeignKey(VariableDef, verbose_name=_('Variable'))
+        
+    class Admin:
+        pass
+
+    def __unicode__(self):
+        return self.concept
+    
+class ExternalContext(models.Model):
+    concept = models.CharField(_('Concept'), max_length=256)
+    varDef = models.ForeignKey(VariableDef, verbose_name=_('Variable'))
+        
+    class Admin:
+        pass
+
+    def __unicode__(self):
+        return self.concept
       
 class XHTML(models.Model):
     uri = models.CharField(_('URI'), max_length=500, unique=True)

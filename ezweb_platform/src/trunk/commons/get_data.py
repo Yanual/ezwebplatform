@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 
 # MORFEO Project 
 # http://morfeo-project.org 
@@ -40,7 +40,7 @@ from django.shortcuts import get_object_or_404, get_list_or_404
 
 from django.core import serializers
 
-from gadget.models import Template, Gadget, XHTML
+from gadget.models import Template, Gadget, XHTML, GadgetContext, ExternalContext
 from igadget.models import Variable, VariableDef, Position, IGadget
 from connectable.models import In, Out
 
@@ -89,7 +89,25 @@ def get_gadget_data(data):
     data_fields = data['fields']
 
     data_template = get_object_or_404(Template, id=data_fields['template'])
-    data_variabledef = VariableDef.objects.filter(template=data_template.id).values('aspect', 'name', 'type', 'label', 'description', 'friend_code', 'default_value')
+    data_variabledef = VariableDef.objects.filter(template=data_template.id)
+    data_vars = []
+    for var in data_variabledef:
+        data_var = {}
+        data_var['aspect'] = var.aspect
+        data_var['name'] = var.name
+        data_var['type'] = var.type
+        data_var['label'] = var.label
+        data_var['description'] = var.description
+        data_var['friend_code'] = var.friend_code
+        data_var['default_value'] = var.default_value
+
+        if var.aspect == 'GCTX':
+            data_var['concept'] = var.gadgetcontext_set.all().values('concept')[0]['concept']
+        if var.aspect == 'ECTX':
+            data_var['concept'] = var.externalcontext_set.all().values('concept')[0]['concept']
+        
+        data_vars.append(data_var)
+    
     data_code = get_object_or_404(XHTML.objects.all().values('uri'), id=data_fields['xhtml'])
 
     data_ret['name'] = data_fields['name']
@@ -107,7 +125,7 @@ def get_gadget_data(data):
     data_ret['template']['size'] = {}
     data_ret['template']['size']['width'] = data_template.width
     data_ret['template']['size']['height'] = data_template.height
-    data_ret['template']['variables'] = data_variabledef
+    data_ret['template']['variables'] = data_vars
     data_ret['image'] = data_template.image
     data_ret['xhtml'] = data_code
 
@@ -182,9 +200,13 @@ def get_variable_data(data):
    
     data_ret['name'] = var_def.name
     data_ret['aspect'] = var_def.aspect
+    
+    if var_def.aspect == 'GCTX':
+          context = GadgetContext.objects.get(varDef=data_fields['vardef'])
+          data_ret['concept'] = context.concept
+    if var_def.aspect == 'ECTX':
+          context = ExternalContext.objects.get(varDef=data_fields['vardef'])
+          data_ret['concept'] = context.concept
     data_ret['value'] = data_fields['value']
-       
+    
     return data_ret
-
-
-

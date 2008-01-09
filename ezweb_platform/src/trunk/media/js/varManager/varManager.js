@@ -76,6 +76,8 @@ var VarManagerFactory = function () {
 						case Variable.prototype.EVENT:
 							objVars[rawVar.name] = new RWVariable(id, rawVar.name, rawVar.aspect, rawVar.value);
 							break;
+						case Variable.prototype.EXTERNAL_CONTEXT:
+						case Variable.prototype.GADGET_CONTEXT:						
 						case Variable.prototype.SLOT:
 						case Variable.prototype.USER_PREF:
 							objVars[rawVar.name] = new RVariable(id, rawVar.name, rawVar.aspect, rawVar.value);
@@ -138,6 +140,15 @@ var VarManagerFactory = function () {
 			
 			variable.set(value);
 		} 
+		
+				VarManager.prototype.updateContextVar = function (iGadgetId, ctxVarName, value) {
+			if (! loaded)
+				return;
+			
+			var variable = findVariable(iGadgetId, ctxVarName);
+			
+			variable.set(value);
+		}  
 		
 		VarManager.prototype.registerVariable = function (iGadgetId, variableName, handler) {
 			if (! loaded)

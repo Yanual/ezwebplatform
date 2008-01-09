@@ -1,0 +1,8 @@
+{
+	"concepts":
+	[
+		{"concept": "username", "adaptor": "UserAdaptador", "name": "user_name"},
+		{"concept": "width", "adaptor": "WidthAdaptador", "name": "width"},
+		{"concept": "high", "adaptor": "HighAdaptador", "name": "high"}
+	]
+}

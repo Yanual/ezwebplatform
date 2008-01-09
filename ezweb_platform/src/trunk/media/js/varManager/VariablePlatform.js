@@ -78,6 +78,8 @@ Variable.prototype.EVENT = "EVEN"
 Variable.prototype.SLOT = "SLOT"  
 Variable.prototype.USER_PREF = "PREF"  
 Variable.prototype.PROPERTY = "PROP"  
+Variable.prototype.EXTERNAL_CONTEXT = "ECTX"
+Variable.prototype.GADGET_CONTEXT = "GCTX"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // RVARIABLE (Derivated class) <<PLATFORM>>
@@ -138,16 +140,21 @@ RVariable.prototype.setHandler = function (handler_) {
 
 RVariable.prototype.get = function () { 
 	switch (this.aspect){
+		case Variable.prototype.GADGET_CONTEXT:
+		case Variable.prototype.EXTERNAL_CONTEXT:
 		case Variable.prototype.USER_PREF:
-			return this.value;
 		case Variable.prototype.SLOT:
 			return this.value;
+		default:
+			break;
 	}
 }  
     
     
 RVariable.prototype.set = function (newValue) { 
 	switch (this.aspect){
+		case Variable.prototype.GADGET_CONTEXT:
+		case Variable.prototype.EXTERNAL_CONTEXT:
 		case Variable.prototype.SLOT:
 		case Variable.prototype.USER_PREF:
 			this.value = newValue;
@@ -156,6 +163,8 @@ RVariable.prototype.set = function (newValue) {
 			} catch (e) {
 				// TODO log this event
 			}
+			break;
+		default:
 			break;
 	}
 

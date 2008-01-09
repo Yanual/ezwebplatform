@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 
 # MORFEO Project 
 # http://morfeo-project.org 
@@ -95,7 +95,7 @@ class ConnectableEntry(Resource):
         
         #TODO Remove this. Sets user screen by default 
         if not screen_id:
-            screen_id = 1
+        		screen_id = '1'
 
         try:
             #Gets current user screen
@@ -108,9 +108,11 @@ class ConnectableEntry(Resource):
                 # Save all IGadget connections (in and out variables)
                 for var in igadget['list']:
                     var_object = Variable.objects.get(uri=var['uri'], vardef__name=var['name'], igadget=igadget_object)
+
                     # Remove existed connections
                     Out.objects.filter(variable=var_object).delete()
                     In.objects.filter(variable=var_object).delete()
+        
                     # Saves IN connection
                     if var['aspect'] == 'EVEN':
                         uri_in = "/user/%s/igadgets/%s/in/%s" % (user_name, igadget_object.code, var['name'])
@@ -124,7 +126,6 @@ class ConnectableEntry(Resource):
                         out_object.save()
             
             # Delete channels
-
             InOut.objects.filter(user=user).delete()
 
             # Saves all channels
@@ -148,11 +149,11 @@ class ConnectableEntry(Resource):
                     connected_out.inout.add(inout_object)
                                           
             transaction.commit()
+            return HttpResponse ('ok')
         except Screen.DoesNotExist:
             transaction.rollback()
             return HttpResponseBadRequest('refered screen (' + screen_id + ') doesn\'t exists.')
-        except IGadget.DoesNotExist, e:
-            print e
+        except IGadget.DoesNotExist:
             transaction.rollback()
             return HttpResponseBadRequest('refered igadget doesn\'t exists.')
         except Variable.DoesNotExist:

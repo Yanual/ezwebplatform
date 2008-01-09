@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+﻿﻿# -*- coding: utf-8 -*-
 
 # MORFEO Project 
 # http://morfeo-project.org 
@@ -64,6 +64,9 @@ urlpatterns = patterns('',
 
     # Connectables
     (r'^user/(?P<user_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/connectable(s)?', include('connectable.urls')),
+    
+    # context
+    (r'^user/(?P<user_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/context(s)?', include('context.urls')),
     
     # Catalogue Resource
     (r'^user/(?P<user_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/catalogue/resource(s)?',include('resource.urls')),
