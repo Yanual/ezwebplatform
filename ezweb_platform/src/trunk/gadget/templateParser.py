@@ -297,6 +297,8 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 ###############
 
     def startElement(self, name, attrs):
+        print name
+
         # Catalogue
         if (name == 'Name') or (name=='Version') or (name=='Vendor') or (name=='ImageURI') or (name=='WikiURI') or (name=='Mail') or (name=='Description') or (name=='Author'):
             self.reset_Accumulator()
@@ -312,10 +314,12 @@ class TemplateHandler(saxutils.handler.ContentHandler):
             return
 
         if (name == 'Slot'):
+            print "Proccessing SLOT"
             self.processSlot(attrs)
             return
 
         if (name == 'Event'):
+            print "Proccessing Event"
             self.processEvent(attrs)
             return
 

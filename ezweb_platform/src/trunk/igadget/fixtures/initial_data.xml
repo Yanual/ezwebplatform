@@ -1,3 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <django-objects version="1.0">
+    <object pk="1" model="igadget.screen">
+        <field type="CharField" name="uri">/user/admin/screen/1</field>
+        <field type="CharField" name="name">myScreen</field>
+        <field type="IntegerField" name="code">1</field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
+    </object>
 </django-objects>

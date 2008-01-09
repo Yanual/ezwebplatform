@@ -151,12 +151,13 @@ class ConnectableEntry(Resource):
         except Screen.DoesNotExist:
             transaction.rollback()
             return HttpResponseBadRequest('refered screen (' + screen_id + ') doesn\'t exists.')
-        except IGadget.DoesNotExist:
+        except IGadget.DoesNotExist, e:
+            print e
             transaction.rollback()
-            return HttpResponseBadRequest('refered igadget (' + gadget_uri + ') doesn\'t exists.')
+            return HttpResponseBadRequest('refered igadget doesn\'t exists.')
         except Variable.DoesNotExist:
             transaction.rollback()
-            return HttpResponseBadRequest('refered variable (' + gadget_uri + ') doesn\'t exists.')
+            return HttpResponseBadRequest('refered variable doesn\'t exists.')
         except Exception, e:
             transaction.rollback()
             return HttpResponseBadRequest('connectables cannot be save: %s' % e)
