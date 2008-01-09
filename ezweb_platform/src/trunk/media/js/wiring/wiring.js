@@ -612,10 +612,12 @@ var WiringFactory = function () {
 			inOutList = copyList;
 		}
 
-		Wiring.prototype.serializationSuccess = function (){
+		Wiring.prototype.serializationSuccess = function (response){
+
 		}
 
-		Wiring.prototype.serializationError = function (){
+		Wiring.prototype.serializationError = function (response){
+		    var p = response.responseText;
 		    alert("ERROR: Channel and its connections cannot be saved");		
 		}
 

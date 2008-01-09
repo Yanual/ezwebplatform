@@ -64,7 +64,7 @@ wiringInterface.prototype.addChannelInterface = function (name){
     var li = document.createElement("li");
 	var inputDel = document.createElement("input");
 	inputDel.setAttribute("type", "image");
-	inputDel.setAttribute("onclick", "wiringInterface.prototype.deleteChannel('"+ name +"'); opManager.restaure(); WiringFactory.getInstance().serialize();");
+	inputDel.setAttribute("onclick", "wiringInterface.prototype.deleteChannel('"+ name +"'); opManager.restaure();");
     inputDel.setAttribute("src", "/ezweb/images/dialog-cancel.png");
 //    inputDel.setAttribute("style", "padding-right: 2px;");
     li.appendChild(inputDel);
@@ -73,7 +73,7 @@ wiringInterface.prototype.addChannelInterface = function (name){
     chkChannel.setAttribute("name", "channels_options");
 //    chkChannel.setAttribute("style", "display: none;");
     chkChannel.setAttribute("id", "chk_"+ idChannel);
-    chkChannel.setAttribute("onclick", "javascript:{wiringInterface.prototype._highlight_channel('chk_"+ idChannel +"', '"+ name +"'); opManager.restaure(); WiringFactory.getInstance().serialize();}");
+    chkChannel.setAttribute("onclick", "javascript:{wiringInterface.prototype._highlight_channel('chk_"+ idChannel +"', '"+ name +"'); opManager.restaure();}");
     var textNode = document.createTextNode(name);
     chkChannel.appendChild(textNode);
     li.appendChild(chkChannel);
