@@ -7,7 +7,7 @@
             <ul id="events_list" class="on"></ul>
 
         </td><td class="columnCell borderLeftCell">
-            <div class="wiresTitle">{% trans "Wires" %}</div>
+            <div class="wiresTitle">{% trans "Channels" %}</div>
             New: <input type="text" id="channel_name" name="channel_name"/>
             <input id="add_channel" type="image" src="{{ MEDIA_URL }}js/wiring/add.png" title="Create channel" alt= "Create channel" onclick="javascript:{wI.addChannel(); opManager.restaure(); WiringFactory.getInstance().serialize();}"/>
             <ul id="channels_list"></ul>
@@ -18,5 +18,8 @@
 
         </td></tr>
     </tr></table>
+
+    <a href="javascript:WiringFactory.getInstance().serialize();">Save</a>
+
     </div>
 </div>
