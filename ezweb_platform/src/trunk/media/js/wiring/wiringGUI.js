@@ -79,7 +79,7 @@ wiringInterface.prototype.addChannelInterface = function (name){
     li.appendChild(chkChannel);
 	var labelItem = document.createElement("label");
 	labelItem.setAttribute("for", "chk_"+ idChannel);
-	labelItem.setAttribute("style", "cursor: pointer;");
+	labelItem.setAttribute("style", "cursor: pointer; cursor: hand;");
 	labelItem.appendChild(textNode);
 	li.appendChild(labelItem);
 	li.setAttribute("id", idChannel);
@@ -166,10 +166,9 @@ wiringInterface.prototype.addGadgetInterface = function (object){
 }
 
 wiringInterface.prototype.addChannelsAsGadgetInterface = function (channels) {
-    for (channel in channels) {
-        alert(channel);
-    }
-
+//    for (var j = 0; j<channels.length; j++) {
+//    
+//    }
 }
 
 wiringInterface.prototype.renewInterface = function (wi) {

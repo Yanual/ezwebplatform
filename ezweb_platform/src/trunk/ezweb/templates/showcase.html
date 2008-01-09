@@ -13,50 +13,18 @@
 		<div id="search" class="search">
 			<form onsubmit="return false;">
 				<div id="advanced_search_top" class="advanced_search_top" style="display:none;">
-					<span>Mostrar Resultados con:</span>
+					<span>Opciones avanzadas</span>
 				</div>
 				<div id="advanced_search_bottom" class="advanced_search_bottom" style="display:none;">
-					<table>
-					<tr>
-					<td><label for="advanced_search_text_and">Todas estas palabras:</label></td>
-					<td><input type="text" id="advanced_search_text_and" name="advanced_search_text_and" class="text" autocomplete="on"></input></td>
-					<td><button onclick="UIUtils.searchGeneric(URIs.GET_RESOURCES_SEARCH_GENERIC, this.form.advanced_search_text_and.value, 'and');">Buscar</button><br/></td>
-					</tr>
-					<tr>
-					<td><label for="advanced_search_text_or">Cualquiera de estas palabras:</label></td>
-					<td><input type="text" id="advanced_search_text_or" name="advanced_search_text_or" class="text" autocomplete="on"></input></td>
-					<td><button onclick="UIUtils.searchGeneric(URIs.GET_RESOURCES_SEARCH_GENERIC, this.form.advanced_search_text_or.value, 'or');">Buscar</button><br/></td>
-					</tr>
-					<tr>
-					<td><label for="advanced_search_text_not">Ninguna de estas palabras:</label></td>
-					<td><input type="text" id="advanced_search_text_not" name="advanced_search_text_not" class="text" autocomplete="on"></input></td>
-					<td><button onclick="UIUtils.searchGeneric(URIs.GET_RESOURCES_SEARCH_GENERIC, this.form.advanced_search_text_not.value, 'not');">Buscar</button><br/></td>
-					</tr>
-					</table>
-					<br/>
-					<table>
-					<tr>
-					<td><label for="advanced_search_text_tag">Buscar por Tags:</label></td>
-					<td><input type="text" id="advanced_search_text_tag" name="advanced_search_text_tag" class="text" autocomplete="on"></input></td>
-					<td><button onclick="UIUtils.searchByTag(URIs.GET_RESOURCES_BY_TAG, this.form.advanced_search_text_tag.value);">Buscar</button><br/></td>
-					</tr>
-					<tr>
-					<td><label for="advanced_search_text_event">Buscar Events:</label></td>
-					<td><input type="text" id="advanced_search_text_event" name="advanced_search_text_event" class="text" autocomplete="on"></input></td>
-					<td><button onclick="UIUtils.searchByWiring(URIs.GET_RESOURCES_BY_WIRING, this.form.advanced_search_text_event.value, 'event');">Buscar</button><br/></td>
-					</tr>
-					<tr>
-					<td><label for="advanced_search_text_slot">Buscar Slots</label></td>
-					<td><input type="text" id="advanced_search_text_slot" name="advanced_search_text_slot" class="text" autocomplete="on"></input></td>
-					<td><button onclick="UIUtils.searchByWiring(URIs.GET_RESOURCES_BY_WIRING, this.form.advanced_search_text_slot.value, 'slot');">Buscar</button><br/></td>
-					</tr>
-					</table>
+					<label for="advanced_search_text">B&uacute;squeda:</label>
+					<input type="text" id="advanced_search_text" name="advanced_search_text" class="text" autocomplete="on"></input>
+					<button onclick="UIUtils.searchByTag(URIs.GET_POST_RESOURCES, this.form.advanced_search_text.value);">Buscar</button><br/>
 					<a href="#" onclick="UIUtils.SlideAdvancedSearchOutOfView('advanced_search_top');">Mostrar b&uacute;squeda simple</a>
 				</div>
 				<div id="simple_search" class="simple_search">
 					<label for="simple_search_text">B&uacute;squeda:</label>
 					<input type="text" id="simple_search_text" name="simple_search_text" class="text" autocomplete="on"></input>
-					<button onclick="UIUtils.searchGeneric(URIs.GET_RESOURCES_SEARCH_GENERIC, this.form.simple_search_text.value, 'and');">Buscar</button><br/>
+					<button onclick="UIUtils.searchByTag(URIs.GET_RESOURCES_BY_TAG, this.form.simple_search_text.value);">Buscar</button><br/>
 					<a href="#" onclick="UIUtils.SlideAdvancedSearchIntoView('advanced_search_top');">Mostrar b&uacute;squeda avanzada</a>
 				</div>
 			</form>

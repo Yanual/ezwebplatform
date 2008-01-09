@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 # MORFEO Project 
 # http://morfeo-project.org 
@@ -47,26 +47,27 @@ from resource.models import GadgetResource
 from resource.models import GadgetWiring
 from tag.models import UserTag
 from resource.utils import get_xml_description
-from resource.search import SearchManager
 
 
 class GadgetsCollectionByGenericSearch(Resource):
 
-    def read(self, request, user_name, value, criteria):
+    def read(self, request, user_name, value):
 	
-        if criteria == 'and':
-            value = value.replace(' ', ' & ') 
-        elif criteria == 'or':
-            value = value.replace(' ', ' | ')
-        elif criteria == 'not':
-            value = '!' + value
-            value = value.replace(' ', ' &! ')
-                
         # Get the list of elements that fits the value given
         
         gadgetlist = list(GadgetResource.objects.search(value))
 
-	response = get_xml_description(gadgetlist)
+	searchlist = list(GadgetWiring.objects.search(value))
+	searchlist = searchlist + list(UserTag.objects.search(value))
+	
+	for b in searchlist:
+        
+	    gadgetlist = gadgetlist + get_list_or_404(GadgetResource, id=b.idResource_id)
+
+	ulist = []
+        [ulist.append(x) for x in gadgetlist if x not in ulist]
+
+	response = get_xml_description(ulist)
 	response = '<?xml version="1.0" encoding="UTF-8" ?>\n\
 	<resources>'+response+'</resources>'
 
@@ -79,24 +80,22 @@ class GadgetsCollectionByCriteria(Resource):
 	
         if criteria == 'event' or criteria == 'slot' or criteria == 'tag':        
             if criteria == 'event':
-                value = value + '&out'
-	        criterialist = list(GadgetWiring.objects.search(value))
+	        criterialist = get_list_or_404(GadgetWiring,friendcode=value,wiring='in')
 	    elif criteria == 'slot':
-                value = value + '&in'
-                criterialist = list(GadgetWiring.objects.search(value))
+                criterialist = get_list_or_404(GadgetWiring,friendcode=value,wiring='out')
 	    elif criteria == 'tag':
-                value = value.replace(' ', ' | ')
-	        criterialist = UserTag.objects.search(value)
-            
-            gadgetlist = []
-            
+	        criterialist = get_list_or_404(UserTag,tag=value)
+
+        
+	    response=''
+
 	    for b in criterialist:
-                
-	        gadgetlist = gadgetlist + get_list_or_404(GadgetResource, id=b.idResource_id)
+        
+	        gadgetlist = get_list_or_404(GadgetResource, id=b.idResource_id)
+	    
+	        temp = get_xml_description(gadgetlist)
+	        response = response+temp
 
-            
-
-	    response = get_xml_description(gadgetlist)
 	    response = '<?xml version="1.0" encoding="UTF-8" ?>\n\
 	    <resources>'+response+'</resources>'
 
