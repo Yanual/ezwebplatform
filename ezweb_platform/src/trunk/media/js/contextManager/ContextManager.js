@@ -160,7 +160,7 @@ var ContextManagerFactory = function () {
 		}
 
 		
-		PersistenceEngineFactory.getInstance().send_get('http://mac.hi.inet:9000/ezweb/js/contextManager/concepts.json', this, _loadConcepts, _onError);
+		PersistenceEngineFactory.getInstance().send_get('/ezweb/js/contextManager/concepts.json', this, _loadConcepts, _onError);
 
 		// ****************
 		// PUBLIC METHODS 
