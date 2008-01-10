@@ -280,6 +280,86 @@
         <field type="TextField" name="default_value"><None></None></field>
         <field to="gadget.template" name="template" rel="ManyToOneRel">17</field>
     </object>
+    <object pk="29" model="gadget.variabledef">
+        <field type="CharField" name="name">bg</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">PREF</field>
+        <field type="CharField" name="label">background color</field>
+        <field type="CharField" name="description">descripcion</field>
+        <field type="CharField" name="friend_code"><None></None></field>
+        <field type="TextField" name="default_value"></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">19</field>
+    </object>
+    <object pk="30" model="gadget.variabledef">
+        <field type="CharField" name="name">textcolor</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">PREF</field>
+        <field type="CharField" name="label">text color</field>
+        <field type="CharField" name="description">descripcion</field>
+        <field type="CharField" name="friend_code"><None></None></field>
+        <field type="TextField" name="default_value"></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">19</field>
+    </object>
+    <object pk="31" model="gadget.variabledef">
+        <field type="CharField" name="name">nota</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">PROP</field>
+        <field type="CharField" name="label"><None></None></field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code"><None></None></field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">19</field>
+    </object>
+    <object pk="32" model="gadget.variabledef">
+        <field type="CharField" name="name">address</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">Address</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">address</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">20</field>
+    </object>
+    <object pk="33" model="gadget.variabledef">
+        <field type="CharField" name="name">phoneNumber</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">SLOT</field>
+        <field type="CharField" name="label">PhoneNumber</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">phone</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">20</field>
+    </object>
+    <object pk="34" model="gadget.variabledef">
+        <field type="CharField" name="name">address</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">Address</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">address</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">21</field>
+    </object>
+    <object pk="35" model="gadget.variabledef">
+        <field type="CharField" name="name">deviceId</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">SLOT</field>
+        <field type="CharField" name="label">deviceId</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">deviceId</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">21</field>
+    </object>
+    <object pk="36" model="gadget.variabledef">
+        <field type="CharField" name="name">deviceStatus</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">SLOT</field>
+        <field type="CharField" name="label">deviceStatus</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">deviceStatus</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">21</field>
+    </object>
     <object pk="1" model="gadget.gadget">
         <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Bandeja_de_Averias/1.0</field>
         <field type="CharField" name="vendor">Morfeo</field>
@@ -520,6 +600,54 @@
         <field to="auth.user" name="user" rel="ManyToOneRel">2</field>
         <field type="DateTimeField" name="last_update"><None></None></field>
     </object>
+    <object pk="16" model="gadget.gadget">
+        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/SimpleNotepad/1.0</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="name">SimpleNotepad</field>
+        <field type="CharField" name="version">1.0</field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">19</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">16</field>
+        <field type="CharField" name="author">jmartin</field>
+        <field type="CharField" name="mail">jjmr@tid.es</field>
+        <field type="CharField" name="wikiURI">http://piccolo.ls.fi.upm.es:7000/Notepad</field>
+        <field type="CharField" name="imageURI">http://europa.ls.fi.upm.es/ezweb/gadgets/postit.gif</field>
+        <field type="CharField" name="description">Este gadget permite anadir una nota personal</field>
+        <field type="BooleanField" name="shared">False</field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
+        <field type="DateTimeField" name="last_update"><None></None></field>
+    </object>
+    <object pk="17" model="gadget.gadget">
+        <field type="CharField" name="uri">/user/mac/gadgets/Morfeo/Visor_Datos_Usuario/1.0</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="name">Visor_Datos_Usuario</field>
+        <field type="CharField" name="version">1.0</field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">20</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">17</field>
+        <field type="CharField" name="author">miglesia</field>
+        <field type="CharField" name="mail">miglesia@pegaso.ls.fi.upm.es</field>
+        <field type="CharField" name="wikiURI">http://piccolo.ls.fi.upm.es:7000//Visor_Datos_Usuario</field>
+        <field type="CharField" name="imageURI">http://europa.ls.fi.upm.es/ezweb/gadgets/person.jpg</field>
+        <field type="CharField" name="description">Este gadget presenta la informacion relativa a un usuario para el cual se ha detectado una averia</field>
+        <field type="BooleanField" name="shared">False</field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">3</field>
+        <field type="DateTimeField" name="last_update"><None></None></field>
+    </object>
+    <object pk="18" model="gadget.gadget">
+        <field type="CharField" name="uri">/user/mac/gadgets/Morfeo/Visor_Datos_Equipo/1.0</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="name">Visor_Datos_Equipo</field>
+        <field type="CharField" name="version">1.0</field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">21</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">18</field>
+        <field type="CharField" name="author">miglesia</field>
+        <field type="CharField" name="mail">miglesia@pegaso.ls.fi.upm.es</field>
+        <field type="CharField" name="wikiURI">http://piccolo.ls.fi.upm.es:7000/Visor_Datos_Equipo</field>
+        <field type="CharField" name="imageURI">http://europa.ls.fi.upm.es/ezweb/gadgets/notepad.jpg</field>
+        <field type="CharField" name="description">Este gadget presenta la informacion relativa a un equipo perteneciente a la red de encaminadores</field>
+        <field type="BooleanField" name="shared">False</field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">3</field>
+        <field type="DateTimeField" name="last_update"><None></None></field>
+    </object>
     <object pk="1" model="gadget.template">
         <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Bandeja_de_Averias/1.0/template</field>
         <field type="CharField" name="description">Este gadget presenta una lista de averias registradas por usuarios y la informacion relativa a ellas</field>
@@ -624,6 +752,27 @@
         <field type="CharField" name="image">http://europa.ls.fi.upm.es/ezweb/gadgets/flickr.png</field>
         <field type="IntegerField" name="width">1</field>
         <field type="IntegerField" name="height">20</field>
+    </object>
+    <object pk="19" model="gadget.template">
+        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/SimpleNotepad/1.0/template</field>
+        <field type="CharField" name="description">Este gadget permite anadir una nota personal</field>
+        <field type="CharField" name="image">http://europa.ls.fi.upm.es/ezweb/gadgets/postit.gif</field>
+        <field type="IntegerField" name="width">1</field>
+        <field type="IntegerField" name="height">11</field>
+    </object>
+    <object pk="20" model="gadget.template">
+        <field type="CharField" name="uri">/user/mac/gadgets/Morfeo/Visor_Datos_Usuario/1.0/template</field>
+        <field type="CharField" name="description">Este gadget presenta la informacion relativa a un usuario para el cual se ha detectado una averia</field>
+        <field type="CharField" name="image">http://europa.ls.fi.upm.es/ezweb/gadgets/person.jpg</field>
+        <field type="IntegerField" name="width">1</field>
+        <field type="IntegerField" name="height">11</field>
+    </object>
+    <object pk="21" model="gadget.template">
+        <field type="CharField" name="uri">/user/mac/gadgets/Morfeo/Visor_Datos_Equipo/1.0/template</field>
+        <field type="CharField" name="description">Este gadget presenta la informacion relativa a un equipo perteneciente a la red de encaminadores</field>
+        <field type="CharField" name="image">http://europa.ls.fi.upm.es/ezweb/gadgets/notepad.jpg</field>
+        <field type="IntegerField" name="width">1</field>
+        <field type="IntegerField" name="height">11</field>
     </object>
     <object pk="1" model="gadget.xhtml">
         <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Bandeja_de_Averias/1.0/xhtml</field>
@@ -4370,6 +4519,196 @@ function searchFail(res){
 &lt;/script&gt;
 &lt;img src="http://europa.ls.fi.upm.es/ezweb/gadgets/trip_search.gif"/&gt;
 &lt;div id="resultados"&gt;A la espera...&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</field>
+    </object>
+    <object pk="16" model="gadget.xhtml">
+        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/SimpleNotepad/1.0/xhtml</field>
+        <field type="TextField" name="code">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /&gt;
+&lt;script language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
+&lt;style&gt;
+#nota{
+	display:block;
+	border:1px solid black;
+	color:black;
+        font-size:13pt;
+	font-family:"Comic Sans MS";
+	width:100%;
+	height:100%;
+	background: #f0e68c;
+	}
+&lt;/style&gt;
+
+&lt;script language="JavaScript"&gt;
+var nota = EzWebAPI.createRWGadgetVariable("nota");
+var bg = EzWebAPI.createRGadgetVariable("bg", setColorbg);
+var textcolor = EzWebAPI.createRGadgetVariable("textcolor", setColorTexto);
+
+function setValue ()  {
+   document.getElementById('nota').value= nota.get();
+}
+
+function save(formulario){
+	nota.set(formulario.nota.value);
+}
+
+function delnote(){
+	nota.set("");
+}
+
+function setColorbg(color){
+	var f = document.getElementById("nota");
+	
+	f.style.background= color;
+}
+function setColorTexto(color){
+	var f = document.getElementById("nota");
+	
+	f.style.color= color;
+}
+function load(){
+	document.getElementById('nota').value= nota.get();
+	document.getElementById('nota').style.height= window.innerHeight - 42 + "px";
+        document.getElementById('nota').style.background=bg.get();
+        document.getElementById('nota').style.color=textcolor.get();
+}
+&lt;/script&gt;
+
+&lt;/head&gt;
+	&lt;body onload="javascript:load();"&gt;
+		&lt;form id="formulario" onsubmit="return false;"&gt;	
+
+			&lt;textarea id="nota"&gt;&lt;/textarea&gt;
+			&lt;center&gt;
+				&lt;button onclick="javascript:save(this.form)"&gt;Guardar&lt;/button&gt;
+				&amp;nbsp;&amp;nbsp;
+				&lt;input type="reset" value="Borrar" onclick="javascript:delnote()"/&gt;
+			&lt;/center&gt;
+		&lt;/form&gt;	
+	&lt;/body&gt;
+&lt;/html&gt;
+</field>
+    </object>
+    <object pk="17" model="gadget.xhtml">
+        <field type="CharField" name="uri">/user/mac/gadgets/Morfeo/Visor_Datos_Usuario/1.0/xhtml</field>
+        <field type="TextField" name="code">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
+
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /&gt;
+&lt;script language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
+&lt;title&gt;Visor de datos de usuario&lt;/title&gt;
+&lt;script&gt;
+var phoneNumber = EzWebAPI.createRGadgetVariable("phoneNumber",_phoneHandler);
+var address = EzWebAPI.createRWGadgetVariable("address");
+/*Temporary data for the demo*/
+var users = [];
+var user = ["Alejandro","Rodriguez Perez","07688357J","Santa Engracia, 25, 1 B, Madrid","35.50","2"];
+users["913933233"] = user;
+user = ["Marta","Lopez Romero","34788114L","Marcelo Usera, 46, 3 C, Madrid","40.74","1"];
+users["915334432"] = user;
+user = ["Rodrigo","Fernandez Bartolome","53333236P","Gran Via, 25, 2 A, Madrid","55.29","8"];
+users["916432233"] = user;
+user = ["Maria","Perez Casas","34788114L","Francisco Silvela, 105, 5 B, Madrid","66.15","3"];
+users["917294723"] = user;
+user = ["Alberto","Garcia Casas","34788114L","Camarena, 2, 4 A, Madrid","36.00","3"];
+users["917744331"] = user;
+
+function _phoneHandler(phone){
+if (phone!=null &amp;&amp; phone!=undefined){
+var content="";
+content+="&lt;p id='title' style=\"font-size: 22px; font-weight: bold; color: #000077; margin-top: 5px; margin-bottom: 5px;\"&gt;Tabla de Datos de Usuario&lt;/p&gt;&lt;table style=\"padding: 1px;\"&gt;";
+content+="&lt;tr&gt;&lt;th&gt;Datos del Usuario&lt;/th&gt;&lt;th&gt;Valor&lt;/th&gt;&lt;/tr&gt;";
+content+="&lt;tr&gt;&lt;td&gt;Nombre&lt;/td&gt;&lt;td&gt;"+users[phone][0]+"&lt;/td&gt;&lt;/tr&gt;";
+content+="&lt;tr&gt;&lt;td&gt;Apellidos&lt;/td&gt;&lt;td&gt;"+users[phone][1]+"&lt;/td&gt;&lt;/tr&gt;";
+content+="&lt;tr&gt;&lt;td&gt;DNI&lt;/td&gt;&lt;td&gt;"+users[phone][2]+"&lt;/td&gt;&lt;/tr&gt;";
+content+="&lt;tr&gt;&lt;td&gt;Direccion&lt;/td&gt;&lt;td&gt;"+users[phone][3]+"&lt;/td&gt;&lt;/tr&gt;";
+content+="&lt;tr&gt;&lt;td&gt;Factura media&lt;/td&gt;&lt;td&gt;"+users[phone][4]+"&lt;/td&gt;&lt;/tr&gt;";
+content+="&lt;tr&gt;&lt;td&gt;Antiguedad&lt;/td&gt;&lt;td&gt;"+users[phone][5]+"&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;";
+document.getElementById("info").innerHTML=content;
+address.set(users[phone][3]);
+}
+}
+&lt;/script&gt;
+&lt;/head&gt;
+&lt;body style="font-family: Arial; font-size: 14px; text-align: left; width: 95%; margin: 0px; padding: 1px;"&gt;
+&lt;div id='info'&gt;&lt;i&gt;A la espera de seleccionar una averia...&lt;/i&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</field>
+    </object>
+    <object pk="18" model="gadget.xhtml">
+        <field type="CharField" name="uri">/user/mac/gadgets/Morfeo/Visor_Datos_Equipo/1.0/xhtml</field>
+        <field type="TextField" name="code">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
+
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /&gt;
+&lt;script language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
+&lt;title&gt;Visor de datos de equipo&lt;/title&gt;
+&lt;script&gt;
+var deviceId = EzWebAPI.createRGadgetVariable("deviceId",_deviceHandler);
+var deviceStatus = EzWebAPI.createRGadgetVariable("deviceStatus",_statusHandler);
+var address = EzWebAPI.createRWGadgetVariable("address");
+var workingStatus = "OK";
+
+/*Temporary data for the demo*/
+var devices = [];
+var deviceData = ["DSLAM-ALCORCON-2","11111111","Fernandez Perez, Rodrigo","10.7.4.12","dslam1","transmision","MXF","ADSL","FSP","Calle Mayor 25, 28921 Alcorcon"];
+devices["device1"] = deviceData;
+deviceData = ["CONM-ALCOBENDAS-8","11112222","Rodriguez Fernandez, Alberto","10.6.7.144","conmuter4","conmutacion","DSL","ADSL","FSP","Calle de Triana 4, 28100 Alcobendas"];
+devices["device2"] = deviceData;
+deviceData = ["CONM-LEGANES-12","11111111","Fernandez Perez, Rodrigo","192.168.5.2","conmuter6","conmutacion","DSL","ADSL","XD","Calle de Antonio Machado 24, 28905 Getafe"];
+devices["device3"] = deviceData;
+deviceData = ["ESR-ALUCHE-10","11112222","Rodriguez Ferna&amp;aacute;ndez, Alberto","10.6.7.12","esr2","conmutacion","DSL","ADSL","XD","Calle de Camarena 253, 28047 Madrid"];
+devices["device4"] = deviceData;
+deviceData = ["DSLAM-ROZAS-6","11111111","Fernandez Perez, Rodrigo","10.5.5.12","dslam2","transmision","DSL","ADSL","FSP","Calle del Ebro 20, 28230 Las Rozas de Madrid"];
+devices["device5"] = deviceData;
+deviceData = ["CONM-ALCOBENDAS-8","11112222","Rodriguez Fernandez, Alberto","10.6.7.144","conmuter4","conmutacion","DSL","ADSL","FSP","Calle de Triana 4, 28100 Alcobendas"];
+devices["device6"] = deviceData;
+deviceData = ["CONM-MOSTOLES-7","11111111","Fernandez Perez, Rodrigo","10.6.3.12","conmuter3","conmutacion","DSL","ADSL","XD","Calle Ricardo Medem 12, 28931 Mostoles"];
+devices["device7"] = deviceData;
+deviceData = ["CONM-RIOSROSAS-1","11112222","Rodriguez Fernandez, Alberto","10.0.5.56","commuter1","conmutacion","DSL","ADSL","FS","Calle de Rios Rosas 46, 28003 Madrid"];
+devices["device8"] = deviceData;
+deviceData = ["ERX-GETAFE-3","11112222","Rodriguez Fernandez, Alberto","10.3.6.33","erx1","conmutacion","DSL","IMAG","XD","Calle Villaverde 25, 28902 Getafe"];
+devices["device9"] = deviceData;
+deviceData = ["ESR-COSLADA-4","11111111","Fernandez Perez, Rodrigo","192.6.7.3","esr1","conmutacion","DSL","ADSL","FS","Calle de Paris 37, 28820 Coslada"];
+devices["device10"] = deviceData;
+
+function _statusHandler(status){
+workingStatus = status;
+}
+
+function _deviceHandler(device){
+if (device!=null &amp;&amp; device!=undefined){
+var content="";
+content+="&lt;p id='title' style=\"font-family: Arial; font-size: 22px; font-weight: bold; margin-top: 5px; margin-bottom: 5px; color: #000077;\"&gt;Datos del Equipo&lt;/p&gt;";
+content+="&lt;table style=\"font-family: Arial; font-size: 12px; padding: 1px;\" &gt;";
+content+="&lt;tr&gt;&lt;th align='left'&gt;Propiedad del Equipo&lt;/th&gt;&lt;th align='left'&gt;Valor&lt;/th&gt;&lt;/tr&gt;";
+content+="&lt;tr&gt;&lt;td&gt;Codigo del Equipo:&lt;/td&gt;&lt;td&gt;"+devices[device][0]+"&lt;/td&gt;&lt;/tr&gt;";
+content+="&lt;tr&gt;&lt;td&gt;Estado:&lt;/td&gt;&lt;td&gt;"+workingStatus+"&lt;/td&gt;&lt;/tr&gt;";
+content+="&lt;tr&gt;&lt;td&gt;Codigo del Responsable:&lt;/td&gt;&lt;td&gt;"+devices[device][1]+"&lt;/td&gt;&lt;/tr&gt;";
+content+="&lt;tr&gt;&lt;td&gt;Nombre del Responsable:&lt;/td&gt;&lt;td&gt;"+devices[device][2]+"&lt;/td&gt;&lt;/tr&gt;";
+content+="&lt;tr&gt;&lt;td&gt;IP:&lt;/td&gt;&lt;td&gt;"+devices[device][3]+"&lt;/td&gt;&lt;/tr&gt;";
+content+="&lt;tr&gt;&lt;td&gt;Nombre:&lt;/td&gt;&lt;td&gt;"+devices[device][4]+"&lt;/td&gt;&lt;/tr&gt;";
+content+="&lt;tr&gt;&lt;td&gt;Area:&lt;/td&gt;&lt;td&gt;"+devices[device][5]+"&lt;/td&gt;&lt;/tr&gt;";
+content+="&lt;tr&gt;&lt;td&gt;Tipo:&lt;/td&gt;&lt;td&gt;"+devices[device][6]+"&lt;/td&gt;&lt;/tr&gt;";
+content+="&lt;tr&gt;&lt;td&gt;Especificador:&lt;/td&gt;&lt;td&gt;"+devices[device][7]+"&lt;/td&gt;&lt;/tr&gt;";
+content+="&lt;tr&gt;&lt;td&gt;Modelo:&lt;/td&gt;&lt;td&gt;"+devices[device][8]+"&lt;/td&gt;&lt;/tr&gt;";
+content+="&lt;tr&gt;&lt;td&gt;Direccion:&lt;/td&gt;&lt;td&gt;"+devices[device][9]+"&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;";
+document.getElementById("info").innerHTML=content;
+address.set(devices[device][9]);
+}
+}
+&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div id='info'&gt;&lt;i&gt;A la espera de seleccionar un equipo...&lt;/i&gt;&lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;</field>
     </object>

@@ -1,9 +1,333 @@
 <?xml version="1.0" encoding="utf-8"?>
 <django-objects version="1.0">
+    <object pk="30" model="igadget.variable">
+        <field type="CharField" name="uri">/user/mru/igadgets/7/variables/textcolor</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">25</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">15</field>
+        <field type="TextField" name="value"></field>
+    </object>
+    <object pk="31" model="igadget.variable">
+        <field type="CharField" name="uri">/user/mru/igadgets/7/variables/bg</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">24</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">15</field>
+        <field type="TextField" name="value"></field>
+    </object>
+    <object pk="29" model="igadget.variable">
+        <field type="CharField" name="uri">/user/mru/igadgets/7/variables/nota</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">26</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">15</field>
+        <field type="TextField" name="value">Nota personal persistente!!</field>
+    </object>
+    <object pk="25" model="igadget.variable">
+        <field type="CharField" name="uri">/user/mru/igadgets/4/variables/travel</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">21</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">12</field>
+        <field type="TextField" name="value">941943</field>
+    </object>
+    <object pk="26" model="igadget.variable">
+        <field type="CharField" name="uri">/user/mru/igadgets/4/variables/poi</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">20</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">12</field>
+        <field type="TextField" name="value">Paris</field>
+    </object>
+    <object pk="33" model="igadget.variable">
+        <field type="CharField" name="uri">/user/mru/igadgets/9/variables/keyword</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">28</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">17</field>
+        <field type="TextField" name="value">Amelie</field>
+    </object>
+    <object pk="27" model="igadget.variable">
+        <field type="CharField" name="uri">/user/mru/igadgets/5/variables/keyword</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">22</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">13</field>
+        <field type="TextField" name="value">Amelie</field>
+    </object>
+    <object pk="28" model="igadget.variable">
+        <field type="CharField" name="uri">/user/mru/igadgets/6/variables/address</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">23</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">14</field>
+        <field type="TextField" name="value">Paris, Francia</field>
+    </object>
+    <object pk="23" model="igadget.variable">
+        <field type="CharField" name="uri">/user/mru/igadgets/2/variables/RSSYurl</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">18</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">10</field>
+        <field type="TextField" name="value">http://www.youtube.com/v/sECzJY07oK4</field>
+    </object>
+    <object pk="24" model="igadget.variable">
+        <field type="CharField" name="uri">/user/mru/igadgets/3/variables/travel</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">19</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">11</field>
+        <field type="TextField" name="value">941943</field>
+    </object>
+    <object pk="22" model="igadget.variable">
+        <field type="CharField" name="uri">/user/mru/igadgets/1/variables/rssUrl</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">14</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">9</field>
+        <field type="TextField" name="value">http://www.youtube.com/v/fc3O8a8-BM4&amp;rel=1</field>
+    </object>
+    <object pk="21" model="igadget.variable">
+        <field type="CharField" name="uri">/user/mru/igadgets/1/variables/place</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">15</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">9</field>
+        <field type="TextField" name="value">Nueva York</field>
+    </object>
+    <object pk="20" model="igadget.variable">
+        <field type="CharField" name="uri">/user/mru/igadgets/1/variables/title</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">16</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">9</field>
+        <field type="TextField" name="value">king Kong</field>
+    </object>
+    <object pk="19" model="igadget.variable">
+        <field type="CharField" name="uri">/user/mru/igadgets/1/variables/poi</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">17</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">9</field>
+        <field type="TextField" name="value">Nueva York</field>
+    </object>
+    <object pk="34" model="igadget.variable">
+        <field type="CharField" name="uri">/user/admin/igadgets/1/variables/serviceHired</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">2</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">18</field>
+        <field type="TextField" name="value"></field>
+    </object>
+    <object pk="35" model="igadget.variable">
+        <field type="CharField" name="uri">/user/admin/igadgets/1/variables/phoneNumber</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">1</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">18</field>
+        <field type="TextField" name="value"></field>
+    </object>
+    <object pk="36" model="igadget.variable">
+        <field type="CharField" name="uri">/user/admin/igadgets/2/variables/nota</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">31</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">19</field>
+        <field type="TextField" name="value"></field>
+    </object>
+    <object pk="37" model="igadget.variable">
+        <field type="CharField" name="uri">/user/admin/igadgets/2/variables/textcolor</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">30</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">19</field>
+        <field type="TextField" name="value"></field>
+    </object>
+    <object pk="38" model="igadget.variable">
+        <field type="CharField" name="uri">/user/admin/igadgets/2/variables/bg</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">29</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">19</field>
+        <field type="TextField" name="value"></field>
+    </object>
+    <object pk="39" model="igadget.variable">
+        <field type="CharField" name="uri">/user/mac/igadgets/1/variables/phoneNumber</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">33</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">20</field>
+        <field type="TextField" name="value"></field>
+    </object>
+    <object pk="40" model="igadget.variable">
+        <field type="CharField" name="uri">/user/mac/igadgets/1/variables/address</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">32</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">20</field>
+        <field type="TextField" name="value"></field>
+    </object>
+    <object pk="41" model="igadget.variable">
+        <field type="CharField" name="uri">/user/mac/igadgets/2/variables/deviceStatus</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">36</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">21</field>
+        <field type="TextField" name="value"></field>
+    </object>
+    <object pk="42" model="igadget.variable">
+        <field type="CharField" name="uri">/user/mac/igadgets/2/variables/deviceId</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">35</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">21</field>
+        <field type="TextField" name="value"></field>
+    </object>
+    <object pk="43" model="igadget.variable">
+        <field type="CharField" name="uri">/user/mac/igadgets/2/variables/address</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">34</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">21</field>
+        <field type="TextField" name="value"></field>
+    </object>
+    <object pk="17" model="igadget.position">
+        <field type="CharField" name="uri">/user/mru/igadgets/9/position</field>
+        <field type="IntegerField" name="posX">1</field>
+        <field type="IntegerField" name="posY">49</field>
+        <field type="IntegerField" name="height">20</field>
+        <field type="IntegerField" name="width">1</field>
+    </object>
+    <object pk="15" model="igadget.position">
+        <field type="CharField" name="uri">/user/mru/igadgets/7/position</field>
+        <field type="IntegerField" name="posX">0</field>
+        <field type="IntegerField" name="posY">49</field>
+        <field type="IntegerField" name="height">11</field>
+        <field type="IntegerField" name="width">1</field>
+    </object>
+    <object pk="14" model="igadget.position">
+        <field type="CharField" name="uri">/user/mru/igadgets/6/position</field>
+        <field type="IntegerField" name="posX">2</field>
+        <field type="IntegerField" name="posY">48</field>
+        <field type="IntegerField" name="height">25</field>
+        <field type="IntegerField" name="width">1</field>
+    </object>
+    <object pk="13" model="igadget.position">
+        <field type="CharField" name="uri">/user/mru/igadgets/5/position</field>
+        <field type="IntegerField" name="posX">0</field>
+        <field type="IntegerField" name="posY">26</field>
+        <field type="IntegerField" name="height">20</field>
+        <field type="IntegerField" name="width">1</field>
+    </object>
+    <object pk="12" model="igadget.position">
+        <field type="CharField" name="uri">/user/mru/igadgets/4/position</field>
+        <field type="IntegerField" name="posX">1</field>
+        <field type="IntegerField" name="posY">24</field>
+        <field type="IntegerField" name="height">22</field>
+        <field type="IntegerField" name="width">1</field>
+    </object>
+    <object pk="11" model="igadget.position">
+        <field type="CharField" name="uri">/user/mru/igadgets/3/position</field>
+        <field type="IntegerField" name="posX">2</field>
+        <field type="IntegerField" name="posY">1</field>
+        <field type="IntegerField" name="height">44</field>
+        <field type="IntegerField" name="width">1</field>
+    </object>
+    <object pk="10" model="igadget.position">
+        <field type="CharField" name="uri">/user/mru/igadgets/2/position</field>
+        <field type="IntegerField" name="posX">1</field>
+        <field type="IntegerField" name="posY">1</field>
+        <field type="IntegerField" name="height">20</field>
+        <field type="IntegerField" name="width">1</field>
+    </object>
+    <object pk="9" model="igadget.position">
+        <field type="CharField" name="uri">/user/mru/igadgets/1/position</field>
+        <field type="IntegerField" name="posX">0</field>
+        <field type="IntegerField" name="posY">1</field>
+        <field type="IntegerField" name="height">22</field>
+        <field type="IntegerField" name="width">1</field>
+    </object>
+    <object pk="18" model="igadget.position">
+        <field type="CharField" name="uri">/user/admin/igadgets/1/position</field>
+        <field type="IntegerField" name="posX">0</field>
+        <field type="IntegerField" name="posY">1</field>
+        <field type="IntegerField" name="height">11</field>
+        <field type="IntegerField" name="width">3</field>
+    </object>
+    <object pk="19" model="igadget.position">
+        <field type="CharField" name="uri">/user/admin/igadgets/2/position</field>
+        <field type="IntegerField" name="posX">0</field>
+        <field type="IntegerField" name="posY">15</field>
+        <field type="IntegerField" name="height">11</field>
+        <field type="IntegerField" name="width">1</field>
+    </object>
+    <object pk="20" model="igadget.position">
+        <field type="CharField" name="uri">/user/mac/igadgets/1/position</field>
+        <field type="IntegerField" name="posX">0</field>
+        <field type="IntegerField" name="posY">1</field>
+        <field type="IntegerField" name="height">11</field>
+        <field type="IntegerField" name="width">1</field>
+    </object>
+    <object pk="21" model="igadget.position">
+        <field type="CharField" name="uri">/user/mac/igadgets/2/position</field>
+        <field type="IntegerField" name="posX">1</field>
+        <field type="IntegerField" name="posY">1</field>
+        <field type="IntegerField" name="height">11</field>
+        <field type="IntegerField" name="width">1</field>
+    </object>
     <object pk="1" model="igadget.screen">
         <field type="CharField" name="uri">/user/admin/screen/1</field>
         <field type="CharField" name="name">myScreen</field>
         <field type="IntegerField" name="code">1</field>
         <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
+    </object>
+    <object pk="2" model="igadget.screen">
+        <field type="CharField" name="uri">/user/mru/screen/1</field>
+        <field type="CharField" name="name">myScreen</field>
+        <field type="IntegerField" name="code">1</field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">2</field>
+    </object>
+    <object pk="3" model="igadget.screen">
+        <field type="CharField" name="uri">/user/mac/screen/1</field>
+        <field type="CharField" name="name">myScreen</field>
+        <field type="IntegerField" name="code">1</field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">3</field>
+    </object>
+    <object pk="9" model="igadget.igadget">
+        <field type="CharField" name="uri">/user/mru/igadgets/1</field>
+        <field type="IntegerField" name="code">1</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">7</field>
+        <field to="igadget.screen" name="screen" rel="ManyToOneRel">2</field>
+        <field to="igadget.position" name="position" rel="ManyToOneRel">9</field>
+    </object>
+    <object pk="10" model="igadget.igadget">
+        <field type="CharField" name="uri">/user/mru/igadgets/2</field>
+        <field type="IntegerField" name="code">2</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">8</field>
+        <field to="igadget.screen" name="screen" rel="ManyToOneRel">2</field>
+        <field to="igadget.position" name="position" rel="ManyToOneRel">10</field>
+    </object>
+    <object pk="11" model="igadget.igadget">
+        <field type="CharField" name="uri">/user/mru/igadgets/3</field>
+        <field type="IntegerField" name="code">3</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">9</field>
+        <field to="igadget.screen" name="screen" rel="ManyToOneRel">2</field>
+        <field to="igadget.position" name="position" rel="ManyToOneRel">11</field>
+    </object>
+    <object pk="12" model="igadget.igadget">
+        <field type="CharField" name="uri">/user/mru/igadgets/4</field>
+        <field type="IntegerField" name="code">4</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">10</field>
+        <field to="igadget.screen" name="screen" rel="ManyToOneRel">2</field>
+        <field to="igadget.position" name="position" rel="ManyToOneRel">12</field>
+    </object>
+    <object pk="13" model="igadget.igadget">
+        <field type="CharField" name="uri">/user/mru/igadgets/5</field>
+        <field type="IntegerField" name="code">5</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">11</field>
+        <field to="igadget.screen" name="screen" rel="ManyToOneRel">2</field>
+        <field to="igadget.position" name="position" rel="ManyToOneRel">13</field>
+    </object>
+    <object pk="14" model="igadget.igadget">
+        <field type="CharField" name="uri">/user/mru/igadgets/6</field>
+        <field type="IntegerField" name="code">6</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">12</field>
+        <field to="igadget.screen" name="screen" rel="ManyToOneRel">2</field>
+        <field to="igadget.position" name="position" rel="ManyToOneRel">14</field>
+    </object>
+    <object pk="15" model="igadget.igadget">
+        <field type="CharField" name="uri">/user/mru/igadgets/7</field>
+        <field type="IntegerField" name="code">7</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">13</field>
+        <field to="igadget.screen" name="screen" rel="ManyToOneRel">2</field>
+        <field to="igadget.position" name="position" rel="ManyToOneRel">15</field>
+    </object>
+    <object pk="17" model="igadget.igadget">
+        <field type="CharField" name="uri">/user/mru/igadgets/9</field>
+        <field type="IntegerField" name="code">9</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">15</field>
+        <field to="igadget.screen" name="screen" rel="ManyToOneRel">2</field>
+        <field to="igadget.position" name="position" rel="ManyToOneRel">17</field>
+    </object>
+    <object pk="18" model="igadget.igadget">
+        <field type="CharField" name="uri">/user/admin/igadgets/1</field>
+        <field type="IntegerField" name="code">1</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">1</field>
+        <field to="igadget.screen" name="screen" rel="ManyToOneRel">1</field>
+        <field to="igadget.position" name="position" rel="ManyToOneRel">18</field>
+    </object>
+    <object pk="19" model="igadget.igadget">
+        <field type="CharField" name="uri">/user/admin/igadgets/2</field>
+        <field type="IntegerField" name="code">2</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">16</field>
+        <field to="igadget.screen" name="screen" rel="ManyToOneRel">1</field>
+        <field to="igadget.position" name="position" rel="ManyToOneRel">19</field>
+    </object>
+    <object pk="20" model="igadget.igadget">
+        <field type="CharField" name="uri">/user/mac/igadgets/1</field>
+        <field type="IntegerField" name="code">1</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">17</field>
+        <field to="igadget.screen" name="screen" rel="ManyToOneRel">3</field>
+        <field to="igadget.position" name="position" rel="ManyToOneRel">20</field>
+    </object>
+    <object pk="21" model="igadget.igadget">
+        <field type="CharField" name="uri">/user/mac/igadgets/2</field>
+        <field type="IntegerField" name="code">2</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">18</field>
+        <field to="igadget.screen" name="screen" rel="ManyToOneRel">3</field>
+        <field to="igadget.position" name="position" rel="ManyToOneRel">21</field>
     </object>
 </django-objects>
