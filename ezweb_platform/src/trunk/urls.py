@@ -1,4 +1,4 @@
-﻿﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 # MORFEO Project 
 # http://morfeo-project.org 
