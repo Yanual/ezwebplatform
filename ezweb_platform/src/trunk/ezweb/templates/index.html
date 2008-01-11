@@ -128,6 +128,17 @@ var URIs = new _URIConstants();
 		DragboardFactory.getInstance().repaint();
 
 		wI = new wiringInterface();
+		switch("{{ current_tab }}") {
+		    case 'dragboard':
+	    		show_dragboard();
+		    break;
+		    case 'showcase':
+	    		show_showcase();
+		    break;
+		    case 'wiring':
+                show_wiring();
+		    break;
+        }
 	}
 	
 	function resizeWrapper() {
@@ -146,12 +157,12 @@ var URIs = new _URIConstants();
 
 <!-- HEADER -->
 <div id="header">
-  <div id="greeting"><!-- {{ current_tab }} -->{% trans "Welcome" %}, {{ user.username }} / <a href="/logout">{% trans "Exit" %}</a></div>
+  <div id="greeting">{% trans "Welcome" %}, {{ user.username }} / <a href="/logout">{% trans "Exit" %}</a></div>
   <img id="logo" src="{{ MEDIA_URL }}images/logo.gif" alt="EzWeb Logo">
   <div class="tab_section">
     <span id="wiring_tab" class="tab" onclick="show_wiring();">{% trans "My Wires" %}</span>
     <span id="showcase_tab" class="tab" onclick="show_showcase();">{% trans "My Catalogue" %}</span>
-    <span id="dragboard_tab" class="tab current" onclick="show_dragboard();">{% trans "My Gadgets" %}</span>
+    <span id="dragboard_tab" class="tab" onclick="show_dragboard();">{% trans "My Gadgets" %}</span>
   </div>
 </div>
 
