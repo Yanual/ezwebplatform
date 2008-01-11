@@ -77,7 +77,7 @@ var OpManagerFactory = function () {
 			this.varManagerModule.addInstance(iGadgetId, gadget.getTemplate());
 			this.wiringModule.addInstance(iGadgetId, gadget.getTemplate());
 			
-			this.contextManagerModule.addInstance(gadget);
+			this.contextManagerModule.addInstance(iGadgetId, gadget);
 			
 			this.dragboardModule.showInstance(iGadgetId);
 

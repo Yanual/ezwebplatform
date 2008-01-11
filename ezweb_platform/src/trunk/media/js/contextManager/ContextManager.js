@@ -165,11 +165,11 @@ var ContextManagerFactory = function () {
 		// ****************
 		// PUBLIC METHODS 
 		// ****************
-		ContextManager.prototype.addInstance = function (gadget) {
+		ContextManager.prototype.addInstance = function (iGadgetId, gadget) {
 			if ((gadget == null) || !(gadget instanceof Gadget))
 				return; // TODO exception
 
-			var cVars = gadget.getTemplate().getContextVars();
+			var cVars = gadget.getTemplate().getContextVars(iGadgetId);
 			for (var i = 0; i < cVars.length; i++){
 				var cVar = cVars[i];
 				cname2IVars[conceptName] = cVar;

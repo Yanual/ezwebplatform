@@ -126,7 +126,7 @@ function Template(template_) {
 		return this.prefs;
 	}
 	
-	this.getContextVars = function () {
+	this.getContextVars = function (igadget_) {
 
 		if (this.contextVars == null) {
 			// JSON-coded Template-Variables mapping	
