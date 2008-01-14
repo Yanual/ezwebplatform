@@ -56,6 +56,8 @@ class GadgetsCollectionByGenericSearch(Resource):
          
         value = value.split(' ')
         gadgetlist = []
+        taglist = []
+        criterialist = []
         count = 0
         list_aux = []
         ulist = []
@@ -65,7 +67,13 @@ class GadgetsCollectionByGenericSearch(Resource):
             for e in value:
                 # Get the list of elements that fits the value given
                 gadgetlist += GadgetResource.objects.filter(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
-             
+                criterialist += UserTag.objects.filter(tag__icontains = e)
+            
+            for b in criterialist:
+	        taglist += get_list_or_404(GadgetResource, id=b.idResource_id)
+            
+            gadgetlist = gadgetlist + taglist              
+
             list_aux = gadgetlist
             
             if (len(value)) == 1:
@@ -101,7 +109,14 @@ class GadgetsCollectionByGenericSearch(Resource):
             for e in value:
                 # Get the list of elements that fits the value given
                 gadgetlist += GadgetResource.objects.filter(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
+                criterialist += UserTag.objects.filter(tag__icontains = e)
+
             
+	    for b in criterialist:
+	        taglist += get_list_or_404(GadgetResource, id=b.idResource_id)        
+   
+            gadgetlist = gadgetlist + taglist
+
             [ulist.append(x) for x in gadgetlist if x not in ulist]
 
         elif criteria == 'not':
