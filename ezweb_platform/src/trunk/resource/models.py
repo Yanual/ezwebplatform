@@ -38,27 +38,30 @@
 
 from django.db import models 
 from django.contrib.auth.models import User
-from resource.search import SearchManager
+from django.utils.translation import ugettext as _
+
   
 class GadgetResource(models.Model): 
      
-     short_name = models.CharField(max_length=20) 
-     vendor= models.CharField(max_length=100)
-     added_by_user = models.ForeignKey(User)
-     author = models.CharField(max_length=100, null=True)
-     size = models.CharField(max_length=10, null=True) 
-     license = models.CharField(max_length=20, null=True) 
-     version = models.CharField(max_length=20)
-     mail = models.EmailField(null=True) 
-     description = models.CharField(max_length=500, null=True) 
-     gadget_uri = models.CharField(max_length=500, null=True) 
-     creation_date = models.DateTimeField('creation_date', null=True) 
-     image_uri = models.CharField(max_length=500, null=True) 
-     wiki_page_uri = models.CharField(max_length=500, null=True) 
-     template_uri= models.CharField(max_length=500, null=True)
+     short_name = models.CharField(_('Name'), max_length=250) 
+     vendor= models.CharField(_('Vendor'), max_length=250)
+     version = models.CharField(_('Version'), max_length=150)
 
-     objects = SearchManager(['short_name_fti', 'vendor_fti', 'version_fti', 'author_fti', 'license_fti', 'size_fti', 'description_fti', 'mail_fti'])
-    
+     added_by_user = models.ForeignKey(User)
+
+     author = models.CharField(_('Author'), max_length=250)
+     mail = models.CharField(_('Mail'), max_length=30)
+           
+     description = models.CharField(_('Description'), max_length=250) 
+     size = models.CharField(_('Size'),max_length=10, null=True) 
+     license = models.CharField(_('License'),max_length=20, null=True)
+
+     gadget_uri = models.URLField(_('gadgetURI'), null=True) 
+     creation_date = models.DateTimeField('creation_date', null=True)
+     image_uri = models.URLField(_('imageURI')) 
+     wiki_page_uri = models.URLField(_('wikiURI')) 
+     template_uri= models.URLField(_('templateURI'))
+
      class Meta:
 	 unique_together = ("short_name", "vendor","version")
 
@@ -70,11 +73,9 @@ class GadgetResource(models.Model):
 
 class GadgetWiring(models.Model): 
 
-     friendcode = models.CharField(max_length=20)
-     wiring  = models.CharField(max_length=20)
+     friendcode = models.CharField(_('Friend code'), max_length=30, blank=True, null=True)
+     wiring  = models.CharField(_('Wiring'), max_length=5)
      idResource = models.ForeignKey(GadgetResource)
-
-     objects = SearchManager(['friendcode_fti', 'wiring_fti'])
 
      class Admin: 
          pass 

@@ -40,7 +40,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from resource.models import GadgetResource
-from resource.search import SearchManager
 
 
 class UserTag(models.Model): 
@@ -52,9 +51,6 @@ class UserTag(models.Model):
      idUser = models.ForeignKey(User)
      idResource = models.ForeignKey(GadgetResource)
  
-     
-     objects = SearchManager(['tag_fti', 'value_fti', 'weight_fti', 'criteria_fti'])
-         
      class Meta:
 	 unique_together = ("tag", "idUser","idResource")
 

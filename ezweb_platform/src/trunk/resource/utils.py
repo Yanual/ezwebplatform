@@ -36,9 +36,6 @@
 #   http://morfeo-project.org/
 #
 
-from xml.sax import saxutils
-from xml.sax import make_parser
-
 from tag.models import UserTag
 from resource.models import GadgetResource
 from resource.models import GadgetWiring
