@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 
 # MORFEO Project 
 # http://morfeo-project.org 
@@ -77,20 +77,25 @@ class TemplateHandler(saxutils.handler.ContentHandler):
     def resetAccumulator(self):
         self._accumulator = []
     
-    def processWire(self, attrs):
+    def processWire(self, attrs, wire):
        
         _friendCode = ''
         _wiring = ''
+        
+        print wire
 
         if (attrs.has_key('friendcode')==True):
             _friendCode = attrs.get('friendcode')
 
-        if (attrs.has_key('wiring')==True):
-            _wiring = attrs.get('wiring')
-
-        if (_friendCode != '' and _wiring != ''):
-
+        if (wire == 'Slot'):
+            _wiring = 'in'
             
+        if (wire == 'Event'):
+            _wiring = 'out'
+
+        if (_friendCode != '' and wire != ''):
+
+            print 'antes de grabar'
             wiring = GadgetWiring( friendcode = _friendCode, 
                                 wiring = _wiring,
                                 idResource_id = get_object_or_404(GadgetResource, short_name=self._name,vendor=self._vendor,version=self._version).id)
@@ -152,6 +157,10 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 	if (name == 'Name') or (name=='Version') or (name=='Vendor') or (name=='Author') or (name=='Description') or (name=='Mail') or (name=='ImageURI') or (name=='WikiURI'):
 	    self.resetAccumulator()
 	    return
-        if (name == 'Wire'):
-            self.processWire(attrs)
+        if (name == 'Slot' or name == 'Event'):
+            self.processWire(attrs,'Slot')
+            print 'en slot'
+            return
+        if (name == 'Event'):
+            self.processWire(attrs,'Event')
             return

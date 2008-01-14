@@ -174,7 +174,7 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 		for (var i=0; i<slotsAux.length; i++)
 		{
 			
-			var jsCall = 'javascript:UIUtils.searchByWiring(URIs.GET_RESOURCES_BY_WIRING, "' + slotsAux[i] + '", "' + 'event' + '");';
+			var jsCall = 'javascript:UIUtils.searchByWiring(URIs.GET_RESOURCES_BY_WIRING, "' + slotsAux[i] + '", "' + 'slot' + '");';
 			slotsHTML += ("<span class='multiple_size_tag'>"+"<a title='Buscar " + slotsAux[i] +"' href='" + jsCall + "'>" + slotsAux[i] + "</a>" + ((i<(slotsAux.length-1))?",":"") + "</span> ");
 		}
 		return slotsHTML;
