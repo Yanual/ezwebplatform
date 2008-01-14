@@ -200,20 +200,6 @@
         <field type="IntegerField" name="height">22</field>
         <field type="IntegerField" name="width">1</field>
     </object>
-    <object pk="18" model="igadget.position">
-        <field type="CharField" name="uri">/user/admin/igadgets/1/position</field>
-        <field type="IntegerField" name="posX">0</field>
-        <field type="IntegerField" name="posY">1</field>
-        <field type="IntegerField" name="height">11</field>
-        <field type="IntegerField" name="width">3</field>
-    </object>
-    <object pk="19" model="igadget.position">
-        <field type="CharField" name="uri">/user/admin/igadgets/2/position</field>
-        <field type="IntegerField" name="posX">0</field>
-        <field type="IntegerField" name="posY">15</field>
-        <field type="IntegerField" name="height">11</field>
-        <field type="IntegerField" name="width">1</field>
-    </object>
     <object pk="20" model="igadget.position">
         <field type="CharField" name="uri">/user/mac/igadgets/1/position</field>
         <field type="IntegerField" name="posX">0</field>
@@ -227,6 +213,20 @@
         <field type="IntegerField" name="posY">1</field>
         <field type="IntegerField" name="height">11</field>
         <field type="IntegerField" name="width">1</field>
+    </object>
+    <object pk="19" model="igadget.position">
+        <field type="CharField" name="uri">/user/admin/igadgets/2/position</field>
+        <field type="IntegerField" name="posX">0</field>
+        <field type="IntegerField" name="posY">15</field>
+        <field type="IntegerField" name="height">11</field>
+        <field type="IntegerField" name="width">1</field>
+    </object>
+    <object pk="18" model="igadget.position">
+        <field type="CharField" name="uri">/user/admin/igadgets/1/position</field>
+        <field type="IntegerField" name="posX">0</field>
+        <field type="IntegerField" name="posY">1</field>
+        <field type="IntegerField" name="height">11</field>
+        <field type="IntegerField" name="width">3</field>
     </object>
     <object pk="1" model="igadget.screen">
         <field type="CharField" name="uri">/user/admin/screen/1</field>

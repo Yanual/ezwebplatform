@@ -95,7 +95,7 @@ class ConnectableEntry(Resource):
         
         #TODO Remove this. Sets user screen by default 
         if not screen_id:
-        		screen_id = '1'
+        		screen_id = 1
 
         try:
             #Gets current user screen

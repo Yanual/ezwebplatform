@@ -4592,8 +4592,7 @@ function load(){
 			&lt;/center&gt;
 		&lt;/form&gt;	
 	&lt;/body&gt;
-&lt;/html&gt;
-</field>
+&lt;/html&gt;</field>
     </object>
     <object pk="17" model="gadget.xhtml">
         <field type="CharField" name="uri">/user/mac/gadgets/Morfeo/Visor_Datos_Usuario/1.0/xhtml</field>

@@ -71,7 +71,7 @@
         <field type="CharField" name="friend_code"></field>
         <field to="auth.user" name="user" rel="ManyToOneRel">2</field>
     </object>
-    <object pk="92" model="connectable.inout">
+    <object pk="96" model="connectable.inout">
         <field type="CharField" name="uri">/user/admin/channel/canal1</field>
         <field type="CharField" name="name">canal1</field>
         <field type="CharField" name="value"><None></None></field>
@@ -108,16 +108,16 @@
         <field to="igadget.variable" name="variable" rel="ManyToOneRel">19</field>
         <field to="connectable.inout" name="inout" rel="ManyToManyRel"><object pk="90"></object></field>
     </object>
-    <object pk="234" model="connectable.in">
-        <field type="CharField" name="uri">/user/admin/igadgets/1/in/serviceHired</field>
-        <field type="CharField" name="name">serviceHired</field>
-        <field to="igadget.variable" name="variable" rel="ManyToOneRel">34</field>
-        <field to="connectable.inout" name="inout" rel="ManyToManyRel"></field>
-    </object>
-    <object pk="235" model="connectable.in">
+    <object pk="242" model="connectable.in">
         <field type="CharField" name="uri">/user/admin/igadgets/1/in/phoneNumber</field>
         <field type="CharField" name="name">phoneNumber</field>
         <field to="igadget.variable" name="variable" rel="ManyToOneRel">35</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="243" model="connectable.in">
+        <field type="CharField" name="uri">/user/admin/igadgets/1/in/serviceHired</field>
+        <field type="CharField" name="name">serviceHired</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">34</field>
         <field to="connectable.inout" name="inout" rel="ManyToManyRel"></field>
     </object>
     <object pk="1" model="auth.user">
@@ -129,8 +129,22 @@
         <field type="BooleanField" name="is_staff">True</field>
         <field type="BooleanField" name="is_active">True</field>
         <field type="BooleanField" name="is_superuser">True</field>
-        <field type="DateTimeField" name="last_login">2008-01-10 13:13:12</field>
+        <field type="DateTimeField" name="last_login">2008-01-14 16:05:58</field>
         <field type="DateTimeField" name="date_joined">2008-01-09 15:47:32</field>
+        <field to="auth.group" name="groups" rel="ManyToManyRel"></field>
+        <field to="auth.permission" name="user_permissions" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="4" model="auth.user">
+        <field type="CharField" name="username">ezforge</field>
+        <field type="CharField" name="first_name"></field>
+        <field type="CharField" name="last_name"></field>
+        <field type="CharField" name="email"></field>
+        <field type="CharField" name="password">sha1$8ad43$34c8c597aa152ed7529f7f2e3228911d9da93310</field>
+        <field type="BooleanField" name="is_staff">True</field>
+        <field type="BooleanField" name="is_active">True</field>
+        <field type="BooleanField" name="is_superuser">True</field>
+        <field type="DateTimeField" name="last_login">2008-01-14 16:24:04</field>
+        <field type="DateTimeField" name="date_joined">2008-01-14 16:24:04</field>
         <field to="auth.group" name="groups" rel="ManyToManyRel"></field>
         <field to="auth.permission" name="user_permissions" rel="ManyToManyRel"></field>
     </object>
@@ -521,6 +535,45 @@
         <field type="CharField" name="name">Can delete user tag</field>
         <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">24</field>
         <field type="CharField" name="codename">delete_usertag</field>
+    </object>
+    <object pk="73" model="auth.permission">
+        <field type="CharField" name="name">Can add gadget resource</field>
+        <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">25</field>
+        <field type="CharField" name="codename">add_gadgetresource</field>
+    </object>
+    <object pk="74" model="auth.permission">
+        <field type="CharField" name="name">Can change gadget resource</field>
+        <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">25</field>
+        <field type="CharField" name="codename">change_gadgetresource</field>
+    </object>
+    <object pk="75" model="auth.permission">
+        <field type="CharField" name="name">Can delete gadget resource</field>
+        <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">25</field>
+        <field type="CharField" name="codename">delete_gadgetresource</field>
+    </object>
+    <object pk="76" model="auth.permission">
+        <field type="CharField" name="name">Can add user tag</field>
+        <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">26</field>
+        <field type="CharField" name="codename">add_usertag</field>
+    </object>
+    <object pk="77" model="auth.permission">
+        <field type="CharField" name="name">Can change user tag</field>
+        <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">26</field>
+        <field type="CharField" name="codename">change_usertag</field>
+    </object>
+    <object pk="78" model="auth.permission">
+        <field type="CharField" name="name">Can delete user tag</field>
+        <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">26</field>
+        <field type="CharField" name="codename">delete_usertag</field>
+    </object>
+    <object pk="18" model="admin.logentry">
+        <field type="DateTimeField" name="action_time">2008-01-14 16:24:17</field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
+        <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">3</field>
+        <field type="TextField" name="object_id">4</field>
+        <field type="CharField" name="object_repr">ezforge</field>
+        <field type="PositiveSmallIntegerField" name="action_flag">2</field>
+        <field type="TextField" name="change_message">Modificado es staff, es superusuario, Último registro y fecha de creación.</field>
     </object>
     <object pk="17" model="admin.logentry">
         <field type="DateTimeField" name="action_time">2008-01-09 18:10:57</field>

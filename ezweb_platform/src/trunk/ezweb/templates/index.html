@@ -101,7 +101,8 @@ var URIs = new _URIConstants();
 	}
 
 	function show_showcase() {
-		wI.unloaded();
+//		wI.unloaded();
+        wI.renewInterface();
 		opManager.repaintCatalogue(URIs.GET_POST_RESOURCES);
 		showInterface('showcase');
 		UIUtils.setResourcesWidth();
@@ -112,25 +113,29 @@ var URIs = new _URIConstants();
 	}
 
 	function show_dragboard() {
-		wI.unloaded();
+//		wI.unloaded();
+//        wI.renewInterface();
 		showInterface('dragboard');
 
-    	opManager.restaure();
+//    	opManager.restaure();
     	//WiringFactory.getInstance().serialize();
 
 	}
 
 	function show_wiring() {
-		wI.renewInterface(WiringFactory.getInstance());
+		wI.renewInterface();
 		showInterface('wiring');
 	}
 
 	// Platform initialization
 	function environmentLoadedCallback() {
-		DragboardFactory.getInstance().repaint();
+		dragboard = DragboardFactory.getInstance();
+		dragboard.repaint();
+    	
+    	wiring = WiringFactory.getInstance();
+		wI = new wiringInterface(wiring);
 
-		wI = new wiringInterface();
-/*		switch("{{ current_tab }}") {
+	switch("{{ current_tab }}") {
 		    case 'dragboard':
 	    		show_dragboard();
 		    break;
@@ -140,8 +145,7 @@ var URIs = new _URIConstants();
 		    case 'wiring':
                 show_wiring();
 		    break;
-        }
-*/
+        }
 
 	}
 	
@@ -150,8 +154,13 @@ var URIs = new _URIConstants();
 	}
 
 	var wI;
-	var opManager = OpManagerFactory.getInstance();
-	opManager.loadEnviroment();
+	var wiring;
+	var opManager;
+	var dragboard;
+
+    opManager = OpManagerFactory.getInstance();
+    opManager.loadEnviroment();
+
 </script>
 
 

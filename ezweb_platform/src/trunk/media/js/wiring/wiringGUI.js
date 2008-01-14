@@ -38,9 +38,8 @@
 
 //This class is the controller of the interface provided for managing the wiring module
 
-function wiringInterface(){
-	this.loaded = false;
-	w = WiringFactory.getInstance();
+function wiringInterface(wi){
+	w = wi;
 	wiringInterface.prototype.friend_codes = {};
 	wiringInterface.prototype.highlight_color = "#FFFFE0";
 	this.friend_codes_counter = 0;
@@ -51,7 +50,6 @@ function wiringInterface(){
 
 wiringInterface.prototype.unloaded = function (){
     this.disabled_all = true;
-	this.loaded = false;
 
 	$("events_list").innerHTML = "";
 	$("slots_list").innerHTML = "";
@@ -66,12 +64,10 @@ wiringInterface.prototype.addChannelInterface = function (name){
 	inputDel.setAttribute("type", "image");
 	inputDel.setAttribute("onclick", "wiringInterface.prototype.deleteChannel('"+ name +"'); opManager.restaure();");
     inputDel.setAttribute("src", "/ezweb/images/dialog-cancel.png");
-//    inputDel.setAttribute("style", "padding-right: 2px;");
     li.appendChild(inputDel);
     var chkChannel = document.createElement("input");
     chkChannel.setAttribute("type", "radio");
     chkChannel.setAttribute("name", "channels_options");
-//    chkChannel.setAttribute("style", "display: none;");
     chkChannel.setAttribute("id", "chk_"+ idChannel);
     chkChannel.setAttribute("onclick", "javascript:{wiringInterface.prototype._highlight_channel('chk_"+ idChannel +"', '"+ name +"'); opManager.restaure();}");
     var textNode = document.createTextNode(name);
@@ -85,7 +81,6 @@ wiringInterface.prototype.addChannelInterface = function (name){
 	li.setAttribute("id", idChannel);
 
     var ulVal = document.createElement("ul");
-//    var textNodeValue = document.createTextNode("Value: "+ w.viewValue(name));
     var textNodeValue = document.createTextNode(w.viewValue(name));
     var liVal = document.createElement("li");
     liVal.appendChild(textNodeValue);
@@ -172,27 +167,24 @@ wiringInterface.prototype.addChannelsAsGadgetInterface = function (channels) {
 
 }
 
-wiringInterface.prototype.renewInterface = function (wi) {
-    w = wi;
+wiringInterface.prototype.renewInterface = function () {
+    this.unloaded();
 	w.edition();
-	if (!this.loaded){
-		var iGadgets = w.getGadgetsId();
-		var channels = w.getInOutsId();
-		for (var i = 0; i<iGadgets.length; i++){
-			this.addGadgetInterface(iGadgets[i]);
-		}
-		for (var j = 0; j<channels.length; j++){
-			this.addChannelInterface(channels[j])
-		}
-        //this.addChannelsAsGadgetInterface(channels)
-        this.channels_counter = channels.length + 1;
-	    $("channel_name").value = "Wire_"+ this.channels_counter;
-	    while(channels.include($("channel_name").value)) {
-            this.channels_counter++;
-	        $("channel_name").value = "Wire_"+ this.channels_counter;
-        }
-		this.loaded = true;
+	var iGadgets = w.getGadgetsId();
+	var channels = w.getInOutsId();
+	for (var i = 0; i<iGadgets.length; i++){
+		this.addGadgetInterface(iGadgets[i]);
 	}
+	for (var j = 0; j<channels.length; j++){
+		this.addChannelInterface(channels[j])
+	}
+    //this.addChannelsAsGadgetInterface(channels)
+    this.channels_counter = channels.length + 1;
+    $("channel_name").value = "Wire_"+ this.channels_counter;
+    while(channels.include($("channel_name").value)) {
+        this.channels_counter++;
+        $("channel_name").value = "Wire_"+ this.channels_counter;
+    }
 }
 
 wiringInterface.prototype.addChannel = function () {
@@ -208,6 +200,7 @@ wiringInterface.prototype.addChannel = function () {
 			this.addChannelInterface(name);
             this.channels_counter++;
 	        $("channel_name").value = "Wire_"+ this.channels_counter;
+            w.serialize();
 		}
 	}
 }
@@ -219,6 +212,7 @@ wiringInterface.prototype.deleteChannel = function (object){
         $(idChannel).remove();
         wiringInterface.prototype._enable_all(false);
         this.channels_counter--;
+        w.serialize();
 	}
 }
 
@@ -244,6 +238,7 @@ wiringInterface.prototype._changeChannel = function(item_id, gadget_id, event_na
             }
 
         }
+        w.serialize();
     }
 }
 
