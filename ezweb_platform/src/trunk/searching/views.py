@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 
 # MORFEO Project 
 # http://morfeo-project.org 
@@ -38,6 +38,7 @@
 import sys
 
 from django.contrib.auth.models import User
+from django.db.models import Q
 from django.http import HttpResponse, HttpResponseServerError
 from django.shortcuts import get_object_or_404, get_list_or_404
 
@@ -51,21 +52,68 @@ from resource.utils import get_xml_description
 
 class GadgetsCollectionByGenericSearch(Resource):
 
-    def read(self, request, user_name, value):
-	
-        # Get the list of elements that fits the value given
-        
-        gadgetlist = list(GadgetResource.objects.search(value))
+    def read(self, request, user_name, value, criteria):
+         
+        value = value.split(' ')
+        gadgetlist = []
+        count = 0
+        list_aux = []
+        ulist = []
+        rlist = []
 
-	searchlist = list(GadgetWiring.objects.search(value))
-	searchlist = searchlist + list(UserTag.objects.search(value))
-	
-	for b in searchlist:
-        
-	    gadgetlist = gadgetlist + get_list_or_404(GadgetResource, id=b.idResource_id)
+        if criteria == 'and':
+            for e in value:
+                # Get the list of elements that fits the value given
+                gadgetlist += GadgetResource.objects.filter(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
+             
+            list_aux = gadgetlist
+            
+            if (len(value)) == 1:
+                 
+                for x in list_aux:
+                    
+                    if x not in rlist:
+                        rlist.append(x)
+                    else:
+                        ulist.append(x)
 
-	ulist = []
-        [ulist.append(x) for x in gadgetlist if x not in ulist]
+                ulist = rlist
+                        
+            else:
+               
+                for i in range(len(value) - 1):
+                
+                    if i == 1:
+                        list_aux = ulist
+
+                    rlist = []
+                    ulist = []
+            
+                    for x in list_aux:
+                    
+                        if x not in rlist:
+                            rlist.append(x)
+                        else:
+                            ulist.append(x)
+                   
+                    
+        elif criteria == 'or':
+            for e in value:
+                # Get the list of elements that fits the value given
+                gadgetlist += GadgetResource.objects.filter(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
+            
+            [ulist.append(x) for x in gadgetlist if x not in ulist]
+
+        elif criteria == 'not':
+            for e in value:
+                # Get the list of elements that fits the value given
+                if count == 0:
+                    gadgetlist = GadgetResource.objects.exclude(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
+	            count = count + 1                    
+                else:
+                    gadgetlist = gadgetlist.exclude(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
+            
+            [ulist.append(x) for x in gadgetlist if x not in ulist]
 
 	response = get_xml_description(ulist)
 	response = '<?xml version="1.0" encoding="UTF-8" ?>\n\
@@ -78,24 +126,36 @@ class GadgetsCollectionByCriteria(Resource):
 
     def read(self, request, user_name, criteria, value):
 	
-        if criteria == 'event' or criteria == 'slot' or criteria == 'tag':        
+        if criteria == 'event' or criteria == 'slot' or criteria == 'tag':     
+            
+            ulist = []
+            criterialist = []
+            gadgetlist = []
+            value = value.split(' ')
+   
             if criteria == 'event':
-	        criterialist = get_list_or_404(GadgetWiring,friendcode=value,wiring='in')
+                for e in value:
+                    criterialist += GadgetWiring.objects.filter(Q(friendcode__icontains = e), Q(wiring__icontains = 'out'))
 	    elif criteria == 'slot':
-                criterialist = get_list_or_404(GadgetWiring,friendcode=value,wiring='out')
+                for e in value:
+                    criterialist += GadgetWiring.objects.filter(Q(friendcode__icontains = e), Q(wiring__icontains = 'in'))
 	    elif criteria == 'tag':
-	        criterialist = get_list_or_404(UserTag,tag=value)
+                for e in value:
+	            criterialist += UserTag.objects.filter(tag__icontains = e)
 
         
 	    response=''
 
 	    for b in criterialist:
         
-	        gadgetlist = get_list_or_404(GadgetResource, id=b.idResource_id)
+	        gadgetlist += get_list_or_404(GadgetResource, id=b.idResource_id)
 	    
-	        temp = get_xml_description(gadgetlist)
-	        response = response+temp
+	        #temp = get_xml_description(gadgetlist)
+	        #response = response+temp
 
+	    [ulist.append(x) for x in gadgetlist if x not in ulist]
+
+            response = get_xml_description(ulist)
 	    response = '<?xml version="1.0" encoding="UTF-8" ?>\n\
 	    <resources>'+response+'</resources>'
 
