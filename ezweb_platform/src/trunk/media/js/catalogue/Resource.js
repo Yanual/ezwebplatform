@@ -72,6 +72,7 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 									"<div class='vendor'>" + state.getVendor() + "</div>" +
 									"<div class='image'><img src='" + state.getUriImage() + "' alt='" + state.getName()+ "&nbsp;" + state.getVersion() + "'/></div>" +
 									"<div class='description'>Descripci&oacute;n:<br/><div class='text'>" + state.getDescription() + "</div></div><br/>" +
+									"<div class='connect'>Conectividad Gadgets:</div><br/>" +
 									"<div class='Events'>Events:" +_events()+ "</div>" +
 									"<div class='Slots'>Slots:" +_slots()+ "</div>" +
 									"<div class='tagcloud'>Tagcloud:<br/><div id='" + id + "_tagcloud' class='tags'>" + _tagsToTagcloud() + "</div></div>" +
@@ -161,7 +162,7 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 		for (var i=0; i<eventsAux.length; i++)
 		{
 			
-			var jsCall = 'javascript:UIUtils.searchByWiring(URIs.GET_RESOURCES_BY_WIRING, "' + eventsAux[i] + '", "' + 'event' + '");';
+			var jsCall = 'javascript:UIUtils.searchByWiring(URIs.GET_RESOURCES_BY_WIRING, "' + eventsAux[i] + '", "' + 'connectEvent' + '");';
 			eventsHTML += ("<span class='multiple_size_tag'>"+"<a title='Buscar " + eventsAux[i] +"' href='" + jsCall + "'>" + eventsAux[i] + "</a>" + ((i<(eventsAux.length-1))?",":"") + "</span> ");
 		}
 		return eventsHTML;
@@ -174,7 +175,7 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 		for (var i=0; i<slotsAux.length; i++)
 		{
 			
-			var jsCall = 'javascript:UIUtils.searchByWiring(URIs.GET_RESOURCES_BY_WIRING, "' + slotsAux[i] + '", "' + 'slot' + '");';
+			var jsCall = 'javascript:UIUtils.searchByWiring(URIs.GET_RESOURCES_BY_WIRING, "' + slotsAux[i] + '", "' + 'connectSlot' + '");';
 			slotsHTML += ("<span class='multiple_size_tag'>"+"<a title='Buscar " + slotsAux[i] +"' href='" + jsCall + "'>" + slotsAux[i] + "</a>" + ((i<(slotsAux.length-1))?",":"") + "</span> ");
 		}
 		return slotsHTML;

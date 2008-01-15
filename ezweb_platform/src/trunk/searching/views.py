@@ -176,6 +176,48 @@ class GadgetsCollectionByCriteria(Resource):
 
             return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
         
+
+        elif criteria == 'connectSlot':
+            
+            gadgetlist = []
+            ulist = []
+            
+            #view compat out
+            criterialist = GadgetWiring.objects.filter(Q(friendcode__icontains = value), Q(wiring__icontains = 'out'))
+
+            for b in criterialist:
+	        gadgetlist += get_list_or_404(GadgetResource, id=b.idResource_id)
+
+            [ulist.append(x) for x in gadgetlist if x not in ulist]
+
+            response = get_xml_description(ulist)
+	    response = '<?xml version="1.0" encoding="UTF-8" ?>\n\
+	    <resources>'+response+'</resources>'
+
+            return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
+
+
+        elif criteria == 'connectEvent':
+            
+            gadgetlist = []
+            ulist = []
+
+            #view compat out
+            criterialist = GadgetWiring.objects.filter(Q(friendcode__icontains = value), Q(wiring__icontains = 'in'))
+
+            for b in criterialist:
+	        gadgetlist += get_list_or_404(GadgetResource, id=b.idResource_id)
+
+            [ulist.append(x) for x in gadgetlist if x not in ulist]
+
+            response = get_xml_description(ulist)
+	    response = '<?xml version="1.0" encoding="UTF-8" ?>\n\
+	    <resources>'+response+'</resources>'
+   
+            return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
+
+
+        
         else:
             if criteria == 'author':
                 criterialist=get_list_or_404(GadgetResource, author=value)
