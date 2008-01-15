@@ -5,8 +5,8 @@
 # 
 # Component: EzWeb
 # 
-# (C) Copyright 2004 TelefÃ³nica InvestigaciÃ³n y Desarrollo 
-#     S.A.Unipersonal (TelefÃ³nica I+D) 
+# (C) Copyright 2004 Telefónica Investigación y Desarrollo 
+#     S.A.Unipersonal (Telefónica I+D) 
 # 
 # Info about members and contributors of the MORFEO project 
 # is available at: 
@@ -38,27 +38,6 @@
 
 from xml.sax import saxutils
 from xml.sax import make_parser
-
-from tag.models import UserTag
-
-def get_tags_by_resource(gadget_id, user_id):
-		
-    xml_tag=''
-		
-    for e in UserTag.objects.filter(idResource=gadget_id, idUser=user_id):
-        xml_tag +='<Tag>\n\
-        <Value>'+e.tag+'</Value>\n\
-	<Added_by>Yes</Added_by>\n\
-        </Tag>'
-   
-    for e in UserTag.objects.filter(idResource=gadget_id).exclude(idUser=user_id):
-        xml_tag +='<Tag>\n\
-        <Value>'+e.tag+'</Value>\n\
-	<Added_by>No</Added_by>\n\
-        </Tag>'
-	
-    response='<Tags>'+xml_tag+'</Tags>'
-    return response
 
 
 class TagsXMLHandler(saxutils.handler.ContentHandler): 

@@ -46,8 +46,7 @@ from xml.sax import make_parser
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 
-from resource.models import GadgetResource
-from resource.models import GadgetWiring
+from resource.models import *
 
 
 class TemplateParser:

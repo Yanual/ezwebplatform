@@ -52,7 +52,7 @@ from resource.models import GadgetResource
 from resource.models import GadgetWiring
 from resource.parser import TemplateParser
 from tag.models import UserTag
-from resource.utils import get_xml_description
+from commons.catalogue_utils import get_xml_description, get_xml_error
 
 
 class GadgetsCollection(Resource):
@@ -68,24 +68,10 @@ class GadgetsCollection(Resource):
 
             templateParser.parse()
             transaction.commit()
-        except IntegrityError:
-            # Gadget already exists. Rollback transaction
+        except IntegrityError, Exception:
+            # Gadget already exists or internal error. Rollback transaction
             transaction.rollback()
-	    value = str(sys.exc_info()[1])
-	    xml_error = '<fault>\n\
-	    <value>'+'Error'+'</value>\n\
-	    <description>'+value+'</description>\n\
-	    </fault>'
-	    return HttpResponseServerError(xml_error,mimetype='text/xml; charset=UTF-8')
-        except Exception, e:
-            # Internal error
-            transaction.rollback()
-	    value = str(sys.exc_info()[1])
-	    xml_error = '<fault>\n\
-	    <value>'+'Error'+'</value>\n\
-	    <description>'+value+'</description>\n\
-	    </fault>'
-	    return HttpResponseServerError(xml_error,mimetype='text/xml; charset=UTF-8')
+	    return HttpResponseServerError(get_xml_error(str(sys.exc_info()[1])),mimetype='text/xml; charset=UTF-8')
 
 	xml_ok = '<ResponseOK>OK</ResponseOK>'
         return HttpResponse(xml_ok,mimetype='text/xml; charset=UTF-8')
@@ -163,3 +149,4 @@ def addToPlatform(request, user_name):
     response = urlopen(url, urlencode(parameters)).read()
 	
     return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
+

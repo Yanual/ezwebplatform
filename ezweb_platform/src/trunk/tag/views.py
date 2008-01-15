@@ -51,7 +51,8 @@ from xml.sax import make_parser
 from xml.sax.xmlreader import InputSource
 
 from tag.models import UserTag
-from tag.utils import get_tags_by_resource, TagsXMLHandler
+from tag.parser import TagsXMLHandler
+from commons.catalogue_utils import get_tags_by_resource
 from resource.models import GadgetResource
 
 

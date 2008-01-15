@@ -39,7 +39,15 @@
 from tag.models import UserTag
 from resource.models import GadgetResource
 from resource.models import GadgetWiring
-from tag.utils import get_tags_by_resource
+
+
+def get_xml_error(description):
+
+    xml_error = '<fault>\n\
+    <value>'+'Error'+'</value>\n\
+    <description>'+description+'</description>\n\
+    </fault>'
+    return xml_error
 
 
 def get_xml_description(gadgetlist):
@@ -87,11 +95,30 @@ def get_events_by_resource(gadget_id):
 
 def get_slots_by_resource(gadget_id):
 
-		
     xml_slot=''
 		
     for e in GadgetWiring.objects.filter(idResource=gadget_id, wiring='in'):
         xml_slot +='<Slot>'+e.friendcode+'</Slot>'
    
     response='<Slots>'+xml_slot+'</Slots>'
+    return response
+
+
+def get_tags_by_resource(gadget_id, user_id):
+		
+    xml_tag=''
+		
+    for e in UserTag.objects.filter(idResource=gadget_id, idUser=user_id):
+        xml_tag +='<Tag>\n\
+        <Value>'+e.tag+'</Value>\n\
+	<Added_by>Yes</Added_by>\n\
+        </Tag>'
+   
+    for e in UserTag.objects.filter(idResource=gadget_id).exclude(idUser=user_id):
+        xml_tag +='<Tag>\n\
+        <Value>'+e.tag+'</Value>\n\
+	<Added_by>No</Added_by>\n\
+        </Tag>'
+	
+    response='<Tags>'+xml_tag+'</Tags>'
     return response
