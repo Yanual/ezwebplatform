@@ -103,22 +103,31 @@ UserPref.prototype.BOOLEAN = "B"; // "B"oolean
  * extends UserPref
  * @author aarranz
  */
-function ListUserPref(name_, label_, desc_, ValueOptions_, defaultValue_) {
+function ListUserPref(name_, label_, desc_, defaultValue_, ValueOptions_) {
 	UserPref.prototype.UserPref.call(this, name_, label_, desc_, defaultValue_);
-	this.options = options_;
+	this.options = ValueOptions_;
 }
 
 ListUserPref.prototype = new UserPref();
 
 ListUserPref.prototype.makeInterface = function (iGadgetId) {
+	var element, select;
+
+	element = document.createElement("label");
+	element.setAttribute("title", this.desc);
+	element.appendChild(document.createTextNode(this.label));
+
+	select = document.createElement("select");
+	element.appendChild(select);
+
 	var output = "";
+	for (var i = 0; i < this.options.length; i++) {
+		output += "<option value=\"" + this.options[i][0] + "\">" + this.options[i][1] + "</option>";
+	}
+		
+	select.innerHTML = output;
 
-	output += "<select>";
-	for (var i; i < options.lenght; i++)
-		output += "<option value=\"" + i + "\">" + option[i] + "</option>";
-	output += "</select>";
-
-	return output;
+	return element;
 }
 
 ListUserPref.prototype.validate = function (newValue) {
@@ -147,7 +156,7 @@ IntUserPref.prototype.makeInterface = function (IGadgetId) {
 	var currentValue =this.getCurrentValue(IGadgetId);
 	if (currentValue != null)
 		output += "value=\"" + currentValue + "\" ";
-	output += "/></label>";
+	output += "/>";
 
 	element.innerHTML = output;
 	return element;

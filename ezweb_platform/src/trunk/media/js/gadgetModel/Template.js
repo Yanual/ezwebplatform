@@ -116,7 +116,7 @@ function Template(template_) {
 							this.prefs.push(new DateUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.default_value));
 							break;
 						case UserPref.prototype.LIST:
-							this.prefs.push(new ListUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.default_value));
+							this.prefs.push(new ListUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.default_value, rawVar.value_options));
 							break;
 					}
 				}

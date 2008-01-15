@@ -40,7 +40,7 @@ from django.shortcuts import get_object_or_404, get_list_or_404
 
 from django.core import serializers
 
-from gadget.models import Template, Gadget, XHTML, GadgetContext, ExternalContext
+from gadget.models import Template, Gadget, XHTML, GadgetContext, ExternalContext, UserPrefOption
 from igadget.models import Variable, VariableDef, Position, IGadget
 from connectable.models import In, Out
 
@@ -100,7 +100,14 @@ def get_gadget_data(data):
         data_var['description'] = var.description
         data_var['friend_code'] = var.friend_code
         data_var['default_value'] = var.default_value
-
+        
+        if var.aspect == 'PREF' and var.type == 'L':
+            options = UserPrefOption.objects.filter(variableDef=var.id)
+            value_options = []
+            for option in options:
+                value_options.append([option.value, option.name]);
+            data_var['value_options'] = value_options;
+        
         if var.aspect == 'GCTX':
             data_var['concept'] = var.gadgetcontext_set.all().values('concept')[0]['concept']
         if var.aspect == 'ECTX':
