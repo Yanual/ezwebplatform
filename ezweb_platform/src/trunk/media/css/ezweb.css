@@ -265,7 +265,7 @@ a:hover{
 
 #wiring .columnCell .on {
     background-repeat: no-repeat;
-    list-style-image: url(/ezweb/images/list-add.png);
+    list-style-image: url(/ezweb/images/list-remove.png);
     background-position: 3px center;
     list-style-position: inside;
     list-style-type: none;
@@ -274,7 +274,7 @@ a:hover{
 
 #wiring .columnCell .off {
     background-repeat: no-repeat;
-    list-style-image: url(/ezweb/images/list-remove.png);
+    list-style-image: url(/ezweb/images/list-add.png);
     background-position: 3px center;
     list-style-position: inside;
     list-style-type: none;
