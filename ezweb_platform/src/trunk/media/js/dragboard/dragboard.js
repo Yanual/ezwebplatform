@@ -668,14 +668,8 @@ var DragboardFactory = function () {
 			// Update igadgets positions in persistence
 			function onSuccess() {}
 
-			function onError(transport, e) {
-				var msg;
-				if (e)
-					msg = e;
-				else
-					msg = transport.status + " " + transport.statusText;
-
-				alert ("Error updating igadgets positions: " + msg);
+			function onError(transport) {
+				alert (transport.responseXML);
 			}
 
 			var iGadgetInfo, uri, position;

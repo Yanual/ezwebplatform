@@ -48,7 +48,7 @@ var WiringFactory = function () {
 	var instance = null;
 
 	function Wiring () {
-				
+
 		// ****************
 		// CALLBACK METHODS 
 		// ****************
@@ -123,6 +123,9 @@ var WiringFactory = function () {
 		var inOutList = new Hash();
 		// copy is the list that is used for making new connections or disconnections with the interface.
 		var copyList = new Hash(); 
+
+		// Allow to pack in an only PUT request, all the variable changes of a VariablePlatform.set invocation
+		var modifiedVars = [];
 
 		persistenceEngine.send_get(URIs.GET_POST_WIRING, this, loadWiring, onError);
 		
@@ -340,12 +343,33 @@ var WiringFactory = function () {
 				}
 
 				channelList = list.setValue(value);
-				return 1;
+
+				return modifiedVars;
 			}
 			else {
 				alert("gadget doesn't exist");
 				return -1;
 			}
+		}
+
+
+		Wiring.prototype.markVariableAsModified = function (varInfo) {
+		    var modVar;
+		    var found = false;
+
+		    for (j=0; j<modifiedVars.length; j++) {
+			modVar = modifiedVars[j];
+			
+			if (modVar.iGadget == varInfo.iGadget && modVar.name == varInfo.name) {
+			    modVar.value = varInfo.value;
+			    found = true;
+			    break;
+			}			  			    
+		    }
+		    
+		    if (found == false) {
+			modifiedVars.push(varInfo);
+		    }			    
 		}
 		 
 		Wiring.prototype.addChannelInput = function () {

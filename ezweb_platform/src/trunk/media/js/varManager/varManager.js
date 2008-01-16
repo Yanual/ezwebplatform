@@ -98,6 +98,7 @@ var VarManagerFactory = function () {
 			
 			// Procesamiento
 		}
+
 		
 		// *********************************
 		// PRIVATE VARIABLES AND FUNCTIONS
@@ -115,6 +116,7 @@ var VarManagerFactory = function () {
 		var opManager = OpManagerFactory.getInstance();
 		var wiring = null; 
 		var iGadgets = [];
+		var modifiedVars = [];
 		
 		// Getting IGadgets from PersistenceEngine. Asyncrhonous call!
 		persistenceEngine.send_get(URIs.GET_IGADGETS, this, loadIGadgets, onError);
@@ -196,6 +198,44 @@ var VarManagerFactory = function () {
 			    return;
 
 			delete iGadgets[iGadgetId];
+		}
+
+		VarManager.prototype.getJSONCodedModifiedVariables = function () {
+		    alert("getting JSON varaibles for serializing")
+		}
+
+
+		VarManager.prototype.markVariablesAsModified = function (vars) {
+		    var varInfo;
+		    var found = false;
+		    var modVar;
+
+		    for (i=0; i<vars.length; i++) {
+			varInfo = vars[i];
+			for (j=0; j<modifiedVars.length; j++) {
+			    modVar = modifiedVars[j];
+
+			    if (modVar.iGadget == varInfo.iGadget && modVar.name == varInfo.name) {
+				modVar.value = varInfo.value;
+				found = true;
+				break;
+			    }			  			    
+			}
+
+			if (found) {
+			    found = false;
+			    continue;
+			}
+			else {
+			    modifiedVars.push(varInfo);
+			}
+			    
+			
+		    }
+		}
+
+		VarManager.prototype.resetModifiedVars = function () {
+		    modifiedVars = [];
 		}
 
 	}

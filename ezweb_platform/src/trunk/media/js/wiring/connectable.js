@@ -134,8 +134,17 @@ wOut.prototype.removeInput = function(input){
 
 wOut.prototype.setValue = function(value){
    this.value=value;
-   var varManager = VarManagerFactory.getInstance();
-   varManager.writeSlot(this.id,this.name,this.value);
+
+   var wiring = WiringFactory.getInstance();
+
+   var varInfo = new Object();
+
+   varInfo.iGadget = this.id;
+   varInfo.name = this.name;
+   varInfo.value = value;
+
+   wiring.markVariableAsModified(varInfo);
+
    return "";
 }
 

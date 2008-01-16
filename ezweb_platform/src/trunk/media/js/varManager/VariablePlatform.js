@@ -101,34 +101,7 @@ RVariable.prototype = new Variable;
 // PUBLIC METHODS TO BE INHERITANCED
 ////////////////////////////////////////////// 
 
-/*RVariable.prototype.notifyChange = function (newValue) { 
-	switch (this.aspect){
-		case Variable.prototype.SLOT:
-		case Variable.prototype.USER_PREF:
-			this.value = newValue;
-			try {
-				this.handler(newValue);
-			} catch (e) {
-				// TODO log this event
-			}
-			break;
-	}
 
-	// Asynchronous handlers 
-	function onSuccess() {}
-	function onError(transport) {alert ("ERROR: variable cannot be saved");}
-	
-	// Saves the new state of variable
-	var persistenceEngine = PersistenceEngineFactory.getInstance();
-	put_variable_uri = URIs.GET_POST_GADGET_VARIABLE.evaluate({
-		"iGadgetId": this.iGadget,
-		"varName": this.name});
-	
-	var param = 'value=' + value_;
-	
-	PersistenceEngineFactory.getInstance().send_update(put_variable_uri, param, this, onSuccess, onError);
-	
-	}*/
 
 //////////////////////////////////////////////
 // OVERWRITTEN METHODS
@@ -168,20 +141,6 @@ RVariable.prototype.set = function (newValue) {
 			break;
 	}
 
-	// Asynchronous handlers 
-	function onSuccess() {}
-	function onError(transport) {alert ("ERROR: variable cannot be saved");}
-	
-	// Saves the new state of variable
-	var persistenceEngine = PersistenceEngineFactory.getInstance();
-	put_variable_uri = URIs.GET_POST_GADGET_VARIABLE.evaluate({
-		"iGadgetId": this.iGadget,
-		"varName": this.name});
-	
-	var param = 'value=' + newValue;
-	
-	PersistenceEngineFactory.getInstance().send_update(put_variable_uri, param, this, onSuccess, onError);
-	
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -205,31 +164,57 @@ RWVariable.prototype = new Variable;
 RWVariable.prototype.set = function (value_) {  
     
     wiring = WiringFactory.getInstance();
-    
+    varManager = VarManagerFactory.getInstance();
+
     // Asynchronous handlers 
     function onSuccess() {}
     function onError(transport) {alert ("ERROR: variable cannot be saved");}
+
+    // This variable was modified
+    if (this.value != value_) {
+	var varInfo = new Object();
+        
+        varInfo.iGadget = this.iGadget;
+        varInfo.name = this.name;
+        varInfo.value = value_;
+        
+        var variables = [];
+        variables[0] = varInfo;
+	
+	varManager.markVariablesAsModified(variables);
+    }
     
-    // Saves the new state of variable
-    var persistenceEngine = PersistenceEngineFactory.getInstance();
-    put_variable_uri = URIs.GET_POST_GADGET_VARIABLE.evaluate({
-	    "iGadgetId": this.iGadget,
-	    "varName": this.name});
-    var param = 'value=' + value_;
-    PersistenceEngineFactory.getInstance().send_update(put_variable_uri, param, this, onSuccess, onError);
-    
-    // Error control needed here!!!!!!!!
+    this.value = value_;
+
+    // Propagate changes to wiring module
     switch (this.aspect){
     case Variable.prototype.PROPERTY:
 	break;
     case Variable.prototype.EVENT:
-	// PersistentEngine.guardar
-	if (this.value != value_){
-	    wiring.sendEvent(this.iGadget, this.name, value_);
+        modifiedVariables = wiring.sendEvent(this.iGadget, this.name, value_);
+	varManager.markVariablesAsModified(modifiedVariables);
+
+	// Notify to SLOTs their new values
+	var modVar;
+
+	for (i=0; i<modifiedVariables.length; i++) {
+	    modVar = modifiedVariables[i];
+	    varManager.writeSlot(modVar.iGadget, modVar.name, modVar.value);
 	}
+	    
+
 	break;
     }
-    this.value = value_;
+
+    // Save all modified vars
+    /*var persistenceEngine = PersistenceEngineFactory.getInstance();
+    put_variable_uri = URIs.GET_POST_GADGET_VARIABLE.evaluate({
+	    "iGadgetId": this.iGadget,
+	    "varName": this.name});
+    var param = 'value=' + value_;
+
+    PersistenceEngineFactory.getInstance().send_update(put_variable_uri, param, this, onSuccess, onError);*/
+
 }  
 
 //////////////////////////////////////////////

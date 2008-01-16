@@ -87,8 +87,7 @@ var CatalogueFactory  = function () {
 			//Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
 			
 			var onError = function(transport) {
-				alert("Error loadCatalogue");
-				// Process
+				alert(transport.responseXML);
 			}
 			
 			var loadResources = function(transport) {
