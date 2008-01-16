@@ -122,14 +122,25 @@ UIUtils.searchByTag = function(url, tag) {
 	this.closeInfoResource();
 	var opManager = OpManagerFactory.getInstance();
 
+  if (tag == ""){
+  	alert("Introduzca un valor en el formulario de búsqueda");
+  }
+  else{
 	opManager.repaintCatalogue(url + "/" + tag );
+}
 }
 
 UIUtils.searchByWiring = function(url, value, wiring) {
 	this.closeInfoResource();
 	var opManager = OpManagerFactory.getInstance();
+	
+	if (value == ""){
+		alert("Introduzca un valor en el formulario de búsqueda");
+	}
   
+  else{
 	opManager.repaintCatalogue(url + "/" + wiring + "/" + value );
+}
 }
 
 UIUtils.searchBySlot = function(url, slot) {
@@ -142,8 +153,13 @@ UIUtils.searchBySlot = function(url, slot) {
 UIUtils.searchGeneric = function(url, param, criteria) {
 	this.closeInfoResource();
 	var opManager = OpManagerFactory.getInstance();
-
+	
+	if (param == ""){
+		alert("Introduzca un valor en el formulario de búsqueda");
+		}
+	else{ 
 	opManager.repaintCatalogue(url + "/" + param + "/" + criteria );
+}
 }
 
 UIUtils.removeTag = function(id_) {
