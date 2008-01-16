@@ -54,6 +54,8 @@ from resource.parser import TemplateParser
 from tag.models import UserTag
 from commons.catalogue_utils import get_xml_description, get_xml_error
 
+from commons.exceptions import TemplateParseException
+from commons.logs import log
 
 class GadgetsCollection(Resource):
 
@@ -68,10 +70,25 @@ class GadgetsCollection(Resource):
 
             templateParser.parse()
             transaction.commit()
-        except IntegrityError, Exception:
-            # Gadget already exists or internal error. Rollback transaction
+        except IntegrityError, e:
+            # Gadget already exists. Rollback transaction
             transaction.rollback()
+            log(e, 'POST', 'user/id/resources', user_name)
+	    value = str(sys.exc_info()[1])
+	    xml_error = '<error>'+value+'</error>'
+	    return HttpResponseServerError(xml_error,mimetype='text/xml; charset=UTF-8')
+        except TemplateParseException, e:
+            transaction.rollback()
+            log(e, 'POST', 'user/id/resources', user_name)
+            return HttpResponseServerError("<error>%s</error>" % e, mimetype='application/xml; charset=UTF-8')
+        except Exception, e:
+            # Internal error
+            transaction.rollback()
+	    value = str(sys.exc_info()[1])
+            log(e, 'POST', 'user/id/resources', user_name)
+	    xml_error = '<error>'+value+'</error>'
 	    return HttpResponseServerError(get_xml_error(str(sys.exc_info()[1])),mimetype='text/xml; charset=UTF-8')
+
 
 	xml_ok = '<ResponseOK>OK</ResponseOK>'
         return HttpResponse(xml_ok,mimetype='text/xml; charset=UTF-8')

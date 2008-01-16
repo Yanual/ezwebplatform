@@ -61,7 +61,9 @@ from gadget.templateParser import TemplateParser
 from django.contrib.auth.models import User
 from django.db import transaction
 
+from commons.logs import log
 from commons.utils import *
+from commons.exceptions import TemplateParseException
 
 from gadget.models import Gadget, Template
 
@@ -82,7 +84,7 @@ class GadgetCollection(Resource):
         if request.POST.has_key('url'):
             templateURL = request.POST['url']
         else:
-            return HttpResponse("<error>Url not specified</error>")
+            return HttpResponseServerError('<error>Url not specified</error>', mimetype='application/xml; charset=UTF-8')
 
         ########### Template Parser
         templateParser = None
@@ -91,11 +93,16 @@ class GadgetCollection(Resource):
             templateParser = TemplateParser(templateURL, user)
             templateParser.parse()
             transaction.commit()
+        except TemplateParseException, e:
+            log(e, 'POST', 'user/id/gadgets', user_name)
+            transaction.rollback()
+            return HttpResponseServerError("<error>%s</error>" % e, mimetype='application/xml; charset=UTF-8')
         except IntegrityError:
             # Gadget already exists. Rollback transaction
             transaction.rollback()
         except Exception, e:
             # Internal error
+            log(e, 'POST', 'user/id/gadgets', user_name)
             transaction.rollback()
             return HttpResponseServerError("<error>%s</error>" % e, mimetype='application/xml; charset=UTF-8')
         
@@ -119,13 +126,13 @@ class GadgetEntry(Resource):
         user = user_authentication(user_name)
         gadget = get_object_or_404(Gadget, user=user, vendor=vendor, name=name, version=version)
         gadget.save()
-        return HttpResponse('')
+        return HttpResponse('ok')
 
     def delete(self, request, user_name, vendor, name, version):
         user = user_authentication(user_name)
         gadget = get_object_or_404(Gadget, user=user, vendor=vendor, name=name, version=version)
         gadget.delete()
-        return HttpResponse('')
+        return HttpResponse('ok')
 
 
 class GadgetTemplateEntry(Resource):

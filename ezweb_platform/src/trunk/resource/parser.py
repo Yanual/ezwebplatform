@@ -43,6 +43,8 @@ import sys
 from xml.sax import saxutils
 from xml.sax import make_parser
 
+from commons.exceptions import TemplateParseException
+
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 
@@ -91,12 +93,14 @@ class TemplateHandler(saxutils.handler.ContentHandler):
             _wiring = 'out'
 
         if (_friendCode != '' and wire != ''):
-
             wiring = GadgetWiring( friendcode = _friendCode, wiring = _wiring,
-                idResource_id = get_object_or_404(GadgetResource, short_name=self._name,vendor=self._vendor,version=self._version).id)
+                idResource_id = get_object_or_404(GadgetResource, 
+                short_name=self._name,vendor=self._vendor,version=self._version).id)
+
             wiring.save()
         else:
-            print "Needed attributed missed in processWire!"
+            raise TemplateParseException("ERROR: Missing attribute at Event or Slot element")
+
 	
     def endElement(self, name):
         
@@ -126,7 +130,6 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 	    return
 
         if (self._name != '' and self._vendor != '' and self._version != '' and self._author != '' and self._description != '' and self._mail != '' and self._imageURI != '' and self._wikiURI != ''):
-
 	    gadget=GadgetResource()
 	    gadget.short_name=self._name
 	    gadget.vendor=self._vendor
@@ -140,8 +143,8 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 	    gadget.template_uri=self._uri
 	    gadget.creation_date=datetime.today()
             gadget.save()
-	               
-            self._wikiURI = ''
+        else:
+            raise TemplateParseException("ERROR: Missing Resource describing info at Resource element! See schema!")
 
     def characters(self, text):
 	self._accumulator.append(text)
@@ -150,9 +153,11 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 	if (name == 'Name') or (name=='Version') or (name=='Vendor') or (name=='Author') or (name=='Description') or (name=='Mail') or (name=='ImageURI') or (name=='WikiURI'):
 	    self.resetAccumulator()
 	    return
-        if (name == 'Slot' or name == 'Event'):
+
+        if (name == 'Slot'):
             self.processWire(attrs,'Slot')
             return
+
         if (name == 'Event'):
             self.processWire(attrs,'Event')
             return

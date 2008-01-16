@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 # MORFEO Project 
 # http://morfeo-project.org 
@@ -39,6 +39,8 @@
 from xml.sax import saxutils
 from xml.sax import make_parser
 from xml.sax.handler import feature_namespaces
+
+from commons.exceptions import TemplateParseException
 
 from gadgetCodeParser import GadgetCodeParser
 
@@ -112,7 +114,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
         elif typeText == 'list':
                 return 'L'
         else:
-            print "ERROR in TEXT TYPE"
+            raise TemplateParseException("ERROR: unkown TEXT TYPE " + typeText)
 
 
     def processProperty(self, attrs):
@@ -137,7 +139,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 
             vDef.save()
         else:
-            print "Needed attributed missed in processProperty"
+            raise TemplateParseException("ERROR: Missing attribute at Property element")
 
     def processPreference(self, attrs):
         _name = ''
@@ -174,7 +176,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
             self._lastPreference = vDef
                 
         else:
-            print "Needed attributed missed in processPreference"
+            raise TemplateParseException("ERROR: Missing attribute at UserPreference element")
 
 
     def processEvent(self, attrs):
@@ -211,7 +213,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 
             vDef.save()
         else:
-            print "Needed attributed missed in processEvent!"
+            raise TemplateParseException("ERROR: Missing attribute at Event element")
 
 
     def processSlot(self, attrs):
@@ -248,7 +250,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 
             vDef.save()
         else:
-            print "Needed attributed missed in processSlot!"
+            raise TemplateParseException("ERROR: Missing attribute at Slot element")            
 
             
     def processGadgetContext(self, attrs):
@@ -280,7 +282,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
             context.save()
             
         else:
-            print "Needed attributed missed in processContext!"
+            raise TemplateParseException("ERROR: Missing attribute at Gadget Context element")            
 
     def processExternalContext(self, attrs):
         _name = ''
@@ -311,9 +313,8 @@ class TemplateHandler(saxutils.handler.ContentHandler):
             context.save()
             
         else:
-            print "Needed attributed missed in processContext!"
+            raise TemplateParseException("ERROR: Missing attribute at External Context element")            
 
-    
     
     def processXHTML (self, attrs):
         _href=""
@@ -327,6 +328,9 @@ class TemplateHandler(saxutils.handler.ContentHandler):
             gadgetParser.parseUserEvents(_href, self._gadgetURI)
 
             self._xhtml = gadgetParser.getXHTML()
+        else:
+            raise TemplateParseException("ERROR: Missing attribute at XHTML element")            
+
 
     def processOption (self, attrs):
         _value=""
@@ -342,6 +346,8 @@ class TemplateHandler(saxutils.handler.ContentHandler):
             option = UserPrefOption(value=_value, name=_name, variableDef=self._lastPreference)
 
             option.save()
+        else:
+            raise TemplateParseException("ERROR: Missing attribute at Option element")            
 
     def processRendering (self, attrs):
         _width=""
@@ -357,7 +363,8 @@ class TemplateHandler(saxutils.handler.ContentHandler):
             self._template.width=_width
             self._template.height=_height
             self._template.save()
-                        
+        else:
+            raise TemplateParseException("ERROR: Missing attribute at Rendering element")                       
 
 ###############
 
