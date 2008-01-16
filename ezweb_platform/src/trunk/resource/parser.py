@@ -80,13 +80,11 @@ class TemplateHandler(saxutils.handler.ContentHandler):
        
         _friendCode = ''
         _wiring = ''
-        
-        print wire
 
         if (attrs.has_key('friendcode')==True):
             _friendCode = attrs.get('friendcode')
 
-        if (wire == 'Slot'):
+	if (wire == 'Slot'):
             _wiring = 'in'
             
         if (wire == 'Event'):
@@ -94,11 +92,8 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 
         if (_friendCode != '' and wire != ''):
 
-            print 'antes de grabar'
-            wiring = GadgetWiring( friendcode = _friendCode, 
-                                wiring = _wiring,
-                                idResource_id = get_object_or_404(GadgetResource, short_name=self._name,vendor=self._vendor,version=self._version).id)
-
+            wiring = GadgetWiring( friendcode = _friendCode, wiring = _wiring,
+                idResource_id = get_object_or_404(GadgetResource, short_name=self._name,vendor=self._vendor,version=self._version).id)
             wiring.save()
         else:
             print "Needed attributed missed in processWire!"
@@ -144,7 +139,6 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 	    gadget.wiki_page_uri=self._wikiURI
 	    gadget.template_uri=self._uri
 	    gadget.creation_date=datetime.today()
-
             gadget.save()
 	               
             self._wikiURI = ''
@@ -158,7 +152,6 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 	    return
         if (name == 'Slot' or name == 'Event'):
             self.processWire(attrs,'Slot')
-            print 'en slot'
             return
         if (name == 'Event'):
             self.processWire(attrs,'Event')

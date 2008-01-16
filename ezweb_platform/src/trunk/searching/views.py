@@ -47,93 +47,53 @@ from django_restapi.resource import Resource
 from resource.models import GadgetResource
 from resource.models import GadgetWiring
 from tag.models import UserTag
-from commons.catalogue_utils import get_xml_description
+from commons.catalogue_utils import get_xml_description, get_xml_error, get_uniquelist
 
 
 class GadgetsCollectionByGenericSearch(Resource):
 
+    def __get_gadgetlist__(self, value):
+        
+	gadgetlist = []
+        taglist = []
+
+        for e in value:
+            # Get a list of elements that matches the given value
+            gadgetlist += GadgetResource.objects.filter(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
+            taglist += UserTag.objects.filter(tag__icontains = e)
+
+	for b in taglist:
+	    gadgetlist += get_list_or_404(GadgetResource, id=b.idResource_id)
+
+	return gadgetlist
+
     def read(self, request, user_name, value, criteria):
          
+	gadgetlist = []
+
         value = value.split(' ')
-        gadgetlist = []
-        taglist = []
-        criterialist = []
-        count = 0
-        list_aux = []
-        ulist = []
-        rlist = []
-
+        
         if criteria == 'and':
-            for e in value:
-                # Get the list of elements that fits the value given
-                gadgetlist += GadgetResource.objects.filter(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
-                criterialist += UserTag.objects.filter(tag__icontains = e)
-            
-            for b in criterialist:
-	        taglist += get_list_or_404(GadgetResource, id=b.idResource_id)
-            
-            gadgetlist = gadgetlist + taglist              
+            gadgetlist = self.__get_gadgetlist__(value)
+	    gadgetlist = get_uniquelist(gadgetlist, value) 
 
-            list_aux = gadgetlist
-            
-            if (len(value)) == 1:
-                 
-                for x in list_aux:
-                    
-                    if x not in rlist:
-                        rlist.append(x)
-                    else:
-                        ulist.append(x)
-
-                ulist = rlist
-                        
-            else:
-               
-                for i in range(len(value) - 1):
-                
-                    if i == 1:
-                        list_aux = ulist
-
-                    rlist = []
-                    ulist = []
-            
-                    for x in list_aux:
-                    
-                        if x not in rlist:
-                            rlist.append(x)
-                        else:
-                            ulist.append(x)
-                   
-                    
         elif criteria == 'or':
-            for e in value:
-                # Get the list of elements that fits the value given
-                gadgetlist += GadgetResource.objects.filter(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
-                criterialist += UserTag.objects.filter(tag__icontains = e)
-
-            
-	    for b in criterialist:
-	        taglist += get_list_or_404(GadgetResource, id=b.idResource_id)        
-   
-            gadgetlist = gadgetlist + taglist
-
-            [ulist.append(x) for x in gadgetlist if x not in ulist]
+            gadgetlist = self.__get_gadgetlist__(value)        
+            gadgetlist = get_uniquelist(gadgetlist)
 
         elif criteria == 'not':
+	    count = 0
             for e in value:
-                # Get the list of elements that fits the value given
+                # Get a list of elements that doesn't match the given value
                 if count == 0:
                     gadgetlist = GadgetResource.objects.exclude(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
 	            count = count + 1                    
                 else:
                     gadgetlist = gadgetlist.exclude(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
-            
-            [ulist.append(x) for x in gadgetlist if x not in ulist]
+ 
+	    gadgetlist = get_uniquelist(gadgetlist)
 
-	response = get_xml_description(ulist)
-	response = '<?xml version="1.0" encoding="UTF-8" ?>\n\
-	<resources>'+response+'</resources>'
-
+	response = get_xml_description(gadgetlist)
         return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
 
 
@@ -141,112 +101,36 @@ class GadgetsCollectionByCriteria(Resource):
 
     def read(self, request, user_name, criteria, value):
 	
-        if criteria == 'event' or criteria == 'slot' or criteria == 'tag':     
-            
-            ulist = []
-            criterialist = []
-            gadgetlist = []
+        criterialist = []
+        gadgetlist = []
+
+	if criteria == 'event':
+	    value = value.split(' ')
+            for e in value:
+                criterialist += GadgetWiring.objects.filter(Q(friendcode__icontains = e), Q(wiring = 'out'))
+            criterialist = get_uniquelist(criterialist)
+	elif criteria == 'slot':
             value = value.split(' ')
-   
-            if criteria == 'event':
-                for e in value:
-                    criterialist += GadgetWiring.objects.filter(Q(friendcode__icontains = e), Q(wiring__icontains = 'out'))
-	    elif criteria == 'slot':
-                for e in value:
-                    criterialist += GadgetWiring.objects.filter(Q(friendcode__icontains = e), Q(wiring__icontains = 'in'))
-	    elif criteria == 'tag':
-                for e in value:
-	            criterialist += UserTag.objects.filter(tag__icontains = e)
+	    for e in value:
+                criterialist += GadgetWiring.objects.filter(Q(friendcode__icontains = e), Q(wiring = 'in'))
+            criterialist = get_uniquelist(criterialist)
 
-        
-	    response=''
-
-	    for b in criterialist:
-        
-	        gadgetlist += get_list_or_404(GadgetResource, id=b.idResource_id)
-	    
-	        #temp = get_xml_description(gadgetlist)
-	        #response = response+temp
-
-	    [ulist.append(x) for x in gadgetlist if x not in ulist]
-
-            response = get_xml_description(ulist)
-	    response = '<?xml version="1.0" encoding="UTF-8" ?>\n\
-	    <resources>'+response+'</resources>'
-
-            return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
-        
+	elif criteria == 'tag':
+            value = value.split(' ')
+	    for e in value:
+	        criterialist += UserTag.objects.filter(tag__icontains = e)
+            criterialist = get_uniquelist(criterialist)
 
         elif criteria == 'connectSlot':
-            
-            gadgetlist = []
-            ulist = []
-            
             #view compat out
-            criterialist = GadgetWiring.objects.filter(Q(friendcode__icontains = value), Q(wiring__icontains = 'out'))
-
-            for b in criterialist:
-	        gadgetlist += get_list_or_404(GadgetResource, id=b.idResource_id)
-
-            [ulist.append(x) for x in gadgetlist if x not in ulist]
-
-            response = get_xml_description(ulist)
-	    response = '<?xml version="1.0" encoding="UTF-8" ?>\n\
-	    <resources>'+response+'</resources>'
-
-            return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
-
+            criterialist = GadgetWiring.objects.filter(Q(friendcode = value), Q(wiring = 'out'))
 
         elif criteria == 'connectEvent':
-            
-            gadgetlist = []
-            ulist = []
-
             #view compat out
-            criterialist = GadgetWiring.objects.filter(Q(friendcode__icontains = value), Q(wiring__icontains = 'in'))
+            criterialist = GadgetWiring.objects.filter(Q(friendcode = value), Q(wiring = 'in'))
 
-            for b in criterialist:
-	        gadgetlist += get_list_or_404(GadgetResource, id=b.idResource_id)
+        for b in criterialist:
+	    gadgetlist += get_list_or_404(GadgetResource, id=b.idResource_id)
 
-            [ulist.append(x) for x in gadgetlist if x not in ulist]
-
-            response = get_xml_description(ulist)
-	    response = '<?xml version="1.0" encoding="UTF-8" ?>\n\
-	    <resources>'+response+'</resources>'
-   
-            return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
-
-
-        
-        else:
-            if criteria == 'author':
-                criterialist=get_list_or_404(GadgetResource, author=value)
-            elif criteria == 'short_name':
-                criterialist=get_list_or_404(GadgetResource, short_name=value)
-            elif criteria == 'vendor':
-                criterialist=get_list_or_404(GadgetResource, vendor=value)
-            elif criteria == 'version':
-                criterialist=get_list_or_404(GadgetResource, version=value)
-            elif criteria == 'mail':
-                criterialist=get_list_or_404(GadgetResource, mail=value)
-            elif criteria == 'license':
-                criterialist=get_list_or_404(GadgetResource, license=value)
-            elif criteria == 'description':
-                criterialist=get_list_or_404(GadgetResource, description=value)
-            else:
-                xml_error = '<fault>\n\
-	        <value>'+'Error'+'</value>\n\
-	        <description>'+'criterio '+criteria+' no correcto'+'</description>\n\
-	        </fault>'
-	        #+sys.exc_info()[2]'+</description></fault>'
-	        return HttpResponseServerError(xml_error,mimetype='text/xml; charset=UTF-8')
-                
-            
-            response=''
-            
-	    temp = get_xml_description(criterialist)
-	    response = response+temp
-	    response = '<?xml version="1.0" encoding="UTF-8" ?>\n\
-	    <resources>'+response+'</resources>'
-            return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
-
+        response = get_xml_description(gadgetlist)
+        return HttpResponse(response,mimetype='text/xml; charset=UTF-8')

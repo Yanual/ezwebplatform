@@ -52,7 +52,7 @@ from xml.sax.xmlreader import InputSource
 
 from tag.models import UserTag
 from tag.parser import TagsXMLHandler
-from commons.catalogue_utils import get_tags_by_resource
+from commons.catalogue_utils import get_tags_by_resource, get_xml_error
 from resource.models import GadgetResource
 
 
@@ -88,13 +88,7 @@ class GadgetTagsCollection(Resource):
 	    try:
 	        UserTag.objects.get_or_create(tag=e, idUser=user, idResource=gadget)
 	    except:
-	        value = str(sys.exc_info()[1])
-	        xml_error = '<fault>\n\
-	        <value>'+'Error'+'</value>\n\
-	        <description>'+value+'</description>\n\
-	        </fault>'
-	        #+sys.exc_info()[2]'+</description></fault>'
-	        return HttpResponseServerError(xml_error,mimetype='text/xml; charset=UTF-8')
+	        return HttpResponseServerError(get_xml_error(str(sys.exc_info()[1])),mimetype='text/xml; charset=UTF-8')
 
         response = '<?xml version="1.0" encoding="UTF-8" ?>\n'
 	response += get_tags_by_resource(gadget, user)
@@ -123,11 +117,7 @@ class GadgetTagsCollection(Resource):
 	try:
 	    tag = get_object_or_404(UserTag, idUser=user_id,idResource=id_resource,tag=value_tag)
 	except:
-	    xml_error = '<fault>\n\
-	    <value>'+'Error'+'</value>\n\
-	    <description>'+'Fallo de autorizacion, no tiene permiso para borrar'+'</description>\n\
-	    </fault>'
-	    return HttpResponseServerError(xml_error,mimetype='text/xml; charset=UTF-8')
+	    return HttpResponseServerError(get_xml_error('Authorization failure, you don't have permission to delete this tag'),mimetype='text/xml; charset=UTF-8')
 	
 	tag.delete()
 

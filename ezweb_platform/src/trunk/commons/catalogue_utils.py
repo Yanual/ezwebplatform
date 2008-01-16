@@ -37,8 +37,21 @@
 #
 
 from tag.models import UserTag
-from resource.models import GadgetResource
 from resource.models import GadgetWiring
+
+
+def get_uniquelist(list, value = None):
+
+    uniquelist = []
+
+    if value==None or len(value) == 1:
+        [uniquelist.append(x) for x in list if x not in uniquelist]
+    else:
+        for x in list:
+            if x not in uniquelist and list.count(x) >= len(value):
+                uniquelist.append(x)
+
+    return uniquelist
 
 
 def get_xml_error(description):
@@ -78,7 +91,8 @@ def get_xml_description(gadgetlist):
 	'+xml_slot+'\n\
    	</resource>'
 		
-    response = xml_resource
+    response = '<?xml version="1.0" encoding="UTF-8" ?>\n\
+    <resources>'+xml_resource+'</resources>'
     return response
 
 

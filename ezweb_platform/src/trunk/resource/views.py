@@ -88,18 +88,12 @@ class GadgetsCollection(Resource):
 	    response = get_xml_description(GadgetResource.objects.all())	
 	# Get the xml description for the requested gadgets
 	else:
-	
 	    c=((a-1)*b)
 	    d= (b*a)
 	
 	    if a==1:
 	        c=0
-	
 	    response = get_xml_description(GadgetResource.objects.all()[c:d])
-
-		
-	response = '<?xml version="1.0" encoding="UTF-8" ?>\n\
-	<resources>'+response+'</resources>'
 		
 	return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
 
