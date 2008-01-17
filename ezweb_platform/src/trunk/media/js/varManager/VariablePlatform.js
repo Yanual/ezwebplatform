@@ -166,10 +166,6 @@ RWVariable.prototype.set = function (value_) {
     wiring = WiringFactory.getInstance();
     varManager = VarManagerFactory.getInstance();
 
-    // Asynchronous handlers 
-    function onSuccess() {}
-    function onError(transport) {alert ("ERROR: variable cannot be saved");}
-
     // This variable was modified
     if (this.value != value_) {
 	var varInfo = new Object();
@@ -191,14 +187,14 @@ RWVariable.prototype.set = function (value_) {
     case Variable.prototype.PROPERTY:
 	break;
     case Variable.prototype.EVENT:
-        modifiedVariables = wiring.sendEvent(this.iGadget, this.name, value_);
-	varManager.markVariablesAsModified(modifiedVariables);
+        modVars = wiring.sendEvent(this.iGadget, this.name, value_);
+	varManager.markVariablesAsModified(modVars);
 
 	// Notify to SLOTs their new values
 	var modVar;
 
-	for (i=0; i<modifiedVariables.length; i++) {
-	    modVar = modifiedVariables[i];
+	for (i=0; i<modVars.length; i++) {
+	    modVar = modVars[i];
 	    varManager.writeSlot(modVar.iGadget, modVar.name, modVar.value);
 	}
 	    
@@ -207,13 +203,19 @@ RWVariable.prototype.set = function (value_) {
     }
 
     // Save all modified vars
-    /*var persistenceEngine = PersistenceEngineFactory.getInstance();
-    put_variable_uri = URIs.GET_POST_GADGET_VARIABLE.evaluate({
-	    "iGadgetId": this.iGadget,
-	    "varName": this.name});
-    var param = 'value=' + value_;
 
-    PersistenceEngineFactory.getInstance().send_update(put_variable_uri, param, this, onSuccess, onError);*/
+    // Asynchronous handlers 
+    function onSuccess(transport) {
+	varManager.resetModifiedVariables();
+    }
+    function onError(transport) {
+	alert (transport.responseText);
+    }
+
+    var persistenceEngine = PersistenceEngineFactory.getInstance();
+    var param = 'variables=' + Object.toJSON(varManager.getModifiedVariables());
+
+    PersistenceEngineFactory.getInstance().send_update(URIs.PUT_VARIABLES, param, this, onSuccess, onError);
 
 }  
 

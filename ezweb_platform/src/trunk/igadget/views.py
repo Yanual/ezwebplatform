@@ -345,6 +345,42 @@ class IGadgetVariableCollection(Resource):
         vars_data = [get_variable_data(d) for d in data]
         return HttpResponse(json_encode(vars_data), mimetype='application/json; charset=UTF-8')
 
+    @transaction.commit_manually
+    def update(self, request, user_name, igadget_id=None, screen_id=None):
+        user = user_authentication(user_name)
+
+        # Gets JSON parameter from request
+        if not request.PUT.has_key('variables'):
+            return HttpResponseBadRequest('<error>iGadget variables JSON expected</error>')
+
+        variables_JSON = request.PUT['variables']
+
+        try:
+            received_variables = eval(variables_JSON)
+        except Exception, e:
+            return HttpResponseBadRequest('<error>%s</error>' % e)
+
+        # Get all variables of "user"
+        if not screen_id:
+            screen_id = 1
+
+        try:
+            screen = Screen.objects.get(user=user, code=screen_id)
+            server_variables = Variable.objects.filter(igadget__screen=screen)
+            
+            # Gadget variables collection update
+            for varServer in server_variables:
+                for varJSON in received_variables:
+                    if (varServer.vardef.name == varJSON['name'] and varServer.igadget == varJSON['iGadget']):
+                        varServer.value = varJSON['value']
+                        varServer.save()
+            
+            transaction.commit()
+        except Exception, e:
+            return HttpResponseBadRequest('<error>%s</error>' % e)
+        
+        return HttpResponse("<ok>", mimetype='text/xml; charset=UTF-8')
+
 class IGadgetVariable(Resource):
     def read(self, request, user_name, igadget_id, var_name, screen_id=None):
         user = user_authentication(user_name)

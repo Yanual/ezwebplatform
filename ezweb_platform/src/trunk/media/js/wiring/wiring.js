@@ -329,6 +329,9 @@ var WiringFactory = function () {
 			var gadget = iGadgetList[iGadgetId];
 			var channelList;
 
+			// Reset modifiedVars variable
+			modifiedVars = []
+
 			if (gadget != undefined){
 				// The channel and the gadget selected exist.
 				var list = gadget.list;

@@ -200,8 +200,8 @@ var VarManagerFactory = function () {
 			delete iGadgets[iGadgetId];
 		}
 
-		VarManager.prototype.getJSONCodedModifiedVariables = function () {
-		    alert("getting JSON varaibles for serializing")
+		VarManager.prototype.getModifiedVariables = function () {
+		    return modifiedVars;
 		}
 
 
@@ -234,7 +234,7 @@ var VarManagerFactory = function () {
 		    }
 		}
 
-		VarManager.prototype.resetModifiedVars = function () {
+		VarManager.prototype.resetModifiedVariables = function () {
 		    modifiedVars = [];
 		}
 
