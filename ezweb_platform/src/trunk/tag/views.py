@@ -117,7 +117,7 @@ class GadgetTagsCollection(Resource):
 	try:
 	    tag = get_object_or_404(UserTag, idUser=user_id,idResource=id_resource,tag=value_tag)
 	except:
-	    return HttpResponseServerError(get_xml_error('Authorization failure, you don't have permission to delete this tag'),mimetype='text/xml; charset=UTF-8')
+	    return HttpResponseServerError(get_xml_error("Authorization failure, you don't have permission to delete this tag"),mimetype='text/xml; charset=UTF-8')
 	
 	tag.delete()
 

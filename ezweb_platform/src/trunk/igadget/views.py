@@ -371,7 +371,7 @@ class IGadgetVariableCollection(Resource):
             # Gadget variables collection update
             for varServer in server_variables:
                 for varJSON in received_variables:
-                    if (varServer.vardef.name == varJSON['name'] and varServer.igadget == varJSON['iGadget']):
+                    if (varServer.vardef.name == varJSON['name'] and varServer.igadget.code == varJSON['iGadget']):
                         varServer.value = varJSON['value']
                         varServer.save()
             
