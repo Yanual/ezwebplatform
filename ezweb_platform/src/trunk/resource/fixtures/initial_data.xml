@@ -256,4 +256,68 @@
         <field type="CharField" name="wiki_page_uri">http://piccolo.ls.fi.upm.es:7000/LocalizadorPequeno</field>
         <field type="CharField" name="template_uri">http://europa.ls.fi.upm.es/ezweb/gadgets/localizadorPequenoGadget2.xml</field>
     </object>
+    <object pk="19" model="resource.gadgetresource">
+        <field type="CharField" name="short_name">Mi_Paint</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="version">1.0</field>
+        <field to="auth.user" name="added_by_user" rel="ManyToOneRel">1</field>
+        <field type="CharField" name="author">jmostazo</field>
+        <field type="CharField" name="mail">jmostazo@pegaso.ls.fi.upm.es</field>
+        <field type="CharField" name="description">Este gadget muestra un Applet Java que te permite realizar tus propiso dibujos.</field>
+        <field type="CharField" name="size"><None></None></field>
+        <field type="CharField" name="license"><None></None></field>
+        <field type="CharField" name="gadget_uri"><None></None></field>
+        <field type="DateTimeField" name="creation_date">2008-01-09 18:16:20</field>
+        <field type="CharField" name="image_uri">http://antares.ls.fi.upm.es/gadgets/paint/images/paint.png</field>
+        <field type="CharField" name="wiki_page_uri">http://piccolo.ls.fi.upm.es:7000/Mi_Paint</field>
+        <field type="CharField" name="template_uri">http://antares.ls.fi.upm.es/gadgets/paint/paint.xml</field>
+    </object>
+    <object pk="20" model="resource.gadgetresource">
+        <field type="CharField" name="short_name">VisorImagenes</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="version">1.0</field>
+        <field to="auth.user" name="added_by_user" rel="ManyToOneRel">1</field>
+        <field type="CharField" name="author">jmostazo</field>
+        <field type="CharField" name="mail">jmostazo@pegaso.ls.fi.upm.es</field>
+        <field type="CharField" name="description">Este gadget permite visualizar y almacenar imagenes a partir de su URL</field>
+        <field type="CharField" name="size"><None></None></field>
+        <field type="CharField" name="license"><None></None></field>
+        <field type="CharField" name="gadget_uri"><None></None></field>
+        <field type="DateTimeField" name="creation_date">2008-01-09 18:16:32</field>
+        <field type="CharField" name="image_uri">http://antares.ls.fi.upm.es/gadgets/visorImagenes/images/visorImagenes.png</field>
+        <field type="CharField" name="wiki_page_uri">http://piccolo.ls.fi.upm.es:7000/Visor_XML</field>
+        <field type="CharField" name="template_uri">http://antares.ls.fi.upm.es/gadgets/visorImagenes/visorImagenes.xml</field>
+    </object>
+    <object pk="21" model="resource.gadgetresource">
+        <field type="CharField" name="short_name">VisorXML</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="version">1.0</field>
+        <field to="auth.user" name="added_by_user" rel="ManyToOneRel">1</field>
+        <field type="CharField" name="author">jmostazo</field>
+        <field type="CharField" name="mail">jmostazo@pegaso.ls.fi.upm.es</field>
+        <field type="CharField" name="description">Este gadget muestra cualquier XML dado en una preferencia</field>
+        <field type="CharField" name="size"><None></None></field>
+        <field type="CharField" name="license"><None></None></field>
+        <field type="CharField" name="gadget_uri"><None></None></field>
+        <field type="DateTimeField" name="creation_date">2008-01-09 18:16:48</field>
+        <field type="CharField" name="image_uri">http://antares.ls.fi.upm.es/gadgets/visorXML/images/visorXML_transparente.png</field>
+        <field type="CharField" name="wiki_page_uri">http://piccolo.ls.fi.upm.es:7000/Visor_XML</field>
+        <field type="CharField" name="template_uri">http://antares.ls.fi.upm.es/gadgets/visorXML/visorXML.xml</field>
+    </object>
+    <object pk="22" model="resource.gadgetresource">
+        <field type="CharField" name="short_name">hardware data viewer</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="version">1.0</field>
+        <field to="auth.user" name="added_by_user" rel="ManyToOneRel">1</field>
+        <field type="CharField" name="author">miglesia</field>
+        <field type="CharField" name="mail">miglesia@pegaso.ls.fi.upm.es</field>
+        <field type="CharField" name="description">This gadget displays information about an equipment that belongs to the rooters network</field>
+        <field type="CharField" name="size"><None></None></field>
+        <field type="CharField" name="license"><None></None></field>
+        <field type="CharField" name="gadget_uri"><None></None></field>
+        <field type="DateTimeField" name="creation_date">2008-01-16 16:00:13</field>
+        <field type="CharField" name="image_uri">http://europa.ls.fi.upm.es/ezweb/gadgets/notepad.jpg</field>
+        <field type="CharField" name="wiki_page_uri">http://piccolo.ls.fi.upm.es:7000/Visor_Datos_Equipo</field>
+        <field type="CharField" name="template_uri">http://europa.ls.fi.upm.es/~manolo/visorDatosEquipo2.xml</field>
+    </object>
 </django-objects>
