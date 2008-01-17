@@ -74,6 +74,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
     def setUserUri (self, user, uri):
         self._user=user
         self._uri=uri
+        self._flag = ''
 	
     def resetAccumulator(self):
         self._accumulator = []
@@ -103,6 +104,8 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 
 	
     def endElement(self, name):
+
+        
         
 	if (name == 'Name'):
 	    self._name = self._accumulator[0]
@@ -129,8 +132,9 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 	    self._wikiURI = self._accumulator[0]
 	    return
 
-        if (self._name != '' and self._vendor != '' and self._version != '' and self._author != '' and self._description != '' and self._mail != '' and self._imageURI != '' and self._wikiURI != ''):
-	    gadget=GadgetResource()
+        if (self._name != '' and self._vendor != '' and self._version != '' and self._author != '' and self._description != '' and self._mail != '' and self._imageURI != '' and self._wikiURI != '' and self._flag == ''):
+	    
+            gadget=GadgetResource()
 	    gadget.short_name=self._name
 	    gadget.vendor=self._vendor
 	    gadget.added_by_user_id = get_object_or_404(User, username=self._user).id
@@ -143,6 +147,10 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 	    gadget.template_uri=self._uri
 	    gadget.creation_date=datetime.today()
             gadget.save()
+            self._flag = 'add'
+
+	elif (self._flag == 'add'):
+            return
         else:
             raise TemplateParseException("ERROR: Missing Resource describing info at Resource element! See schema!")
 
