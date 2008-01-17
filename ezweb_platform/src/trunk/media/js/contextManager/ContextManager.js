@@ -46,35 +46,13 @@ var ContextManagerFactory = function () {
 		// *********************************
 		// PRIVATE VARIABLES
 		// *********************************
-		var loaded = false;
-		var concepts = new Hash();     // a concept is its adaptor an its value
-		var cname2IVars = new Hash();   // reltaes the concept name to the igadget's variables  
-		var concept2Name = new Hash(); // relates the concept to its names
-		var name2Concept = new Hash(); // relates the name to its concept
-		var varsWaitingValue = new Hash();
+		var _loaded = false;
+		var _concepts = new Hash();     // a concept is its adaptor an its value
+		var _name2Concept = new Hash(); // relates the name to its concept
 
 		// ***********************
 		// PRIVATED FUNCTIONS 
 		// ***********************
-		
-		/**
-		 * Loads data from persistenceEngine
-		 */
-	
-		function _setContextValue (contextVar) {		
-			var conceptName = contextVar.getConceptName();
-			var concept = name2Concept[conceptName];
-			if (concept == null){
-				alert ("ERROR: Concept name '" + conceptName + "' has not related concept")
-				return;
-			} 
-			// Gets concept value from adaptor (asynchronous)
-			var adaptor = eval ('new ' + concepts[concept].adaptor + "("+ contextVar.getIGadget() +")"); // Remove this if we have a concept cache
-			if (varsWaitingValue[concept] == null){
-				varsWaitingValue[concept]= new Array()
-			}
-			varsWaitingValue[concept].push(contextVar);
-		}
 		
 
 		/**
@@ -82,13 +60,12 @@ var ContextManagerFactory = function () {
 		 */
 		function _loadConcepts(receivedData) {
 			
+			// Start to load igadget's context variables
 			function _loadIGadgetContextVars(receivedData) {
 
 				var iGadgetsJson = eval ('(' + receivedData.responseText + ')');
 				iGadgetsJson = iGadgetsJson.iGadgets;
 			
-				cname2IVars = new Hash();
-
 				for (var i = 0; i < iGadgetsJson.length; i++) {
 					var currentIGadget = iGadgetsJson[i];
 				
@@ -99,15 +76,17 @@ var ContextManagerFactory = function () {
 							case Variable.prototype.EXTERNAL_CONTEXT:
 							case Variable.prototype.GADGET_CONTEXT:
 								var contextVar = new ContextVar(currentIGadget.id, currentVar.name, currentVar.concept)
-								cname2IVars[currentVar.concept] = contextVar; 
-								_setContextValue(contextVar)
+								var relatedConcept = _concepts[_name2Concept[currentVar.concept]];
+								relatedConcept.addIGadgetVar(contextVar);								
 								break;
 							default:
 								break;
 						}
 					}
 				}
-				loaded = true;
+
+				// Continues loading next module								
+				_loaded = true;
 				OpManagerFactory.getInstance().continueLoading(Modules.prototype.CONTEXT_MANAGER);
 
 			}
@@ -121,31 +100,31 @@ var ContextManagerFactory = function () {
 				alert ("Error getting gadgets variables: " + msg);
 			}
 			
-			// Start to load igadget's variables
+			// Start to load concepts
 			var conceptsJson = eval ('(' + receivedData.responseText + ')');
 			conceptsJson = conceptsJson.concepts; 
 
-			concepts = new Hash();
+			_concepts = new Hash();
+			_name2Concept = new Hash();
 
 			for (var i = 0; i < conceptsJson.length; i++) {
 				var curConcept = conceptsJson[i];
 				// Creates the concept
-				var concept = new Concept(curConcept.concept, curConcept.adaptor, curConcept.name);
-				concepts[curConcept.concept] = concept; 
-				
-				// Relates the concept to its name
-				if (concept2Name[curConcept.concept] == null){
-					concept2Name[curConcept.concept] = new Array();
-				}
-				concept2Name[curConcept.concept].push(curConcept.name);		
-				
-				// Relates the concept name to its concept
-				if (name2Concept[curConcept.name] != null){
-					alert ("WARNING: concept name '" + curConcept.name + "' is already related to '" + name2Concept[curConcept.name] + "'. New related concept is '" + curConcept.concept + "'")
-				}
-				name2Concept[curConcept.name] = curConcept.concept;
+				var concept = new Concept(curConcept.concept, curConcept.adaptor, null);
+				_concepts[curConcept.concept] = concept; 
+
+				// Relates the concept name to all its concept
+				for (var j = 0; j < curConcept.names.length; j++) {
+					var cname = curConcept.names[j];
+					
+					if (_name2Concept[cname] != null){
+						alert ("WARNING: concept name '" + cname + "' is already related to '" + _name2Concept[cname] + "'. New related concept is '" + curConcept.concept + "'")
+					}
+					_name2Concept[cname] = curConcept.concept;	
+				}	
 			}
 
+			// Now, we need to load all igadget context variables from persistence system
 			PersistenceEngineFactory.getInstance().send_get(URIs.GET_IGADGETS, this, _loadIGadgetContextVars, _onError);
 		}
 
@@ -160,7 +139,7 @@ var ContextManagerFactory = function () {
 		}
 
 		
-		PersistenceEngineFactory.getInstance().send_get('/ezweb/js/contextManager/concepts.json', this, _loadConcepts, _onError);
+		PersistenceEngineFactory.getInstance().send_get(URIs.GET_CONTEXT, this, _loadConcepts, _onError);
 
 		// ****************
 		// PUBLIC METHODS 
@@ -172,20 +151,17 @@ var ContextManagerFactory = function () {
 			var cVars = gadget.getTemplate().getContextVars(iGadgetId);
 			for (var i = 0; i < cVars.length; i++){
 				var cVar = cVars[i];
-				cname2IVars[conceptName] = cVar;
-				
-				_setContextValue(cVar);
+				if (_name2Concept[cVar.getConceptName()] == null){
+					alert ("Context variable [" + cVar.getName() + "] without related concept. Its value cannot be established");
+					return;
+				}
+				var relatedConcept = _concepts[_name2Concept[cVar.getConceptName()]];
+				relatedConcept.addIGadgetVar(cVar);							
  			}
 		}
 
 		ContextManager.prototype.setConceptValue = function (concept, value) {
-			concepts[concept].value = value; // This is the concept cache 'concepts[concept].value'
-			var contextVar = varsWaitingValue[concept].pop();
-			do{
-				contextVar.setValue(value);
-				contextVar = varsWaitingValue[concept].pop();
-			}while (contextVar != null)
-				
+			_concepts[concept].setValue(value);
 		}
 	}
 

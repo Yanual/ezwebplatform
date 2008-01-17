@@ -66,26 +66,58 @@ ContextVar.prototype.setValue = function (newValue) {
 //////////////////////////////////////////////////////////
 // Concept
 //////////////////////////////////////////////////////////
-function Concept(semanticConcept_, adaptor_, conceptName_) {
-	this.semanticConcept = semanticConcept_;
-	this.adaptor = adaptor_;
-	this.conceptName = conceptName_;
+function Concept(semanticConcept_, adaptor_, value_) {
+	this._semanticConcept = semanticConcept_;
+	this._adaptor = adaptor_;
+	this._value = value_;
+
+	this._igadgetVars = new Array();
+	this._hasValue = false;
+	
+	this._initAdaptor = function () {
+		for (var i = 0; i < this._igadgetVars.length; i++) {
+			var ivar = this._igadgetVars[i];
+			try{		
+				// Adaptor of Gadget Context variable receives the IGadget as parameter 
+				eval ('new ' + adaptor_ + "("+ ivar.getIGadget() +")"); // Remove this if we have a concept cache
+			}catch(e){
+				// Adaptor of External Context variable doesn't receives any parameter   
+				eval ('new ' + adaptor_ + "()"); // Remove this if we have a concept cache
+			}
+		}
+	}
+	
 }
 
-//Concept.prototype.Concept = function (semanticConcept_, adaptor_, conceptName_) {
-//	this.semanticConcept = semanticConcept_;
-//	this.adaptor = adaptor_;
-//	this.conceptName = conceptName_;
-//}
-
 Concept.prototype.getSemanticConcept = function () {
-	return this.semanticConcept;
+	return this._semanticConcept;
 }
 
 Concept.prototype.getAdaptor = function () {
-	return this.adaptor;
+	return this._adaptor;
 }
 
-Concept.prototype.getConceptName = function () {
-	return this.conceptName;
+Concept.prototype.getValue = function () {
+	return this.value_;
 }
+
+Concept.prototype.setValue = function (value_) {
+	this._value = value_;
+	this._hasValue = true;
+	for (var i = 0; i < this._igadgetVars.length; i++){
+		var ivar = this._igadgetVars[i];
+		ivar.setValue(value_);
+	}
+}
+
+Concept.prototype.addIGadgetVar = function (ivar_) {
+	if (this._hasValue){
+		ivar_.setValue(this._value);
+		this._igadgetVars.push(ivar_);		
+	}else{
+		this._igadgetVars.push(ivar_);
+		this._initAdaptor();
+	}
+}
+
+

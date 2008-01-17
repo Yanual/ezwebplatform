@@ -43,6 +43,7 @@ from django.core import serializers
 from gadget.models import Template, Gadget, XHTML, GadgetContext, ExternalContext, UserPrefOption
 from igadget.models import Variable, VariableDef, Position, IGadget
 from connectable.models import In, Out
+from context.models import Concept, ConceptName
 
 def get_wiring_variable_data(var, ig):
     res_data = {}
@@ -215,5 +216,17 @@ def get_variable_data(data):
           context = ExternalContext.objects.get(varDef=data_fields['vardef'])
           data_ret['concept'] = context.concept
     data_ret['value'] = data_fields['value']
+    
+    return data_ret
+
+def get_concept_data(data):
+    data_ret = {}
+    data_fields = data['fields']
+    
+    cnames = ConceptName.objects.filter(concept=data['pk']).values('name')
+
+    data_ret['concept'] = data['pk']
+    data_ret['adaptor'] = data_fields['adaptor']
+    data_ret['names'] = [cname['name'] for cname in cnames] 
     
     return data_ret

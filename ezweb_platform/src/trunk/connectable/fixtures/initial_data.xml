@@ -134,6 +134,20 @@
         <field to="auth.group" name="groups" rel="ManyToManyRel"></field>
         <field to="auth.permission" name="user_permissions" rel="ManyToManyRel"></field>
     </object>
+	<object pk="5" model="auth.user">
+        <field type="CharField" name="username">lmayllon</field>
+        <field type="CharField" name="first_name"></field>
+        <field type="CharField" name="last_name"></field>
+        <field type="CharField" name="email"></field>
+        <field type="CharField" name="password">sha1$e5846$92396f3bff770a656d75184d04ad3b2001a6f2b7</field>
+        <field type="BooleanField" name="is_staff">True</field>
+        <field type="BooleanField" name="is_active">True</field>
+        <field type="BooleanField" name="is_superuser">True</field>
+        <field type="DateTimeField" name="last_login">2008-01-14 16:05:58</field>
+        <field type="DateTimeField" name="date_joined">2008-01-08 15:47:32</field>
+        <field to="auth.group" name="groups" rel="ManyToManyRel"></field>
+        <field to="auth.permission" name="user_permissions" rel="ManyToManyRel"></field>
+    </object>
     <object pk="4" model="auth.user">
         <field type="CharField" name="username">ezforge</field>
         <field type="CharField" name="first_name"></field>
@@ -576,7 +590,7 @@
         <field type="TextField" name="change_message">Modificado es staff, es superusuario, Último registro y fecha de creación.</field>
     </object>
     <object pk="17" model="admin.logentry">
-        <field type="DateTimeField" name="action_time">2008-01-09 18:10:57</field>
+        <field type="DateTimeField" name="action_time">2008-01-09 18:11:00</field>
         <field to="auth.user" name="user" rel="ManyToOneRel">2</field>
         <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">13</field>
         <field type="TextField" name="object_id">10</field>

@@ -44,6 +44,12 @@ from context.views import *
 
 urlpatterns = patterns('context.views',
 
-    # Gadgets
-    (r'^/((?P<concept_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)[/]?)?$',  ContextEntry(permitted_methods=('GET', '',))),
+    # Context
+    (r'^[/]?$', 
+         ContextCollection(permitted_methods=('GET', 'POST'))),
+    (r'^/((?P<concept_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)[/]?)?$',
+         ContextEntry(permitted_methods=('GET', 'POST', 'PUT', 'DELETE'))),
+    (r'^/((?P<concept_name>[-ÑñáéíóúÁÉÍÓÚ\w]+)/value[/]?)?$',
+         ContextValueEntry(permitted_methods=('GET', ''))),
+
 )

@@ -5,8 +5,8 @@
 # 
 # Component: EzWeb
 # 
-# (C) Copyright 2004 Telefónica Investigación y Desarrollo 
-#     S.A.Unipersonal (Telefónica I+D) 
+# (C) Copyright 2004 Telefï¿½nica Investigaciï¿½n y Desarrollo 
+#     S.A.Unipersonal (Telefï¿½nica I+D) 
 # 
 # Info about members and contributors of the MORFEO project 
 # is available at: 
@@ -37,5 +37,27 @@
 #
 
 from django.db import models
+from django.utils.translation import ugettext as _
 
 # Create your models here.
+
+class Concept(models.Model):
+    concept = models.CharField(_('Concept'), max_length=256, primary_key=True)
+    adaptor = models.CharField(_('Adaptor'), max_length=256)
+
+    class Admin:
+        pass
+
+    def __unicode__(self):
+        return self.concept + ' ' + self.adaptor 
+
+class ConceptName(models.Model):
+    name = models.CharField(_('Name'), max_length=256)
+    concept = models.ForeignKey(Concept, verbose_name=_('Concept'))    
+
+    class Admin:
+        pass
+
+    def __unicode__(self):
+        return self.name
+
