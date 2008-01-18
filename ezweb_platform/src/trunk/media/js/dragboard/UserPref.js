@@ -106,6 +106,7 @@ UserPref.prototype.BOOLEAN = "B"; // "B"oolean
 function ListUserPref(name_, label_, desc_, defaultValue_, ValueOptions_) {
 	UserPref.prototype.UserPref.call(this, name_, label_, desc_, defaultValue_);
 	this.options = ValueOptions_;
+	this.optionHash = null;
 }
 
 ListUserPref.prototype = new UserPref();
@@ -118,6 +119,7 @@ ListUserPref.prototype.makeInterface = function (iGadgetId) {
 	element.appendChild(document.createTextNode(this.label));
 
 	select = document.createElement("select");
+	select.setAttribute("name", this.varName);
 	element.appendChild(select);
 
 	var output = "";
@@ -131,7 +133,13 @@ ListUserPref.prototype.makeInterface = function (iGadgetId) {
 }
 
 ListUserPref.prototype.validate = function (newValue) {
-    return this.options[newValue] != undefined;
+	if (this.optionHash == null) {
+		this.optionHash = new Hash();
+		for (var i = 0; i < this.options.length; i++)
+			this.optionHash[this.options[i][0]] = true;
+	}
+
+	return this.optionHash[newValue] != undefined;
 }
 
 /**
