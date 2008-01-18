@@ -1,0 +1,16 @@
+ERROR: POST user/id/resources admin
+[17/01/2008 13:23:18] ERROR:  duplicate key violates unique constraint "resource_gadgetresource_short_name_key"
+
+INSERT INTO "resource_gadgetresource" ("short_name","vendor","version","added_by_user_id","author","mail","description","size","license","gadget_uri","creation_date","image_uri","wiki_page_uri","template_uri") VALUES ('Bandeja_de_Averias','Morfeo','1.0',1,'miglesia','miglesia@pegaso.ls.fi.upm.es','Este gadget presenta una lista de averias registradas por usuarios y la informacion relativa a ellas',NULL,NULL,NULL,'2008-01-17 13:23:18.221181','http://europa.ls.fi.upm.es/ezweb/gadgets/RedLightBulb.gif','http://piccolo.ls.fi.upm.es:7000/Bandeja_de_Averias','http://europa.ls.fi.upm.es/ezweb/gadgets/bandejaAveriasGadget.xml')
+ERROR: POST user/id/resources admin
+[17/01/2008 13:23:49] ERROR:  duplicate key violates unique constraint "resource_gadgetresource_short_name_key"
+
+INSERT INTO "resource_gadgetresource" ("short_name","vendor","version","added_by_user_id","author","mail","description","size","license","gadget_uri","creation_date","image_uri","wiki_page_uri","template_uri") VALUES ('Bandeja_de_Averias','Morfeo','1.0',1,'miglesia','miglesia@pegaso.ls.fi.upm.es','Este gadget presenta una lista de averias registradas por usuarios y la informacion relativa a ellas',NULL,NULL,NULL,'2008-01-17 13:23:49.818781','http://europa.ls.fi.upm.es/ezweb/gadgets/RedLightBulb.gif','http://piccolo.ls.fi.upm.es:7000/Bandeja_de_Averias','http://europa.ls.fi.upm.es/ezweb/gadgets/bandejaAveriasGadget.xml')
+ERROR: POST user/id/resources admin
+[17/01/2008 13:30:39] ERROR:  duplicate key violates unique constraint "resource_gadgetresource_short_name_key"
+
+INSERT INTO "resource_gadgetresource" ("short_name","vendor","version","added_by_user_id","author","mail","description","size","license","gadget_uri","creation_date","image_uri","wiki_page_uri","template_uri") VALUES ('Configuracion_de_Red','Morfeo','1.0',1,'miglesia','miglesia@pegaso.ls.fi.upm.es','Este gadget presenta un diagrama con la localizacion de la averia en el servicio',NULL,NULL,NULL,'2008-01-17 13:30:39.528054','http://europa.ls.fi.upm.es/ezweb/gadgets/red.jpg','http://piccolo.ls.fi.upm.es:7000/Configuracion_de_Red','http://europa.ls.fi.upm.es/ezweb/gadgets/configuracionRedGadget.xml')
+ERROR: POST user/id/resources admin
+[17/01/2008 13:32:29] ERROR:  duplicate key violates unique constraint "resource_gadgetresource_short_name_key"
+
+INSERT INTO "resource_gadgetresource" ("short_name","vendor","version","added_by_user_id","author","mail","description","size","license","gadget_uri","creation_date","image_uri","wiki_page_uri","template_uri") VALUES ('Configuracion_de_Red','Morfeo','1.0',1,'miglesia','miglesia@pegaso.ls.fi.upm.es','Este gadget presenta un diagrama con la localizacion de la averia en el servicio',NULL,NULL,NULL,'2008-01-17 13:32:29.534689','http://europa.ls.fi.upm.es/ezweb/gadgets/red.jpg','http://piccolo.ls.fi.upm.es:7000/Configuracion_de_Red','http://europa.ls.fi.upm.es/ezweb/gadgets/configuracionRedGadget.xml')

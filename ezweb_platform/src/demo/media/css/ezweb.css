@@ -1,0 +1,330 @@
+body{
+	 margin:0;
+	 padding:0;
+	 color:#000;
+	 font-size:80%;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	background: url("/ezweb/images/fond.gif") top left;
+}
+
+a{
+	 color:red;
+}
+
+a:hover{
+	 color:red;
+}
+
+/* header ------------------------------------------------------------------------------------------ */
+/* testing from codesyntax */
+
+#header {
+	position: relative;
+	width:100%;
+	background: url("/ezweb/images/header.gif") repeat-x top left;
+	color:white;
+	text-align:right;
+	height:55px;
+}
+#greeting{
+	float:right;
+	width:200px;
+	margin-right:15px;
+	margin-top:5px;
+}
+#greeting a{
+	color:white;
+}
+#logo {
+	float:left;
+	margin-top:0;
+	margin-left:10px;
+}
+
+#toolbar {}
+
+#toolbar a{}
+
+#description {}
+
+#description p {}
+
+#header .tab_section {
+  position: absolute;
+  padding-left: 10px;
+  bottom: -2px;
+  z-index: 3;
+}
+
+#header .tab_section .tab {
+  float: right;
+  border: 2px solid #4c5054;
+  color: #FFF;
+  background: #97a0a8;
+  font-weight: bold;
+  padding: 2px 9px;
+  margin: 0px 0.5em;
+  cursor: pointer;
+}
+
+#header .tab_section .current {
+  color: #4c5054;
+  background: #E0E0E0;
+  border-bottom: 0px none;
+  padding-bottom: 4px;
+}
+
+/* gadgets ------------------------------------------------------------------------------------------ */
+
+#gadgets {
+}
+
+#gadgets .gadget {
+	border: 1px solid #C5D7EF;
+	border-top:1px solid #7AA5D6;
+	padding:0;
+}
+
+#gadgets .gadget .toolbar{
+	margin-top:0;
+	background-color:#E5ECF9;
+	height:30px;
+	border-bottom: 1px solid #C5D7EF;
+}
+#gadgets .gadget .toolbar h2{
+	margin:0;
+	color:#36C;
+	padding:5px;
+	font-size:120%;
+	float:left;
+}
+
+#gadgets .gadget .toolbar a {
+	float:right;
+	margin-right:2%;
+	margin-top:10px;
+}
+#gadgets .gadget .toolbar a img {}
+
+#gadgets .gadget .preferences{
+	border-bottom: 1px solid #C5D7EF;
+	background-color:#E5ECF9;
+	color:#36C;
+}
+
+#gadgets .gadget .preferences table{
+	width:90%; 
+	margin-left:5%; 
+	margin-right:5%;
+	background-color:#E5ECF9;
+	color:#36C;
+}
+
+#gadgets .gadget .preferences input{
+	width:100%; 
+}
+
+#gadgets .gadget .preferences td{
+	text-align:left;
+}
+
+#gadgets .gadget .preferences fieldset{
+	border:none;
+}
+
+#gadgets .gadget .main{
+	padding:1%;
+}
+#gadgets .gadget .main h4{
+	margin-top:1%;
+	border-bottom:1px dotted #dfdfdf;
+}
+#gadgets .gadget .main table{
+	border:1px dotted #dfdfdf;
+}
+#gadgets .gadget .main th{
+
+}
+#gadgets .gadget .main td{
+
+}
+#gadgets .gadget .main img{
+	width:120px;
+	height:60px;
+	margin-bottom: 1%;
+}
+
+/* containers --------------------------------------------------------------------------------------- */
+
+#wrapper {
+  position:relative;
+  min-width: 600px;
+  width: 99%;
+  height: 98%;
+  border: 2px solid #4c5054;
+  margin: 0 2px 2px 2px;
+}
+
+.container {
+  position: absolute;
+  top: 0;
+  width:100%;
+  height:100%;
+  background: #e6f3ff;
+  background-color:#e0e0e0;
+  overflow-x: auto;
+  overflow-y: auto;
+  z-index: 1;
+  display: none;
+}
+
+.container_content {
+  position: relative;
+  top: 0;
+  width:100%;
+  height:100%;
+}
+
+/* dragboard ---------------------------------------------------------------------------------------- */
+
+#dragboard_container {
+  overflow-x: hidden;
+  z-index: 2;
+  display: block;
+}
+
+/* showcase ---------------------------------------------------------------------------------------- */
+
+#showcase_container {
+  overflow-x: hidden;
+  background: #FFF;
+}
+
+
+/* wiring ------------------------------------------------------------------------------------------ */
+
+#wiring_container {
+  width: 100%;
+}
+
+#wiring #channel_list {
+	padding: 15px 15px 15px 15px;
+}
+
+#wiring .tableCell {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+#wiring .columnCell {
+	width: 33%;
+	vertical-align: top;
+}
+
+#wiring .columnCell .outsTitle {
+    background-image: url(/ezweb/images/go-first.png);
+    background-repeat: no-repeat;
+    padding: 0 0 0 18px;
+    font-weight: bold;
+}
+
+#wiring .columnCell .insTitle {
+    background-image: url(/ezweb/images/go-last.png);
+    background-repeat: no-repeat;
+    padding: 0 0 0 18px;
+    font-weight: bold;
+}
+
+#wiring .columnCell .wiresTitle {
+    background-image: url(/ezweb/images/connect_creating.png);
+    background-repeat: no-repeat;
+    padding: 0 0 0 18px;
+    font-weight: bold;
+}
+
+#wiring .borderLeftCell {
+    border-collapse: collapse;
+	padding: 0 0 0 25px;
+    border-top: none;
+    border-bottom: none;
+    border-left: 1px solid #AAA;
+    border-right: none;
+}
+
+#wiring .columnCell ul input[type="radio"] {
+	display: none;
+}
+
+#wiring .columnCell ul li {
+    padding: 2px;
+}
+
+#wiring .columnCell ul li div {
+    padding: 2px;
+}
+
+#wiring .columnCell .on {
+    background-repeat: no-repeat;
+    list-style-image: url(/ezweb/images/list-remove.png);
+    background-position: 3px center;
+    list-style-position: inside;
+    list-style-type: none;
+    cursor: pointer;
+}
+
+#wiring .columnCell .off {
+    background-repeat: no-repeat;
+    list-style-image: url(/ezweb/images/list-add.png);
+    background-position: 3px center;
+    list-style-position: inside;
+    list-style-type: none;
+    cursor: pointer;
+}
+
+#wiring .columnCell .on ul {
+    display: block;
+}
+
+#wiring .columnCell .off ul {
+    display: none;
+}
+
+#wiring .columnCell #channels_list li {
+    background-repeat: no-repeat;
+    list-style-image: url(/ezweb/images/connect_established.png);
+    list-style-position: inside;
+    list-style-type: none;
+}
+
+#wiring .columnCell #channels_list li input[type="image"] {
+    padding-right: 5px;
+}
+
+
+#wiring .columnCell #channels_list ul li {
+    background-repeat: no-repeat;
+    list-style-image: url(/ezweb/images/pencil.png);
+    list-style-position: inside;
+}
+
+#wiring .columnCell #slots_list ul li {
+    list-style: none;
+/*    background-repeat: no-repeat;*/
+/*    list-style-image: url(/ezweb/images/energy.png);*/
+}
+
+
+#wiring .columnCell #events_list ul li {
+    list-style: none;
+/*    background-repeat: no-repeat;*/
+/*    list-style-image: url(/ezweb/images/connect_no.png);*/
+}
+
+
+/* footer ------------------------------------------------------------------------------------------ */
+
+
+
+#footer {}
+
+#footer p {}

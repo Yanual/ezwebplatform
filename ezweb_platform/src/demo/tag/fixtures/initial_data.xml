@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="utf-8"?>
+<django-objects version="1.0">
+    <object pk="1" model="tag.usertag">
+        <field type="CharField" name="tag">Amazon</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">2</field>
+    </object>
+    <object pk="2" model="tag.usertag">
+        <field type="CharField" name="tag">Precios</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">2</field>
+    </object>
+    <object pk="3" model="tag.usertag">
+        <field type="CharField" name="tag">Articulos</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">2</field>
+    </object>
+    <object pk="4" model="tag.usertag">
+        <field type="CharField" name="tag">CUIPTV</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">5</field>
+    </object>
+    <object pk="5" model="tag.usertag">
+        <field type="CharField" name="tag">Flickr</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">5</field>
+    </object>
+    <object pk="6" model="tag.usertag">
+        <field type="CharField" name="tag">Fotos</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">5</field>
+    </object>
+    <object pk="7" model="tag.usertag">
+        <field type="CharField" name="tag">CUIPTV</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">8</field>
+    </object>
+    <object pk="8" model="tag.usertag">
+        <field type="CharField" name="tag">PostIt</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">8</field>
+    </object>
+    <object pk="9" model="tag.usertag">
+        <field type="CharField" name="tag">Notas</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">8</field>
+    </object>
+    <object pk="10" model="tag.usertag">
+        <field type="CharField" name="tag">Editor</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">8</field>
+    </object>
+    <object pk="11" model="tag.usertag">
+        <field type="CharField" name="tag">RSS</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">1</field>
+    </object>
+    <object pk="12" model="tag.usertag">
+        <field type="CharField" name="tag">RSS</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">9</field>
+    </object>
+    <object pk="13" model="tag.usertag">
+        <field type="CharField" name="tag">RSS</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">10</field>
+    </object>
+    <object pk="14" model="tag.usertag">
+        <field type="CharField" name="tag">CUIPTV</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">11</field>
+    </object>
+    <object pk="15" model="tag.usertag">
+        <field type="CharField" name="tag">YouTube</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">11</field>
+    </object>
+    <object pk="16" model="tag.usertag">
+        <field type="CharField" name="tag">Buscador</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">11</field>
+    </object>
+    <object pk="17" model="tag.usertag">
+        <field type="CharField" name="tag">Search</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">11</field>
+    </object>
+    <object pk="18" model="tag.usertag">
+        <field type="CharField" name="tag">Video</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">11</field>
+    </object>
+    <object pk="19" model="tag.usertag">
+        <field type="CharField" name="tag">CUIPTV</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">12</field>
+    </object>
+    <object pk="20" model="tag.usertag">
+        <field type="CharField" name="tag">YouTube</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">12</field>
+    </object>
+    <object pk="21" model="tag.usertag">
+        <field type="CharField" name="tag">Video</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">12</field>
+    </object>
+    <object pk="22" model="tag.usertag">
+        <field type="CharField" name="tag">Visor</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">12</field>
+    </object>
+    <object pk="23" model="tag.usertag">
+        <field type="CharField" name="tag">CUIPTV</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">15</field>
+    </object>
+    <object pk="24" model="tag.usertag">
+        <field type="CharField" name="tag">Yahoo</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">15</field>
+    </object>
+    <object pk="25" model="tag.usertag">
+        <field type="CharField" name="tag">Viaje</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">15</field>
+    </object>
+    <object pk="26" model="tag.usertag">
+        <field type="CharField" name="tag">CUIPTV</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">16</field>
+    </object>
+    <object pk="27" model="tag.usertag">
+        <field type="CharField" name="tag">Yahoo</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">16</field>
+    </object>
+    <object pk="28" model="tag.usertag">
+        <field type="CharField" name="tag">Search</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">16</field>
+    </object>
+    <object pk="29" model="tag.usertag">
+        <field type="CharField" name="tag">Buscador</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">16</field>
+    </object>
+    <object pk="30" model="tag.usertag">
+        <field type="CharField" name="tag">Viaje</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">16</field>
+    </object>
+    <object pk="31" model="tag.usertag">
+        <field type="CharField" name="tag">CUIPTV</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">17</field>
+    </object>
+    <object pk="32" model="tag.usertag">
+        <field type="CharField" name="tag">Mapa</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">17</field>
+    </object>
+    <object pk="33" model="tag.usertag">
+        <field type="CharField" name="tag">Maps</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">17</field>
+    </object>
+    <object pk="34" model="tag.usertag">
+        <field type="CharField" name="tag">Google</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">17</field>
+    </object>
+    <object pk="35" model="tag.usertag">
+        <field type="CharField" name="tag">Localizador</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">17</field>
+    </object>
+    <object pk="36" model="tag.usertag">
+        <field type="CharField" name="tag">OSS</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">17</field>
+    </object>
+    <object pk="37" model="tag.usertag">
+        <field type="CharField" name="tag">CUIPTV</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">18</field>
+    </object>
+    <object pk="38" model="tag.usertag">
+        <field type="CharField" name="tag">OSS</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">18</field>
+    </object>
+    <object pk="39" model="tag.usertag">
+        <field type="CharField" name="tag">Localizador</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">18</field>
+    </object>
+    <object pk="40" model="tag.usertag">
+        <field type="CharField" name="tag">Mapa</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">18</field>
+    </object>
+    <object pk="41" model="tag.usertag">
+        <field type="CharField" name="tag">Google</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">18</field>
+    </object>
+    <object pk="42" model="tag.usertag">
+        <field type="CharField" name="tag">Visor</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">13</field>
+    </object>
+    <object pk="43" model="tag.usertag">
+        <field type="CharField" name="tag">OSS</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">13</field>
+    </object>
+    <object pk="44" model="tag.usertag">
+        <field type="CharField" name="tag">Device</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">13</field>
+    </object>
+    <object pk="45" model="tag.usertag">
+        <field type="CharField" name="tag">Equipo</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">13</field>
+    </object>
+    <object pk="46" model="tag.usertag">
+        <field type="CharField" name="tag">OSS</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">14</field>
+    </object>
+    <object pk="47" model="tag.usertag">
+        <field type="CharField" name="tag">Visor</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">14</field>
+    </object>
+    <object pk="48" model="tag.usertag">
+        <field type="CharField" name="tag">Usuario</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">14</field>
+    </object>
+    <object pk="49" model="tag.usertag">
+        <field type="CharField" name="tag">User</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">14</field>
+    </object>
+    <object pk="50" model="tag.usertag">
+        <field type="CharField" name="tag">OSS</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">3</field>
+    </object>
+    <object pk="51" model="tag.usertag">
+        <field type="CharField" name="tag">Averias</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">3</field>
+    </object>
+    <object pk="52" model="tag.usertag">
+        <field type="CharField" name="tag">Bandeja</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">3</field>
+    </object>
+    <object pk="53" model="tag.usertag">
+        <field type="CharField" name="tag">Lista</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">3</field>
+    </object>
+    <object pk="54" model="tag.usertag">
+        <field type="CharField" name="tag">OSS</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">4</field>
+    </object>
+    <object pk="55" model="tag.usertag">
+        <field type="CharField" name="tag">Cpomfiguracion</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">4</field>
+    </object>
+    <object pk="56" model="tag.usertag">
+        <field type="CharField" name="tag">ADSL</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">4</field>
+    </object>
+    <object pk="57" model="tag.usertag">
+        <field type="CharField" name="tag">IMAGENIO</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">4</field>
+    </object>
+    <object pk="58" model="tag.usertag">
+        <field type="CharField" name="tag">DSLAN</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">4</field>
+    </object>
+    <object pk="59" model="tag.usertag">
+        <field type="CharField" name="tag">ROUTER</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">4</field>
+    </object>
+    <object pk="60" model="tag.usertag">
+        <field type="CharField" name="tag">Visor</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">20</field>
+    </object>
+    <object pk="61" model="tag.usertag">
+        <field type="CharField" name="tag">Imagenes</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">20</field>
+    </object>
+    <object pk="62" model="tag.usertag">
+        <field type="CharField" name="tag">jpg</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">20</field>
+    </object>
+    <object pk="63" model="tag.usertag">
+        <field type="CharField" name="tag">fotos</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">20</field>
+    </object>
+    <object pk="64" model="tag.usertag">
+        <field type="CharField" name="tag">Applet</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">19</field>
+    </object>
+    <object pk="65" model="tag.usertag">
+        <field type="CharField" name="tag">Draw</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">19</field>
+    </object>
+    <object pk="66" model="tag.usertag">
+        <field type="CharField" name="tag">Imagenes</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">19</field>
+    </object>
+    <object pk="68" model="tag.usertag">
+        <field type="CharField" name="tag">Visor</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">4</field>
+    </object>
+    <object pk="69" model="tag.usertag">
+        <field type="CharField" name="tag">Applet</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">20</field>
+    </object>
+    <object pk="70" model="tag.usertag">
+        <field type="CharField" name="tag">Compras</field>
+        <field type="CharField" name="weight"><None></None></field>
+        <field type="CharField" name="criteria"><None></None></field>
+        <field type="CharField" name="value"><None></None></field>
+        <field to="auth.user" name="idUser" rel="ManyToOneRel">1</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">2</field>
+    </object>
+</django-objects>

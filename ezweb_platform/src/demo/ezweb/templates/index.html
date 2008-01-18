@@ -1,0 +1,206 @@
+﻿{% load i18n %}
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es">
+<head>
+<title>EzWeb</title>
+<head>
+<title>EzWeb Platform</title>
+
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+<link rel="stylesheet" type="text/css" media="screen,projection" href="{{ MEDIA_URL }}css/ezweb.css" />
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/dragboard.css">
+<link rel="shortcut icon" type="image/x-icon" href="{{ MEDIA_URL }}css/favicon.ico" />
+
+<script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/lib/prototype/prototype.js"></script>
+<script type="text/javascript" language="javascript">
+_URIConstants = function(){}
+_URIConstants.prototype.USER = '/user/{{ user.username }}';
+_URIConstants.prototype.GET_IGADGET = new Template ('/user/{{ user.username }}/igadgets/#{id}');
+_URIConstants.prototype.GET_IGADGETS = '/user/{{ user.username }}/igadgets';
+_URIConstants.prototype.GET_GADGET = new Template ('/user/{{ user.username }}/gadgets/#{vendor}/#{name}/#{version}');
+_URIConstants.prototype.GET_GADGETS = '/user/{{ user.username }}/gadgets';
+_URIConstants.prototype.GET_CONTEXT = '/user/{{ user.username }}/context';
+_URIConstants.prototype.GET_CONTEXT_VALUE = new Template ('/user/{{ user.username }}/context/#{concept}/value');
+_URIConstants.prototype.GET_POST_WIRING = '/user/{{ user.username }}/connectable';
+_URIConstants.prototype.GET_POST_RESOURCES = '/user/{{ user.username }}/catalogue/resource';
+_URIConstants.prototype.GET_RESOURCES_BY_TAG = '/user/{{ user.username }}/catalogue/search/tag';
+_URIConstants.prototype.GET_RESOURCES_BY_WIRING = '/user/{{ user.username }}/catalogue/search';
+_URIConstants.prototype.POST_RESOURCE_TAGS = '/user/{{ user.username }}/catalogue/tag';
+_URIConstants.prototype.GET_RESOURCES_SEARCH_GENERIC = '/user/{{ user.username }}/catalogue/search/generic';
+_URIConstants.prototype.POST_IGADGET = new Template ('/user/{{ user.username }}/igadgets/#{iGadgetId}');
+_URIConstants.prototype.PROXY = '/proxy';
+_URIConstants.prototype.GET_IGADGET_VARIABLES = new Template ('/user/{{ user.username }}/igadgets/#{iGadgetId}/variables');
+_URIConstants.prototype.GET_POST_GADGET_VARIABLE = new Template ('/user/{{ user.username }}/igadgets/#{iGadgetId}/variables/#{varName}');
+_URIConstants.prototype.GET_POST_CHANNEL = new Template ('/user/{{ user.username }}/channel/#{channelName}');
+_URIConstants.prototype.PUT_VARIABLES = '/user/{{ user.username }}/igadgets/variables';
+
+var URIs = new _URIConstants();
+</script>
+
+<script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/lib/scriptaculous/scriptaculous.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/lib/prototype/prototype.improvements.js"></script>
+
+
+<script language="JavaScript" src="{{ MEDIA_URL }}js/common/modules.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/persistenceEngine/PersistenceEngine.js"></script>
+
+<script language="JavaScript" src="{{ MEDIA_URL }}js/gadgetModel/XHtml.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/gadgetModel/Template.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/gadgetModel/Gadget.js"></script>
+
+<script language="JavaScript" src="{{ MEDIA_URL }}js/opManager/OpManager.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/varManager/VariableGadget.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/varManager/VariablePlatform.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/varManager/varManager.js"></script>
+
+<script language="JavaScript" src="{{ MEDIA_URL }}js/showcase/showcase.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/showcase/util.js"></script>
+
+<script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/contextManager/ContextManager.js"></script>
+<script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/contextManager/ContextPlatform.js"></script>
+<script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/contextManager/Adaptors.js"></script>
+
+<script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/dragboard/dragboard.js"></script>
+<script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/dragboard/UserPref.js"></script>
+
+<script language="JavaScript" src="{{ MEDIA_URL }}js/wiring/connectable.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/wiring/wiring.js"></script>
+<!--<script language="JavaScript" src="{{ MEDIA_URL }}js/wiring/wiringInterface.js"></script>-->
+<script language="JavaScript" src="{{ MEDIA_URL}}js/wiring/wiringGUI.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL}}js/wiring/color_scheme.js"></script>
+
+		<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/catalogue.css" />
+		<script language="JavaScript" src="{{ MEDIA_URL }}js/lib/helpballoon/HelpBalloon.js"></script>
+		<script language="JavaScript" src="{{ MEDIA_URL }}js/catalogue/UIUtils.js"></script>
+		<script language="JavaScript" src="{{ MEDIA_URL }}js/catalogue/Catalogue.js"></script>
+		<script language="JavaScript" src="{{ MEDIA_URL }}js/catalogue/Resource.js"></script>
+		<script language="JavaScript" src="{{ MEDIA_URL }}js/catalogue/Tagger.js"></script>
+		<script language="JavaScript" src="{{ MEDIA_URL }}js/catalogue/Tag.js"></script>
+		<script language="JavaScript" src="{{ MEDIA_URL }}js/catalogue/HashTable.js"></script>
+		<script type="text/javascript">
+			window.onresize = UIUtils.setResourcesWidth;
+		</script>
+
+<!-- Initialization code -->
+<script language="JavaScript">
+
+	function showInterface(element) {
+		var tabs = ["wiring", "showcase", "dragboard"];
+
+
+		for (var i = 0; i < tabs.length; i++) {
+			$(tabs[i] + "_container").style.zIndex = 1;
+			$(tabs[i] + "_tab").className = "tab";
+                        if (tabs[i] != "dragboard")
+                                $(tabs[i] + "_container").setStyle({"display": "none"});
+		}
+
+		$(element + "_container").setStyle({"display": "block", "zIndex" : "2"});
+		$(element + "_tab").className = "tab current";
+	}
+
+	function show_showcase() {
+//		wI.unloaded();
+        wI.renewInterface();
+		opManager.repaintCatalogue(URIs.GET_POST_RESOURCES);
+		showInterface('showcase');
+		UIUtils.setResourcesWidth();
+		$('simple_search_text').focus();
+
+    	//opManager.restaure();
+    	//WiringFactory.getInstance().serialize();
+	}
+
+	function show_dragboard() {
+//		wI.unloaded();
+//        wI.renewInterface();
+		showInterface('dragboard');
+
+//    	opManager.restaure();
+    	//WiringFactory.getInstance().serialize();
+
+	}
+
+	function show_wiring() {
+		wI.renewInterface();
+		showInterface('wiring');
+	}
+
+	// Platform initialization
+	function environmentLoadedCallback() {
+		dragboard = DragboardFactory.getInstance();
+		dragboard.repaint();
+    	
+    	wiring = WiringFactory.getInstance();
+		wI = new wiringInterface(wiring);
+
+	switch("{{ current_tab }}") {
+		    case 'dragboard':
+	    		show_dragboard();
+		    break;
+		    case 'showcase':
+	    		show_showcase();
+		    break;
+		    case 'wiring':
+                show_wiring();
+		    break;
+        }
+
+	}
+	
+	function resizeWrapper() {
+		$("wrapper").setStyle({"height" : (window.innerHeight - $("header").offsetHeight - 20) + "px"});
+	}
+
+	var wI;
+	var wiring;
+	var opManager;
+	var dragboard;
+
+    opManager = OpManagerFactory.getInstance();
+    opManager.loadEnviroment();
+
+</script>
+
+
+</head>
+
+<body onload="resizeWrapper();" onresize="resizeWrapper();">
+
+<!-- HEADER -->
+<div id="header">
+  <div id="greeting">{% trans "Welcome" %}, {{ user.username }} / <a href="/logout">{% trans "Exit" %}</a></div>
+  <img id="logo" src="{{ MEDIA_URL }}images/logo.gif" alt="EzWeb Logo">
+  <div class="tab_section">
+    <span id="wiring_tab" class="tab" onclick="show_wiring();">{% trans "My Wires" %}</span>
+    <span id="showcase_tab" class="tab" onclick="show_showcase();">{% trans "My Catalogue" %}</span>
+    <span id="dragboard_tab" class="tab current" onclick="show_dragboard();">{% trans "My Gadgets" %}</span>
+  </div>
+</div>
+
+<div id="wrapper">
+  <!-- DRAGBOARD LAYER -->
+  <div id="dragboard_container" class="container">
+    {% include "dragboard.html" %}
+  </div>
+  <!-- DRAGBOARD LAYER -->
+  
+  <!-- SHOWCASE LAYER -->
+  <div id="showcase_container" class="container">
+     {% include "showcase.html" %}
+  </div>
+  <!-- SHOWCASE LAYER -->
+
+  <!-- WIRING LAYER -->
+  <div id="wiring_container" class="container">
+    {% include "wiring.html" %}
+  </div>
+  <!-- WIRING LAYER -->
+
+</div>
+</body>
+
+</html>
