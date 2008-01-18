@@ -213,7 +213,7 @@ RWVariable.prototype.set = function (value_) {
     }
 
     var persistenceEngine = PersistenceEngineFactory.getInstance();
-    var param = 'variables=' + Object.toJSON(varManager.getModifiedVariables());
+    var param = {variables: Object.toJSON(varManager.getModifiedVariables())};
 
     PersistenceEngineFactory.getInstance().send_update(URIs.PUT_VARIABLES, param, this, onSuccess, onError);
 
