@@ -39,21 +39,23 @@
 import sys
 from urllib import urlopen, urlencode
 
+from django.core import serializers
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseServerError
 from django.shortcuts import get_object_or_404, get_list_or_404
 from django.db import transaction
-
 from django.db import IntegrityError
 
 from django_restapi.resource import Resource
 
-from resource.models import GadgetResource
-from resource.models import GadgetWiring
+from resource.models import *
 from resource.parser import TemplateParser
 from tag.models import UserTag
-from commons.catalogue_utils import get_xml_description, get_xml_error
 
+from commons.catalogue_utils import get_xml_error
+from commons.utils import json_encode
+from commons.get_json_catalogue_data import get_gadgetresource_data
+from commons.get_xml_catalogue_data import get_xml_description
 from commons.exceptions import TemplateParseException
 from commons.logs import log
 
@@ -74,9 +76,7 @@ class GadgetsCollection(Resource):
             # Gadget already exists. Rollback transaction
             transaction.rollback()
             log(e, 'POST', 'user/id/resources', user_name)
-	    value = str(sys.exc_info()[1])
-	    xml_error = '<error>'+value+'</error>'
-	    return HttpResponseServerError(xml_error,mimetype='text/xml; charset=UTF-8')
+	    return HttpResponseServerError(get_xml_error(str(sys.exc_info()[1])),mimetype='text/xml; charset=UTF-8')
         except TemplateParseException, e:
             transaction.rollback()
             log(e, 'POST', 'user/id/resources', user_name)
@@ -84,9 +84,7 @@ class GadgetsCollection(Resource):
         except Exception, e:
             # Internal error
             transaction.rollback()
-	    value = str(sys.exc_info()[1])
             log(e, 'POST', 'user/id/resources', user_name)
-	    xml_error = '<error>'+value+'</error>'
 	    return HttpResponseServerError(get_xml_error(str(sys.exc_info()[1])),mimetype='text/xml; charset=UTF-8')
 
 
@@ -99,10 +97,12 @@ class GadgetsCollection(Resource):
         #paginate
 	a= int(pag)
 	b= int(offset)
+	gadgetresource = {}
 
         # Get the xml description for all the gadgets in the catalogue
 	if a == 0 or b == 0:
-	    response = get_xml_description(GadgetResource.objects.all())	
+	    #resources = GadgetResource.objects.all()
+            response = get_xml_description(GadgetResource.objects.all())	
 	# Get the xml description for the requested gadgets
 	else:
 	    c=((a-1)*b)
@@ -110,8 +110,14 @@ class GadgetsCollection(Resource):
 	
 	    if a==1:
 	        c=0
-	    response = get_xml_description(GadgetResource.objects.all()[c:d])
-		
+            #resources = GadgetResource.objects.all()[c:d]
+            response = get_xml_description(GadgetResource.objects.all()[c:d])
+	
+        #resource_data = serializers.serialize('python', resources, ensure_ascii=False)
+        #resource_data_list = [get_gadgetresource_data(d) for d in resource_data]
+        #gadgetresource['resourceList'] = resource_data_list
+        
+        #return HttpResponse(json_encode(gadgetresource), mimetype='application/json; charset=UTF-8')		
 	return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
 
     

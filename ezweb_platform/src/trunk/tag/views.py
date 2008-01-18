@@ -52,8 +52,11 @@ from xml.sax.xmlreader import InputSource
 
 from tag.models import UserTag
 from tag.parser import TagsXMLHandler
-from commons.catalogue_utils import get_tags_by_resource, get_xml_error
 from resource.models import GadgetResource
+
+from commons.catalogue_utils import get_xml_error
+from commons.get_json_catalogue_data import get_gadgetresource_data
+from commons.get_xml_catalogue_data import get_tags_by_resource
 
 
 class GadgetTagsCollection(Resource):

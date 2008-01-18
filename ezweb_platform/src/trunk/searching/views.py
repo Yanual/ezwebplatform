@@ -47,7 +47,10 @@ from django_restapi.resource import Resource
 from resource.models import GadgetResource
 from resource.models import GadgetWiring
 from tag.models import UserTag
-from commons.catalogue_utils import get_xml_description, get_xml_error, get_uniquelist
+
+from commons.catalogue_utils import get_xml_error, get_uniquelist
+from commons.get_json_catalogue_data import get_gadgetresource_data
+from commons.get_xml_catalogue_data import get_xml_description
 
 
 class GadgetsCollectionByGenericSearch(Resource):

@@ -131,6 +131,7 @@ INSTALLED_APPS = (
     'resource',
     'tag',
     'searching',
+    'context',
 )
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
