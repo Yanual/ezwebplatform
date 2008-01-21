@@ -253,7 +253,7 @@ BoolUserPref.prototype.makeInterface = function (IGadgetId) {
 	output += "<input name=\"" + this.varName +"\" type=\"checkbox\" ";
 
 	var currentValue = this.getCurrentValue(IGadgetId);
-	if (currentValue)
+	if (currentValue.strip().toLowerCase() == "true")
 		output += "checked=\"true\" ";
 
 	output += "/>";
