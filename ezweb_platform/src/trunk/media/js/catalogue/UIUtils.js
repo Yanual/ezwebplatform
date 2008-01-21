@@ -61,7 +61,8 @@ UIUtils.addResource = function(url, paramName, paramValue) {
 	
 	var persistenceEngine = PersistenceEngineFactory.getInstance();	
 
-	var params = paramName + "=" + paramValue;
+	var params = new Hash();
+	params[paramName] = paramValue;
 
 	persistenceEngine.send_post(url, params, this, newResourceOnSuccess, newResourceOnError);
 }

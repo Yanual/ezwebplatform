@@ -712,9 +712,7 @@ var WiringFactory = function () {
 		    json['iGadgetList'] = gadgets;
 		    json['inOutList'] = inouts;
 		    
-		    var param = Object.toJSON(json);
-		    
-			param = "json=" + param;
+		    var param = {json: Object.toJSON(json)};
 		    
 		    PersistenceEngineFactory.getInstance().send_post(URIs.GET_POST_WIRING, param, this, this.serializationSuccess, this.serializationError); 
 		    

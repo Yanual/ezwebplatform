@@ -686,7 +686,7 @@ var DragboardFactory = function () {
 				data['iGadgets'].push(iGadgetInfo);
 			});
 
-			data = "igadgets=" + data.toJSON();
+			data = {igadgets: data.toJSON()};
 			persistenceEngine.send_update(URIs.GET_IGADGETS, data, this, onSuccess, onError);
 		}
 
@@ -1067,7 +1067,7 @@ IGadget.prototype.save = function() {
 	data['gadget'] = URIs.GET_GADGET.evaluate({vendor: this.gadget.getVendor(),
 	                                           name: this.gadget.getName(),
 	                                           version: this.gadget.getVersion()});
-	data = "igadget=" + data.toJSON();
+	data = {igadget: data.toJSON()};
 	persistenceEngine.send_post(uri , data, this, onSuccess, onError);
 }
 

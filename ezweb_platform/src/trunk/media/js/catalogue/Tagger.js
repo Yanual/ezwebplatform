@@ -82,7 +82,7 @@ function Tagger(){
 			}
 			
 			var elements = tags.getValues();
-			var tagsXML = 	//"<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + 
+			var tagsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + 
 								"<Tags>";
 			for (var i=0; i<elements.size(); i++)
 			{
@@ -90,7 +90,7 @@ function Tagger(){
 			}
 			tagsXML += "</Tags>"
 	
-			var param = "tags_xml=" + tagsXML;
+			var param = {tags_xml: tagsXML};
 	
 			PersistenceEngineFactory.getInstance().send_post(url + resourceURI, param, this, loadTags, onError);
 			_this.removeAll();
