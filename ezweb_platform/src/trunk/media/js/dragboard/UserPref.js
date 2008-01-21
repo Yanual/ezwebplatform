@@ -263,6 +263,6 @@ BoolUserPref.prototype.makeInterface = function (IGadgetId) {
 }
 
 BoolUserPref.prototype.getValueFromInterface = function(element) {
-	return element.checked ? true : false;
+	return element.checked ? "true" : "false";
 }
 
