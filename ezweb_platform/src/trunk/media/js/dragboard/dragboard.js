@@ -1042,6 +1042,8 @@ IGadget.prototype.saveConfig = function() {
 		if (newValue != oldValue)
 			curPref.setValue(this.id, newValue);
 	}
+
+	VarManagerFactory.getInstance().commitModifiedVariables();
 }
 
 IGadget.prototype.save = function() {

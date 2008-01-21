@@ -117,6 +117,7 @@ var VarManagerFactory = function () {
 		var wiring = null; 
 		var iGadgets = [];
 		var modifiedVars = [];
+		var nestingLevel = 0;
 		
 		// Getting IGadgets from PersistenceEngine. Asyncrhonous call!
 		persistenceEngine.send_get(URIs.GET_IGADGETS, this, loadIGadgets, onError);
@@ -200,6 +201,24 @@ var VarManagerFactory = function () {
 			delete iGadgets[iGadgetId];
 		}
 
+		VarManager.prototype.commitModifiedVariables = function() {
+			// Asynchronous handlers 
+			function onSuccess(transport) {
+				//varManager.resetModifiedVariables(); Race Condition
+			}
+			function onError(transport) {
+				alert (transport.responseText);
+			}
+
+			if (modifiedVars.length > 0) {
+				var persistenceEngine = PersistenceEngineFactory.getInstance();
+				var param = {variables: Object.toJSON(modifiedVars)};
+
+				persistenceEngine.send_update(URIs.PUT_VARIABLES, param, this, onSuccess, onError);
+				varManager.resetModifiedVariables();
+			}
+		}
+
 		VarManager.prototype.getModifiedVariables = function () {
 		    return modifiedVars;
 		}
@@ -234,7 +253,18 @@ var VarManagerFactory = function () {
 		    }
 		}
 
+		VarManager.prototype.incNestingLevel = function() {
+		    nestingLevel++;
+		}
+
+		VarManager.prototype.decNestingLevel = function() {
+		    nestingLevel--;
+		    if (nestingLevel == 0)
+			this.commitModifiedVariables();
+		}
+
 		VarManager.prototype.resetModifiedVariables = function () {
+		    nestingLevel = 0;
 		    modifiedVars = [];
 		}
 

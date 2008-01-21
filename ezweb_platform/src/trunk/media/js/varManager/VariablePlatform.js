@@ -126,10 +126,13 @@ RVariable.prototype.get = function () {
     
 RVariable.prototype.set = function (newValue) { 
 	switch (this.aspect){
+		case Variable.prototype.USER_PREF:
+			varManager = VarManagerFactory.getInstance();
+			var varInfo = [{iGadget: this.iGadget, name: this.name, value: newValue}];
+			varManager.markVariablesAsModified(varInfo);
 		case Variable.prototype.GADGET_CONTEXT:
 		case Variable.prototype.EXTERNAL_CONTEXT:
 		case Variable.prototype.SLOT:
-		case Variable.prototype.USER_PREF:
 			this.value = newValue;
 			try {
 				this.handler(newValue);
@@ -165,6 +168,8 @@ RWVariable.prototype.set = function (value_) {
     
     wiring = WiringFactory.getInstance();
     varManager = VarManagerFactory.getInstance();
+
+    varManager.incNestingLevel();
 
     // This variable was modified
     if (this.value != value_) {
@@ -202,20 +207,8 @@ RWVariable.prototype.set = function (value_) {
 	break;
     }
 
-    // Save all modified vars
-
-    // Asynchronous handlers 
-    function onSuccess(transport) {
-	varManager.resetModifiedVariables();
-    }
-    function onError(transport) {
-	alert (transport.responseText);
-    }
-
-    var persistenceEngine = PersistenceEngineFactory.getInstance();
-    var param = {variables: Object.toJSON(varManager.getModifiedVariables())};
-
-    PersistenceEngineFactory.getInstance().send_update(URIs.PUT_VARIABLES, param, this, onSuccess, onError);
+    // This will save all modified vars if we are the root event
+    varManager.decNestingLevel();
 
 }  
 
