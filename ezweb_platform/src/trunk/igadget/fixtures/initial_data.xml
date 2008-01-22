@@ -144,6 +144,156 @@
         <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">21</field>
         <field type="TextField" name="value"></field>
     </object>
+    <object pk="44" model="igadget.variable">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/1/variables/user_project_name</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">40</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">22</field>
+        <field type="TextField" name="value"></field>
+    </object>
+    <object pk="45" model="igadget.variable">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/1/variables/user_project_id</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">39</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">22</field>
+        <field type="TextField" name="value"></field>
+    </object>
+    <object pk="46" model="igadget.variable">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/1/variables/user_project_uri</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">38</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">22</field>
+        <field type="TextField" name="value"></field>
+    </object>
+    <object pk="69" model="igadget.variable">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/8/variables/user_name</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">65</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">29</field>
+        <field type="TextField" name="value"></field>
+    </object>
+    <object pk="70" model="igadget.variable">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/8/variables/user_id</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">64</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">29</field>
+        <field type="TextField" name="value"></field>
+    </object>
+    <object pk="71" model="igadget.variable">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/8/variables/user_uri</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">63</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">29</field>
+        <field type="TextField" name="value"></field>
+    </object>
+    <object pk="54" model="igadget.variable">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/3/variables/user_uri</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">45</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">24</field>
+        <field type="TextField" name="value">http://ezforge.morfeo-project.org:80/ezforge/v0.1/users/macvaz</field>
+    </object>
+    <object pk="53" model="igadget.variable">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/3/variables/user_id</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">46</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">24</field>
+        <field type="TextField" name="value">3</field>
+    </object>
+    <object pk="52" model="igadget.variable">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/3/variables/user_name</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">47</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">24</field>
+        <field type="TextField" name="value">macvaz</field>
+    </object>
+    <object pk="47" model="igadget.variable">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/1/variables/user_uri</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">37</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">22</field>
+        <field type="TextField" name="value">http://ezforge.morfeo-project.org:80/ezforge/v0.1/users/macvaz</field>
+    </object>
+    <object pk="58" model="igadget.variable">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/4/variables/user_uri</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">48</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">25</field>
+        <field type="TextField" name="value">http://ezforge.morfeo-project.org:80/ezforge/v0.1/users/macvaz</field>
+    </object>
+    <object pk="61" model="igadget.variable">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/5/variables/user_uri</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">52</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">26</field>
+        <field type="TextField" name="value">http://ezforge.morfeo-project.org:80/ezforge/v0.1/users/macvaz</field>
+    </object>
+    <object pk="60" model="igadget.variable">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/5/variables/skills_uri</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">53</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">26</field>
+        <field type="TextField" name="value">http://ezforge.morfeo-project.org:80/ezforge/v0.1/users/macvaz/skills</field>
+    </object>
+    <object pk="59" model="igadget.variable">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/5/variables/projects_uri</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">54</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">26</field>
+        <field type="TextField" name="value">http://ezforge.morfeo-project.org:80/ezforge/v0.1/users/macvaz/projects</field>
+    </object>
+    <object pk="57" model="igadget.variable">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/4/variables/user_project_uri</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">49</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">25</field>
+        <field type="TextField" name="value">http://ezforge.morfeo-project.org:80/ezforge/v0.1/users/macvaz/backends/gforge_morfeo/users/macvaz/projects/15</field>
+    </object>
+    <object pk="56" model="igadget.variable">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/4/variables/user_project_id</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">50</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">25</field>
+        <field type="TextField" name="value">15</field>
+    </object>
+    <object pk="55" model="igadget.variable">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/4/variables/user_project_name</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">51</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">25</field>
+        <field type="TextField" name="value">TIDStateEngine</field>
+    </object>
+    <object pk="64" model="igadget.variable">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/6/variables/project_uri</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">55</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">27</field>
+        <field type="TextField" name="value">http://ezforge.morfeo-project.org:80/ezforge/v0.1/projects/prj1</field>
+    </object>
+    <object pk="51" model="igadget.variable">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/2/variables/project_uri</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">41</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">23</field>
+        <field type="TextField" name="value">http://ezforge.morfeo-project.org:80/ezforge/v0.1/projects/prj1</field>
+    </object>
+    <object pk="72" model="igadget.variable">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/8/variables/project_uri</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">62</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">29</field>
+        <field type="TextField" name="value">http://ezforge.morfeo-project.org:80/ezforge/v0.1/projects/prj1</field>
+    </object>
+    <object pk="63" model="igadget.variable">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/6/variables/project_id</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">56</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">27</field>
+        <field type="TextField" name="value">prj1</field>
+    </object>
+    <object pk="62" model="igadget.variable">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/6/variables/project_name</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">57</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">27</field>
+        <field type="TextField" name="value">Project 1</field>
+    </object>
+    <object pk="50" model="igadget.variable">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/2/variables/users_uri</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">42</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">23</field>
+        <field type="TextField" name="value">http://ezforge.morfeo-project.org:80/ezforge/v0.1/projects/prj1/users</field>
+    </object>
+    <object pk="49" model="igadget.variable">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/2/variables/backend-instances_uri</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">43</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">23</field>
+        <field type="TextField" name="value">http://ezforge.morfeo-project.org:80/ezforge/v0.1/projects/prj1/backends</field>
+    </object>
+    <object pk="48" model="igadget.variable">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/2/variables/wikis_uri</field>
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">44</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">23</field>
+        <field type="TextField" name="value">http://ezforge.morfeo-project.org:80/ezforge/v0.1/projects/prj1/wikis</field>
+    </object>
     <object pk="17" model="igadget.position">
         <field type="CharField" name="uri">/user/mru/igadgets/9/position</field>
         <field type="IntegerField" name="posX">1</field>
@@ -228,6 +378,55 @@
         <field type="IntegerField" name="height">11</field>
         <field type="IntegerField" name="width">3</field>
     </object>
+    <object pk="22" model="igadget.position">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/1/position</field>
+        <field type="IntegerField" name="posX">0</field>
+        <field type="IntegerField" name="posY">15</field>
+        <field type="IntegerField" name="height">11</field>
+        <field type="IntegerField" name="width">1</field>
+    </object>
+    <object pk="23" model="igadget.position">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/2/position</field>
+        <field type="IntegerField" name="posX">1</field>
+        <field type="IntegerField" name="posY">15</field>
+        <field type="IntegerField" name="height">11</field>
+        <field type="IntegerField" name="width">1</field>
+    </object>
+    <object pk="24" model="igadget.position">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/3/position</field>
+        <field type="IntegerField" name="posX">0</field>
+        <field type="IntegerField" name="posY">1</field>
+        <field type="IntegerField" name="height">11</field>
+        <field type="IntegerField" name="width">1</field>
+    </object>
+    <object pk="25" model="igadget.position">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/4/position</field>
+        <field type="IntegerField" name="posX">2</field>
+        <field type="IntegerField" name="posY">1</field>
+        <field type="IntegerField" name="height">11</field>
+        <field type="IntegerField" name="width">1</field>
+    </object>
+    <object pk="26" model="igadget.position">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/5/position</field>
+        <field type="IntegerField" name="posX">1</field>
+        <field type="IntegerField" name="posY">1</field>
+        <field type="IntegerField" name="height">11</field>
+        <field type="IntegerField" name="width">1</field>
+    </object>
+    <object pk="27" model="igadget.position">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/6/position</field>
+        <field type="IntegerField" name="posX">2</field>
+        <field type="IntegerField" name="posY">15</field>
+        <field type="IntegerField" name="height">11</field>
+        <field type="IntegerField" name="width">1</field>
+    </object>
+    <object pk="29" model="igadget.position">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/8/position</field>
+        <field type="IntegerField" name="posX">0</field>
+        <field type="IntegerField" name="posY">29</field>
+        <field type="IntegerField" name="height">11</field>
+        <field type="IntegerField" name="width">1</field>
+    </object>
     <object pk="1" model="igadget.screen">
         <field type="CharField" name="uri">/user/admin/screen/1</field>
         <field type="CharField" name="name">myScreen</field>
@@ -245,6 +444,12 @@
         <field type="CharField" name="name">myScreen</field>
         <field type="IntegerField" name="code">1</field>
         <field to="auth.user" name="user" rel="ManyToOneRel">3</field>
+    </object>
+    <object pk="4" model="igadget.screen">
+        <field type="CharField" name="uri">/user/ezforge/screen/1</field>
+        <field type="CharField" name="name">myScreen</field>
+        <field type="IntegerField" name="code">1</field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">4</field>
     </object>
     <object pk="9" model="igadget.igadget">
         <field type="CharField" name="uri">/user/mru/igadgets/1</field>
@@ -329,5 +534,54 @@
         <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">18</field>
         <field to="igadget.screen" name="screen" rel="ManyToOneRel">3</field>
         <field to="igadget.position" name="position" rel="ManyToOneRel">21</field>
+    </object>
+    <object pk="22" model="igadget.igadget">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/1</field>
+        <field type="IntegerField" name="code">1</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">19</field>
+        <field to="igadget.screen" name="screen" rel="ManyToOneRel">4</field>
+        <field to="igadget.position" name="position" rel="ManyToOneRel">22</field>
+    </object>
+    <object pk="23" model="igadget.igadget">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/2</field>
+        <field type="IntegerField" name="code">2</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">20</field>
+        <field to="igadget.screen" name="screen" rel="ManyToOneRel">4</field>
+        <field to="igadget.position" name="position" rel="ManyToOneRel">23</field>
+    </object>
+    <object pk="24" model="igadget.igadget">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/3</field>
+        <field type="IntegerField" name="code">3</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">21</field>
+        <field to="igadget.screen" name="screen" rel="ManyToOneRel">4</field>
+        <field to="igadget.position" name="position" rel="ManyToOneRel">24</field>
+    </object>
+    <object pk="25" model="igadget.igadget">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/4</field>
+        <field type="IntegerField" name="code">4</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">22</field>
+        <field to="igadget.screen" name="screen" rel="ManyToOneRel">4</field>
+        <field to="igadget.position" name="position" rel="ManyToOneRel">25</field>
+    </object>
+    <object pk="26" model="igadget.igadget">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/5</field>
+        <field type="IntegerField" name="code">5</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">23</field>
+        <field to="igadget.screen" name="screen" rel="ManyToOneRel">4</field>
+        <field to="igadget.position" name="position" rel="ManyToOneRel">26</field>
+    </object>
+    <object pk="27" model="igadget.igadget">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/6</field>
+        <field type="IntegerField" name="code">6</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">24</field>
+        <field to="igadget.screen" name="screen" rel="ManyToOneRel">4</field>
+        <field to="igadget.position" name="position" rel="ManyToOneRel">27</field>
+    </object>
+    <object pk="29" model="igadget.igadget">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/8</field>
+        <field type="IntegerField" name="code">8</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">26</field>
+        <field to="igadget.screen" name="screen" rel="ManyToOneRel">4</field>
+        <field to="igadget.position" name="position" rel="ManyToOneRel">29</field>
     </object>
 </django-objects>

@@ -36,6 +36,36 @@
         <field to="igadget.variable" name="variable" rel="ManyToOneRel">23</field>
         <field to="connectable.inout" name="inout" rel="ManyToManyRel"><object pk="87"></object></field>
     </object>
+    <object pk="380" model="connectable.out">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/1/out/user_uri</field>
+        <field type="CharField" name="name">user_uri</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">47</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"><object pk="160"></object></field>
+    </object>
+    <object pk="381" model="connectable.out">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/2/out/project_uri</field>
+        <field type="CharField" name="name">project_uri</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">51</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"><object pk="161"></object><object pk="162"></object></field>
+    </object>
+    <object pk="382" model="connectable.out">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/4/out/user_uri</field>
+        <field type="CharField" name="name">user_uri</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">58</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"><object pk="160"></object></field>
+    </object>
+    <object pk="383" model="connectable.out">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/5/out/user_uri</field>
+        <field type="CharField" name="name">user_uri</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">61</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"><object pk="160"></object></field>
+    </object>
+    <object pk="385" model="connectable.out">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/8/out/project_uri</field>
+        <field type="CharField" name="name">project_uri</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">72</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"><object pk="161"></object><object pk="162"></object></field>
+    </object>
     <object pk="86" model="connectable.inout">
         <field type="CharField" name="uri">/user/mru/channel/travel</field>
         <field type="CharField" name="name">travel</field>
@@ -77,6 +107,27 @@
         <field type="CharField" name="value"><None></None></field>
         <field type="CharField" name="friend_code"></field>
         <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
+    </object>
+    <object pk="160" model="connectable.inout">
+        <field type="CharField" name="uri">/user/ezforge/channel/user</field>
+        <field type="CharField" name="name">user</field>
+        <field type="CharField" name="value">http://ezforge.morfeo-project.org:80/ezforge/v0.1/users/macvaz</field>
+        <field type="CharField" name="friend_code"></field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">4</field>
+    </object>
+    <object pk="161" model="connectable.inout">
+        <field type="CharField" name="uri">/user/ezforge/channel/project</field>
+        <field type="CharField" name="name">project</field>
+        <field type="CharField" name="value"><None></None></field>
+        <field type="CharField" name="friend_code"></field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">4</field>
+    </object>
+    <object pk="162" model="connectable.inout">
+        <field type="CharField" name="uri">/user/ezforge/channel/user_projects</field>
+        <field type="CharField" name="name">user_projects</field>
+        <field type="CharField" name="value">http://ezforge.morfeo-project.org:80/ezforge/v0.1/users/irenka/projects/prj1</field>
+        <field type="CharField" name="friend_code"></field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">4</field>
     </object>
     <object pk="227" model="connectable.in">
         <field type="CharField" name="uri">/user/mru/igadgets/4/in/travel</field>
@@ -120,6 +171,126 @@
         <field to="igadget.variable" name="variable" rel="ManyToOneRel">34</field>
         <field to="connectable.inout" name="inout" rel="ManyToManyRel"></field>
     </object>
+    <object pk="1095" model="connectable.in">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/1/in/user_project_name</field>
+        <field type="CharField" name="name">user_project_name</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">44</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="1096" model="connectable.in">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/1/in/user_project_id</field>
+        <field type="CharField" name="name">user_project_id</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">45</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="1097" model="connectable.in">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/1/in/user_project_uri</field>
+        <field type="CharField" name="name">user_project_uri</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">46</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="1098" model="connectable.in">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/2/in/wikis_uri</field>
+        <field type="CharField" name="name">wikis_uri</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">48</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="1099" model="connectable.in">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/2/in/backend-instances_uri</field>
+        <field type="CharField" name="name">backend-instances_uri</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">49</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="1100" model="connectable.in">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/2/in/users_uri</field>
+        <field type="CharField" name="name">users_uri</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">50</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="1101" model="connectable.in">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/3/in/user_name</field>
+        <field type="CharField" name="name">user_name</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">52</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="1102" model="connectable.in">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/3/in/user_id</field>
+        <field type="CharField" name="name">user_id</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">53</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="1103" model="connectable.in">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/3/in/user_uri</field>
+        <field type="CharField" name="name">user_uri</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">54</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"><object pk="160"></object></field>
+    </object>
+    <object pk="1104" model="connectable.in">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/4/in/user_project_name</field>
+        <field type="CharField" name="name">user_project_name</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">55</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="1105" model="connectable.in">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/4/in/user_project_id</field>
+        <field type="CharField" name="name">user_project_id</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">56</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="1106" model="connectable.in">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/4/in/user_project_uri</field>
+        <field type="CharField" name="name">user_project_uri</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">57</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"><object pk="162"></object></field>
+    </object>
+    <object pk="1107" model="connectable.in">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/5/in/projects_uri</field>
+        <field type="CharField" name="name">projects_uri</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">59</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="1108" model="connectable.in">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/5/in/skills_uri</field>
+        <field type="CharField" name="name">skills_uri</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">60</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="1109" model="connectable.in">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/6/in/project_name</field>
+        <field type="CharField" name="name">project_name</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">62</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="1110" model="connectable.in">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/6/in/project_id</field>
+        <field type="CharField" name="name">project_id</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">63</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="1111" model="connectable.in">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/6/in/project_uri</field>
+        <field type="CharField" name="name">project_uri</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">64</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"><object pk="161"></object></field>
+    </object>
+    <object pk="1115" model="connectable.in">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/8/in/user_name</field>
+        <field type="CharField" name="name">user_name</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">69</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="1116" model="connectable.in">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/8/in/user_id</field>
+        <field type="CharField" name="name">user_id</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">70</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="1117" model="connectable.in">
+        <field type="CharField" name="uri">/user/ezforge/igadgets/8/in/user_uri</field>
+        <field type="CharField" name="name">user_uri</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">71</field>
+        <field to="connectable.inout" name="inout" rel="ManyToManyRel"></field>
+    </object>
     <object pk="1" model="auth.user">
         <field type="CharField" name="username">admin</field>
         <field type="CharField" name="first_name"></field>
@@ -129,7 +300,7 @@
         <field type="BooleanField" name="is_staff">True</field>
         <field type="BooleanField" name="is_active">True</field>
         <field type="BooleanField" name="is_superuser">True</field>
-        <field type="DateTimeField" name="last_login">2008-01-14 16:05:58</field>
+        <field type="DateTimeField" name="last_login">2008-01-16 19:05:58</field>
         <field type="DateTimeField" name="date_joined">2008-01-09 15:47:32</field>
         <field to="auth.group" name="groups" rel="ManyToManyRel"></field>
         <field to="auth.permission" name="user_permissions" rel="ManyToManyRel"></field>
@@ -157,7 +328,7 @@
         <field type="BooleanField" name="is_staff">True</field>
         <field type="BooleanField" name="is_active">True</field>
         <field type="BooleanField" name="is_superuser">True</field>
-        <field type="DateTimeField" name="last_login">2008-01-14 16:24:04</field>
+        <field type="DateTimeField" name="last_login">2008-01-16 19:06:57</field>
         <field type="DateTimeField" name="date_joined">2008-01-14 16:24:04</field>
         <field to="auth.group" name="groups" rel="ManyToManyRel"></field>
         <field to="auth.permission" name="user_permissions" rel="ManyToManyRel"></field>

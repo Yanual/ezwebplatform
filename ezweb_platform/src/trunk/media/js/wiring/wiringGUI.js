@@ -38,8 +38,9 @@
 
 //This class is the controller of the interface provided for managing the wiring module
 
-function wiringInterface(wi){
+function wiringInterface(wi, opman){
 	w = wi;
+	opm = opman;
 	wiringInterface.prototype.friend_codes = {};
 	wiringInterface.prototype.highlight_color = "#FFFFE0";
 	this.friend_codes_counter = 0;
@@ -62,14 +63,14 @@ wiringInterface.prototype.addChannelInterface = function (name){
     var li = document.createElement("li");
 	var inputDel = document.createElement("input");
 	inputDel.setAttribute("type", "image");
-	inputDel.setAttribute("onclick", "wiringInterface.prototype.deleteChannel('"+ name +"'); opManager.restaure();");
+	inputDel.setAttribute("onclick", "wiringInterface.prototype.deleteChannel('"+ name +"');");
     inputDel.setAttribute("src", "/ezweb/images/dialog-cancel.png");
     li.appendChild(inputDel);
     var chkChannel = document.createElement("input");
     chkChannel.setAttribute("type", "radio");
     chkChannel.setAttribute("name", "channels_options");
     chkChannel.setAttribute("id", "chk_"+ idChannel);
-    chkChannel.setAttribute("onclick", "javascript:{wiringInterface.prototype._highlight_channel('chk_"+ idChannel +"', '"+ name +"'); opManager.restaure();}");
+    chkChannel.setAttribute("onclick", "javascript:{wiringInterface.prototype._highlight_channel('chk_"+ idChannel +"', '"+ name +"');}");
     var textNode = document.createTextNode(name);
     chkChannel.appendChild(textNode);
     li.appendChild(chkChannel);
@@ -185,6 +186,9 @@ wiringInterface.prototype.renewInterface = function () {
         this.channels_counter++;
         $("channel_name").value = "Wire_"+ this.channels_counter;
     }
+//    opm.restaure();
+//    w.serialize();
+
 }
 
 wiringInterface.prototype.addChannel = function () {
@@ -200,6 +204,7 @@ wiringInterface.prototype.addChannel = function () {
 			this.addChannelInterface(name);
             this.channels_counter++;
 	        $("channel_name").value = "Wire_"+ this.channels_counter;
+            opm.restaure();
             w.serialize();
 		}
 	}
@@ -212,6 +217,7 @@ wiringInterface.prototype.deleteChannel = function (object){
         $(idChannel).remove();
         wiringInterface.prototype._enable_all(false);
         this.channels_counter--;
+        opm.restaure();
         w.serialize();
 	}
 }
@@ -238,6 +244,7 @@ wiringInterface.prototype._changeChannel = function(item_id, gadget_id, event_na
             }
 
         }
+        opm.restaure();
         w.serialize();
     }
 }
@@ -283,7 +290,7 @@ wiringInterface.prototype._highlight_friend_code = function (friend_code, highli
         var fcColor = this.friend_codes[friend_code].color;
         var fcBgColor = "";
         for (var i = 0; i < fcList.length; i++) {
-            if (highlight) {
+            if (highlight && $(fcList[i])) {
                 $(fcList[i]).style.backgroundColor = fcColor;
                 $(fcList[i]).parentNode.parentNode.className = "on";
             } else {

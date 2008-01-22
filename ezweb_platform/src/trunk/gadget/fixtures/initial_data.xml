@@ -360,6 +360,296 @@
         <field type="TextField" name="default_value"><None></None></field>
         <field to="gadget.template" name="template" rel="ManyToOneRel">21</field>
     </object>
+    <object pk="37" model="gadget.variabledef">
+        <field type="CharField" name="name">user_uri</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">SLOT</field>
+        <field type="CharField" name="label">User URI</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">user_uri</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">22</field>
+    </object>
+    <object pk="38" model="gadget.variabledef">
+        <field type="CharField" name="name">user_project_uri</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">User Project URI</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">user_project_uri</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">22</field>
+    </object>
+    <object pk="39" model="gadget.variabledef">
+        <field type="CharField" name="name">user_project_id</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">User Project ID</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">user_project_id</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">22</field>
+    </object>
+    <object pk="40" model="gadget.variabledef">
+        <field type="CharField" name="name">user_project_name</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">User Project name</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">user_project_name</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">22</field>
+    </object>
+    <object pk="41" model="gadget.variabledef">
+        <field type="CharField" name="name">project_uri</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">SLOT</field>
+        <field type="CharField" name="label">Project URI</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">project_uri</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">23</field>
+    </object>
+    <object pk="42" model="gadget.variabledef">
+        <field type="CharField" name="name">users_uri</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">Users URI</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">users_uri</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">23</field>
+    </object>
+    <object pk="43" model="gadget.variabledef">
+        <field type="CharField" name="name">backend-instances_uri</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">Backend Instances URI</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">backend-instances_uri</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">23</field>
+    </object>
+    <object pk="44" model="gadget.variabledef">
+        <field type="CharField" name="name">wikis_uri</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">Wikis URI</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">wikis_uri</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">23</field>
+    </object>
+    <object pk="45" model="gadget.variabledef">
+        <field type="CharField" name="name">user_uri</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">User URI</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">user_uri</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">24</field>
+    </object>
+    <object pk="46" model="gadget.variabledef">
+        <field type="CharField" name="name">user_id</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">User ID</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">user_id</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">24</field>
+    </object>
+    <object pk="47" model="gadget.variabledef">
+        <field type="CharField" name="name">user_name</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">User name</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">user_name</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">24</field>
+    </object>
+    <object pk="48" model="gadget.variabledef">
+        <field type="CharField" name="name">user_uri</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">SLOT</field>
+        <field type="CharField" name="label">User URI</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">user_uri</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">25</field>
+    </object>
+    <object pk="49" model="gadget.variabledef">
+        <field type="CharField" name="name">user_project_uri</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">User Project URI</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">user_project_uri</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">25</field>
+    </object>
+    <object pk="50" model="gadget.variabledef">
+        <field type="CharField" name="name">user_project_id</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">User Project ID</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">user_project_id</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">25</field>
+    </object>
+    <object pk="51" model="gadget.variabledef">
+        <field type="CharField" name="name">user_project_name</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">User Project name</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">user_project_name</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">25</field>
+    </object>
+    <object pk="52" model="gadget.variabledef">
+        <field type="CharField" name="name">user_uri</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">SLOT</field>
+        <field type="CharField" name="label">User URI</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">user_uri</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">26</field>
+    </object>
+    <object pk="53" model="gadget.variabledef">
+        <field type="CharField" name="name">skills_uri</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">Skills URI</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">skills_uri</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">26</field>
+    </object>
+    <object pk="54" model="gadget.variabledef">
+        <field type="CharField" name="name">projects_uri</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">Projects URI</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">projects_uri</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">26</field>
+    </object>
+    <object pk="55" model="gadget.variabledef">
+        <field type="CharField" name="name">project_uri</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">Project URI</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">project_uri</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">27</field>
+    </object>
+    <object pk="56" model="gadget.variabledef">
+        <field type="CharField" name="name">project_id</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">Project ID</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">project_id</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">27</field>
+    </object>
+    <object pk="57" model="gadget.variabledef">
+        <field type="CharField" name="name">project_name</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">Project name</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">project_name</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">27</field>
+    </object>
+    <object pk="58" model="gadget.variabledef">
+        <field type="CharField" name="name">project_uri</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">SLOT</field>
+        <field type="CharField" name="label">Project URI</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">project_uri</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">28</field>
+    </object>
+    <object pk="59" model="gadget.variabledef">
+        <field type="CharField" name="name">wiki_uri</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">Wiki URI</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">wiki_uri</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">28</field>
+    </object>
+    <object pk="60" model="gadget.variabledef">
+        <field type="CharField" name="name">wiki_id</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">Wiki ID</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">wiki_id</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">28</field>
+    </object>
+    <object pk="61" model="gadget.variabledef">
+        <field type="CharField" name="name">wiki_name</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">Wiki name</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">wiki_name</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">28</field>
+    </object>
+    <object pk="62" model="gadget.variabledef">
+        <field type="CharField" name="name">project_uri</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">SLOT</field>
+        <field type="CharField" name="label">Project URI</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">project_uri</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">29</field>
+    </object>
+    <object pk="63" model="gadget.variabledef">
+        <field type="CharField" name="name">user_uri</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">User URI</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">user_uri</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">29</field>
+    </object>
+    <object pk="64" model="gadget.variabledef">
+        <field type="CharField" name="name">user_id</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">User ID</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">user_id</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">29</field>
+    </object>
+    <object pk="65" model="gadget.variabledef">
+        <field type="CharField" name="name">user_name</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">User name</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">user_name</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">29</field>
+    </object>
     <object pk="1" model="gadget.gadget">
         <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Bandeja_de_Averias/1.0</field>
         <field type="CharField" name="vendor">Morfeo</field>
@@ -648,6 +938,134 @@
         <field to="auth.user" name="user" rel="ManyToOneRel">3</field>
         <field type="DateTimeField" name="last_update"><None></None></field>
     </object>
+    <object pk="19" model="gadget.gadget">
+        <field type="CharField" name="uri">/user/ezforge/gadgets/Morfeo/ezforge-projects-rep/1.0</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="name">ezforge-projects-rep</field>
+        <field type="CharField" name="version">1.0</field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">22</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">19</field>
+        <field type="CharField" name="author">jlopez</field>
+        <field type="CharField" name="mail">jlopez@yaco.es</field>
+        <field type="CharField" name="wikiURI">http://piccolo.ls.fi.upm.es:7000/EzForge-Users-Projects</field>
+        <field type="CharField" name="imageURI">http://www.callclareity.com/repository.gif</field>
+        <field type="CharField" name="description">Lista de repositorios externos asociados a un usuario</field>
+        <field type="BooleanField" name="shared">False</field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">4</field>
+        <field type="DateTimeField" name="last_update"><None></None></field>
+    </object>
+    <object pk="20" model="gadget.gadget">
+        <field type="CharField" name="uri">/user/ezforge/gadgets/Morfeo/ezforge-projects-details/1.0</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="name">ezforge-projects-details</field>
+        <field type="CharField" name="version">1.0</field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">23</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">20</field>
+        <field type="CharField" name="author">jrosa</field>
+        <field type="CharField" name="mail">jrosa@yaco.es</field>
+        <field type="CharField" name="wikiURI">http://piccolo.ls.fi.upm.es:7000/EzForge-Project-Details</field>
+        <field type="CharField" name="imageURI">http://corriehaffly.files.wordpress.com/2007/06/project-detail.png</field>
+        <field type="CharField" name="description">Detalles de usuario</field>
+        <field type="BooleanField" name="shared">False</field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">4</field>
+        <field type="DateTimeField" name="last_update"><None></None></field>
+    </object>
+    <object pk="21" model="gadget.gadget">
+        <field type="CharField" name="uri">/user/ezforge/gadgets/Morfeo/ezforge-users/1.0</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="name">ezforge-users</field>
+        <field type="CharField" name="version">1.0</field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">24</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">21</field>
+        <field type="CharField" name="author">jrosa</field>
+        <field type="CharField" name="mail">jrosa@yaco.es</field>
+        <field type="CharField" name="wikiURI">http://piccolo.ls.fi.upm.es:7000/EzForge-Users</field>
+        <field type="CharField" name="imageURI">http://www1.istockphoto.com/file_thumbview_approve/4175621/2/istockphoto_4175621_shiny_icons_user_actions.jpg</field>
+        <field type="CharField" name="description">Lista de usuarios de la forja de Morfeo</field>
+        <field type="BooleanField" name="shared">False</field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">4</field>
+        <field type="DateTimeField" name="last_update"><None></None></field>
+    </object>
+    <object pk="22" model="gadget.gadget">
+        <field type="CharField" name="uri">/user/ezforge/gadgets/Morfeo/ezforge-users-projects/1.0</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="name">ezforge-users-projects</field>
+        <field type="CharField" name="version">1.0</field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">25</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">22</field>
+        <field type="CharField" name="author">jrosa</field>
+        <field type="CharField" name="mail">jrosa@yaco.es</field>
+        <field type="CharField" name="wikiURI">http://piccolo.ls.fi.upm.es:7000/EzForge-Users-Projects</field>
+        <field type="CharField" name="imageURI">http://corriehaffly.files.wordpress.com/2007/06/gtd-project-list.png</field>
+        <field type="CharField" name="description">Lista de proyectos de un usuario</field>
+        <field type="BooleanField" name="shared">False</field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">4</field>
+        <field type="DateTimeField" name="last_update"><None></None></field>
+    </object>
+    <object pk="23" model="gadget.gadget">
+        <field type="CharField" name="uri">/user/ezforge/gadgets/Morfeo/ezforge-users-details/1.0</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="name">ezforge-users-details</field>
+        <field type="CharField" name="version">1.0</field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">26</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">23</field>
+        <field type="CharField" name="author">jrosa</field>
+        <field type="CharField" name="mail">jrosa@yaco.es</field>
+        <field type="CharField" name="wikiURI">http://piccolo.ls.fi.upm.es:7000/EzForge-Users-Details</field>
+        <field type="CharField" name="imageURI">http://es.crisopeya.net/user_guide/espanol/img/example_criso_detail_view.png</field>
+        <field type="CharField" name="description">Detalles de usuario</field>
+        <field type="BooleanField" name="shared">False</field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">4</field>
+        <field type="DateTimeField" name="last_update"><None></None></field>
+    </object>
+    <object pk="24" model="gadget.gadget">
+        <field type="CharField" name="uri">/user/ezforge/gadgets/Morfeo/ezforge-projects/1.0</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="name">ezforge-projects</field>
+        <field type="CharField" name="version">1.0</field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">27</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">24</field>
+        <field type="CharField" name="author">jrosa</field>
+        <field type="CharField" name="mail">jrosa@yaco.es</field>
+        <field type="CharField" name="wikiURI">http://piccolo.ls.fi.upm.es:7000/EzForge-Projects</field>
+        <field type="CharField" name="imageURI">http://www.diyplanner.com/files/projects_list.png</field>
+        <field type="CharField" name="description">Lista de proyectos de la forja de Morfeo</field>
+        <field type="BooleanField" name="shared">False</field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">4</field>
+        <field type="DateTimeField" name="last_update"><None></None></field>
+    </object>
+    <object pk="25" model="gadget.gadget">
+        <field type="CharField" name="uri">/user/ezforge/gadgets/Morfeo/ezforge-projects-wikis/1.0</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="name">ezforge-projects-wikis</field>
+        <field type="CharField" name="version">1.0</field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">28</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">25</field>
+        <field type="CharField" name="author">jrosa</field>
+        <field type="CharField" name="mail">jrosa@yaco.es</field>
+        <field type="CharField" name="wikiURI">http://piccolo.ls.fi.upm.es:7000/EzForge-Projects-Wikis</field>
+        <field type="CharField" name="imageURI">http://web.educastur.princast.es/proyectos/cuate/blog/wp-images/wiki.gif</field>
+        <field type="CharField" name="description">Lista de usuarios del proyecto</field>
+        <field type="BooleanField" name="shared">False</field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">4</field>
+        <field type="DateTimeField" name="last_update"><None></None></field>
+    </object>
+    <object pk="26" model="gadget.gadget">
+        <field type="CharField" name="uri">/user/ezforge/gadgets/Morfeo/ezforge-projects-users/1.0</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="name">ezforge-projects-users</field>
+        <field type="CharField" name="version">1.0</field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">29</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">26</field>
+        <field type="CharField" name="author">jrosa</field>
+        <field type="CharField" name="mail">jrosa@yaco.es</field>
+        <field type="CharField" name="wikiURI">http://piccolo.ls.fi.upm.es:7000/EzForge-Projects-Users</field>
+        <field type="CharField" name="imageURI">http://download.bblug.usla.org.ar/netiquette.png</field>
+        <field type="CharField" name="description">Lista de usuarios del proyecto</field>
+        <field type="BooleanField" name="shared">False</field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">4</field>
+        <field type="DateTimeField" name="last_update"><None></None></field>
+    </object>
     <object pk="1" model="gadget.template">
         <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Bandeja_de_Averias/1.0/template</field>
         <field type="CharField" name="description">Este gadget presenta una lista de averias registradas por usuarios y la informacion relativa a ellas</field>
@@ -771,6 +1189,62 @@
         <field type="CharField" name="uri">/user/mac/gadgets/Morfeo/Visor_Datos_Equipo/1.0/template</field>
         <field type="CharField" name="description">Este gadget presenta la informacion relativa a un equipo perteneciente a la red de encaminadores</field>
         <field type="CharField" name="image">http://europa.ls.fi.upm.es/ezweb/gadgets/notepad.jpg</field>
+        <field type="IntegerField" name="width">1</field>
+        <field type="IntegerField" name="height">11</field>
+    </object>
+    <object pk="22" model="gadget.template">
+        <field type="CharField" name="uri">/user/ezforge/gadgets/Morfeo/ezforge-projects-rep/1.0/template</field>
+        <field type="CharField" name="description">Lista de repositorios externos asociados a un usuario</field>
+        <field type="CharField" name="image">http://www.callclareity.com/repository.gif</field>
+        <field type="IntegerField" name="width">1</field>
+        <field type="IntegerField" name="height">11</field>
+    </object>
+    <object pk="23" model="gadget.template">
+        <field type="CharField" name="uri">/user/ezforge/gadgets/Morfeo/ezforge-projects-details/1.0/template</field>
+        <field type="CharField" name="description">Detalles de usuario</field>
+        <field type="CharField" name="image">http://corriehaffly.files.wordpress.com/2007/06/project-detail.png</field>
+        <field type="IntegerField" name="width">1</field>
+        <field type="IntegerField" name="height">11</field>
+    </object>
+    <object pk="24" model="gadget.template">
+        <field type="CharField" name="uri">/user/ezforge/gadgets/Morfeo/ezforge-users/1.0/template</field>
+        <field type="CharField" name="description">Lista de usuarios de la forja de Morfeo</field>
+        <field type="CharField" name="image">http://www1.istockphoto.com/file_thumbview_approve/4175621/2/istockphoto_4175621_shiny_icons_user_actions.jpg</field>
+        <field type="IntegerField" name="width">1</field>
+        <field type="IntegerField" name="height">11</field>
+    </object>
+    <object pk="25" model="gadget.template">
+        <field type="CharField" name="uri">/user/ezforge/gadgets/Morfeo/ezforge-users-projects/1.0/template</field>
+        <field type="CharField" name="description">Lista de proyectos de un usuario</field>
+        <field type="CharField" name="image">http://corriehaffly.files.wordpress.com/2007/06/gtd-project-list.png</field>
+        <field type="IntegerField" name="width">1</field>
+        <field type="IntegerField" name="height">11</field>
+    </object>
+    <object pk="26" model="gadget.template">
+        <field type="CharField" name="uri">/user/ezforge/gadgets/Morfeo/ezforge-users-details/1.0/template</field>
+        <field type="CharField" name="description">Detalles de usuario</field>
+        <field type="CharField" name="image">http://es.crisopeya.net/user_guide/espanol/img/example_criso_detail_view.png</field>
+        <field type="IntegerField" name="width">1</field>
+        <field type="IntegerField" name="height">11</field>
+    </object>
+    <object pk="27" model="gadget.template">
+        <field type="CharField" name="uri">/user/ezforge/gadgets/Morfeo/ezforge-projects/1.0/template</field>
+        <field type="CharField" name="description">Lista de proyectos de la forja de Morfeo</field>
+        <field type="CharField" name="image">http://www.diyplanner.com/files/projects_list.png</field>
+        <field type="IntegerField" name="width">1</field>
+        <field type="IntegerField" name="height">11</field>
+    </object>
+    <object pk="28" model="gadget.template">
+        <field type="CharField" name="uri">/user/ezforge/gadgets/Morfeo/ezforge-projects-wikis/1.0/template</field>
+        <field type="CharField" name="description">Lista de usuarios del proyecto</field>
+        <field type="CharField" name="image">http://web.educastur.princast.es/proyectos/cuate/blog/wp-images/wiki.gif</field>
+        <field type="IntegerField" name="width">1</field>
+        <field type="IntegerField" name="height">11</field>
+    </object>
+    <object pk="29" model="gadget.template">
+        <field type="CharField" name="uri">/user/ezforge/gadgets/Morfeo/ezforge-projects-users/1.0/template</field>
+        <field type="CharField" name="description">Lista de usuarios del proyecto</field>
+        <field type="CharField" name="image">http://download.bblug.usla.org.ar/netiquette.png</field>
         <field type="IntegerField" name="width">1</field>
         <field type="IntegerField" name="height">11</field>
     </object>
@@ -4710,5 +5184,544 @@ address.set(devices[device][9]);
 &lt;div id='info'&gt;&lt;i&gt;A la espera de seleccionar un equipo...&lt;/i&gt;&lt;/div&gt;
 &lt;/body&gt;
 &lt;/html&gt;</field>
+    </object>
+    <object pk="19" model="gadget.xhtml">
+        <field type="CharField" name="uri">/user/ezforge/gadgets/Morfeo/ezforge-projects-rep/1.0/xhtml</field>
+        <field type="TextField" name="code">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+    &lt;link rel="stylesheet" href="http://gadgets.yaco.es/styles.css" type="text/css" charset="utf-8" /&gt;
+    &lt;script type="text/javascript" language="javascript" src="http://gadgets.yaco.es/prototype.js"&gt;&lt;/script&gt; 
+    &lt;script type="text/javascript" language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
+    &lt;script type="text/javascript" language="javascript"&gt;
+
+    // Definimos un procesador para el XML
+    successHandler = function(xml) {
+        var rootNode = xml;
+        $("user-external-repositories-list").innerHTML = "";
+        xmlDoc = xml.responseXML;
+        users = xmlDoc.getElementsByTagName("user-backend");
+        if (users.length &gt; 0) {
+            for (i=0; i&lt;users.length; i++) {
+                var id = users[i].getAttribute("id");
+                var name = users[i].getElementsByTagName("name")[0].textContent;
+                var uri = users[i].getElementsByTagName("uri")[0].getAttribute("xlink:href");
+                $("user-external-repositories-list").innerHTML += id +": &lt;a href='" + uri +"'&gt;"+ name +"&lt;/a&gt;&lt;br/&gt;";
+            }
+        } else {
+            $("user-external-repositories-list").innerHTML = "El usuario no tiene repositorios externos asociados";
+        }
+    }
+
+    // Definimos un manejador de error
+    errorHandler = function(xml) {
+        $("user-external-repositories-list").innerHTML = "Imposible obtener la lista de usuarios";
+    }
+
+    // Obtenemos las variables a través de la API
+    var user_project_uri = EzWebAPI.createRWGadgetVariable("user_project_uri");
+    var user_project_id = EzWebAPI.createRWGadgetVariable("user_project_id");
+    var user_project_name = EzWebAPI.createRWGadgetVariable("user_project_name");
+    var user_uri = EzWebAPI.createRGadgetVariable("user_uri", userUriHandler);
+
+    // Definimos la función que establece el valor de las variables
+    function setVars(uri, id, name) {
+        user_project_uri.set(uri);
+        user_project_id.set(id);
+        user_project_name.set(name);
+    }
+
+    // Definimos la función manejadora que se activa al cambiar la variable
+    function userUriHandler(value) {
+        $("user-external-repositories-list").innerHTML = '&lt;img src="http://www.fontreactor.com/images/loading.gif" alt="Cargando..." title="Cargando..."/&gt;';
+        // Solicitamos la lista de usuarios
+        EzWebAPI.send_get(value +'/backends/', {}, successHandler, errorHandler);
+    }
+    &lt;/script&gt;
+
+&lt;/head&gt;
+
+&lt;body&gt;
+    &lt;div id="user-external-repositories-list"&gt;Seleccione un usuario
+    &lt;/div&gt;
+&lt;/body&gt;
+
+&lt;/html&gt;
+</field>
+    </object>
+    <object pk="20" model="gadget.xhtml">
+        <field type="CharField" name="uri">/user/ezforge/gadgets/Morfeo/ezforge-projects-details/1.0/xhtml</field>
+        <field type="TextField" name="code">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;link rel="stylesheet" href="http://gadgets.yaco.es/styles.css" type="text/css" charset="utf-8" /&gt;
+&lt;script type="text/javascript" language="javascript" src="http://gadgets.yaco.es/prototype.js"&gt;&lt;/script&gt; 
+&lt;script type="text/javascript" language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" language="javascript"&gt;
+
+// Definimos un procesador para el XML
+successHandler = function(xml) {
+    var rootNode = xml;
+    $("message").innerHTML = "";
+    xmlDoc = xml.responseXML;
+    project = xmlDoc.getElementsByTagName("project")[0];
+    $("id").value = project.getAttribute("id");
+    $("alias").value = project.getElementsByTagName("alias")[0].textContent;
+    $("name").value = project.getElementsByTagName("name")[0].textContent;
+    $("description").value = project.getElementsByTagName("description")[0].textContent;
+    $("webpage").value = project.getElementsByTagName("webpage")[0].textContent;
+    users = project.getElementsByTagName("users")[0];
+    user = users.getElementsByTagName("uri")[0].getAttribute("xlink:href");
+    $("users").value = user
+    backend_instances = project.getElementsByTagName("backend-instances")[0];
+    backend_instance = backend_instances.getElementsByTagName("uri")[0].getAttribute("xlink:href");
+    $("backend-instances").value = backend_instance
+    wikis = project.getElementsByTagName("wikis")[0];
+    wiki = wikis.getElementsByTagName("uri")[0].getAttribute("xlink:href");
+    $("wikis").value = wiki
+    setVars(user, backend_instance, wiki);
+}
+
+// Definimos un manejador de error
+errorHandler = function(xml) {
+    $("message").innerHTML = "Imposible obtener los detalles del proyecto";
+}
+
+// Obtenemos las variables a través de la API
+var users_uri = EzWebAPI.createRWGadgetVariable("users_uri");
+var backend_instances_uri = EzWebAPI.createRWGadgetVariable("backend-instances_uri");
+var wikis_uri = EzWebAPI.createRWGadgetVariable("wikis_uri");
+var project_uri = EzWebAPI.createRGadgetVariable("project_uri", projectUriHandler);
+
+// Definimos la función que establece el valor de las variables
+function setVars(user, backend_instance, wiki) {
+    users_uri.set(user);
+    backend_instances_uri.set(backend_instance);
+    wikis_uri.set(wiki);
+}
+
+// Definimos la función manejadora que se activa al cambiar la variable
+function projectUriHandler(value) {
+    $("message").innerHTML = '&lt;img src="http://www.fontreactor.com/images/loading.gif" alt="Cargando..." title="Cargando..."/&gt;';
+    // Solicitamos la lista de usuarios
+    EzWebAPI.send_get(value, {}, successHandler, errorHandler);
+}
+&lt;/script&gt;
+
+&lt;/head&gt;
+
+&lt;body&gt;
+&lt;div id="message"&gt;Seleccione un proyecto&lt;/div&gt;
+&lt;div id="user-details"&gt;
+&lt;label for="id"&gt;Id: &lt;/label&gt;&lt;input type="text" id="id"/&gt;
+&lt;label for="alias"&gt;Alias: &lt;/label&gt;&lt;input type="text" id="alias"/&gt;
+&lt;label for="name"&gt;Nombre: &lt;/label&gt;&lt;input type="text" id="name"/&gt;
+&lt;label for="description"&gt;Descripción: &lt;/label&gt;&lt;input type="text" id="description"/&gt;
+&lt;label for="webpage"&gt;Web: &lt;/label&gt;&lt;input type="text" id="webpage"/&gt;
+&lt;label for="users"&gt;Users URI: &lt;/label&gt;&lt;input type="text" id="users"/&gt;
+&lt;label for="backend-instances"&gt;Backend Instance URI: &lt;/label&gt;&lt;input type="text" id="backend-instances"/&gt;
+&lt;label for="wikis"&gt;Wikis URI: &lt;/label&gt;&lt;input type="text" id="wikis"/&gt;
+&lt;/div&gt;
+
+&lt;/body&gt;
+
+&lt;/html&gt;
+</field>
+    </object>
+    <object pk="21" model="gadget.xhtml">
+        <field type="CharField" name="uri">/user/ezforge/gadgets/Morfeo/ezforge-users/1.0/xhtml</field>
+        <field type="TextField" name="code">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;link rel="stylesheet" href="http://gadgets.yaco.es/styles.css" type="text/css" charset="utf-8" /&gt;
+&lt;script type="text/javascript" language="javascript" src="http://gadgets.yaco.es/prototype.js"&gt;&lt;/script&gt; 
+&lt;script type="text/javascript" language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" language="javascript"&gt;
+
+// Definimos un procesador para el XML
+successHandler = function(xml) {
+    var rootNode = xml;
+    $("users-list").innerHTML = "";
+    xmlDoc = xml.responseXML;
+    users = xmlDoc.getElementsByTagName("user");
+    $("users-list").innerHTML += "&lt;ul&gt;";
+    for (i=0; i&lt;users.length; i++) {
+        var id = users[i].getAttribute("id");
+        var name = users[i].getElementsByTagName("name")[0].textContent;
+        var uri = users[i].getElementsByTagName("uri")[0].getAttribute("xlink:href");
+        $("users-list").innerHTML += "&lt;li&gt;" + id +": &lt;a href='javascript:{setVars(\""+ uri +"\", \""+ id +"\", \""+ name +"\");}'&gt;"+ name +"&lt;/a&gt;&lt;/li&gt;";
+    }
+    $("users-list").innerHTML += "&lt;/ul&gt;";
+
+}
+
+// Definimos un manejador de error
+errorHandler = function(xml) {
+    $("users-list").innerHTML = "Imposible obtener la lista de usuarios";
+}
+
+// Solicitamos la lista de usuarios
+EzWebAPI.send_get('http://ezforge.morfeo-project.org/ezforge/v0.1/users/', {}, successHandler, errorHandler);
+
+// Obtenemos las variables a través de la API
+var user_uri = EzWebAPI.createRWGadgetVariable("user_uri");
+var user_id = EzWebAPI.createRWGadgetVariable("user_id");
+var user_name = EzWebAPI.createRWGadgetVariable("user_name");
+
+// Definimos la función que establece el valor de las variables
+function setVars(uri, id, name) {
+    user_uri.set(uri);
+    user_id.set(id);
+    user_name.set(name);
+}
+&lt;/script&gt;
+
+&lt;/head&gt;
+
+&lt;body&gt;
+&lt;div id="users-list"&gt;&lt;img src="http://www.fontreactor.com/images/loading.gif" alt="Cargando..." title="Cargando..."/&gt;
+&lt;/div&gt;
+
+&lt;/body&gt;
+
+&lt;/html&gt;
+</field>
+    </object>
+    <object pk="22" model="gadget.xhtml">
+        <field type="CharField" name="uri">/user/ezforge/gadgets/Morfeo/ezforge-users-projects/1.0/xhtml</field>
+        <field type="TextField" name="code">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;link rel="stylesheet" href="http://gadgets.yaco.es/styles.css" type="text/css" charset="utf-8" /&gt;
+&lt;script type="text/javascript" language="javascript" src="http://gadgets.yaco.es/prototype.js"&gt;&lt;/script&gt; 
+&lt;script type="text/javascript" language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" language="javascript"&gt;
+
+// Definimos un procesador para el XML
+successHandler = function(xml) {
+    var rootNode = xml;
+    $("users-projects-list").innerHTML = "";
+    xmlDoc = xml.responseXML;
+    users = xmlDoc.getElementsByTagName("user-project");
+    if (users.length &gt; 0) {
+        for (i=0; i&lt;users.length; i++) {
+            var id = users[i].getAttribute("id");
+            var name = users[i].getElementsByTagName("name")[0].textContent;
+            var uri = users[i].getElementsByTagName("uri")[0].getAttribute("xlink:href");
+            $("users-projects-list").innerHTML += id +": &lt;a href='javascript:{setVars(\""+ uri +"\", \""+ id +"\", \""+ name +"\");}'&gt;"+ name +"&lt;/a&gt;&lt;br/&gt;";
+        }
+    } else {
+        $("users-projects-list").innerHTML = "El usuario no tiene proyectos";
+    }
+}
+
+// Definimos un manejador de error
+errorHandler = function(xml) {
+    $("users-projects-list").innerHTML = "Imposible obtener la lista de usuarios";
+}
+
+// Obtenemos las variables a través de la API
+var user_project_uri = EzWebAPI.createRWGadgetVariable("user_project_uri");
+var user_project_id = EzWebAPI.createRWGadgetVariable("user_project_id");
+var user_project_name = EzWebAPI.createRWGadgetVariable("user_project_name");
+var user_uri = EzWebAPI.createRGadgetVariable("user_uri", userUriHandler);
+
+// Definimos la función que establece el valor de las variables
+function setVars(uri, id, name) {
+    user_project_uri.set(uri);
+    user_project_id.set(id);
+    user_project_name.set(name);
+}
+
+// Definimos la función manejadora que se activa al cambiar la variable
+function userUriHandler(value) {
+    $("users-projects-list").innerHTML = '&lt;img src="http://www.fontreactor.com/images/loading.gif" alt="Cargando..." title="Cargando..."/&gt;';
+    // Solicitamos la lista de usuarios
+    EzWebAPI.send_get(value +'/projects/', {}, successHandler, errorHandler);
+}
+&lt;/script&gt;
+
+&lt;/head&gt;
+
+&lt;body&gt;
+&lt;div id="users-projects-list"&gt;Seleccione un usuario
+&lt;/div&gt;
+
+&lt;/body&gt;
+
+&lt;/html&gt;
+</field>
+    </object>
+    <object pk="23" model="gadget.xhtml">
+        <field type="CharField" name="uri">/user/ezforge/gadgets/Morfeo/ezforge-users-details/1.0/xhtml</field>
+        <field type="TextField" name="code">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;link rel="stylesheet" href="http://gadgets.yaco.es/styles.css" type="text/css" charset="utf-8" /&gt;
+&lt;script type="text/javascript" language="javascript" src="http://gadgets.yaco.es/prototype.js"&gt;&lt;/script&gt; 
+&lt;script type="text/javascript" language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" language="javascript"&gt;
+
+// Definimos un procesador para el XML
+successHandler = function(xml) {
+    var rootNode = xml;
+    $("message").innerHTML = "";
+    xmlDoc = xml.responseXML;
+    user = xmlDoc.getElementsByTagName("user")[0];
+    $("id").value = user.getAttribute("id");
+    $("sessionname").value = user.getElementsByTagName("sessionname")[0].textContent;
+    $("name").value = user.getElementsByTagName("name")[0].textContent;
+    $("secondname").value = user.getElementsByTagName("secondname")[0].textContent;
+    $("email").value = user.getElementsByTagName("email")[0].textContent;
+    skills = user.getElementsByTagName("skills")[0];
+    skill = skills.getElementsByTagName("uri")[0].getAttribute("xlink:href");
+    $("skills").value = skill
+    projects = user.getElementsByTagName("projects")[0];
+    project = projects.getElementsByTagName("uri")[0].getAttribute("xlink:href");
+    $("projects").value = project
+    setVars(skill, project);
+}
+
+// Definimos un manejador de error
+errorHandler = function(xml) {
+    $("message").innerHTML = "Imposible obtener los detalles del usuario";
+}
+
+// Obtenemos las variables a través de la API
+var skills_uri = EzWebAPI.createRWGadgetVariable("skills_uri");
+var projects_uri = EzWebAPI.createRWGadgetVariable("projects_uri");
+var user_uri = EzWebAPI.createRGadgetVariable("user_uri", userUriHandler);
+
+// Definimos la función que establece el valor de las variables
+function setVars(skills, project) {
+    skills_uri.set(skills);
+    projects_uri.set(project);
+}
+
+// Definimos la función manejadora que se activa al cambiar la variable
+function userUriHandler(value) {
+    $("message").innerHTML = '&lt;img src="http://www.fontreactor.com/images/loading.gif" alt="Cargando..." title="Cargando..."/&gt;';
+    // Solicitamos la lista de usuarios
+    EzWebAPI.send_get(value, {}, successHandler, errorHandler);
+}
+&lt;/script&gt;
+
+&lt;/head&gt;
+
+&lt;body&gt;
+&lt;div id="message"&gt;Seleccione un usuario&lt;/div&gt;
+&lt;div id="user-details"&gt;
+
+&lt;label for="id"&gt;Id: &lt;/label&gt;&lt;input type="text" id="id"/&gt;
+&lt;label for="sessionname"&gt;Nick: &lt;/label&gt;&lt;input type="text" id="sessionname"/&gt;
+&lt;label for="name"&gt;Nombre: &lt;/label&gt;&lt;input type="text" id="name"/&gt;
+&lt;label for="secondname"&gt;Apellido: &lt;/label&gt;&lt;input type="text" id="secondname"/&gt;
+&lt;label for="email"&gt;Email: &lt;/label&gt;&lt;input type="text" id="email"/&gt;
+&lt;label for="skills"&gt;Skills URI: &lt;/label&gt;&lt;input type="text" id="skills"/&gt;
+&lt;label for="projects"&gt;Projects URI: &lt;/label&gt;&lt;input type="text" id="projects"/&gt;
+&lt;/div&gt;
+
+&lt;/body&gt;
+
+&lt;/html&gt;
+</field>
+    </object>
+    <object pk="24" model="gadget.xhtml">
+        <field type="CharField" name="uri">/user/ezforge/gadgets/Morfeo/ezforge-projects/1.0/xhtml</field>
+        <field type="TextField" name="code">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;link rel="stylesheet" href="http://gadgets.yaco.es/styles.css" type="text/css" charset="utf-8" /&gt;
+&lt;script type="text/javascript" language="javascript" src="http://gadgets.yaco.es/prototype.js"&gt;&lt;/script&gt; 
+&lt;script type="text/javascript" language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" language="javascript"&gt;
+
+// Definimos un procesador para el XML
+successHandler = function(xml) {
+    var rootNode = xml;
+    $("projects-list").innerHTML = "";
+    xmlDoc = xml.responseXML;
+    users = xmlDoc.getElementsByTagName("project");
+    if (users.length &gt; 0) {
+        $("projects-list").innerHTML += "&lt;ul&gt;";
+        for (i=0; i&lt;users.length; i++) {
+            var id = users[i].getAttribute("id");
+            var name = users[i].getElementsByTagName("name")[0].textContent;
+            var uri = users[i].getElementsByTagName("uri")[0].getAttribute("xlink:href");
+            $("projects-list").innerHTML += "&lt;li&gt;"+ id +": &lt;a href='javascript:{setVars(\""+ uri +"\", \""+ id +"\", \""+ name +"\");}'&gt;"+ name +"&lt;/a&gt;&lt;/li&gt;&lt;br/&gt;";
+        }
+        $("projects-list").innerHTML += "&lt;/ul&gt;";
+    } else {
+        $("users-projects-list").innerHTML = "No hay proyectos";
+    }
+}
+
+// Definimos un manejador de error
+errorHandler = function(xml) {
+    $("projects-list").innerHTML = "Imposible obtener la lista de proyectos";
+}
+
+// Solicitamos la lista de usuarios
+EzWebAPI.send_get('http://ezforge.morfeo-project.org/ezforge/v0.1/projects/', {}, successHandler, errorHandler);
+
+// Obtenemos las variables a través de la API
+var user_uri = EzWebAPI.createRWGadgetVariable("project_uri");
+var user_id = EzWebAPI.createRWGadgetVariable("project_id");
+var user_name = EzWebAPI.createRWGadgetVariable("project_name");
+
+// Definimos la función que establece el valor de las variables
+function setVars(uri, id, name) {
+    user_uri.set(uri);
+    user_id.set(id);
+    user_name.set(name);
+}
+&lt;/script&gt;
+
+&lt;/head&gt;
+
+&lt;body&gt;
+&lt;div id="projects-list"&gt;&lt;img src="http://www.fontreactor.com/images/loading.gif" alt="Cargando..." title="Cargando..."/&gt;
+&lt;/div&gt;
+
+&lt;/body&gt;
+
+&lt;/html&gt;
+</field>
+    </object>
+    <object pk="25" model="gadget.xhtml">
+        <field type="CharField" name="uri">/user/ezforge/gadgets/Morfeo/ezforge-projects-wikis/1.0/xhtml</field>
+        <field type="TextField" name="code">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;link rel="stylesheet" href="http://gadgets.yaco.es/styles.css" type="text/css" charset="utf-8" /&gt;
+&lt;script type="text/javascript" language="javascript" src="http://gadgets.yaco.es/prototype.js"&gt;&lt;/script&gt; 
+&lt;script type="text/javascript" language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" language="javascript"&gt;
+
+// Definimos un procesador para el XML
+successHandler = function(xml) {
+    var rootNode = xml;
+    $("wikis-list").innerHTML = "";
+    xmlDoc = xml.responseXML;
+    wikis = xmlDoc.getElementsByTagName("wiki");
+    if (wikis.length &gt; 0) {
+        for (i=0; i&lt;users.length; i++) {
+            var id = wikis[i].getAttribute("id");
+            var name = wikis[i].getElementsByTagName("name")[0].textContent;
+            var uri = wikis[i].getElementsByTagName("uri")[0].getAttribute("xlink:href");
+            $("wikis-list").innerHTML += id +": &lt;a href='javascript:{setVars(\""+ uri +"\", \""+ id +"\", \""+ name +"\");}'&gt;"+ name +"&lt;/a&gt;&lt;br/&gt;";
+        }
+    } else {
+        $("wikis-list").innerHTML = "El proyecto no tiene wikis";
+    }
+}
+
+// Definimos un manejador de error
+errorHandler = function(xml) {
+    $("wikis-list").innerHTML = "Imposible obtener la lista de wikis";
+}
+
+// Obtenemos las variables a través de la API
+var wiki_uri = EzWebAPI.createRWGadgetVariable("wiki_uri");
+var wiki_id = EzWebAPI.createRWGadgetVariable("wiki_id");
+var wiki_name = EzWebAPI.createRWGadgetVariable("wiki_name");
+var project_uri = EzWebAPI.createRGadgetVariable("project_uri", projectUriHandler);
+
+// Definimos la función que establece el valor de las variables
+function setVars(uri, id, name) {
+    wiki_uri.set(uri);
+    wiki_id.set(id);
+    wiki_name.set(name);
+}
+
+// Definimos la función manejadora que se activa al cambiar la variable
+function projectUriHandler(value) {
+    $("wikis-list").innerHTML = '&lt;img src="http://www.fontreactor.com/images/loading.gif" alt="Cargando..." title="Cargando..."/&gt;';
+    // Solicitamos la lista de usuarios
+    EzWebAPI.send_get(value +"/wikis", {}, successHandler, errorHandler);
+}
+
+&lt;/script&gt;
+
+&lt;/head&gt;
+
+&lt;body&gt;
+&lt;div id="wikis-list"&gt;Seleccione un proyecto
+&lt;/div&gt;
+
+&lt;/body&gt;
+
+&lt;/html&gt;
+</field>
+    </object>
+    <object pk="26" model="gadget.xhtml">
+        <field type="CharField" name="uri">/user/ezforge/gadgets/Morfeo/ezforge-projects-users/1.0/xhtml</field>
+        <field type="TextField" name="code">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;link rel="stylesheet" href="http://gadgets.yaco.es/styles.css" type="text/css" charset="utf-8" /&gt;
+&lt;script type="text/javascript" language="javascript" src="http://gadgets.yaco.es/prototype.js"&gt;&lt;/script&gt; 
+&lt;script type="text/javascript" language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" language="javascript"&gt;
+
+// Definimos un procesador para el XML
+successHandler = function(xml) {
+    var rootNode = xml;
+    $("users-list").innerHTML = "";
+    xmlDoc = xml.responseXML;
+    users = xmlDoc.getElementsByTagName("project-user");
+    for (i=0; i&lt;users.length; i++) {
+        var id = users[i].getAttribute("id");
+        var name = users[i].getElementsByTagName("name")[0].textContent;
+        var uri = users[i].getElementsByTagName("uri")[0].getAttribute("xlink:href");
+        $("users-list").innerHTML += id +": &lt;a href='javascript:{setVars(\""+ uri +"\", \""+ id +"\", \""+ name +"\");}'&gt;"+ name +"&lt;/a&gt;&lt;br/&gt;";
+    }
+}
+
+// Definimos un manejador de error
+errorHandler = function(xml) {
+    $("users-list").innerHTML = "Imposible obtener la lista de usuarios";
+}
+
+// Obtenemos las variables a través de la API
+var user_uri = EzWebAPI.createRWGadgetVariable("user_uri");
+var user_id = EzWebAPI.createRWGadgetVariable("user_id");
+var user_name = EzWebAPI.createRWGadgetVariable("user_name");
+var project_uri = EzWebAPI.createRGadgetVariable("project_uri", projectUriHandler);
+
+// Definimos la función que establece el valor de las variables
+function setVars(uri, id, name) {
+    user_uri.set(uri);
+    user_id.set(id);
+    user_name.set(name);
+}
+
+// Definimos la función manejadora que se activa al cambiar la variable
+function projectUriHandler(value) {
+    $("users-list").innerHTML = '&lt;img src="http://www.fontreactor.com/images/loading.gif" alt="Cargando..." title="Cargando..."/&gt;';
+    // Solicitamos la lista de usuarios
+    EzWebAPI.send_get(value +"/users", {}, successHandler, errorHandler);
+}
+
+&lt;/script&gt;
+
+&lt;/head&gt;
+
+&lt;body&gt;
+&lt;div id="users-list"&gt;&lt;img src="http://www.fontreactor.com/images/loading.gif" alt="Cargando..." title="Cargando..."/&gt;
+&lt;/div&gt;
+
+&lt;/body&gt;
+
+&lt;/html&gt;
+</field>
     </object>
 </django-objects>
