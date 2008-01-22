@@ -44,6 +44,8 @@ from django.http import Http404, HttpResponse
 from django.core import serializers
 from django.utils import simplejson
 from django.db import transaction
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import string_concat, get_language
 
 from django_restapi.resource import Resource
 from django_restapi.model_resource import Collection, Entry
@@ -73,19 +75,19 @@ class ContextCollection(Resource):
         if request.POST.has_key('json'):
             received_json = request.POST['json']
         else:
-            return HttpResponseBadRequest("<error>JSON parameter not specified</error>")
+            return HttpResponseBadRequest(string_concat(['<error>', _(u'JSON parameter not specified'), '</error>']))
 
         try:
             received_data = eval(received_json)
         except Exception, e:
-            return HttpResponseBadRequest('<error>%s</error>' % e)
+            return HttpResponseBadRequest(string_concat(['<error>', _(e), '</error>']))
 
         for received_concept in received_data['concepts']:
             concept = None
             try:
                  concept = Concept.objects.get(concept=received_concept['concept'])
                  if not concept.adaptor == received_concept['adaptor']:
-                     return HttpResponseBadRequest("<error>Attempted update. You must use PUT HTTP method in this case</error>")
+                     return HttpResponseBadRequest(string_concat(["<error>",_(u'Attempted update. You must use PUT HTTP method in this case'),"</error>"]))
             
             except Concept.DoesNotExist:
                  concept = Concept (concept=received_concept['concept'], adaptor=received_concept['adaptor'])
@@ -118,18 +120,18 @@ class ContextEntry(Resource):
         if request.POST.has_key('json'):
             received_json = request.POST['json']
         else:
-            return HttpResponseBadRequest("<error>JSON parameter not specified</error>")
+            return HttpResponseBadRequest(string_concat(['<error>', _(u'JSON parameter not specified'), '</error>']))
 
         try:
             received_concept = eval(received_json)
         except Exception, e:
-            return HttpResponseBadRequest('<error>%s</error>' % e)
+            return HttpResponseBadRequest(string_concat(['<error>', _(e), '</error>']))
 
         concept = None
         try:
             concept = Concept.objects.get(concept=concept_name)
             if not concept.adaptor == received_concept['adaptor']:
-                return HttpResponseBadRequest("<error>Attempted update. You must use PUT HTTP method in this case</error>")
+                return HttpResponseBadRequest(string_concat(["<error>",_(u'Attempted update. You must use PUT HTTP method in this case'),"</error>"]))
                  
         except Concept.DoesNotExist:
             concept = Concept (concept=concept_name, adaptor=received_concept['adaptor'])
@@ -147,12 +149,12 @@ class ContextEntry(Resource):
         if request.POST.has_key('json'):
             received_json = request.POST['json']
         else:
-            return HttpResponseBadRequest("<error>JSON parameter not specified</error>")
+            return HttpResponseBadRequest(string_concat(['<error>', _(u'JSON parameter not specified'), '</error>']))
 
         try:
             received_data = eval(received_json)
         except Exception, e:
-            return HttpResponseBadRequest('<error>%s</error>' % e)
+            return HttpResponseBadRequest(string_concat(['<error>', _(e), '</error>']))
 
         for received_concept in received_data:
             concept = None
@@ -162,7 +164,7 @@ class ContextEntry(Resource):
                  concept.save()
                  
             except Concept.DoesNotExist:
-                 return HttpResponseBadRequest("<error>Concept doesn't exist. You must use POST HTTP method in this case</error>")
+                 return HttpResponseBadRequest(string_concat(['<error>',_(u"Concept doesn't exist. You must use POST HTTP method in this case"),'</error>']))
             
             cname = ConceptName (name=received_concept['name'], concept=concept)
             cname.save()
@@ -188,6 +190,11 @@ class ContextValueEntry(Resource):
         if concept_name == 'username':
             user = user_authentication(user_name)
             data_res ['username'] = user_name  
+        else:
+            raise Http404;
+        
+        if concept_name == 'language':
+            data_res ['language'] = get_language()  
         else:
             raise Http404;
         
