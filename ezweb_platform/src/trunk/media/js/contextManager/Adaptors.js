@@ -88,7 +88,7 @@ function WidthAdaptador(gadgetID) {
 		alert ("Error getting concept " + WidthAdaptador.prototype.CONCEPT + ":"+ msg);
 	}
 	
-	uri = URIs.GET_IGADGET.evaluate({id: gadgetID});
+	var uri = URIs.GET_IGADGET.evaluate({id: gadgetID});
 	PersistenceEngineFactory.getInstance().send_get(uri , this, _onSuccess, _onError);			
 	
 }
@@ -96,16 +96,16 @@ function WidthAdaptador(gadgetID) {
 WidthAdaptador.prototype.CONCEPT = 'width'
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////     High ADAPTOR     //////////////////////////////////////////////////
+//////////////////////////////     HEIGHT ADAPTOR     //////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function HighAdaptador(gadgetID) {
+function HeightAdaptador(gadgetID) {
 
 	function _onSuccess(receivedData) {
 		var json = eval ('(' + receivedData.responseText + ')');
 		var value = json.height;
-		ContextManagerFactory.getInstance().setConceptValue(HighAdaptador.prototype.CONCEPT, value)
+		ContextManagerFactory.getInstance().setConceptValue(HeightAdaptador.prototype.CONCEPT, value)
 	}
 
 	function _onError(transport, e) {
@@ -114,15 +114,44 @@ function HighAdaptador(gadgetID) {
 			msg = e;
 		else
 			msg = transport.status + " " + transport.statusText;
-		alert ("Error getting concept " + HighAdaptador.prototype.CONCEPT + ":"+ msg);
+		alert ("Error getting concept " + HeightAdaptador.prototype.CONCEPT + ":"+ msg);
 	}
 	
-	uri = URIs.GET_IGADGET.evaluate({id: gadgetID});
+	var uri = URIs.GET_IGADGET.evaluate({id: gadgetID});
 	PersistenceEngineFactory.getInstance().send_get(uri , this, _onSuccess, _onError);			
 	
 }
 
-HighAdaptador.prototype.CONCEPT = 'high'
+HeightAdaptador.prototype.CONCEPT = 'height'
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////     LANGUAGE ADAPTOR     //////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function LanguageAdaptador(gadgetID) {
+
+	function _onSuccess(receivedData) {
+		var json = eval ('(' + receivedData.responseText + ')');
+		var value = json.language;
+		ContextManagerFactory.getInstance().setConceptValue(LanguageAdaptador.prototype.CONCEPT, value)
+	}
+
+	function _onError(transport, e) {
+		var msg;
+		if (e)
+			msg = e;
+		else
+			msg = transport.status + " " + transport.statusText;
+		alert ("Error getting concept " + LanguageAdaptador.prototype.CONCEPT + ":"+ msg);
+	}
+	
+	var uri = URIs.GET_CONTEXT_VALUE.evaluate({concept: LanguageAdaptador.prototype.CONCEPT});
+	PersistenceEngineFactory.getInstance().send_get(uri , this, _onSuccess, _onError);			
+	
+}
+
+LanguageAdaptador.prototype.CONCEPT = 'language'
 
 
