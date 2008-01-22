@@ -190,12 +190,9 @@ class ContextValueEntry(Resource):
         if concept_name == 'username':
             user = user_authentication(user_name)
             data_res ['username'] = user_name  
+        elif concept_name == 'language':
+            data_res ['language'] = get_language() 
         else:
             raise Http404;
-        
-        if concept_name == 'language':
-            data_res ['language'] = get_language()  
-        else:
-            raise Http404;
-        
+       
         return HttpResponse(json_encode(data_res), mimetype='application/json; charset=UTF-8')
