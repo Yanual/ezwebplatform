@@ -515,25 +515,44 @@ var DragboardFactory = function () {
 		}
 
 		Dragboard.prototype.move = function (iGadgetId) {
-			
+			// TODO implement this function
 		}
 
 		Dragboard.prototype.maximize = function (iGadgetId) {
-			var element = $('gadget_' + iGadgetId);
-			var mySlider = new Effect.SlideDown(element);
+			var igadget = iGadgets[iGadgetId];
+
+			var oldWidth = igadget.getContentWidth();
+			var oldHeight = igadget.getHeight();
+			igadget.setMinimizeStatus(false);
+			_resize(igadget, oldWidth, oldHeight, oldWidth, igadget.getHeight());
+
 		}
 
 		Dragboard.prototype.minimize = function (iGadgetId) {
-//			var igadget = iGadgets[iGadgetId];
-//			var element = igadget.getElement(); // TODO get correct div
-			var element = $('gadget_' + iGadgetId);
-			var mySlider = new Effect.SlideUp(element, {
-			                     afterFinish: function(element) {
-			                       DragboardFactory.getInstance().maximize(element.element.iGadgetId); // TODO
-			                     }
-			                   });
+			var igadget = iGadgets[iGadgetId];
+
+			// TODO add effects?
+//			var mySlider = new Effect.SlideUp(igadget.contentWrapper, {
+//	                                                  afterFinish: function(element) {
+//                                                             DragboardFactory.getInstance().maximize(element.element.iGadgetId); // TODO
+//			             }
+//			});
+
+			var oldWidth = igadget.getContentWidth();
+			var oldHeight = igadget.getHeight();
+			igadget.setMinimizeStatus(true);
+			_resize(igadget, oldWidth, oldHeight, oldWidth, igadget.getHeight());
 		}
 
+		Dragboard.prototype.toggleMinimizeStatus = function (iGadgetId) {
+			var igadget = iGadgets[iGadgetId];
+
+			if (igadget.isMinimized())
+				this.maximize(igadget.getId());
+			else
+				this.minimize(igadget.getId());
+		}
+		
 		// TODO better implementation of toggle functionality (create a new function?)
 		Dragboard.prototype.setConfigurationVisible = function (iGadgetId, newStatus) {
 			var igadget = iGadgets[iGadgetId];
@@ -738,9 +757,13 @@ function IGadget(gadget, iGadgetId, screen, position, width, height) {
 	this.width = width;
 	this.contentHeight = height;
 	this.height = height + 2; // TODO this is a estimation
-	this.element = null;
-	this.configurationElement = null;
 	this.configurationVisible = false;
+	this.minimized = false;
+
+	// Elements
+	this.element = null;
+	this.contentWrapper = null, this.content = null;
+	this.configurationElement = null;
 }
 
 IGadget.prototype.getGadget = function() {
@@ -793,10 +816,18 @@ IGadget.prototype.getContentHeight = function() {
  */
 IGadget.prototype.getHeight = function() {
 	if (this.height == null) {
-		if (this.element == null)
-			this.height = 0;
-		else
+		if (this.element != null) {
+			if (!this.minimized) {
+				var wrapperHeight = this.content.offsetHeight + this.configurationElement.offsetHeight;
+				this.contentWrapper.setStyle({height: wrapperHeight + "px"});
+			} else {
+				this.contentWrapper.setStyle({height: 0 + "px"});
+			}
+
 			this.height = this.screen.fromPixelsToVCells(this.element.offsetHeight);
+		} else {
+			this.height = 0;
+		}
 	}
 
 	return this.height;
@@ -819,7 +850,7 @@ IGadget.prototype.paint = function(where) {
 	if (this.element != null) // exit if the igadgets is already visible
 		return; // TODO exception
 
-	var gadgetElement, gadgetMenu, gadgetContent;
+	var gadgetElement, gadgetMenu;
 
 	gadgetElement = document.createElement("div");
 	gadgetElement.setAttribute("id", "gadget_" + this.id + "_container");
@@ -832,28 +863,34 @@ IGadget.prototype.paint = function(where) {
 	// buttons. Inserted from right to left
 	gadgetMenu.innerHTML = "<div class=\"floatright button\" onclick=\"javascript:OpManagerFactory.getInstance().removeInstance(" + this.id + ")\" >X</div>"	// close button
 						 + "<div class=\"floatright button\" onclick=\"javascript:DragboardFactory.getInstance().setConfigurationVisible(" + this.id + ", 'toggle');\" >P</div>"	// settings button
-						 + "<div class=\"floatright button\" onclick=\"javascript:DragboardFactory.getInstance().minimize(" + this.id + ")\" >-</div>"	// minimize button
+						 + "<div class=\"floatright button\" onclick=\"javascript:DragboardFactory.getInstance().toggleMinimizeStatus(" + this.id + ")\" >-</div>"	// minimize button
 	                     + this.gadget.getName()
 	                     + " (Gadget " + this.id + ")";	// TODO Gadget Title
 	gadgetElement.appendChild(gadgetMenu);
 
-	// Gadget configuration (Initially empty)
+	// Content wrapper
+
+	this.contentWrapper = document.createElement("div");
+	this.contentWrapper.setAttribute("class", "gadget_wrapper");
+	gadgetElement.appendChild(this.contentWrapper);
+	
+	// Gadget configuration (Initially empty and hidden)
 	this.configurationElement = document.createElement("form");
 	this.configurationElement.setAttribute("class", "config_interface");
 	this.configurationElement.setAttribute("onsubmit", "javascript:return false;");
-	gadgetElement.appendChild(this.configurationElement);
+	this.contentWrapper.appendChild(this.configurationElement);
 
 	// Gadget Content
-	gadgetContent = document.createElement("object");
-	gadgetContent.setAttribute("id", "gadget_" + this.id);
-	gadgetContent.setAttribute("class", "gadget_object");
-	gadgetContent.setAttribute("type", "text/html"); // TODO xhtml? => application/xhtml+xml
+	this.content = document.createElement("object");
+	this.content.setAttribute("id", "gadget_" + this.id);
+	this.content.setAttribute("class", "gadget_object");
+	this.content.setAttribute("type", "text/html"); // TODO xhtml? => application/xhtml+xml
 	if (this.gadget != null) // TODO remove this line this.gadgte must be not null
-		gadgetContent.setAttribute("data", this.gadget.getXHtml().getURICode() + "?id=" + this.id);
-	gadgetContent.setAttribute("standby", "Loading...");
-	gadgetContent.innerHTML = "<param name=\"IGadgetId\" value=\"" + this.id + "\" />Loading...."; // TODO add an animation
+		this.content.setAttribute("data", this.gadget.getXHtml().getURICode() + "?id=" + this.id);
+	this.content.setAttribute("standby", "Loading...");
+	this.content.innerHTML = "<param name=\"IGadgetId\" value=\"" + this.id + "\" />Loading...."; // TODO add an animation
 
-	gadgetElement.appendChild(gadgetContent);
+	this.contentWrapper.appendChild(this.content);
 
 	// Position
 	gadgetElement.style.left = this.screen.getColumnOffsetLeft(this.position.x);
@@ -861,12 +898,14 @@ IGadget.prototype.paint = function(where) {
 
 	// Sizes
 	gadgetElement.style.width = this.screen.fromHCellsToPercentage(this.width) + "%";
-	gadgetContent.style.height = this.screen.fromVCellsToPixels(this.contentHeight) + "px";
-	gadgetContent.style.width = "100%";
+	var contentHeight = this.screen.fromVCellsToPixels(this.contentHeight) + "px";
+	this.contentWrapper.style.height = contentHeight;
+	this.content.style.height = contentHeight;
 
 	// References
 	gadgetElement.iGadgetId = this.id;
-	gadgetContent.iGadgetId = this.id;
+	this.content.iGadgetId = this.id;
+	this.contentWrapper.iGadgetId = this.id;
 
 	var startFunc = function (iGadgetId) {
 		DragboardFactory.getInstance().initializeMove(iGadgetId);
@@ -988,6 +1027,25 @@ IGadget.prototype._makeConfigureInterface = function() {
 	interface.appendChild(buttons);
 
 	return interface;
+}
+
+IGadget.prototype.isMinimized = function() {
+	return this.minimized;
+}
+
+IGadget.prototype.setMinimizeStatus = function(newStatus) {
+	if (this.minimized == newStatus)
+	    return;
+
+	this.minimized = newStatus;
+
+	if (this.minimized) {
+	    this.contentWrapper.setStyle({"visibility": "hidden" , "border": "0px"});
+	} else {
+	    this.contentWrapper.setStyle({"visibility": "visible", "border": ""});
+	}
+
+	this.height = null; // force refreshing sizes (see getHeight function)
 }
 
 IGadget.prototype.isConfigurationVisible = function() {
