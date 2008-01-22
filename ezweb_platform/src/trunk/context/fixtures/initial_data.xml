@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <django-objects version="1.0">
     <object pk="username" model="context.concept">
-        <field type="CharField" name="adaptor">UserAdaptador</field>
+        <field type="CharField" name="adaptor">UserAdaptor</field>
     </object>
     <object pk="width" model="context.concept">
-        <field type="CharField" name="adaptor">WidthAdaptador</field>
+        <field type="CharField" name="adaptor">WidthAdaptor</field>
     </object>
     <object pk="height" model="context.concept">
-        <field type="CharField" name="adaptor">HeightAdaptador</field>
+        <field type="CharField" name="adaptor">HeightAdaptor</field>
     </object>
 	<object pk="language" model="context.concept">
-        <field type="CharField" name="adaptor">LanguageAdaptador</field>
+        <field type="CharField" name="adaptor">LanguageAdaptor</field>
     </object>
     <object pk="1" model="context.conceptname">
         <field type="CharField" name="name">user_name</field>
