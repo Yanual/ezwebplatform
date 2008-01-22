@@ -2,7 +2,7 @@
   //                RESOURCE                  //
   //////////////////////////////////////////////
 
-function Resource( id_, resourceXML_, urlTemplate_) {
+function Resource( id_, resourceJSON_, urlTemplate_) {
 	
 	// ******************
 	//  PUBLIC FUNCTIONS
@@ -93,6 +93,11 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 								"<button onclick='CatalogueFactory.getInstance().addResourceToShowCase(UIUtils.getSelectedResource());'>A&ntilde;adir Instancia</button>";
 	}
 	
+	this.paginate = function() {
+		var pageInfo = document.getElementById("paginate");
+		pageInfo.innerHTML = 	"<center>" + _paginate() + "</center>";
+	}
+	
 	this.updateTags = function()
 	{
 		document.getElementById(id + "_important_tags").innerHTML = _tagsToMoreImportantTags(3);
@@ -153,6 +158,25 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 			tagsHTML += (moreImportantTags[i].tagToHTML() + ((i<(((moreImportantTags.length>tagsNumber_)?tagsNumber_:moreImportantTags.length)-1))?", ":""));
 		}
 		return tagsHTML;
+	}
+	
+ var _paginate = function(){
+		var eventsHTML = '';
+		
+		var jsCall_prev = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, 10,"prev");';
+		
+		eventsHTML = ("<span class='multiple_size_tag'><a title='ir a pagina anterior' href='" + jsCall_prev + "'>anterior</a></span>");
+		
+		for (var i=1; i<4; i++)
+		{
+			var jsCall_num = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, 10, "' + i + '");';
+			eventsHTML += ("<span class='multiple_size_tag'>"+"<a title='ir a pagina " + i +"' href='" + jsCall_num + "'>" + i + "</a></span> ");
+		}
+		
+		var jsCall_next = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, 10,"next");';
+		eventsHTML += ("<span class='multiple_size_tag'><a title='ir a pagina siguiente' href='" + jsCall_next + "'>siguiente</a></span>");
+		
+		return eventsHTML;
 	}
 	
 	var _events = function(){
@@ -263,8 +287,9 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 		_createResource(urlTemplate_);
 	}
 	else {
-		state = new ResourceState(resourceXML_);
+		state = new ResourceState(resourceJSON_);
 		this.paint();
+		//this.paginate();
 	}
 }
 
@@ -272,7 +297,7 @@ function Resource( id_, resourceXML_, urlTemplate_) {
   //       RESOURCESTATE (State Object)       //
   //////////////////////////////////////////////
   
-	function ResourceState(resourceXML_) {
+	function ResourceState(resourceJSON_) {
 
 	// *******************
 	//  PRIVATE VARIABLES
@@ -301,30 +326,29 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 	this.getUriTemplate = function() { return uriTemplate; }
 	this.getUriWiki = function() { return uriWiki; }
 
-	this.setTags = function(tagsXML_) {
+	this.setTags = function(tagsJSON_) {
 		tags.clear();
-		var tagsXMLList = tagsXML_.getElementsByTagName("Tag");
-		for (var i=0; i<tagsXMLList.length; i++)
+		//var tagsXMLList = tagsXML_.getElementsByTagName("Tag");
+		for (var i=0; i<tagsJSON_.length; i++)
 		{
-			tags.push(new Tag(tagsXMLList[i]));
+			tags.push(new Tag(tagsJSON_[i]));
 		}
 	}
 	
-	this.setSlots = function(slotsXML_) {
+	
+	this.setSlots = function(slotsJSON_) {
 		slots.clear();
-		var slotsXMLList = slotsXML_.getElementsByTagName("Slot");
-		for (var i=0; i<slotsXMLList.length; i++)
+		for (var i=0; i<slotsJSON_.length; i++)
 		{
-			slots.push(slotsXMLList[i].firstChild.nodeValue);
+			slots.push(slotsJSON_[i].friendcode);
 		}
 	}
 	
-	this.setEvents = function(eventsXML_) {
+	this.setEvents = function(eventsJSON_) {
 		events.clear();
-		var eventsXMLList = eventsXML_.getElementsByTagName("Event");
-		for (var i=0; i<eventsXMLList.length; i++)
+		for (var i=0; i<eventsJSON_.length; i++)
 		{
-			events.push(eventsXMLList[i].firstChild.nodeValue);
+			events.push(eventsJSON_[i].friendcode);
 		}
 	}
 	
@@ -332,18 +356,20 @@ function Resource( id_, resourceXML_, urlTemplate_) {
 	this.getSlots = function() { return slots; }
 	this.getEvents = function() { return events; }
 	
-	// Parsing XML Resource
+	// Parsing JSON Resource
 	// Constructing the structure
 	
-	vendor = resourceXML_.getElementsByTagName("vendor")[0].firstChild.nodeValue;
-	name = resourceXML_.getElementsByTagName("name")[0].firstChild.nodeValue;
-	version = resourceXML_.getElementsByTagName("version")[0].firstChild.nodeValue;
-	description = resourceXML_.getElementsByTagName("description")[0].firstChild.nodeValue;
-	uriImage = resourceXML_.getElementsByTagName("uriImage")[0].firstChild.nodeValue;
-	uriWiki = resourceXML_.getElementsByTagName("uriWiki")[0].firstChild.nodeValue;
-	uriTemplate = resourceXML_.getElementsByTagName("uriTemplate")[0].firstChild.nodeValue;
-	this.setTags(resourceXML_.getElementsByTagName("Tags")[0]);
-	this.setSlots(resourceXML_.getElementsByTagName("Slots")[0]);
-	this.setEvents(resourceXML_.getElementsByTagName("Events")[0]);
+	vendor = resourceJSON_.vendor;
+	name = resourceJSON_.name;
+	version = resourceJSON_.version;
+	description = resourceJSON_.description;
+	uriImage = resourceJSON_.uriImage;
+	uriWiki = resourceJSON_.uriWiki;
+	uriTemplate = resourceJSON_.uriTemplate;
+	this.setEvents(resourceJSON_.events);
+	this.setSlots(resourceJSON_.slots);
+	this.setTags(resourceJSON_.tags);
+	
+	
 
 }

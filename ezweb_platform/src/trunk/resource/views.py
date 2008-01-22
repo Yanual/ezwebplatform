@@ -39,7 +39,6 @@
 import sys
 from urllib import urlopen, urlencode
 
-from django.core import serializers
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseServerError
 from django.shortcuts import get_object_or_404, get_list_or_404
@@ -48,14 +47,11 @@ from django.db import IntegrityError
 
 from django_restapi.resource import Resource
 
-from resource.models import *
+from resource.models import GadgetResource, GadgetWiring
 from resource.parser import TemplateParser
 from tag.models import UserTag
 
-from commons.catalogue_utils import get_xml_error
-from commons.utils import json_encode
-from commons.get_json_catalogue_data import get_gadgetresource_data
-from commons.get_xml_catalogue_data import get_xml_description
+from commons.catalogue_utils import get_xml_error, get_resource_response
 from commons.exceptions import TemplateParseException
 from commons.logs import log
 
@@ -97,12 +93,10 @@ class GadgetsCollection(Resource):
         #paginate
 	a= int(pag)
 	b= int(offset)
-	gadgetresource = {}
 
         # Get the xml description for all the gadgets in the catalogue
 	if a == 0 or b == 0:
-	    #resources = GadgetResource.objects.all()
-            response = get_xml_description(GadgetResource.objects.all())	
+	    gadgetlist = GadgetResource.objects.all()
 	# Get the xml description for the requested gadgets
 	else:
 	    c=((a-1)*b)
@@ -110,15 +104,9 @@ class GadgetsCollection(Resource):
 	
 	    if a==1:
 	        c=0
-            #resources = GadgetResource.objects.all()[c:d]
-            response = get_xml_description(GadgetResource.objects.all()[c:d])
+            gadgetlist = GadgetResource.objects.all()[c:d]
 	
-        #resource_data = serializers.serialize('python', resources, ensure_ascii=False)
-        #resource_data_list = [get_gadgetresource_data(d) for d in resource_data]
-        #gadgetresource['resourceList'] = resource_data_list
-        
-        #return HttpResponse(json_encode(gadgetresource), mimetype='application/json; charset=UTF-8')		
-	return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
+        return get_resource_response(gadgetlist)
 
     
     def delete(self, request, user_name):

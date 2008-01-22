@@ -36,6 +36,13 @@
 #   http://morfeo-project.org/
 #
 
+from django.core import serializers
+from django.http import HttpResponse
+
+from commons.utils import json_encode
+from commons.get_json_catalogue_data import get_gadgetresource_data, get_tag_data
+from commons.get_xml_catalogue_data import get_xml_description, get_tags_by_resource
+
 def get_uniquelist(list, value = None):
 
     uniquelist = []
@@ -54,3 +61,29 @@ def get_xml_error(value):
 
     xml_error = '<error>'+value+'</error>'
     return xml_error
+
+
+def get_resource_response(gadgetlist, format='json'):
+
+    if format == 'json':
+        gadgetresource = {}
+        resource_data = serializers.serialize('python', gadgetlist, ensure_ascii=False)
+        resource_data_list = [get_gadgetresource_data(d) for d in resource_data]
+        gadgetresource['resourceList'] = resource_data_list
+        return HttpResponse(json_encode(gadgetresource), mimetype='application/json; charset=UTF-8')
+    else:
+        response = get_xml_description(gadgetlist)
+        return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
+
+
+def get_tag_response(gadget, user, format='json'):
+
+    if format == 'json':
+        tag = {}
+        tag_data_list = get_tag_data(gadget, user.id)
+        tag['tagList'] = tag_data_list
+        return HttpResponse(json_encode(tag), mimetype='application/json; charset=UTF-8')
+    else:
+        response = '<?xml version="1.0" encoding="UTF-8" ?>\n'
+        response += get_tags_by_resource(gadget, user)
+        return HttpResponse(response,mimetype='text/xml; charset=UTF-8')

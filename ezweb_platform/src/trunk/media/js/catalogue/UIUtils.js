@@ -49,6 +49,7 @@ UIUtils.imageBottom = '';
 UIUtils.imageContent = '';
 UIUtils.infoResourcesWidth = 400;
 UIUtils.isInfoResourcesOpen = false;
+UIUtils.page = 1;
 
 UIUtils.addResource = function(url, paramName, paramValue) {
 	var newResourceOnSuccess = function (response) {
@@ -144,12 +145,20 @@ UIUtils.searchByWiring = function(url, value, wiring) {
 }
 }
 
-UIUtils.searchBySlot = function(url, slot) {
+UIUtils.cataloguePaginate = function(url, offset, pag) {
 	this.closeInfoResource();
 	var opManager = OpManagerFactory.getInstance();
-
-	opManager.repaintCatalogue(url + "/" + slot );
+  if (pag == "prev"){
+  	pag = UIUtils.page - 1;
+  }
+  if (pag == "next"){
+  	pag = UIUtils.page + 1;
+  }
+  UIUtils.page = pag;    
+	opManager.repaintCatalogue(url + "/" + offset + "/" + pag + "/" );
+	
 }
+
 
 UIUtils.searchGeneric = function(url, param, criteria) {
 	this.closeInfoResource();

@@ -37,6 +37,7 @@
 #
 import sys
 
+from django.core import serializers
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseServerError
@@ -48,9 +49,7 @@ from resource.models import GadgetResource
 from resource.models import GadgetWiring
 from tag.models import UserTag
 
-from commons.catalogue_utils import get_xml_error, get_uniquelist
-from commons.get_json_catalogue_data import get_gadgetresource_data
-from commons.get_xml_catalogue_data import get_xml_description
+from commons.catalogue_utils import get_xml_error, get_uniquelist, get_resource_response
 
 
 class GadgetsCollectionByGenericSearch(Resource):
@@ -89,15 +88,14 @@ class GadgetsCollectionByGenericSearch(Resource):
             for e in value:
                 # Get a list of elements that doesn't match the given value
                 if count == 0:
-                    gadgetlist = GadgetResource.objects.exclude(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
+		    gadgetlist = GadgetResource.objects.exclude(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
 	            count = count + 1                    
                 else:
-                    gadgetlist = gadgetlist.exclude(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
+		    gadgetlist = gadgetlist.exclude(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
  
 	    gadgetlist = get_uniquelist(gadgetlist)
 
-	response = get_xml_description(gadgetlist)
-        return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
+	return get_resource_response(gadgetlist)
 
 
 class GadgetsCollectionByCriteria(Resource):
@@ -135,5 +133,4 @@ class GadgetsCollectionByCriteria(Resource):
         for b in criterialist:
 	    gadgetlist += get_list_or_404(GadgetResource, id=b.idResource_id)
 
-        response = get_xml_description(gadgetlist)
-        return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
+        return get_resource_response(gadgetlist)

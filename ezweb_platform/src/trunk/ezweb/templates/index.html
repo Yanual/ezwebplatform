@@ -102,10 +102,10 @@ var URIs = new _URIConstants();
 		$(element + "_tab").className = "tab current";
 	}
 
-	function show_showcase() {
+	function show_showcase(offset, pag) {
 //		wI.unloaded();
         wI.renewInterface();
-		opManager.repaintCatalogue(URIs.GET_POST_RESOURCES);
+		opManager.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + offset + "/" + pag + "/");
 		showInterface('showcase');
 		UIUtils.setResourcesWidth();
 		$('simple_search_text').focus();
@@ -116,7 +116,7 @@ var URIs = new _URIConstants();
 
 	function show_dragboard() {
 //		wI.unloaded();
-        wI.renewInterface();
+//        wI.renewInterface();
 		showInterface('dragboard');
 
 //    	opManager.restaure();
@@ -135,19 +135,19 @@ var URIs = new _URIConstants();
 		dragboard.repaint();
     	
     	wiring = WiringFactory.getInstance();
-		wI = new wiringInterface(wiring, opManager);
+		wI = new wiringInterface(wiring);
 
 	switch("{{ current_tab }}") {
 		    case 'dragboard':
 	    		show_dragboard();
 		    break;
 		    case 'showcase':
-	    		show_showcase();
+	    		show_showcase(0,0);
 		    break;
 		    case 'wiring':
                 show_wiring();
 		    break;
-        }
+        }
 
 	}
 	
@@ -176,7 +176,7 @@ var URIs = new _URIConstants();
   <img id="logo" src="{{ MEDIA_URL }}images/logo.gif" alt="EzWeb Logo">
   <div class="tab_section">
     <span id="wiring_tab" class="tab" onclick="show_wiring();">{% trans "My Wires" %}</span>
-    <span id="showcase_tab" class="tab" onclick="show_showcase();">{% trans "My Catalogue" %}</span>
+    <span id="showcase_tab" class="tab" onclick="show_showcase(0,0);">{% trans "My Catalogue" %}</span>
     <span id="dragboard_tab" class="tab current" onclick="show_dragboard();">{% trans "My Gadgets" %}</span>
   </div>
 </div>

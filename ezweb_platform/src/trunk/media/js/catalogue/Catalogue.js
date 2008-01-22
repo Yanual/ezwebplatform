@@ -1,4 +1,4 @@
-/* 
+﻿/* 
  * MORFEO Project 
  * http://morfeo-project.org 
  * 
@@ -69,8 +69,8 @@ var CatalogueFactory  = function () {
 			return resources.getValue(id_);
 		}
 		
-		this.addResource = function(resourceXML_, urlTemplate_) { 
-			resources.addElement("resource_" + resources.size(), new Resource("resource_" + resources.size(), resourceXML_, urlTemplate_)); 
+		this.addResource = function(resourceJSON_, urlTemplate_) { 
+			resources.addElement("resource_" + resources.size(), new Resource("resource_" + resources.size(), resourceJSON_, urlTemplate_)); 
 		}
 		
 		this.addResourceToShowCase = function(resourceId_) {
@@ -87,7 +87,8 @@ var CatalogueFactory  = function () {
 			//Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
 			
 			var onError = function(transport) {
-				alert(transport.responseXML);
+				alert("Error loadCatalogue");
+				// Process
 			}
 			
 			var loadResources = function(transport) {
@@ -98,10 +99,15 @@ var CatalogueFactory  = function () {
 													return xmldom; }
 								);
 								
-				var resourcesXML = response.getElementsByTagName("resource");
-				for (var i=(resourcesXML.length-1); i>=0; i--)
+				var responseJSON = transport.responseText;
+			  var jsonResourceList = eval ('(' + responseJSON + ')');
+			  jsonResourceList = jsonResourceList.resourceList
+			  		  
+				//var resourcesXML = response.getElementsByTagName("resource");
+				
+				for (var i = 0; i<jsonResourceList.length; i++)
 				{
-					this.addResource(resourcesXML[i], null);
+					this.addResource(jsonResourceList[i], null);
 				}
 			}
 			

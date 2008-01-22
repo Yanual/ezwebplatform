@@ -1,4 +1,4 @@
-/* 
+﻿/* 
  * MORFEO Project 
  * http://morfeo-project.org 
  * 
@@ -36,9 +36,9 @@
  */
 
 
-function Tag(tagXML_)
+function Tag(tagJSON_)
 {
-	var state = new StateTag(tagXML_);
+	var state = new StateTag(tagJSON_);
 	
 	this.getValue = function() { return state.getValue(); }
 	this.getAppearances = function() { return state.getAppearances(); }
@@ -74,9 +74,9 @@ function Tag(tagXML_)
 	}
 }
 
-function StateTag(tagXML_) 
+function StateTag(tagJSON_) 
 {
-    var value = tagXML_.getElementsByTagName('Value')[0].firstChild.nodeValue;
+    var value = tagJSON_.value;
 	var appearances = 1;
 	//var value = tagXML_.getElementsByTagName("value")[0].firstChild.nodeValue;
 	//var appearances = parseInt(tagXML_.getElementsByTagName("appearances")[0].firstChild.nodeValue);

@@ -1,4 +1,4 @@
-/* 
+﻿/* 
  * MORFEO Project 
  * http://morfeo-project.org 
  * 
@@ -77,7 +77,9 @@ function Tagger(){
 			
 			var loadTags = function(transport) {
 				var resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
-				resource.setTags(transport.responseXML);
+				var responseJSON = transport.responseText;
+				var jsonResourceList = eval ('(' + responseJSON + ')');
+				resource.setTags(jsonResourceList.tagList);
 				resource.updateTags();
 			}
 			
