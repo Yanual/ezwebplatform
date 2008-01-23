@@ -907,11 +907,14 @@ IGadget.prototype.paint = function(where) {
 	this.content.iGadgetId = this.id;
 	this.contentWrapper.iGadgetId = this.id;
 
-	var startFunc = function (iGadgetId) {
+	var dragboardStyle = this.screen;
+	var startFunc = function (draggable, iGadgetId) {
 		DragboardFactory.getInstance().initializeMove(iGadgetId);
+		draggable.setXOffset(dragboardStyle.fromHCellsToPixels(1) / 2);
+		draggable.setYOffset(dragboardStyle.getCellHeight());
 	}
 
-	var updateFunc = function (iGadgetId, x, y) {
+	var updateFunc = function (draggable, iGadgetId, x, y) {
 		var position = DragboardFactory.getInstance().getCellAt(x, y);
 
 		// If the mouse is inside of the dragboard and we have enought columns =>
@@ -920,7 +923,7 @@ IGadget.prototype.paint = function(where) {
 			DragboardFactory.getInstance().moveTemporally(position.x, position.y);
 	};
 
-	var finishFunc = function (iGadgetId) {
+	var finishFunc = function (draggable, iGadgetId) {
 		DragboardFactory.getInstance().acceptMove(iGadgetId);
 	};
 
@@ -1260,12 +1263,13 @@ DragboardCursor.prototype.destroy = function() {
 /////////////////////////////////////
 // Drag and drop support
 /////////////////////////////////////
-function Draggable(el, handler, data, onStart, onDrag, onFinish) {
+function Draggable(draggableElement, handler, data, onStart, onDrag, onFinish) {
 	var xDelta = 0, yDelta = 0;
 	var xStart = 0, yStart = 0;
 	var xOffset = 0, yOffset = 0;
 	var x, y;
 	var objects;
+	var draggable = this;
 
 	// remove the events
 	function enddrag(e) {
@@ -1280,8 +1284,8 @@ function Draggable(el, handler, data, onStart, onDrag, onFinish) {
 			objects[i].contentDocument.onmousemove = null;
 		}
 
-		onFinish(data);
-		el.style.zIndex = "";
+		onFinish(draggable, data);
+		draggableElement.style.zIndex = "";
 
 		handler.addEventListener("mousedown", startdrag, false);
 
@@ -1299,10 +1303,10 @@ function Draggable(el, handler, data, onStart, onDrag, onFinish) {
 		yStart = parseInt(e.screenY);
 		y = y - yDelta;
 		x = x - xDelta;
-		el.style.top = y + 'px';
-		el.style.left = x + 'px';
+		draggableElement.style.top = y + 'px';
+		draggableElement.style.left = x + 'px';
 
-		onDrag(data, x + xOffset, y + yOffset);
+		onDrag(draggable, data, x + xOffset, y + yOffset);
 	}
 
 	// initiate the drag
@@ -1314,14 +1318,12 @@ function Draggable(el, handler, data, onStart, onDrag, onFinish) {
 		document.onmousedown = function() { return false; }; // disable text selection
 		handler.removeEventListener("mousedown", startdrag, false);
 
-		xOffset = 100; // TODO we must calculate this value (half column)
-		yOffset = 100; // TODO must we calculate this value? is 100 a good number for this value?
 		xStart = parseInt(e.screenX);
 		yStart = parseInt(e.screenY);
-		y = el.offsetTop;
-		x = el.offsetLeft;
-		el.style.top = y + 'px';
-		el.style.left = x + 'px';
+		y = draggableElement.offsetTop;
+		x = draggableElement.offsetLeft;
+		draggableElement.style.top = y + 'px';
+		draggableElement.style.left = x + 'px';
 		document.addEventListener("mouseup", enddrag, false);
 		document.addEventListener("mousemove", drag, false);
 
@@ -1331,8 +1333,8 @@ function Draggable(el, handler, data, onStart, onDrag, onFinish) {
 			objects[i].contentDocument.onmousemove = drag;
 		}
 
-		el.style.zIndex = "200"; // TODO
-		onStart(data);
+		draggableElement.style.zIndex = "200"; // TODO
+		onStart(draggable, data);
 
 		return false;
 	}
@@ -1347,4 +1349,12 @@ function Draggable(el, handler, data, onStart, onDrag, onFinish) {
 	var children = handler.childElements();
 	for (var i = 0; i < children.length; i++)
 		children[i].addEventListener("mousedown", cancelbubbling, false);
+
+	this.setXOffset = function(offset) {
+		xOffset = offset;
+	}
+
+	this.setYOffset = function(offset) {
+		yOffset = offset;
+	}
 }
