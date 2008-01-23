@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+﻿﻿# -*- coding: utf-8 -*-
 
 # MORFEO Project 
 # http://morfeo-project.org 
@@ -39,7 +39,8 @@
 from django.shortcuts import get_object_or_404, get_list_or_404
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.core import serializers
-from django.utils import simplejson 
+from django.utils import simplejson
+from django.utils.translation import ugettext as _ 
  
 from django_restapi.resource import Resource
 from django_restapi.model_resource import Collection, Entry
@@ -91,7 +92,7 @@ class ConnectableEntry(Resource):
         if request.POST.has_key('json'):
             json = simplejson.loads(request.POST['json'])
         else:
-            return HttpResponseBadRequest ('json parameter expected')
+            return HttpResponseBadRequest (_(u'JSON parameter expected'))
         
         #TODO Remove this. Sets user screen by default 
         if not screen_id:
