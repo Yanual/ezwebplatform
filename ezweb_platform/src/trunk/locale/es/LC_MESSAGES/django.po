@@ -8,13 +8,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-21 16:57+0100\n"
+"POT-Creation-Date: 2008-01-23 10:36+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: settings.py:81
+msgid "Spanish"
+msgstr ""
+
+#: settings.py:82
+msgid "English"
+msgstr ""
 
 #: connectable/models.py:47 connectable/models.py:63 connectable/models.py:80
 #: gadget/models.py:46 gadget/models.py:134 gadget/models.py:145
@@ -46,11 +54,11 @@ msgstr ""
 #: connectable/models.py:66 connectable/models.py:83 gadget/models.py:115
 #: gadget/models.py:125
 msgid "Variable"
-msgstr ""
+msgstr "Variable"
 
 #: connectable/models.py:67 connectable/models.py:84
 msgid "InOut"
-msgstr ""
+msgstr "Entrada Salida"
 
 #: context/models.py:45 context/models.py:56 gadget/models.py:114
 #: gadget/models.py:124
@@ -59,7 +67,7 @@ msgstr ""
 
 #: context/models.py:46
 msgid "Adaptor"
-msgstr ""
+msgstr "Adaptador"
 
 #: context/views.py:78 context/views.py:123 context/views.py:152
 msgid "JSON parameter not specified"
@@ -75,40 +83,40 @@ msgstr ""
 
 #: ezweb/templates/index.html:175
 msgid "Welcome"
-msgstr ""
+msgstr "Bienvenido"
 
 #: ezweb/templates/index.html:175
 msgid "Exit"
-msgstr ""
+msgstr "Salir"
 
 #: ezweb/templates/index.html:178
 msgid "My Wires"
-msgstr ""
+msgstr "Mis Conexiones"
 
 #: ezweb/templates/index.html:179
 msgid "My Catalogue"
-msgstr ""
+msgstr "Mi Catalogo"
 
 #: ezweb/templates/index.html:180
 msgid "My Gadgets"
-msgstr ""
+msgstr "Mi Entorno"
 
 #: ezweb/templates/wiring.html:6
 msgid "Events"
-msgstr ""
+msgstr "Eventos"
 
 #: ezweb/templates/wiring.html:10
 msgid "Channels"
-msgstr ""
+msgstr "Canales"
 
 #: ezweb/templates/wiring.html:16
 msgid "Slots"
-msgstr ""
+msgstr "Ranura"
 
 #: gadget/models.py:47 gadget/models.py:78 gadget/models.py:160
 #: resource/models.py:55
 msgid "Description"
-msgstr ""
+msgstr "Descripcion"
 
 #: gadget/models.py:49 igadget/models.py:55
 msgid "Width"
