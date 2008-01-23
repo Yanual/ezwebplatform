@@ -1,4 +1,4 @@
-﻿﻿# -*- coding: utf-8 -*-
+﻿﻿﻿# -*- coding: utf-8 -*-
 
 # MORFEO Project 
 # http://morfeo-project.org 
@@ -153,16 +153,16 @@ class ConnectableEntry(Resource):
             return HttpResponse ('ok')
         except Screen.DoesNotExist:
             transaction.rollback()
-            return HttpResponseBadRequest('refered screen (' + screen_id + ') doesn\'t exists.')
+            return HttpResponseBadRequest(_('refered screen %(screen_id)s doesn\'t exists.') % {'screen_id': screen_id})
         except IGadget.DoesNotExist:
             transaction.rollback()
-            return HttpResponseBadRequest('refered igadget doesn\'t exists.')
+            return HttpResponseBadRequest(_('refered igadget doesn\'t exists.'))
         except Variable.DoesNotExist:
             transaction.rollback()
-            return HttpResponseBadRequest('refered variable doesn\'t exists.')
+            return HttpResponseBadRequest(_('refered variable doesn\'t exists.'))
         except Exception, e:
             transaction.rollback()
-            return HttpResponseBadRequest('connectables cannot be save: %s' % e)
+            return HttpResponseBadRequest(_('connectables cannot be save: %(exc)s') % {'exc': e})
 
         return HttpResponse('ok')
 
