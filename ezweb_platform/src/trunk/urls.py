@@ -85,5 +85,6 @@ urlpatterns = patterns('',
     (r'^accounts/login$', 'django.contrib.auth.views.login'),
     (r'^logout$', 'django.contrib.auth.views.logout'),
     (r'^admin/', include('django.contrib.admin.urls')),
+    (r'^i18n/', include('django.conf.urls.i18n')),
 
 )
