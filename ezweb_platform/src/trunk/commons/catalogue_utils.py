@@ -43,6 +43,9 @@ from commons.utils import json_encode
 from commons.get_json_catalogue_data import get_gadgetresource_data, get_tag_data
 from commons.get_xml_catalogue_data import get_xml_description, get_tags_by_resource
 
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import string_concat
+
 def get_uniquelist(list, value = None):
 
     uniquelist = []
@@ -59,7 +62,7 @@ def get_uniquelist(list, value = None):
 
 def get_xml_error(value):
 
-    xml_error = '<error>'+value+'</error>'
+    xml_error = string_concat(['<error>', _(value), '</error>'])
     return xml_error
 
 
