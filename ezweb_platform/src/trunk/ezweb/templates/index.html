@@ -137,7 +137,7 @@ var URIs = new _URIConstants();
     	wiring = WiringFactory.getInstance();
 		wI = new wiringInterface(wiring);
 
-	switch("{{ current_tab }}") {
+		switch("{{ current_tab }}") {
 		    case 'dragboard':
 	    		show_dragboard();
 		    break;
@@ -153,6 +153,22 @@ var URIs = new _URIConstants();
 	
 	function resizeWrapper() {
 		$("wrapper").setStyle({"height" : (window.innerHeight - $("header").offsetHeight - 20) + "px"});
+	}
+
+	function onSuccess() {alert ("OK");}
+	function onError(transport, e) {
+			var msg;
+			if (e)
+				msg = e;
+			else
+				msg = transport.status + " " + transport.statusText;
+			alert ("Error setting language: " + msg);
+	}
+
+	
+	function setLanguage(language) {
+		document.setlanguage.language.value = language; 
+		document.setlanguage.submit()
 	}
 
 	var wI;
@@ -172,7 +188,12 @@ var URIs = new _URIConstants();
 
 <!-- HEADER -->
 <div id="header">
-  <div id="greeting">{% trans "Welcome" %}, {{ user.username }} / <a href="/logout">{% trans "Exit" %}</a></div>
+  <div id="greeting">{% trans "Welcome" %}, {{ user.username }}{% for lang in LANGUAGES %} | <a href="/" onclick="return setLanguage('{{ lang.0 }}')" >{{ lang.1 }}</a>{% endfor %} | <a href="/logout">{% trans "Exit" %}</a>
+  <form name="setlanguage" action="/i18n/setlang/" method="post">
+	<input name="next" type="hidden" value="/" />
+	<input name="language" type="hidden"/>
+  </form>
+  </div>
   <img id="logo" src="{{ MEDIA_URL }}images/logo.gif" alt="EzWeb Logo">
   <div class="tab_section">
     <span id="wiring_tab" class="tab" onclick="show_wiring();">{% trans "My Wires" %}</span>
