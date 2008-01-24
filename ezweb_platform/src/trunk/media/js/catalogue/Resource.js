@@ -2,7 +2,7 @@
   //                RESOURCE                  //
   //////////////////////////////////////////////
 
-function Resource( id_, resourceJSON_, urlTemplate_) {
+function Resource( id_, resourceJSON_, urlTemplate_, regs) {
 	
 	// ******************
 	//  PUBLIC FUNCTIONS
@@ -93,9 +93,9 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 								"<button onclick='CatalogueFactory.getInstance().addResourceToShowCase(UIUtils.getSelectedResource());'>A&ntilde;adir Instancia</button>";
 	}
 	
-	this.paginate = function() {
+	this.paginate = function(regs) {
 		var pageInfo = document.getElementById("paginate");
-		pageInfo.innerHTML = 	"<center>" + _paginate() + "</center>";
+		pageInfo.innerHTML = 	"<center>" + _paginate(regs) + "</center>";
 	}
 	
 	this.updateTags = function()
@@ -160,20 +160,21 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 		return tagsHTML;
 	}
 	
- var _paginate = function(){
+ var _paginate = function(regs){
 		var eventsHTML = '';
 		
-		var jsCall_prev = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, 10,"prev");';
+		var end_page = regs/10;
+		var jsCall_prev = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, 10,"prev", "' + regs + '");';
 		
 		eventsHTML = ("<span class='multiple_size_tag'><a title='ir a pagina anterior' href='" + jsCall_prev + "'>anterior</a></span>");
 		
-		for (var i=1; i<4; i++)
+		for (var i=1; i<end_page + 1; i++)
 		{
-			var jsCall_num = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, 10, "' + i + '");';
+			var jsCall_num = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, 10, "' + i + '", "' + regs + '");';
 			eventsHTML += ("<span class='multiple_size_tag'>"+"<a title='ir a pagina " + i +"' href='" + jsCall_num + "'>" + i + "</a></span> ");
 		}
 		
-		var jsCall_next = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, 10,"next");';
+		var jsCall_next = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, 10,"next", "' + regs + '");';
 		eventsHTML += ("<span class='multiple_size_tag'><a title='ir a pagina siguiente' href='" + jsCall_next + "'>siguiente</a></span>");
 		
 		return eventsHTML;
@@ -289,7 +290,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 	else {
 		state = new ResourceState(resourceJSON_);
 		this.paint();
-		//this.paginate();
+		//this.paginate(regs);
 	}
 }
 

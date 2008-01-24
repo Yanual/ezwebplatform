@@ -59,7 +59,12 @@ from commons.catalogue_utils import get_xml_error, get_tag_response
 class GadgetTagsCollection(Resource):
 
     def create(self,request, user_name, vendor, name, version):
-        
+
+	try:
+	    format = request.__getitem__('format')
+	except:
+	    format = 'default'
+
         user = user_authentication(user_name)
 
         # Get the xml containing the tags from the request
@@ -91,23 +96,33 @@ class GadgetTagsCollection(Resource):
 	    except:
 	        return HttpResponseServerError(get_xml_error(str(sys.exc_info()[1])),mimetype='text/xml; charset=UTF-8')
 
-        return get_tag_response(gadget,user)
+        return get_tag_response(gadget,user, format)
 
 	
     def read(self,request,user_name,vendor,name,version):
 
-        # Get the gadget's id for those vendor, name and version
+        try:
+	    format = request.__getitem__('format')
+	except:
+	    format = 'default'
+
+	# Get the gadget's id for those vendor, name and version
         gadget = get_object_or_404(GadgetResource, short_name=name,vendor=vendor,version=version).id
 
 	# Get the user's id for that user_name
 	user = user_authentication(user_name)
 
-	return get_tag_response(gadget,user)
+	return get_tag_response(gadget,user, format)
 
 
     def delete(self,request,user_name,vendor,name,version):
 
-        value_tag = request.__getitem__('value_tag')
+        try:
+	    format = request.__getitem__('format')
+	except:
+	    format = 'default'
+
+	value_tag = request.__getitem__('value_tag')
         gadget = get_object_or_404(GadgetResource, short_name=name,vendor=vendor,version=version).id
         user = user_authentication(user_name)
 
@@ -118,6 +133,6 @@ class GadgetTagsCollection(Resource):
 
         tag.delete()
 
-        return get_tag_response(gadget,user)
+        return get_tag_response(gadget,user, format)
 
 				

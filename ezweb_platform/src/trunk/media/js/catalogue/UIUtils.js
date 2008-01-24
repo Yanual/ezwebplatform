@@ -145,17 +145,30 @@ UIUtils.searchByWiring = function(url, value, wiring) {
 }
 }
 
-UIUtils.cataloguePaginate = function(url, offset, pag) {
+UIUtils.cataloguePaginate = function(url, offset, pag, regs) {
 	this.closeInfoResource();
 	var opManager = OpManagerFactory.getInstance();
+	var pages = regs/offset;
   if (pag == "prev"){
-  	pag = UIUtils.page - 1;
+  	
+  	if(UIUtils.page == 1){
+  		pag = 1;
+  	}
+    else{
+  		pag = UIUtils.page - 1;
+  	}
   }
+  
   if (pag == "next"){
-  	pag = UIUtils.page + 1;
+  	if(UIUtils.page == pages){
+  		pag = pages;
+  	}
+    else{
+  	  pag = UIUtils.page + 1;
+  }
   }
   UIUtils.page = pag;    
-	opManager.repaintCatalogue(url + "/" + offset + "/" + pag + "/" );
+	opManager.repaintCatalogue(url + "/" + offset + "/" + pag);
 	
 }
 

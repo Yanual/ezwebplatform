@@ -74,6 +74,11 @@ class GadgetsCollectionByGenericSearch(Resource):
 	gadgetlist = []
 
         value = value.split(' ')
+
+	try:
+	    format = request.__getitem__('format')
+	except:
+	    format = 'default'
         
         if criteria == 'and':
             gadgetlist = self.__get_gadgetlist__(value)
@@ -95,7 +100,7 @@ class GadgetsCollectionByGenericSearch(Resource):
  
 	    gadgetlist = get_uniquelist(gadgetlist)
 
-	return get_resource_response(gadgetlist)
+	return get_resource_response(gadgetlist, format)
 
 
 class GadgetsCollectionByCriteria(Resource):
@@ -104,6 +109,11 @@ class GadgetsCollectionByCriteria(Resource):
 	
         criterialist = []
         gadgetlist = []
+
+	try:
+	    format = request.__getitem__('format')
+	except:
+	    format = 'default'
 
 	if criteria == 'event':
 	    value = value.split(' ')
@@ -133,4 +143,4 @@ class GadgetsCollectionByCriteria(Resource):
         for b in criterialist:
 	    gadgetlist += get_list_or_404(GadgetResource, id=b.idResource_id)
 
-        return get_resource_response(gadgetlist)
+        return get_resource_response(gadgetlist, format)

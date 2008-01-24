@@ -89,8 +89,13 @@ class GadgetsCollection(Resource):
 
 
     def read(self,request, user_name, offset=0,pag=0):
-		
-        #paginate
+        
+	try:
+	    format = request.__getitem__('format')
+	except:
+	    format = 'default'
+
+	#paginate
 	a= int(pag)
 	b= int(offset)
 
@@ -106,7 +111,7 @@ class GadgetsCollection(Resource):
 	        c=0
             gadgetlist = GadgetResource.objects.all()[c:d]
 	
-        return get_resource_response(gadgetlist)
+        return get_resource_response(gadgetlist,format)
 
     
     def delete(self, request, user_name):

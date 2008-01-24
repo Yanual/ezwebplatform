@@ -1,4 +1,4 @@
-{% load i18n %}
+﻿{% load i18n %}
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -107,7 +107,7 @@ var URIs = new _URIConstants();
 	function show_showcase(offset, pag) {
 //		wI.unloaded();
         wI.renewInterface();
-		opManager.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + offset + "/" + pag + "/");
+		opManager.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + offset + "/" + pag);
 		showInterface('showcase');
 		UIUtils.setResourcesWidth();
 		$('simple_search_text').focus();

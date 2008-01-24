@@ -69,8 +69,8 @@ var CatalogueFactory  = function () {
 			return resources.getValue(id_);
 		}
 		
-		this.addResource = function(resourceJSON_, urlTemplate_) { 
-			resources.addElement("resource_" + resources.size(), new Resource("resource_" + resources.size(), resourceJSON_, urlTemplate_)); 
+		this.addResource = function(resourceJSON_, urlTemplate_, pages) { 
+			resources.addElement("resource_" + resources.size(), new Resource("resource_" + resources.size(), resourceJSON_, urlTemplate_, pages)); 
 		}
 		
 		this.addResourceToShowCase = function(resourceId_) {
@@ -100,6 +100,7 @@ var CatalogueFactory  = function () {
 								);
 								
 				var responseJSON = transport.responseText;
+				var pages = transport.getResponseHeader('pages');
 			  var jsonResourceList = eval ('(' + responseJSON + ')');
 			  jsonResourceList = jsonResourceList.resourceList
 			  		  
@@ -107,7 +108,7 @@ var CatalogueFactory  = function () {
 				
 				for (var i = 0; i<jsonResourceList.length; i++)
 				{
-					this.addResource(jsonResourceList[i], null);
+					this.addResource(jsonResourceList[i], null, pages);
 				}
 			}
 			
