@@ -41,6 +41,9 @@ from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpRespo
 from django.core import serializers
 from django.utils import simplejson
 
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import string_concat
+
 from django_restapi.resource import Resource
 from django_restapi.model_resource import Collection, Entry
 from django_restapi.responder import *
@@ -57,7 +60,7 @@ from igadget.models import *
 @transaction.commit_on_success
 def SaveIGadget(igadget, user, screen_id, igadget_id):
     if not igadget.has_key('uri'):
-        raise Exception('Malformed iGadget JSON: expecting igadget uri.')
+        raise Exception(_('Malformed iGadget JSON: expecting igadget uri.'))
 
     # Gets all needed parameters of the IGadget
     uri = igadget.get('uri')
@@ -112,7 +115,7 @@ def SaveIGadget(igadget, user, screen_id, igadget_id):
             var.save() 
 
     except Gadget.DoesNotExist:
-        raise Gadget.DoesNotExist('refered gadget (' + gadget_uri + ') don\'t exists.')
+        raise Gadget.DoesNotExist(_('refered gadget %(gadget_uri)s doesn\'t exists.') % {'gadget_uri': gadget_uri})
     except VariableDef.DoesNotExist:
         #iGadget has no variables. It's normal
         pass
@@ -120,7 +123,7 @@ def SaveIGadget(igadget, user, screen_id, igadget_id):
 @transaction.commit_on_success
 def UpdateIGadget(igadget, user, screen_id, igadget_id):
     if not igadget.has_key('uri'):
-        raise Exception('Malformed iGadget JSON: expecting igadget uri.')
+        raise Exception(_('Malformed iGadget JSON: expecting igadget uri.'))
 
     # Gets all needed parameters of the IGadget
     uri = igadget.get('uri')
@@ -138,25 +141,25 @@ def UpdateIGadget(igadget, user, screen_id, igadget_id):
     if igadget.has_key('width'):
         width = igadget.get('width')
         if width <= 0:
-            raise Exception('Malformed iGadget JSON')
+            raise Exception(_('Malformed iGadget JSON'))
         position.width = width
 
     if igadget.has_key('height'):
         height = igadget.get('height')
         if height <= 0:
-            raise Exception('Malformed iGadget JSON')
+            raise Exception(_('Malformed iGadget JSON'))
         position.height = height
 
     if igadget.has_key('top'):
         top = igadget.get('top')
         if top < 0:
-            raise Exception('Malformed iGadget JSON')
+            raise Exception(_('Malformed iGadget JSON'))
         position.posY = top
     
     if igadget.has_key('left'):
         left = igadget.get('left')
         if left < 0:
-            raise Exception('Malformed iGadget JSON')
+            raise Exception(_('Malformed iGadget JSON'))
         position.posX = left
 
     if igadget.has_key('minimized'):
@@ -204,8 +207,8 @@ class IGadgetCollection(Resource):
             screen_id = 1
         
         if not request.has_key('igadgets'):
-            return HttpResponseBadRequest('<error>iGadget JSON expected</error>')
-
+            return HttpResponseBadRequest(string_concat(['<error>',_(u"iGadget JSON expected"),'</error>']))
+        
         #TODO we can make this with deserializers (simplejson)      
         received_json = request.POST['igadgets']
 	    
@@ -222,7 +225,7 @@ class IGadgetCollection(Resource):
             return HttpResponse('ok')
         except Exception, e:
             transaction.rollback()
-            return HttpResponseServerError('<error>iGadgets cannot be saved: %s</error>' % e)
+            return HttpResponseServerError(string_concat(['<error>',_(u"iGadgets cannot be saved: "), e,'</error>']))
 
 
     @transaction.commit_manually
@@ -234,7 +237,7 @@ class IGadgetCollection(Resource):
             screen_id = 1
 
         if not request.PUT.has_key('igadgets'):
-            return HttpResponseBadRequest('<error>iGadget JSON expected</error>')
+            return HttpResponseBadRequest(string_concat(['<error>',_(u"iGadget JSON expected"),'</error>']))
 
         #TODO we can make this with deserializers (simplejson)      
         received_json = request.PUT['igadgets']
@@ -252,7 +255,7 @@ class IGadgetCollection(Resource):
             return HttpResponse('ok')
         except Exception, e:
             transaction.rollback()
-            return HttpResponseServerError('<error>iGadgets cannot be updated: %s</error>' % e)
+            return HttpResponseServerError(string_concat(['<error>',_(u"iGadgets cannot be updated: "), e,'</error>']))
 
 class IGadgetEntry(Resource):
     def read(self, request, user_name, igadget_id, screen_id=None):
@@ -279,7 +282,7 @@ class IGadgetEntry(Resource):
             screen_id = 1
 
         if not request.has_key('igadget'):
-            return HttpResponseBadRequest('<error>iGadget JSON expected</error>')
+            return HttpResponseBadRequest(string_concat(['<error>',_(u"iGadget JSON expected"),'</error>']))
 
         #TODO we can make this with deserializers (simplejson)
         received_json = request.POST['igadget']
@@ -293,7 +296,7 @@ class IGadgetEntry(Resource):
             SaveIGadget(igadget, user, screen_id, igadget_id)
             return HttpResponse('ok')
         except Exception, e:
-            return HttpResponseServerError('<error>iGadget cannot be saved: %s</error>' % e)
+            return HttpResponseServerError(string_concat(['<error>',_(u"iGadgets cannot be saved: "), e,'</error>']))
 
 
     def update(self, request, user_name, igadget_id, screen_id=None):
@@ -304,7 +307,7 @@ class IGadgetEntry(Resource):
             screen_id = 1
 
         if not request.PUT.has_key('igadget'):
-            return HttpResponseBadRequest('<error>iGadget JSON expected</error>')
+            return HttpResponseBadRequest(string_concat(['<error>',_(u"iGadget JSON expected"),'</error>']))
 
         #TODO we can make this with deserializers (simplejson)
         received_json = request.PUT['igadget']
@@ -318,7 +321,7 @@ class IGadgetEntry(Resource):
             UpdateIGadget(igadget, user, screen_id, igadget_id)
             return HttpResponse('ok')
         except Exception, e:
-            return HttpResponseServerError('<error>iGadget cannot be updated: %s</error>' % e)
+            return HttpResponseServerError(string_concat(['<error>',_(u"iGadgets cannot be updated: "), e,'</error>']))
 
 
     def delete(self, request, user_name, igadget_id, screen_id=None):
@@ -364,7 +367,7 @@ class IGadgetVariableCollection(Resource):
 
         # Gets JSON parameter from request
         if not request.PUT.has_key('variables'):
-            return HttpResponseBadRequest('<error>iGadget variables JSON expected</error>')
+            return HttpResponseBadRequest(string_concat(['<error>',_(u"iGadget variables JSON expected"),'</error>']))
 
         variables_JSON = request.PUT['variables']
 
@@ -416,7 +419,7 @@ class IGadgetVariable(Resource):
         
         # Gets value parameter from request
         if not request.PUT.has_key('value'):
-            return HttpResponseBadRequest('<error>iGadget JSON expected</error>')
+            return HttpResponseBadRequest(string_concat(['<error>',_(u"iGadget JSON expected"),'</error>']))
         new_value = request.PUT['value']
         
         #TODO by default. Remove in final release
