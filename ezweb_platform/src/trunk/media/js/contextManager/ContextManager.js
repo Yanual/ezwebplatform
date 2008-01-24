@@ -97,7 +97,7 @@ var ContextManagerFactory = function () {
 					msg = e;
 				else
 					msg = transport.status + " " + transport.statusText;
-				alert ("Error getting gadgets variables: " + msg);
+				alert (gettext("Error getting gadgets variables: ") + msg);
 			}
 			
 			// Start to load concepts
@@ -118,7 +118,7 @@ var ContextManagerFactory = function () {
 					var cname = curConcept.names[j];
 					
 					if (_name2Concept[cname] != null){
-						alert ("WARNING: concept name '" + cname + "' is already related to '" + _name2Concept[cname] + "'. New related concept is '" + curConcept.concept + "'")
+						alert (gettext("WARNING: concept name") + " '" + cname + "' " + gettext("is already related to") + " '" + _name2Concept[cname] + "'. " + gettext("New related concept is") + " '" + curConcept.concept + "'");
 					}
 					_name2Concept[cname] = curConcept.concept;	
 				}	
@@ -135,7 +135,7 @@ var ContextManagerFactory = function () {
 			else
 				msg = transport.status + " " + transport.statusText;
 
-			alert ("Error receiving context manager data: " + msg);
+			alert (gettext("Error receiving context manager data") + ": " + msg);
 		}
 
 		
@@ -152,7 +152,7 @@ var ContextManagerFactory = function () {
 			for (var i = 0; i < cVars.length; i++){
 				var cVar = cVars[i];
 				if (_name2Concept[cVar.getConceptName()] == null){
-					alert ("Context variable [" + cVar.getName() + "] without related concept. Its value cannot be established");
+					alert (gettext("Context variable") + " [" + cVar.getName() + "] " + gettext("without related concept. Its value cannot be established"));
 					return;
 				}
 				var relatedConcept = _concepts[_name2Concept[cVar.getConceptName()]];

@@ -57,7 +57,7 @@ function UserAdaptor() {
 			msg = e;
 		else
 			msg = transport.status + " " + transport.statusText;
-		alert ("Error getting concept " + UserAdaptor.prototype.CONCEPT + ":"+ msg);
+		alert (gettext ("Error getting concept ") + UserAdaptor.prototype.CONCEPT + ":"+ msg);
 	}
 	
 	var uri = URIs.GET_CONTEXT_VALUE.evaluate({concept: UserAdaptor.prototype.CONCEPT});
@@ -85,7 +85,7 @@ function WidthAdaptor(gadgetID) {
 			msg = e;
 		else
 			msg = transport.status + " " + transport.statusText;
-		alert ("Error getting concept " + WidthAdaptor.prototype.CONCEPT + ":"+ msg);
+		alert (gettext ("Error getting concept ") + WidthAdaptor.prototype.CONCEPT + ":"+ msg);
 	}
 	
 	var uri = URIs.GET_IGADGET.evaluate({id: gadgetID});
@@ -114,7 +114,7 @@ function HeightAdaptor(gadgetID) {
 			msg = e;
 		else
 			msg = transport.status + " " + transport.statusText;
-		alert ("Error getting concept " + HeightAdaptor.prototype.CONCEPT + ":"+ msg);
+		alert (gettext ("Error getting concept ") + HeightAdaptor.prototype.CONCEPT + ":"+ msg);
 	}
 	
 	var uri = URIs.GET_IGADGET.evaluate({id: gadgetID});
@@ -144,7 +144,7 @@ function LanguageAdaptor(gadgetID) {
 			msg = e;
 		else
 			msg = transport.status + " " + transport.statusText;
-		alert ("Error getting concept " + LanguageAdaptor.prototype.CONCEPT + ":"+ msg);
+		alert (gettext ("Error getting concept ") + LanguageAdaptor.prototype.CONCEPT + ":"+ msg);
 	}
 	
 	var uri = URIs.GET_CONTEXT_VALUE.evaluate({concept: LanguageAdaptor.prototype.CONCEPT});
