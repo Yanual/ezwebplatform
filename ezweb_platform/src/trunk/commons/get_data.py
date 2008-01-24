@@ -194,6 +194,10 @@ def get_igadget_data(data):
     data_ret['left'] = position.posX
     data_ret['width'] = position.width
     data_ret['height'] = position.height
+    if position.minimized:
+          data_ret['minimized'] = "true"
+    else:
+          data_ret['minimized'] = "false"
     variables = Variable.objects.filter (igadget__id=data['pk'])
     data = serializers.serialize('python', variables, ensure_ascii=False)
     data_ret['variables'] = [get_variable_data(d) for d in data]

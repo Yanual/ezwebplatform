@@ -56,6 +56,9 @@ from igadget.models import *
 
 @transaction.commit_on_success
 def SaveIGadget(igadget, user, screen_id, igadget_id):
+    if not igadget.has_key('uri'):
+        raise Exception('Malformed iGadget JSON: expecting igadget uri.')
+
     # Gets all needed parameters of the IGadget
     uri = igadget.get('uri')
 
@@ -116,6 +119,9 @@ def SaveIGadget(igadget, user, screen_id, igadget_id):
 
 @transaction.commit_on_success
 def UpdateIGadget(igadget, user, screen_id, igadget_id):
+    if not igadget.has_key('uri'):
+        raise Exception('Malformed iGadget JSON: expecting igadget uri.')
+
     # Gets all needed parameters of the IGadget
     uri = igadget.get('uri')
 
@@ -152,6 +158,13 @@ def UpdateIGadget(igadget, user, screen_id, igadget_id):
         if left < 0:
             raise Exception('Malformed iGadget JSON')
         position.posX = left
+
+    if igadget.has_key('minimized'):
+	minimized = igadget.get('minimized')
+	if (minimized == 'true'):
+            position.minimized = 1
+	else:
+            position.minimized = 0
 
     # Checks
     screen = Screen.objects.get(user=user, code=screen_id)

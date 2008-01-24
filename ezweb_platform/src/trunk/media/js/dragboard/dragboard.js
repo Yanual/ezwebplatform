@@ -117,7 +117,7 @@ var DragboardFactory = function () {
 		 * Loads data from persistenceEngine
 		 */
 		function _load(receivedData) {
-			var curIGadget, position, width, height, igadget, gadget, gadgetid;
+			var curIGadget, position, width, height, igadget, gadget, gadgetid, minimized;
 
 			var iGadgetsJson = eval ('(' + receivedData.responseText + ')');
 			iGadgetsJson = iGadgetsJson.iGadgets;
@@ -144,8 +144,11 @@ var DragboardFactory = function () {
 				curIGadget.id = curIGadget.uri.split("/");
 				curIGadget.id = parseInt(curIGadget.id[curIGadget.id.length - 1]);
 
+				// Parse minimize status
+				minimized = curIGadget.minimized == "true" ? true : false;
+
 				// Create instance model
-				igadget = new IGadget(gadget, curIGadget.id, dragboardStyle, position, width, height);
+				igadget = new IGadget(gadget, curIGadget.id, dragboardStyle, position, width, height, minimized);
 				iGadgets[curIGadget.id] = igadget;
 
 				if (curIGadget.id >= currentId) // TODO remove, persistenceEngine will manage ids
@@ -478,6 +481,34 @@ var DragboardFactory = function () {
 					}
 		}
 
+		function _commitChanges() {
+			// Update igadgets positions in persistence
+			function onSuccess() {}
+
+			function onError(transport) {
+				alert (transport.responseXML);
+			}
+
+			// TODO only send changes
+			var iGadgetInfo, uri, position;
+			var data = new Hash();
+			data['iGadgets'] = new Array();
+			iGadgets.each( function (pair) {
+				iGadget = pair.value;
+				iGadgetInfo = new Hash();
+ 				uri = URIs.GET_IGADGET.evaluate({id: iGadget.getId()});
+				iGadgetInfo['uri'] = uri;
+				position = iGadget.getPosition();
+				iGadgetInfo['top'] = position.y;
+				iGadgetInfo['left'] = position.x;
+				data['iGadgets'].push(iGadgetInfo);
+				iGadgetInfo['minimized'] = iGadget.isMinimized() ? "true" : "false";
+			});
+
+			data = {igadgets: data.toJSON()};
+			persistenceEngine.send_update(URIs.GET_IGADGETS, data, this, onSuccess, onError);
+		}
+
 		// ****************
 		// PUBLIC METHODS 
 		// ****************
@@ -494,7 +525,7 @@ var DragboardFactory = function () {
 			var position = _searchFreeSpace(width, height + 2);
 
 			// Create the instance
-			var iGadget = new IGadget(gadget, currentId, dragboardStyle, position, width, height);
+			var iGadget = new IGadget(gadget, currentId, dragboardStyle, position, width, height, false);
 			iGadget.save();
 			iGadgets[currentId] = iGadget;
 			currentId++;
@@ -524,8 +555,13 @@ var DragboardFactory = function () {
 			var oldWidth = igadget.getContentWidth();
 			var oldHeight = igadget.getHeight();
 			igadget.setMinimizeStatus(false);
-			_resize(igadget, oldWidth, oldHeight, oldWidth, igadget.getHeight());
 
+			var newHeight = igadget.getHeight();
+			if (oldHeight != newHeight) {
+				_resize(igadget, oldWidth, oldHeight, oldWidth, newHeight);
+				// Save new positions into persistence
+				_commitChanges();
+			}
 		}
 
 		Dragboard.prototype.minimize = function (iGadgetId) {
@@ -541,7 +577,13 @@ var DragboardFactory = function () {
 			var oldWidth = igadget.getContentWidth();
 			var oldHeight = igadget.getHeight();
 			igadget.setMinimizeStatus(true);
-			_resize(igadget, oldWidth, oldHeight, oldWidth, igadget.getHeight());
+
+			var newHeight = igadget.getHeight();
+			if (oldHeight != newHeight) {
+				_resize(igadget, oldWidth, oldHeight, oldWidth, newHeight);
+				// Save new positions into persistence
+				_commitChanges();
+			}
 		}
 
 		Dragboard.prototype.toggleMinimizeStatus = function (iGadgetId) {
@@ -676,6 +718,7 @@ var DragboardFactory = function () {
 			if (gadgetToMove == null)
 				alert("exception at acceptMove"); // TODO
 
+			var oldposition = gadgetToMove.getPosition();
 			var newposition = dragboardCursor.getPosition();
 			_destroyCursor(false);
 
@@ -685,28 +728,8 @@ var DragboardFactory = function () {
 			shadowMatrix = null;
 
 			// Update igadgets positions in persistence
-			function onSuccess() {}
-
-			function onError(transport) {
-				alert (transport.responseXML);
-			}
-
-			var iGadgetInfo, uri, position;
-			var data = new Hash();
-			data['iGadgets'] = new Array();
-			iGadgets.each( function (pair) {
-				iGadget = pair.value;
-				iGadgetInfo = new Hash();
- 				uri = URIs.GET_IGADGET.evaluate({id: iGadget.getId()});
-				iGadgetInfo['uri'] = uri;
-				position = iGadget.getPosition();
-				iGadgetInfo['top'] = position.y;
-				iGadgetInfo['left'] = position.x;
-				data['iGadgets'].push(iGadgetInfo);
-			});
-
-			data = {igadgets: data.toJSON()};
-			persistenceEngine.send_update(URIs.GET_IGADGETS, data, this, onSuccess, onError);
+			if (oldposition.y != newposition.y || oldposition.x != newposition.x)
+				_commitChanges();
 		}
 
 		// TODO rename this method to something like getGadgetFromIGadget
@@ -749,16 +772,20 @@ var DragboardFactory = function () {
  * This class represents a instance of one Gadget.
  * @author aarranz
  */
-function IGadget(gadget, iGadgetId, screen, position, width, height) {
+function IGadget(gadget, iGadgetId, screen, position, width, height, minimized) {
 	this.id = iGadgetId;
 	this.gadget = gadget;
 	this.screen = screen;
 	this.position = position;
 	this.width = width;
 	this.contentHeight = height;
-	this.height = height + 2; // TODO this is a estimation
+
+	this.height = 2; // TODO 2 is a estimation of the menu's height
+	if (!minimized)
+	    this.height += height;
+
 	this.configurationVisible = false;
-	this.minimized = false;
+	this.minimized = minimized;
 
 	// Elements
 	this.element = null;
@@ -869,7 +896,6 @@ IGadget.prototype.paint = function(where) {
 	gadgetElement.appendChild(gadgetMenu);
 
 	// Content wrapper
-
 	this.contentWrapper = document.createElement("div");
 	this.contentWrapper.setAttribute("class", "gadget_wrapper");
 	gadgetElement.appendChild(this.contentWrapper);
@@ -892,6 +918,7 @@ IGadget.prototype.paint = function(where) {
 
 	this.contentWrapper.appendChild(this.content);
 
+	// TODO use setStyle from prototype
 	// Position
 	gadgetElement.style.left = this.screen.getColumnOffsetLeft(this.position.x);
 	gadgetElement.style.top = this.screen.fromVCellsToPixels(this.position.y) + "px";
@@ -899,8 +926,13 @@ IGadget.prototype.paint = function(where) {
 	// Sizes
 	gadgetElement.style.width = this.screen.fromHCellsToPercentage(this.width) + "%";
 	var contentHeight = this.screen.fromVCellsToPixels(this.contentHeight) + "px";
-	this.contentWrapper.style.height = contentHeight;
 	this.content.style.height = contentHeight;
+	if (this.minimized) {
+		this.contentWrapper.style.height = "0px";
+		this.contentWrapper.style.borderTop = "0px";
+	} else {
+		this.contentWrapper.style.height = contentHeight;
+	}
 
 	// References
 	gadgetElement.iGadgetId = this.id;
@@ -1049,6 +1081,28 @@ IGadget.prototype.setMinimizeStatus = function(newStatus) {
 	}
 
 	this.height = null; // force refreshing sizes (see getHeight function)
+
+	// Persistence
+	function onSuccess() {}
+	function onError(transport, e) {
+		var msg;
+		if (e) {
+			msg = e;
+		} else {
+			msg = transport.status + " " + transport.statusText;
+		}
+
+		alert("Error changing igadget minimized status in persistence: " + msg);
+	}
+
+	var persistenceEngine = PersistenceEngineFactory.getInstance();
+ 	var uri = URIs.GET_IGADGET.evaluate({id: this.id});
+
+	var data = new Hash();
+	data['minimized'] = this.minimized.toString();
+	data['uri'] = uri;
+	data = {igadget: data.toJSON()};
+	persistenceEngine.send_update(uri , data, this, onSuccess, onError);
 }
 
 IGadget.prototype.isConfigurationVisible = function() {
@@ -1110,13 +1164,14 @@ IGadget.prototype.saveConfig = function() {
 IGadget.prototype.save = function() {
 	function onSuccess() {}
 	function onError(transport, e) {
-			var msg;
-			if (e)
-				msg = e;
-			else
-				msg = transport.status + " " + transport.statusText;
+		var msg;
+		if (e) {
+			msg = e;
+		} else {
+			msg = transport.status + " " + transport.statusText;
+		}
 
-			alert ("Error adding igadget to persistence: " + msg);
+		alert("Error adding igadget to persistence: " + msg);
 	}
 
 	var persistenceEngine = PersistenceEngineFactory.getInstance();
