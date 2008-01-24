@@ -46,6 +46,10 @@ from django_restapi.resource import Resource
 
 from resource.views import addToPlatform
 
+#JavaScript tranlation
+js_info_dict = {
+    'packages': ('',),
+}
 
 urlpatterns = patterns('',
     # Static content
@@ -85,6 +89,10 @@ urlpatterns = patterns('',
     (r'^accounts/login$', 'django.contrib.auth.views.login'),
     (r'^logout$', 'django.contrib.auth.views.logout'),
     (r'^admin/', include('django.contrib.admin.urls')),
+    
+    # Django "set language" (internacionalitation)
     (r'^i18n/', include('django.conf.urls.i18n')),
-
+    
+    # Django JavaScript Internacionalitation
+    (r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
 )
