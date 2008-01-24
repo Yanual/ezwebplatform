@@ -5,7 +5,7 @@
 		<div id="new_resource" class="search">
 		<div class="simple_search">
 		        <form action="#" onsubmit="UIUtils.addResource(URIs.GET_POST_RESOURCES, 'template_uri', this.template_uri.value); return false;">
-			<label for="new_resource_text">{% "Template URL:" %} </label>
+			<label for="new_resource_text">{% trans "Template URL:" %} </label>
 			<input id="new_resource_text" name="template_uri" type="text" />
 			<button>{% trans "Create resource" %}</button>
 			</form>
@@ -13,19 +13,19 @@
 		  <form onsubmit="return false;">
 			<table>
 					<tr>
-					<td><label for="advanced_search_text_tag">{% "Search by Tags:" %}</label></td>
+					<td><label for="advanced_search_text_tag">{% trans  "Search by Tags:" %}</label></td>
 					<td><input type="text" id="advanced_search_text_tag" name="advanced_search_text_tag" class="text" autocomplete="on"></input></td>
-					<td><button onclick="UIUtils.searchByTag(URIs.GET_RESOURCES_BY_TAG, this.form.advanced_search_text_tag.value);">{% "Search" %}</button><br/></td>
+					<td><button onclick="UIUtils.searchByTag(URIs.GET_RESOURCES_BY_TAG, this.form.advanced_search_text_tag.value);">{% trans  "Search" %}</button><br/></td>
 					</tr>
 					<tr>
-					<td><label for="advanced_search_text_event">{% "Search by Events:" %}</label></td>
+					<td><label for="advanced_search_text_event">{% trans  "Search by Events:" %}</label></td>
 					<td><input type="text" id="advanced_search_text_event" name="advanced_search_text_event" class="text" autocomplete="on"></input></td>
-					<td><button onclick="UIUtils.searchByWiring(URIs.GET_RESOURCES_BY_WIRING, this.form.advanced_search_text_event.value, 'event');">{% "Search" %}</button><br/></td>
+					<td><button onclick="UIUtils.searchByWiring(URIs.GET_RESOURCES_BY_WIRING, this.form.advanced_search_text_event.value, 'event');">{% trans  "Search" %}</button><br/></td>
 					</tr>
 					<tr>
-					<td><label for="advanced_search_text_slot">{% "Search by Slots:" %}</label></td>
+					<td><label for="advanced_search_text_slot">{% trans  "Search by Slots:" %}</label></td>
 					<td><input type="text" id="advanced_search_text_slot" name="advanced_search_text_slot" class="text" autocomplete="on"></input></td>
-					<td><button onclick="UIUtils.searchByWiring(URIs.GET_RESOURCES_BY_WIRING, this.form.advanced_search_text_slot.value, 'slot');">{% "Search" %}</button><br/></td>
+					<td><button onclick="UIUtils.searchByWiring(URIs.GET_RESOURCES_BY_WIRING, this.form.advanced_search_text_slot.value, 'slot');">{% trans  "Search" %}</button><br/></td>
 					</tr>
 			</table>
 		</div>
@@ -33,34 +33,34 @@
 		<div id="search" class="search">
 			
 				<div id="advanced_search_top" class="advanced_search_top" style="display:none;">
-					<span>{% "Show results with:" %}</span>
+					<span>{% trans  "Show results with:" %}</span>
 				</div>
 				<div id="advanced_search_bottom" class="advanced_search_bottom" style="display:none;">
 					<table>
 					<tr>
-					<td><label for="advanced_search_text_and">{% "All of this words:" %}</label></td>
+					<td><label for="advanced_search_text_and">{% trans  "All of this words:" %}</label></td>
 					<td><input type="text" id="advanced_search_text_and" name="advanced_search_text_and" class="text" autocomplete="on"></input></td>
-					<td><button onclick="UIUtils.searchGeneric(URIs.GET_RESOURCES_SEARCH_GENERIC, this.form.advanced_search_text_and.value, 'and');">{% "Search" %}</button><br/></td>
+					<td><button onclick="UIUtils.searchGeneric(URIs.GET_RESOURCES_SEARCH_GENERIC, this.form.advanced_search_text_and.value, 'and');">{% trans  "Search" %}</button><br/></td>
 					</tr>
 					<tr>
-					<td><label for="advanced_search_text_or">{% "Any of this word:" %}</label></td>
+					<td><label for="advanced_search_text_or">{% trans  "Any of this word:" %}</label></td>
 					<td><input type="text" id="advanced_search_text_or" name="advanced_search_text_or" class="text" autocomplete="on"></input></td>
-					<td><button onclick="UIUtils.searchGeneric(URIs.GET_RESOURCES_SEARCH_GENERIC, this.form.advanced_search_text_or.value, 'or');">{% "Search" %}</button><br/></td>
+					<td><button onclick="UIUtils.searchGeneric(URIs.GET_RESOURCES_SEARCH_GENERIC, this.form.advanced_search_text_or.value, 'or');">{% trans  "Search" %}</button><br/></td>
 					</tr>
 					<tr>
-					<td><label for="advanced_search_text_not">{% "None of this word:" %}</label></td>
+					<td><label for="advanced_search_text_not">{% trans  "None of this word:" %}</label></td>
 					<td><input type="text" id="advanced_search_text_not" name="advanced_search_text_not" class="text" autocomplete="on"></input></td>
-					<td><button onclick="UIUtils.searchGeneric(URIs.GET_RESOURCES_SEARCH_GENERIC, this.form.advanced_search_text_not.value, 'not');">{% "Search" %}</button><br/></td>
+					<td><button onclick="UIUtils.searchGeneric(URIs.GET_RESOURCES_SEARCH_GENERIC, this.form.advanced_search_text_not.value, 'not');">{% trans  "Search" %}</button><br/></td>
 					</tr>
 					</table>
 					<br/>
-					<a href="#" onclick="UIUtils.SlideAdvancedSearchOutOfView('advanced_search_top');">{% "Simple Search" %}</a>
+					<a href="#" onclick="UIUtils.SlideAdvancedSearchOutOfView('advanced_search_top');">{% trans  "Simple Search" %}</a>
 				</div>
 				<div id="simple_search" class="simple_search">
-					<label for="simple_search_text">{% "Search:" %}</label>
+					<label for="simple_search_text">{% trans  "Search:" %}</label>
 					<input type="text" id="simple_search_text" name="simple_search_text" class="text" autocomplete="on"></input>
-					<button onclick="UIUtils.searchGeneric(URIs.GET_RESOURCES_SEARCH_GENERIC, this.form.simple_search_text.value, 'or');">{% "Search" %}</button><br/>
-					<a href="#" onclick="UIUtils.SlideAdvancedSearchIntoView('advanced_search_top');">{% "Advanced Search" %}a</a>
+					<button onclick="UIUtils.searchGeneric(URIs.GET_RESOURCES_SEARCH_GENERIC, this.form.simple_search_text.value, 'or');">{% trans  "Search" %}</button><br/>
+					<a href="#" onclick="UIUtils.SlideAdvancedSearchIntoView('advanced_search_top');">{% trans  "Advanced Search" %}a</a>
 				</div>
 			</form>
 		</div>
@@ -75,10 +75,10 @@
 		</div></div>
 		
 		<div id="tab_info_resource" class="tab_info_resource">
-					<a id="tab_info_resource_open" title="{% 'Show resource details' %}" href="javascript:UIUtils.openInfoResource();" onmouseover="UIUtils.changeImage('tab_info_resource_open_img', '{{ MEDIA_URL }}images/info_resource_open_selected.png');" onmouseout="UIUtils.changeImage('tab_info_resource_open_img', '{{ MEDIA_URL }}images/info_resource_open.png');">
+					<a id="tab_info_resource_open" title="{% trans  'Show resource details' %}" href="javascript:UIUtils.openInfoResource();" onmouseover="UIUtils.changeImage('tab_info_resource_open_img', '{{ MEDIA_URL }}images/info_resource_open_selected.png');" onmouseout="UIUtils.changeImage('tab_info_resource_open_img', '{{ MEDIA_URL }}images/info_resource_open.png');">
 				<img  id="tab_info_resource_open_img" src="{{ MEDIA_URL }}images/info_resource_open.png"></img>
 			</a>
-			<a id="tab_info_resource_close" title="{% 'Hide resource details' %}" href="javascript:UIUtils.closeInfoResource();" onmouseover="UIUtils.changeImage('tab_info_resource_close_img', '{{ MEDIA_URL }}images/info_resource_close_selected.png');" onmouseout="UIUtils.changeImage('tab_info_resource_close_img', '{{ MEDIA_URL }}images/info_resource_close.png');" style="display:none;">
+			<a id="tab_info_resource_close" title="{% trans  'Hide resource details' %}" href="javascript:UIUtils.closeInfoResource();" onmouseover="UIUtils.changeImage('tab_info_resource_close_img', '{{ MEDIA_URL }}images/info_resource_close_selected.png');" onmouseout="UIUtils.changeImage('tab_info_resource_close_img', '{{ MEDIA_URL }}images/info_resource_close.png');" style="display:none;">
 				<img  id="tab_info_resource_close_img" src="{{ MEDIA_URL }}images/info_resource_close.png"></img>
 			</a>
 		</div>
