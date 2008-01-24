@@ -45,6 +45,8 @@ from django.shortcuts import get_object_or_404, get_list_or_404
 from django.db import transaction
 from django.db import IntegrityError
 
+from django.utils.translation import gettext_lazy as _
+
 from django_restapi.resource import Resource
 
 from resource.models import GadgetResource, GadgetWiring
@@ -140,7 +142,7 @@ def addToPlatform(request, user_name):
     try:
         cfg.readfp(file(CONFIG))
     except Exception, e:
-        print "Error, couldn't read config  ", e.strerror
+        print _("Error, couldn't read config  "), e.strerror
         return
      
     URL = cfg.get ('URL', 'URLeuropa'.lower())

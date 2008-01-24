@@ -48,6 +48,8 @@ from commons.exceptions import TemplateParseException
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 
+from django.utils.translation import gettext_lazy as _
+
 from resource.models import *
 
 
@@ -100,7 +102,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 
             wiring.save()
         else:
-            raise TemplateParseException("ERROR: Missing attribute at Event or Slot element")
+            raise TemplateParseException(_("ERROR: Missing attribute at Event or Slot element"))
 
 	
     def endElement(self, name):
@@ -152,7 +154,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 	elif (self._flag == 'add'):
             return
         else:
-            raise TemplateParseException("ERROR: Missing Resource describing info at Resource element! See schema!")
+            raise TemplateParseException(_("ERROR: Missing Resource describing info at Resource element! See schema!"))
 
     def characters(self, text):
 	self._accumulator.append(text)

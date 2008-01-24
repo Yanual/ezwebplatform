@@ -41,6 +41,9 @@ from django_restapi.resource import Resource
 from django_restapi.responder import *
 from proxy.utils import is_valid_header
 
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import string_concat
+
 from django.http import Http404, HttpResponse, HttpResponseServerError
 import string
 
@@ -50,7 +53,7 @@ class Proxy(Resource):
         if request.POST.has_key('url'):
             url = request.POST['url']
         else:
-            return HttpResponse("<error>Url not specified</error>")
+            return HttpResponse(string_concat(['<error>',_(u"Url not specified"),'</error>']))
         # HTTP method, by default is GET
         if request.POST.has_key('method'):
             method = request.POST['method']
