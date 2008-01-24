@@ -93,7 +93,7 @@ var VarManagerFactory = function () {
 		
 		onError = function (transport) {
 			// JSON-coded iGadget-variable mapping
-			alert("error VarManager GET");
+			alert(gettext("error VarManager GET"));
 			
 			// Procesamiento
 		}

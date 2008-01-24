@@ -71,7 +71,7 @@ function Gadget(gadget_, url_) {
 		// Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
 		
 		var onError = function(transport) {
-			alert ("Unexpected error in HTTP method invocation")
+			alert (gettext("Unexpected error in HTTP method invocation"));
 		}
 		
 		var loadGadget = function(transport) {

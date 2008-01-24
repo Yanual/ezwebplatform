@@ -168,7 +168,7 @@ var DragboardFactory = function () {
 			else
 				msg = transport.status + " " + transport.statusText;
 
-			alert ("Error receiving dragboard data: " + msg);
+			alert (gettext("Error receiving dragboard data") + ": " + msg);
 		}
 
 		function _getPositionOn(_matrix, gadget) {
@@ -654,7 +654,7 @@ var DragboardFactory = function () {
 
 		Dragboard.prototype.initializeMove = function (iGadgetId) {
 			if (gadgetToMove != null) {
-//				alert("exception at initializeMove"); // TODO
+//				alert(gettext("exception at initializeMove")); // TODO
 				this.cancelMove();
 			}
 
@@ -705,7 +705,7 @@ var DragboardFactory = function () {
 
 		Dragboard.prototype.cancelMove = function() {
 			if (gadgetToMove == null)
-				alert("exception at cancelMove"); // TODO
+				alert(gettext("exception at cancelMove")); // TODO
 
 			_destroyCursor(true);
 			var position = gadgetToMove.getPosition();
@@ -716,7 +716,7 @@ var DragboardFactory = function () {
 
 		Dragboard.prototype.acceptMove = function() {
 			if (gadgetToMove == null)
-				alert("exception at acceptMove"); // TODO
+				alert(gettext("exception at acceptMove")); // TODO
 
 			var oldposition = gadgetToMove.getPosition();
 			var newposition = dragboardCursor.getPosition();
@@ -981,7 +981,7 @@ IGadget.prototype.destroy = function() {
 			else
 				msg = transport.status + " " + transport.statusText;
 
-			alert ("Error removing igadget from persistence: " + msg);
+			alert (gettext("Error removing igadget from persistence") + ": " + msg);
 		}
 		this.element.parentNode.removeChild(this.element);
 		this.element = null;
@@ -1019,7 +1019,7 @@ IGadget.prototype._makeConfigureInterface = function() {
 	var interface = document.createElement("div");
 
 	if (prefs.length == 0) {
-		interface.innerHTML = "This IGadget don't have user prefs";
+		interface.innerHTML = gettext("This IGadget don't have user prefs");
 		return interface;
 	}
 
@@ -1038,14 +1038,14 @@ IGadget.prototype._makeConfigureInterface = function() {
 	// "Set Defaults" button
 	button = document.createElement("input");
 	button.setAttribute("type", "button");
-	button.setAttribute("value", "Set Defaults");
+	button.setAttribute("value", gettext("Set Defaults"));
 	button.addEventListener("click", this._setDefaultPrefsInInterface.bind(this), true);
 	buttons.appendChild(button);
 
 	// "Save" button
 	button = document.createElement("input");
 	button.setAttribute("type", "button");
-	button.setAttribute("value", "Save");
+	button.setAttribute("value", gettext("Save"));
 	button.addEventListener("click",
 	                        function () {DragboardFactory.getInstance().saveConfig(this.id)}.bind(this),
 	                        true);
@@ -1054,7 +1054,7 @@ IGadget.prototype._makeConfigureInterface = function() {
 	// "Cancel" button
 	button = document.createElement("input");
 	button.setAttribute("type", "button");
-	button.setAttribute("value", "Cancel");
+	button.setAttribute("value", gettext("Cancel"));
 	button.addEventListener("click",
 	                        function () {DragboardFactory.getInstance().setConfigurationVisible(this.id, false)}.bind(this),
 	                        true);
@@ -1171,7 +1171,7 @@ IGadget.prototype.save = function() {
 			msg = transport.status + " " + transport.statusText;
 		}
 
-		alert("Error adding igadget to persistence: " + msg);
+			alert (gettext("Error adding igadget to persistence") + ": " + msg);
 	}
 
 	var persistenceEngine = PersistenceEngineFactory.getInstance();
