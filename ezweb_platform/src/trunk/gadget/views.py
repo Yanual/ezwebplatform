@@ -70,7 +70,7 @@ from gadget.models import Gadget, Template
 class GadgetCollection(Resource):
     def read(self, request, user_name):
         user = user_authentication(user_name)
-        gadgets = get_list_or_404(Gadget, user=user)
+        gadgets = Gadget.objects.filter(user=user)
         data = serializers.serialize('python', gadgets, ensure_ascii=False)
         data_list = []
         for d in data:
