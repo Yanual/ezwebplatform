@@ -1,4 +1,4 @@
-﻿/* 
+/* 
  * MORFEO Project 
  * http://morfeo-project.org 
  * 
@@ -58,7 +58,7 @@ function Tag(tagJSON_)
 		
 		var jsCall = 'javascript:UIUtils.searchByTag(URIs.GET_RESOURCES_BY_TAG, "' + state.getValue() + '");';
 
-		var result = "<a class='" + classAux + "' title='Buscar "+ state.getValue() +"' href='" + jsCall + "'>" + state.getValue() + "</a>";
+		var result = "<a class='" + classAux + "' title=" + gettext ('Search by ') + state.getValue() +"' href='" + jsCall + "'>" + state.getValue() + "</a>";
 
 		return result;
 	}

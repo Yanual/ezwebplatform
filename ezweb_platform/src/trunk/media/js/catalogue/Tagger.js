@@ -1,4 +1,4 @@
-﻿/* 
+/* 
  * MORFEO Project 
  * http://morfeo-project.org 
  * 
@@ -43,7 +43,7 @@ function Tagger(){
 	
 	this.addTag = function(tag_) {
 		if (tag_.length < 3) {
-			alert("La etiqueta debe tener al menos tres caracteres.");
+			alert(gettext ("Tag must be at least three characters."));
 		}
 		else {
 			if (!tags.contains(tag_)) {
@@ -71,7 +71,7 @@ function Tagger(){
 		if (tags.size()>0)
 		{
 			var onError = function(transport) {
-				alert("Error POST");
+				alert(gettext ("Error POST"));
 				// Process
 			}
 			

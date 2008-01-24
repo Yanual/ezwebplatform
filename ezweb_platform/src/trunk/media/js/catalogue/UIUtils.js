@@ -1,4 +1,4 @@
-﻿﻿/* 
+/* 
  * MORFEO Project 
  * http://morfeo-project.org 
  * 
@@ -137,7 +137,7 @@ UIUtils.searchByWiring = function(url, value, wiring) {
 	var opManager = OpManagerFactory.getInstance();
 	
 	if (value == ""){
-		alert("Introduzca un valor en el formulario de búsqueda");
+		alert(gettext ("Indicate a criteria in search formulary"));
 	}
   
   else{
@@ -178,7 +178,7 @@ UIUtils.searchGeneric = function(url, param, criteria) {
 	var opManager = OpManagerFactory.getInstance();
 	
 	if (param == ""){
-		alert("Introduzca un valor en el formulario de búsqueda");
+		alert(gettext ("Indicate a criteria in search formulary"));
 		}
 	else{ 
 	opManager.repaintCatalogue(url + "/" + param + "/" + criteria );
