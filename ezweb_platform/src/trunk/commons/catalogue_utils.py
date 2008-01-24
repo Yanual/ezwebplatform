@@ -5,8 +5,8 @@
 # 
 # Component: EzWeb
 # 
-# (C) Copyright 2004 Telefónica Investigación y Desarrollo 
-#     S.A.Unipersonal (Telefónica I+D) 
+# (C) Copyright 2004 Telefï¿½nica Investigaciï¿½n y Desarrollo 
+#     S.A.Unipersonal (Telefï¿½nica I+D) 
 # 
 # Info about members and contributors of the MORFEO project 
 # is available at: 
@@ -80,7 +80,7 @@ def get_resource_response(gadgetlist, format):
         response = get_xml_description(gadgetlist)
         return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
     else:
-        return HttpResponseServerError("<error>Invalid format. Format must be either xml or json</error>", mimetype='text/xml; charset=UTF-8')
+        return HttpResponseServerError(get_xml_error("Invalid format. Format must be either xml or json"), mimetype='text/xml; charset=UTF-8')
 
 
 
@@ -96,4 +96,4 @@ def get_tag_response(gadget, user, format):
         response += get_tags_by_resource(gadget, user)
         return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
     else:
-        return HttpResponseServerError("<error>Invalid format. Format must be either xml or json</error>", mimetype='text/xml; charset=UTF-8')
+        return HttpResponseServerError(get_xml_error("Invalid format. Format must be either xml or json"), mimetype='text/xml; charset=UTF-8')

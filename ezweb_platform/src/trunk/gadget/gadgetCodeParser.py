@@ -40,6 +40,8 @@ from django.http import Http404
 from HTMLParser import HTMLParser
 from urllib import urlopen
 
+from django.utils.translation import gettext_lazy as _
+
 from models import *
 
 class GadgetCodeParser(HTMLParser):
@@ -53,7 +55,7 @@ class GadgetCodeParser(HTMLParser):
         try:
             xhtml = urlopen(codeURI).read()
         except Exception:
-            raise Http404("XHTML code is not accessible")
+            raise Http404(_(u"XHTML code is not accessible"))
         
         self.xHTML = XHTML (uri=gadgetURI + "/xhtml", code=xhtml)
         self.xHTML.save()
