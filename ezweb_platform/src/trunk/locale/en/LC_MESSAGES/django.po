@@ -8,13 +8,34 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-23 10:46+0100\n"
+"POT-Creation-Date: 2008-01-25 13:32+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: manage.py:10
+#, python-format
+msgid ""
+"Error: Can't find the file 'settings.py' in the directory containing %(file)"
+"r.\n"
+msgstr ""
+
+#: manage.py:11
+msgid "It appears you've customized things.\n"
+msgstr ""
+
+#: manage.py:12
+msgid "You'll have to run django-admin.py, passing it your settings module.\n"
+msgstr ""
+
+#: manage.py:13
+msgid ""
+"(If the file settings.py does indeed exist, it's causing an ImportError "
+"somehow.)\n"
+msgstr ""
 
 #: settings.py:81
 msgid "Spanish"
@@ -24,22 +45,26 @@ msgstr ""
 msgid "English"
 msgstr ""
 
+#: commons/authentication.py:48
+msgid "User authentication failed!"
+msgstr ""
+
 #: connectable/models.py:47 connectable/models.py:63 connectable/models.py:80
 #: gadget/models.py:46 gadget/models.py:134 gadget/models.py:145
-#: igadget/models.py:50 igadget/models.py:64 igadget/models.py:80
-#: igadget/models.py:100
+#: igadget/models.py:50 igadget/models.py:65 igadget/models.py:81
+#: igadget/models.py:101
 msgid "URI"
 msgstr ""
 
 #: connectable/models.py:49 connectable/models.py:65 connectable/models.py:82
 #: context/models.py:55 gadget/models.py:60 gadget/models.py:92
-#: gadget/models.py:104 gadget/models.py:148 igadget/models.py:66
+#: gadget/models.py:104 gadget/models.py:148 igadget/models.py:67
 #: resource/models.py:46
 msgid "Name"
 msgstr ""
 
 #: connectable/models.py:50 gadget/models.py:91 gadget/models.py:103
-#: igadget/models.py:104
+#: igadget/models.py:105
 msgid "Value"
 msgstr ""
 
@@ -47,7 +72,7 @@ msgstr ""
 msgid "Friend code"
 msgstr ""
 
-#: connectable/models.py:53 gadget/models.py:163 igadget/models.py:68
+#: connectable/models.py:53 gadget/models.py:163 igadget/models.py:69
 msgid "User"
 msgstr ""
 
@@ -58,6 +83,28 @@ msgstr ""
 
 #: connectable/models.py:67 connectable/models.py:84
 msgid "InOut"
+msgstr ""
+
+#: connectable/views.py:95
+msgid "JSON parameter expected"
+msgstr ""
+
+#: connectable/views.py:156
+#, python-format
+msgid "refered screen %(screen_id)s doesn't exists."
+msgstr ""
+
+#: connectable/views.py:159
+msgid "refered igadget doesn't exists."
+msgstr ""
+
+#: connectable/views.py:162
+msgid "refered variable doesn't exists."
+msgstr ""
+
+#: connectable/views.py:165
+#, python-format
+msgid "connectables cannot be save: %(exc)s"
 msgstr ""
 
 #: context/models.py:45 context/models.py:56 gadget/models.py:114
@@ -81,24 +128,91 @@ msgstr ""
 msgid "Concept doesn't exist. You must use POST HTTP method in this case"
 msgstr ""
 
-#: ezweb/templates/index.html:175
+#: ezweb/templates/index.html:9
+msgid "EzWeb Platform"
+msgstr ""
+
+#: ezweb/templates/index.html:193
 msgid "Welcome"
 msgstr ""
 
-#: ezweb/templates/index.html:175
+#: ezweb/templates/index.html:193
 msgid "Exit"
 msgstr ""
 
-#: ezweb/templates/index.html:178
+#: ezweb/templates/index.html:201
 msgid "My Wires"
 msgstr ""
 
-#: ezweb/templates/index.html:179
+#: ezweb/templates/index.html:202
 msgid "My Catalogue"
 msgstr ""
 
-#: ezweb/templates/index.html:180
+#: ezweb/templates/index.html:203
 msgid "My Gadgets"
+msgstr ""
+
+#: ezweb/templates/showcase.html:8
+msgid "Template URL:"
+msgstr ""
+
+#: ezweb/templates/showcase.html:10
+msgid "Create resource"
+msgstr ""
+
+#: ezweb/templates/showcase.html:16
+msgid "Search by Tags:"
+msgstr ""
+
+#: ezweb/templates/showcase.html:18 ezweb/templates/showcase.html.py:23
+#: ezweb/templates/showcase.html:28 ezweb/templates/showcase.html.py:43
+#: ezweb/templates/showcase.html:48 ezweb/templates/showcase.html.py:53
+#: ezweb/templates/showcase.html:62
+msgid "Search"
+msgstr ""
+
+#: ezweb/templates/showcase.html:21
+msgid "Search by Events:"
+msgstr ""
+
+#: ezweb/templates/showcase.html:26
+msgid "Search by Slots:"
+msgstr ""
+
+#: ezweb/templates/showcase.html:36
+msgid "Show results with:"
+msgstr ""
+
+#: ezweb/templates/showcase.html:41
+msgid "All of this words:"
+msgstr ""
+
+#: ezweb/templates/showcase.html:46
+msgid "Any of this word:"
+msgstr ""
+
+#: ezweb/templates/showcase.html:51
+msgid "None of this word:"
+msgstr ""
+
+#: ezweb/templates/showcase.html:57
+msgid "Simple Search"
+msgstr ""
+
+#: ezweb/templates/showcase.html:60
+msgid "Search:"
+msgstr ""
+
+#: ezweb/templates/showcase.html:63
+msgid "Advanced Search"
+msgstr ""
+
+#: ezweb/templates/showcase.html:78
+msgid "Show resource details"
+msgstr ""
+
+#: ezweb/templates/showcase.html:81
+msgid "Hide resource details"
 msgstr ""
 
 #: ezweb/templates/wiring.html:6
@@ -111,6 +225,10 @@ msgstr ""
 
 #: ezweb/templates/wiring.html:16
 msgid "Slots"
+msgstr ""
+
+#: gadget/gadgetCodeParser.py:58
+msgid "XHTML code is not accessible"
 msgstr ""
 
 #: gadget/models.py:47 gadget/models.py:78 gadget/models.py:160
@@ -182,7 +300,7 @@ msgstr ""
 msgid "Default value"
 msgstr ""
 
-#: gadget/models.py:135 igadget/models.py:67 igadget/models.py:82
+#: gadget/models.py:135 igadget/models.py:68 igadget/models.py:83
 msgid "Code"
 msgstr ""
 
@@ -218,6 +336,46 @@ msgstr ""
 msgid "Last update"
 msgstr ""
 
+#: gadget/templateParser.py:119
+msgid "ERROR: unkown TEXT TYPE "
+msgstr ""
+
+#: gadget/templateParser.py:144
+msgid "ERROR: Missing attribute at Property element"
+msgstr ""
+
+#: gadget/templateParser.py:181
+msgid "ERROR: Missing attribute at UserPreference element"
+msgstr ""
+
+#: gadget/templateParser.py:218
+msgid "ERROR: Missing attribute at Event element"
+msgstr ""
+
+#: gadget/templateParser.py:255
+msgid "ERROR: Missing attribute at Slot element"
+msgstr ""
+
+#: gadget/templateParser.py:287
+msgid "ERROR: Missing attribute at Gadget Context element"
+msgstr ""
+
+#: gadget/templateParser.py:318
+msgid "ERROR: Missing attribute at External Context element"
+msgstr ""
+
+#: gadget/templateParser.py:334
+msgid "ERROR: Missing attribute at XHTML element"
+msgstr ""
+
+#: gadget/templateParser.py:352
+msgid "ERROR: Missing attribute at Option element"
+msgstr ""
+
+#: gadget/templateParser.py:369
+msgid "ERROR: Missing attribute at Rendering element"
+msgstr ""
+
 #: igadget/models.py:52
 msgid "PositionX"
 msgstr ""
@@ -226,24 +384,63 @@ msgstr ""
 msgid "PositionY"
 msgstr ""
 
-#: igadget/models.py:84
-msgid "Gadget"
+#: igadget/models.py:56
+msgid "Minimized"
 msgstr ""
 
 #: igadget/models.py:85
-msgid "Screen"
+msgid "Gadget"
 msgstr ""
 
 #: igadget/models.py:86
+msgid "Screen"
+msgstr ""
+
+#: igadget/models.py:87
 msgid "Position"
 msgstr ""
 
-#: igadget/models.py:102
+#: igadget/models.py:103
 msgid "Variable definition"
 msgstr ""
 
-#: igadget/models.py:103
+#: igadget/models.py:104
 msgid "IGadget"
+msgstr ""
+
+#: igadget/views.py:63 igadget/views.py:126
+msgid "Malformed iGadget JSON: expecting igadget uri."
+msgstr ""
+
+#: igadget/views.py:118
+#, python-format
+msgid "refered gadget %(gadget_uri)s doesn't exists."
+msgstr ""
+
+#: igadget/views.py:144 igadget/views.py:150 igadget/views.py:156
+#: igadget/views.py:162
+msgid "Malformed iGadget JSON"
+msgstr ""
+
+#: igadget/views.py:210 igadget/views.py:240 igadget/views.py:285
+#: igadget/views.py:310 igadget/views.py:422
+msgid "iGadget JSON expected"
+msgstr ""
+
+#: igadget/views.py:228 igadget/views.py:299
+msgid "iGadgets cannot be saved: "
+msgstr ""
+
+#: igadget/views.py:258 igadget/views.py:324
+msgid "iGadgets cannot be updated: "
+msgstr ""
+
+#: igadget/views.py:370
+msgid "iGadget variables JSON expected"
+msgstr ""
+
+#: proxy/views.py:56
+msgid "Url not specified"
 msgstr ""
 
 #: resource/models.py:56
@@ -264,4 +461,17 @@ msgstr ""
 
 #: resource/models.py:77
 msgid "Wiring"
+msgstr ""
+
+#: resource/parser.py:105
+msgid "ERROR: Missing attribute at Event or Slot element"
+msgstr ""
+
+#: resource/parser.py:157
+msgid ""
+"ERROR: Missing Resource describing info at Resource element! See schema!"
+msgstr ""
+
+#: resource/views.py:145
+msgid "Error, couldn't read config  "
 msgstr ""
