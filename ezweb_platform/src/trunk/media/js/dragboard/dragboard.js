@@ -1081,28 +1081,6 @@ IGadget.prototype.setMinimizeStatus = function(newStatus) {
 	}
 
 	this.height = null; // force refreshing sizes (see getHeight function)
-
-	// Persistence
-	function onSuccess() {}
-	function onError(transport, e) {
-		var msg;
-		if (e) {
-			msg = e;
-		} else {
-			msg = transport.status + " " + transport.statusText;
-		}
-
-		alert("Error changing igadget minimized status in persistence: " + msg);
-	}
-
-	var persistenceEngine = PersistenceEngineFactory.getInstance();
- 	var uri = URIs.GET_IGADGET.evaluate({id: this.id});
-
-	var data = new Hash();
-	data['minimized'] = this.minimized.toString();
-	data['uri'] = uri;
-	data = {igadget: data.toJSON()};
-	persistenceEngine.send_update(uri , data, this, onSuccess, onError);
 }
 
 IGadget.prototype.isConfigurationVisible = function() {
