@@ -104,7 +104,7 @@ var OpManagerFactory = function () {
 		}
 
 		OpManager.prototype.loadEnviroment = function () {
-			alert (gettext('Testing'));
+			//alert (gettext('Testing'));
 			this.varManagerModule = VarManagerFactory.getInstance();
 		}
 
