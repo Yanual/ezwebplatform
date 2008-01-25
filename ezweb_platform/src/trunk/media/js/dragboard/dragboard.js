@@ -930,6 +930,7 @@ IGadget.prototype.paint = function(where) {
 	if (this.minimized) {
 		this.contentWrapper.style.height = "0px";
 		this.contentWrapper.style.borderTop = "0px";
+		this.contentWrapper.style.visibility = "hidden";
 	} else {
 		this.contentWrapper.style.height = contentHeight;
 	}
