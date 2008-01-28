@@ -48,7 +48,7 @@ from resource.views import addToPlatform
 
 #JavaScript tranlation
 js_info_dict = {
-    'packages': ('',),
+    'packages': ('ezweb',),
 }
 
 urlpatterns = patterns('',
