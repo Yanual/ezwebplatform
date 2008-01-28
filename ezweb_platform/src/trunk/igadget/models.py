@@ -53,7 +53,7 @@ class Position(models.Model):
     posY = models.IntegerField(_('PositionY'))
     height = models.IntegerField(_('Height'))
     width = models.IntegerField(_('Width'))
-    minimized = models.BooleanField(_('Minimized'), default=0);
+    minimized = models.BooleanField(_('Minimized'), default=False);
 
     class Admin:
         pass
