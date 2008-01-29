@@ -82,18 +82,21 @@ def SaveIGadget(igadget, user, screen_id, igadget_id):
 #        raise Exception('Malformed iGadget JSON')
 
     #Gets current user screen
+
     try:
         screen = Screen.objects.get(user=user, code=screen_id)
     except Screen.DoesNotExist: 
         #TODO Screen would have to be created yet with a POST Screen. Remove from last release 
         screen_uri = "/user/" + user.username + '/screen/' + str(screen_id)
         screen = Screen (code=screen_id, uri=screen_uri, name='myScreen', user=user) 
-        screen.save()            
+        screen.save()        
+        
 
     # Creates IGadget position
-    position = Position (uri=uri + '/position', posX=left, posY=top, height=height, width=width)
+    position = Position (uri=uri + '/position', posX=left, posY=top, height=height, width=width, minimized=False)
     position.save()
 
+    
     try:
         # Creates the new IGadget
         gadget = Gadget.objects.get(uri=gadget_uri, user=user)
@@ -165,9 +168,9 @@ def UpdateIGadget(igadget, user, screen_id, igadget_id):
     if igadget.has_key('minimized'):
 	minimized = igadget.get('minimized')
 	if (minimized == 'true'):
-            position.minimized = 1
+            position.minimized = True
 	else:
-            position.minimized = 0
+            position.minimized = False
 
     # Checks
     screen = Screen.objects.get(user=user, code=screen_id)

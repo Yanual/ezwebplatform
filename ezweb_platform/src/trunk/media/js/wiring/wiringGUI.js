@@ -47,6 +47,7 @@ function wiringInterface(wi, opman){
     this.channels_counter = 1;
     this.last_checked = null;
     this.disabled_all = true;
+    this.modified = false;
 }
 
 wiringInterface.prototype.unloaded = function (){
@@ -56,6 +57,16 @@ wiringInterface.prototype.unloaded = function (){
 	$("slots_list").innerHTML = "";
 	$("channels_list").innerHTML = "";
 	$("channel_name").value = "Wire_"+ this.channels_counter;
+}
+
+wiringInterface.prototype.saveWiring = function (){
+    // Only it's needed to save wiring structure when it has been modified!
+    if (this.modified == true) {
+	opm.restaure();
+	w.serialize();
+	
+	this.modified=false;
+    }
 }
 
 wiringInterface.prototype.addChannelInterface = function (name){
@@ -105,10 +116,13 @@ wiringInterface.prototype.addGadgetInterface = function (object){
             var divItem = document.createElement("div");
             var chkItem = document.createElement("input");
             var idItem = "gadget_"+ object.id +"_"+ connections[i].name;
+
             divItem.setAttribute("id", "div_"+ idItem);
+
             chkItem.setAttribute("id", "chk_"+ idItem);
             chkItem.setAttribute("disabled", "disabled");
             chkItem.setAttribute("type", "checkbox");
+	    chkItem.setAttribute("onClick", "javascript:{wiringInterface.prototype.changeConnectionStatus(this, " + object.id + ", '"  + connections[i].name + "', '" + connections[i].aspect + "')}");
 
             divItem.appendChild(chkItem);
 			var labelItem = document.createElement("label");
@@ -186,28 +200,67 @@ wiringInterface.prototype.renewInterface = function () {
         this.channels_counter++;
         $("channel_name").value = "Wire_"+ this.channels_counter;
     }
-//    opm.restaure();
-//    w.serialize();
 
 }
 
-wiringInterface.prototype.addChannel = function () {
+    wiringInterface.prototype.addChannel = function () {
 	var result = null;
 	var name = $("channel_name").value;
-    while(w.getInOutsId().include($("channel_name").value)) {
-        this.channels_counter++;
-        $("channel_name").value = "Wire_"+ this.channels_counter;
-    }
+	
+	while(w.getInOutsId().include($("channel_name").value)) {
+	    this.channels_counter++;
+	    $("channel_name").value = "Wire_"+ this.channels_counter;
+	}
 	name = name.strip();
 	if (!name.empty()) {
-		if (!(result = w.createChannel(name))){	
-			this.addChannelInterface(name);
-            this.channels_counter++;
+	    if (!(result = w.createChannel(name))){	
+		this.addChannelInterface(name);
+		this.channels_counter++;
 	        $("channel_name").value = "Wire_"+ this.channels_counter;
-            opm.restaure();
-            w.serialize();
-		}
+
+		this.modified=true;
+	    }
 	}
+}
+
+wiringInterface.prototype.changeConnectionStatus = function (checkbox_element, iGadgetId, connectableName, typeOfConnectable){
+    var channelName = this.last_checked;
+
+    if (checkbox_element.checked == true) {
+	wiringInterface.prototype.addConnection(channelName, iGadgetId, connectableName, typeOfConnectable);
+    }
+
+    // Delete connection
+    wiringInterface.prototype.deleteConnection(channelName, iGadgetId, connectableName, typeOfConnectable);
+}
+
+
+wiringInterface.prototype.addConnection = function (channelName, iGadgetId, connectableName, typeOfConnectable){
+    this.modified=true;
+
+    if (typeOfConnectable == 'EVEN') {
+	w.addChannelInput(iGadgetId, connectableName, channelName);
+	return;
+    }
+
+    if (typeOfConnectable == 'SLOT') {
+	w.addChannelOutput(iGadgetId, connectableName, channelName);
+	return;
+    }
+}
+
+wiringInterface.prototype.deleteConnection = function (channelName, iGadgetId, connectableName, typeOfConnectable){
+    this.modified=true;
+
+    if (typeOfConnectable == 'EVEN') {
+	w.removeChannelInput(iGadgetId, connectableName, channelName);
+	return;
+    }
+
+    if (typeOfConnectable == 'SLOT') {
+	w.removeChannelOutput(iGadgetId, connectableName, channelName);
+	return;
+    }
 }
 
 wiringInterface.prototype.deleteChannel = function (object){
@@ -217,9 +270,9 @@ wiringInterface.prototype.deleteChannel = function (object){
         $(idChannel).remove();
         wiringInterface.prototype._enable_all(false);
         this.channels_counter--;
-        opm.restaure();
-        w.serialize();
 	}
+
+	this.modified=true;
 }
 
 wiringInterface.prototype._changeChannel = function(item_id, gadget_id, event_name, aspect, friend_code) {
@@ -244,8 +297,7 @@ wiringInterface.prototype._changeChannel = function(item_id, gadget_id, event_na
             }
 
         }
-        opm.restaure();
-        w.serialize();
+
     }
 }
 

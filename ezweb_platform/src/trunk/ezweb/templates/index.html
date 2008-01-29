@@ -104,26 +104,24 @@ var URIs = new _URIConstants();
 		$(element + "_tab").className = "tab current";
 	}
 
-	function show_showcase(offset, pag) {
-//		wI.unloaded();
-        wI.renewInterface();
+        function show_showcase(offset, pag) {
+		wI.saveWiring();
+		wI.renewInterface();
+
 		opManager.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + offset + "/" + pag);
+
 		showInterface('showcase');
+
 		UIUtils.setResourcesWidth();
 		$('simple_search_text').focus();
 
-    	//opManager.restaure();
-    	//WiringFactory.getInstance().serialize();
 	}
 
 	function show_dragboard() {
-//		wI.unloaded();
-        wI.renewInterface();
+		wI.saveWiring();
+		wI.renewInterface();
+
 		showInterface('dragboard');
-
-//    	opManager.restaure();
-    	//WiringFactory.getInstance().serialize();
-
 	}
 
 	function show_wiring() {
@@ -138,6 +136,7 @@ var URIs = new _URIConstants();
     	
     	wiring = WiringFactory.getInstance();
 		wI = new wiringInterface(wiring, opManager);
+		wI = wiringInterface.prototype;
 
 		switch("{{ current_tab }}") {
 		    case 'dragboard':
