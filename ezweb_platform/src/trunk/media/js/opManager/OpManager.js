@@ -147,6 +147,20 @@ var OpManagerFactory = function () {
 			}
 		}
 		
+		OpManager.prototype.log = function(msg, level) {
+			switch (level) {
+			default:
+			case Constants.Logging.ERROR_MSG:
+				if (console) console.error(msg);
+				break;
+			case Constants.Logging.WARN_MSG:
+				if (console) console.warn(msg);
+				break;
+			case Constants.Logging.INFO_MSG:
+				if (console) console.info(msg);
+				break;
+			}
+		}
 	}
 	
 	// *********************************
