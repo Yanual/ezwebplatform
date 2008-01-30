@@ -1,4 +1,4 @@
-{% load i18n %}
+﻿{% load i18n %}
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -28,6 +28,7 @@ _URIConstants.prototype.GET_POST_WIRING = '/user/{{ user.username }}/connectable
 _URIConstants.prototype.GET_POST_RESOURCES = '/user/{{ user.username }}/catalogue/resource';
 _URIConstants.prototype.GET_RESOURCES_BY_TAG = '/user/{{ user.username }}/catalogue/search/tag';
 _URIConstants.prototype.GET_RESOURCES_BY_WIRING = '/user/{{ user.username }}/catalogue/search';
+_URIConstants.prototype.DELETE_TAG = '/user/{{ user.username }}/catalogue/tag';
 _URIConstants.prototype.POST_RESOURCE_TAGS = '/user/{{ user.username }}/catalogue/tag';
 _URIConstants.prototype.GET_RESOURCES_SEARCH_GENERIC = '/user/{{ user.username }}/catalogue/search/generic';
 _URIConstants.prototype.POST_IGADGET = new Template ('/user/{{ user.username }}/igadgets/#{iGadgetId}');
@@ -109,7 +110,7 @@ var URIs = new _URIConstants();
 		wiringInterface.saveWiring();
 		wiringInterface.renewInterface();
 
-		opManager.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + offset + "/" + pag);
+		opManager.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + pag + "/" + offset);
 
 		showInterface('showcase');
 
@@ -143,7 +144,7 @@ var URIs = new _URIConstants();
 	    		show_dragboard();
 		    break;
 		    case 'showcase':
-	    		show_showcase(0,0);
+	    		show_showcase(10,1);
 		    break;
 		    case 'wiring':
 		        show_wiring();
@@ -198,7 +199,7 @@ var URIs = new _URIConstants();
   <img id="logo" src="{{ MEDIA_URL }}images/logo.gif" alt="EzWeb Logo">
   <div class="tab_section">
     <span id="wiring_tab" class="tab" onclick="show_wiring();">{% trans "My Wires" %}</span>
-    <span id="showcase_tab" class="tab" onclick="show_showcase(0,0);">{% trans "My Catalogue" %}</span>
+    <span id="showcase_tab" class="tab" onclick="show_showcase(10,1);">{% trans "My Catalogue" %}</span>
     <span id="dragboard_tab" class="tab current" onclick="show_dragboard();">{% trans "My Gadgets" %}</span>
   </div>
 </div>

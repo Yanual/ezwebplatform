@@ -1,4 +1,4 @@
-/* 
+﻿/* 
  * MORFEO Project 
  * http://morfeo-project.org 
  * 
@@ -98,6 +98,28 @@ function Tagger(){
 			_this.removeAll();
 		}
 	}
+	
+	this.removeTagUser = function(url, resourceURI)
+	{
+		
+			var onError = function(transport) {
+				alert(gettext ("Error DELETE"));
+				// Process
+			}
+			
+			var loadTags = function(transport) {
+				var resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
+				var responseJSON = transport.responseText;
+				var jsonResourceList = eval ('(' + responseJSON + ')');
+				resource.setTags(jsonResourceList.tagList);
+				resource.updateTags();
+			}
+			
+			PersistenceEngineFactory.getInstance().send_delete(url + resourceURI, this, loadTags, onError);
+			var resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
+			resource.updateTags();
+  }
+
 	
 	var paintTag = function(id_, tag_) {
 		var newTag = document.createElement("div");

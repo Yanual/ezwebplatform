@@ -1,4 +1,4 @@
-/* 
+﻿/* 
  * MORFEO Project 
  * http://morfeo-project.org 
  * 
@@ -69,8 +69,8 @@ var CatalogueFactory  = function () {
 			return resources.getValue(id_);
 		}
 		
-		this.addResource = function(resourceJSON_, urlTemplate_, pages) { 
-			resources.addElement("resource_" + resources.size(), new Resource("resource_" + resources.size(), resourceJSON_, urlTemplate_, pages)); 
+		this.addResource = function(resourceJSON_, urlTemplate_, items) { 
+			resources.addElement("resource_" + resources.size(), new Resource("resource_" + resources.size(), resourceJSON_, urlTemplate_, items)); 
 		}
 		
 		this.addResourceToShowCase = function(resourceId_) {
@@ -100,7 +100,7 @@ var CatalogueFactory  = function () {
 								);
 								
 				var responseJSON = transport.responseText;
-				var pages = transport.getResponseHeader('pages');
+				var items = transport.getResponseHeader('items');
 			  var jsonResourceList = eval ('(' + responseJSON + ')');
 			  jsonResourceList = jsonResourceList.resourceList
 			  		  
@@ -108,7 +108,7 @@ var CatalogueFactory  = function () {
 				
 				for (var i = 0; i<jsonResourceList.length; i++)
 				{
-					this.addResource(jsonResourceList[i], null, pages);
+					this.addResource(jsonResourceList[i], null, items);
 				}
 			}
 			

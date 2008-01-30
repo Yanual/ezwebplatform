@@ -66,7 +66,7 @@ def get_xml_error(value):
     return xml_error
 
 
-def get_resource_response(gadgetlist, format):
+def get_resource_response(gadgetlist, format, items):
 
     if format == 'json' or format=='default':
         gadgetresource = {}
@@ -74,11 +74,13 @@ def get_resource_response(gadgetlist, format):
         resource_data_list = [get_gadgetresource_data(d) for d in resource_data]
         gadgetresource['resourceList'] = resource_data_list
         response = HttpResponse(json_encode(gadgetresource), mimetype='application/json; charset=UTF-8')
-        response.__setitem__('pages', 20)
+        response.__setitem__('items', items)
         return response
     elif format == 'xml':
         response = get_xml_description(gadgetlist)
-        return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
+	response = HttpResponse(response,mimetype='text/xml; charset=UTF-8')
+	response.__setitem__('items', items)
+        return response
     else:
         return HttpResponseServerError(get_xml_error("Invalid format. Format must be either xml or json"), mimetype='text/xml; charset=UTF-8')
 

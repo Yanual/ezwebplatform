@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 
 # MORFEO Project 
 # http://morfeo-project.org 
@@ -45,6 +45,9 @@ from django_restapi.responder import *
 urlpatterns = patterns('tag.views',
 
     # Tags
+    (r'^(?P<vendor>\w+)/(?P<name>\w+)/(?P<version>[\._\w]+)/(?P<tag>[\._\w]+)$', 
+        GadgetTagsCollection(permitted_methods=('DELETE', ))),
     (r'^(?P<vendor>\w+)/(?P<name>\w+)/(?P<version>[\._\w]+)$', 
-        GadgetTagsCollection(permitted_methods=('GET','POST','DELETE', ))),
+        GadgetTagsCollection(permitted_methods=('GET','POST',))),
+        
 )

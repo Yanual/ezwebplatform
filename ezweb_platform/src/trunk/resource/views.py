@@ -90,7 +90,7 @@ class GadgetsCollection(Resource):
         return HttpResponse(xml_ok,mimetype='text/xml; charset=UTF-8')
 
 
-    def read(self,request, user_name, offset=0,pag=0):
+    def read(self,request, user_name, pag=0,offset=0):
         
 	try:
 	    format = request.__getitem__('format')
@@ -98,13 +98,15 @@ class GadgetsCollection(Resource):
 	    format = 'default'
 
 	#paginate
-	a= int(pag)
-	b= int(offset)
+	a= int(offset)
+	b= int(pag)
 
-        # Get the xml description for all the gadgets in the catalogue
+	items = GadgetResource.objects.count()
+
+        # Get all the gadgets in the catalogue
 	if a == 0 or b == 0:
 	    gadgetlist = GadgetResource.objects.all()
-	# Get the xml description for the requested gadgets
+	# Get the requested gadgets
 	else:
 	    c=((a-1)*b)
 	    d= (b*a)
@@ -113,7 +115,7 @@ class GadgetsCollection(Resource):
 	        c=0
             gadgetlist = GadgetResource.objects.all()[c:d]
 	
-        return get_resource_response(gadgetlist,format)
+        return get_resource_response(gadgetlist, format, items)
 
     
     def delete(self, request, user_name):

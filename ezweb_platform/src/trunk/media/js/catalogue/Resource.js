@@ -2,7 +2,7 @@
   //                RESOURCE                  //
   //////////////////////////////////////////////
 
-function Resource( id_, resourceJSON_, urlTemplate_, regs) {
+function Resource( id_, resourceJSON_, urlTemplate_, items) {
 	
 	// ******************
 	//  PUBLIC FUNCTIONS
@@ -93,9 +93,9 @@ function Resource( id_, resourceJSON_, urlTemplate_, regs) {
 								"<button onclick='CatalogueFactory.getInstance().addResourceToShowCase(UIUtils.getSelectedResource());'>" + gettext ('Add Instance') + ":</button>";
 	}
 	
-	this.paginate = function(regs) {
+	this.paginate = function(items) {
 		var pageInfo = document.getElementById("paginate");
-		pageInfo.innerHTML = 	"<center>" + _paginate(regs) + "</center>";
+		pageInfo.innerHTML = 	"<center>" + _paginate(items) + "</center>";
 	}
 	
 	this.updateTags = function()
@@ -160,21 +160,21 @@ function Resource( id_, resourceJSON_, urlTemplate_, regs) {
 		return tagsHTML;
 	}
 	
- var _paginate = function(regs){
+ var _paginate = function(items){
 		var eventsHTML = '';
 		
-		var end_page = regs/10;
-		var jsCall_prev = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, 10,"prev", "' + regs + '");';
+		var end_page = items/10;
+		var jsCall_prev = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, 10,"prev", "' + items + '");';
 		
 		eventsHTML = ("<span class='multiple_size_tag'><a title='" + gettext ('Go to previous page') + "' href='" + jsCall_prev + "'>Previous</a></span>");
 		
 		for (var i=1; i<end_page + 1; i++)
 		{
-			var jsCall_num = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, 10, "' + i + '", "' + regs + '");';
+			var jsCall_num = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, 10, "' + i + '", "' + items + '");';
 			eventsHTML += ("<span class='multiple_size_tag'>"+"<a title='" + gettext ('Go to page ') + i + "' href='" + jsCall_num + "'>" + i + "</a></span> ");
 		}
 		
-		var jsCall_next = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, 10,"next", "' + regs + '");';
+		var jsCall_next = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, 10,"next", "' + items + '");';
 		eventsHTML += ("<span class='multiple_size_tag'><a title='" + gettext ('Go to next page') + "' href='" + jsCall_next + "'>Next</a></span>");
 		
 		return eventsHTML;
@@ -208,10 +208,25 @@ function Resource( id_, resourceJSON_, urlTemplate_, regs) {
 	
 	var _tagsToTagcloud = function(){
 		var tagsHTML = '';
+		var URL = '';
 		var tagsAux = state.getTags();
+		
+		
 		for (var i=0; i<tagsAux.length; i++)
 		{
-			tagsHTML += ("<span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML() + ((i<(tagsAux.length-1))?",":"") + "</span> ");
+			var version = state.getVersion();
+			var added = tagsAux[i].getAdded_by();
+			
+			if(tagsAux[i].getAdded_by() == 'Yes'){  
+			
+			var jsCall = 'javascript:UIUtils.removeTagUser("' + tagsAux[i].getValue() + '");';
+			tagsHTML += ("<a href='" + jsCall + "'><img src='/ezweb/images/cancel_gray.png'border=0 name=op1></a><span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML() + ((i<(tagsAux.length-1))?",":"") + "</span>");
+			
+		}
+		  else{
+		  
+		  tagsHTML += ("<span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML() + ((i<(tagsAux.length-1))?",":"") + "</span>");		  
+		}
 		}
 		return tagsHTML;
 	}
@@ -290,7 +305,7 @@ function Resource( id_, resourceJSON_, urlTemplate_, regs) {
 	else {
 		state = new ResourceState(resourceJSON_);
 		this.paint();
-		//this.paginate(regs);
+		this.paginate(items);
 	}
 }
 

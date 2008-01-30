@@ -1,4 +1,4 @@
-/* 
+﻿/* 
  * MORFEO Project 
  * http://morfeo-project.org 
  * 
@@ -50,6 +50,9 @@ UIUtils.imageContent = '';
 UIUtils.infoResourcesWidth = 400;
 UIUtils.isInfoResourcesOpen = false;
 UIUtils.page = 1;
+UIUtils.search = 'false';
+UIUtils.searchValue = '';
+UIUtils.searchCriteria = '';
 
 UIUtils.addResource = function(url, paramName, paramValue) {
 	var newResourceOnSuccess = function (response) {
@@ -128,7 +131,10 @@ UIUtils.searchByTag = function(url, tag) {
   	alert("Introduzca un valor en el formulario de búsqueda");
   }
   else{
-	opManager.repaintCatalogue(url + "/" + tag );
+      UIUtils.search = 'tag';
+      UIUtils.searchValue = tag;
+      UIUtils.searchCriteria = 'tag' ;
+	    opManager.repaintCatalogue(url + "/" + tag );
 }
 }
 
@@ -141,14 +147,31 @@ UIUtils.searchByWiring = function(url, value, wiring) {
 	}
   
   else{
+  UIUtils.search = 'wiring';
+  UIUtils.searchValue = value;
+  UIUtils.searchCriteria = wiring ;
 	opManager.repaintCatalogue(url + "/" + wiring + "/" + value );
 }
 }
 
-UIUtils.cataloguePaginate = function(url, offset, pag, regs) {
+UIUtils.cataloguePaginate = function(url, offset, pag, items) {
 	this.closeInfoResource();
 	var opManager = OpManagerFactory.getInstance();
-	var pages = regs/offset;
+	var pages = Math.ceil(items/offset);
+	
+	if (UIUtils.search == 'false'){
+		 url = URIs.GET_POST_RESOURCES;
+	}
+	if (UIUtils.search == 'generic'){
+		url = URIs.GET_RESOURCES_SEARCH_GENERIC + "/" + UIUtils.searchValue + "/" + UIUtils.searchCriteria;
+	}
+  if (UIUtils.search == 'wiring'){
+		url = URIs.GET_RESOURCES_BY_WIRING + "/" + UIUtils.searchCriteria + "/" + UIUtils.searchValue;
+	}
+  if (UIUtils.search == 'tag'){
+		url = URIs.GET_RESOURCES_BY_TAG + "/" + UIUtils.searchValue;
+	}
+	
   if (pag == "prev"){
   	
   	if(UIUtils.page == 1){
@@ -164,11 +187,11 @@ UIUtils.cataloguePaginate = function(url, offset, pag, regs) {
   		pag = pages;
   	}
     else{
-  	  pag = UIUtils.page + 1;
+  	  pag = parseInt(UIUtils.page) + 1;
   }
   }
   UIUtils.page = pag;    
-	opManager.repaintCatalogue(url + "/" + offset + "/" + pag);
+	opManager.repaintCatalogue(url + "/" + pag + "/" + offset);
 	
 }
 
@@ -181,7 +204,11 @@ UIUtils.searchGeneric = function(url, param, criteria) {
 		alert(gettext ("Indicate a criteria in search formulary"));
 		}
 	else{ 
-	opManager.repaintCatalogue(url + "/" + param + "/" + criteria );
+	UIUtils.searchValue = param;
+  UIUtils.searchCriteria = criteria ;
+	UIUtils.search = 'generic';
+	
+	opManager.repaintCatalogue(url + "/" + param + "/" + criteria + "/10/0");
 }
 }
 
@@ -194,6 +221,17 @@ UIUtils.removeAllTags = function() {
 	var tagger = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).getTagger();
 	tagger.removeAll();
 }
+
+UIUtils.removeTagUser = function(tag)
+	{	
+		  
+		  var resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
+	    var tagger = resource.getTagger();
+	    var resourceURI = "/" + resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion() + "/" + tag;
+			
+			tagger.removeTagUser(URIs.DELETE_TAG, resourceURI);	
+			
+	}
 
 UIUtils.sendTags = function() {
 	var resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
@@ -215,6 +253,7 @@ UIUtils.setResourcesWidth = function() {
 	var head = document.getElementById('head');
 	var resources = document.getElementById('resources');
 	var center = document.getElementById('center');
+	UIUtils.search = false;
 	center.style.width = head.offsetWidth + 'px';
 	resources.style.width = (center.offsetWidth - (tab.offsetWidth + (UIUtils.isInfoResourcesOpen?UIUtils.infoResourcesWidth:0))) + 'px';
 }

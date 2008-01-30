@@ -1,4 +1,4 @@
-/* 
+﻿/* 
  * MORFEO Project 
  * http://morfeo-project.org 
  * 
@@ -41,6 +41,7 @@ function Tag(tagJSON_)
 	var state = new StateTag(tagJSON_);
 	
 	this.getValue = function() { return state.getValue(); }
+	this.getAdded_by = function() { return state.getAdded_by(); }
 	this.getAppearances = function() { return state.getAppearances(); }
 	
 	this.tagToHTML = function() {
@@ -77,10 +78,12 @@ function Tag(tagJSON_)
 function StateTag(tagJSON_) 
 {
     var value = tagJSON_.value;
-	var appearances = 1;
+	  var appearances = 1;
+	  var added_by = tagJSON_.added_by;
 	//var value = tagXML_.getElementsByTagName("value")[0].firstChild.nodeValue;
 	//var appearances = parseInt(tagXML_.getElementsByTagName("appearances")[0].firstChild.nodeValue);
 	
 	this.getValue = function() { return value; }
 	this.getAppearances = function() { return appearances; } 
+	this.getAdded_by = function() { return added_by; }
 }

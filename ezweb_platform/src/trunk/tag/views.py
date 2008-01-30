@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 
 # MORFEO Project 
 # http://morfeo-project.org 
@@ -115,14 +115,16 @@ class GadgetTagsCollection(Resource):
 	return get_tag_response(gadget,user, format)
 
 
-    def delete(self,request,user_name,vendor,name,version):
+    def delete(self,request,user_name,vendor,name,version, tag):
 
         try:
 	    format = request.__getitem__('format')
 	except:
 	    format = 'default'
-
-	value_tag = request.__getitem__('value_tag')
+  
+        
+	#value_tag = request.__getitem__('value_tag')
+        value_tag = tag
         gadget = get_object_or_404(GadgetResource, short_name=name,vendor=vendor,version=version).id
         user = user_authentication(user_name)
 

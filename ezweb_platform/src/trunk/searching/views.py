@@ -69,7 +69,7 @@ class GadgetsCollectionByGenericSearch(Resource):
 
 	return gadgetlist
 
-    def read(self, request, user_name, value, criteria):
+    def read(self, request, user_name, value, criteria, pag=0, offset=0):
          
 	gadgetlist = []
 
@@ -79,7 +79,7 @@ class GadgetsCollectionByGenericSearch(Resource):
 	    format = request.__getitem__('format')
 	except:
 	    format = 'default'
-        
+
         if criteria == 'and':
             gadgetlist = self.__get_gadgetlist__(value)
 	    gadgetlist = get_uniquelist(gadgetlist, value) 
@@ -99,13 +99,25 @@ class GadgetsCollectionByGenericSearch(Resource):
 		    gadgetlist = gadgetlist.exclude(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
  
 	    gadgetlist = get_uniquelist(gadgetlist)
+        
+	items = len(gadgetlist)
+	#paginate
+	a= int(pag)
+	b= int(offset)
+	if a != 0 and b != 0:
+	    c=((a-1)*b)
+	    d= (b*a)
 
-	return get_resource_response(gadgetlist, format)
+	    if a==1:
+	        c=0
+            gadgetlist = gadgetlist[c:d]
+
+	return get_resource_response(gadgetlist, format, items)
 
 
 class GadgetsCollectionByCriteria(Resource):
 
-    def read(self, request, user_name, criteria, value):
+    def read(self, request, user_name, criteria, value, pag=0, offset=0):
 	
         criterialist = []
         gadgetlist = []
@@ -143,4 +155,16 @@ class GadgetsCollectionByCriteria(Resource):
         for b in criterialist:
 	    gadgetlist += get_list_or_404(GadgetResource, id=b.idResource_id)
 
-        return get_resource_response(gadgetlist, format)
+        items = len(gadgetlist)
+	#paginate
+	a= int(pag)
+	b= int(offset)
+	if a != 0 and b != 0:
+	    c=((a-1)*b)
+	    d= (b*a)
+	
+	    if a==1:
+	        c=0
+            gadgetlist = gadgetlist[c:d]
+
+        return get_resource_response(gadgetlist, format, items)
