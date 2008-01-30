@@ -76,7 +76,7 @@ class TemplateParser:
     def getGadgetVendor (self):
         return self.handler._gadgetVendor
 
-            
+
 class TemplateHandler(saxutils.handler.ContentHandler):
     # XML parsing
 
@@ -325,11 +325,14 @@ class TemplateHandler(saxutils.handler.ContentHandler):
             _href = attrs.get('href')
         
         if (_href != ""):
-            # Gadget Code Parsing
-            gadgetParser = GadgetCodeParser()
-            gadgetParser.parseUserEvents(_href, self._gadgetURI)
+            try:
+                # Gadget Code Parsing
+                gadgetParser = GadgetCodeParser()
+                gadgetParser.parseUserEvents(_href, self._gadgetURI)
 
-            self._xhtml = gadgetParser.getXHTML()
+                self._xhtml = gadgetParser.getXHTML()
+            except Exception, e:
+                raise TemplateParseException(_("ERROR: XHtml couldn't be readed") + " - " + unicode(e))
         else:
             raise TemplateParseException(_("ERROR: Missing attribute at XHTML element"))            
 
@@ -480,19 +483,45 @@ class TemplateHandler(saxutils.handler.ContentHandler):
         self._accumulator += text
 
     def endDocument(self):
-        if self._gadgetName != "" and self._gadgetVendor != "" \
-                and self._gadgetVersion != "" and self._gadgetAuthor != "" \
-                and self._gadgetMail != "" and self._gadgetDesc != "" \
-                and self._gadgetWiki != "" and self._gadgetImage != "":
+        emptyRequiredFields = []
+        if self._gadgetName == "":
+            emptyRequiredFields.append("name");
+        
+        if self._gadgetVendor == "":
+            emptyRequiredFields.append("vendor");
 
-            self._gadget = Gadget ( uri=self._gadgetURI, vendor=self._gadgetVendor, 
-                              name=self._gadgetName, version=self._gadgetVersion, 
-                              template=self._template, xhtml=self._xhtml, 
-                              author=self._gadgetAuthor, mail=self._gadgetMail,
-                              wikiURI=self._gadgetWiki, imageURI=self._gadgetImage, 
-                              description=self._gadgetDesc, user=self._user )
+        if self._gadgetVersion == "":
+            emptyRequiredFields.append("version");
 
-            self._gadget.save()
+        if self._gadgetAuthor == "":
+            emptyRequiredFields.append("author");
+
+        if self._gadgetMail == "":
+            emptyRequiredFields.append("mail");
+
+        if self._gadgetDesc == "":
+            emptyRequiredFields.append("description");
+
+        if self._gadgetWiki == "":
+            emptyRequiredFields.append("wiki");
+
+        if self._gadgetImage == "":
+            emptyRequiredFields.append("image");
+
+        if self._xhtml == "":
+            emptyRequiredFields.append("xhtml");
+        
+        if len(emptyRequiredFields) > 0:
+	    raise TemplateParseException(_("Missing required filed(s)") + ": " + unicode(emptyRequiredFields))
+        
+        self._gadget = Gadget (uri=self._gadgetURI, vendor=self._gadgetVendor, 
+                          name=self._gadgetName, version=self._gadgetVersion, 
+                          template=self._template, xhtml=self._xhtml, 
+                          author=self._gadgetAuthor, mail=self._gadgetMail,
+                          wikiURI=self._gadgetWiki, imageURI=self._gadgetImage, 
+                          description=self._gadgetDesc, user=self._user )
+
+        self._gadget.save()
             
     def reset_Accumulator(self):
         self._accumulator = ""

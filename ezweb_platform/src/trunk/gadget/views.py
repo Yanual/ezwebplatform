@@ -38,6 +38,7 @@
 
 from xml.dom.ext.reader import Sax2
 from xml.dom.ext import Print
+from xml.dom.minidom import getDOMImplementation
 from xml.sax._exceptions import SAXParseException
 from StringIO import StringIO
 
@@ -96,8 +97,19 @@ class GadgetCollection(Resource):
         except TemplateParseException, e:
             log(e, 'POST', 'user/id/gadgets', user_name)
             transaction.rollback()
-            return HttpResponseServerError("<error>%s</error>" % e, mimetype='application/xml; charset=UTF-8')
+
+            dom = getDOMImplementation()
+
+            doc = dom.createDocument(None, "error", None)
+            rootelement = doc.documentElement
+            text = doc.createTextNode(unicode(e))
+            rootelement.appendChild(text)
+            errormsg = doc.toxml()
+            doc.unlink()
+
+            return HttpResponseServerError(errormsg, mimetype='application/xml; charset=UTF-8')
         except IntegrityError:
+            log(_("Gadget already exists"), 'POST', 'user/id/gadgets', user_name)
             # Gadget already exists. Rollback transaction
             transaction.rollback()
         except Exception, e:
