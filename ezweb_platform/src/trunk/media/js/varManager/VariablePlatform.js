@@ -109,6 +109,10 @@ RVariable.prototype = new Variable;
 
 RVariable.prototype.setHandler = function (handler_) { 
 	this.handler = handler_;
+
+	// If the variable has a value, the value it's submitted to the handler
+	if (this.value)
+	    this.handler(this.value);
 } 
 
 RVariable.prototype.get = function () { 

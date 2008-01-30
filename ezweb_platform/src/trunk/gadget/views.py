@@ -62,6 +62,9 @@ from gadget.templateParser import TemplateParser
 from django.contrib.auth.models import User
 from django.db import transaction
 
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import string_concat
+
 from commons.logs import log
 from commons.utils import *
 from commons.exceptions import TemplateParseException
