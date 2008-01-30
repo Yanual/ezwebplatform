@@ -53,6 +53,7 @@ function Gadget(gadget_, url_) {
 	this.getVersion = function() { return state.getVersion(); }
 	this.getTemplate = function() { return state.getTemplate(); }
 	this.getXHtml = function() { return state.getXHtml(); }
+	this.getInfoString = function() { return state.getInfoString(); }
 	
 	this.getImage = function() { return state.getImage(); }
 	this.setImage = function(image_) { state.setImage(image_); }
@@ -71,7 +72,16 @@ function Gadget(gadget_, url_) {
 		// Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
 		
 		var onError = function(transport) {
-			alert (gettext("Unexpected error in HTTP method invocation"));
+			var msg;
+			if (transport.responseXML) {
+                                msg = transport.responseXML.documentElement.textContent;
+			} else {
+                                msg = "HTTP Error " + transport.status + " - " + transport.statusText;
+			}
+
+			msg = interpolate(gettext("The gadget could not be added to the showcase: %(errorMsg)s."), {errorMsg: msg}, true);
+			OpManagerFactory.getInstance().log(msg);
+			alert (gettext("The gadget could not be added to the showcase, please check the logs for further info."));
 		}
 		
 		var loadGadget = function(transport) {
@@ -137,6 +147,11 @@ function GadgetState(gadget_) {
 	this.getVersion = function() { return version; }
 	this.getTemplate = function() { return template; }
 	this.getXHtml = function() { return xhtml; }
+	this.getInfoString = function() {
+		var transObj = { vendor: vendor, name: name, version: version};
+		var msg = gettext("[GadgetVendor: %(vendor)s, GadgetName: %(name)s, GadgetVersion: %(version)s]");
+		return interpolate(msg, transObj, true);
+	}
 	
 	this.getImage = function() { return image; }
 	this.setImage = function(image_) { image = image_; }

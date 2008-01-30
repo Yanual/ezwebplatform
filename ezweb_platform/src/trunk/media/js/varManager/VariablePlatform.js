@@ -135,9 +135,12 @@ RVariable.prototype.set = function (newValue) {
 		case Variable.prototype.SLOT:
 			this.value = newValue;
 			try {
-				this.handler(newValue);
+				/*if (this.handler)*/ this.handler(newValue);
 			} catch (e) {
-				// TODO log this event
+				var gadgetInfo = DragboardFactory.getInstance().getGadget(this.iGadget).getInfoString();
+				var transObj = {iGadgetId: this.iGadgetId, varName: this.name, exceptionMsg: e, GadgetInfo: gadgetInfo};
+				var msg = interpolate(gettext("Error in the handler of the \"%(varName)s\" RVariable in iGadget %(iGadgetId)s: %(exceptionMsg)s.\n%(GadgetInfo)s."), transObj, true);
+				OpManagerFactory.getInstance().log(msg, Constants.Logging.ERROR_MSG);
 			}
 			break;
 		default:
