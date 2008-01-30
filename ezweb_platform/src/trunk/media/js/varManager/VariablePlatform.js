@@ -135,7 +135,7 @@ RVariable.prototype.set = function (newValue) {
 		case Variable.prototype.SLOT:
 			this.value = newValue;
 			try {
-				/*if (this.handler)*/ this.handler(newValue);
+				if (this.handler) this.handler(newValue);
 			} catch (e) {
 				var gadgetInfo = DragboardFactory.getInstance().getGadget(this.iGadget).getInfoString();
 				var transObj = {iGadgetId: this.iGadgetId, varName: this.name, exceptionMsg: e, GadgetInfo: gadgetInfo};
