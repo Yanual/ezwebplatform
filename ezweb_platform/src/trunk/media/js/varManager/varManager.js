@@ -110,7 +110,7 @@ var VarManagerFactory = function () {
 		
 			return variable;
 		}
-		
+
 		var loaded = false;
 		var persistenceEngine = PersistenceEngineFactory.getInstance();
 		var opManager = OpManagerFactory.getInstance();
@@ -144,7 +144,7 @@ var VarManagerFactory = function () {
 			variable.set(value);
 		} 
 		
-				VarManager.prototype.updateContextVar = function (iGadgetId, ctxVarName, value) {
+		VarManager.prototype.updateContextVar = function (iGadgetId, ctxVarName, value) {
 			if (! loaded)
 				return;
 			
@@ -225,6 +225,38 @@ var VarManagerFactory = function () {
 				varManager.resetModifiedVariables();
 			}
 		}
+
+		VarManager.prototype.planInterfaceInitialization = function () {
+		    if (loaded == true) {
+			try {
+			    setTimeout("VarManagerFactory.getInstance().initializeInterface()", 500);
+			} catch (e) {
+			    alert(e);
+			}
+		    }
+		}
+
+		VarManager.prototype.initializeInterface = function () {
+		    // Calling all SLOT vars handler
+		    var variable;
+		    var vars;
+		    var varIndex;
+		    var gadgetIndex;
+
+		    for (gadgetIndex in iGadgets) {
+			vars = iGadgets[gadgetIndex];
+
+			for (varIndex in vars) {
+			    variable = vars[varIndex];
+
+			    if (variable.aspect == "SLOT" && variable.handler) {
+				variable.handler(variable.value);
+			    }
+			}
+			
+		    }
+		}
+
 
 		VarManager.prototype.getModifiedVariables = function () {
 		    return modifiedVars;

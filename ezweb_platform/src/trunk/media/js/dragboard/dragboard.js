@@ -127,6 +127,9 @@ var DragboardFactory = function () {
 			currentId = 1; // TODO remove, persistenceEngine will manage ids
 			iGadgets = new Hash();
 
+			// For controlling when the igadgets are totally loaded!
+			this.igadgetsToLoad = iGadgetsJson.length;
+
 			for (var i = 0; i < iGadgetsJson.length; i++) {
 				curIGadget = iGadgetsJson[i];
 
@@ -548,6 +551,14 @@ var DragboardFactory = function () {
 		Dragboard.prototype.move = function (iGadgetId) {
 			// TODO implement this function
 		}
+
+
+		Dragboard.prototype.igadgetLoaded = function (iGadgetId) {
+		    this.igadgetsToLoad--;
+		    if (this.igadgetsToLoad == 0)
+			VarManagerFactory.getInstance().planInterfaceInitialization();
+		}
+
 
 		Dragboard.prototype.maximize = function (iGadgetId) {
 			var igadget = iGadgets[iGadgetId];

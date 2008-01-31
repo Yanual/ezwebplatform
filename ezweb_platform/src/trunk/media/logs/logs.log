@@ -26,3 +26,11 @@ ERROR: POST user/id/gadgets admin
 [30/01/2008 15:45:18] Gadget already exists
 ERROR: POST user/id/gadgets admin
 [30/01/2008 15:45:21] Gadget already exists
+ERROR: POST user/id/gadgets admin
+[31/01/2008 11:22:17] Gadget already exists
+ERROR: POST user/id/gadgets admin
+[31/01/2008 12:11:29] Gadget already exists
+ERROR: POST user/id/gadgets admin
+[31/01/2008 12:26:49] Gadget already exists
+ERROR: POST user/id/gadgets admin
+[31/01/2008 15:55:08] Gadget already exists

@@ -112,6 +112,10 @@ var OpManagerFactory = function () {
 	 	    this.catalogue.emptyResourceList();
 		    this.catalogue.loadCatalogue(url);	
 		}
+
+		OpManager.prototype.igadgetLoaded = function () {
+	 	    this.dragboardModule.igadgetLoaded();
+		}
 		
 		OpManager.prototype.continueLoading = function (module) {
 			// Asynchronous load of modules

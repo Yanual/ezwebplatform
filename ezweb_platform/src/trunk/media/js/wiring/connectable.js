@@ -547,6 +547,14 @@ wInOut.prototype.delConnections = function () {
 	}
 }
 
+wInOut.prototype.propagate = function () {
+    for (var j = 0; j < this.outputCounter; j++){
+	if (this.outputList[j] instanceof wOut){
+	    this.outputList[j].setValue(this.value);
+	}
+    }
+}
+
 wInOut.prototype.getURI = function(){ 
     var values = {'channelName' : this.name};
 

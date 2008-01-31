@@ -43,6 +43,8 @@ function _EzWebAPI() {
 	var tmp = document.URL.split("?");
 	tmp = tmp[1].split("=");
 	this.id = tmp[1];
+
+	this.platform.opManager.igadgetLoaded();
 }
 
 _EzWebAPI.prototype.getId = function() {
