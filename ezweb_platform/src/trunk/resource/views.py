@@ -53,6 +53,7 @@ from resource.models import GadgetResource, GadgetWiring
 from resource.parser import TemplateParser
 from tag.models import UserTag
 
+from commons.authentication import user_authentication
 from commons.catalogue_utils import get_xml_error, get_resource_response
 from commons.exceptions import TemplateParseException
 from commons.logs import log
@@ -92,6 +93,8 @@ class GadgetsCollection(Resource):
 
     def read(self,request, user_name, pag=0,offset=0):
         
+	user = user_authentication(user_name)
+
 	try:
 	    format = request.__getitem__('format')
 	except:
@@ -115,7 +118,7 @@ class GadgetsCollection(Resource):
 	        c=0
             gadgetlist = GadgetResource.objects.all()[c:d]
 	
-        return get_resource_response(gadgetlist, format, items)
+        return get_resource_response(gadgetlist, format, items, user)
 
     
     def delete(self, request, user_name):

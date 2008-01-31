@@ -49,6 +49,7 @@ from resource.models import GadgetResource
 from resource.models import GadgetWiring
 from tag.models import UserTag
 
+from commons.authentication import user_authentication
 from commons.catalogue_utils import get_xml_error, get_uniquelist, get_resource_response
 
 
@@ -70,7 +71,9 @@ class GadgetsCollectionByGenericSearch(Resource):
 	return gadgetlist
 
     def read(self, request, user_name, value, criteria, pag=0, offset=0):
-         
+
+        user = user_authentication(user_name)
+
 	gadgetlist = []
 
         value = value.split(' ')
@@ -112,14 +115,16 @@ class GadgetsCollectionByGenericSearch(Resource):
 	        c=0
             gadgetlist = gadgetlist[c:d]
 
-	return get_resource_response(gadgetlist, format, items)
+	return get_resource_response(gadgetlist, format, items, user)
 
 
 class GadgetsCollectionByCriteria(Resource):
 
     def read(self, request, user_name, criteria, value, pag=0, offset=0):
-	
-        criterialist = []
+
+        user = user_authentication(user_name)
+
+	criterialist = []
         gadgetlist = []
 
 	try:
@@ -167,4 +172,4 @@ class GadgetsCollectionByCriteria(Resource):
 	        c=0
             gadgetlist = gadgetlist[c:d]
 
-        return get_resource_response(gadgetlist, format, items)
+        return get_resource_response(gadgetlist, format, items, user)

@@ -184,15 +184,15 @@ msgid "Show results with:"
 msgstr ""
 
 #: ezweb/templates/showcase.html:41
-msgid "All of this words:"
+msgid "All of these words:"
 msgstr ""
 
 #: ezweb/templates/showcase.html:46
-msgid "Any of this word:"
+msgid "Any of these words:"
 msgstr ""
 
 #: ezweb/templates/showcase.html:51
-msgid "None of this word:"
+msgid "None of these words:"
 msgstr ""
 
 #: ezweb/templates/showcase.html:57

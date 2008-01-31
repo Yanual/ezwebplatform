@@ -71,7 +71,7 @@ def get_slot_data (gadget_id):
         all_slots.append(slot_data)
     return all_slots
 
-def get_gadgetresource_data(data):
+def get_gadgetresource_data(data, user):
     data_ret = {}
     data_fields = data['fields']
     data_ret['vendor'] = data_fields['vendor']
@@ -84,7 +84,7 @@ def get_gadgetresource_data(data):
     data_ret['uriWiki'] = data_fields['wiki_page_uri']
     data_ret['uriTemplate'] = data_fields['template_uri']
 
-    data_tags = get_tag_data(gadget_id=data['pk'], user_id=data_fields['added_by_user'])
+    data_tags = get_tag_data(gadget_id=data['pk'], user_id=user.id)
     data_ret['tags'] = [d for d in data_tags]
 
     data_events = get_event_data(gadget_id=data['pk'])

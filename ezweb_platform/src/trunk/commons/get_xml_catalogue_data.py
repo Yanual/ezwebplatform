@@ -40,7 +40,7 @@ from tag.models import UserTag
 from resource.models import GadgetWiring
 
 
-def get_xml_description(gadgetlist):
+def get_xml_description(gadgetlist, user):
 
     xml_resource = ''
     xml_tag=''
@@ -49,7 +49,7 @@ def get_xml_description(gadgetlist):
 
     for e in gadgetlist:
 
-        xml_tag = get_tags_by_resource(e.id,e.added_by_user)
+        xml_tag = get_tags_by_resource(e.id,user.id)
 	xml_event = get_events_by_resource(e.id)
 	xml_slot = get_slots_by_resource(e.id)
 	  				
