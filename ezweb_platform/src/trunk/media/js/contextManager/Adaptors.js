@@ -71,12 +71,14 @@ UserAdaptor.prototype.CONCEPT = 'username'
 //////////////////////////////     WIDTH ADAPTOR    //////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function WidthAdaptor(gadgetID) {
+function WidthAdaptor(gadgetID_) {
 
+	this._igadget = gadgetID_;
+	
 	function _onSuccess(receivedData) {
 		var json = eval ('(' + receivedData.responseText + ')');
 		var value = json.width;
-		ContextManagerFactory.getInstance().setConceptValue(WidthAdaptor.prototype.CONCEPT, value)
+		ContextManagerFactory.getInstance().setGadgetConceptValue(this._igadget, WidthAdaptor.prototype.CONCEPT, value)
 	}
 
 	function _onError(transport, e) {
@@ -88,7 +90,7 @@ function WidthAdaptor(gadgetID) {
 		alert (gettext ("Error getting concept ") + WidthAdaptor.prototype.CONCEPT + ":"+ msg);
 	}
 	
-	var uri = URIs.GET_IGADGET.evaluate({id: gadgetID});
+	var uri = URIs.GET_IGADGET.evaluate({id: this._igadget});
 	PersistenceEngineFactory.getInstance().send_get(uri , this, _onSuccess, _onError);			
 	
 }
@@ -100,12 +102,14 @@ WidthAdaptor.prototype.CONCEPT = 'width'
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function HeightAdaptor(gadgetID) {
+function HeightAdaptor(gadgetID_) {
+
+	this._igadget = gadgetID_;
 
 	function _onSuccess(receivedData) {
 		var json = eval ('(' + receivedData.responseText + ')');
 		var value = json.height;
-		ContextManagerFactory.getInstance().setConceptValue(HeightAdaptor.prototype.CONCEPT, value)
+		ContextManagerFactory.getInstance().setGadgetConceptValue(this._igadget, HeightAdaptor.prototype.CONCEPT, value)
 	}
 
 	function _onError(transport, e) {
@@ -117,7 +121,7 @@ function HeightAdaptor(gadgetID) {
 		alert (gettext ("Error getting concept ") + HeightAdaptor.prototype.CONCEPT + ":"+ msg);
 	}
 	
-	var uri = URIs.GET_IGADGET.evaluate({id: gadgetID});
+	var uri = URIs.GET_IGADGET.evaluate({id: this._igadget});
 	PersistenceEngineFactory.getInstance().send_get(uri , this, _onSuccess, _onError);			
 	
 }
@@ -130,12 +134,14 @@ HeightAdaptor.prototype.CONCEPT = 'height'
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function LanguageAdaptor(gadgetID) {
+function LanguageAdaptor(gadgetID_) {
+	
+	this._igadget = gadgetID_;
 
 	function _onSuccess(receivedData) {
 		var json = eval ('(' + receivedData.responseText + ')');
 		var value = json.language;
-		ContextManagerFactory.getInstance().setConceptValue(LanguageAdaptor.prototype.CONCEPT, value)
+		ContextManagerFactory.getInstance().setGadgetConceptValue(this._igadget, LanguageAdaptor.prototype.CONCEPT, value)
 	}
 
 	function _onError(transport, e) {

@@ -49,10 +49,23 @@ var ContextManagerFactory = function () {
 		var _loaded = false;
 		var _concepts = new Hash();     // a concept is its adaptor an its value
 		var _name2Concept = new Hash(); // relates the name to its concept
-
+		
 		// ***********************
 		// PRIVATED FUNCTIONS 
 		// ***********************
+		
+		this._addContextVarsFromTemplate = function (cVars, type_) {
+			for (var i = 0; i < cVars.length; i++){
+				var cVar = cVars[i];
+				if (_name2Concept[cVar.getConceptName()] == null){
+					alert (gettext("Context variable") + " [" + cVar.getName() + "] " + gettext("without related concept. Its value cannot be established"));
+					return;
+				}
+				var relatedConcept = _concepts[_name2Concept[cVar.getConceptName()]];
+				relatedConcept.setType(type_);
+				relatedConcept.addIGadgetVar(cVar);							
+ 			}
+		}
 		
 
 		/**
@@ -77,6 +90,7 @@ var ContextManagerFactory = function () {
 							case Variable.prototype.GADGET_CONTEXT:
 								var contextVar = new ContextVar(currentIGadget.id, currentVar.name, currentVar.concept)
 								var relatedConcept = _concepts[_name2Concept[currentVar.concept]];
+								relatedConcept.setType(currentVar.aspect);
 								relatedConcept.addIGadgetVar(contextVar);								
 								break;
 							default:
@@ -110,7 +124,7 @@ var ContextManagerFactory = function () {
 			for (var i = 0; i < conceptsJson.length; i++) {
 				var curConcept = conceptsJson[i];
 				// Creates the concept
-				var concept = new Concept(curConcept.concept, curConcept.adaptor, null);
+				var concept = new Concept(curConcept.concept, curConcept.adaptor);
 				_concepts[curConcept.concept] = concept; 
 
 				// Relates the concept name to all its concept
@@ -137,7 +151,6 @@ var ContextManagerFactory = function () {
 
 			alert (gettext("Error receiving context manager data") + ": " + msg);
 		}
-
 		
 		PersistenceEngineFactory.getInstance().send_get(URIs.GET_CONTEXT, this, _loadConcepts, _onError);
 
@@ -148,20 +161,17 @@ var ContextManagerFactory = function () {
 			if ((gadget == null) || !(gadget instanceof Gadget))
 				return; // TODO exception
 
-			var cVars = gadget.getTemplate().getContextVars(iGadgetId);
-			for (var i = 0; i < cVars.length; i++){
-				var cVar = cVars[i];
-				if (_name2Concept[cVar.getConceptName()] == null){
-					alert (gettext("Context variable") + " [" + cVar.getName() + "] " + gettext("without related concept. Its value cannot be established"));
-					return;
-				}
-				var relatedConcept = _concepts[_name2Concept[cVar.getConceptName()]];
-				relatedConcept.addIGadgetVar(cVar);							
- 			}
+			var template = gadget.getTemplate();
+			this._addContextVarsFromTemplate(template.getExternalContextVars(iGadgetId), Concept.prototype.EXTERNAL);
+			this._addContextVarsFromTemplate(template.getGadgetContextVars(iGadgetId), Concept.prototype.IGADGET);
 		}
 
 		ContextManager.prototype.setConceptValue = function (concept, value) {
 			_concepts[concept].setValue(value);
+		}
+		
+		ContextManager.prototype.setGadgetConceptValue = function (igadgetid, concept, value) {
+			_concepts[concept].getIGadgetVar(igadgetid).setValue(value);
 		}
 	}
 

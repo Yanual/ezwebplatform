@@ -126,29 +126,50 @@ function Template(template_) {
 		return this.prefs;
 	}
 	
-	this.getContextVars = function (igadget_) {
+	this.getExternalContextVars = function (igadget_) {
 
-		if (this.contextVars == null) {
+		if (this.extCtxtVars == null) {
 			// JSON-coded Template-Variables mapping	
 			// Constructing the structure 
 		 
-			this.contextVars = new Array();
+			this.extCtxtVars = new Array();
 			var rVar = null;
 			for (i = 0; i < variableList.length; i++) {
 				rVar = variableList[i];
 				switch (rVar.aspect) {
 					case Variable.prototype.EXTERNAL_CONTEXT:
-					case Variable.prototype.GADGET_CONTEXT:
-						this.contextVars.push(new ContextVar(igadget_, rVar.name, rVar.concept)); 
+						this.extCtxtVars.push(new ContextVar(igadget_, rVar.name, rVar.concept)); 
 						break;
 					default:
 						break;
 				}
 			}
 		}
-		return this.contextVars;
+		return this.extCtxtVars;
 	}
 	
+	this.getGadgetContextVars = function (igadget_) {
+
+		if (this.gCtxtVars == null) {
+			// JSON-coded Template-Variables mapping	
+			// Constructing the structure 
+		 
+			this.gCtxtVars = new Array();
+			var rVar = null;
+			for (i = 0; i < variableList.length; i++) {
+				rVar = variableList[i];
+				switch (rVar.aspect) {
+					case Variable.prototype.GADGET_CONTEXT:
+						this.gCtxtVars.push(new ContextVar(igadget_, rVar.name, rVar.concept)); 
+						break;
+					default:
+						break;
+				}
+			}
+		}
+		return this.gCtxtVars;
+	}
+
 	
 	this.getUserPrefsId = function () {
         

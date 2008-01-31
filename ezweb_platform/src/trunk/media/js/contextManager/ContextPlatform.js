@@ -36,58 +36,58 @@
  */
 
 function ContextVar(igadget_, varName_, conceptName_) {
-	this.igadget = igadget_;
-	this.varName = varName_;
-	this.conceptName = conceptName_;
+	this._igadget = igadget_;
+	this._varName = varName_;
+	this._conceptName = conceptName_;
+	this._value = null;
 }
 
-//ContextVar.prototype.ContextVar = function (igadget_, varName_, conceptName_) {
-//	this.igadget = igadget_;
-//	this.varName = varName_;
-//	this.conceptName = conceptName_;
-//}
-
 ContextVar.prototype.getName = function () {
-	return this.varName;
+	return this._varName;
 }
 
 ContextVar.prototype.getIGadget = function () {
-	return this.igadget;
+	return this._igadget;
 }
 
 ContextVar.prototype.getConceptName = function () {
-	return this.conceptName;
+	return this._conceptName;
 }
 
-ContextVar.prototype.setValue = function (newValue) {
-	VarManagerFactory.getInstance().updateContextVar(this.igadget, this.varName, newValue);
+ContextVar.prototype.getValue = function () {
+	return this._value;
+}
+
+ContextVar.prototype.setValue = function (newValue_) {
+	this._value = newValue_;
+	VarManagerFactory.getInstance().updateContextVar(this._igadget, this._varName, newValue_);
 }
 
 //////////////////////////////////////////////////////////
 // Concept
 //////////////////////////////////////////////////////////
-function Concept(semanticConcept_, adaptor_, value_) {
+function Concept(semanticConcept_, adaptor_) {
 	this._semanticConcept = semanticConcept_;
 	this._adaptor = adaptor_;
-	this._value = value_;
+	this._type = null;
+	this._value = null;
 
 	this._igadgetVars = new Array();
-	this._hasValue = false;
 	
-	this._initAdaptor = function () {
-		for (var i = 0; i < this._igadgetVars.length; i++) {
-			var ivar = this._igadgetVars[i];
-			try{		
-				// Adaptor of Gadget Context variable receives the IGadget as parameter 
-				eval ('new ' + adaptor_ + "("+ ivar.getIGadget() +")"); // Remove this if we have a concept cache
-			}catch(e){
-				// Adaptor of External Context variable doesn't receives any parameter   
-				eval ('new ' + adaptor_ + "()"); // Remove this if we have a concept cache
-			}
+	this._initAdaptor = function (ivar_) {
+		if (ivar_ == null){
+			// Adaptor of External Context variable doesn't receives any parameter   
+			eval ('new ' + adaptor_ + "()"); 
+		}else{
+			// Adaptor of Gadget Context variable receives the IGadget as parameter			
+			eval ('new ' + adaptor_ + "("+ ivar_.getIGadget() +")");
 		}
 	}
 	
 }
+
+Concept.prototype.EXTERNAL = 'ECTX';
+Concept.prototype.IGADGET = 'GCTX';
 
 Concept.prototype.getSemanticConcept = function () {
 	return this._semanticConcept;
@@ -98,25 +98,75 @@ Concept.prototype.getAdaptor = function () {
 }
 
 Concept.prototype.getValue = function () {
-	return this.value_;
+	if (this._type == Concept.prototype.EXTERNAL){
+		return this.value_;
+	}
+	throw gettext("Concept has not value, this is a Gadget Concept.");
+}
+
+Concept.prototype.setType = function (type_) {
+	if (this._type == null){
+		this._type = type_;			
+	} else if (this._type != type_) {
+		throw gettext("Unexpected change of concept type.");
+	}
 }
 
 Concept.prototype.setValue = function (value_) {
-	this._value = value_;
-	this._hasValue = true;
-	for (var i = 0; i < this._igadgetVars.length; i++){
-		var ivar = this._igadgetVars[i];
-		ivar.setValue(value_);
+	switch (this._type) {
+		case Concept.prototype.EXTERNAL:
+			this._value = value_;
+			for (var i = 0; i < this._igadgetVars.length; i++){
+				var ivar = this._igadgetVars[i];
+				ivar.setValue(value_);
+			} 
+			break;
+		case Concept.prototype.IGADGET:
+			throw gettext("Concept has not value, this is a Gadget Concept.");
+			break;
+		default:
+			throw gettext("Concept has not type yet.");
+			break;
 	}
 }
 
 Concept.prototype.addIGadgetVar = function (ivar_) {
-	if (this._hasValue){
-		ivar_.setValue(this._value);
-		this._igadgetVars.push(ivar_);		
-	}else{
-		this._igadgetVars.push(ivar_);
-		this._initAdaptor();
+	switch (this._type) {
+		case Concept.prototype.EXTERNAL:
+			if (this.value != null){
+				ivar_.setValue(this._value);
+				this._igadgetVars.push(ivar_);		
+			}else{
+				this._igadgetVars.push(ivar_);
+				this._initAdaptor(null);
+			}
+			break;
+		case Concept.prototype.IGADGET:
+			this._igadgetVars.push(ivar_);
+			this._initAdaptor(ivar_);
+			break;
+		default:
+			throw gettext("Concept has not type yet.");
+			break;
+	}
+}
+
+Concept.prototype.getIGadgetVar = function (igadgetId_) {
+	switch (this._type) {
+		case Concept.prototype.IGADGET:
+			for (var i = 0; i < this._igadgetVars.length; i++){
+				var ivar = this._igadgetVars[i];
+				if (ivar.getIGadget() == igadgetId_){
+					return ivar;
+				}
+			}
+			throw interpolate (gettext("%(concept)s Concept is not related to IGadget number %(var)."), {'concept': this._semanticConcept, 'var': igadgetId_}, true)
+			break;
+		case Concept.prototype.EXTERNAL:
+			throw gettext("This is a External Concept, 'getIGadgetVar' is only for Gadget Concept.");
+			break;
+		default:
+			throw gettext("Concept has not type yet.");
 	}
 }
 
