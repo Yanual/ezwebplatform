@@ -38,7 +38,7 @@
 
 # Django settings for mymem project.
 from os import path
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -76,6 +76,7 @@ LANGUAGE_CODE = 'es-ES'
 LANGUAGES = (
     ('es', _('Spanish')),
     ('en', _('English')),
+    ('pt', _('Portugese')),
 )
 
 SITE_ID = 1
