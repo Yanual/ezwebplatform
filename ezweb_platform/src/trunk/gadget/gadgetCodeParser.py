@@ -36,11 +36,12 @@
 #   http://morfeo-project.org/
 #
 
-from django.http import Http404
 from HTMLParser import HTMLParser
-from urllib import urlopen
+from urllib2 import urlopen
 
-from django.utils.translation import gettext_lazy as _
+from commons.exceptions import TemplateParseException
+
+from django.utils.translation import ugettext as _
 
 from models import *
 
@@ -55,7 +56,7 @@ class GadgetCodeParser(HTMLParser):
         try:
             xhtml = urlopen(codeURI).read()
         except Exception:
-            raise Http404(_(u"XHTML code is not accessible"))
+            raise TemplateParseException(_(u"XHTML code is not accessible"))
         
         self.xHTML = XHTML (uri=gadgetURI + "/xhtml", code=xhtml)
         self.xHTML.save()
