@@ -101,8 +101,8 @@ class GadgetsCollection(Resource):
 	    format = 'default'
 
 	#paginate
-	a= int(offset)
-	b= int(pag)
+	a= int(pag)
+	b= int(offset)
 
 	items = GadgetResource.objects.count()
 

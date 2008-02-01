@@ -208,7 +208,7 @@ UIUtils.searchGeneric = function(url, param, criteria) {
   UIUtils.searchCriteria = criteria ;
 	UIUtils.search = 'generic';
 	
-	opManager.repaintCatalogue(url + "/" + param + "/" + criteria + "/10/0");
+	opManager.repaintCatalogue(url + "/" + param + "/" + criteria + "/1/10");
 }
 }
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-31 13:13+0100\n"
+"POT-Creation-Date: 2008-02-01 07:40+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: manage.py:10
+#: .\manage.py:10
 #, python-format
 msgid ""
 "Error: Can't find the file 'settings.py' in the directory containing %(file)"
@@ -24,15 +24,15 @@ msgid ""
 msgstr ""
 "Error: El fichero 'settings.py' no se encuentra en el directorio %(file)r.\n"
 
-#: manage.py:11
+#: .\manage.py:11
 msgid "It appears you've customized things.\n"
 msgstr "Parece que ha modificado la configuracion.\n"
 
-#: manage.py:12
+#: .\manage.py:12
 msgid "You'll have to run django-admin.py, passing it your settings module.\n"
 msgstr "Debe ejecutar django-admin.py, pasandole su modulo de condiguracion.\n"
 
-#: manage.py:13
+#: .\manage.py:13
 msgid ""
 "(If the file settings.py does indeed exist, it's causing an ImportError "
 "somehow.)\n"
@@ -40,458 +40,465 @@ msgstr ""
 "(Si el fichero settings.py existe, de alguna manera esta causando un error "
 "importante.)\n"
 
-#: settings.py:77
+#: .\settings.py:77
 msgid "Spanish"
 msgstr ""
 
-#: settings.py:78
+#: .\settings.py:78
 msgid "English"
 msgstr ""
 
-#: commons/authentication.py:48
+#: .\settings.py:79
+msgid "Portugese"
+msgstr ""
+
+#: .\commons\authentication.py:48
 msgid "User authentication failed!"
 msgstr "Autentificacion de usuario fallida"
 
-#: connectable/models.py:47 connectable/models.py:63 connectable/models.py:80
-#: gadget/models.py:46 gadget/models.py:134 gadget/models.py:145
-#: igadget/models.py:50 igadget/models.py:65 igadget/models.py:81
-#: igadget/models.py:101
+#: .\connectable\models.py:47 .\connectable\models.py:63
+#: .\connectable\models.py:80 .\gadget\models.py:46 .\gadget\models.py:134
+#: .\gadget\models.py:145 .\igadget\models.py:50 .\igadget\models.py:65
+#: .\igadget\models.py:81 .\igadget\models.py:101
 msgid "URI"
 msgstr "URI"
 
-#: connectable/models.py:49 connectable/models.py:65 connectable/models.py:82
-#: context/models.py:55 gadget/models.py:60 gadget/models.py:92
-#: gadget/models.py:104 gadget/models.py:148 igadget/models.py:67
-#: resource/models.py:46
+#: .\connectable\models.py:49 .\connectable\models.py:65
+#: .\connectable\models.py:82 .\context\models.py:55 .\gadget\models.py:60
+#: .\gadget\models.py:92 .\gadget\models.py:104 .\gadget\models.py:148
+#: .\igadget\models.py:67 .\resource\models.py:46
 msgid "Name"
 msgstr "Nombre"
 
-#: connectable/models.py:50 gadget/models.py:91 gadget/models.py:103
-#: igadget/models.py:105
+#: .\connectable\models.py:50 .\gadget\models.py:91 .\gadget\models.py:103
+#: .\igadget\models.py:105
 msgid "Value"
 msgstr "Valor"
 
-#: connectable/models.py:51 gadget/models.py:79 resource/models.py:76
+#: .\connectable\models.py:51 .\gadget\models.py:79 .\resource\models.py:76
 msgid "Friend code"
 msgstr "Codigo relacionado"
 
-#: connectable/models.py:53 gadget/models.py:163 igadget/models.py:69
+#: .\connectable\models.py:53 .\gadget\models.py:163 .\igadget\models.py:69
 msgid "User"
 msgstr "Usuario"
 
-#: connectable/models.py:66 connectable/models.py:83 gadget/models.py:115
-#: gadget/models.py:125
+#: .\connectable\models.py:66 .\connectable\models.py:83
+#: .\gadget\models.py:115 .\gadget\models.py:125
 msgid "Variable"
 msgstr "Variable"
 
-#: connectable/models.py:67 connectable/models.py:84
+#: .\connectable\models.py:67 .\connectable\models.py:84
 msgid "InOut"
 msgstr "Entrada Salida"
 
-#: connectable/views.py:95
+#: .\connectable\views.py:95
 msgid "JSON parameter expected"
 msgstr "Se esperaba el parametro JSON"
 
-#: connectable/views.py:156
+#: .\connectable\views.py:156
 #, python-format
 msgid "refered screen %(screen_id)s doesn't exists."
 msgstr "El Screen %(screen_id)s refenciado no existe."
 
-#: connectable/views.py:159
+#: .\connectable\views.py:159
 msgid "refered igadget doesn't exists."
 msgstr "El IGadget refenciado no existe."
 
-#: connectable/views.py:162
+#: .\connectable\views.py:162
 msgid "refered variable doesn't exists."
 msgstr "La variable referenciada no existe."
 
-#: connectable/views.py:165
+#: .\connectable\views.py:165
 #, python-format
 msgid "connectables cannot be save: %(exc)s"
 msgstr "Fallo al salvar Los connectables: %(exc)s"
 
-#: context/models.py:45 context/models.py:56 gadget/models.py:114
-#: gadget/models.py:124
+#: .\context\models.py:45 .\context\models.py:56 .\gadget\models.py:114
+#: .\gadget\models.py:124
 msgid "Concept"
 msgstr "Concepto"
 
-#: context/models.py:46
+#: .\context\models.py:46
 msgid "Adaptor"
 msgstr "Adaptador"
 
-#: context/views.py:78 context/views.py:123 context/views.py:152
+#: .\context\views.py:78 .\context\views.py:123 .\context\views.py:152
 msgid "JSON parameter not specified"
 msgstr "Parametro JSON no especificado"
 
-#: context/views.py:90 context/views.py:134
+#: .\context\views.py:90 .\context\views.py:134
 msgid "Attempted update. You must use PUT HTTP method in this case"
 msgstr ""
 "Intento de Actualizacion. Para este caso debe utilizar el metodo HTTP PUT"
 
-#: context/views.py:167
+#: .\context\views.py:167
 msgid "Concept doesn't exist. You must use POST HTTP method in this case"
 msgstr "El concepto no existe. Use el metodo HTTP POST"
 
-#: ezweb/templates/index.html:9
+#: .\ezweb\templates\index.html.py:9
 msgid "EzWeb Platform"
 msgstr "Plataforma EzWeb"
 
-#: ezweb/templates/index.html:193
+#: .\ezweb\templates\index.html.py:193
 msgid "Welcome"
 msgstr "Bienvenido"
 
-#: ezweb/templates/index.html:193
+#: .\ezweb\templates\index.html.py:193
 msgid "Exit"
 msgstr "Salir"
 
-#: ezweb/templates/index.html:201
+#: .\ezweb\templates\index.html.py:201
 msgid "My Wires"
 msgstr "Mis Conexiones"
 
-#: ezweb/templates/index.html:202
+#: .\ezweb\templates\index.html.py:202
 msgid "My Catalogue"
 msgstr "Mi Catalogo"
 
-#: ezweb/templates/index.html:203
+#: .\ezweb\templates\index.html.py:203
 msgid "My Gadgets"
 msgstr "Mi Entorno"
 
-#: ezweb/templates/showcase.html:8
+#: .\ezweb\templates\showcase.html.py:8
 #, fuzzy
 msgid "Template URL:"
 msgstr "templateURI"
 
-#: ezweb/templates/showcase.html:10
+#: .\ezweb\templates\showcase.html.py:10
 msgid "Create resource"
 msgstr "Crear recurso"
 
-#: ezweb/templates/showcase.html:16
+#: .\ezweb\templates\showcase.html.py:16
 msgid "Search by Tags:"
 msgstr "Buscar por Etiquetas:"
 
-#: ezweb/templates/showcase.html:18 ezweb/templates/showcase.html.py:23
-#: ezweb/templates/showcase.html:28 ezweb/templates/showcase.html.py:43
-#: ezweb/templates/showcase.html:48 ezweb/templates/showcase.html.py:53
-#: ezweb/templates/showcase.html:62
+#: .\ezweb\templates\showcase.html.py:18
+#: .\ezweb\templates\showcase.html.py:23
+#: .\ezweb\templates\showcase.html.py:28
+#: .\ezweb\templates\showcase.html.py:43
+#: .\ezweb\templates\showcase.html.py:48
+#: .\ezweb\templates\showcase.html.py:53
+#: .\ezweb\templates\showcase.html.py:62
 msgid "Search"
 msgstr "Buscar"
 
-#: ezweb/templates/showcase.html:21
+#: .\ezweb\templates\showcase.html.py:21
 msgid "Search by Events:"
 msgstr "Buscar por Eventos:"
 
-#: ezweb/templates/showcase.html:26
+#: .\ezweb\templates\showcase.html.py:26
 msgid "Search by Slots:"
 msgstr "Buscar por Slots:"
 
-#: ezweb/templates/showcase.html:36
+#: .\ezweb\templates\showcase.html.py:36
 msgid "Show results with:"
 msgstr "Mostrar resultados con:"
 
-#: ezweb/templates/showcase.html:41
-msgid "All of this words:"
+#: .\ezweb\templates\showcase.html.py:41
+msgid "All of these words:"
 msgstr "Todas estas palabras:"
 
-#: ezweb/templates/showcase.html:46
-msgid "Any of this word:"
+#: .\ezweb\templates\showcase.html.py:46
+msgid "Any of these words:"
 msgstr "Cualquiera de estas palabras:"
 
-#: ezweb/templates/showcase.html:51
-msgid "None of this word:"
+#: .\ezweb\templates\showcase.html.py:51
+msgid "None of these words:"
 msgstr "Ninguna de estas palabras:"
 
-#: ezweb/templates/showcase.html:57
+#: .\ezweb\templates\showcase.html.py:57
 msgid "Simple Search"
 msgstr "Busqueda Simple"
 
-#: ezweb/templates/showcase.html:60
+#: .\ezweb\templates\showcase.html.py:60
 msgid "Search:"
 msgstr "Buscar:"
 
-#: ezweb/templates/showcase.html:63
+#: .\ezweb\templates\showcase.html.py:63
 msgid "Advanced Search"
 msgstr "Busqueda Avanzada"
 
-#: ezweb/templates/showcase.html:78
+#: .\ezweb\templates\showcase.html.py:78
 msgid "Show resource details"
 msgstr "Ver informacion del recurso"
 
-#: ezweb/templates/showcase.html:81
+#: .\ezweb\templates\showcase.html.py:81
 msgid "Hide resource details"
 msgstr "Ocultar informacion del recurso"
 
-#: ezweb/templates/wiring.html:6
+#: .\ezweb\templates\wiring.html.py:6
 msgid "Events"
 msgstr "Eventos"
 
-#: ezweb/templates/wiring.html:10
+#: .\ezweb\templates\wiring.html.py:10
 msgid "Channels"
 msgstr "Canales"
 
-#: ezweb/templates/wiring.html:16
+#: .\ezweb\templates\wiring.html.py:16
 msgid "Slots"
 msgstr "Ranura"
 
-#: gadget/gadgetCodeParser.py:59
+#: .\gadget\gadgetCodeParser.py:59
 msgid "XHTML code is not accessible"
 msgstr "Codigo XHTML inaccesible"
 
-#: gadget/models.py:47 gadget/models.py:78 gadget/models.py:160
-#: resource/models.py:55
+#: .\gadget\models.py:47 .\gadget\models.py:78 .\gadget\models.py:160
+#: .\resource\models.py:55
 msgid "Description"
 msgstr "Descripcion"
 
-#: gadget/models.py:49 igadget/models.py:55
+#: .\gadget\models.py:49 .\igadget\models.py:55
 msgid "Width"
 msgstr "Anchura"
 
-#: gadget/models.py:50 igadget/models.py:54
+#: .\gadget\models.py:50 .\igadget\models.py:54
 msgid "Height"
 msgstr "Altura"
 
-#: gadget/models.py:62
+#: .\gadget\models.py:62
 msgid "Number"
 msgstr "Numero"
 
-#: gadget/models.py:63
+#: .\gadget\models.py:63
 msgid "String"
 msgstr "Cadena"
 
-#: gadget/models.py:64
+#: .\gadget\models.py:64
 msgid "Date"
 msgstr "Fecha"
 
-#: gadget/models.py:65
+#: .\gadget\models.py:65
 msgid "Boolean"
 msgstr "Boolean"
 
-#: gadget/models.py:67
+#: .\gadget\models.py:67
 msgid "Type"
 msgstr "Tipo"
 
-#: gadget/models.py:69
+#: .\gadget\models.py:69
 msgid "Slot"
 msgstr "Ranura"
 
-#: gadget/models.py:70
+#: .\gadget\models.py:70
 msgid "Event"
 msgstr "Evento"
 
-#: gadget/models.py:71
+#: .\gadget\models.py:71
 msgid "Preference"
 msgstr "Preferencia"
 
-#: gadget/models.py:72
+#: .\gadget\models.py:72
 msgid "Property"
 msgstr "Propiedad"
 
-#: gadget/models.py:73
+#: .\gadget\models.py:73
 msgid "GadgetContext"
 msgstr "Contexto de Gadget"
 
-#: gadget/models.py:74
+#: .\gadget\models.py:74
 msgid "ExternalContext"
 msgstr "Contexto Externo"
 
-#: gadget/models.py:76
+#: .\gadget\models.py:76
 msgid "Aspect"
 msgstr "Aspecto"
 
-#: gadget/models.py:77
+#: .\gadget\models.py:77
 msgid "Label"
 msgstr "Etiqueta"
 
-#: gadget/models.py:80
+#: .\gadget\models.py:80
 msgid "Default value"
 msgstr "Valor por defecto"
 
-#: gadget/models.py:135 igadget/models.py:68 igadget/models.py:83
+#: .\gadget\models.py:135 .\igadget\models.py:68 .\igadget\models.py:83
 msgid "Code"
 msgstr "Codigo"
 
-#: gadget/models.py:147 resource/models.py:47
+#: .\gadget\models.py:147 .\resource\models.py:47
 msgid "Vendor"
 msgstr "Distribuidor"
 
-#: gadget/models.py:149 resource/models.py:48
+#: .\gadget\models.py:149 .\resource\models.py:48
 msgid "Version"
 msgstr "Version"
 
-#: gadget/models.py:154 resource/models.py:52
+#: .\gadget\models.py:154 .\resource\models.py:52
 msgid "Author"
 msgstr "Autor"
 
-#: gadget/models.py:155 resource/models.py:53
+#: .\gadget\models.py:155 .\resource\models.py:53
 msgid "Mail"
 msgstr "Mail"
 
-#: gadget/models.py:157 resource/models.py:62
+#: .\gadget\models.py:157 .\resource\models.py:62
 msgid "wikiURI"
 msgstr "wikiURI"
 
-#: gadget/models.py:158 resource/models.py:61
+#: .\gadget\models.py:158 .\resource\models.py:61
 msgid "imageURI"
 msgstr "imagenURI"
 
-#: gadget/models.py:162
+#: .\gadget\models.py:162
 msgid "Shared"
 msgstr "Compartido"
 
-#: gadget/models.py:164
+#: .\gadget\models.py:164
 msgid "Last update"
 msgstr "Ultima actualizacion"
 
-#: gadget/templateParser.py:119
+#: .\gadget\templateParser.py:119
 msgid "ERROR: unkown TEXT TYPE "
 msgstr "ERROR: Tipo TEXT desconocido "
 
-#: gadget/templateParser.py:144
+#: .\gadget\templateParser.py:144
 msgid "ERROR: Missing attribute at Property element"
 msgstr "ERROR: Falta un atributo en el elemento Property"
 
-#: gadget/templateParser.py:181
+#: .\gadget\templateParser.py:181
 msgid "ERROR: Missing attribute at UserPreference element"
 msgstr "ERROR: Falta un atributo en el elemento UserPreference"
 
-#: gadget/templateParser.py:218
+#: .\gadget\templateParser.py:218
 msgid "ERROR: Missing attribute at Event element"
 msgstr "ERROR: Falta un atributo en el elemento Event"
 
-#: gadget/templateParser.py:255
+#: .\gadget\templateParser.py:255
 msgid "ERROR: Missing attribute at Slot element"
 msgstr "ERROR: Falta un atributo en el elemento Slot"
 
-#: gadget/templateParser.py:287
+#: .\gadget\templateParser.py:287
 msgid "ERROR: Missing attribute at Gadget Context element"
 msgstr "ERROR: Falta un atributo en el elemento Gadget Context"
 
-#: gadget/templateParser.py:318
+#: .\gadget\templateParser.py:318
 msgid "ERROR: Missing attribute at External Context element"
 msgstr "ERROR: Falta un atributo en el elemento External Context"
 
-#: gadget/templateParser.py:335
+#: .\gadget\templateParser.py:335
 msgid "ERROR: XHtml couldn't be readed"
 msgstr "ERROR: No se puede leer el codigo XHTML"
 
-#: gadget/templateParser.py:337
+#: .\gadget\templateParser.py:337
 msgid "ERROR: Missing attribute at XHTML element"
 msgstr "ERROR: Falta un atributo en el elemento XHTML"
 
-#: gadget/templateParser.py:355
+#: .\gadget\templateParser.py:355
 msgid "ERROR: Missing attribute at Option element"
 msgstr "ERROR: Falta un atributo en el elemento Option"
 
-#: gadget/templateParser.py:372
+#: .\gadget\templateParser.py:372
 msgid "ERROR: Missing attribute at Rendering element"
 msgstr "ERROR: Falta un atributo en el elemento Rendering"
 
-#: gadget/templateParser.py:515
+#: .\gadget\templateParser.py:515
 msgid "Missing required filed(s)"
 msgstr "No se encuentra(n) el/los fichero(s) requerido(s)"
 
-#: gadget/views.py:115
+#: .\gadget\views.py:115
 msgid "Gadget already exists"
 msgstr "El Gadget ya existe"
 
-#: igadget/models.py:52
+#: .\igadget\models.py:52
 msgid "PositionX"
 msgstr "PosicionX"
 
-#: igadget/models.py:53
+#: .\igadget\models.py:53
 msgid "PositionY"
 msgstr "PosicionY"
 
-#: igadget/models.py:56
+#: .\igadget\models.py:56
 msgid "Minimized"
 msgstr "Minimizar"
 
-#: igadget/models.py:85
+#: .\igadget\models.py:85
 msgid "Gadget"
 msgstr "Gadget"
 
-#: igadget/models.py:86
+#: .\igadget\models.py:86
 msgid "Screen"
 msgstr "Screen"
 
-#: igadget/models.py:87
+#: .\igadget\models.py:87
 msgid "Position"
 msgstr "Posicion"
 
-#: igadget/models.py:103
+#: .\igadget\models.py:103
 msgid "Variable definition"
 msgstr "Definicion de Variable"
 
-#: igadget/models.py:104
+#: .\igadget\models.py:104
 msgid "IGadget"
 msgstr "IGadget"
 
-#: igadget/views.py:63 igadget/views.py:129
+#: .\igadget\views.py:63 .\igadget\views.py:129
 #, fuzzy
 msgid "Malformed iGadget JSON: expecting igadget uri."
 msgstr "JSON de IGadget incorrecto"
 
-#: igadget/views.py:121
+#: .\igadget\views.py:121
 #, python-format
 msgid "refered gadget %(gadget_uri)s doesn't exists."
 msgstr "El Gadget %(gadget_uri)s referenciado no existe."
 
-#: igadget/views.py:147 igadget/views.py:153 igadget/views.py:159
-#: igadget/views.py:165
+#: .\igadget\views.py:147 .\igadget\views.py:153 .\igadget\views.py:159
+#: .\igadget\views.py:165
 msgid "Malformed iGadget JSON"
 msgstr "JSON de IGadget incorrecto"
 
-#: igadget/views.py:213 igadget/views.py:243 igadget/views.py:288
-#: igadget/views.py:313 igadget/views.py:425
+#: .\igadget\views.py:213 .\igadget\views.py:243 .\igadget\views.py:288
+#: .\igadget\views.py:313 .\igadget\views.py:425
 msgid "iGadget JSON expected"
 msgstr "Se esperaba un JSON de IGadget"
 
-#: igadget/views.py:231 igadget/views.py:302
+#: .\igadget\views.py:231 .\igadget\views.py:302
 msgid "iGadgets cannot be saved: "
 msgstr "No se pudo salvar el IGadget: "
 
-#: igadget/views.py:261 igadget/views.py:327
+#: .\igadget\views.py:261 .\igadget\views.py:327
 msgid "iGadgets cannot be updated: "
 msgstr "No se pudo actualizar el IGadget: "
 
-#: igadget/views.py:373
+#: .\igadget\views.py:373
 msgid "iGadget variables JSON expected"
 msgstr "Se esperaba un JSON con las variables del IGadget"
 
-#: proxy/views.py:56
+#: .\proxy\views.py:56
 msgid "Url not specified"
 msgstr "URL no especificada"
 
-#: resource/models.py:56
+#: .\resource\models.py:56
 msgid "Size"
 msgstr "Tamano"
 
-#: resource/models.py:57
+#: .\resource\models.py:57
 msgid "License"
 msgstr "Licencia"
 
-#: resource/models.py:59
+#: .\resource\models.py:59
 msgid "gadgetURI"
 msgstr "gadgetURI"
 
-#: resource/models.py:63
+#: .\resource\models.py:63
 msgid "templateURI"
 msgstr "templateURI"
 
-#: resource/models.py:77
+#: .\resource\models.py:77
 msgid "Wiring"
 msgstr "Conexiones"
 
-#: resource/parser.py:105
+#: .\resource\parser.py:105
 msgid "ERROR: Missing attribute at Event or Slot element"
 msgstr "Error: Falta un atributo en el elemento Event o Slot"
 
-#: resource/parser.py:157
+#: .\resource\parser.py:157
 msgid ""
 "ERROR: Missing Resource describing info at Resource element! See schema!"
 msgstr ""
 "Error: Falta la descripcion del recurso en el elemento Resource. ¡Compruebe "
 "el esquema!"
 
-#: resource/views.py:150
+#: .\resource\views.py:150
 msgid "Error, couldn't read config  "
 msgstr "Error, no se pudo leer la configuracion"
