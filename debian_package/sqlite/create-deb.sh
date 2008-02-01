@@ -70,7 +70,7 @@ rm tmp1 tmp2 tmp3
 ###
 # Copy control file
 #
-cp $BASE_DIR/debian-control debian/DEBIAN/control
+cat $BASE_DIR/debian-control | sed s/"<vnumber>"/$PKG_VERSION/g > $BASE_DIR/debian/DEBIAN/control
 
 ###
 # Copy Apache 2 virtual host config file

@@ -1,5 +1,5 @@
-Package: ezweb-platform
-Version: 20080125
+Package: ezweb-platform-sqlite3
+Version: <vnumber>
 Section: web
 Priority: optional
 Architecture: all
