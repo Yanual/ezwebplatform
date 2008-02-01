@@ -1,0 +1,55 @@
+#!/bin/sh
+
+###
+# Set the correct file owner
+#
+chown -R root:root /usr/share/ezweb-platform
+chown root:root /etc/apache2/sites-available/ezweb-platform
+
+###
+# Create a link to settings in /etc
+#
+ln -s /usr/share/ezweb-platform/settings.py /etc/ezweb-platform/settings.py
+
+###
+# Set the correct hostname for virtual host
+#
+while true; do
+   echo -n "Please, select a host name for your EzWeb site: "
+
+   read hostname
+
+   if [ -z $hostname ] ; then
+     echo "Invalid hostname, please try again."
+   else
+     break
+   fi
+done
+
+cat /etc/apache2/sites-available/ezweb-platform | sed s/localhost/$hostname/g > /tmp/ezweb-postinst
+mv /tmp/ezweb-postinst /etc/apache2/sites-available/ezweb-platform
+
+ln -s /etc/apache2/sites-available/ezweb-platform /etc/apache2/sites-enabled/010-ezweb-platform
+
+###
+# Initialize the database
+#
+mkdir -p /var/lib/ezweb-platform
+
+cd /usr/share/ezweb-platform
+python manage.py syncdb
+
+chown -R www-data:www-data /var/lib/ezweb-platform
+
+### 
+# Create the Apache 2 files layout
+#
+mkdir -p /var/www/ezweb-platform/gadgets
+chown -R www-data:www-data /var/www/ezweb-platform
+
+
+###
+# Restart apache 2 web server
+###
+/etc/init.d/apache2 restart
+

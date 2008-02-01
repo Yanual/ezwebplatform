@@ -1,0 +1,49 @@
+NameVirtualHost *
+
+<VirtualHost *>
+  ServerAdmin webmaster@localhost
+
+  ServerName localhost
+
+  DocumentRoot /var/www/ezweb-platform/
+
+  ErrorLog /var/log/apache2/ezweb-error.log
+
+  LogLevel warn
+
+  CustomLog /var/log/apache2/ezweb-access.log combined
+
+  ServerSignature On
+
+  <Location />
+    SetHandler python-program
+    PythonHandler django.core.handlers.modpython
+    SetEnv DJANGO_SETTINGS_MODULE settings
+
+    PythonPath "['/usr/share/ezweb-platform'] + sys.path"
+  </Location>
+
+  Alias /media /usr/share/python-support/python-django/django/contrib/admin/media
+  Alias /site-media /usr/share/ezweb-platform/media
+
+  <Location /media>
+    SetHandler None
+  </Location>
+
+  <Location /site-media>
+    SetHandler None
+  </Location>
+
+  <Location /gadgets>
+    SetHandler None
+  </Location>
+
+  <Directory /var/www/ezweb-platform/gadgets>
+    Options Indexes FollowSymLinks MultiViews
+    AllowOverride None
+    Order allow,deny
+    allow from all
+  </Directory>
+
+</VirtualHost>
+
