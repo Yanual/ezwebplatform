@@ -60,18 +60,89 @@ getval() {
 		else
 			break
 		fi
+
 	done
+}
+
+ReadYesOrNo () {
+	while true; do
+		echo -n -e "$1 [y/n]: "
+		read _val
+		if [ "$_val" != "y" -a "$_val" != "n" ] ; then
+			echo "Invalid value, you should type 'y' or 'n'"
+		else
+			break
+		fi
+	done
+}
+
+DB_DatabaseExists() {
+	db="$1"
+	query="select count(datname) from pg_database where datname='$db'"
+	_val=$(sudo -u postgres psql -c "$query" -t)
+}
+
+DB_UserExists() {
+	user="$1"
+	query="select count(usename) from pg_user where usename='$user'"
+	_val=$(sudo -u postgres psql -c "$query" -t)
+}
+
+DB_RemoveDatabase() {
+	sudo -u postgres dropdb $1
+}
+
+DB_RemoveUser() {
+	sudo -u postgres dropuser $1
 }
 
 while true; do
 	getval_checkvalue=false
 	getval_noecho=false
 
-	getval "Select a database name [ezweb]: " "ezweb"
-	dbname="$_val"
+	while true; do
+		getval "Select a database name [ezweb]: " "ezweb"
+		dbname="$_val"
+
+		DB_DatabaseExists "$dbname"
+
+		if [ $_val = "1" ] ; then
+			ReadYesOrNo "Database '$dbname' already exists, remove and create again?"
+			if [ $_val = "y" ] ; then
+				DB_RemoveDatabase "$dbname"
+				break
+			else
+				echo "Ok, try a different database name"
+			fi
+		else
+			break
+		fi
+	done
 	
-	getval "Select a database username [ezweb]: " "ezweb"
-	dbuser="$_val"
+
+	while true; do
+		getval "Select a database username [ezweb]: " "ezweb"
+		dbuser="$_val"
+
+		DB_UserExists "$dbuser"
+		if [ $_val = "1" ] ; then
+			
+			ReadYesOrNo "User $dbuser already exists, remove and create again?"
+
+			if [ $_val = "y" ] ; then
+				if DB_RemoveUser "$dbuser" ; then
+					break
+				else
+					echo "Cannot remove this database user, choose a different one"
+				fi
+			else
+				echo "Ok, try a different username"
+			fi
+		else
+			break
+		fi
+		
+	done
 
 	while true; do
 		getval_noecho=true
