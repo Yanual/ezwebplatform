@@ -1,37 +1,5 @@
 #!/bin/bash
 
-
-###
-# Set the correct file owner
-#
-chown -R root:root /usr/share/ezweb-platform
-chown root:root /etc/apache2/sites-available/ezweb-platform
-
-###
-# Create a link to settings in /etc
-#
-ln -s /usr/share/ezweb-platform/settings.py /etc/ezweb-platform/settings.py
-
-###
-# Set the correct hostname for virtual host
-#
-while true; do
-   echo -n "Select a host name for your EzWeb site: "
-
-   read hostname
-
-   if [ -z $hostname ] ; then
-     echo "Invalid hostname, please try again."
-   else
-     break
-   fi
-done
-
-cat /etc/apache2/sites-available/ezweb-platform | sed s/localhost/$hostname/g > /tmp/ezweb-postinst
-mv /tmp/ezweb-postinst /etc/apache2/sites-available/ezweb-platform
-
-ln -s /etc/apache2/sites-available/ezweb-platform /etc/apache2/sites-enabled/010-ezweb-platform
-
 ###
 # Initialize the database
 #
@@ -181,11 +149,12 @@ sudo -u postgres createdb --owner $dbuser $dbname
 TMP_PRE="/tmp/ezweb-platform-"
 cp /usr/share/ezweb-platform/settings.py ${TMP_PRE}00
 
-cat ${TMP_PRE}00 | sed s/"PKG_DBNAME"/"$dbname"/g > ${TMP_PRE}01
-cat ${TMP_PRE}01 | sed s/"PKG_DBUSER"/"$dbuser"/g > ${TMP_PRE}02
-cat ${TMP_PRE}02 | sed s/"PKG_DBPASSWD"/"$dbpasswd1"/g > ${TMP_PRE}03
-cat ${TMP_PRE}03 | sed s/"PKG_DBHOST"/"$dbhost"/g > ${TMP_PRE}04
-cat ${TMP_PRE}04 | sed s/"PKG_DBPORT"/"$dbport"/g > ${TMP_PRE}05
+cat ${TMP_PRE}00 | sed s/DATABASE_ENGINE.*/"DATABASE_ENGINE = \"postgresql_psycopg2\""/g > ${TMP_PRE}01
+cat ${TMP_PRE}01 | sed s/DATABASE_NAME.*/"DATABASE_NAME = \"$dbname\""/g > ${TMP_PRE}02
+cat ${TMP_PRE}02 | sed s/DATABASE_USER.*/"DATABASE_USER = \"$dbuser\""/g > ${TMP_PRE}03
+cat ${TMP_PRE}03 | sed s/DATABASE_PASSWORD.*/"DATABASE_PASSWORD = \"$dbpasswd1\""/g > ${TMP_PRE}04
+cat ${TMP_PRE}04 | sed s/DATABASE_HOST.*/"DATABASE_HOST = \"$dbhost\""/g > ${TMP_PRE}05
+cat ${TMP_PRE}05 | sed s/DATABASE_PORT.*/"DATABASE_PORT = \"$dbport\""/g > ${TMP_PRE}06
 
 cp ${TMP_PRE}05 /usr/share/ezweb-platform/settings.py
 
@@ -194,16 +163,4 @@ rm ${TMP_PRE}*
 cd /usr/share/ezweb-platform
 python manage.py syncdb
 
-
-### 
-# Create the Apache 2 files layout
-#
-mkdir -p /var/www/ezweb-platform/gadgets
-chown -R www-data:www-data /var/www/ezweb-platform
-
-
-###
-# Restart apache 2 web server
-###
-/etc/init.d/apache2 restart
 

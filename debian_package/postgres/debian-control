@@ -3,8 +3,9 @@ Version: <vnumber>
 Section: web
 Priority: optional
 Architecture: all
-Depends: python (>= 2.4), apache2 (>= 2.0), libapache2-mod-python, python-xml, python-django (>>0.96), postgresql, python-psycopg2
+Depends: ezweb-platform-common, postgresql, python-psycopg2
+Conflicts: ezweb-platform-sqlite3, ezweb-platform-mysql
 Maintainer: Alvaro Polo Valdenebro <apv@tid.es>
-Description: EzWeb Platform
- This package provides the EzWeb Platform, the Telefonica I+D Mashup Engine
+Description: PostgreSQL suport for EzWeb Platform
+ This package provides support for PostgreSQL to EzWeb Platform, the Telefonica I+D Mashup Engine
 

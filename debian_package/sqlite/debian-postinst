@@ -1,35 +1,19 @@
 #!/bin/sh
 
 ###
-# Set the correct file owner
+# Update settings.py
 #
-chown -R root:root /usr/share/ezweb-platform
-chown root:root /etc/apache2/sites-available/ezweb-platform
+TMP_PRE="/tmp/ezweb-platform-"
+cp /usr/share/ezweb-platform/settings.py ${TMP_PRE}00
 
-###
-# Create a link to settings in /etc
-#
-ln -s /usr/share/ezweb-platform/settings.py /etc/ezweb-platform/settings.py
 
-###
-# Set the correct hostname for virtual host
-#
-while true; do
-   echo -n "Please, select a host name for your EzWeb site: "
+cat ${TMP_PRE}00 | sed s/DATABASE_ENGINE.*/"DATABASE_ENGINE = \"sqlite3\""/g > ${TMP_PRE}01
+cat ${TMP_PRE}01 | sed s/DATABASE_NAME.*/"DATABASE_NAME = \"\/var\/lib\/ezweb-platform\/db\""/g > ${TMP_PRE}02
 
-   read hostname
+cp ${TMP_PRE}02 /usr/share/ezweb-platform/settings.py
 
-   if [ -z $hostname ] ; then
-     echo "Invalid hostname, please try again."
-   else
-     break
-   fi
-done
+rm ${TMP_PRE}*
 
-cat /etc/apache2/sites-available/ezweb-platform | sed s/localhost/$hostname/g > /tmp/ezweb-postinst
-mv /tmp/ezweb-postinst /etc/apache2/sites-available/ezweb-platform
-
-ln -s /etc/apache2/sites-available/ezweb-platform /etc/apache2/sites-enabled/010-ezweb-platform
 
 ###
 # Initialize the database
@@ -40,16 +24,4 @@ cd /usr/share/ezweb-platform
 python manage.py syncdb
 
 chown -R www-data:www-data /var/lib/ezweb-platform
-
-### 
-# Create the Apache 2 files layout
-#
-mkdir -p /var/www/ezweb-platform/gadgets
-chown -R www-data:www-data /var/www/ezweb-platform
-
-
-###
-# Restart apache 2 web server
-###
-/etc/init.d/apache2 restart
 
