@@ -1,0 +1,138 @@
+#!/bin/bash
+
+
+###
+# Set the correct file owner
+#
+chown -R root:root /usr/share/ezweb-platform
+chown root:root /etc/apache2/sites-available/ezweb-platform
+
+###
+# Create a link to settings in /etc
+#
+ln -s /usr/share/ezweb-platform/settings.py /etc/ezweb-platform/settings.py
+
+###
+# Set the correct hostname for virtual host
+#
+while true; do
+   echo -n "Select a host name for your EzWeb site: "
+
+   read hostname
+
+   if [ -z $hostname ] ; then
+     echo "Invalid hostname, please try again."
+   else
+     break
+   fi
+done
+
+cat /etc/apache2/sites-available/ezweb-platform | sed s/localhost/$hostname/g > /tmp/ezweb-postinst
+mv /tmp/ezweb-postinst /etc/apache2/sites-available/ezweb-platform
+
+ln -s /etc/apache2/sites-available/ezweb-platform /etc/apache2/sites-enabled/010-ezweb-platform
+
+###
+# Initialize the database
+#
+getval() {
+	while true; do
+		echo -n -e "$1"
+
+		if $getval_noecho ; then
+			read -s _val
+			echo ""
+		else
+			read _val
+		fi
+		
+		if ! $getval_checkvalue ; then
+
+			if [ -z "$_val" ] ; then
+				_val="$2"
+			fi
+
+			break;
+		fi
+
+		if [ -z $_val ] ; then
+			echo "Invalid value, please try again"
+		else
+			break
+		fi
+	done
+}
+
+while true; do
+	getval_checkvalue=false
+	getval_noecho=false
+
+	getval "Select a database name [ezweb]: " "ezweb"
+	dbname="$_val"
+	
+	getval "Select a database username [ezweb]: " "ezweb"
+	dbuser="$_val"
+
+	while true; do
+		getval_noecho=true
+		getval_checkvalue=true
+		getval "Select a database user password: "
+		dbpasswd1="$_val"
+		
+		getval "Please, retype user password: "
+		dbpasswd2="$_val"
+
+		if [ "$dbpasswd1" != "$dbpasswd2" ] ; then
+			echo "Passwords does not match, try again"
+		else
+			break
+		fi
+	done
+
+	getval_checkvalue=false
+	getval_noecho=false
+
+	getval "Insert your database host (empty for default): " "127.0.0.1"
+	dbhost="$_val"
+
+	getval "Insert your database port (empty for default): "
+	dbport="$_val"
+
+	break	
+	
+done
+
+query="create user $dbuser password '$dbpasswd1'"
+
+sudo -u postgres psql -c "$query" postgres
+sudo -u postgres createdb --owner $dbuser $dbname
+
+TMP_PRE="/tmp/ezweb-platform-"
+cp /usr/share/ezweb-platform/settings.py ${TMP_PRE}00
+
+cat ${TMP_PRE}00 | sed s/"PKG_DBNAME"/"$dbname"/g > ${TMP_PRE}01
+cat ${TMP_PRE}01 | sed s/"PKG_DBUSER"/"$dbuser"/g > ${TMP_PRE}02
+cat ${TMP_PRE}02 | sed s/"PKG_DBPASSWD"/"$dbpasswd1"/g > ${TMP_PRE}03
+cat ${TMP_PRE}03 | sed s/"PKG_DBHOST"/"$dbhost"/g > ${TMP_PRE}04
+cat ${TMP_PRE}04 | sed s/"PKG_DBPORT"/"$dbport"/g > ${TMP_PRE}05
+
+cp ${TMP_PRE}05 /usr/share/ezweb-platform/settings.py
+
+rm ${TMP_PRE}*
+
+cd /usr/share/ezweb-platform
+python manage.py syncdb
+
+
+### 
+# Create the Apache 2 files layout
+#
+mkdir -p /var/www/ezweb-platform/gadgets
+chown -R www-data:www-data /var/www/ezweb-platform
+
+
+###
+# Restart apache 2 web server
+###
+/etc/init.d/apache2 restart
+
