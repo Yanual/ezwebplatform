@@ -48,7 +48,7 @@ from commons.exceptions import TemplateParseException
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext as _
 
 from resource.models import *
 
@@ -72,6 +72,14 @@ class TemplateParser:
 class TemplateHandler(saxutils.handler.ContentHandler): 
 	
     _accumulator = []
+    _name = ""
+    _vendor = ""
+    _version = ""
+    _author = ""
+    _description = ""
+    _mail = ""
+    _imageURI = ""
+    _wikiURI = ""
 
     def setUserUri (self, user, uri):
         self._user=user
