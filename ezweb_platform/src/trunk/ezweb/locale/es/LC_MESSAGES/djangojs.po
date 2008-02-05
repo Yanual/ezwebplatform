@@ -107,7 +107,7 @@ msgstr ""
 
 #: media/js/catalogue/Resource.js:237 media/js/catalogue/Resource.js.py:238
 msgid "Description"
-msgstr ""
+msgstr "Descripción"
 
 #: media/js/catalogue/Resource.js:252 media/js/catalogue/Resource.js.py:253
 msgid "TagCloud"
