@@ -1,6 +1,11 @@
 #!/bin/sh
 
 ###
+# Include debconf module
+#
+. /usr/share/debconf/confmodule
+
+###
 # Set the correct file owner
 #
 chown -R root:root /usr/share/ezweb-platform
@@ -11,25 +16,29 @@ chown root:root /etc/apache2/sites-available/ezweb-platform
 #
 ln -s /usr/share/ezweb-platform/settings.py /etc/ezweb-platform/settings.py
 
+
+
 ###
-# Set the correct hostname for virtual host
+# Read ezweb hostname from user
 #
-while true; do
-   echo -n "Please, select a host name for your EzWeb site: "
+db_input high ezweb/hostname
+db_go
 
-   read hostname
+db_get ezweb/hostname
+hostname=$RET
 
-   if [ -z $hostname ] ; then
-     echo "Invalid hostname, please try again."
-   else
-     break
-   fi
-done
-
+###
+# Update apache conf files
+#
 cat /etc/apache2/sites-available/ezweb-platform | sed s/localhost/$hostname/g > /tmp/ezweb-postinst
 mv /tmp/ezweb-postinst /etc/apache2/sites-available/ezweb-platform
 
-ln -s /etc/apache2/sites-available/ezweb-platform /etc/apache2/sites-enabled/010-ezweb-platform
+vh_file="/etc/apache2/sites-available/ezweb-platform"
+vh_link="/etc/apache2/sites-enabled/010-ezweb-platform"
+
+if [ ! -e $vh_link ] ; then
+	ln -s $vh_file $vh_link
+fi
 
 ### 
 # Create the Apache 2 files layout
@@ -41,5 +50,24 @@ chown -R www-data:www-data /var/www/ezweb-platform
 ###
 # Restart apache 2 web server
 ###
-/etc/init.d/apache2 restart
+if [ -e /var/run/apache2.pid ] ; then
+	db_input low ezweb/apache2/reload
+	db_go
+	db_get ezweb/apache2/reload
+
+	if [ "true" = $RET ] ; then
+		/etc/init.d/apache2 reload
+	fi
+else
+  db_input low ezweb/apache2/start
+  db_go
+  db_get ezweb/apache2/start
+  
+  if [ "true" = $RET ] ; then
+    /etc/init.d/apache2 start
+  fi
+
+fi
+
+db_stop
 

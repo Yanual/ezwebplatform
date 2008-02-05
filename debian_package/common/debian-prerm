@@ -8,9 +8,16 @@ rm -f $(find /usr/share/ezweb-platform -name "*.pyc")
 ###
 # Unlink virtual host link
 #
-unlink /etc/apache2/sites-enabled/010-ezweb-platform
+vh_link="/etc/apache2/sites-enabled/010-ezweb-platform"
+if [ -e $vh_link ] ; then
+	unlink $vh_link
+fi
 
 ###
 # Unlink settings.py from /etc
-unlink /etc/ezweb-platform/settings.py
+#
+settings_link="/etc/ezweb-platform/settings.py"
+if [ -e $settings_link ] ; then
+	unlink $settings_link
+fi
 

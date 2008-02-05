@@ -73,20 +73,18 @@ rm $BASE_DIR/tmp*
 
 
 ###
-# Copy control file
+# Copy maintainer files
 #
 cat $BASE_DIR/debian-control | sed s/"<vnumber>"/$PKG_VERSION/g > $BASE_DIR/debian/DEBIAN/control
+cp $BASE_DIR/debian-templates $BASE_DIR/debian/DEBIAN/templates
+cp $BASE_DIR/debian-postinst $BASE_DIR/debian/DEBIAN/postinst
+cp $BASE_DIR/debian-prerm $BASE_DIR/debian/DEBIAN/prerm
 
 ###
 # Copy Apache 2 virtual host config file
 #
 cp $BASE_DIR/apache-vhost $BASE_DIR/debian/etc/apache2/sites-available/ezweb-platform
 
-###
-# Copy scripts
-#
-cp $BASE_DIR/debian-postinst $BASE_DIR/debian/DEBIAN/postinst
-cp $BASE_DIR/debian-prerm $BASE_DIR/debian/DEBIAN/prerm
 
 ###
 # Create the Debian package
