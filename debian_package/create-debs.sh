@@ -36,4 +36,6 @@ fi
 bash $BASE_DIR/common/create-deb.sh $SRC_DIR $PKG_VERSION
 bash $BASE_DIR/sqlite/create-deb.sh $PKG_VERSION
 bash $BASE_DIR/postgres/create-deb.sh $PKG_VERSION
+bash $BASE_DIR/meta/create-deb.sh $PKG_VERSION
+
 

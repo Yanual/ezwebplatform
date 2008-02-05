@@ -1,0 +1,10 @@
+Package: ezweb-platform
+Version: <vnumber>
+Section: web
+Priority: optional
+Architecture: all
+Depends: ezweb-platform-postgres | ezweb-platform-mysql | ezweb-platform-sqlite3
+Maintainer: Alvaro Polo Valdenebro <apv@tid.es>
+Description: EzWeb Platform metapackage
+ This package provides a metapackage for EzWeb Platform, the Telefonica I+D Mashup Engine
+
