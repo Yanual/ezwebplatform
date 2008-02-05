@@ -156,7 +156,7 @@ cat ${TMP_PRE}03 | sed s/DATABASE_PASSWORD.*/"DATABASE_PASSWORD = \"$dbpasswd1\"
 cat ${TMP_PRE}04 | sed s/DATABASE_HOST.*/"DATABASE_HOST = \"$dbhost\""/g > ${TMP_PRE}05
 cat ${TMP_PRE}05 | sed s/DATABASE_PORT.*/"DATABASE_PORT = \"$dbport\""/g > ${TMP_PRE}06
 
-cp ${TMP_PRE}05 /usr/share/ezweb-platform/settings.py
+cp ${TMP_PRE}06 /usr/share/ezweb-platform/settings.py
 
 rm ${TMP_PRE}*
 
