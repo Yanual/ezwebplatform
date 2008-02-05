@@ -229,7 +229,7 @@ var VarManagerFactory = function () {
 		VarManager.prototype.planInterfaceInitialization = function () {
 		    if (loaded == true) {
 			try {
-			    setTimeout("VarManagerFactory.getInstance().initializeInterface()", 500);
+			    setTimeout("VarManagerFactory.getInstance().initializeInterface()", 200);
 			} catch (e) {
 			    alert(e);
 			}
@@ -250,7 +250,10 @@ var VarManagerFactory = function () {
 			    variable = vars[varIndex];
 
 			    if (variable.aspect == "SLOT" && variable.handler) {
-				variable.handler(variable.value);
+				try { 
+				    variable.handler(variable.value);
+				} catch (e) {
+				}
 			    }
 			}
 			

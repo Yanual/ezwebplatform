@@ -43,9 +43,12 @@ from django.conf import settings
 def log(exception, method, url, user, file_name='logs'):
     """Prints msg to file_name log file"""
     log_file = os.path.join(settings.MEDIA_ROOT, 'logs', file_name + '.log')
-    f = open(log_file, "a")
-    line = 'ERROR: %s %s %s\n' % (method, url, user)
-    f.write(line)
-    line = '[%s] %s\n' % (datetime.today().strftime('%d/%m/%Y %H:%M:%S'), exception)
-    f.write(line)
-    f.close()
+    try: 
+    	f = open(log_file, "a")
+    	line = 'ERROR: %s %s %s\n' % (method, url, user)
+    	f.write(line)
+    	line = '[%s] %s\n' % (datetime.today().strftime('%d/%m/%Y %H:%M:%S'), exception)
+    	f.write(line)
+    	f.close()
+    except IOError:
+    	pass

@@ -195,13 +195,13 @@ RWVariable.prototype.set = function (value_) {
     case Variable.prototype.PROPERTY:
 	break;
     case Variable.prototype.EVENT:
-        modVars = wiring.sendEvent(this.iGadget, this.name, value_);
+        var modVars = wiring.sendEvent(this.iGadget, this.name, value_);
 	varManager.markVariablesAsModified(modVars);
 
 	// Notify to SLOTs their new values
 	var modVar;
 
-	for (i=0; i<modVars.length; i++) {
+	for (var i=0; i<modVars.length; i++) {
 	    modVar = modVars[i];
 	    varManager.writeSlot(modVar.iGadget, modVar.name, modVar.value);
 	}

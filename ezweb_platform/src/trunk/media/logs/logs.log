@@ -34,3 +34,11 @@ ERROR: POST user/id/gadgets admin
 [31/01/2008 12:26:49] Gadget already exists
 ERROR: POST user/id/gadgets admin
 [31/01/2008 15:55:08] Gadget already exists
+ERROR: POST user/id/gadgets admin
+[04/02/2008 21:21:39] El Gadget ya existe
+ERROR: POST user/id/gadgets admin
+[04/02/2008 21:21:52] El Gadget ya existe
+ERROR: POST user/id/gadgets admin
+[04/02/2008 21:21:54] El Gadget ya existe
+ERROR: POST user/id/gadgets admin
+[04/02/2008 21:21:55] El Gadget ya existe

@@ -44,8 +44,14 @@ function _EzWebAPI() {
 	tmp = tmp[1].split("=");
 	this.id = tmp[1];
 
-	this.platform.opManager.igadgetLoaded();
+        if (document.addEventListener) 
+           document.addEventListener("DOMContentLoaded", this.addOnLoadNotifier, false);
 }
+
+_EzWebAPI.prototype.addOnLoadNotifier = function() {
+        EzWebAPI.platform.opManager.igadgetLoaded();	
+}
+
 
 _EzWebAPI.prototype.getId = function() {
 	return EzWebAPI.id;
