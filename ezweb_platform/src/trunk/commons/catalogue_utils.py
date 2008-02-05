@@ -42,9 +42,9 @@ from django.http import HttpResponse, HttpResponseServerError
 from commons.utils import json_encode
 from commons.get_json_catalogue_data import get_gadgetresource_data, get_tag_data
 from commons.get_xml_catalogue_data import get_xml_description, get_tags_by_resource
+from commons.utils import get_xml_error
 
-from django.utils.translation import gettext_lazy as _
-from django.utils.translation import string_concat
+from django.utils.translation import ugettext as _
 
 def get_uniquelist(list, value = None):
 
@@ -58,12 +58,6 @@ def get_uniquelist(list, value = None):
                 uniquelist.append(x)
 
     return uniquelist
-
-
-def get_xml_error(value):
-
-    xml_error = string_concat(['<error>', _(value), '</error>'])
-    return xml_error
 
 
 def get_resource_response(gadgetlist, format, items, user):
@@ -82,7 +76,7 @@ def get_resource_response(gadgetlist, format, items, user):
 	response.__setitem__('items', items)
         return response
     else:
-        return HttpResponseServerError(get_xml_error("Invalid format. Format must be either xml or json"), mimetype='text/xml; charset=UTF-8')
+        return HttpResponseServerError(get_xml_error(_("Invalid format. Format must be either xml or json")), mimetype='text/xml; charset=UTF-8')
 
 
 def get_tag_response(gadget, user, format):
@@ -97,4 +91,4 @@ def get_tag_response(gadget, user, format):
         response += get_tags_by_resource(gadget, user)
         return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
     else:
-        return HttpResponseServerError(get_xml_error("Invalid format. Format must be either xml or json"), mimetype='text/xml; charset=UTF-8')
+        return HttpResponseServerError(get_xml_error(_("Invalid format. Format must be either xml or json")), mimetype='text/xml; charset=UTF-8')

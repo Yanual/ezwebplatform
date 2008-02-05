@@ -45,7 +45,7 @@ from django.shortcuts import get_object_or_404, get_list_or_404
 from django.db import transaction
 from django.db import IntegrityError
 
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext as _
 
 from django_restapi.resource import Resource
 
@@ -54,9 +54,10 @@ from resource.parser import TemplateParser
 from tag.models import UserTag
 
 from commons.authentication import user_authentication
-from commons.catalogue_utils import get_xml_error, get_resource_response
+from commons.catalogue_utils import get_resource_response
 from commons.exceptions import TemplateParseException
 from commons.logs import log
+from commons.utils import get_xml_error
 
 class GadgetsCollection(Resource):
 
@@ -67,24 +68,24 @@ class GadgetsCollection(Resource):
         templateParser = None
 
 	try:
-            templateParser = TemplateParser(template_uri, user_name)
+    	    templateParser = TemplateParser(template_uri, user_name)
 
-            templateParser.parse()
-            transaction.commit()
+    	    templateParser.parse()
+    	    transaction.commit()
         except IntegrityError, e:
             # Gadget already exists. Rollback transaction
             transaction.rollback()
             log(e, 'POST', 'user/id/resources', user_name)
-	    return HttpResponseServerError(get_xml_error(str(sys.exc_info()[1])),mimetype='text/xml; charset=UTF-8')
+	    return HttpResponseServerError(get_xml_error(unicode(sys.exc_info()[1])),mimetype='text/xml; charset=UTF-8')
         except TemplateParseException, e:
             transaction.rollback()
             log(e, 'POST', 'user/id/resources', user_name)
-            return HttpResponseServerError("<error>%s</error>" % e, mimetype='application/xml; charset=UTF-8')
+            return HttpResponseServerError(get_xml_error(unicode(e)), mimetype='application/xml; charset=UTF-8')
         except Exception, e:
             # Internal error
             transaction.rollback()
             log(e, 'POST', 'user/id/resources', user_name)
-	    return HttpResponseServerError(get_xml_error(str(sys.exc_info()[1])),mimetype='text/xml; charset=UTF-8')
+	    return HttpResponseServerError(get_xml_error(unicode(sys.exc_info()[1])),mimetype='text/xml; charset=UTF-8')
 
 
 	xml_ok = '<ResponseOK>OK</ResponseOK>'

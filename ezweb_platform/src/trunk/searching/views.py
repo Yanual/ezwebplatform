@@ -50,7 +50,8 @@ from resource.models import GadgetWiring
 from tag.models import UserTag
 
 from commons.authentication import user_authentication
-from commons.catalogue_utils import get_xml_error, get_uniquelist, get_resource_response
+from commons.catalogue_utils import get_uniquelist, get_resource_response
+from commons.utils import get_xml_error
 
 
 class GadgetsCollectionByGenericSearch(Resource):

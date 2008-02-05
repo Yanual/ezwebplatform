@@ -39,7 +39,7 @@
 from django.http import Http404
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext as _
 
 
 def user_authentication(user_name):

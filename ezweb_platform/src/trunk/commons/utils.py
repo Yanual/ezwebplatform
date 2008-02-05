@@ -42,6 +42,8 @@ from django.db import models
 from django.utils import simplejson
 from django.core.serializers.json import DateTimeAwareJSONEncoder
 
+from xml.dom.minidom import getDOMImplementation
+
 def json_encode(data, ensure_ascii=False):
     """
     The main issues with django's default json serializer is that properties that
@@ -94,3 +96,15 @@ def json_encode(data, ensure_ascii=False):
     ret = _any(data)
     
     return simplejson.dumps(ret, cls=DateTimeAwareJSONEncoder, ensure_ascii=ensure_ascii)
+
+def get_xml_error(value):
+    dom = getDOMImplementation()
+
+    doc = dom.createDocument(None, "error", None)
+    rootelement = doc.documentElement
+    text = doc.createTextNode(value)
+    rootelement.appendChild(text)
+    errormsg = doc.toxml()
+    doc.unlink()
+
+    return errormsg

@@ -38,7 +38,6 @@
 
 from xml.dom.ext.reader import Sax2
 from xml.dom.ext import Print
-from xml.dom.minidom import getDOMImplementation
 from xml.sax._exceptions import SAXParseException
 from StringIO import StringIO
 
@@ -62,7 +61,7 @@ from gadget.templateParser import TemplateParser
 from django.contrib.auth.models import User
 from django.db import transaction
 
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ugettext as _
 from django.utils.translation import string_concat
 
 from commons.logs import log
@@ -101,16 +100,7 @@ class GadgetCollection(Resource):
             log(e, 'POST', 'user/id/gadgets', user_name)
             transaction.rollback()
 
-            dom = getDOMImplementation()
-
-            doc = dom.createDocument(None, "error", None)
-            rootelement = doc.documentElement
-            text = doc.createTextNode(unicode(e))
-            rootelement.appendChild(text)
-            errormsg = doc.toxml()
-            doc.unlink()
-
-            return HttpResponseServerError(errormsg, mimetype='application/xml; charset=UTF-8')
+            return HttpResponseServerError(get_xml_error(unicode(e)), mimetype='application/xml; charset=UTF-8')
         except IntegrityError:
             log(_("Gadget already exists"), 'POST', 'user/id/gadgets', user_name)
             # Gadget already exists. Rollback transaction
