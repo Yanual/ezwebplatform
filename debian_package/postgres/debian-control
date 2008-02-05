@@ -5,6 +5,7 @@ Priority: optional
 Architecture: all
 Depends: ezweb-platform-common, postgresql, python-psycopg2
 Conflicts: ezweb-platform-sqlite3, ezweb-platform-mysql
+Replaces: ezweb-platform-sqlite3, ezweb-platform-mysql
 Maintainer: Alvaro Polo Valdenebro <apv@tid.es>
 Description: PostgreSQL suport for EzWeb Platform
  This package provides support for PostgreSQL to EzWeb Platform, the Telefonica I+D Mashup Engine

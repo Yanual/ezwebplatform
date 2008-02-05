@@ -5,6 +5,7 @@ Priority: optional
 Architecture: all
 Depends: ezweb-platform-common, python-pysqlite2
 Conflicts: ezweb-platform-postgres, ezweb-platform-mysql
+Replaces: ezweb-platform-postgres, ezweb-platform-mysql
 Maintainer: Alvaro Polo Valdenebro <apv@tid.es>
 Description: SQLite3 support for EzWeb Platform
  This package provides SQLite3 support for EzWeb Platform, the Telefonica I+D Mashup Engine
