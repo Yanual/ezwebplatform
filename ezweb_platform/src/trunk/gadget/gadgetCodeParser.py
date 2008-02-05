@@ -37,6 +37,7 @@
 #
 
 from HTMLParser import HTMLParser
+from django.utils.http import urlquote
 from urllib2 import urlopen
 
 from commons.exceptions import TemplateParseException
@@ -53,10 +54,14 @@ class GadgetCodeParser(HTMLParser):
     def parseUserEvents(self, codeURI, gadgetURI):
         
         xhtml = ""
+	# TODO Fixme!! This works for now, but we have to check if a part of a url is empty
+	address = codeURI.partition('://')
+	query = address[2].partition('/')
+	codeURI = address[0] + "://" + query[0] + "/" + urlquote(query[2])
         try:
             xhtml = urlopen(codeURI).read()
         except Exception:
-            raise TemplateParseException(_(u"XHTML code is not accessible"))
+            raise TemplateParseException(_("XHTML code is not accessible"))
         
         self.xHTML = XHTML (uri=gadgetURI + "/xhtml", code=xhtml)
         self.xHTML.save()
