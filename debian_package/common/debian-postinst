@@ -36,7 +36,7 @@ mv /tmp/ezweb-postinst /etc/apache2/sites-available/ezweb-platform
 vh_file="/etc/apache2/sites-available/ezweb-platform"
 vh_link="/etc/apache2/sites-enabled/010-ezweb-platform"
 
-if [ ! -e $vh_link ] ; then
+if [ ! -e $vh_link ]; then
 	ln -s $vh_file $vh_link
 fi
 
@@ -50,12 +50,12 @@ chown -R www-data:www-data /var/www/ezweb-platform
 ###
 # Restart apache 2 web server
 ###
-if [ -e /var/run/apache2.pid ] ; then
+if [ -e /var/run/apache2.pid ]; then
 	db_input low ezweb/apache2/reload
 	db_go
 	db_get ezweb/apache2/reload
 
-	if [ "true" = $RET ] ; then
+	if [ "true" = $RET ]; then
 		/etc/init.d/apache2 reload
 	fi
 else
@@ -63,7 +63,7 @@ else
   db_go
   db_get ezweb/apache2/start
   
-  if [ "true" = $RET ] ; then
+  if [ "true" = $RET ]; then
     /etc/init.d/apache2 start
   fi
 
