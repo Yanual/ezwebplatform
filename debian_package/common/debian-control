@@ -3,7 +3,7 @@ Version: <vnumber>
 Section: web
 Priority: optional
 Architecture: all
-Depends: python (>= 2.4), apache2 (>= 2.0), libapache2-mod-python, python-xml, python-django (>>0.97)
+Depends: python (>= 2.4), apache2 (>= 2.0), libapache2-mod-python, python-xml, python-django (>=0.97~svn6996-1)
 Maintainer: Alvaro Polo Valdenebro <apv@tid.es>
 Description: EzWeb Platform
  This package provides common files for EzWeb Platform, the Telefonica I+D Mashup Engine

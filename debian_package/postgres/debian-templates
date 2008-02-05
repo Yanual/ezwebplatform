@@ -1,0 +1,45 @@
+Template: ezweb/pg/dbname
+Type: string
+Default: ezweb
+Description: Choose a database name
+	.
+	This package will configure EzWeb for using PostgreSQL DBMS.
+
+Template: ezweb/pg/dbname/conflict
+Type: select
+Choices: remove, continue, reselect
+Default: continue
+Description: Select an option
+	.
+	This database name already exists and cannot be used. You can
+	remove it and create it again, continue using this database or 
+	select a different name.
+
+Template: ezweb/pg/dbuser
+Type: string
+Default: ezweb
+Description: Choose a database user
+
+Template: ezweb/pg/dbuser/conflict
+Type: select
+Choices: remove, continue, reselect
+Default: continue
+Description: Select an option
+	.
+	This database user already exists and cannot be used. You can
+	remove it and create it again, continue using this username or
+	select a different one.
+
+Template: ezweb/pg/dbpasswd
+Type: password
+Description: Insert a password
+	.
+	You need to provide an user password for EzWeb database.
+
+Template: ezweb/pg/remove
+Type: boolean
+Default: false
+Description: Remove database?
+	.
+	EzWeb is about to uninstall. It could be a good idea remove 
+	all its data in the PostgreSQL database.

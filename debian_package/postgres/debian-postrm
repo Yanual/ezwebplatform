@@ -1,0 +1,20 @@
+#!/bin/bash
+
+. /usr/share/debconf/confmodule
+
+db_input high ezweb/pg/remove
+db_go
+db_get ezweb/pg/remove
+
+if [ "$RET" = true ]; then
+	db_get ezweb/pg/dbname
+	dbname=$RET
+
+	db_get ezweb/pg/dbuser
+	dbuser=$RET
+
+	sudo -u postgres dropdb $dbname
+	sudo -u postgres dropuser $dbuser
+fi
+
+db_purge

@@ -28,14 +28,12 @@ fi
 mkdir -p $BASE_DIR/debian/DEBIAN
 
 ###
-# Copy control file
+# Copy maintainer files
 #
 cat $BASE_DIR/debian-control | sed s/"<vnumber>"/$PKG_VERSION/g > $BASE_DIR/debian/DEBIAN/control
-
-###
-# Copy post install script
-#
+cp $BASE_DIR/debian-templates $BASE_DIR/debian/DEBIAN/templates
 cp $BASE_DIR/debian-postinst $BASE_DIR/debian/DEBIAN/postinst
+cp $BASE_DIR/debian-postrm $BASE_DIR/debian/DEBIAN/postrm
 
 ###
 # Create the Debian package
