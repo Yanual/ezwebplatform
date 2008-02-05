@@ -1,0 +1,16 @@
+#!/bin/bash
+
+###
+# Remove .pyc files
+#
+rm -f $(find /usr/share/ezweb-platform -name "*.pyc")
+
+###
+# Unlink virtual host link
+#
+unlink /etc/apache2/sites-enabled/010-ezweb-platform
+
+###
+# Unlink settings.py from /etc
+unlink /etc/ezweb-platform/settings.py
+

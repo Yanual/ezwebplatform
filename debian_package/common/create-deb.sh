@@ -83,9 +83,10 @@ cat $BASE_DIR/debian-control | sed s/"<vnumber>"/$PKG_VERSION/g > $BASE_DIR/debi
 cp $BASE_DIR/apache-vhost $BASE_DIR/debian/etc/apache2/sites-available/ezweb-platform
 
 ###
-# Copy post install script
+# Copy scripts
 #
 cp $BASE_DIR/debian-postinst $BASE_DIR/debian/DEBIAN/postinst
+cp $BASE_DIR/debian-prerm $BASE_DIR/debian/DEBIAN/prerm
 
 ###
 # Create the Debian package
