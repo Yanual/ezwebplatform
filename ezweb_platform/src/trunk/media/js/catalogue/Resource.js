@@ -86,12 +86,16 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 											"<button onClick='javascript:UIUtils.toggle(\"add_tags_panel\");UIUtils.toggle(\"add_tags_link\");UIUtils.removeAllTags();'>" + gettext ('Cancel') + ":</button>" +
 										"</div>" +
 									"</div>" +
-									"<div id='add_tags_link' class='link'><a href='javascript:UIUtils.toggle(\"add_tags_link\");UIUtils.toggle(\"add_tags_panel\");document.getElementById(\"new_tag_text_input\").focus();'>" + gettext ('To label the resource') + ":</a></div>" +
-									"<div class='link'><a href='" + state.getUriWiki() + "' target='_blank'>" + gettext ('Access to Wiki') + ":</a></div>" +
-									"<div class='link'><a href='" + state.getUriTemplate() + "' target='_blank'>" + gettext ('Access to Template') + ":</a></div>" +
-									"<div class='link'><a href='javascript:UIUtils.deleteGadget()'>" + gettext ('Delete Gadget') + ":</a></div>" +
-								"</div>" +
-								"<button onclick='CatalogueFactory.getInstance().addResourceToShowCase(UIUtils.getSelectedResource());'>" + gettext ('Add Instance') + ":</button>";
+									
+"<div id='add_tags_link' class='link'><a href='javascript:UIUtils.toggle(\"add_tags_link\");UIUtils.toggle(\"add_tags_panel\");document.getElementById(\"new_tag_text_input\").focus();'>" + gettext ('To label the resource') + ":</a></div>" +"<div class='link'><a href='" + state.getUriWiki() + "' target='_blank'>" + gettext ('Access to Wiki') + ":</a></div>" +
+
+"<div class='link'><a href='" + state.getUriTemplate() + "' target='_blank'>" + gettext ('Access to Template') + ":</a></div>" + 
+
+"<div class='link'><a href='javascript:UIUtils.updateGadgetXHTML();'>" + gettext ('Update Gadget Code') + ":</a></div>" + 
+
+"<div class='link'><a href='javascript:UIUtils.deleteGadget()'>" + gettext ('Delete Gadget') + ":</a></div>" +
+
+"</div><button onclick='CatalogueFactory.getInstance().addResourceToShowCase(UIUtils.getSelectedResource());'>" + gettext ('Add Instance') + ":</button>";
 	}
 	
 	this.paginate = function(items) {

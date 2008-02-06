@@ -51,5 +51,5 @@ urlpatterns = patterns('gadget.views',
     (r'^/(?P<vendor>[^/\t\n\r\f\v]+)/(?P<name>[^/\t\n\r\f\v]+)/(?P<version>[\._-ÑñáéíóúÁÉÍÓÚ\w]+)/template$',
         GadgetTemplateEntry(permitted_methods=('GET', ))),
     (r'^/(?P<vendor>[^/\t\n\r\f\v]+)/(?P<name>[^/\t\n\r\f\v]+)/(?P<version>[\._-ÑñáéíóúÁÉÍÓÚ\w]+)/xhtml$',
-        GadgetCodeEntry(permitted_methods=('GET', ))),   
+        GadgetCodeEntry(permitted_methods=('GET', 'PUT'))),   
 )

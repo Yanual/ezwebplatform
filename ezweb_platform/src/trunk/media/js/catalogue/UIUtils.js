@@ -95,6 +95,26 @@ UIUtils.showResourceInfo = function(resourceId_) {
 	UIUtils.selectedResource = resourceId_;
 	CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).showInfo();
 }
+
+UIUtils.updateGadgetXHTML = function() {
+    var resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
+
+    var dict = {vendor: resource.getVendor(), name: resource.getName(), version: resource.getVersion()};
+
+    var resourceURI = URIs.GET_GADGET.evaluate(dict) + "/xhtml";
+
+    var onError = function(transport) {
+	alert(gettext ("Error PUT"));
+	// Process
+    }
+			
+    var onSuccess = function(transport) {
+	
+    }
+    
+    PersistenceEngineFactory.getInstance().send_update(resourceURI, "", this, onSuccess, onError);
+
+}
 	
 UIUtils.toggle = function(elementId_) {
 	var element = document.getElementById(elementId_);
@@ -250,7 +270,7 @@ UIUtils.deleteGadget = function() {
 				// Process
 			}
 			
-  var loadTags = function(transport) {
+	var loadTags = function(transport) {
 				opManager.repaintCatalogue(URIs.GET_POST_RESOURCES + "/1/10");
 			}
 	PersistenceEngineFactory.getInstance().send_delete(resourceURI, this, loadTags, onError);

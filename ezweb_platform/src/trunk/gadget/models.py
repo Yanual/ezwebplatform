@@ -133,6 +133,7 @@ class ExternalContext(models.Model):
 class XHTML(models.Model):
     uri = models.CharField(_('URI'), max_length=500, unique=True)
     code = models.TextField(_('Code'))
+    url = models.URLField(_('URL'), max_length=500)
 
     class Admin:
         pass

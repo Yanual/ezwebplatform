@@ -70,6 +70,9 @@ from commons.exceptions import TemplateParseException
 
 from gadget.models import Gadget, Template
 
+from urllib import urlcleanup
+from urllib2 import urlopen
+
 class GadgetCollection(Resource):
     def read(self, request, user_name):
         user = user_authentication(user_name)
@@ -155,3 +158,18 @@ class GadgetCodeEntry(Resource):
         code = get_object_or_404(gadget.xhtml, id=gadget.xhtml.id)
         return HttpResponse(code.code, mimetype='text/html; charset=UTF-8')
 
+    def update(self, request, user_name, vendor, name, version):
+        user = user_authentication(user_name)
+        gadget = get_object_or_404(Gadget, user=user, vendor=vendor, name=name, version=version)
+
+        xhtml = gadget.xhtml;
+
+        try:
+            urlcleanup()
+            xhtml.code = urlopen(xhtml.url).read()
+            xhtml.save()
+        except Exception, e:
+            log(e, 'PUT', 'user/id/gadgets/xhtml', user_name)
+            return HttpResponseServerError(_("XHTML code is not accessible"))
+        
+        return HttpResponse('ok')

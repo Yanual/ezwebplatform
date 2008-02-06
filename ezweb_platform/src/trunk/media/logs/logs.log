@@ -42,3 +42,19 @@ ERROR: POST user/id/gadgets admin
 [04/02/2008 21:21:54] El Gadget ya existe
 ERROR: POST user/id/gadgets admin
 [04/02/2008 21:21:55] El Gadget ya existe
+ERROR: POST user/id/gadgets admin
+[06/02/2008 17:47:28] Gadget already exists
+ERROR: PUT user/id/gadgets/xhtml admin
+[06/02/2008 18:34:19] global name 'urlopen' is not defined
+ERROR: PUT user/id/gadgets/xhtml admin
+[06/02/2008 20:34:25] global name 'urlopen' is not defined
+ERROR: PUT user/id/gadgets/xhtml admin
+[06/02/2008 20:36:05] global name 'urlopen' is not defined
+ERROR: PUT user/id/gadgets/xhtml admin
+[06/02/2008 20:38:10] global name 'urlopen' is not defined
+ERROR: PUT user/id/gadgets/xhtml admin
+[06/02/2008 20:55:06] global name 'urllib' is not defined
+ERROR: PUT user/id/gadgets/xhtml admin
+[06/02/2008 20:59:06] global name 'urllib2' is not defined
+ERROR: POST user/id/gadgets admin
+[06/02/2008 21:08:04] Gadget already exists
