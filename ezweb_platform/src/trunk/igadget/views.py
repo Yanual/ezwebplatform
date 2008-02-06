@@ -209,7 +209,7 @@ class IGadgetCollection(Resource):
             screen_id = 1
         
         if not request.has_key('igadgets'):
-            return HttpResponseBadRequest(get_xml_error(_("iGadget JSON expected")))
+            return HttpResponseBadRequest(get_xml_error(_("iGadget JSON expected")), mimetype='application/xml; charset=UTF-8')
         
         #TODO we can make this with deserializers (simplejson)      
         received_json = request.POST['igadgets']
@@ -217,7 +217,7 @@ class IGadgetCollection(Resource):
         try:
             received_data = eval(received_json)
         except Exception, e:
-            return HttpResponseBadRequest(get_xml_error(unicode(e)))
+            return HttpResponseBadRequest(get_xml_error(unicode(e)), mimetype='application/xml; charset=UTF-8')
         
         igadgets = received_data.get('iGadgets')
         try:
@@ -227,7 +227,7 @@ class IGadgetCollection(Resource):
             return HttpResponse('ok')
         except Exception, e:
             transaction.rollback()
-            return HttpResponseServerError(get_xml_error(_("iGadgets cannot be saved: ") + unicode(e)))
+            return HttpResponseServerError(get_xml_error(_("iGadgets cannot be saved: ") + unicode(e)), mimetype='application/xml; charset=UTF-8')
 
 
     @transaction.commit_manually
@@ -239,7 +239,7 @@ class IGadgetCollection(Resource):
             screen_id = 1
 
         if not request.PUT.has_key('igadgets'):
-            return HttpResponseBadRequest(get_xml_error(_("iGadget JSON expected")))
+            return HttpResponseBadRequest(get_xml_error(_("iGadget JSON expected")), mimetype='application/xml; charset=UTF-8')
 
         #TODO we can make this with deserializers (simplejson)      
         received_json = request.PUT['igadgets']
@@ -247,7 +247,7 @@ class IGadgetCollection(Resource):
         try:
             received_data = eval(received_json)
         except Exception, e:
-            return HttpResponseBadRequest(get_xml_error(unicode(e)))
+            return HttpResponseBadRequest(get_xml_error(unicode(e)), mimetype='application/xml; charset=UTF-8')
         
         igadgets = received_data.get('iGadgets')
         try:
@@ -257,7 +257,7 @@ class IGadgetCollection(Resource):
             return HttpResponse('ok')
         except Exception, e:
             transaction.rollback()
-            return HttpResponseServerError(get_xml_error(_("iGadgets cannot be updated: ") + unicode(e)))
+            return HttpResponseServerError(get_xml_error(_("iGadgets cannot be updated: ") + unicode(e)), mimetype='application/xml; charset=UTF-8')
 
 class IGadgetEntry(Resource):
     def read(self, request, user_name, igadget_id, screen_id=None):
@@ -285,7 +285,7 @@ class IGadgetEntry(Resource):
             screen_id = 1
 
         if not request.has_key('igadget'):
-            return HttpResponseBadRequest(get_xml_error(_("iGadget JSON expected")))
+            return HttpResponseBadRequest(get_xml_error(_("iGadget JSON expected")), mimetype='application/xml; charset=UTF-8')
 
         #TODO we can make this with deserializers (simplejson)
         received_json = request.POST['igadget']
@@ -293,13 +293,13 @@ class IGadgetEntry(Resource):
         try:
             igadget = eval(received_json)
         except Exception, e:
-            return HttpResponseBadRequest(get_xml_error(unicode(e)))
+            return HttpResponseBadRequest(get_xml_error(unicode(e)), mimetype='application/xml; charset=UTF-8')
 
         try:
             SaveIGadget(igadget, user, screen_id, igadget_id)
             return HttpResponse('ok')
         except Exception, e:
-            return HttpResponseServerError(get_xml_error(_("iGadgets cannot be saved: ") + unicode(e)))
+            return HttpResponseServerError(get_xml_error(_("iGadgets cannot be saved: ") + unicode(e)), mimetype='application/xml; charset=UTF-8')
 
 
     def update(self, request, user_name, igadget_id, screen_id=None):
@@ -310,7 +310,7 @@ class IGadgetEntry(Resource):
             screen_id = 1
 
         if not request.PUT.has_key('igadget'):
-            return HttpResponseBadRequest(get_xml_error(_("iGadget JSON expected")))
+            return HttpResponseBadRequest(get_xml_error(_("iGadget JSON expected")), mimetype='application/xml; charset=UTF-8')
 
         #TODO we can make this with deserializers (simplejson)
         received_json = request.PUT['igadget']
@@ -318,13 +318,13 @@ class IGadgetEntry(Resource):
         try:
             igadget = eval(received_json)
         except Exception, e:
-            return HttpResponseBadRequest(get_xml_error(unicode(e)))
+            return HttpResponseBadRequest(get_xml_error(unicode(e)), mimetype='application/xml; charset=UTF-8')
 
         try:
             UpdateIGadget(igadget, user, screen_id, igadget_id)
             return HttpResponse('ok')
         except Exception, e:
-            return HttpResponseServerError(get_xml_error(_("iGadgets cannot be updated: ") + unicode(e)))
+            return HttpResponseServerError(get_xml_error(_("iGadgets cannot be updated: ") + unicode(e)), mimetype='application/xml; charset=UTF-8')
 
 
     def delete(self, request, user_name, igadget_id, screen_id=None):
@@ -370,14 +370,14 @@ class IGadgetVariableCollection(Resource):
 
         # Gets JSON parameter from request
         if not request.PUT.has_key('variables'):
-            return HttpResponseBadRequest(get_xml_error(_("iGadget variables JSON expected")))
+            return HttpResponseBadRequest(get_xml_error(_("iGadget variables JSON expected")), mimetype='application/xml; charset=UTF-8')
 
         variables_JSON = request.PUT['variables']
 
         try:
             received_variables = eval(variables_JSON)
         except Exception, e:
-            return HttpResponseBadRequest(get_xml_error(unicode(e)))
+            return HttpResponseBadRequest(get_xml_error(unicode(e)), mimetype='application/xml; charset=UTF-8')
 
         # Get all variables of "user"
         if not screen_id:
@@ -396,7 +396,7 @@ class IGadgetVariableCollection(Resource):
             
             transaction.commit()
         except Exception, e:
-            return HttpResponseBadRequest(get_xml_error(unicode(e)))
+            return HttpResponseBadRequest(get_xml_error(unicode(e)), mimetype='application/xml; charset=UTF-8')
         
         return HttpResponse("<ok>", mimetype='text/xml; charset=UTF-8')
 
@@ -422,7 +422,7 @@ class IGadgetVariable(Resource):
         
         # Gets value parameter from request
         if not request.PUT.has_key('value'):
-            return HttpResponseBadRequest(get_xml_error(_("iGadget JSON expected")))
+            return HttpResponseBadRequest(get_xml_error(_("iGadget JSON expected")), mimetype='application/xml; charset=UTF-8')
         new_value = request.PUT['value']
         
         #TODO by default. Remove in final release

@@ -76,7 +76,7 @@ class GadgetsCollection(Resource):
             # Gadget already exists. Rollback transaction
             transaction.rollback()
             log(e, 'POST', 'user/id/resources', user_name)
-	    return HttpResponseServerError(get_xml_error(unicode(sys.exc_info()[1])),mimetype='text/xml; charset=UTF-8')
+	    return HttpResponseServerError(get_xml_error(unicode(sys.exc_info()[1])), mimetype='application/xml; charset=UTF-8')
         except TemplateParseException, e:
             transaction.rollback()
             log(e, 'POST', 'user/id/resources', user_name)
@@ -85,11 +85,11 @@ class GadgetsCollection(Resource):
             # Internal error
             transaction.rollback()
             log(e, 'POST', 'user/id/resources', user_name)
-	    return HttpResponseServerError(get_xml_error(unicode(sys.exc_info()[1])),mimetype='text/xml; charset=UTF-8')
+	    return HttpResponseServerError(get_xml_error(unicode(sys.exc_info()[1])), mimetype='application/xml; charset=UTF-8')
 
 
 	xml_ok = '<ResponseOK>OK</ResponseOK>'
-        return HttpResponse(xml_ok,mimetype='text/xml; charset=UTF-8')
+        return HttpResponse(xml_ok,mimetype='application/xml; charset=UTF-8')
 
 
     def read(self,request, user_name, pag=0,offset=0):

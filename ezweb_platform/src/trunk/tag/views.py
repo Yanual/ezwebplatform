@@ -95,7 +95,7 @@ class GadgetTagsCollection(Resource):
 	    try:
 	        UserTag.objects.get_or_create(tag=e, idUser=user, idResource=gadget)
 	    except:
-	        return HttpResponseServerError(get_xml_error(unicode(sys.exc_info()[1])), mimetype='text/xml; charset=UTF-8')
+	        return HttpResponseServerError(get_xml_error(unicode(sys.exc_info()[1])), mimetype='application/xml; charset=UTF-8')
 
         return get_tag_response(gadget,user, format)
 
@@ -132,7 +132,7 @@ class GadgetTagsCollection(Resource):
         try:
             tag = get_object_or_404(UserTag, idUser=user,idResource=gadget,tag=value_tag)
         except:
-            return HttpResponseServerError(get_xml_error(_("Authorization failure, you don't have permission to delete this tag")), mimetype='text/xml; charset=UTF-8')
+            return HttpResponseServerError(get_xml_error(_("Authorization failure, you don't have permission to delete this tag")), mimetype='application/xml; charset=UTF-8')
 
         tag.delete()
 

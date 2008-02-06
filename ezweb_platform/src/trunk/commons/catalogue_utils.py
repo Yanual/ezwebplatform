@@ -76,7 +76,7 @@ def get_resource_response(gadgetlist, format, items, user):
 	response.__setitem__('items', items)
         return response
     else:
-        return HttpResponseServerError(get_xml_error(_("Invalid format. Format must be either xml or json")), mimetype='text/xml; charset=UTF-8')
+        return HttpResponseServerError(get_xml_error(_("Invalid format. Format must be either xml or json")), mimetype='application/xml; charset=UTF-8')
 
 
 def get_tag_response(gadget, user, format):
@@ -91,4 +91,4 @@ def get_tag_response(gadget, user, format):
         response += get_tags_by_resource(gadget, user)
         return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
     else:
-        return HttpResponseServerError(get_xml_error(_("Invalid format. Format must be either xml or json")), mimetype='text/xml; charset=UTF-8')
+        return HttpResponseServerError(get_xml_error(_("Invalid format. Format must be either xml or json")), mimetype='application/xml; charset=UTF-8')
