@@ -45,5 +45,6 @@ urlpatterns = patterns('resource.views',
 
     # Gadgets
     (r'^/(?P<pag>\d+)/(?P<offset>\d+)$', GadgetsCollection(permitted_methods=('GET', ))),
-    (r'^$', GadgetsCollection(permitted_methods=('GET', 'POST','DELETE',))),
+    (r'^$', GadgetsCollection(permitted_methods=('GET', 'POST',))),
+    (r'^/(?P<vendor>[\@_\%_\._\!_\s_\-_\|_\&_\/_\:_\(_\)_\w]+)/(?P<name>[\@_\%_\._\!_\s_\-_\|_\&_\/_\:_\(_\)_\w]+)/(?P<version>[\@_\%_\._\!_\s_\-_\|_\&_\/_\:_\(_\)_\w]+)$', GadgetsCollection(permitted_methods=('DELETE', ))),
  )

@@ -1,4 +1,4 @@
-/* 
+﻿/* 
  * MORFEO Project 
  * http://morfeo-project.org 
  * 
@@ -239,6 +239,23 @@ UIUtils.sendTags = function() {
 	var resourceURI = "/" + resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion();
 
 	tagger.sendTags(URIs.POST_RESOURCE_TAGS, resourceURI);
+}
+
+UIUtils.deleteGadget = function() {
+	var resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
+	var resourceURI = URIs.GET_POST_RESOURCES + "/" + resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion();
+	
+	var onError = function(transport) {
+				alert(gettext ("Error DELETE"));
+				// Process
+			}
+			
+  var loadTags = function(transport) {
+				opManager.repaintCatalogue(URIs.GET_POST_RESOURCES + "/1/10");
+			}
+	PersistenceEngineFactory.getInstance().send_delete(resourceURI, this, loadTags, onError);
+  
+	
 }
 
 UIUtils.addTag = function(inputText_) {

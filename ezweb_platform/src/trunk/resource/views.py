@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 
 # MORFEO Project 
 # http://morfeo-project.org 
@@ -122,11 +122,11 @@ class GadgetsCollection(Resource):
         return get_resource_response(gadgetlist, format, items, user)
 
     
-    def delete(self, request, user_name):
+    def delete(self, request, user_name, vendor, name, version):
 
-        vendor = request.__getitem__('vendor')
-	name = request.__getitem__('name')
-	version = request.__getitem__('version')
+        #vendor = request.__getitem__('vendor')
+	#name = request.__getitem__('name')
+	#version = request.__getitem__('version')
         resource=get_object_or_404(GadgetResource, short_name=name,vendor=vendor,version=version)
 	
 	# Delete the related wiring information for that gadget
