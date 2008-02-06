@@ -8,7 +8,7 @@
 
         </td><td class="columnCell borderLeftCell">
             <div class="wiresTitle">{% trans "Channels" %}</div>
-            New: <input type="text" id="channel_name" name="channel_name"/>
+            {% trans "New" %}: <input type="text" id="channel_name" name="channel_name"/>
             <input id="add_channel" type="image" src="{{ MEDIA_URL }}js/wiring/add.png" title="Create channel" alt= "Create channel" onclick="javascript:{wiringInterface.addChannel();}"/>
             <ul id="channels_list"></ul>
 

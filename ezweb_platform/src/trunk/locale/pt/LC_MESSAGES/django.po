@@ -190,15 +190,15 @@ msgid "Show results with:"
 msgstr "Mostrar reusltados com:"
 
 #: ezweb/templates/showcase.html:41
-msgid "All of this words:"
+msgid "All of these words:"
 msgstr "Todos com estas palavras:"
 
 #: ezweb/templates/showcase.html:46
-msgid "Any of this word:"
+msgid "Any of these words:"
 msgstr "Quaisquer palavras:"
 
 #: ezweb/templates/showcase.html:51
-msgid "None of this word:"
+msgid "None of these words:"
 msgstr "Nome desta palavra:"
 
 #: ezweb/templates/showcase.html:57
@@ -228,6 +228,10 @@ msgstr "Eventos"
 #: ezweb/templates/wiring.html:10
 msgid "Channels"
 msgstr "Canais"
+
+#: .\ezweb\templates\wiring.html.py:11
+msgid "New"
+msgstr "Novo"
 
 #: ezweb/templates/wiring.html:16
 msgid "Slots"

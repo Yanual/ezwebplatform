@@ -235,6 +235,10 @@ msgstr "Eventos"
 msgid "Channels"
 msgstr "Canales"
 
+#: .\ezweb\templates\wiring.html.py:11
+msgid "New"
+msgstr "Nuevo"
+
 #: .\ezweb\templates\wiring.html.py:16
 msgid "Slots"
 msgstr "Ranura"

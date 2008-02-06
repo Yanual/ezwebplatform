@@ -230,6 +230,10 @@ msgstr ""
 msgid "Channels"
 msgstr ""
 
+#: .\ezweb\templates\wiring.html.py:11
+msgid "New"
+msgstr ""
+
 #: .\ezweb\templates\wiring.html.py:16
 msgid "Slots"
 msgstr ""
