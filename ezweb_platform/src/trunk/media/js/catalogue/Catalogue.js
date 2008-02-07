@@ -86,9 +86,22 @@ var CatalogueFactory  = function () {
 		
 			//Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
 			
-			var onError = function(transport) {
-				alert(gettext("Error loadCatalogue"));
-				// Process
+			var onError = function(transport, e) {
+				var msg;
+				if (e) {
+					msg = interpolate(gettext("JavaScript exception on file %(errorFile)s (line: %(errorLine)s): %(errorDesc)s"),
+					                  {errorFile: e.fileName, errorLine: e.lineNumber, errorDesc: e},
+							  true);
+				} else if (transport.responseXML) {
+					msg = transport.responseXML.documentElement.textContent;
+				} else {
+					msg = "HTTP Error " + transport.status + " - " + transport.statusText;
+				}
+
+				msg = interpolate(gettext("Error retreiving catalogue data: %(errorMsg)s."), {errorMsg: msg}, true);
+				OpManagerFactory.getInstance().log(msg);
+
+				alert (gettext("Error retreiving catalogue data, please check the logs for further info."));
 			}
 			
 			var loadResources = function(transport) {

@@ -59,8 +59,21 @@ UIUtils.addResource = function(url, paramName, paramValue) {
 		OpManagerFactory.getInstance().repaintCatalogue(URIs.GET_POST_RESOURCES);
 	}
 	
-	var newResourceOnError = function (response) {
-		alert (response.responseText);
+	var newResourceOnError = function (transport, e) {
+		var msg;
+		if (e) {
+			msg = interpolate(gettext("JavaScript exception on file %(errorFile)s (line: %(errorLine)s): %(errorDesc)s"),
+			                  {errorFile: e.fileName, errorLine: e.lineNumber, errorDesc: e},
+					  true);
+		} else if (transport.responseXML) {
+                        msg = transport.responseXML.documentElement.textContent;
+		} else {
+                        msg = "HTTP Error " + transport.status + " - " + transport.statusText;
+		}
+
+		msg = interpolate(gettext("The resource could not be added to the catalogue: %(errorMsg)s."), {errorMsg: msg}, true);
+		OpManagerFactory.getInstance().log(msg);
+		alert (gettext("The resource could not be added to the catalogue, please check the logs for further info."));
 	}
 	
 	var persistenceEngine = PersistenceEngineFactory.getInstance();	

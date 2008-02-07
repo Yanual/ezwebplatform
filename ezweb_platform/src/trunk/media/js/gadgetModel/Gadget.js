@@ -71,9 +71,13 @@ function Gadget(gadget_, url_) {
 	
 		// Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
 		
-		var onError = function(transport) {
+		var onError = function(transport, e) {
 			var msg;
-			if (transport.responseXML) {
+			if (e) {
+				msg = interpolate(gettext("JavaScript exception on file %(errorFile)s (line: %(errorLine)s): %(errorDesc)s"),
+				                  {errorFile: e.fileName, errorLine: e.lineNumber, errorDesc: e},
+						  true);
+			} else if (transport.responseXML) {
                                 msg = transport.responseXML.documentElement.textContent;
 			} else {
                                 msg = "HTTP Error " + transport.status + " - " + transport.statusText;

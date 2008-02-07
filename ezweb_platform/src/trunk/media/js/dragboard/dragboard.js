@@ -166,12 +166,20 @@ var DragboardFactory = function () {
 
 		function onError(transport, e) {
 			var msg;
-			if (e)
-				msg = e;
-			else
-				msg = transport.status + " " + transport.statusText;
+			if (e) {
+				msg = interpolate(gettext("JavaScript exception on file %(errorFile)s (line: %(errorLine)s): %(errorDesc)s"),
+				                  {errorFile: e.fileName, errorLine: e.lineNumber, errorDesc: e},
+						  true);
+			} else if (transport.responseXML) {
+				msg = transport.responseXML.documentElement.textContent;
+			} else {
+				msg = "HTTP Error " + transport.status + " - " + transport.statusText;
+			}
 
-			alert (gettext("Error receiving dragboard data") + ": " + msg);
+			msg = interpolate(gettext("Error retreiving dragboard data from persistence: %(errorMsg)s."), {errorMsg: msg}, true);
+			OpManagerFactory.getInstance().log(msg);
+
+			alert (gettext("Error retreiving dragboard data from persistence, please check the logs for further info."));
 		}
 
 		function _getPositionOn(_matrix, gadget) {
@@ -488,8 +496,18 @@ var DragboardFactory = function () {
 			// Update igadgets positions in persistence
 			function onSuccess() {}
 
-			function onError(transport) {
-				alert (transport.responseXML);
+			function onError(transport, e) {
+				var msg;
+				if (transport.responseXML) {
+					msg = transport.responseXML.documentElement.textContent;
+				} else {
+					msg = "HTTP Error " + transport.status + " - " + transport.statusText;
+				}
+
+				msg = interpolate(gettext("Error commiting dragboard changes to persistence: %(errorMsg)s."), {errorMsg: msg}, true);
+				OpManagerFactory.getInstance().log(msg);
+
+				alert (gettext("Error commiting dragboard changes to persistence, please check the logs for further info."));
 			}
 
 			// TODO only send changes
@@ -727,7 +745,7 @@ var DragboardFactory = function () {
 
 		Dragboard.prototype.acceptMove = function() {
 			if (gadgetToMove == null)
-				alert(gettext("exception at acceptMove")); // TODO
+				throw new Exception(gettext("Dragboard: function acceptMove called when there is not any igadget's move started."));
 
 			var oldposition = gadgetToMove.getPosition();
 			var newposition = dragboardCursor.getPosition();
@@ -983,17 +1001,17 @@ IGadget.prototype.paint = function(where) {
 
 IGadget.prototype.destroy = function() {
 	if (this.element != null) {
-		function onSuccess() {
-//			alert ("v success");
-		}
+		function onSuccess() {}
 		function onError(transport, e) {
 			var msg;
-			if (e)
-				msg = e;
-			else
-				msg = transport.status + " " + transport.statusText;
+			if (transport.responseXML) {
+                                msg = transport.responseXML.documentElement.textContent;
+			} else {
+                                msg = "HTTP Error " + transport.status + " - " + transport.statusText;
+			}
 
-			alert (gettext("Error removing igadget from persistence") + ": " + msg);
+			msg = interpolate(gettext("Error removing igadget from persistence: %(errorMsg)s."), {errorMsg: msg}, true);
+			OpManagerFactory.getInstance().log(msg);
 		}
 		this.element.parentNode.removeChild(this.element);
 		this.element = null;
@@ -1155,13 +1173,16 @@ IGadget.prototype.save = function() {
 	function onSuccess() {}
 	function onError(transport, e) {
 		var msg;
-		if (e) {
-			msg = e;
+		if (transport.responseXML) {
+			msg = transport.responseXML.documentElement.textContent;
 		} else {
-			msg = transport.status + " " + transport.statusText;
+			msg = "HTTP Error " + transport.status + " - " + transport.statusText;
 		}
 
-			alert (gettext("Error adding igadget to persistence") + ": " + msg);
+		msg = interpolate(gettext("Error adding igadget to persistence: %(errorMsg)s."), {errorMsg: msg}, true);
+		OpManagerFactory.getInstance().log(msg);
+
+		alert (gettext("Error adding igadget to persistence, please check the logs for further info."));
 	}
 
 	var persistenceEngine = PersistenceEngineFactory.getInstance();
