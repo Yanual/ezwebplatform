@@ -32,11 +32,6 @@ if [ ! -d $SRC_DIR ] ; then
 fi
 
 ###
-# Clean .pyc files
-#
-rm -f $(find $SRC_DIR -name "*.pyc")
-
-###
 # Clean previous data
 #
 rm -rf $BASE_DIR/debian
@@ -55,6 +50,12 @@ mkdir -p $BASE_DIR/debian/DEBIAN
 #
 cp -r $SRC_DIR/* $BASE_DIR/debian/usr/share/ezweb-platform/
 cp -r $BASE_DIR/django_restapi $BASE_DIR/debian/usr/share/ezweb-platform/
+
+###
+# Remove unwanted files
+#
+rm -f $(find $BASE_DIR/debian -name "*.pyc")
+rm -rf $(find $BASE_DIR/debian -name ".svn")
 
 ###
 # Modify settings.py to insert parseable tags
