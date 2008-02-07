@@ -2,7 +2,7 @@
 
 usage() {
 	echo "Usage:"
-	echo -e "\t$0 <ezweb source directory> <version>\n"
+	echo -e "\t$0 <ezweb source directory> [<version>]\n"
 }
 
 usage_and_error() {
@@ -23,12 +23,19 @@ if [ -z $SRC_DIR ] ; then
 	usage_and_error "missing source directory argument"
 fi
 
-if [ -z $PKG_VERSION ] ; then
-	usage_and_error "missing version argument"
-fi
-
 if [ ! -d $SRC_DIR ] ; then
 	usage_and_error "$SRC_DIR is not a valid directory"
+fi
+
+###
+# Calculate package version (if not given)
+#
+if [ -z $PKG_VERSION ]; then
+	rev=$(svn info $SRC_DIR | head -n 5 | tail -n 1 | cut -d: -f2)
+
+	rev2=$(echo $rev) # This bullshit is for trimming the string
+
+	PKG_VERSION="0.1~svn$rev2"
 fi
 
 ###
