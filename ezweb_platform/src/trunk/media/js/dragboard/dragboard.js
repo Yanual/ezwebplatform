@@ -715,7 +715,7 @@ var DragboardFactory = function () {
 
 		Dragboard.prototype.moveTemporally = function (x, y) {
 			if (dragboardCursor == null) {
-				OpManagerFactory.getInstance().log(gettext("Dragboard: You must call initializeMove function before calling to this function (moveTemporally).", Constants.WARN_MSG);
+				OpManagerFactory.getInstance().log(gettext("Dragboard: You must call initializeMove function before calling to this function (moveTemporally)."), Constants.WARN_MSG);
 				return;
 			}
 
@@ -736,7 +736,7 @@ var DragboardFactory = function () {
 
 		Dragboard.prototype.cancelMove = function() {
 			if (gadgetToMove == null) {
-				OpManagerFactory.getInstance().log(gettext("Dragboard: Trying to cancel an inexistant temporal move.", Constants.WARN_MSG);
+				OpManagerFactory.getInstance().log(gettext("Dragboard: Trying to cancel an inexistant temporal move."), Constants.WARN_MSG);
 				return;
 			}
 
