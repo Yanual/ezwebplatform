@@ -683,7 +683,7 @@ var DragboardFactory = function () {
 
 		Dragboard.prototype.initializeMove = function (iGadgetId) {
 			if (gadgetToMove != null) {
-//				alert(gettext("exception at initializeMove")); // TODO
+				OpManagerFactory.getInstance().log(gettext("There was a pending move that was cancelled because initializedMove function was called before it was finished."), Constants.WARN_MSG);
 				this.cancelMove();
 			}
 
@@ -714,8 +714,10 @@ var DragboardFactory = function () {
 		}
 
 		Dragboard.prototype.moveTemporally = function (x, y) {
-			if (dragboardCursor == null)
-				return; // TODO exception
+			if (dragboardCursor == null) {
+				OpManagerFactory.getInstance().log(gettext("Dragboard: You must call initializeMove function before calling to this function (moveTemporally).", Constants.WARN_MSG);
+				return;
+			}
 
 			var maxX = dragboardStyle.getColumns() - dragboardCursor.getContentWidth();
 			if (x > maxX) x = maxX;
@@ -733,8 +735,10 @@ var DragboardFactory = function () {
 		}
 
 		Dragboard.prototype.cancelMove = function() {
-			if (gadgetToMove == null)
-				alert(gettext("exception at cancelMove")); // TODO
+			if (gadgetToMove == null) {
+				OpManagerFactory.getInstance().log(gettext("Dragboard: Trying to cancel an inexistant temporal move.", Constants.WARN_MSG);
+				return;
+			}
 
 			_destroyCursor(true);
 			var position = gadgetToMove.getPosition();
