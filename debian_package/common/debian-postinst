@@ -14,8 +14,10 @@ chown root:root /etc/apache2/sites-available/ezweb-platform
 ###
 # Create a link to settings in /etc
 #
-ln -s /usr/share/ezweb-platform/settings.py /etc/ezweb-platform/settings.py
-
+SETUP_FILE="/usr/share/ezweb-platform/settings.py"
+ln -s $SETUP_FILE /etc/ezweb-platform/settings.py
+chgrp www-data $SETUP_FILE
+chmod o-r $SETUP_FILE
 
 
 ###
