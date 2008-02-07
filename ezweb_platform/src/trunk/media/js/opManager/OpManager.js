@@ -82,7 +82,7 @@ var OpManagerFactory = function () {
 			this.dragboardModule.showInstance(iGadgetId);
 
 			// The dragboard must be shown after an igadget insertion
-			//show_dragboard()
+			show_dragboard()
 		}
 
 		OpManager.prototype.removeInstance = function (iGadgetId) {
