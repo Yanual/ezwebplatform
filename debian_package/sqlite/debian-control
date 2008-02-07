@@ -3,7 +3,7 @@ Version: <vnumber>
 Section: web
 Priority: optional
 Architecture: all
-Depends: ezweb-platform-common (>=<vnumber>), python-pysqlite2
+Depends: debconf, ezweb-platform-common (>=<vnumber>), python-pysqlite2
 Conflicts: ezweb-platform-postgres, ezweb-platform-mysql
 Replaces: ezweb-platform-postgres, ezweb-platform-mysql
 Maintainer: Alvaro Polo Valdenebro <apv@tid.es>
