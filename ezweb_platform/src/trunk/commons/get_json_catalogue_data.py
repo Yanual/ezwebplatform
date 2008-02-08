@@ -83,6 +83,11 @@ def get_gadgetresource_data(data, user):
     data_ret['uriImage'] = data_fields['image_uri']
     data_ret['uriWiki'] = data_fields['wiki_page_uri']
     data_ret['uriTemplate'] = data_fields['template_uri']
+    
+    if data_fields['added_by_user'] == user.id:
+        data_ret['added_by'] = 'Yes'
+    else:
+	data_ret['added_by'] = 'No'
 
     data_tags = get_tag_data(gadget_id=data['pk'], user_id=user.id)
     data_ret['tags'] = [d for d in data_tags]

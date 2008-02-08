@@ -15,6 +15,7 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 	this.getUriImage = function() { return state.getUriImage(); }
 	this.getUriTemplate = function() { return state.getUriTemplate(); }
 	this.getUriWiki = function() { return state.getUriWiki(); }
+	this.getAddedBy = function() { return state.getAddedBy(); }
 	this.getTags = function() { return state.getTags(); }
 	this.setTags = function(tags_) { state.setTags(tags_); }
 	this.getSlots = function() { return state.getSlots(); }
@@ -93,7 +94,7 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 
 "<div class='link'><a href='javascript:UIUtils.updateGadgetXHTML();'>" + gettext ('Update Gadget Code') + ":</a></div>" + 
 
-"<div class='link'><a href='javascript:UIUtils.deleteGadget()'>" + gettext ('Delete Gadget') + ":</a></div>" +
+"<div class='link'>" + _deleteGadget() + "</div>" +
 
 "</div><button onclick='CatalogueFactory.getInstance().addResourceToShowCase(UIUtils.getSelectedResource());'>" + gettext ('Add Instance') + ":</button>";
 	}
@@ -196,6 +197,17 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 			eventsHTML += ("<span class='multiple_size_tag'>"+"<a title='" + gettext ('Search by ') + eventsAux[i] +"' href='" + jsCall + "'>" + eventsAux[i] + "</a>" + ((i<(eventsAux.length-1))?",":"") + "</span> ");
 		}
 		return eventsHTML;
+	}
+	
+	var _deleteGadget = function(){
+		var deleteHTML = '';
+		var addedBy = state.getAddedBy();
+		
+		if (addedBy == 'Yes'){
+		
+	     deleteHTML += ("<a href='javascript:UIUtils.deleteGadget()'>" + gettext ('Delete Gadget') + ":</a>");
+    }
+		return deleteHTML;
 	}
 	
 	var _slots = function(){
@@ -346,6 +358,7 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 	this.getUriImage = function() { return uriImage; }
 	this.getUriTemplate = function() { return uriTemplate; }
 	this.getUriWiki = function() { return uriWiki; }
+	this.getAddedBy = function() { return addedBy; }
 
 	this.setTags = function(tagsJSON_) {
 		tags.clear();
@@ -386,6 +399,7 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 	description = resourceJSON_.description;
 	uriImage = resourceJSON_.uriImage;
 	uriWiki = resourceJSON_.uriWiki;
+	addedBy = resourceJSON_.added_by;
 	uriTemplate = resourceJSON_.uriTemplate;
 	this.setEvents(resourceJSON_.events);
 	this.setSlots(resourceJSON_.slots);
