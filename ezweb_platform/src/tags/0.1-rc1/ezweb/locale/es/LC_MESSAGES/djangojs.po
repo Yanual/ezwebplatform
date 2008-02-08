@@ -1,0 +1,237 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-01-31 13:12+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: media/js/catalogue/Catalogue.js:85
+msgid "Error loadCatalogue"
+msgstr ""
+
+#: media/js/catalogue/Resource.js:32
+msgid "Show description"
+msgstr ""
+
+#: media/js/catalogue/Resource.js:34 media/js/catalogue/Resource.js.py:89
+msgid "Access to Wiki"
+msgstr ""
+
+#: media/js/catalogue/Resource.js:37
+msgid "Show Template"
+msgstr ""
+
+#: media/js/catalogue/Resource.js:44
+msgid "Show resource details"
+msgstr ""
+
+#: media/js/catalogue/Resource.js:50
+msgid "Show resource tag cloud"
+msgstr ""
+
+#: media/js/catalogue/Resource.js:54 media/js/catalogue/Resource.js.py:92
+msgid "Add Instance"
+msgstr ""
+
+#: media/js/catalogue/Resource.js:67
+msgid "Resource details"
+msgstr ""
+
+#: media/js/catalogue/Resource.js:73
+msgid "Description:"
+msgstr ""
+
+#: media/js/catalogue/Resource.js:74
+msgid "Gadget connectivity"
+msgstr ""
+
+#: media/js/catalogue/Resource.js:75
+msgid "Events: "
+msgstr ""
+
+#: media/js/catalogue/Resource.js:76
+msgid "Slots: "
+msgstr ""
+
+#: media/js/catalogue/Resource.js:77
+msgid "Tagcloud"
+msgstr ""
+
+#: media/js/catalogue/Resource.js:79
+msgid "New Tags"
+msgstr ""
+
+#: media/js/catalogue/Resource.js:84
+msgid "To label"
+msgstr ""
+
+#: media/js/catalogue/Resource.js:85 media/js/dragboard/dragboard.js:1000
+msgid "Cancel"
+msgstr ""
+
+#: media/js/catalogue/Resource.js:88
+msgid "To label the resource"
+msgstr ""
+
+#: media/js/catalogue/Resource.js:90
+msgid "Access to Template"
+msgstr ""
+
+#: media/js/catalogue/Resource.js:167
+msgid "Go to previous page"
+msgstr ""
+
+#: media/js/catalogue/Resource.js:172
+msgid "Go to page "
+msgstr ""
+
+#: media/js/catalogue/Resource.js:176
+msgid "Go to next page"
+msgstr ""
+
+#: media/js/catalogue/Resource.js:189 media/js/catalogue/Resource.js.py:202
+#: media/js/catalogue/Tag.js:62
+msgid "Search by "
+msgstr ""
+
+#: media/js/catalogue/Resource.js:237 media/js/catalogue/Resource.js.py:238
+msgid "Description"
+msgstr "Descripción"
+
+#: media/js/catalogue/Resource.js:252 media/js/catalogue/Resource.js.py:253
+msgid "TagCloud"
+msgstr ""
+
+#: media/js/catalogue/Tagger.js:46
+msgid "Tag must be at least three characters."
+msgstr ""
+
+#: media/js/catalogue/Tagger.js:74
+msgid "Error POST"
+msgstr ""
+
+#: media/js/catalogue/Tagger.js:106
+msgid "Error DELETE"
+msgstr ""
+
+#: media/js/catalogue/UIUtils.js:146 media/js/catalogue/UIUtils.js.py:204
+msgid "Indicate a criteria in search formulary"
+msgstr ""
+
+#: media/js/contextManager/Adaptors.js:59
+#: media/js/contextManager/Adaptors.js:88
+#: media/js/contextManager/Adaptors.js:118
+#: media/js/contextManager/Adaptors.js:148
+msgid "Error getting concept "
+msgstr ""
+
+#: media/js/contextManager/ContextManager.js:59
+msgid "Context variable"
+msgstr ""
+
+#: media/js/contextManager/ContextManager.js:59
+msgid "without related concept. Its value cannot be established"
+msgstr ""
+
+#: media/js/contextManager/ContextManager.js:110
+msgid "Error getting gadgets variables: "
+msgstr ""
+
+#: media/js/contextManager/ContextManager.js:129
+msgid "WARNING: concept name"
+msgstr ""
+
+#: media/js/contextManager/ContextManager.js:129
+msgid "is already related to"
+msgstr ""
+
+#: media/js/contextManager/ContextManager.js:129
+msgid "New related concept is"
+msgstr ""
+
+#: media/js/contextManager/ContextManager.js:145
+msgid "Error receiving context manager data"
+msgstr ""
+
+#: media/js/contextManager/ContextPlatform.js:103
+#: media/js/contextManager/ContextPlatform.js:124
+msgid "Concept has not value, this is a Gadget Concept."
+msgstr ""
+
+#: media/js/contextManager/ContextPlatform.js:110
+msgid "Unexpected change of concept type."
+msgstr ""
+
+#: media/js/contextManager/ContextPlatform.js:127
+#: media/js/contextManager/ContextPlatform.js:148
+#: media/js/contextManager/ContextPlatform.js:168
+msgid "Concept has not type yet."
+msgstr ""
+
+#: media/js/contextManager/ContextPlatform.js:162
+msgid "%(concept)s Concept is not related to IGadget number %(var)."
+msgstr ""
+
+#: media/js/contextManager/ContextPlatform.js:165
+msgid "This is a External Concept, 'getIGadgetVar' is only for Gadget Concept."
+msgstr ""
+
+#: media/js/dragboard/dragboard.js:930
+msgid "Error removing igadget from persistence"
+msgstr ""
+
+#: media/js/dragboard/dragboard.js:968
+msgid "This IGadget don't have user prefs"
+msgstr ""
+
+#: media/js/dragboard/dragboard.js:986
+msgid "Set Defaults"
+msgstr ""
+
+#: media/js/dragboard/dragboard.js:992
+msgid "Save"
+msgstr ""
+
+#: media/js/gadgetModel/Gadget.js:74
+msgid "The gadget could not be added to the showcase: %(errorMsg)s."
+msgstr ""
+
+#: media/js/gadgetModel/Gadget.js:76
+msgid ""
+"The gadget could not be added to the showcase, please check the logs for "
+"further info."
+msgstr ""
+
+#: media/js/gadgetModel/Gadget.js:138
+msgid ""
+"[GadgetVendor: %(vendor)s, GadgetName: %(name)s, GadgetVersion: %(version)s]"
+msgstr ""
+
+#: media/js/showcase/varManager.js:92
+msgid "error VarManager GET"
+msgstr ""
+
+#: media/js/varManager/VariablePlatform.js:134
+msgid ""
+"Error in the handler of the \"%(varName)s\" RVariable in iGadget %(iGadgetId)"
+"s: %(exceptionMsg)s.\n"
+"%(GadgetInfo)s."
+msgstr ""
+
+#: media/js/varManager/varManager.js:158
+msgid ""
+"IGadget %(iGadgetId)s doesn't have any variable named \"%(varName)s\".\n"
+"If you need it, please insert it into the gadget's template.\n"
+"%(GadgetInfo)s."
+msgstr ""

@@ -1,0 +1,94 @@
+.button {
+  cursor: pointer;
+}
+
+div.gadget_window {
+  position: absolute;
+  border: 1px solid #4c5054;
+  background: white;
+}
+
+div.gadget_window div.gadget_menu {
+  cursor: move;
+  padding: 3px 7px;
+  height: 16px;
+  font-weight: bold;
+  color: #FFF;
+  background: #97a0a8;
+}
+
+div.gadget_window div.gadget_menu div.button {
+  display: inline;
+  margin: 0 0 0 5px;
+  border: 1px solid #4c5054;
+  padding: 0px 2px;
+}
+
+div.gadget_window div.gadget_menu div.button:hover {
+  color: #000;
+  background: #e6f3ff;
+}
+
+div.gadget_window div.gadget_wrapper {
+  width: 100%;
+  border-top: 1px solid #4c5054;
+}
+
+div.gadget_window div.gadget_wrapper object {
+  width: 100%;
+}
+
+/*****
+ * config_interface
+ */
+ 
+div.gadget_window form.config_interface {
+  background: #DDD;
+  border-bottom: 1px solid #4c5054;
+  display: none;
+  padding: 1px 1ex;
+  margin: 0px;
+}
+
+form.config_interface div.buttons {
+  margin: 1ex 0px;
+  position: relative;
+  right: 0px;
+}
+
+form.config_interface label {
+  margin: 1ex;
+  display: block;
+}
+
+form.config_interface input {
+  border: 1px solid #4c5054;
+  margin: 0px 1ex;
+  padding: 0px 0.5ex;
+}
+
+form.config_interface label.invalid {
+  color: red;
+}
+
+form.config_interface label.invalid input {
+  border: 1px solid red;
+}
+
+/***
+ *
+ */
+.floatleft {
+  float: left;
+}
+
+.floatright {
+  float: right;
+}
+
+#dragboardcursor {
+  position: absolute;
+  border: 2px dashed #97A0A8;
+  background: #F2F9FF;
+  z-index: 1;
+}
