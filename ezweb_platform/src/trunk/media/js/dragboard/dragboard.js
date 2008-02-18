@@ -1050,11 +1050,11 @@ IGadget.prototype.setDefaultPrefs = function() {
 IGadget.prototype._makeConfigureInterface = function() {
 	var prefs = this.gadget.getTemplate().getUserPrefs();
 
-	var interface = document.createElement("div");
+	var interfaceDiv = document.createElement("div");
 
 	if (prefs.length == 0) {
-		interface.innerHTML = gettext("This IGadget don't have user prefs");
-		return interface;
+		interfaceDiv.innerHTML = gettext("This IGadget don't have user prefs");
+		return interfaceDiv;
 	}
 
 	this.prefElements = new Array();
@@ -1062,7 +1062,7 @@ IGadget.prototype._makeConfigureInterface = function() {
 	for (var i = 0; i < prefs.length; i++) {
 		curPrefInterface = prefs[i].makeInterface(this.id);
 		this.prefElements[i] = curPrefInterface;
-		interface.appendChild(curPrefInterface);
+		interfaceDiv.appendChild(curPrefInterface);
 	}
 
 	var buttons = document.createElement("div");
@@ -1093,9 +1093,9 @@ IGadget.prototype._makeConfigureInterface = function() {
 	                        function () {DragboardFactory.getInstance().setConfigurationVisible(this.id, false)}.bind(this),
 	                        true);
 	buttons.appendChild(button);
-	interface.appendChild(buttons);
+	interfaceDiv.appendChild(buttons);
 
-	return interface;
+	return interfaceDiv;
 }
 
 IGadget.prototype.isMinimized = function() {
