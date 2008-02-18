@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 ###
 # Include debconf module
@@ -37,7 +37,7 @@ vh_link="/etc/apache2/sites-enabled/010-ezweb-platform"
 vh_tmp="/tmp/ezweb-postinst"
 
 cat $vh_file | sed s/ServerName.*/"ServerName $hostname"/g > $vh_tmp
-mv /tmp/ezweb-postinst /etc/apache2/sites-available/ezweb-platform
+mv $vh_tmp $vh_file
 
 if [ ! -e $vh_link ]; then
 	ln -s $vh_file $vh_link
