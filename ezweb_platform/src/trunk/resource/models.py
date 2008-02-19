@@ -63,7 +63,7 @@ class GadgetResource(models.Model):
      template_uri= models.URLField(_('templateURI'))
 
      class Meta:
-	 unique_together = ("short_name", "vendor","version")
+         unique_together = ("short_name", "vendor","version")
 
      class Admin: 
          pass 
