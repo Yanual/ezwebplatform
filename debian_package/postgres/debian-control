@@ -3,7 +3,7 @@ Version: <vnumber>
 Section: web
 Priority: optional
 Architecture: all
-Depends: debconf, ezweb-platform-common (>=<vnumber>), postgresql, python-psycopg2
+Depends: debconf, ezweb-platform-common (>=<vnumber>), postgresql-8.1 | postgresql-8.2, python-psycopg2
 Conflicts: ezweb-platform-sqlite3, ezweb-platform-mysql
 Replaces: ezweb-platform-sqlite3, ezweb-platform-mysql
 Maintainer: Alvaro Polo Valdenebro <apv@tid.es>
