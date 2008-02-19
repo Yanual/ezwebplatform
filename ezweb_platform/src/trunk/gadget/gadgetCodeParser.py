@@ -39,6 +39,7 @@
 from HTMLParser import HTMLParser
 from django.utils.http import urlquote
 from urllib2 import urlopen
+from urllib import urlcleanup
 
 from commons.exceptions import TemplateParseException
 
@@ -59,6 +60,7 @@ class GadgetCodeParser(HTMLParser):
 	query = address[1].split('/',1)
 	codeURI = address[0] + "://" + query[0] + "/" + urlquote(query[1])
         try:
+	    urlcleanup()
             xhtml = urlopen(codeURI).read()
         except Exception:
             raise TemplateParseException(_("XHTML code is not accessible"))
