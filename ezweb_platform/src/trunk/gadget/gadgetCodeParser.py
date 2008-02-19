@@ -55,9 +55,9 @@ class GadgetCodeParser(HTMLParser):
 
         xhtml = ""
 	# TODO Fixme!! This works for now, but we have to check if a part of a url is empty
-	address = codeURI.partition('://')
-	query = address[2].partition('/')
-	codeURI = address[0] + "://" + query[0] + "/" + urlquote(query[2])
+	address = codeURI.split('://')
+	query = address[1].split('/',1)
+	codeURI = address[0] + "://" + query[0] + "/" + urlquote(query[1])
         try:
             xhtml = urlopen(codeURI).read()
         except Exception:

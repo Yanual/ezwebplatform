@@ -66,9 +66,9 @@ def SaveIGadget(igadget, user, screen_id, igadget_id):
 
     if not igadget_id:
         if uri.find('igadgets'):
-            igadget_id = uri.partition('/igadgets/')[2]
+            igadget_id = uri.split('/igadgets/',1)[1]
         else:
-            igadget_id = uri.partition('/igadget/')[2]
+            igadget_id = uri.split('/igadget/',1)[1]
 
     gadget_uri = igadget.get('gadget')
     width = igadget.get('width')
@@ -132,9 +132,9 @@ def UpdateIGadget(igadget, user, screen_id, igadget_id):
 
     if not igadget_id:
         if uri.find('igadgets'):
-            igadget_id = uri.partition('/igadgets/')[2]
+            igadget_id = uri.split('/igadgets/',1)[1]
         else:
-            igadget_id = uri.partition('/igadget/')[2]
+            igadget_id = uri.split('/igadget/',1)[1]
 
     # get IGadget's position
     position = Position.objects.get(uri=uri + '/position')
