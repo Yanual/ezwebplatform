@@ -92,9 +92,8 @@ class GadgetsCollection(Resource):
         return HttpResponse(xml_ok,mimetype='application/xml; charset=UTF-8')
 
 
-    def read(self,request, user_name, pag=0,offset=0):
-        
-	user = user_authentication(user_name)
+    def read(self, request, user_name, pag=0, offset=0):
+        user = user_authentication(user_name)
 
 	try:
 	    format = request.__getitem__('format')
