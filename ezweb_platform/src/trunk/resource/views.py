@@ -37,7 +37,7 @@
 #
 
 import sys
-from urllib import urlopen, urlencode
+from urllib import urlopen, urlencode, urlcleanup
 
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseServerError
@@ -162,7 +162,7 @@ def addToPlatform(request, user_name):
     coreURL=URL
     uri='/user/'+user_name+'/gadgets'
     url=coreURL+uri
-
+    urlcleanup()
     response = urlopen(url, urlencode(parameters)).read()
 	
     return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
