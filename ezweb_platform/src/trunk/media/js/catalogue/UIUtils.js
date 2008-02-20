@@ -1,11 +1,11 @@
-ï»¿/* 
+/* 
  * MORFEO Project 
  * http://morfeo-project.org 
  * 
  * Component: EzWeb
  * 
- * (C) Copyright 2004 TelefÃ³nica InvestigaciÃ³n y Desarrollo 
- *     S.A.Unipersonal (TelefÃ³nica I+D) 
+ * (C) Copyright 2004 Telefónica Investigación y Desarrollo 
+ *     S.A.Unipersonal (Telefónica I+D) 
  * 
  * Info about members and contributors of the MORFEO project 
  * is available at: 
@@ -161,7 +161,7 @@ UIUtils.searchByTag = function(url, tag) {
 	var opManager = OpManagerFactory.getInstance();
 
   if (tag == ""){
-  	alert("Introduzca un valor en el formulario de bÃºsqueda");
+  	alert("Introduzca un valor en el formulario de búsqueda");
   }
   else{
       UIUtils.search = 'tag';
@@ -205,6 +205,10 @@ UIUtils.cataloguePaginate = function(url, offset, pag, items) {
 		url = URIs.GET_RESOURCES_BY_TAG + "/" + UIUtils.searchValue;
 	}
 	
+	if (pag == "first"){
+          pag = 1;
+    }
+	
   if (pag == "prev"){
   	
   	if(UIUtils.page == 1){
@@ -223,9 +227,16 @@ UIUtils.cataloguePaginate = function(url, offset, pag, items) {
   	  pag = parseInt(UIUtils.page) + 1;
   }
   }
+    if (pag == "last"){
+          pag = pages;
+    }
   UIUtils.page = pag;    
 	opManager.repaintCatalogue(url + "/" + pag + "/" + offset);
 	
+}
+
+UIUtils.getPage = function() {
+    return UIUtils.page;
 }
 
 
