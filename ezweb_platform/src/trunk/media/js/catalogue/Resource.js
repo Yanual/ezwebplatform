@@ -170,18 +170,47 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 		var eventsHTML = '';
 		
 		var end_page = items/10;
-		var jsCall_prev = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, 10,"prev", "' + items + '");';
-		
-		eventsHTML = ("<span class='multiple_size_tag'><a title='" + gettext ('Go to previous page') + "' href='" + jsCall_prev + "'>Previous</a></span>");
-		
+
+        if(UIUtils.getPage()!=1)
+        {
+           var jsCall_first = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, 10,"first", "' + items + '");';
+           eventsHTML = ("<span class='multiple_size_tag'><a title='" + gettext ('Go to first page') + "' href='" + jsCall_first + "'>" + "<img src='/ezweb/images/go-first.png'/>" + "</a></span>");
+        } else {
+           eventsHTML = ("<span class='multiple_size_tag'>" + "<img src='/ezweb/images/go-first-dim.png'/>" + "</span>");
+        }
+		if(UIUtils.getPage()!=1)
+		{
+           var jsCall_prev = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, 10,"prev", "' + items + '");';
+	       eventsHTML += ("<span class='multiple_size_tag'><a title='" + gettext ('Go to previous page') + "' href='" + jsCall_prev + "'>" + "<img src='/ezweb/images/go-previous.png'/>" + "</a></span>");
+		} else {
+		   eventsHTML += ("<span class='multiple_size_tag'>" + "<img src='/ezweb/images/go-previous-dim.png'/>" + "</span>");
+        }
+        
 		for (var i=1; i<end_page + 1; i++)
 		{
-			var jsCall_num = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, 10, "' + i + '", "' + items + '");';
-			eventsHTML += ("<span class='multiple_size_tag'>"+"<a title='" + gettext ('Go to page ') + i + "' href='" + jsCall_num + "'>" + i + "</a></span> ");
+            if(UIUtils.getPage()!=i)
+            {
+			     var jsCall_num = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, 10, "' + i + '", "' + items + '");';
+			     eventsHTML += ("<span class='multiple_size_tag'>"+"<a title='" + gettext ('Go to page ') + i + "' href='" + jsCall_num + "'>" + i + "</a></span>");
+		    } else {
+                 eventsHTML += ("<span class='multiple_size_tag'>" + i + "</span>");
+		    }
+		}
+		if((end_page <= UIUtils.getPage()) && (UIUtils.getPage() < end_page + 1))
+        {
+              eventsHTML += ("<span class='multiple_size_tag'>" + "<img src='/ezweb/images/go-next-dim.png'/>" + "</span>");
+        } else {
+		      var jsCall_next = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, 10,"next", "' + items + '");';
+		      eventsHTML += ("<span class='multiple_size_tag'><a title='" + gettext ('Go to next page') + "' href='" + jsCall_next + "'>" + "<img src='/ezweb/images/go-next.png'/>" + "</a></span>");
 		}
 		
-		var jsCall_next = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, 10,"next", "' + items + '");';
-		eventsHTML += ("<span class='multiple_size_tag'><a title='" + gettext ('Go to next page') + "' href='" + jsCall_next + "'>Next</a></span>");
+        if((end_page <= UIUtils.getPage()) && (UIUtils.getPage() < end_page + 1))
+        {
+                eventsHTML += ("<span class='multiple_size_tag'>" + "<img src='/ezweb/images/go-last-dim.png'/>" + "</span>");
+        } else {
+                var jsCall_last = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, 10,"last", "' + items + '");';
+                eventsHTML += ("<span class='multiple_size_tag'><a title='" + gettext ('Go to last page') + "' href='" + jsCall_last + "'>" + "<img src='/ezweb/images/go-last.png'/>" + "</a></span>");
+        }
 		
 		return eventsHTML;
 	}
@@ -237,7 +266,7 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 			if(tagsAux[i].getAdded_by() == 'Yes'){  
 			
 			var jsCall = 'javascript:UIUtils.removeTagUser("' + tagsAux[i].getValue() + '");';
-			tagsHTML += ("<a href='" + jsCall + "'><img src='/ezweb/images/cancel_gray.png'border=0 name=op1></a><span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML() + ((i<(tagsAux.length-1))?",":"") + "</span>");
+			tagsHTML += ("<a href='" + jsCall + "'><img src='/ezweb/images/cancel_gray.png' border=0 name=op1></a><span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML() + ((i<(tagsAux.length-1))?",":"") + "</span>");
 			
 		}
 		  else{
