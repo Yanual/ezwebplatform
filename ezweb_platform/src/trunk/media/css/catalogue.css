@@ -87,6 +87,10 @@
 	border-top: 1px solid #efefef;
 }
 
+#catalogue .center .paginate img{
+    border-style:none;	
+}
+
 #catalogue .center .resources
 {
 	height:100%;
