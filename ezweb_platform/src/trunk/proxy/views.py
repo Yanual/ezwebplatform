@@ -36,7 +36,10 @@
 #   http://morfeo-project.org/
 #
 
+
 from urllib2 import *
+import httplib
+import urlparse
 from django_restapi.resource import Resource
 from django_restapi.responder import *
 from proxy.utils import is_valid_header
@@ -63,34 +66,40 @@ class Proxy(Resource):
         # Params
         if request.POST.has_key('params'):
             params = request.POST['params']
-
+	else:
+	    params = ''
         # HTTP call
         try:
             # Request creation
-            req = Request (url)
-            # Add POST parameters
-            if (method=="POST"):
-                req.add_data(params)
+		proto, host, cgi, param, query = urlparse.urlparse(url)[:5]
+		conn = httplib.HTTPConnection(host)
+
             # Add original request Headers to the request
-            for header in request.META.items():
-                req.add_header(header[0], header[1])
+		headers = {}
+        	for header in request.META.items():
+                	headers[header[0]] = header[1]
             # The same with cookies
-            cookies = ''
-            for cookie in request.COOKIES.items():
-                cookies = cookies + cookie[0] + '=' + cookie[1] + '; '	
-            req.add_header('Cookie', cookies)
+            	cookies = ''
+            	for cookie in request.COOKIES.items():
+            	    cookies = cookies + cookie[0] + '=' + cookie[1] + '; '	
+           	headers['Cookie'] = cookies
+
             # Open the request
-            file = urlopen(req)
+		if query != '':
+			cgi = cgi + '?%s' % query
+           	conn.request(method, cgi , params, headers)
+	    	res = conn.getresponse()
+
             # Add content-type header to the response
-            if file.info().has_key('content-type'):
-                response = HttpResponse (file.read(), mimetype=file.info()['content-type'])
-            else:
-                response = HttpResponse (file.read())
+            	if res.getheader('content-type'):
+                	response = HttpResponse (res.read(), mimetype=res.getheader('content-type'))
+            	else:
+                	response = HttpResponse (res.read())
             # Add all the headers recieved to the response
-            headers = file.info().items()
-            for header in headers:
-                if is_valid_header (string.lower(header[0])):
-                    response[header[0]] = header[1]
-            return response
+            	headers = res.getheaders()
+		for header in headers:
+			if is_valid_header (string.lower(header[0])):
+				response[header[0]] = header[1]
+		return response
         except Exception, e:
             return HttpResponseServerError("<html><head><title>Error</title></head><body>%s</body></html>" % e, mimetype='text/html; charset=UTF-8')
