@@ -91,6 +91,12 @@
     border-style:none;	
 }
 
+#catalogue .center .paginate .results_per_page{
+    margin-top:1em;
+    margin-bottom:1em;
+    vertical-align:middle;
+}
+
 #catalogue .center .resources
 {
 	height:100%;

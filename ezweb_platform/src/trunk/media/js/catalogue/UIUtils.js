@@ -50,6 +50,7 @@ UIUtils.imageContent = '';
 UIUtils.infoResourcesWidth = 400;
 UIUtils.isInfoResourcesOpen = false;
 UIUtils.page = 1;
+UIUtils.off = 4;
 UIUtils.search = 'false';
 UIUtils.searchValue = '';
 UIUtils.searchCriteria = '';
@@ -189,8 +190,10 @@ UIUtils.searchByWiring = function(url, value, wiring) {
 
 UIUtils.cataloguePaginate = function(url, offset, pag, items) {
 	this.closeInfoResource();
+	UIUtils.off=offset;
 	var opManager = OpManagerFactory.getInstance();
-	var pages = Math.ceil(items/offset);
+	var pages = Math.ceil(items/UIUtils.getOffset());
+	
 	
 	if (UIUtils.search == 'false'){
 		 url = URIs.GET_POST_RESOURCES;
@@ -230,8 +233,9 @@ UIUtils.cataloguePaginate = function(url, offset, pag, items) {
     if (pag == "last"){
           pag = pages;
     }
-  UIUtils.page = pag;    
-	opManager.repaintCatalogue(url + "/" + pag + "/" + offset);
+  UIUtils.page = pag; 
+  
+	opManager.repaintCatalogue(url + "/" + pag + "/" + UIUtils.getOffset());
 	
 }
 
@@ -239,6 +243,9 @@ UIUtils.getPage = function() {
     return UIUtils.page;
 }
 
+UIUtils.getOffset = function() {
+    return UIUtils.off;
+}
 
 UIUtils.searchGeneric = function(url, param, criteria) {
 	this.closeInfoResource();
@@ -252,7 +259,7 @@ UIUtils.searchGeneric = function(url, param, criteria) {
   UIUtils.searchCriteria = criteria ;
 	UIUtils.search = 'generic';
 	
-	opManager.repaintCatalogue(url + "/" + param + "/" + criteria + "/1/10");
+	opManager.repaintCatalogue(url + "/" + param + "/" + criteria + "/1/" + UIUtils.getOffset());
 }
 }
 
@@ -295,7 +302,7 @@ UIUtils.deleteGadget = function() {
 			}
 			
 	var loadTags = function(transport) {
-				opManager.repaintCatalogue(URIs.GET_POST_RESOURCES + "/1/10");
+				opManager.repaintCatalogue(URIs.GET_POST_RESOURCES + "/1/" + UIUtils.getOffset());
 			}
 	PersistenceEngineFactory.getInstance().send_delete(resourceURI, this, loadTags, onError);
   

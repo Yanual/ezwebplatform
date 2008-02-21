@@ -168,19 +168,36 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 	
  var _paginate = function(items){
 		var eventsHTML = '';
-		
-		var end_page = items/10;
+
+		eventsHTML=( "<div id='results_per_page' class='results_per_page'>" +
+		                  "<label for='combo_results_per_page'>" + gettext("Gadgets per page: ") + "</label>" +
+		                  "<select id='combo_results_per_page' size=1 onChange=" + 
+		                      "'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, document.getElementById(\"combo_results_per_page\").options[document.getElementById(\"combo_results_per_page\").selectedIndex].value.toString(), \"first\", \"" + items + "\");'" +
+		                  "\">");
+
+		for (var i=1; i<5; i++)
+		{
+		  eventsHTML+=("<option value=\"" + i*4 + "\"");
+		      if(UIUtils.getOffset() == i*4)
+		      {
+		          eventsHTML+=(" SELECTED");
+		      }
+		  eventsHTML+=(">" + i*4);
+		}
+		eventsHTML+=("</select></div></br>");
+          
+		var end_page = items/UIUtils.getOffset();
 
         if(UIUtils.getPage()!=1)
         {
-           var jsCall_first = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, 10,"first", "' + items + '");';
-           eventsHTML = ("<span class='multiple_size_tag'><a title='" + gettext ('Go to first page') + "' href='" + jsCall_first + "'>" + "<img src='/ezweb/images/go-first.png'/>" + "</a></span>");
+           var jsCall_first = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, ' + UIUtils.getOffset() + ',"first", "' + items + '");';
+           eventsHTML += ("<span class='multiple_size_tag'><a title='" + gettext ('Go to first page') + "' href='" + jsCall_first + "'>" + "<img src='/ezweb/images/go-first.png'/>" + "</a></span>");
         } else {
-           eventsHTML = ("<span class='multiple_size_tag'>" + "<img src='/ezweb/images/go-first-dim.png'/>" + "</span>");
+           eventsHTML += ("<span class='multiple_size_tag'>" + "<img src='/ezweb/images/go-first-dim.png'/>" + "</span>");
         }
 		if(UIUtils.getPage()!=1)
 		{
-           var jsCall_prev = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, 10,"prev", "' + items + '");';
+           var jsCall_prev = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, ' + UIUtils.getOffset() + ',"prev", "' + items + '");';
 	       eventsHTML += ("<span class='multiple_size_tag'><a title='" + gettext ('Go to previous page') + "' href='" + jsCall_prev + "'>" + "<img src='/ezweb/images/go-previous.png'/>" + "</a></span>");
 		} else {
 		   eventsHTML += ("<span class='multiple_size_tag'>" + "<img src='/ezweb/images/go-previous-dim.png'/>" + "</span>");
@@ -190,7 +207,7 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 		{
             if(UIUtils.getPage()!=i)
             {
-			     var jsCall_num = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, 10, "' + i + '", "' + items + '");';
+			     var jsCall_num = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, ' + UIUtils.getOffset() + ', "' + i + '", "' + items + '");';
 			     eventsHTML += ("<span class='multiple_size_tag'>"+"<a title='" + gettext ('Go to page ') + i + "' href='" + jsCall_num + "'>" + i + "</a></span>");
 		    } else {
                  eventsHTML += ("<span class='multiple_size_tag'>" + i + "</span>");
@@ -200,7 +217,7 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
         {
               eventsHTML += ("<span class='multiple_size_tag'>" + "<img src='/ezweb/images/go-next-dim.png'/>" + "</span>");
         } else {
-		      var jsCall_next = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, 10,"next", "' + items + '");';
+		      var jsCall_next = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, ' + UIUtils.getOffset() + ',"next", "' + items + '");';
 		      eventsHTML += ("<span class='multiple_size_tag'><a title='" + gettext ('Go to next page') + "' href='" + jsCall_next + "'>" + "<img src='/ezweb/images/go-next.png'/>" + "</a></span>");
 		}
 		
@@ -208,10 +225,9 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
         {
                 eventsHTML += ("<span class='multiple_size_tag'>" + "<img src='/ezweb/images/go-last-dim.png'/>" + "</span>");
         } else {
-                var jsCall_last = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, 10,"last", "' + items + '");';
+                var jsCall_last = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, ' + UIUtils.getOffset() + ',"last", "' + items + '");';
                 eventsHTML += ("<span class='multiple_size_tag'><a title='" + gettext ('Go to last page') + "' href='" + jsCall_last + "'>" + "<img src='/ezweb/images/go-last.png'/>" + "</a></span>");
         }
-		
 		return eventsHTML;
 	}
 	
