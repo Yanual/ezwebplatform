@@ -174,8 +174,13 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 		                  "<select id='combo_results_per_page' size=1 onChange=" + 
 		                      "'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, document.getElementById(\"combo_results_per_page\").options[document.getElementById(\"combo_results_per_page\").selectedIndex].value.toString(), \"first\", \"" + items + "\");'" +
 		                  "\">");
-
-		for (var i=1; i<5; i++)
+        var max;
+        if(items>100) {
+            max = 100;
+        } else {
+            max = Math.ceil(items/4);
+        }
+		for (var i=1; i<=max; i++)
 		{
 		  eventsHTML+=("<option value=\"" + i*4 + "\"");
 		      if(UIUtils.getOffset() == i*4)
@@ -186,8 +191,8 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 		}
 		eventsHTML+=("</select></div></br>");
           
-		var end_page = items/UIUtils.getOffset();
-
+		var end_page = Math.ceil(items/UIUtils.getOffset());
+        
         if(UIUtils.getPage()!=1)
         {
            var jsCall_first = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, ' + UIUtils.getOffset() + ',"first", "' + items + '");';
@@ -203,7 +208,7 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 		   eventsHTML += ("<span class='multiple_size_tag'>" + "<img src='/ezweb/images/go-previous-dim.png'/>" + "</span>");
         }
         
-		for (var i=1; i<end_page + 1; i++)
+		for (var i=1; i<=end_page; i++)
 		{
             if(UIUtils.getPage()!=i)
             {
@@ -213,7 +218,7 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
                  eventsHTML += ("<span class='multiple_size_tag'>" + i + "</span>");
 		    }
 		}
-		if((end_page <= UIUtils.getPage()) && (UIUtils.getPage() < end_page + 1))
+		if(end_page == UIUtils.getPage())
         {
               eventsHTML += ("<span class='multiple_size_tag'>" + "<img src='/ezweb/images/go-next-dim.png'/>" + "</span>");
         } else {
@@ -221,7 +226,7 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 		      eventsHTML += ("<span class='multiple_size_tag'><a title='" + gettext ('Go to next page') + "' href='" + jsCall_next + "'>" + "<img src='/ezweb/images/go-next.png'/>" + "</a></span>");
 		}
 		
-        if((end_page <= UIUtils.getPage()) && (UIUtils.getPage() < end_page + 1))
+        if(end_page == UIUtils.getPage())
         {
                 eventsHTML += ("<span class='multiple_size_tag'>" + "<img src='/ezweb/images/go-last-dim.png'/>" + "</span>");
         } else {
