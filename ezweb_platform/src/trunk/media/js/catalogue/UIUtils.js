@@ -59,7 +59,7 @@ UIUtils.searchCriteria = '';
 
 UIUtils.addResource = function(url, paramName, paramValue) {
 	var newResourceOnSuccess = function (response) {
-		OpManagerFactory.getInstance().repaintCatalogue(URIs.GET_POST_RESOURCES);
+		OpManagerFactory.getInstance().repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
 	}
 	
 	var newResourceOnError = function (transport, e) {
@@ -361,11 +361,9 @@ UIUtils.deleteGadget = function() {
 			}
 			
 	var loadTags = function(transport) {
-				opManager.repaintCatalogue(URIs.GET_POST_RESOURCES + "/1/" + UIUtils.getOffset());
+				opManager.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getOffset() + "/" + UIUtils.getOffset());
 			}
 	PersistenceEngineFactory.getInstance().send_delete(resourceURI, this, loadTags, onError);
-  
-	
 }
 
 UIUtils.addTag = function(inputText_) {
