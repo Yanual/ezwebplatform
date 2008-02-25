@@ -45,9 +45,9 @@ from django_restapi.responder import *
 urlpatterns = patterns('tag.views',
 
     # Tags
-    (r'^(?P<vendor>\w+)/(?P<name>\w+)/(?P<version>[\._\w]+)/(?P<tag>[\._\w]+)$', 
+    (r'^(?P<vendor>[^/\t\n\r\f\v]+)/(?P<name>[^/\t\n\r\f\v]+)/(?P<version>[\._-ÑñáéíóúÁÉÍÓÚ\w]+)/(?P<tag>[\._\w]+)$',
         GadgetTagsCollection(permitted_methods=('DELETE', ))),
-    (r'^(?P<vendor>\w+)/(?P<name>\w+)/(?P<version>[\._\w]+)$', 
+    (r'^(?P<vendor>[^/\t\n\r\f\v]+)/(?P<name>[^/\t\n\r\f\v]+)/(?P<version>[\._-ÑñáéíóúÁÉÍÓÚ\w]+)$',
         GadgetTagsCollection(permitted_methods=('GET','POST',))),
-        
+
 )
