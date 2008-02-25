@@ -104,6 +104,61 @@ UIUtils.deselectResource = function(resourceId_) {
 	var content = document.getElementById(resourceId_ + '_content');
 	content.style.backgroundImage = UIUtils.imageContent;
 }
+
+/* This method selects all the resources related by wiring in the catalogue*/
+UIUtils.selectConnectableResources = function(resourceId_) {
+
+	var resource = CatalogueFactory.getInstance().getResource(resourceId_);
+	var slots = resource.getSlots();
+	var events = resource.getEvents();
+	var resources = CatalogueFactory.getInstance().getResources().getValues();
+	var slots2;
+	var events2;
+	for (var i=0; i<resources.length; i++){
+		slots2 = resources[i].getSlots();
+		var lookup = {};
+		for (var j=0; j<slots2.length; j++) {
+			lookup[slots2[j]] = slots2[j];
+		}
+		for (var k =0; k<events.length; k++) {
+			if (typeof lookup[events[k]] != 'undefined') {
+				var bottom = document.getElementById('resource_'+i + '_bottom');
+				UIUtils.imageBottom = bottom.style.backgroundImage;
+				bottom.style.backgroundImage = 'url(/ezweb/images/resource-left-bottom-select.png)';
+				var content = document.getElementById('resource_'+i + '_content');
+				UIUtils.imageContent = content.style.backgroundImage;
+				content.style.backgroundImage = 'url(/ezweb/images/resource-left-fill-select.png)';
+				break;
+			}
+		}
+		events2 = resources[i].getEvents();
+		var lookup = {};
+		for (var j=0; j<events2.length; j++) {
+			lookup[events2[j]] = events2[j];
+		}
+		for (var k =0; k<slots.length; k++) {
+			if (typeof lookup[slots[k]] != 'undefined') {
+				var bottom = document.getElementById('resource_'+i + '_bottom');
+				UIUtils.imageBottom = bottom.style.backgroundImage;
+				bottom.style.backgroundImage = 'url(/ezweb/images/resource-left-bottom-select.png)';
+				var content = document.getElementById('resource_'+i + '_content');
+				UIUtils.imageContent = content.style.backgroundImage;
+				content.style.backgroundImage = 'url(/ezweb/images/resource-left-fill-select.png)';
+				break;
+			}
+		}
+	}
+}
+
+UIUtils.deselectConnectableResources = function() {
+	var resources = CatalogueFactory.getInstance().getResources().getValues();
+	for (var i=0; i<resources.length; i++){
+		var bottom = document.getElementById('resource_'+i + '_bottom');
+		bottom.style.backgroundImage = UIUtils.imageBottom;
+		var content = document.getElementById('resource_'+i + '_content');
+		content.style.backgroundImage = UIUtils.imageContent;
+	}
+}
 	
 UIUtils.showResourceInfo = function(resourceId_) {
 	UIUtils.selectedResource = resourceId_;
@@ -337,6 +392,7 @@ UIUtils.openInfoResource = function() {
 UIUtils.closeInfoResource = function() {
 	if (UIUtils.isInfoResourcesOpen)
 	{
+		UIUtils.deselectConnectableResources();
 		UIUtils.isInfoResourcesOpen = false;
 		UIUtils.SlideInfoResourceOutOfView('info_resource');
 	}

@@ -43,7 +43,7 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 									"</div>" +
 									"<div id='" + id + "_content' class='content'>" +
 										"<div class='title'>" + state.getName() + "</div>" +
-										"<div class='image'><a title='" + gettext ('Show resource details') + "' href='javascript:UIUtils.showResourceInfo(\"" + id + "\");UIUtils.openInfoResource();'><img src='" + state.getUriImage() + "'></img></a></div>" +
+										"<div class='image'><a title='" + gettext ('Show resource details') + "' href='javascript:UIUtils.showResourceInfo(\"" + id + "\");UIUtils.openInfoResource();UIUtils.selectConnectableResources(\"" + id + "\");'><img src='" + state.getUriImage() + "'></img></a></div>" +
 										"<div class='tags'>" +
 											"<div id='" + id + "_important_tags' class='important_tags'>" + 
 												_tagsToMoreImportantTags(3) +
@@ -88,15 +88,16 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 										"</div>" +
 									"</div>" +
 									
-"<div id='add_tags_link' class='link'><a href='javascript:UIUtils.toggle(\"add_tags_link\");UIUtils.toggle(\"add_tags_panel\");document.getElementById(\"new_tag_text_input\").focus();'>" + gettext ('To label the resource') + ":</a></div>" +"<div class='link'><a href='" + state.getUriWiki() + "' target='_blank'>" + gettext ('Access to Wiki') + ":</a></div>" +
+"<div id='add_tags_link' class='link'><a href='javascript:UIUtils.toggle(\"add_tags_link\");UIUtils.toggle(\"add_tags_panel\");document.getElementById(\"new_tag_text_input\").focus();'>" + gettext ('To label the resource') + "</a></div>" +
+"<div class='link'><a href='" + state.getUriWiki() + "' target='_blank'>" + gettext ('Access to Wiki') + "</a></div>" +
 
-"<div class='link'><a href='" + state.getUriTemplate() + "' target='_blank'>" + gettext ('Access to Template') + ":</a></div>" + 
+"<div class='link'><a href='" + state.getUriTemplate() + "' target='_blank'>" + gettext ('Access to Template') + "</a></div>" + 
 
-"<div class='link'><a href='javascript:UIUtils.updateGadgetXHTML();'>" + gettext ('Update Gadget Code') + ":</a></div>" + 
+"<div class='link'><a href='javascript:UIUtils.updateGadgetXHTML();'>" + gettext ('Update Gadget Code') + "</a></div>" + 
 
 "<div class='link'>" + _deleteGadget() + "</div>" +
 
-"</div><button onclick='CatalogueFactory.getInstance().addResourceToShowCase(UIUtils.getSelectedResource());'>" + gettext ('Add Instance') + ":</button>";
+"</div><button onclick='CatalogueFactory.getInstance().addResourceToShowCase(UIUtils.getSelectedResource());'>" + gettext ('Add Instance') + "</button>";
 	}
 	
 	this.paginate = function(items) {
@@ -255,7 +256,7 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 		
 		if (addedBy == 'Yes'){
 		
-	     deleteHTML += ("<a href='javascript:UIUtils.deleteGadget()'>" + gettext ('Delete Gadget') + ":</a>");
+	     deleteHTML += ("<a href='javascript:UIUtils.deleteGadget()'>" + gettext ('Delete Gadget') + "</a>");
     }
 		return deleteHTML;
 	}
