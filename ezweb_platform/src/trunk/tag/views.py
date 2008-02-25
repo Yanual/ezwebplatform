@@ -40,10 +40,11 @@ import sys
 
 from django.db import IntegrityError
 
-from django.http import HttpResponse, HttpResponseServerError
+from django.http import HttpResponse, HttpResponseServerError, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User 
 from django_restapi.resource import Resource
+from django.utils.translation import ugettext as _
 
 from xml.sax import make_parser
 from xml.sax.xmlreader import InputSource
@@ -52,8 +53,9 @@ from tag.models import UserTag
 from tag.parser import TagsXMLHandler
 from resource.models import GadgetResource
 
-from commons.authentication import user_authentication
+from commons.authentication import *
 from commons.catalogue_utils import get_tag_response
+from commons.logs import log
 from commons.utils import get_xml_error
 
 
@@ -66,7 +68,7 @@ class GadgetTagsCollection(Resource):
 	except:
 	    format = 'default'
 
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
 
         # Get the xml containing the tags from the request
         tags_xml = request.__getitem__('tags_xml')
@@ -94,8 +96,9 @@ class GadgetTagsCollection(Resource):
 	for e in handler._tags:
 	    try:
 	        UserTag.objects.get_or_create(tag=e, idUser=user, idResource=gadget)
-	    except:
-	        return HttpResponseServerError(get_xml_error(unicode(sys.exc_info()[1])), mimetype='application/xml; charset=UTF-8')
+	    except Exception, ex:
+	        log (ex, request)
+	        return HttpResponseServerError(get_xml_error(unicode(ex)), mimetype='application/xml; charset=UTF-8')
 
         return get_tag_response(gadget,user, format)
 
@@ -111,12 +114,19 @@ class GadgetTagsCollection(Resource):
         gadget = get_object_or_404(GadgetResource, short_name=name,vendor=vendor,version=version).id
 
 	# Get the user's id for that user_name
-	user = user_authentication(user_name)
+	user = user_authentication(request, user_name)
 
 	return get_tag_response(gadget,user, format)
 
 
     def delete(self,request,user_name,vendor,name,version, tag):
+
+        try:
+            user = user_authentication(request, user_name)
+	except Http403, e:
+            msg = _("This tag cannot be deleted: ") + unicode(e)
+            log (msg, request)
+            return HttpResponseForbidden(get_xml_error(msg), mimetype='application/xml; charset=UTF-8')
 
         try:
 	    format = request.__getitem__('format')
@@ -127,15 +137,9 @@ class GadgetTagsCollection(Resource):
 	#value_tag = request.__getitem__('value_tag')
         value_tag = tag
         gadget = get_object_or_404(GadgetResource, short_name=name,vendor=vendor,version=version).id
-        user = user_authentication(user_name)
-
-        try:
-            tag = get_object_or_404(UserTag, idUser=user,idResource=gadget,tag=value_tag)
-        except:
-            return HttpResponseServerError(get_xml_error(_("Authorization failure, you don't have permission to delete this tag")), mimetype='application/xml; charset=UTF-8')
+        tag = get_object_or_404(UserTag, idUser=user, idResource=gadget, tag=value_tag)
 
         tag.delete()
 
         return get_tag_response(gadget,user, format)
-
-				
+

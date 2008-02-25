@@ -52,6 +52,7 @@ from django.db import transaction
 
 from commons.authentication import user_authentication
 from commons.get_data import get_igadget_data, get_variable_data
+from commons.logs import log
 from commons.utils import get_xml_error, json_encode
 
 from gadget.models import Gadget, VariableDef
@@ -95,7 +96,7 @@ def SaveIGadget(igadget, user, screen_id, igadget_id):
     position = Position (uri=uri + '/position', posX=left, posY=top, height=height, width=width, minimized=False)
     position.save()
 
-    
+
     try:
         # Creates the new IGadget
         gadget = Gadget.objects.get(uri=gadget_uri, user=user)
@@ -181,7 +182,7 @@ def UpdateIGadget(igadget, user, screen_id, igadget_id):
 
 class IGadgetCollection(Resource):
     def read(self, request, user_name, screen_id=None):
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
         
         #TODO by default. Remove in final release
         if not screen_id:
@@ -202,7 +203,7 @@ class IGadgetCollection(Resource):
 
     @transaction.commit_manually
     def create(self, request, user_name, screen_id=None):
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
 
         #TODO by default. Remove in final release
         if not screen_id:
@@ -227,12 +228,14 @@ class IGadgetCollection(Resource):
             return HttpResponse('ok')
         except Exception, e:
             transaction.rollback()
-            return HttpResponseServerError(get_xml_error(_("iGadgets cannot be saved: ") + unicode(e)), mimetype='application/xml; charset=UTF-8')
+            msg = _("iGadgets cannot be created: ") + unicode(e)
+            log (msg, request)
+            return HttpResponseServerError(get_xml_error(msg), mimetype='application/xml; charset=UTF-8')
 
 
     @transaction.commit_manually
     def update(self, request, user_name, screen_id=None):
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
 
         #TODO by default. Remove in final release
         if not screen_id:
@@ -257,11 +260,13 @@ class IGadgetCollection(Resource):
             return HttpResponse('ok')
         except Exception, e:
             transaction.rollback()
-            return HttpResponseServerError(get_xml_error(_("iGadgets cannot be updated: ") + unicode(e)), mimetype='application/xml; charset=UTF-8')
+            msg = _("iGadgets cannot be updated: ") + unicode(e)
+            log(msg, request)
+            return HttpResponseServerError(get_xml_error(msg), mimetype='application/xml; charset=UTF-8')
 
 class IGadgetEntry(Resource):
     def read(self, request, user_name, igadget_id, screen_id=None):
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
               
         #TODO by default. Remove in final release
         if not screen_id:
@@ -278,7 +283,7 @@ class IGadgetEntry(Resource):
     
     @transaction.commit_on_success
     def create(self, request, user_name, igadget_id, screen_id=None):
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
 
         #TODO by default. Remove in final release
         if not screen_id:
@@ -299,11 +304,14 @@ class IGadgetEntry(Resource):
             SaveIGadget(igadget, user, screen_id, igadget_id)
             return HttpResponse('ok')
         except Exception, e:
-            return HttpResponseServerError(get_xml_error(_("iGadgets cannot be saved: ") + unicode(e)), mimetype='application/xml; charset=UTF-8')
+            transaction.rollback()
+            msg = _("iGadget cannot be created: ") + unicode(e)
+            log(msg, request)
+            return HttpResponseServerError(get_xml_error(msg), mimetype='application/xml; charset=UTF-8')
 
 
     def update(self, request, user_name, igadget_id, screen_id=None):
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
 
         #TODO by default. Remove in final release
         if not screen_id:
@@ -324,11 +332,14 @@ class IGadgetEntry(Resource):
             UpdateIGadget(igadget, user, screen_id, igadget_id)
             return HttpResponse('ok')
         except Exception, e:
-            return HttpResponseServerError(get_xml_error(_("iGadgets cannot be updated: ") + unicode(e)), mimetype='application/xml; charset=UTF-8')
+            transaction.rollback()
+            msg = _("iGadget cannot be updated: ") + unicode(e)
+            log(msg, request)
+            return HttpResponseServerError(get_xml_error(msg), mimetype='application/xml; charset=UTF-8')
 
 
     def delete(self, request, user_name, igadget_id, screen_id=None):
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
 
         #TODO by default. Remove in final release
         if not screen_id:
@@ -352,7 +363,7 @@ class IGadgetEntry(Resource):
 
 class IGadgetVariableCollection(Resource):
     def read(self, request, user_name, igadget_id, screen_id=None):
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
         
         #TODO by default. Remove in final release
         if not screen_id:
@@ -366,7 +377,7 @@ class IGadgetVariableCollection(Resource):
 
     @transaction.commit_manually
     def update(self, request, user_name, igadget_id=None, screen_id=None):
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
 
         # Gets JSON parameter from request
         if not request.PUT.has_key('variables'):
@@ -396,13 +407,15 @@ class IGadgetVariableCollection(Resource):
             
             transaction.commit()
         except Exception, e:
-            return HttpResponseBadRequest(get_xml_error(unicode(e)), mimetype='application/xml; charset=UTF-8')
+            transaction.rollback()
+            log(e, request)
+            return HttpResponseServerError(get_xml_error(e), mimetype='application/xml; charset=UTF-8')
         
         return HttpResponse("<ok>", mimetype='text/xml; charset=UTF-8')
 
 class IGadgetVariable(Resource):
     def read(self, request, user_name, igadget_id, var_name, screen_id=None):
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
         
         #TODO by default. Remove in final release
         if not screen_id:
@@ -418,7 +431,7 @@ class IGadgetVariable(Resource):
         return self.update(request, user_name, igadget_id, var_name, screen_id)
     
     def update(self, request, user_name, igadget_id, var_name, screen_id=None):
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
         
         # Gets value parameter from request
         if not request.PUT.has_key('value'):
@@ -431,6 +444,12 @@ class IGadgetVariable(Resource):
 
         screen = Screen.objects.get(user=user, code=screen_id)
         variable = get_object_or_404(Variable, igadget__screen=screen, igadget__code=igadget_id, vardef__name=var_name)
-        variable.value = new_value
-        variable.save()
+        try:
+            variable.value = new_value
+            variable.save()
+	except Exception, e:
+            transaction.rollback()
+            log(e, request)
+            return HttpResponseServerError(get_xml_error(e), mimetype='application/xml; charset=UTF-8')
+
         return HttpResponse('ok')

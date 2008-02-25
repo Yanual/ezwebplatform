@@ -58,7 +58,7 @@ from connectable.models import In, Out, InOut
 
 class ConnectableEntry(Resource):
     def read(self, request, user_name, screen_id=1):
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
         wiring = {}
         
         # IGadgets list
@@ -86,7 +86,7 @@ class ConnectableEntry(Resource):
     
     @transaction.commit_manually
     def create(self, request, user_name, screen_id=None):
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
 
         # Gets all needed parameters from request
         if request.POST.has_key('json'):
@@ -153,16 +153,24 @@ class ConnectableEntry(Resource):
             return HttpResponse ('ok')
         except Screen.DoesNotExist:
             transaction.rollback()
-            return HttpResponseBadRequest(_('refered screen %(screen_id)s doesn\'t exists.') % {'screen_id': screen_id})
+            msg = _('refered screen %(screen_id)s doesn\'t exists.') % {'screen_id': screen_id}
+            log(msg, request)
+            return HttpResponseBadRequest(get_xml_error(msg));
         except IGadget.DoesNotExist:
             transaction.rollback()
-            return HttpResponseBadRequest(_('refered igadget doesn\'t exists.'))
+            msg = _('refered igadget %(igadget)s doesn\'t exists.')
+            log(msg, request)
+            return HttpResponseBadRequest(get_xml_error(msg))
         except Variable.DoesNotExist:
             transaction.rollback()
-            return HttpResponseBadRequest(_('refered variable doesn\'t exists.'))
+            msg = _('refered variable doesn\'t exists.')
+            log(msg, request)
+            return HttpResponseBadRequest(get_xml_error(msg))
         except Exception, e:
             transaction.rollback()
-            return HttpResponseBadRequest(_('connectables cannot be save: %(exc)s') % {'exc': e})
+            msg = _('connectables cannot be save: %(exc)s') % {'exc': e}
+            log(msg, request)
+            return HttpResponseBadRequest(msg)
 
         return HttpResponse('ok')
 

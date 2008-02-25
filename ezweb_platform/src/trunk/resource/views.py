@@ -64,6 +64,8 @@ class GadgetsCollection(Resource):
     @transaction.commit_manually
     def create(self,request, user_name):
 	
+        user = user_authentication(request, user_name)
+
         template_uri = request.__getitem__('template_uri')
         templateParser = None
 
@@ -75,16 +77,16 @@ class GadgetsCollection(Resource):
         except IntegrityError, e:
             # Gadget already exists. Rollback transaction
             transaction.rollback()
-            log(e, 'POST', 'user/id/resources', user_name)
+            log(e, request)
 	    return HttpResponseServerError(get_xml_error(unicode(sys.exc_info()[1])), mimetype='application/xml; charset=UTF-8')
         except TemplateParseException, e:
             transaction.rollback()
-            log(e, 'POST', 'user/id/resources', user_name)
+            log(e, request)
             return HttpResponseServerError(get_xml_error(unicode(e)), mimetype='application/xml; charset=UTF-8')
         except Exception, e:
             # Internal error
             transaction.rollback()
-            log(e, 'POST', 'user/id/resources', user_name)
+            log(e, request)
 	    return HttpResponseServerError(get_xml_error(unicode(sys.exc_info()[1])), mimetype='application/xml; charset=UTF-8')
 
 
@@ -93,7 +95,7 @@ class GadgetsCollection(Resource):
 
 
     def read(self, request, user_name, pag=0, offset=0):
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
 
 	try:
 	    format = request.__getitem__('format')
@@ -122,6 +124,8 @@ class GadgetsCollection(Resource):
 
     
     def delete(self, request, user_name, vendor, name, version):
+
+        user = user_authentication(request, user_name)
 
         #vendor = request.__getitem__('vendor')
 	#name = request.__getitem__('name')
@@ -158,7 +162,7 @@ def addToPlatform(request, user_name):
     parameters = {
         'url': template_uri,
     }
-	
+
     coreURL=URL
     uri='/user/'+user_name+'/gadgets'
     url=coreURL+uri

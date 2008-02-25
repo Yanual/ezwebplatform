@@ -73,7 +73,7 @@ class GadgetsCollectionByGenericSearch(Resource):
 
     def read(self, request, user_name, value, criteria, pag=0, offset=0):
 
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
 
 	gadgetlist = []
 
@@ -123,7 +123,7 @@ class GadgetsCollectionByCriteria(Resource):
 
     def read(self, request, user_name, criteria, value, pag=0, offset=0):
 
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
 
 	criterialist = []
         gadgetlist = []

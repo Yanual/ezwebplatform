@@ -512,8 +512,8 @@ class TemplateHandler(saxutils.handler.ContentHandler):
             emptyRequiredFields.append("xhtml");
         
         if len(emptyRequiredFields) > 0:
-	    raise TemplateParseException(_("Missing required filed(s)") + ": " + unicode(emptyRequiredFields))
-        
+	    raise TemplateParseException(_("Missing required filed(s): %(fields)s") % {fields: unicode(emptyRequiredFields)})
+
         self._gadget = Gadget (uri=self._gadgetURI, vendor=self._gadgetVendor, 
                           name=self._gadgetName, version=self._gadgetVersion, 
                           template=self._template, xhtml=self._xhtml, 

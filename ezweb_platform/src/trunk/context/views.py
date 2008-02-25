@@ -61,7 +61,7 @@ from context.models import *
 
 class ContextCollection(Resource):
     def read(self, request, user_name):
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
         concepts = Concept.objects.all()
         data = serializers.serialize('python', concepts, ensure_ascii=False)
         data_list = {} 
@@ -70,24 +70,24 @@ class ContextCollection(Resource):
 
     @transaction.commit_on_success
     def create(self, request, user_name):
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
         
         if request.POST.has_key('json'):
             received_json = request.POST['json']
         else:
-            return HttpResponseBadRequest(string_concat(['<error>', _(u'JSON parameter not specified'), '</error>']))
+            return HttpResponseBadRequest(get_xml_error(_("JSON parameter not specified")))
 
         try:
             received_data = eval(received_json)
-        except Exception, e:
-            return HttpResponseBadRequest(string_concat(['<error>', _(e), '</error>']))
+        except:
+            return HttpResponseBadRequest(get_xml_error(_("Expecting data in JSON format.")))
 
         for received_concept in received_data['concepts']:
             concept = None
             try:
                  concept = Concept.objects.get(concept=received_concept['concept'])
                  if not concept.adaptor == received_concept['adaptor']:
-                     return HttpResponseBadRequest(string_concat(["<error>",_(u'Attempted update. You must use PUT HTTP method in this case'),"</error>"]))
+                     return HttpResponseBadRequest(get_xml_error(_(u'Attempted update. You must use PUT HTTP method in this case')))
             
             except Concept.DoesNotExist:
                  concept = Concept (concept=received_concept['concept'], adaptor=received_concept['adaptor'])
@@ -107,54 +107,54 @@ class ContextCollection(Resource):
 
 class ContextEntry(Resource):
     def read(self, request, user_name, concept_name):
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
         concepts = get_list_or_404(Concept, concept=concept_name)
         data = serializers.serialize('python', concepts, ensure_ascii=False)
         data_list = get_concept_data(data[0])
         return HttpResponse(json_encode(data_list), mimetype='application/json; charset=UTF-8')
-    
+
     @transaction.commit_on_success
     def create(self, request, user_name, concept_name):
-        user = user_authentication(user_name)
-        
+        user = user_authentication(request, user_name)
+
         if request.POST.has_key('json'):
             received_json = request.POST['json']
         else:
-            return HttpResponseBadRequest(string_concat(['<error>', _(u'JSON parameter not specified'), '</error>']))
+            return HttpResponseBadRequest(get_xml_error(_("JSON parameter not specified")))
 
         try:
             received_concept = eval(received_json)
-        except Exception, e:
-            return HttpResponseBadRequest(string_concat(['<error>', _(e), '</error>']))
+        except:
+            return HttpResponseBadRequest(get_xml_error(_("Expecting data in JSON format.")))
 
         concept = None
         try:
             concept = Concept.objects.get(concept=concept_name)
             if not concept.adaptor == received_concept['adaptor']:
-                return HttpResponseBadRequest(string_concat(["<error>",_(u'Attempted update. You must use PUT HTTP method in this case'),"</error>"]))
-                 
+                return HttpResponseBadRequest(get_xml_error(_(u'Attempted update. You must use PUT HTTP method in this case')))
+
         except Concept.DoesNotExist:
             concept = Concept (concept=concept_name, adaptor=received_concept['adaptor'])
             concept.save()
-            
+
         cname = ConceptName (name=received_concept['name'], concept=concept)
         cname.save()
-        
+
         return HttpResponse('ok') 
                 
     @transaction.commit_on_success
     def update(self, request, user_name, concept_name):
-        user = user_authentication(user_name)
-        
+        user = user_authentication(request, user_name)
+
         if request.POST.has_key('json'):
             received_json = request.POST['json']
         else:
-            return HttpResponseBadRequest(string_concat(['<error>', _(u'JSON parameter not specified'), '</error>']))
+            return HttpResponseBadRequest(get_xml_error(_("JSON parameter not specified")))
 
         try:
             received_data = eval(received_json)
-        except Exception, e:
-            return HttpResponseBadRequest(string_concat(['<error>', _(e), '</error>']))
+        except:
+            return HttpResponseBadRequest(get_xml_error(_("Expecting data in JSON format.")))
 
         for received_concept in received_data:
             concept = None
@@ -164,35 +164,36 @@ class ContextEntry(Resource):
                  concept.save()
                  
             except Concept.DoesNotExist:
-                 return HttpResponseBadRequest(string_concat(['<error>',_(u"Concept doesn't exist. You must use POST HTTP method in this case"),'</error>']))
-            
+                 return HttpResponseBadRequest(get_xml_error(_("Concept doesn't exist. You must use POST HTTP method in this case")))
+
             cname = ConceptName (name=received_concept['name'], concept=concept)
             cname.save()
-        
+
         return HttpResponse('ok') 
 
     @transaction.commit_on_success
     def delete(self, request, user_name, concept_name):
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
         concept = get_object_or_404 (Concept, concept=concept_name)
         ConceptName.objects.filter(concept=concept).delete()
         concept.delete()
-        return HttpResponse('ok')                
+        return HttpResponse('ok')
 
 
 
 class ContextValueEntry(Resource):
     def read(self, request, user_name, concept_name):
-        user = user_authentication(user_name)
-        
+        user = user_authentication(request, user_name)
+
         data_res = {}
-        
+
         if concept_name == 'username':
-            user = user_authentication(user_name)
+            user = user_authentication(request, user_name)
             data_res ['username'] = user_name  
         elif concept_name == 'language':
             data_res ['language'] = get_language() 
         else:
             raise Http404;
-       
+
         return HttpResponse(json_encode(data_res), mimetype='application/json; charset=UTF-8')
+

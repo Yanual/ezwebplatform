@@ -75,7 +75,7 @@ from urllib2 import urlopen
 
 class GadgetCollection(Resource):
     def read(self, request, user_name):
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
         gadgets = Gadget.objects.filter(user=user)
         data = serializers.serialize('python', gadgets, ensure_ascii=False)
         data_list = []
@@ -86,7 +86,7 @@ class GadgetCollection(Resource):
 
     @transaction.commit_manually
     def create(self, request, user_name):
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
         if request.POST.has_key('url'):
             templateURL = request.POST['url']
         else:
@@ -100,19 +100,19 @@ class GadgetCollection(Resource):
             templateParser.parse()
             transaction.commit()
         except TemplateParseException, e:
-            log(e, 'POST', 'user/id/gadgets', user_name)
+            log(e, request)
             transaction.rollback()
 
             return HttpResponseServerError(get_xml_error(unicode(e)), mimetype='application/xml; charset=UTF-8')
         except IntegrityError:
-            log(_("Gadget already exists"), 'POST', 'user/id/gadgets', user_name)
+            log(_("Gadget already exists"), request)
             # Gadget already exists. Rollback transaction
             transaction.rollback()
         except Exception, e:
             # Internal error
-            log(e, 'POST', 'user/id/gadgets', user_name)
+            log(e, request)
             transaction.rollback()
-            return HttpResponseServerError("<error>%s</error>" % e, mimetype='application/xml; charset=UTF-8')
+            return HttpResponseServerError(get_xml_error(unicode(e)), mimetype='application/xml; charset=UTF-8')
         
         gadgetName = templateParser.getGadgetName()
         gadgetVendor = templateParser.getGadgetVendor()
@@ -124,20 +124,20 @@ class GadgetCollection(Resource):
         
 class GadgetEntry(Resource):
     def read(self, request, user_name, vendor, name, version):
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
         gadgets = get_list_or_404(Gadget, user=user, vendor=vendor, name=name, version=version)
         data = serializers.serialize('python', gadgets, ensure_ascii=False)
         data_fields = get_gadget_data(data[0])
         return HttpResponse(json_encode(data_fields), mimetype='application/json; charset=UTF-8')
 
     def update(self, request, user_name, vendor, name, version):
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
         gadget = get_object_or_404(Gadget, user=user, vendor=vendor, name=name, version=version)
         gadget.save()
         return HttpResponse('ok')
 
     def delete(self, request, user_name, vendor, name, version):
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
         gadget = get_object_or_404(Gadget, user=user, vendor=vendor, name=name, version=version)
         gadget.delete()
         return HttpResponse('ok')
@@ -145,7 +145,7 @@ class GadgetEntry(Resource):
 
 class GadgetTemplateEntry(Resource):
     def read(self, request, user_name, vendor, name, version):
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
         gadget = get_object_or_404(Gadget, user=user, vendor=vendor, name=name, version=version)
         template = get_object_or_404(gadget.template, id=gadget.template.id)
         return HttpResponse(json_encode(template), mimetype='application/json; charset=UTF-8')
@@ -153,13 +153,13 @@ class GadgetTemplateEntry(Resource):
 
 class GadgetCodeEntry(Resource):
     def read(self, request, user_name, vendor, name, version):
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
         gadget = get_object_or_404(Gadget, vendor=vendor, name=name, version=version, user=user)
         code = get_object_or_404(gadget.xhtml, id=gadget.xhtml.id)
         return HttpResponse(code.code, mimetype='text/html; charset=UTF-8')
 
     def update(self, request, user_name, vendor, name, version):
-        user = user_authentication(user_name)
+        user = user_authentication(request, user_name)
         gadget = get_object_or_404(Gadget, user=user, vendor=vendor, name=name, version=version)
 
         xhtml = gadget.xhtml;
@@ -169,7 +169,8 @@ class GadgetCodeEntry(Resource):
             xhtml.code = urlopen(xhtml.url).read()
             xhtml.save()
         except Exception, e:
-            log(e, 'PUT', 'user/id/gadgets/xhtml', user_name)
-            return HttpResponseServerError(_("XHTML code is not accessible"))
+            msg = _("XHTML code is not accessible")
+            log(msg, request)
+            return HttpResponseServerError(get_xml_error(msg))
         
         return HttpResponse('ok')

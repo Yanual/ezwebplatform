@@ -41,11 +41,15 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 
+class Http403(Exception):
+    pass
 
-def user_authentication(user_name):
-    user = get_object_or_404(User, username=user_name)
+def user_authentication(request, user_name):
+    user = request.user
     if not user.is_authenticated():
-        print _("User authentication failed!")
-        raise Http404
-    else:
-        return user
+	raise Http403 (_("You must be logged"))
+
+    if user.username != user_name:
+        raise Http403 (_("You do not have permission"))
+
+    return user
