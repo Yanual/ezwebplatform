@@ -47,6 +47,8 @@ function UIUtils()
 UIUtils.selectedResource = null;
 UIUtils.imageBottom = '';
 UIUtils.imageContent = '';
+UIUtils.imageConnectableBottom = '';
+UIUtils.imageConnectableContent = '';
 UIUtils.infoResourcesWidth = 400;
 UIUtils.isInfoResourcesOpen = false;
 UIUtils.page = 1;
@@ -114,6 +116,8 @@ UIUtils.selectConnectableResources = function(resourceId_) {
 	var resources = CatalogueFactory.getInstance().getResources().getValues();
 	var slots2;
 	var events2;
+	UIUtils.deselectConnectableResources();
+	UIUtils.selectResource(resourceId_);
 	for (var i=0; i<resources.length; i++){
 		slots2 = resources[i].getSlots();
 		var lookup = {};
@@ -123,10 +127,10 @@ UIUtils.selectConnectableResources = function(resourceId_) {
 		for (var k =0; k<events.length; k++) {
 			if (typeof lookup[events[k]] != 'undefined') {
 				var bottom = document.getElementById('resource_'+i + '_bottom');
-				UIUtils.imageBottom = bottom.style.backgroundImage;
+				UIUtils.imageConnectableBottom = bottom.style.backgroundImage;
 				bottom.style.backgroundImage = 'url(/ezweb/images/resource-left-bottom-select.png)';
 				var content = document.getElementById('resource_'+i + '_content');
-				UIUtils.imageContent = content.style.backgroundImage;
+				UIUtils.imageConnectableContent = content.style.backgroundImage;
 				content.style.backgroundImage = 'url(/ezweb/images/resource-left-fill-select.png)';
 				break;
 			}
@@ -139,10 +143,10 @@ UIUtils.selectConnectableResources = function(resourceId_) {
 		for (var k =0; k<slots.length; k++) {
 			if (typeof lookup[slots[k]] != 'undefined') {
 				var bottom = document.getElementById('resource_'+i + '_bottom');
-				UIUtils.imageBottom = bottom.style.backgroundImage;
+				UIUtils.imageConnectableBottom = bottom.style.backgroundImage;
 				bottom.style.backgroundImage = 'url(/ezweb/images/resource-left-bottom-select.png)';
 				var content = document.getElementById('resource_'+i + '_content');
-				UIUtils.imageContent = content.style.backgroundImage;
+				UIUtils.imageConnectableContent = content.style.backgroundImage;
 				content.style.backgroundImage = 'url(/ezweb/images/resource-left-fill-select.png)';
 				break;
 			}
@@ -154,9 +158,9 @@ UIUtils.deselectConnectableResources = function() {
 	var resources = CatalogueFactory.getInstance().getResources().getValues();
 	for (var i=0; i<resources.length; i++){
 		var bottom = document.getElementById('resource_'+i + '_bottom');
-		bottom.style.backgroundImage = UIUtils.imageBottom;
+		bottom.style.backgroundImage = UIUtils.imageConnectableBottom;
 		var content = document.getElementById('resource_'+i + '_content');
-		content.style.backgroundImage = UIUtils.imageContent;
+		content.style.backgroundImage = UIUtils.imageConnectableContent;
 	}
 }
 	
