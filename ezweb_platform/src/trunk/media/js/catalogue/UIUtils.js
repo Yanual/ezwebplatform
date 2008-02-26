@@ -56,6 +56,7 @@ UIUtils.off = 4;
 UIUtils.search = 'false';
 UIUtils.searchValue = '';
 UIUtils.searchCriteria = '';
+UIUtils.idResource='';
 
 UIUtils.addResource = function(url, paramName, paramValue) {
 	var newResourceOnSuccess = function (response) {
@@ -107,8 +108,15 @@ UIUtils.deselectResource = function(resourceId_) {
 	content.style.backgroundImage = UIUtils.imageContent;
 }
 
-/* This method selects all the resources related by wiring in the catalogue*/
 UIUtils.selectConnectableResources = function(resourceId_) {
+	UIUtils.idResource = resourceId_;
+	UIUtils.deselectConnectableResources();
+	UIUtils.selectResource(resourceId_);
+	UIUtils.lightUpConnectableResources(resourceId_);
+}
+
+/* This method selects all the resources related by wiring in the catalogue*/
+UIUtils.lightUpConnectableResources = function(resourceId_) {
 
 	var resource = CatalogueFactory.getInstance().getResource(resourceId_);
 	var slots = resource.getSlots();
@@ -116,8 +124,6 @@ UIUtils.selectConnectableResources = function(resourceId_) {
 	var resources = CatalogueFactory.getInstance().getResources().getValues();
 	var slots2;
 	var events2;
-	UIUtils.deselectConnectableResources();
-	UIUtils.selectResource(resourceId_);
 	for (var i=0; i<resources.length; i++){
 		slots2 = resources[i].getSlots();
 		var lookup = {};
@@ -128,10 +134,10 @@ UIUtils.selectConnectableResources = function(resourceId_) {
 			if (typeof lookup[events[k]] != 'undefined') {
 				var bottom = document.getElementById('resource_'+i + '_bottom');
 				UIUtils.imageConnectableBottom = bottom.style.backgroundImage;
-				bottom.style.backgroundImage = 'url(/ezweb/images/resource-left-bottom-select.png)';
+				bottom.style.backgroundImage = 'url(/ezweb/images/resource-left-bottom-select-slot.png)';
 				var content = document.getElementById('resource_'+i + '_content');
 				UIUtils.imageConnectableContent = content.style.backgroundImage;
-				content.style.backgroundImage = 'url(/ezweb/images/resource-left-fill-select.png)';
+				content.style.backgroundImage = 'url(/ezweb/images/resource-left-fill-select-slot.png)';
 				break;
 			}
 		}
@@ -144,10 +150,10 @@ UIUtils.selectConnectableResources = function(resourceId_) {
 			if (typeof lookup[slots[k]] != 'undefined') {
 				var bottom = document.getElementById('resource_'+i + '_bottom');
 				UIUtils.imageConnectableBottom = bottom.style.backgroundImage;
-				bottom.style.backgroundImage = 'url(/ezweb/images/resource-left-bottom-select.png)';
+				bottom.style.backgroundImage = 'url(/ezweb/images/resource-left-bottom-select-event.png)';
 				var content = document.getElementById('resource_'+i + '_content');
 				UIUtils.imageConnectableContent = content.style.backgroundImage;
-				content.style.backgroundImage = 'url(/ezweb/images/resource-left-fill-select.png)';
+				content.style.backgroundImage = 'url(/ezweb/images/resource-left-fill-select-event.png)';
 				break;
 			}
 		}
@@ -417,6 +423,9 @@ UIUtils.SlideInfoResourceIntoView = function(element) {
         { UIUtils.hidde('tab_info_resource_open'); UIUtils.show('tab_info_resource_close'); }
     })
   );
+	if (UIUtils.idResource != '') {
+		 UIUtils.lightUpConnectableResources(UIUtils.idResource);
+	}
 }
 
 UIUtils.SlideInfoResourceOutOfView = function(element) {
