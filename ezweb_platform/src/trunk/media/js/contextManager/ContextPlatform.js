@@ -101,7 +101,7 @@ Concept.prototype.getValue = function () {
 	if (this._type == Concept.prototype.EXTERNAL){
 		return this.value_;
 	}
-	throw gettext("Concept has not value, this is a Gadget Concept.");
+	throw gettext("Concept does not have value, this is a Gadget Concept.");
 }
 
 Concept.prototype.setType = function (type_) {
@@ -122,10 +122,10 @@ Concept.prototype.setValue = function (value_) {
 			} 
 			break;
 		case Concept.prototype.IGADGET:
-			throw gettext("Concept has not value, this is a Gadget Concept.");
+			throw gettext("Concept does not have value, this is a Gadget Concept.");
 			break;
 		default:
-			throw gettext("Concept has not type yet.");
+			throw gettext("Concept does not have type yet.");
 			break;
 	}
 }
@@ -146,7 +146,7 @@ Concept.prototype.addIGadgetVar = function (ivar_) {
 			this._initAdaptor(ivar_);
 			break;
 		default:
-			throw gettext("Concept has not type yet.");
+			throw gettext("Concept does not have type yet.");
 			break;
 	}
 }
@@ -160,13 +160,13 @@ Concept.prototype.getIGadgetVar = function (igadgetId_) {
 					return ivar;
 				}
 			}
-			throw interpolate (gettext("%(concept)s Concept is not related to IGadget number %(var)."), {'concept': this._semanticConcept, 'var': igadgetId_}, true)
+			throw interpolate (gettext("%(concept)s Concept is not related to IGadget number %(var)s."), {'concept': this._semanticConcept, 'var': igadgetId_}, true)
 			break;
 		case Concept.prototype.EXTERNAL:
 			throw gettext("This is a External Concept, 'getIGadgetVar' is only for Gadget Concept.");
 			break;
 		default:
-			throw gettext("Concept has not type yet.");
+			throw gettext("Concept does not have type yet.");
 	}
 }
 

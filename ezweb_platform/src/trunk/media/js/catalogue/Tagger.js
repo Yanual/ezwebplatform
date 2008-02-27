@@ -43,7 +43,7 @@ function Tagger(){
 	
 	this.addTag = function(tag_) {
 		if (tag_.length < 3) {
-			alert(gettext ("Tag must be at least three characters."));
+			alert(gettext ("Tag must have at least three characters."));
 		}
 		else {
 			if (!tags.contains(tag_)) {

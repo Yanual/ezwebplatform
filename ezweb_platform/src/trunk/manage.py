@@ -7,10 +7,10 @@ try:
     import settings # Assumed to be in the same directory.
 except ImportError:
     import sys
-    message1 = _("Error: Can't find the file 'settings.py' in the directory containing %(file)r.\n") % {'file': __file__} 
-    message1 = string_concat (message1, _("It appears you've customized things.\n"))
-    message1 = string_concat (message1, _("You'll have to run django-admin.py, passing it your settings module.\n"))
-    message1 = string_concat (message1, _("(If the file settings.py does indeed exist, it's causing an ImportError somehow.)\n"))
+    message1 = _("Error: cannot find the file 'settings.py' in the directory containing %(file)r.\n") % {'file': __file__} 
+    message1 = string_concat (message1, _("It seems you have customized things.\n"))
+    message1 = string_concat (message1, _("You will have to run django-admin.py, passing it your settings module.\n"))
+    message1 = string_concat (message1, _("(If the file settings.py does indeed exist, it is causing an ImportError somehow.)\n"))
     sys.stderr.write(message1) 
     sys.exit(1)
 

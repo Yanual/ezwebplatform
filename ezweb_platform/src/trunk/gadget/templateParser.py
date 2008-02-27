@@ -141,7 +141,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 
             vDef.save()
         else:
-            raise TemplateParseException(_(u"ERROR: Missing attribute at Property element"))
+            raise TemplateParseException(_(u"ERROR: missing attribute at Property element"))
 
     def processPreference(self, attrs):
         _name = ''
@@ -178,7 +178,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
             self._lastPreference = vDef
                 
         else:
-            raise TemplateParseException(_("ERROR: Missing attribute at UserPreference element"))
+            raise TemplateParseException(_("ERROR: missing attribute at UserPreference element"))
 
 
     def processEvent(self, attrs):
@@ -215,7 +215,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 
             vDef.save()
         else:
-            raise TemplateParseException(_("ERROR: Missing attribute at Event element"))
+            raise TemplateParseException(_("ERROR: missing attribute at Event element"))
 
 
     def processSlot(self, attrs):
@@ -252,7 +252,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 
             vDef.save()
         else:
-            raise TemplateParseException(_("ERROR: Missing attribute at Slot element"))            
+            raise TemplateParseException(_("ERROR: missing attribute at Slot element"))            
 
             
     def processGadgetContext(self, attrs):
@@ -284,7 +284,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
             context.save()
             
         else:
-            raise TemplateParseException(_("ERROR: Missing attribute at Gadget Context element"))            
+            raise TemplateParseException(_("ERROR: missing attribute at Gadget Context element"))            
 
     def processExternalContext(self, attrs):
         _name = ''
@@ -315,7 +315,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
             context.save()
             
         else:
-            raise TemplateParseException(_("ERROR: Missing attribute at External Context element"))            
+            raise TemplateParseException(_("ERROR: missing attribute at External Context element"))            
 
     
     def processXHTML (self, attrs):
@@ -332,9 +332,9 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 
                 self._xhtml = gadgetParser.getXHTML()
             except Exception, e:
-                raise TemplateParseException(_("ERROR: XHtml couldn't be readed") + " - " + unicode(e))
+                raise TemplateParseException(_("ERROR: XHTML could not be read") + " - " + unicode(e))
         else:
-            raise TemplateParseException(_("ERROR: Missing attribute at XHTML element"))            
+            raise TemplateParseException(_("ERROR: missing attribute at XHTML element"))            
 
 
     def processOption (self, attrs):
@@ -352,7 +352,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 
             option.save()
         else:
-            raise TemplateParseException(_("ERROR: Missing attribute at Option element"))            
+            raise TemplateParseException(_("ERROR: missing attribute at Option element"))            
 
     def processRendering (self, attrs):
         _width=""
@@ -369,7 +369,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
             self._template.height=_height
             self._template.save()
         else:
-            raise TemplateParseException(_("ERROR: Missing attribute at Rendering element"))                       
+            raise TemplateParseException(_("ERROR: missing attribute at Rendering element"))                       
 
 ###############
 

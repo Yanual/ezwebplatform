@@ -104,7 +104,7 @@ def get_xml_error(value):
     rootelement = doc.documentElement
     text = doc.createTextNode(value)
     rootelement.appendChild(text)
-    errormsg = doc.toxml()
+    errormsg = doc.toxml("utf-8")
     doc.unlink()
 
     return errormsg

@@ -110,7 +110,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 
             wiring.save()
         else:
-            raise TemplateParseException(_("ERROR: Missing attribute at Event or Slot element"))
+            raise TemplateParseException(_("ERROR: missing attribute at Event or Slot element"))
 
 	
     def endElement(self, name):
@@ -162,7 +162,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 	elif (self._flag == 'add'):
             return
         else:
-            raise TemplateParseException(_("ERROR: Missing Resource describing info at Resource element! See schema!"))
+            raise TemplateParseException(_("ERROR: missing Resource description info at Resource element! Check schema!"))
 
     def characters(self, text):
 	self._accumulator.append(text)

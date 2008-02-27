@@ -33,10 +33,10 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 										"<div id='" + id + "_toolbar' style='display:none;'>" +
 											"<a id='" + id + "_description' title='" + gettext ('Show description') + "' onmouseover=\"CatalogueFactory.getInstance().getResource('" + id + "').changeIconDescriptionBalloon('/ezweb/images/description.png');\" onmouseout=\"CatalogueFactory.getInstance().getResource('" + id + "').changeIconDescriptionBalloon('/ezweb/images/description_gray.png');\">" +
 											"</a>" +
-											"<a title='" + gettext ('Access to Wiki') + "' href='" + state.getUriWiki() + "' target='_blank'  onmouseover=\"UIUtils.changeImage('" + id + "_wiki_img', '/ezweb/images/wiki.png');\" onmouseout=\"UIUtils.changeImage('" + id + "_wiki_img', '/ezweb/images/wiki_gray.png');\">" +
+											"<a title='" + gettext ('Access to the wiki') + "' href='" + state.getUriWiki() + "' target='_blank'  onmouseover=\"UIUtils.changeImage('" + id + "_wiki_img', '/ezweb/images/wiki.png');\" onmouseout=\"UIUtils.changeImage('" + id + "_wiki_img', '/ezweb/images/wiki_gray.png');\">" +
 												"<img id='" + id + "_wiki_img' src='/ezweb/images/wiki_gray.png'></img>" +
 											"</a>" +
-											"<a title='" + gettext ('Show Template') + "' href='" + state.getUriTemplate() + "' target='_blank' onmouseover=\"UIUtils.changeImage('" + id + "_template_img', '/ezweb/images/template.png');\" onmouseout=\"UIUtils.changeImage('" + id + "_template_img', '/ezweb/images/template_gray.png');\">" +
+											"<a title='" + gettext ('Show template') + "' href='" + state.getUriTemplate() + "' target='_blank' onmouseover=\"UIUtils.changeImage('" + id + "_template_img', '/ezweb/images/template.png');\" onmouseout=\"UIUtils.changeImage('" + id + "_template_img', '/ezweb/images/template_gray.png');\">" +
 												"<img id='" + id + "_template_img' src='/ezweb/images/template_gray.png'></img>" +
 											"</a>" +
 										"</div>" +
@@ -49,7 +49,7 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 												_tagsToMoreImportantTags(3) +
 											"</div>" +
 											"<div class='more_tags'>" +
-												"<a id='" + id + "_tagcloud_balloon' title='" + gettext ('Show resource tag cloud') + "' onmouseover=\"CatalogueFactory.getInstance().getResource('" + id + "').changeIconTagcloudBalloon('/ezweb/images/more_tags.png');\" onmouseout=\"CatalogueFactory.getInstance().getResource('" + id + "').changeIconTagcloudBalloon('/ezweb/images/more_tags_gray.png');\">" +
+												"<a id='" + id + "_tagcloud_balloon' title='" + gettext ('Show resource tagcloud') + "' onmouseover=\"CatalogueFactory.getInstance().getResource('" + id + "').changeIconTagcloudBalloon('/ezweb/images/more_tags.png');\" onmouseout=\"CatalogueFactory.getInstance().getResource('" + id + "').changeIconTagcloudBalloon('/ezweb/images/more_tags_gray.png');\">" +
 												"</a>" + 
 											"</div>" +
 										"</div>" +
@@ -72,28 +72,28 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 									"<span class='version'>" + state.getVersion() + "</span></div>" +
 									"<div class='vendor'>" + state.getVendor() + "</div>" +
 									"<div class='image'><img src='" + state.getUriImage() + "' alt='" + state.getName()+ "&nbsp;" + state.getVersion() + "'/></div>" +
-									"<div class='description'>" + gettext ('Description:') + "<br/><div class='text'>" + state.getDescription() + "</div></div><br/>" +
-									"<div class='connect'>" + gettext ('Gadget connectivity') + "</div><br/>" +
+									"<div class='description'>" + gettext ('Description') + ":<br/><div class='text'>" + state.getDescription() + "</div></div><br/>" +
+									"<div class='connect'>" + gettext ('Gadget connectivity') + ":</div><br/>" +
 									"<div class='Events'>" + gettext ('Events: ') + _events()+ "</div>" +
 									"<div class='Slots'>" + gettext ('Slots: ') +_slots()+ "</div>" +
 									"<div class='tagcloud'>" + gettext ('Tagcloud') + ":<br/><div id='" + id + "_tagcloud' class='tags'>" + _tagsToTagcloud() + "</div></div>" +
 									"<div id='add_tags_panel' class='new_tags' style='display:none;'>" +
-										"<div class='title'>" + gettext ('New Tags') + ":</div>" +
+										"<div class='title'>" + gettext ('New tags') + ":</div>" +
 										"<div id='my_tags' class='my_tags'>" +
 											"<div id='new_tag_text' class='new_tag_text'><input id='new_tag_text_input' type='text' onkeypress=\"UIUtils.onReturn(event,UIUtils.addTag,this);\"/></div>" +
 										"</div>" +
 										"<div class='buttons'>" +
-											"<button onclick='javascript:UIUtils.sendTags();'>" + gettext ('To label') + ":</button>" +
-											"<button onClick='javascript:UIUtils.toggle(\"add_tags_panel\");UIUtils.toggle(\"add_tags_link\");UIUtils.removeAllTags();'>" + gettext ('Cancel') + ":</button>" +
+											"<button onclick='javascript:UIUtils.sendTags();'>" + gettext ('Tag') + "</button>" +
+											"<button onClick='javascript:UIUtils.toggle(\"add_tags_panel\");UIUtils.toggle(\"add_tags_link\");UIUtils.removeAllTags();'>" + gettext ('Cancel') + "</button>" +
 										"</div>" +
 									"</div>" +
 									
-"<div id='add_tags_link' class='link'><a href='javascript:UIUtils.toggle(\"add_tags_link\");UIUtils.toggle(\"add_tags_panel\");document.getElementById(\"new_tag_text_input\").focus();'>" + gettext ('To label the resource') + "</a></div>" +
-"<div class='link'><a href='" + state.getUriWiki() + "' target='_blank'>" + gettext ('Access to Wiki') + "</a></div>" +
+"<div id='add_tags_link' class='link'><a href='javascript:UIUtils.toggle(\"add_tags_link\");UIUtils.toggle(\"add_tags_panel\");document.getElementById(\"new_tag_text_input\").focus();'>" + gettext ('Tag the resource') + "</a></div>" +
+"<div class='link'><a href='" + state.getUriWiki() + "' target='_blank'>" + gettext ('Access to the Wiki') + "</a></div>" +
 
-"<div class='link'><a href='" + state.getUriTemplate() + "' target='_blank'>" + gettext ('Access to Template') + "</a></div>" + 
+"<div class='link'><a href='" + state.getUriTemplate() + "' target='_blank'>" + gettext ('Access to the Template') + "</a></div>" + 
 
-"<div class='link'><a href='javascript:UIUtils.updateGadgetXHTML();'>" + gettext ('Update Gadget Code') + "</a></div>" + 
+"<div class='link'><a href='javascript:UIUtils.updateGadgetXHTML();'>" + gettext ('Update gadget code') + "</a></div>" + 
 
 "<div class='link'>" + _deleteGadget() + "</div>" +
 
@@ -319,8 +319,8 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 		tagcloudBalloon = new HelpBalloon({
 									returnElement: true,
 									icon: 		'/ezweb/images/more_tags_gray.png',	//url to the icon to use
-									altText: 	gettext ('TagCloud'),				//Alt text of the help icon
-									title: 		gettext ('TagCloud') + ':',			//Title of the balloon topic
+									altText: 	gettext ('Tagcloud'),				//Alt text of the help icon
+									title: 		gettext ('Tagcloud') + ':',			//Title of the balloon topic
 									content:	"<p class='tagcloud_balloon'>" +	//Static content of the help balloon
 													_tagsToTagcloud() + 
 												"</p>",

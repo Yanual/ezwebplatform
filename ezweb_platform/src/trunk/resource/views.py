@@ -151,7 +151,7 @@ def addToPlatform(request, user_name):
     try:
         cfg.readfp(file(CONFIG))
     except Exception, e:
-        print _("Error, couldn't read config  "), e.strerror
+        print _("Error, could not read config"), e.strerror
         return
      
     URL = cfg.get ('URL', 'URLeuropa'.lower())
