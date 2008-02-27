@@ -504,10 +504,10 @@ var DragboardFactory = function () {
 					msg = "HTTP Error " + transport.status + " - " + transport.statusText;
 				}
 
-				msg = interpolate(gettext("Error commiting dragboard changes to persistence: %(errorMsg)s."), {errorMsg: msg}, true);
+				msg = interpolate(gettext("Error committing dragboard changes to persistence: %(errorMsg)s."), {errorMsg: msg}, true);
 				OpManagerFactory.getInstance().log(msg);
 
-				alert (gettext("Error commiting dragboard changes to persistence, please check the logs for further info."));
+				alert (gettext("Error committing dragboard changes to persistence, please check the logs for further info."));
 			}
 
 			// TODO only send changes
@@ -824,6 +824,7 @@ function IGadget(gadget, iGadgetId, screen, position, width, height, minimized) 
 	this.element = null;
 	this.contentWrapper = null, this.content = null;
 	this.configurationElement = null;
+	this.minimizeButtonElement = null;
 }
 
 IGadget.prototype.getGadget = function() {
@@ -921,11 +922,39 @@ IGadget.prototype.paint = function(where) {
 	gadgetMenu.setAttribute("class", "gadget_menu");
 
 	// buttons. Inserted from right to left
-	gadgetMenu.innerHTML = "<div class=\"floatright button\" onclick=\"javascript:OpManagerFactory.getInstance().removeInstance(" + this.id + ")\" >X</div>"	// close button
-						 + "<div class=\"floatright button\" onclick=\"javascript:DragboardFactory.getInstance().setConfigurationVisible(" + this.id + ", 'toggle');\" >P</div>"	// settings button
-						 + "<div class=\"floatright button\" onclick=\"javascript:DragboardFactory.getInstance().toggleMinimizeStatus(" + this.id + ")\" >-</div>"	// minimize button
-	                     + this.gadget.getName()
-	                     + " (Gadget " + this.id + ")";	// TODO Gadget Title
+	var button;
+
+	// close button
+	button = document.createElement("div");
+	button.setAttribute("class", "floatright button");
+	button.setAttribute("onclick", "javascript:OpManagerFactory.getInstance().removeInstance(" + this.id + ");");
+	button.setAttribute("title", gettext("Close"));
+	button.innerHTML = "X";
+	gadgetMenu.appendChild(button);
+
+	// settings button
+	button = document.createElement("div");
+	button.setAttribute("class", "floatright button");
+	button.addEventListener("click", function() {DragboardFactory.getInstance().setConfigurationVisible(this.id, 'toggle');}.bind(this), true);
+	button.setAttribute("title", gettext("Preferences"));
+	button.innerHTML = "P";
+	gadgetMenu.appendChild(button);
+
+	// minimize button
+	button = document.createElement("div");
+	button.setAttribute("class", "floatright button");
+	button.addEventListener("click", function() {DragboardFactory.getInstance().toggleMinimizeStatus(this.id)}.bind(this), true);
+	if (this.minimized)
+		button.setAttribute("title", gettext("Maximize"));
+	else
+		button.setAttribute("title", gettext("Minimize"));
+
+	button.innerHTML = "-";
+	gadgetMenu.appendChild(button);
+	this.minimizeButtonElement = button;
+
+	// Gadget title
+	gadgetMenu.appendChild(document.createTextNode(this.gadget.getName() + " (Gadget " + this.id + ")")); // TODO
 	gadgetElement.appendChild(gadgetMenu);
 
 	// Content wrapper
@@ -1053,7 +1082,7 @@ IGadget.prototype._makeConfigureInterface = function() {
 	var interfaceDiv = document.createElement("div");
 
 	if (prefs.length == 0) {
-		interfaceDiv.innerHTML = gettext("This IGadget don't have user prefs");
+		interfaceDiv.innerHTML = gettext("This IGadget does not have user prefs");
 		return interfaceDiv;
 	}
 
@@ -1110,8 +1139,10 @@ IGadget.prototype.setMinimizeStatus = function(newStatus) {
 
 	if (this.minimized) {
 	    this.contentWrapper.setStyle({"visibility": "hidden" , "border": "0px"});
+	    this.minimizeButtonElement.setAttribute("title", gettext("Maximize"));
 	} else {
 	    this.contentWrapper.setStyle({"visibility": "visible", "border": ""});
+	    this.minimizeButtonElement.setAttribute("title", gettext("Minimize"));
 	}
 
 	this.height = null; // force refreshing sizes (see getHeight function)
