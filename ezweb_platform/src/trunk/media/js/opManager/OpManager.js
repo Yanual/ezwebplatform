@@ -157,7 +157,7 @@ var OpManagerFactory = function () {
 				$("logs_tab").className="tab";
 			}
 			msg = ngettext("%(errorCount)s error", "%(errorCount)s errors", errorCount);
-			label = interpolate(, {errorCount: errorCount}, true);
+			label = interpolate(msg, {errorCount: errorCount}, true);
 			$("logs_tab").innerHTML = label;
 
 			var logentry = document.createElement("p");
