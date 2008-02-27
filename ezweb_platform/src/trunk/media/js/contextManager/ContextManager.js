@@ -107,10 +107,13 @@ var ContextManagerFactory = function () {
 			
 			function _onError(transport, e) {
 				var msg;
-				if (e)
-					msg = e;
-				else
+				if (e) {
+					msg = interpolate(gettext("JavaScript exception on file %(errorFile)s (line: %(errorLine)s): %(errorDesc)s"),
+						                  {errorFile: e.fileName, errorLine: e.lineNumber, errorDesc: e},
+								  true);
+				} else {
 					msg = transport.status + " " + transport.statusText;
+				}
 				alert (gettext("Error getting gadgets variables: ") + msg);
 			}
 			
@@ -144,10 +147,13 @@ var ContextManagerFactory = function () {
 
 		function _onError(transport, e) {
 			var msg;
-			if (e)
-				msg = e;
-			else
+			if (e) {
+				msg = interpolate(gettext("JavaScript exception on file %(errorFile)s (line: %(errorLine)s): %(errorDesc)s"),
+						                  {errorFile: e.fileName, errorLine: e.lineNumber, errorDesc: e},
+								  true);
+			} else {
 				msg = transport.status + " " + transport.statusText;
+			}
 
 			alert (gettext("Error receiving context manager data") + ": " + msg);
 		}

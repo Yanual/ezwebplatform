@@ -74,7 +74,7 @@ var URIs = new _URIConstants();
 <script language="JavaScript" src="{{ MEDIA_URL}}js/wiring/wiringGUI.js"></script>
 <!--<script language="JavaScript" src="{{ MEDIA_URL}}js/wiring/color_scheme.js"></script>-->
 
-<script type="text/javascript" src="/jsi18n/"></script>
+<script type="text/javascript" src="/jsi18n/?language={{ LANGUAGE_CODE }}"></script>
 
 		<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/catalogue.css" />
 		<script language="JavaScript" src="{{ MEDIA_URL }}js/lib/helpballoon/HelpBalloon.js"></script>
@@ -91,24 +91,32 @@ var URIs = new _URIConstants();
 <!-- Initialization code -->
 <script language="JavaScript">
 
-	function showInterface(element) {
-		var tabs = ["wiring", "showcase", "dragboard"];
+	function showInterface(interfaceToShow) {
+		var tabs = ["wiring", "showcase", "dragboard", "logs"];
 
+		if (interfaceToShow == currentInterface)
+		    return; // Do nothing
 
-		for (var i = 0; i < tabs.length; i++) {
-			$(tabs[i] + "_container").style.zIndex = 1;
-			$(tabs[i] + "_tab").className = "tab";
-                        if (tabs[i] != "dragboard")
-                                $(tabs[i] + "_container").setStyle({"display": "none"});
-		}
+		// Hidden current interface
+		$(currentInterface + "_container").setStyle({"zIndex" : 1});
+		$(currentInterface + "_tab").className = "tab";
+                if (currentInterface != "dragboard")
+                    $(currentInterface + "_container").setStyle({"display": "none"});
 
-		$(element + "_container").setStyle({"display": "block", "zIndex" : "2"});
-		$(element + "_tab").className = "tab current";
+		if (currentInterface == "wiring")
+		    wiringInterface.saveWiring();
+
+		// Show the interface
+		if (interfaceToShow == "wiring")
+		    wiringInterface.renewInterface();
+
+		$(interfaceToShow + "_container").setStyle({"display": "block", "zIndex" : "2"});
+		$(interfaceToShow + "_tab").className = "tab current";
+
+		currentInterface = interfaceToShow;
 	}
 
     function show_showcase() {
-		wiringInterface.saveWiring();
-		wiringInterface.renewInterface();
 
         opManager.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
 		
@@ -120,14 +128,10 @@ var URIs = new _URIConstants();
 	}
 
 	function show_dragboard() {
-		wiringInterface.saveWiring();
-		wiringInterface.renewInterface();
-
 		showInterface('dragboard');
 	}
 
 	function show_wiring() {
-		wiringInterface.renewInterface();
 		showInterface('wiring');
 	}
 
@@ -173,6 +177,7 @@ var URIs = new _URIConstants();
 		document.setlanguage.submit()
 	}
 
+	var currentInterface = "dragboard";
 	var wiring;
 	var opManager;
 	var dragboard;
@@ -198,9 +203,10 @@ var URIs = new _URIConstants();
   </div>
   <img id="logo" src="{{ MEDIA_URL }}images/logo.gif" alt="EzWeb Logo">
   <div class="tab_section">
-    <span id="wiring_tab" class="tab" onclick="show_wiring();">{% trans "My Wires" %}</span>
+    <span id="wiring_tab" class="tab" onclick="showInterface('wiring');">{% trans "My Wires" %}</span>
     <span id="showcase_tab" class="tab" onclick="show_showcase();">{% trans "My Catalogue" %}</span>
-    <span id="dragboard_tab" class="tab current" onclick="show_dragboard();">{% trans "My Gadgets" %}</span>
+    <span id="dragboard_tab" class="tab current" onclick="showInterface('dragboard');">{% trans "My Gadgets" %}</span>
+    <span id="logs_tab" class="tab disabled" onclick="showInterface('logs')"></span>
   </div>
 </div>
 
@@ -223,6 +229,12 @@ var URIs = new _URIConstants();
   </div>
   <!-- WIRING LAYER -->
 
+  <!-- LOGS LAYER -->
+  <div id="logs_container" class="container">
+    <div id="logs_console" class="container_content">
+    </div>
+  </div>
+  <!-- LOGS LAYER -->
 </div>
 </body>
 

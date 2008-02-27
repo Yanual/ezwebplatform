@@ -53,11 +53,16 @@ function UserAdaptor() {
 
 	function _onError(transport, e) {
 		var msg;
-		if (e)
-			msg = e;
-		else
+		if (e) {
+			msg = interpolate(gettext("JavaScript exception on file %(errorFile)s (line: %(errorLine)s): %(errorDesc)s"),
+					                  {errorFile: e.fileName, errorLine: e.lineNumber, errorDesc: e},
+							  true);
+		} else {
 			msg = transport.status + " " + transport.statusText;
-		alert (gettext ("Error getting concept ") + UserAdaptor.prototype.CONCEPT + ":"+ msg);
+		}
+		msg = interpolate(gettext("Error getting concept %(concept)s: %(errorMsg)s."),
+		                          {concept: UserAdaptor.prototype.CONCEPT, errorMsg: msg}, true);
+		OpManagerFactory.getInstance().log(msg);
 	}
 	
 	var uri = URIs.GET_CONTEXT_VALUE.evaluate({concept: UserAdaptor.prototype.CONCEPT});
@@ -83,11 +88,16 @@ function WidthAdaptor(gadgetID_) {
 
 	function _onError(transport, e) {
 		var msg;
-		if (e)
-			msg = e;
-		else
+		if (e) {
+			msg = interpolate(gettext("JavaScript exception on file %(errorFile)s (line: %(errorLine)s): %(errorDesc)s"),
+					                  {errorFile: e.fileName, errorLine: e.lineNumber, errorDesc: e},
+							  true);
+		} else {
 			msg = transport.status + " " + transport.statusText;
-		alert (gettext ("Error getting concept ") + WidthAdaptor.prototype.CONCEPT + ":"+ msg);
+		}
+		msg = interpolate(gettext("Error getting concept %(concept)s: %(errorMsg)s."),
+		                          {concept: UserAdaptor.prototype.CONCEPT, errorMsg: msg}, true);
+		OpManagerFactory.getInstance().log(msg);
 	}
 	
 	var uri = URIs.GET_IGADGET.evaluate({id: this._igadget});
@@ -114,11 +124,16 @@ function HeightAdaptor(gadgetID_) {
 
 	function _onError(transport, e) {
 		var msg;
-		if (e)
-			msg = e;
-		else
+		if (e) {
+			msg = interpolate(gettext("JavaScript exception on file %(errorFile)s (line: %(errorLine)s): %(errorDesc)s"),
+					                  {errorFile: e.fileName, errorLine: e.lineNumber, errorDesc: e},
+							  true);
+		} else {
 			msg = transport.status + " " + transport.statusText;
-		alert (gettext ("Error getting concept ") + HeightAdaptor.prototype.CONCEPT + ":"+ msg);
+		}
+		msg = interpolate(gettext("Error getting concept %(concept)s: %(errorMsg)s."),
+		                          {concept: UserAdaptor.prototype.CONCEPT, errorMsg: msg}, true);
+		OpManagerFactory.getInstance().log(msg);
 	}
 	
 	var uri = URIs.GET_IGADGET.evaluate({id: this._igadget});
@@ -144,11 +159,16 @@ function LanguageAdaptor() {
 
 	function _onError(transport, e) {
 		var msg;
-		if (e)
-			msg = e;
-		else
+		if (e) {
+			msg = interpolate(gettext("JavaScript exception on file %(errorFile)s (line: %(errorLine)s): %(errorDesc)s"),
+					                  {errorFile: e.fileName, errorLine: e.lineNumber, errorDesc: e},
+							  true);
+		} else {
 			msg = transport.status + " " + transport.statusText;
-		alert (gettext ("Error getting concept ") + LanguageAdaptor.prototype.CONCEPT + ":"+ msg);
+		}
+		msg = interpolate(gettext("Error getting concept %(concept)s: %(errorMsg)s."),
+		                          {concept: UserAdaptor.prototype.CONCEPT, errorMsg: msg}, true);
+		OpManagerFactory.getInstance().log(msg);
 	}
 	
 	var uri = URIs.GET_CONTEXT_VALUE.evaluate({concept: LanguageAdaptor.prototype.CONCEPT});

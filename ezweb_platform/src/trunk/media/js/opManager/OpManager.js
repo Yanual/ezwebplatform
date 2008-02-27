@@ -48,6 +48,7 @@ var OpManagerFactory = function () {
 		// *********************************
 		// PRIVATE VARIABLES AND FUNCTIONS
 		// *********************************
+		var errorCount = 0;
 		
 		// Already loaded modules
 		this.persistenceEngine = PersistenceEngineFactory.getInstance();
@@ -152,18 +153,45 @@ var OpManagerFactory = function () {
 		}
 		
 		OpManager.prototype.log = function(msg, level) {
+			if (errorCount++ == 0) {
+				$("logs_tab").className="tab";
+			}
+			msg = ngettext("%(errorCount)s error", "%(errorCount)s errors", errorCount);
+			label = interpolate(, {errorCount: errorCount}, true);
+			$("logs_tab").innerHTML = label;
+
+			var logentry = document.createElement("p");
+
 			switch (level) {
 			default:
 			case Constants.Logging.ERROR_MSG:
+				icon = document.createElement("img");
+				icon.setAttribute("src", "/ezweb/images/error.png");
+				icon.setAttribute("class", "icon");
+				icon.setAttribute("alt", "[Error] ");
+				logentry.appendChild(icon);
 				if (console) console.error(msg);
 				break;
 			case Constants.Logging.WARN_MSG:
+				icon = document.createElement("img");
+				icon.setAttribute("src", "/ezweb/images/warning.png");
+				icon.setAttribute("class", "icon"); 
+				icon.setAttribute("alt", "[Warning] ");
+				logentry.appendChild(icon);
 				if (console) console.warn(msg);
 				break;
 			case Constants.Logging.INFO_MSG:
+				icon = document.createElement("img");
+				icon.setAttribute("src", "/ezweb/images/info.png");
+				icon.setAttribute("class", "icon");
+				icon.setAttribute("alt", "[Info] ");
+				logentry.appendChild(icon);
 				if (console) console.info(msg);
 				break;
 			}
+
+			logentry.appendChild(document.createTextNode(msg));
+			$("logs_console").appendChild(logentry);
 		}
 	}
 	

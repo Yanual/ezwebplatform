@@ -54,6 +54,7 @@ a:hover{
   padding-left: 10px;
   bottom: -2px;
   z-index: 3;
+  right: 4px;
 }
 
 #header .tab_section .tab {
@@ -65,6 +66,10 @@ a:hover{
   padding: 2px 9px;
   margin: 0px 0.5em;
   cursor: pointer;
+}
+
+.disabled {
+  display: none;
 }
 
 #header .tab_section .current {
@@ -320,6 +325,28 @@ a:hover{
 /*    list-style-image: url(/ezweb/images/connect_no.png);*/
 }
 
+/* logs -------------------------------------------------------------------------------------------- */
+
+#header .tab_section #logs_tab {
+  color: #FFCC00;
+}
+
+#header .tab_section #logs_tab.current {
+  color: #FF0000;
+}
+
+#logs_console {
+  overflow-x: none;
+  overflow-y: auto;
+}
+
+#logs_console .icon {
+  margin: 0px 0.5ex;
+}
+
+#logs_console p {
+  margin: 1ex 1ex 1ex 3ex;
+}
 
 /* footer ------------------------------------------------------------------------------------------ */
 
