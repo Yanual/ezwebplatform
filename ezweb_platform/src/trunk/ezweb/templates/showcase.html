@@ -13,17 +13,17 @@
 		  <form onsubmit="return false;">
 			<table>
 					<tr>
-					<td><label for="advanced_search_text_tag">{% trans  "Search by Tags:" %}</label></td>
+ 					<td><label for="advanced_search_text_tag">{% trans  "Search by tags:" %}</label></td>
 					<td><input type="text" id="advanced_search_text_tag" name="advanced_search_text_tag" class="text" autocomplete="on"></input></td>
 					<td><button onclick="UIUtils.searchByTag(URIs.GET_RESOURCES_BY_TAG, this.form.advanced_search_text_tag.value);">{% trans  "Search" %}</button><br/></td>
 					</tr>
 					<tr>
-					<td><label for="advanced_search_text_event">{% trans  "Search by Events:" %}</label></td>
+ 					<td><label for="advanced_search_text_event">{% trans  "Search by events:" %}</label></td>
 					<td><input type="text" id="advanced_search_text_event" name="advanced_search_text_event" class="text" autocomplete="on"></input></td>
 					<td><button onclick="UIUtils.searchByWiring(URIs.GET_RESOURCES_BY_WIRING, this.form.advanced_search_text_event.value, 'event');">{% trans  "Search" %}</button><br/></td>
 					</tr>
 					<tr>
-					<td><label for="advanced_search_text_slot">{% trans  "Search by Slots:" %}</label></td>
+ 					<td><label for="advanced_search_text_slot">{% trans  "Search by slots:" %}</label></td>
 					<td><input type="text" id="advanced_search_text_slot" name="advanced_search_text_slot" class="text" autocomplete="on"></input></td>
 					<td><button onclick="UIUtils.searchByWiring(URIs.GET_RESOURCES_BY_WIRING, this.form.advanced_search_text_slot.value, 'slot');">{% trans  "Search" %}</button><br/></td>
 					</tr>
