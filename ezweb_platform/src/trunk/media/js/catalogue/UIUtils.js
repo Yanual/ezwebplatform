@@ -54,13 +54,15 @@ UIUtils.infoResourcesWidth = 400;
 UIUtils.isInfoResourcesOpen = false;
 UIUtils.page = 1;
 UIUtils.off = 4;
+UIUtils.num_items = 0;
 UIUtils.search = 'false';
 UIUtils.searchValue = '';
 UIUtils.searchCriteria = '';
 
 UIUtils.addResource = function(url, paramName, paramValue) {
 	var newResourceOnSuccess = function (response) {
-		OpManagerFactory.getInstance().repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
+		//OpManagerFactory.getInstance().repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + Math.ceil(UIUtils.getNum_items()/UIUtils.getOffset()) + "/" + UIUtils.getOffset());
+	    UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, UIUtils.getOffset(), Math.ceil(UIUtils.getNum_items()/UIUtils.getOffset()), UIUtils.getNum_items());
 	}
 	
 	var newResourceOnError = function (transport, e) {
@@ -256,8 +258,9 @@ UIUtils.searchByWiring = function(url, value, wiring) {
 UIUtils.cataloguePaginate = function(url, offset, pag, items) {
 	this.closeInfoResource();
 	UIUtils.off=offset;
+	UIUtils.num_items=items;
 	var opManager = OpManagerFactory.getInstance();
-	var pages = Math.ceil(items/UIUtils.getOffset());
+	var pages = Math.ceil(UIUtils.getNum_items()/UIUtils.getOffset());
 	
 	
 	if (UIUtils.search == 'false'){
@@ -312,6 +315,10 @@ UIUtils.getOffset = function() {
     return UIUtils.off;
 }
 
+UIUtils.getNum_items = function() {
+    return UIUtils.num_items;
+}
+
 UIUtils.searchGeneric = function(url, param, criteria) {
 	this.closeInfoResource();
 	var opManager = OpManagerFactory.getInstance();
@@ -364,7 +371,7 @@ UIUtils.deleteGadget = function(id) {
 			}
 			
 	var loadTags = function(transport) {
-				opManager.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getOffset() + "/" + UIUtils.getOffset());
+				opManager.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
 			}
 	PersistenceEngineFactory.getInstance().send_delete(resourceURI, this, loadTags, onError);
 }
