@@ -49,7 +49,8 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 												_tagsToMoreImportantTags(3) +
 											"</div>" +
 											"<div class='more_tags'>" +
-												"<a id='" + id + "_tagcloud_balloon' title='" + gettext ('Show resource tagcloud') + "' onmouseover=\"CatalogueFactory.getInstance().getResource('" + id + "').changeIconTagcloudBalloon('/ezweb/images/more_tags.png');\" onmouseout=\"CatalogueFactory.getInstance().getResource('" + id + "').changeIconTagcloudBalloon('/ezweb/images/more_tags_gray.png');\">" +
+												"<a id='" + id + "_tagcloud_balloon' title='" + gettext ('Show resource tagcloud') + "' onmouseover=\"CatalogueFactory.getInstance().getResource('" + id + "').changeIconTagcloudBalloon('/ezweb/images/more_tags.png');\"" + 
+			                                       "onmouseout=\"CatalogueFactory.getInstance().getResource('" + id + "').changeIconTagcloudBalloon('/ezweb/images/more_tags_gray.png');\" onClick=\"javascript:UIUtils.balloonResource ='" + id + "'\";>" +
 												"</a>" + 
 											"</div>" +
 										"</div>" +
@@ -76,7 +77,7 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 									"<div class='connect'>" + gettext ('Gadget connectivity') + ":</div><br/>" +
 									"<div class='Events'>" + gettext ('Events: ') + _events()+ "</div>" +
 									"<div class='Slots'>" + gettext ('Slots: ') +_slots()+ "</div>" +
-									"<div class='tagcloud'>" + gettext ('Tagcloud') + ":<br/><div id='" + id + "_tagcloud' class='tags'>" + _tagsToTagcloud() + "</div></div>" +
+									"<div class='tagcloud'>" + gettext ('Tagcloud') + ":<br/><div id='" + id + "_tagcloud' class='tags'>" + _tagsToTagcloud('description') + "</div></div>" +
 									"<div id='add_tags_panel' class='new_tags' style='display:none;'>" +
 										"<div class='title'>" + gettext ('New tags') + ":</div>" +
 										"<div id='my_tags' class='my_tags'>" +
@@ -109,8 +110,15 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 	{
 		document.getElementById(id + "_important_tags").innerHTML = _tagsToMoreImportantTags(3);
 		document.getElementById(id + '_tagcloud_balloon').innerHTML = "\n";
-		_createTagcloudBalloon();
-		if (id == UIUtils.selectedResource) document.getElementById(id + "_tagcloud").innerHTML = _tagsToTagcloud();
+		var visible = tagcloudBalloon._properties.visible;
+		if (visible) tagcloudBalloon.hide();
+		_updateTagcloudBalloon(visible);
+		if (id == UIUtils.selectedResource || id == UIUtils.balloonResource) {
+			if (document.getElementById(id + "_tagcloud") != null)
+			{
+				document.getElementById(id + "_tagcloud").innerHTML = _tagsToTagcloud('description');
+			}
+		}
 	}
 	
 	this.changeIconDescriptionBalloon = function(src_)
@@ -122,7 +130,7 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 	{
 		tagcloudBalloon._elements.icon.src = src_;
 	}
-	
+
 	// *******************
 	//  PRIVATE FUNCTIONS
 	// *******************
@@ -274,31 +282,28 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 		return slotsHTML;
 	}
 	
-	var _tagsToTagcloud = function(){
+	var _tagsToTagcloud = function(loc){
 		var tagsHTML = '';
 		var URL = '';
 		var tagsAux = state.getTags();
-		
-		
+
 		for (var i=0; i<tagsAux.length; i++)
 		{
 			var version = state.getVersion();
 			var added = tagsAux[i].getAdded_by();
 			
 			if(tagsAux[i].getAdded_by() == 'Yes'){  
-			
-			var jsCall = 'javascript:UIUtils.removeTagUser("' + tagsAux[i].getValue() + '");';
-			tagsHTML += ("<a href='" + jsCall + "'><img src='/ezweb/images/cancel_gray.png' border=0 name=op1></a><span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML() + ((i<(tagsAux.length-1))?",":"") + "</span>");
-			
-		}
-		  else{
-		  
-		  tagsHTML += ("<span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML() + ((i<(tagsAux.length-1))?",":"") + "</span>");		  
-		}
+
+				var jsCall = 'javascript:UIUtils.removeTagUser("' + tagsAux[i].getValue() + '","'+loc+'");';
+				tagsHTML += ("<a href='" + jsCall + "' ><img id='"+id+"_deleteIcon_"+i+"_"+loc+"' onMouseOver=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/delete.png';\" onMouseOut=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/cancel_gray.png';\" src='/ezweb/images/cancel_gray.png' border=0 name=op1></a><span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML() + ((i<(tagsAux.length-1))?",":"") + "</span>");
+			}
+			else{
+				tagsHTML += ("<span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML() + ((i<(tagsAux.length-1))?",":"") + "</span>");		  
+			}
 		}
 		return tagsHTML;
 	}
-	
+
 	var _createDescriptionBalloon = function()
 	{
 		descriptionBalloon = new HelpBalloon({
@@ -322,11 +327,17 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 									altText: 	gettext ('Tagcloud'),				//Alt text of the help icon
 									title: 		gettext ('Tagcloud') + ':',			//Title of the balloon topic
 									content:	"<p class='tagcloud_balloon'>" +	//Static content of the help balloon
-													_tagsToTagcloud() + 
+													_tagsToTagcloud('balloon') + 
 												"</p>",
 									imagePath: 	'/ezweb/js/lib/helpballoon/images/'
 		});
 		$(id + '_tagcloud_balloon').appendChild(tagcloudBalloon._elements.icon);
+	}
+
+	var _updateTagcloudBalloon = function(visible)
+	{
+		_createTagcloudBalloon();
+		if (visible && state.getTags().length!=0) { tagcloudBalloon.show(); }
 	}
 
 	var _createResource = function(urlTemplate_) {

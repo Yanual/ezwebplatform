@@ -99,16 +99,24 @@ function Tagger(){
 		}
 	}
 	
-	this.removeTagUser = function(url, resourceURI)
+this.removeTagUser = function(url, resourceURI,loc)
 	{
-		
+			var resource;
+			if (loc == 'balloon')
+			{
+				resource = CatalogueFactory.getInstance().getResource(UIUtils.balloonResource);
+			}
+			else {
+				resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
+			}
+
 			var onError = function(transport) {
 				alert(gettext ("Error DELETE"));
 				// Process
 			}
 			
 			var loadTags = function(transport) {
-				var resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
+				
 				var responseJSON = transport.responseText;
 				var jsonResourceList = eval ('(' + responseJSON + ')');
 				resource.setTags(jsonResourceList.tagList);
@@ -116,8 +124,7 @@ function Tagger(){
 			}
 			
 			PersistenceEngineFactory.getInstance().send_delete(url + resourceURI, this, loadTags, onError);
-			var resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
-			resource.updateTags();
+			
   }
 
 	

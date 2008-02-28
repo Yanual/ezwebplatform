@@ -45,6 +45,7 @@ function UIUtils()
 }
 
 UIUtils.selectedResource = null;
+UIUtils.balloonResource = null;
 UIUtils.imageBottom = '';
 UIUtils.imageContent = '';
 UIUtils.imageConnectableBottom = '';
@@ -56,7 +57,6 @@ UIUtils.off = 4;
 UIUtils.search = 'false';
 UIUtils.searchValue = '';
 UIUtils.searchCriteria = '';
-UIUtils.idResource='';
 
 UIUtils.addResource = function(url, paramName, paramValue) {
 	var newResourceOnSuccess = function (response) {
@@ -91,6 +91,10 @@ UIUtils.addResource = function(url, paramName, paramValue) {
 UIUtils.getSelectedResource = function() {
 	return UIUtils.selectedResource;
 }
+
+UIUtils.getBalloonResource = function() {
+	return UIUtils.balloonResource;
+}
 	
 UIUtils.selectResource = function(resourceId_) {
 	var bottom = document.getElementById(resourceId_ + '_bottom');
@@ -109,10 +113,9 @@ UIUtils.deselectResource = function(resourceId_) {
 }
 
 UIUtils.selectConnectableResources = function(resourceId_) {
-	UIUtils.idResource = resourceId_;
 	UIUtils.deselectConnectableResources();
 	UIUtils.selectResource(resourceId_);
-	UIUtils.lightUpConnectableResources(resourceId_);
+	UIUtils.lightUpConnectableResources(UIUtils.selectedResource);
 }
 
 /* This method selects all the resources related by wiring in the catalogue*/
@@ -318,14 +321,13 @@ UIUtils.searchGeneric = function(url, param, criteria) {
 	
 	if (param == ""){
 		alert(gettext ("Indicate a criteria in search formulary"));
-		}
+	}
 	else{ 
-	UIUtils.searchValue = param;
-  UIUtils.searchCriteria = criteria ;
-	UIUtils.search = 'generic';
-	
-	opManager.repaintCatalogue(url + "/" + param + "/" + criteria + "/1/" + UIUtils.getOffset());
-}
+		UIUtils.searchValue = param;
+		UIUtils.searchCriteria = criteria ;
+		UIUtils.search = 'generic';
+		opManager.repaintCatalogue(url + "/" + param + "/" + criteria + "/1/" + UIUtils.getOffset());
+	}
 }
 
 UIUtils.removeTag = function(id_) {
@@ -338,15 +340,19 @@ UIUtils.removeAllTags = function() {
 	tagger.removeAll();
 }
 
-UIUtils.removeTagUser = function(tag)
-	{	
-		  
-		  var resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
-	    var tagger = resource.getTagger();
-	    var resourceURI = "/" + resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion() + "/" + tag;
-			
-			tagger.removeTagUser(URIs.DELETE_TAG, resourceURI);	
-			
+UIUtils.removeTagUser = function(tag,loc) {	
+	
+	var resource;
+	if (loc == 'balloon')
+	{
+		resource = CatalogueFactory.getInstance().getResource(UIUtils.balloonResource);
+	}
+	else {
+		resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
+	}
+    var tagger = resource.getTagger();
+    var resourceURI = "/" + resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion() + "/" + tag;
+	tagger.removeTagUser(URIs.DELETE_TAG, resourceURI,loc);		
 	}
 
 UIUtils.sendTags = function() {
@@ -423,8 +429,8 @@ UIUtils.SlideInfoResourceIntoView = function(element) {
         { UIUtils.hidde('tab_info_resource_open'); UIUtils.show('tab_info_resource_close'); }
     })
   );
-	if (UIUtils.idResource != '') {
-		 UIUtils.lightUpConnectableResources(UIUtils.idResource);
+	if (UIUtils.selectedResource != null) {
+		 UIUtils.lightUpConnectableResources(UIUtils.selectedResource);
 	}
 }
 
