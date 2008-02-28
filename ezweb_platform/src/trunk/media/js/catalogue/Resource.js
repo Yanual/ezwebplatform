@@ -27,7 +27,7 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 	this.paint = function(){
 		var newResource = document.createElement("div");
 		newResource.setAttribute('id', id);
-		newResource.innerHTML = "<div class='resource' onMouseOver='UIUtils.selectResource(\"" + id + "\");UIUtils.show(\"" + id + "_toolbar\");' onMouseOut='UIUtils.deselectResource(\"" + id + "\");UIUtils.hidde(\"" + id + "_toolbar\");'>" +
+		content =				"<div class='resource' onMouseOver='UIUtils.selectResource(\"" + id + "\");UIUtils.show(\"" + id + "_toolbar\");' onMouseOut='UIUtils.deselectResource(\"" + id + "\");UIUtils.hidde(\"" + id + "_toolbar\");'>" +
 									"<div class='top'></div>" +
 									"<div class='toolbar'>" +
 										"<div id='" + id + "_toolbar' style='display:none;'>" +
@@ -38,8 +38,13 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 											"</a>" +
 											"<a title='" + gettext ('Show template') + "' href='" + state.getUriTemplate() + "' target='_blank' onmouseover=\"UIUtils.changeImage('" + id + "_template_img', '/ezweb/images/template.png');\" onmouseout=\"UIUtils.changeImage('" + id + "_template_img', '/ezweb/images/template_gray.png');\">" +
 												"<img id='" + id + "_template_img' src='/ezweb/images/template_gray.png'></img>" +
-											"</a>" +
-										"</div>" +
+											"</a>";
+		if (state.getAddedBy() == 'Yes'){ 
+			content +=						"<a title='" + gettext ('Delete gadget') + "' href='javascript:UIUtils.deleteGadget(\"" + id + "\")' onmouseover=\"UIUtils.changeImage('" + id + "_delete_img', '/ezweb/images/delete.png');\" onmouseout=\"UIUtils.changeImage('" + id + "_delete_img', '/ezweb/images/cancel_gray.png');\">" +
+												"<img id='" + id + "_delete_img' src='/ezweb/images/cancel_gray.png'></img>" +
+											"</a>";
+		}
+		content +=						"</div>" +
 									"</div>" +
 									"<div id='" + id + "_content' class='content'>" +
 										"<div class='title'>" + state.getName() + "</div>" +
@@ -58,6 +63,7 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 									"</div>" +
 									"<div id='" + id + "_bottom' class = 'bottom'></div>" +
 								"</div>";
+		newResource.innerHTML = content;
 		var parentHTML = document.getElementById("resources");
 		parentHTML.insertBefore(newResource, parentHTML.firstChild);
 		
@@ -264,7 +270,7 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 		
 		if (addedBy == 'Yes'){
 		
-	     deleteHTML += ("<a href='javascript:UIUtils.deleteGadget()'>" + gettext ('Delete Gadget') + "</a>");
+	     deleteHTML += ("<a href='javascript:UIUtils.deleteGadget(\"" + id + "\")'>" + gettext ('Delete gadget') + "</a>");
     }
 		return deleteHTML;
 	}
@@ -294,7 +300,7 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 			
 			if(tagsAux[i].getAdded_by() == 'Yes'){  
 
-				var jsCall = 'javascript:UIUtils.removeTagUser("' + tagsAux[i].getValue() + '","'+loc+'");';
+				var jsCall = 'javascript:UIUtils.removeTagUser("' + tagsAux[i].getValue() + '","'+id+'");';
 				tagsHTML += ("<a href='" + jsCall + "' ><img id='"+id+"_deleteIcon_"+i+"_"+loc+"' onMouseOver=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/delete.png';\" onMouseOut=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/cancel_gray.png';\" src='/ezweb/images/cancel_gray.png' border=0 name=op1></a><span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML() + ((i<(tagsAux.length-1))?",":"") + "</span>");
 			}
 			else{

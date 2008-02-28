@@ -99,16 +99,9 @@ function Tagger(){
 		}
 	}
 	
-this.removeTagUser = function(url, resourceURI,loc)
+this.removeTagUser = function(url, resourceURI,id)
 	{
-			var resource;
-			if (loc == 'balloon')
-			{
-				resource = CatalogueFactory.getInstance().getResource(UIUtils.balloonResource);
-			}
-			else {
-				resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
-			}
+			var resource = CatalogueFactory.getInstance().getResource(id);
 
 			var onError = function(transport) {
 				alert(gettext ("Error DELETE"));

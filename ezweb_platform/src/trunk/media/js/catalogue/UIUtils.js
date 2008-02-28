@@ -92,9 +92,6 @@ UIUtils.getSelectedResource = function() {
 	return UIUtils.selectedResource;
 }
 
-UIUtils.getBalloonResource = function() {
-	return UIUtils.balloonResource;
-}
 	
 UIUtils.selectResource = function(resourceId_) {
 	var bottom = document.getElementById(resourceId_ + '_bottom');
@@ -340,19 +337,13 @@ UIUtils.removeAllTags = function() {
 	tagger.removeAll();
 }
 
-UIUtils.removeTagUser = function(tag,loc) {	
+UIUtils.removeTagUser = function(tag,id) {	
 	
-	var resource;
-	if (loc == 'balloon')
-	{
-		resource = CatalogueFactory.getInstance().getResource(UIUtils.balloonResource);
-	}
-	else {
-		resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
-	}
+	var resource = CatalogueFactory.getInstance().getResource(id);
+
     var tagger = resource.getTagger();
     var resourceURI = "/" + resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion() + "/" + tag;
-	tagger.removeTagUser(URIs.DELETE_TAG, resourceURI,loc);		
+	tagger.removeTagUser(URIs.DELETE_TAG, resourceURI,id);		
 	}
 
 UIUtils.sendTags = function() {
@@ -363,8 +354,8 @@ UIUtils.sendTags = function() {
 	tagger.sendTags(URIs.POST_RESOURCE_TAGS, resourceURI);
 }
 
-UIUtils.deleteGadget = function() {
-	var resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
+UIUtils.deleteGadget = function(id) {
+	var resource = CatalogueFactory.getInstance().getResource(id);
 	var resourceURI = URIs.GET_POST_RESOURCES + "/" + resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion();
 	
 	var onError = function(transport) {
