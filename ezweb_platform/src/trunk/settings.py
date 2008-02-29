@@ -55,7 +55,6 @@ ADMINS = (
 MANAGERS = ADMINS
 
 DATABASE_ENGINE = 'postgresql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_OPTIONS = {"init_command": "SET storage_engine=InnoDB"}
 DATABASE_NAME = 'ezweb'             # Or path to database file if using sqlite3.
 DATABASE_USER = 'ezweb'             # Not used with sqlite3.
 DATABASE_PASSWORD = 'ezweb'         # Not used with sqlite3.
@@ -145,3 +144,7 @@ INSTALLED_APPS = (
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 AUTH_PROFILE_MODULE = 'user.UserProfile'
+
+#Proxy server for accessing Internet
+#PROXY_SERVER = 'nube.hi.inet:8080'
+

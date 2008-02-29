@@ -48,6 +48,8 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import string_concat
 
 from django.http import Http404, HttpResponse, HttpResponseServerError
+from django.conf import settings
+
 import string
 
 class Proxy(Resource):
@@ -57,6 +59,7 @@ class Proxy(Resource):
             url = request.POST['url']
         else:
             return HttpResponse(string_concat(['<error>',_(u"Url not specified"),'</error>']))
+
         # HTTP method, by default is GET
         if request.POST.has_key('method'):
             method = request.POST['method']
@@ -68,38 +71,59 @@ class Proxy(Resource):
             params = request.POST['params']
 	else:
 	    params = ''
+
         # HTTP call
         try:
             # Request creation
-		proto, host, cgi, param, query = urlparse.urlparse(url)[:5]
-		conn = httplib.HTTPConnection(host)
+            url = unquote(url)
+            proto, host, cgi, param, query = urlparse.urlparse(url)[:5]
+            
+            # Proxy support
+            proxy = ""
+            try:
+                proxy = settings.PROXY_SERVER
+            except Exception:
+                pass
 
+            print proxy
+            if (proxy != ""):
+                conn = httplib.HTTPConnection(proxy)
+            else:
+                conn = httplib.HTTPConnection(host)
+                
             # Add original request Headers to the request
-		headers = {}
-        	for header in request.META.items():
-                	headers[header[0]] = header[1]
+            headers = {}
+            for header in request.META.items():
+                headers[header[0]] = header[1]
+                
             # The same with cookies
-            	cookies = ''
-            	for cookie in request.COOKIES.items():
-            	    cookies = cookies + cookie[0] + '=' + cookie[1] + '; '	
-           	headers['Cookie'] = cookies
+            cookies = ''
+            for cookie in request.COOKIES.items():
+                cookies = cookies + cookie[0] + '=' + cookie[1] + '; '	
+            headers['Cookie'] = cookies
 
             # Open the request
-		if query != '':
-			cgi = cgi + '?%s' % query
-           	conn.request(method, cgi , params, headers)
-	    	res = conn.getresponse()
-
+            if query != '':
+                cgi = cgi + '?%s' % query
+                
+            if (proxy != ""):
+                conn.request(method, url, params, headers)
+            else:
+                conn.request(method, cgi, params, headers)
+	    	
+            res = conn.getresponse()
+                
             # Add content-type header to the response
-            	if res.getheader('content-type'):
-                	response = HttpResponse (res.read(), mimetype=res.getheader('content-type'))
-            	else:
-                	response = HttpResponse (res.read())
+            if res.getheader('content-type'):
+                response = HttpResponse (res.read(), mimetype=res.getheader('content-type'))
+            else:
+                response = HttpResponse (res.read())
+
             # Add all the headers recieved to the response
-            	headers = res.getheaders()
-		for header in headers:
-			if is_valid_header (string.lower(header[0])):
-				response[header[0]] = header[1]
-		return response
+            headers = res.getheaders()
+            for header in headers:
+                if is_valid_header (string.lower(header[0])):
+                    response[header[0]] = header[1]
+            return response
         except Exception, e:
             return HttpResponseServerError("<html><head><title>Error</title></head><body>%s</body></html>" % e, mimetype='text/html; charset=UTF-8')
