@@ -70,7 +70,7 @@ class GadgetsCollection(Resource):
         templateParser = None
 
 	try:
-    	    templateParser = TemplateParser(template_uri, user_name)
+    	    templateParser = TemplateParser(template_uri, user)
 
     	    templateParser.parse()
     	    transaction.commit()

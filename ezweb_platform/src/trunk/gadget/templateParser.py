@@ -36,33 +36,28 @@
 #   http://morfeo-project.org/
 #
 
-from xml.sax import saxutils
-from xml.sax import make_parser
-from xml.sax.handler import feature_namespaces
+from urllib import urlopen, urlcleanup
+from xml.sax import parseString, handler
 
 from commons.exceptions import TemplateParseException
 
-from gadgetCodeParser import GadgetCodeParser
-
 from django.utils.translation import ugettext as _
+from django.conf import settings
 
 from models import *
 
+from gadgetCodeParser import GadgetCodeParser
+
 class TemplateParser:
     def __init__(self, uri, user):
-
-        self.parser = make_parser()
-        self.handler = TemplateHandler()
-        self.handler.setUser(user)
-
+        urlcleanup()
         self.uri = uri
+        self.xml = urlopen(uri, settings.PROXY_SERVER).read()
+        self.handler = TemplateHandler(user)
 
-        # Tell the parser to use our handler
-        self.parser.setContentHandler(self.handler)
-        
     def parse(self):
         # Parse the input
-        self.parser.parse(self.uri)
+        parseString(self.xml, self.handler)
         
     def getGadget (self):
         return self.handler._gadget 
@@ -76,34 +71,28 @@ class TemplateParser:
     def getGadgetVendor (self):
         return self.handler._gadgetVendor
 
-
-class TemplateHandler(saxutils.handler.ContentHandler):
-    # XML parsing
-
+class TemplateHandler(handler.ContentHandler):
     _SLOT = "SLOT"
     _EVENT = "EVEN"
-
-    _accumulator = []
-    _link = []
-    _gadgetName = ""
-    _gadgetVersion = ""
-    _gadgetVendor = ""
-    _gadgetImage = ""
-    _gadgetWiki = ""
-    _gadgetAuthor = ""
-    _gadgetMail = ""
-    _gadgetDesc = ""
-    _template = ""
-    _user = ""
-    _gadgetURI = ""
-    _xhtml = ""
-    _lastPreference = ""
-    _gadget = None
-
         
-    def setUser (self, user):
-        self._user=user
-
+    def __init__(self, user):
+        self._accumulator = []
+        self._link = []
+        self._gadgetName = ""
+        self._gadgetVersion = ""
+        self._gadgetVendor = ""
+        self._gadgetImage = ""
+        self._gadgetWiki = ""
+        self._gadgetAuthor = ""
+        self._gadgetMail = ""
+        self._gadgetDesc = ""
+        self._template = ""
+        self._user = user
+        self._gadgetURI = ""
+        self._xhtml = ""
+        self._lastPreference = ""
+        self._gadget = None
+        
     def typeText2typeCode (self, typeText):
         if typeText == 'text':
                 return 'S'
@@ -328,7 +317,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
             try:
                 # Gadget Code Parsing
                 gadgetParser = GadgetCodeParser()
-                gadgetParser.parseUserEvents(_href, self._gadgetURI)
+                gadgetParser.parse(_href, self._gadgetURI)
 
                 self._xhtml = gadgetParser.getXHTML()
             except Exception, e:
@@ -374,8 +363,6 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 ###############
 
     def startElement(self, name, attrs):
-        print name
-
         # Catalogue
         if (name == 'Name') or (name=='Version') or (name=='Vendor') or (name=='ImageURI') or (name=='WikiURI') or (name=='Mail') or (name=='Description') or (name=='Author'):
             self.reset_Accumulator()
@@ -391,12 +378,10 @@ class TemplateHandler(saxutils.handler.ContentHandler):
             return
 
         if (name == 'Slot'):
-            print "Proccessing SLOT"
             self.processSlot(attrs)
             return
 
         if (name == 'Event'):
-            print "Proccessing Event"
             self.processEvent(attrs)
             return
 

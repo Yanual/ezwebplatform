@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 # MORFEO Project 
 # http://morfeo-project.org 
@@ -36,12 +36,9 @@
 #   http://morfeo-project.org/
 #
 
-from urllib import urlopen
 from datetime import datetime
-import sys
 
-from xml.sax import saxutils
-from xml.sax import make_parser
+import sys
 
 from commons.exceptions import TemplateParseException
 
@@ -50,47 +47,45 @@ from django.shortcuts import get_object_or_404
 
 from django.utils.translation import ugettext as _
 
+from urllib import urlopen, urlcleanup
+from xml.sax import parseString, handler
+
 from resource.models import *
+from django.conf import settings
 
 
 class TemplateParser:
     def __init__(self, uri, user):
-
-        self.parser = make_parser()
-        self.handler = TemplateHandler()
-        self.handler.setUserUri(user,uri)
+        urlcleanup()
         self.uri = uri
-
-        # Tell the parser to use our handler
-        self.parser.setContentHandler(self.handler)
+        self.xml = urlopen(uri,settings.PROXY_SERVER).read()
+        self.handler = TemplateHandler(user, uri)
 
     def parse(self):
         # Parse the input
-        self.parser.parse(self.uri)
+        parseString(self.xml, self.handler)
+
         
 
-class TemplateHandler(saxutils.handler.ContentHandler): 
-	
-    _accumulator = []
-    _name = ""
-    _vendor = ""
-    _version = ""
-    _author = ""
-    _description = ""
-    _mail = ""
-    _imageURI = ""
-    _wikiURI = ""
+class TemplateHandler(handler.ContentHandler): 
+    def __init__(self, user, uri):
+        self._accumulator = []
+        self._name = ""
+        self._vendor = ""
+        self._version = ""
+        self._author = ""
+        self._description = ""
+        self._mail = ""
+        self._imageURI = ""
+        self._wikiURI = ""
+        self._flag = ""
+        self._user = user
+        self._uri = uri
 
-    def setUserUri (self, user, uri):
-        self._user=user
-        self._uri=uri
-        self._flag = ''
-	
     def resetAccumulator(self):
         self._accumulator = []
     
     def processWire(self, attrs, wire):
-       
         _friendCode = ''
         _wiring = ''
 
@@ -114,9 +109,6 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 
 	
     def endElement(self, name):
-
-        
-        
 	if (name == 'Name'):
 	    self._name = self._accumulator[0]
 	    return
@@ -162,7 +154,7 @@ class TemplateHandler(saxutils.handler.ContentHandler):
 	elif (self._flag == 'add'):
             return
         else:
-            raise TemplateParseException(_("ERROR: missing Resource description info at Resource element! Check schema!"))
+            raise TemplateParseException(_("ERROR: missing Resource description field at Resource element! Check schema!"))
 
     def characters(self, text):
 	self._accumulator.append(text)

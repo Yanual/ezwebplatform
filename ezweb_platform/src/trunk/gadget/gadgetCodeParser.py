@@ -52,8 +52,7 @@ class GadgetCodeParser(HTMLParser):
 
     xHTML = None
 
-    def parseUserEvents(self, codeURI, gadgetURI):
-
+    def parse(self, codeURI, gadgetURI):
         xhtml = ""
 	# TODO Fixme!! This works for now, but we have to check if a part of a url is empty
 	address = codeURI.split('://')
