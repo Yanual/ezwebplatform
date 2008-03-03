@@ -85,7 +85,6 @@ class Proxy(Resource):
             except Exception:
                 pass
 
-            print proxy
             if (proxy != ""):
                 conn = httplib.HTTPConnection(proxy)
             else:

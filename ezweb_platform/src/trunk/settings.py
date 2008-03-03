@@ -145,6 +145,6 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 AUTH_PROFILE_MODULE = 'user.UserProfile'
 
-#Proxy server for accessing Internet
+#Set the proxy server here if needed
 #PROXY_SERVER = 'nube.hi.inet:8080'
 
