@@ -83,7 +83,12 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 									"<div class='connect'>" + gettext ('Gadget connectivity') + ":</div><br/>" +
 									"<div class='Events'>" + gettext ('Events: ') + _events()+ "</div>" +
 									"<div class='Slots'>" + gettext ('Slots: ') +_slots()+ "</div>" +
-									"<div class='tagcloud'>" + gettext ('Tagcloud') + ":<br/><div id='" + id + "_tagcloud' class='tags'>" + _tagsToTagcloud('description') + "</div></div>" +
+									"<div class='tagcloud'>" + gettext ('Tagcloud') + ":<br/>" +
+									"<div id='view_tags_links' class='link'>"+
+									"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('View my tags') + "</a>" +
+									"&nbsp&nbsp&nbsp <a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('View others tags') + "</a>" +
+									"</div>" +
+									"<div id='" + id + "_tagcloud' class='tags'>" + _tagsToTagcloud('description') + "</div></div>" +
 									"<div id='add_tags_panel' class='new_tags' style='display:none;'>" +
 										"<div class='title'>" + gettext ('New tags') + ":</div>" +
 										"<div id='my_tags' class='my_tags'>" +
@@ -135,6 +140,37 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 	this.changeIconTagcloudBalloon = function(src_)
 	{
 		tagcloudBalloon._elements.icon.src = src_;
+	}
+
+	this.changeTagcloud = function(type){
+		var opciones = {}
+		var viewTagsHTML = "";
+		if (type=='mytags')
+		{
+			opciones = {tags: type}
+			viewTagsHTML = "<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"all\");'>" + gettext ('View all tags') + "</a>" +
+						"&nbsp&nbsp&nbsp <a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('View others tags') + "</a>";
+			document.getElementById('view_tags_links').innerHTML = viewTagsHTML;
+		}
+		else {
+			if (type=='others') {
+				opciones = {tags: type}
+				viewTagsHTML = "<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"all\");'>" + gettext ('View all tags') + "</a>" +
+						"&nbsp&nbsp&nbsp <a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('View my tags') + "</a>";
+				document.getElementById('view_tags_links').innerHTML = viewTagsHTML;
+			}
+			else {
+				opciones = {tags: type}
+				viewTagsHTML = "<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('View my tags') + "</a>" +
+						"&nbsp&nbsp&nbsp <a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('View others tags') + "</a>";
+				document.getElementById('view_tags_links').innerHTML = viewTagsHTML;
+			}
+		}
+		
+		if (document.getElementById(id + '_tagcloud'))
+		{
+			document.getElementById(id + '_tagcloud').innerHTML= _tagsToTagcloud('description',opciones);
+		}
 	}
 
 	// *******************
@@ -287,24 +323,29 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 		}
 		return slotsHTML;
 	}
-	
+
+
 	var _tagsToTagcloud = function(loc){
 		var tagsHTML = '';
 		var URL = '';
 		var tagsAux = state.getTags();
+		var opciones = arguments[1] || {tags:'all'};
 
 		for (var i=0; i<tagsAux.length; i++)
 		{
 			var version = state.getVersion();
 			var added = tagsAux[i].getAdded_by();
 			
-			if(tagsAux[i].getAdded_by() == 'Yes'){  
+			if(tagsAux[i].getAdded_by() == 'Yes' && (opciones.tags=='all' || opciones.tags=='mytags')){  
 
 				var jsCall = 'javascript:UIUtils.removeTagUser("' + tagsAux[i].getValue() + '","'+id+'");';
-				tagsHTML += ("<a href='" + jsCall + "' ><img id='"+id+"_deleteIcon_"+i+"_"+loc+"' onMouseOver=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/delete.png';\" onMouseOut=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/cancel_gray.png';\" src='/ezweb/images/cancel_gray.png' border=0 name=op1></a><span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML() + ((i<(tagsAux.length-1))?",":"") + "</span>");
+				tagsHTML += ("<a title='" + gettext ('Delete tag') + "' href='" + jsCall + "' ><img id='"+id+"_deleteIcon_"+i+"_"+loc+"' onMouseOver=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/delete.png';\" onMouseOut=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/cancel_gray.png';\" src='/ezweb/images/cancel_gray.png' border=0 name=op1></a><span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML() + ((i<(tagsAux.length-1))?",":"") + "</span>");
 			}
 			else{
-				tagsHTML += ("<span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML() + ((i<(tagsAux.length-1))?",":"") + "</span>");		  
+				if (tagsAux[i].getAdded_by() == 'No' && (opciones.tags=='all' || opciones.tags=='others'))
+				{
+					tagsHTML += ("<span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML() + ((i<(tagsAux.length-1))?",":"") + "</span>");		  
+				}
 			}
 		}
 		return tagsHTML;

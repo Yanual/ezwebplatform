@@ -310,7 +310,7 @@
 {
 	position:relative;
 	width:400px;
-	height:720px;
+	height:750px;
 	float:right;
 	margin:0px;
 	text-align:center;
@@ -334,7 +334,7 @@
 	height: 11px;
 	padding: 0px;
 	left:0px;
-	top: 703px;
+	top: 733px;
 	background: url(../images/info-resource-right-bottom.png) no-repeat bottom right;
 }
 
@@ -344,7 +344,7 @@
 	left:0px;
 	top:7px;
 	width:400px;
-	height:702px;
+	height:732px;
 	float:right;
 	margin:0px;
 	display:block;
