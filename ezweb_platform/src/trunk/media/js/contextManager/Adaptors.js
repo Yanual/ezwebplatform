@@ -145,9 +145,80 @@ HeightAdaptor.prototype.CONCEPT = 'height'
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////     LANGUAGE ADAPTOR     //////////////////////////////////////////////////
+//////////////////////////////    X POSITION  ADAPTOR  (LEFT)   //////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
+function XPositionAdaptor(gadgetID_) {
+
+	this._igadget = gadgetID_;
+
+	function _onSuccess(receivedData) {
+		var json = eval ('(' + receivedData.responseText + ')');
+		var value = json.left;
+		ContextManagerFactory.getInstance().setGadgetConceptValue(this._igadget, XPositionAdaptor.prototype.CONCEPT, value);
+	}
+
+	function _onError(transport, e) {
+		var msg;
+		if (e) {
+			msg = interpolate(gettext("JavaScript exception on file %(errorFile)s (line: %(errorLine)s): %(errorDesc)s"),
+					                  {errorFile: e.fileName, errorLine: e.lineNumber, errorDesc: e},
+							  true);
+		} else {
+			msg = transport.status + " " + transport.statusText;
+		}
+		msg = interpolate(gettext("Error getting concept %(concept)s: %(errorMsg)s."),
+		                          {concept: XPositionAdaptor.prototype.CONCEPT, errorMsg: msg}, true);
+		OpManagerFactory.getInstance().log(msg);
+	}
+	
+	var uri = URIs.GET_IGADGET.evaluate({id: this._igadget});
+	PersistenceEngineFactory.getInstance().send_get(uri , this, _onSuccess, _onError);			
+	
+}
+
+XPositionAdaptor.prototype.CONCEPT = 'xPosition'
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////    Y POSITION ADAPTOR (TOP)   ////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function YPositionAdaptor(gadgetID_) {
+
+	this._igadget = gadgetID_;
+	
+	function _onSuccess(receivedData) {
+		var json = eval ('(' + receivedData.responseText + ')');
+		var value = json.top;
+		ContextManagerFactory.getInstance().setGadgetConceptValue(this._igadget, YPositionAdaptor.prototype.CONCEPT, value);
+	}
+
+	function _onError(transport, e) {
+		var msg;
+		if (e) {
+			msg = interpolate(gettext("JavaScript exception on file %(errorFile)s (line: %(errorLine)s): %(errorDesc)s"),
+					                  {errorFile: e.fileName, errorLine: e.lineNumber, errorDesc: e},
+							  true);
+		} else {
+			msg = transport.status + " " + transport.statusText;
+		}
+		msg = interpolate(gettext("Error getting concept %(concept)s: %(errorMsg)s."),
+		                          {concept: YPositionAdaptor.prototype.CONCEPT, errorMsg: msg}, true);
+		OpManagerFactory.getInstance().log(msg);
+	}
+	
+	var uri = URIs.GET_IGADGET.evaluate({id: this._igadget});
+	PersistenceEngineFactory.getInstance().send_get(uri , this, _onSuccess, _onError);			
+	
+}
+
+YPositionAdaptor.prototype.CONCEPT = 'yPosition'
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////     LANGUAGE ADAPTOR     //////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function LanguageAdaptor() {
 	
