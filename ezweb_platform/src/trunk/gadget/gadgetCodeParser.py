@@ -60,7 +60,15 @@ class GadgetCodeParser(HTMLParser):
 	codeURI = address[0] + "://" + query[0] + "/" + urlquote(query[1])
         try:
 	    urlcleanup()
-            xhtml = urlopen(codeURI).read()
+	    try:
+	        proxy = settings.PROXY_SERVER
+    	    except Exception:
+                proxy = False
+
+            if proxy:
+                xhtml = urlopen(codeURI, proxy).read()
+	    else:
+                xhtml = urlopen(codeURI).read()
         except Exception:
             raise TemplateParseException(_("XHTML code is not accessible"))
         

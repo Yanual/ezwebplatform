@@ -58,9 +58,15 @@ class TemplateParser:
     def __init__(self, uri, user):
         urlcleanup()
         self.uri = uri
+
         try:
-            self.xml = urlopen(uri,settings.PROXY_SERVER).read()
-        except:
+            proxy = settings.PROXY_SERVER
+        except Exception:
+            proxy = False
+
+        if proxy:
+            self.xml = urlopen(uri, proxy).read()
+        else:
             self.xml = urlopen(uri).read()
 
         self.handler = TemplateHandler(user, uri)

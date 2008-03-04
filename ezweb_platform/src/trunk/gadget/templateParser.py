@@ -54,12 +54,15 @@ class TemplateParser:
         self.uri = uri
 
         try:
-            if (settings.PROXY_SERVER):
-                self.xml = urlopen(uri, settings.PROXY_SERVER).read()
+            proxy = settings.PROXY_SERVER
         except Exception:
+            proxy = False
+
+        if proxy:
+            self.xml = urlopen(uri, proxy).read()
+        else:
             self.xml = urlopen(uri).read()
 
-        self.xml = urlopen(uri, settings.PROXY_SERVER).read()
         self.handler = TemplateHandler(user)
 
     def parse(self):
