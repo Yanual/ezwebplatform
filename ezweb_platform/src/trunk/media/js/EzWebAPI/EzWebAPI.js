@@ -101,6 +101,10 @@ _EzWebAPI.prototype.send_put = function(url, parameters, context, successHandler
 	EzWebAPI.platform.PersistenceEngineFactory.getInstance().send_post(this.platform.URIs.PROXY, params, context, successHandler, errorHandler);
 }
 
+_EzWebAPI.prototype.getConnection = function() {
+    return Ajax.getTransport();
+}
+
 var EzWebAPI = new _EzWebAPI();
 
 

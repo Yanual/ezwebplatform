@@ -1,8 +1,8 @@
 #!/bin/bash
 # tu nombre de usuario tiene que existir como superusuario de postgresq
 
-dropdb ezweb
-createdb --owner=ezweb ezweb
+dropdb ezwebmiguel
+createdb --owner=ezwebmiguel ezwebmiguel
 
 if (( $? )) ; then
   echo "No se puede crear la base de datos. (Mira que Django no está corriendo y prueba de nuevo.)"

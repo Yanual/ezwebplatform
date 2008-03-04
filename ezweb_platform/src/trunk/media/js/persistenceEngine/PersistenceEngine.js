@@ -44,17 +44,17 @@ var PersistenceEngineFactory = function () {
 	var instance = null;
 
 	function PersitenceEngine () {
-		
+
 		// ****************
 		// PUBLIC METHODS 
 		// ****************
-		PersitenceEngine.prototype.send_get = function (url, context, successHandler, errorHandler) { 
+		PersitenceEngine.prototype.send_get = function (url, context, successHandler, errorHandler) {
 			new Ajax.Request(url, {
 				method: 'get',
 				onSuccess: successHandler.bind(context),
 				onFailure: errorHandler.bind(context),
 				onException: errorHandler.bind(context)
-			});
+			    });
 		} 
 		
 		PersitenceEngine.prototype.send_post = function (url, params, context, successHandler, errorHandler) {
@@ -63,8 +63,7 @@ var PersistenceEngineFactory = function () {
 				parameters: params,
 				onSuccess: successHandler.bind(context),
 				onFailure: errorHandler.bind(context),
-				onException: errorHandler.bind(context)
-			});
+			    });
 		}
 		
 		PersitenceEngine.prototype.send_delete = function (url, context, successHandler, errorHandler){

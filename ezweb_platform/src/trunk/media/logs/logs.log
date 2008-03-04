@@ -1,0 +1,71 @@
+ERROR: POST user/id/gadgets admin
+[18/02/2008 16:32:37] u'ERROR: Falta un atributo en el elemento Property'
+ERROR: POST user/id/gadgets admin
+[18/02/2008 16:32:51] u'ERROR: Falta un atributo en el elemento Property'
+ERROR: POST user/id/gadgets admin
+[18/02/2008 16:35:13] u'ERROR: Falta un atributo en el elemento Property'
+ERROR: POST user/id/gadgets admin
+[18/02/2008 16:35:41] u'ERROR: Falta un atributo en el elemento Property'
+ERROR: POST user/id/gadgets admin
+[18/02/2008 16:36:32] u'ERROR: Missing attribute at Property element'
+ERROR: POST user/id/resources admin
+[18/02/2008 16:41:47] ERROR:  llave duplicada viola restricción unique «resource_gadgetresource_short_name_key»
+
+INSERT INTO "resource_gadgetresource" ("short_name","vendor","version","added_by_user_id","author","mail","description","size","license","gadget_uri","creation_date","image_uri","wiki_page_uri","template_uri") VALUES ('AlarmPanel','Morfeo','1.2',1,'fabio','fabio@tid.es','Este gadget presenta el panel de alarmas',NULL,NULL,NULL,'2008-02-18 16:41:47.760397','http://demo.wasup.morfeo-project.org:8080/gadgets/images/AttentionSZ.jpg','http://forge.morfeo-project.org/wiki/index.php/Plataforma_WASUP','http://mac/~mike/guardarTexto2.xml')
+ERROR: POST user/id/gadgets admin
+[18/02/2008 16:53:14] <urlopen error (110, 'Connection timed out')>
+ERROR: POST user/id/resources admin
+[18/02/2008 17:00:23] ERROR:  llave duplicada viola restricción unique «resource_gadgetresource_short_name_key»
+
+INSERT INTO "resource_gadgetresource" ("short_name","vendor","version","added_by_user_id","author","mail","description","size","license","gadget_uri","creation_date","image_uri","wiki_page_uri","template_uri") VALUES ('AlarmPanel','Morfeo','1.2',1,'fabio','fabio@tid.es','Este gadget presenta el panel de alarmas',NULL,NULL,NULL,'2008-02-18 17:00:23.097250','http://demo.wasup.morfeo-project.org:8080/gadgets/images/AttentionSZ.jpg','http://forge.morfeo-project.org/wiki/index.php/Plataforma_WASUP','http://mac/~mike/guardarTexto3.xml')
+ERROR: POST user/id/gadgets admin
+[18/02/2008 17:26:46] <urlopen error (110, 'Connection timed out')>
+ERROR: POST user/id/resources admin
+[19/02/2008 12:00:32] ERROR:  llave duplicada viola restricción unique «resource_gadgetresource_short_name_key»
+
+INSERT INTO "resource_gadgetresource" ("short_name","vendor","version","added_by_user_id","author","mail","description","size","license","gadget_uri","creation_date","image_uri","wiki_page_uri","template_uri") VALUES ('Flickr','Morfeo','2.0',1,'jmostazo','jmostazo@pegaso.ls.fi.upm.es','Nueva version del gadget de flickr que permite enviar la ruta de la imagen seleccionada a un canal',NULL,NULL,NULL,'2008-02-19 12:00:32.029341','http://europa.ls.fi.upm.es/ezweb/gadgets/flickr.png','http://piccolo.ls.fi.upm.es:7000/flickr','http://europa.ls.fi.upm.es/ezweb/gadgets/flickr.xml')
+ERROR: POST user/id/resources admin
+[19/02/2008 12:04:45] <urlopen error (110, 'Connection timed out')>
+ERROR: POST /user/admin/gadgets admin
+[27/02/2008 13:04:39] El Gadget ya existe
+ERROR: POST /user/admin/gadgets admin
+[27/02/2008 13:05:52] El Gadget ya existe
+ERROR: POST /user/admin/catalogue/resource admin
+[29/02/2008 12:47:58] TemplateHandler instance has no attribute '_flag'
+ERROR: POST /user/admin/catalogue/resource admin
+[29/02/2008 12:51:00] TemplateHandler instance has no attribute '_user'
+ERROR: POST /user/admin/catalogue/resource admin
+[29/02/2008 12:54:34] __init__() takes exactly 2 arguments (1 given)
+ERROR: POST /user/admin/catalogue/resource admin
+[29/02/2008 12:55:22] TemplateHandler instance has no attribute '_uri'
+ERROR: POST /user/admin/catalogue/resource admin
+[29/02/2008 12:56:26] __init__() takes exactly 3 arguments (2 given)
+ERROR: POST /user/admin/catalogue/resource admin
+[29/02/2008 12:57:31] parseString() takes at least 2 arguments (1 given)
+ERROR: POST /user/admin/catalogue/resource admin
+ERROR: POST /user/admin/gadgets admin
+[29/02/2008 13:20:57] El gadget ya existe
+ERROR: POST /user/admin/gadgets admin
+[29/02/2008 13:21:18] u"ERROR: No se puede leer el c\xf3digo XHTML - global name 'GadgetCodeParser' is not defined"
+ERROR: POST /user/admin/gadgets admin
+[29/02/2008 13:59:03] El gadget ya existe
+ERROR: POST /user/admin/gadgets admin
+[04/03/2008 12:22:13] El gadget ya existe
+ERROR: POST /user/admin/gadgets admin
+[04/03/2008 12:23:08] El gadget ya existe
+ERROR: POST /user/admin/gadgets admin
+[04/03/2008 12:34:54] El gadget ya existe
+ERROR: POST /user/admin/gadgets admin
+[04/03/2008 12:36:56] El gadget ya existe
+ERROR: POST /user/admin/gadgets admin
+[04/03/2008 12:48:27] El gadget ya existe
+ERROR: POST /user/admin/gadgets admin
+[04/03/2008 12:51:06] El gadget ya existe
+ERROR: POST /user/admin/gadgets admin
+[04/03/2008 13:23:49] El gadget ya existe
+ERROR: POST /user/admin/gadgets admin
+[04/03/2008 13:23:53] El gadget ya existe
+ERROR: POST /user/admin/gadgets admin
+[04/03/2008 13:23:55] El gadget ya existe
+ERROR: POST /user/admin/gadgets admin
+[04/03/2008 15:14:08] El gadget ya existe
