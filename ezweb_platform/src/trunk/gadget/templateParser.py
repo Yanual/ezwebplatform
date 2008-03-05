@@ -48,16 +48,25 @@ from models import *
 
 from gadgetCodeParser import GadgetCodeParser
 
+from urlparse import urlparse
+
 class TemplateParser:
     def __init__(self, uri, user):
         urlcleanup()
         self.uri = uri
-
+        
         try:
             proxy = settings.PROXY_SERVER
+
+            #The proxy must not be used with local address
+            host = urlparse(uri)[1]
+            
+            if (host.startswith(('localhost','127.0.0.1'))):
+                proxy = False
+
         except Exception:
             proxy = False
-
+            
         if proxy:
             self.xml = urlopen(uri, proxy).read()
         else:
@@ -507,6 +516,7 @@ class TemplateHandler(handler.ContentHandler):
             emptyRequiredFields.append("xhtml");
         
         if len(emptyRequiredFields) > 0:
+            print emptyRequiredFields
 	    raise TemplateParseException(_("Missing required filed(s): %(fields)s") % {fields: unicode(emptyRequiredFields)})
 
         self._gadget = Gadget (uri=self._gadgetURI, vendor=self._gadgetVendor, 

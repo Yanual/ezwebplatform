@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#-*- coding: utf-8 -*-
 
 # MORFEO Project 
 # http://morfeo-project.org 
@@ -53,6 +53,7 @@ from xml.sax import parseString, handler
 from resource.models import *
 from django.conf import settings
 
+from urlparse import urlparse
 
 class TemplateParser:
     def __init__(self, uri, user):
@@ -61,14 +62,30 @@ class TemplateParser:
 
         try:
             proxy = settings.PROXY_SERVER
+
+            #The proxy must not be used with local address
+            host = urlparse(uri)[1]
+            
+            if (host.startswith(('localhost','127.0.0.1'))):
+                proxy = False
+
         except Exception:
             proxy = False
-
+            
         if proxy:
             self.xml = urlopen(uri, proxy).read()
         else:
             self.xml = urlopen(uri).read()
 
+        #The proxy must not be used with local address
+        if (host.startswith(('localhost','127.0.0.1'))):
+            self.xml = urlopen(uri, None).read()
+        else:
+            try:
+                self.xml = urlopen(uri,settings.PROXY_SERVER).read()
+            except:
+                self.xml = urlopen(uri).read()
+            
         self.handler = TemplateHandler(user, uri)
 
     def parse(self):
