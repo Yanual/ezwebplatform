@@ -97,6 +97,10 @@ var URIs = new _URIConstants();
 		if (interfaceToShow == currentInterface)
 		    return; // Do nothing
 
+		if (UIUtils.isInfoResourcesOpen) {
+			UIUtils.isInfoResourcesOpen = false;
+			UIUtils.SlideInfoResourceOutOfView('info_resource');
+		}
 		// Hidden current interface
 		$(currentInterface + "_container").setStyle({"zIndex" : 1});
 		$(currentInterface + "_tab").className = "tab";
@@ -117,14 +121,19 @@ var URIs = new _URIConstants();
 	}
 
     function show_showcase() {
-
-        opManager.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
 		
+		if (UIUtils.isInfoResourcesOpen) {
+			UIUtils.isInfoResourcesOpen = false;
+			UIUtils.SlideInfoResourceOutOfView('info_resource');
+		}
+
+		opManager.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
+
 		showInterface('showcase');
-
+		
 		UIUtils.setResourcesWidth();
+		
 		$('simple_search_text').focus();
-
 	}
 
 	function show_dragboard() {

@@ -424,7 +424,7 @@ UIUtils.SlideInfoResourceIntoView = function(element) {
       scaleFrom: 0,
       afterUpdate: function(effect){},
 	  afterFinish: function(effect)
-        { UIUtils.hidde('tab_info_resource_open'); UIUtils.show('tab_info_resource_close'); }
+        {UIUtils.show('tab_info_resource_close'); }
     })
   );
 	if (UIUtils.selectedResource != null) {
@@ -442,7 +442,7 @@ UIUtils.SlideInfoResourceOutOfView = function(element) {
       scaleY: false,
       afterUpdate: function(effect){},
       afterFinish: function(effect)
-        { Element.hide(effect.element); UIUtils.setResourcesWidth(); UIUtils.hidde('tab_info_resource_close'); UIUtils.show('tab_info_resource_open'); }
+        { Element.hide(effect.element); UIUtils.setResourcesWidth(); UIUtils.hidde('tab_info_resource_close'); }
     })
   );
 }
