@@ -44,7 +44,7 @@ from django.shortcuts import render_to_response
 
 from django_restapi.resource import Resource
 
-from resource.views import addToPlatform
+#from resource.views import addToPlatform
 
 #JavaScript tranlation
 js_info_dict = {
@@ -74,7 +74,8 @@ urlpatterns = patterns('',
     
     # Catalogue Resource
     (r'^user/(?P<user_name>[_\w]+)/catalogue/resource(s)?',include('resource.urls')),
-    (r'^user/(?P<user_name>[_\w]+)/platform/$', addToPlatform),
+    
+    #(r'^user/(?P<user_name>[_\w]+)/platform/$', addToPlatform),
 
     # Catalogue Tag
     (r'^user/(?P<user_name>[_\w]+)/catalogue/tag(s)?/',include('tag.urls')),

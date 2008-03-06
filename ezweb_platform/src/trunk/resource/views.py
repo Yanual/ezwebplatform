@@ -37,7 +37,6 @@
 #
 
 import sys
-from urllib import urlopen, urlencode, urlcleanup
 
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseServerError
@@ -143,31 +142,32 @@ class GadgetsCollection(Resource):
 	return HttpResponse(xml_ok,mimetype='text/xml; charset=UTF-8')
 
 
-def addToPlatform(request, user_name):
 
-    CONFIG='config.conf'
+# def addToPlatform(request, user_name):
+
+#     CONFIG='config.conf'
     
-    cfg = ConfigParser.ConfigParser()
-    try:
-        cfg.readfp(file(CONFIG))
-    except Exception, e:
-        print _("Error, could not read config"), e.strerror
-        return
+#     cfg = ConfigParser.ConfigParser()
+#     try:
+#         cfg.readfp(file(CONFIG))
+#     except Exception, e:
+#         print _("Error, could not read config"), e.strerror
+#         return
      
-    URL = cfg.get ('URL', 'URLeuropa'.lower())
+#     URL = cfg.get ('URL', 'URLeuropa'.lower())
     
     
-    template_uri = request.__getitem__('template_uri')
+#     template_uri = request.__getitem__('template_uri')
 
-    parameters = {
-        'url': template_uri,
-    }
+#     parameters = {
+#         'url': template_uri,
+#     }
 
-    coreURL=URL
-    uri='/user/'+user_name+'/gadgets'
-    url=coreURL+uri
-    urlcleanup()
-    response = urlopen(url, urlencode(parameters)).read()
+#     coreURL=URL
+#     uri='/user/'+user_name+'/gadgets'
+#     url=coreURL+uri
+#     urlcleanup()
+#     response = urlopen(url, urlencode(parameters)).read()
 	
-    return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
+#     return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
 

@@ -38,61 +38,30 @@
 
 from datetime import datetime
 
-import sys
-
 from commons.exceptions import TemplateParseException
+from commons.http_utils import download_http_content 
 
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
-
 from django.utils.translation import ugettext as _
 
-from urllib import urlopen, urlcleanup
-from xml.sax import parseString, handler
-
 from resource.models import *
-from django.conf import settings
 
-from urlparse import urlparse
+from xml.sax import parseString, handler
+import sys
+
+
 
 class TemplateParser:
     def __init__(self, uri, user):
-        urlcleanup()
         self.uri = uri
-
-        try:
-            proxy = settings.PROXY_SERVER
-
-            #The proxy must not be used with local address
-            host = urlparse(uri)[1]
-            
-            if (host.startswith(('localhost','127.0.0.1'))):
-                proxy = False
-
-        except Exception:
-            proxy = False
-            
-        if proxy:
-            self.xml = urlopen(uri, proxy).read()
-        else:
-            self.xml = urlopen(uri).read()
-
-        #The proxy must not be used with local address
-        if (host.startswith(('localhost','127.0.0.1'))):
-            self.xml = urlopen(uri, None).read()
-        else:
-            try:
-                self.xml = urlopen(uri,settings.PROXY_SERVER).read()
-            except:
-                self.xml = urlopen(uri).read()
-            
+        self.xml = download_http_content(uri)
         self.handler = TemplateHandler(user, uri)
 
     def parse(self):
         # Parse the input
         parseString(self.xml, self.handler)
 
-        
 
 class TemplateHandler(handler.ContentHandler): 
     def __init__(self, user, uri):
