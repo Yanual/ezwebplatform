@@ -36,69 +36,36 @@
 #   http://morfeo-project.org/
 #
 
-from HTMLParser import HTMLParser
 from django.utils.http import urlquote
-from urllib2 import urlopen
-from urllib import urlcleanup
 
+from commons.http_utils import download_http_content
 from commons.exceptions import TemplateParseException
 
 from django.utils.translation import ugettext as _
 
 from models import *
 
-class GadgetCodeParser(HTMLParser):
-# HTML parsing
+from django.conf import settings
+from urlparse import urlparse
 
+class GadgetCodeParser():
     xHTML = None
 
     def parse(self, codeURI, gadgetURI):
         xhtml = ""
-	# TODO Fixme!! This works for now, but we have to check if a part of a url is empty
+	
+        # TODO Fixme!! This works for now, but we have to check if a part of a url is empty
 	address = codeURI.split('://')
 	query = address[1].split('/',1)
 	codeURI = address[0] + "://" + query[0] + "/" + urlquote(query[1])
+        
         try:
-	    urlcleanup()
-	    try:
-	        proxy = settings.PROXY_SERVER
-    	    except Exception:
-                proxy = False
-
-            if proxy:
-                xhtml = urlopen(codeURI, proxy).read()
-	    else:
-                xhtml = urlopen(codeURI).read()
-        except Exception:
+            xhtml = download_http_content(codeURI)
+        except Exception, e :
             raise TemplateParseException(_("XHTML code is not accessible"))
         
         self.xHTML = XHTML (uri=gadgetURI + "/xhtml", code=xhtml, url=codeURI)
         self.xHTML.save()
-
-        #self.feed(xhtml)
-
-        return
-
-    def handle_starttag(self, tag, attrs):
-        handler = None
-        event = None
-        id = None
-
-        for (name, value) in attrs:
-            if (name == 'ezweb:handler'):
-                handler = value
-                continue
-
-            if (name == 'ezweb:event'):
-                event = value
-                continue
-
-            if (name == 'id'):
-                id = value
-
-        #if (handler != None and event != None and id != None):
-            #mapping = UserEventsInfo(event=event, handler=handler,html_element=id, xhtml=self.xHTML)
-            #mapping.save()
 
         return
 

@@ -67,11 +67,9 @@ from django.utils.translation import string_concat
 from commons.logs import log
 from commons.utils import *
 from commons.exceptions import TemplateParseException
+from commons.http_utils import download_http_content
 
 from gadget.models import Gadget, Template
-
-from urllib import urlcleanup
-from urllib2 import urlopen
 
 class GadgetCollection(Resource):
     def read(self, request, user_name):
@@ -165,8 +163,7 @@ class GadgetCodeEntry(Resource):
         xhtml = gadget.xhtml;
 
         try:
-            urlcleanup()
-            xhtml.code = urlopen(xhtml.url).read()
+            xhtml.code = download_http_content(xhtml.url)
             xhtml.save()
         except Exception, e:
             msg = _("XHTML code is not accessible")

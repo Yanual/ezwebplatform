@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#-*- coding: utf-8 -*-
 
 # MORFEO Project 
 # http://morfeo-project.org 
@@ -36,42 +36,21 @@
 #   http://morfeo-project.org/
 #
 
-from urllib import urlopen, urlcleanup
 from xml.sax import parseString, handler
 
 from commons.exceptions import TemplateParseException
+from commons.http_utils import download_http_content
 
 from django.utils.translation import ugettext as _
-from django.conf import settings
 
 from models import *
 
 from gadgetCodeParser import GadgetCodeParser
 
-from urlparse import urlparse
-
 class TemplateParser:
     def __init__(self, uri, user):
-        urlcleanup()
         self.uri = uri
-        
-        try:
-            proxy = settings.PROXY_SERVER
-
-            #The proxy must not be used with local address
-            host = urlparse(uri)[1]
-            
-            if (host.startswith(('localhost','127.0.0.1'))):
-                proxy = False
-
-        except Exception:
-            proxy = False
-            
-        if proxy:
-            self.xml = urlopen(uri, proxy).read()
-        else:
-            self.xml = urlopen(uri).read()
-
+        self.xml = download_http_content(uri)
         self.handler = TemplateHandler(user)
 
     def parse(self):
