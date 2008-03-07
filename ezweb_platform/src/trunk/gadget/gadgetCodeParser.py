@@ -48,22 +48,22 @@ from models import *
 from django.conf import settings
 from urlparse import urlparse
 
-class GadgetCodeParser():
+class GadgetCodeParser:
     xHTML = None
 
     def parse(self, codeURI, gadgetURI):
         xhtml = ""
-	
+
         # TODO Fixme!! This works for now, but we have to check if a part of a url is empty
-	address = codeURI.split('://')
-	query = address[1].split('/',1)
-	codeURI = address[0] + "://" + query[0] + "/" + urlquote(query[1])
-        
+        address = codeURI.split('://')
+        query = address[1].split('/',1)
+        codeURI = address[0] + "://" + query[0] + "/" + urlquote(query[1])
+
         try:
             xhtml = download_http_content(codeURI)
         except Exception, e :
             raise TemplateParseException(_("XHTML code is not accessible"))
-        
+
         self.xHTML = XHTML (uri=gadgetURI + "/xhtml", code=xhtml, url=codeURI)
         self.xHTML.save()
 
