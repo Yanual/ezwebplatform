@@ -232,10 +232,11 @@ UIUtils.searchByTag = function(url, tag) {
   	alert("Introduzca un valor en el formulario de búsqueda");
   }
   else{
+  	UIUtils.setPage(1);
       UIUtils.search = 'tag';
       UIUtils.searchValue = tag;
       UIUtils.searchCriteria = 'tag' ;
-	    opManager.repaintCatalogue(url + "/" + tag );
+	    opManager.repaintCatalogue(url + "/" + tag  + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
 }
 }
 
@@ -248,10 +249,11 @@ UIUtils.searchByWiring = function(url, value, wiring) {
 	}
   
   else{
+  	UIUtils.setPage(1);
   UIUtils.search = 'wiring';
   UIUtils.searchValue = value;
   UIUtils.searchCriteria = wiring ;
-	opManager.repaintCatalogue(url + "/" + wiring + "/" + value );
+	opManager.repaintCatalogue(url + "/" + wiring + "/" + value  + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
 }
 }
 
@@ -311,8 +313,16 @@ UIUtils.getPage = function() {
     return UIUtils.page;
 }
 
+UIUtils.setPage = function(page) {
+    UIUtils.page = page;
+}
+
 UIUtils.getOffset = function() {
     return UIUtils.off;
+}
+
+UIUtils.setOffset = function(offset) {
+    UIUtils.off = offset;
 }
 
 UIUtils.getNum_items = function() {
@@ -327,10 +337,11 @@ UIUtils.searchGeneric = function(url, param, criteria) {
 		alert(gettext ("Indicate a criteria in search formulary"));
 	}
 	else{ 
+		UIUtils.setPage(1);
 		UIUtils.searchValue = param;
 		UIUtils.searchCriteria = criteria ;
 		UIUtils.search = 'generic';
-		opManager.repaintCatalogue(url + "/" + param + "/" + criteria + "/1/" + UIUtils.getOffset());
+		opManager.repaintCatalogue(url + "/" + param + "/" + criteria + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
 	}
 }
 
