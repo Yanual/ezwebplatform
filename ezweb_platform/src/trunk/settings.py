@@ -131,7 +131,6 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.admin',
     'ezweb',
-    'trial',
     'gadget',
     'igadget',
     'connectable',

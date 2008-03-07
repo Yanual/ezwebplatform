@@ -59,6 +59,7 @@ var WiringInterfaceFactory = function () {
 	    this.last_checked = null;
 	    this.disabled_all = true;
 	    this.modified = false;
+	    this.wire_word = gettext("Wire_");
 
 
 	    // ***********************************
@@ -169,7 +170,7 @@ var WiringInterfaceFactory = function () {
 	    $("events_list").innerHTML = "";
 	    $("slots_list").innerHTML = "";
 	    $("channels_list").innerHTML = "";
-	    $("channel_name").value = "Wire_"+ this.channels_counter;
+	    $("channel_name").value = this.wire_word + this.channels_counter;
 	}
 
 	WiringInterface.prototype.saveWiring = function (){
@@ -232,53 +233,53 @@ var WiringInterfaceFactory = function () {
 	    var connections = this.wiring.gadgetConnections(object.id);
 	    
 	    if (connections) {
-		for (var i = 0; i < connections.length; i++) {
-		    var liItem = document.createElement("li");
-		    var divItem = document.createElement("div");
-		    var chkItem = document.createElement("input");
-		    var idItem = "gadget_"+ object.id +"_"+ connections[i].name;
-		    
-		    divItem.setAttribute("id", "div_"+ idItem);
-		    
-		    chkItem.setAttribute("id", "chk_"+ idItem);
-		    chkItem.setAttribute("disabled", "disabled");
-		    chkItem.setAttribute("type", "checkbox");
-		    chkItem.setAttribute("onClick", "javascript:{wiringInterface.changeConnectionStatus(this, " + object.id + ", '"  + connections[i].name + "', '" + connections[i].aspect + "')}");
-		    
-		    divItem.appendChild(chkItem);
-		    
-		    var labelItem = document.createElement("label");
-		    labelItem.setAttribute("for", "chk_"+ idItem);
-		    labelItem.setAttribute("id", "lbl_chk_"+ idItem);
-		    
-		    var textNodeItem = document.createTextNode(connections[i].name);
-		    if ((connections[i].friend_code != "undefined") || (connections[i].friend_code != undefined)) {
-			if (!this.friend_codes[connections[i].friend_code]) {
-			    this.friend_codes[connections[i].friend_code] = {};
-			    this.friend_codes[connections[i].friend_code].list = [];
-			    this.friend_codes[connections[i].friend_code].color = 
-				this.color_scheme[this.friend_codes_counter++];
-			}
-                
-			this.friend_codes[connections[i].friend_code].list.push(idItem);
+		    for (var i = 0; i < connections.length; i++) {
+		        var liItem = document.createElement("li");
+		        var divItem = document.createElement("div");
+		        var chkItem = document.createElement("input");
+		        var idItem = "gadget_"+ object.id +"_"+ connections[i].name;
+		        
+		        divItem.setAttribute("id", "div_"+ idItem);
+		        
+		        chkItem.setAttribute("id", "chk_"+ idItem);
+		        chkItem.setAttribute("disabled", "disabled");
+		        chkItem.setAttribute("type", "checkbox");
+		        chkItem.setAttribute("onClick", "javascript:{wiringInterface.changeConnectionStatus(this, " + object.id + ", '"  + connections[i].name + "', '" + connections[i].aspect + "')}");
+		        
+		        divItem.appendChild(chkItem);
+		        
+		        var labelItem = document.createElement("label");
+		        labelItem.setAttribute("for", "chk_"+ idItem);
+		        labelItem.setAttribute("id", "lbl_chk_"+ idItem);
+		        
+		        var textNodeItem = document.createTextNode(connections[i].name);
+		        if ((connections[i].friend_code != "undefined") || (connections[i].friend_code != undefined)) {
+			        if (!this.friend_codes[connections[i].friend_code]) {
+			            this.friend_codes[connections[i].friend_code] = {};
+			            this.friend_codes[connections[i].friend_code].list = [];
+			            this.friend_codes[connections[i].friend_code].color = 
+				        this.color_scheme[this.friend_codes_counter++];
+			        }
+                        
+			        this.friend_codes[connections[i].friend_code].list.push(idItem);
 
-			liItem.setAttribute("onclick", "javascript:{wiringInterface._changeChannel('"+ idItem +"', '"+ object.id +"', '"+ connections[i].name +"', '"+ connections[i].aspect +"', '"+ connections[i].friend_code +"');}");
-			liItem.setAttribute("onmouseover", "javascript:wiringInterface._highlight_friend_code('"+ connections[i].friend_code +"', true);");
-			liItem.setAttribute("onmouseout", "javascript:wiringInterface._highlight_friend_code('"+ connections[i].friend_code +"', false);");
+			        liItem.setAttribute("onclick", "javascript:{wiringInterface._changeChannel('"+ idItem +"', '"+ object.id +"', '"+ connections[i].name +"', '"+ connections[i].aspect +"', '"+ connections[i].friend_code +"');}");
+			        liItem.setAttribute("onmouseover", "javascript:wiringInterface._highlight_friend_code('"+ connections[i].friend_code +"', true);");
+			        liItem.setAttribute("onmouseout", "javascript:wiringInterface._highlight_friend_code('"+ connections[i].friend_code +"', false);");
 			
-		    }    
-		    
-		    labelItem.appendChild(textNodeItem);
-		    divItem.appendChild(labelItem);
-		    liItem.appendChild(divItem);
-		    liItem.setAttribute("id", idItem);
+		        }    
+		        
+		        labelItem.appendChild(textNodeItem);
+		        divItem.appendChild(labelItem);
+		        liItem.appendChild(divItem);
+		        liItem.setAttribute("id", idItem);
 
-		    if (connections[i].aspect == "EVEN") {
-			ulEvents.appendChild(liItem);
-		    } else if (connections[i].aspect == "SLOT") {
-			ulSlots.appendChild(liItem);
+		        if (connections[i].aspect == "EVEN") {
+        			ulEvents.appendChild(liItem);
+		        } else if (connections[i].aspect == "SLOT") {
+	        		ulSlots.appendChild(liItem);
+		        }
 		    }
-		}
 	    }
 
 	    var li = document.createElement("li");
@@ -331,11 +332,11 @@ var WiringInterfaceFactory = function () {
 	    //this.addChannelsAsGadgetInterface(channels)
 	    this.channels_counter = channels.length + 1;
 	    
-	    $("channel_name").value = "Wire_"+ this.channels_counter;
+	    $("channel_name").value = this.wire_word + this.channels_counter;
 	    
 	    while(channels.include($("channel_name").value)) {
 		this.channels_counter++;
-		$("channel_name").value = "Wire_"+ this.channels_counter;
+		$("channel_name").value = this.wire_word + this.channels_counter;
 	    }    
 	}
 	
@@ -345,7 +346,7 @@ var WiringInterfaceFactory = function () {
 	    
 	    while(this.wiring.getInOutsId().include($("channel_name").value)) {
 		this.channels_counter++;
-		$("channel_name").value = "Wire_"+ this.channels_counter;
+		$("channel_name").value = this.wire_word + this.channels_counter;
 	    }
 	    
 	    name = name.strip();
@@ -354,7 +355,7 @@ var WiringInterfaceFactory = function () {
 		if (!(result = this.wiring.createChannel(name))){	
 		    this.addChannelInterface(name);
 		    this.channels_counter++;
-		    $("channel_name").value = "Wire_"+ this.channels_counter;
+		    $("channel_name").value = this.wire_word + this.channels_counter;
 		    
 		    this.modified=true;
 		}
@@ -480,19 +481,20 @@ var WiringInterfaceFactory = function () {
 
 	WiringInterface.prototype._highlight_friend_code = function (friend_code, highlight) {
 	    if (this.friend_codes[friend_code]) {
-		var fcList = this.friend_codes[friend_code].list;
-		var fcColor = this.friend_codes[friend_code].color;
-		var fcBgColor = "";
+		    var fcList = this.friend_codes[friend_code].list;
+		    var fcColor = this.friend_codes[friend_code].color;
+		    var fcBgColor = "";
 		
-		for (var i = 0; i < fcList.length; i++) {
-		    if (highlight && $(fcList[i])) {
-			$(fcList[i]).style.backgroundColor = fcColor;
-			$(fcList[i]).parentNode.parentNode.className = "on";
-		    } else {
-			$(fcList[i]).style.backgroundColor = fcBgColor;            
-			$(fcList[i]).parentNode.parentNode.className = "on";
+		    for (var i = 0; i < fcList.length; i++) {
+		        if (fcElement = $(fcList[i])) {
+		            if (highlight) {
+			            fcElement.style.backgroundColor = fcColor;
+		            } else {
+			            fcElement.style.backgroundColor = fcBgColor;            
+		            }
+		            fcElement.parentNode.parentNode.className = "on";
+                }
 		    }
-		}
 	    }
 	}
 	
@@ -500,30 +502,30 @@ var WiringInterfaceFactory = function () {
 	    this._enable_all();
 	    
 	    if (this.last_checked && $("channel_"+ this.last_checked)) {
-		$("channel_"+ this.last_checked).style.backgroundColor = "";
-		channels = this.wiring.connections(this.last_checked);
-		if (channels) {
-		    channel_list = channels["input"].concat(channels["output"]);
-		    for(var i = 0; i < channel_list.length; i++) {
-			var chk_gadget_id = "chk_gadget_"+ channel_list[i].id +"_"+ channel_list[i].name;
-			$(chk_gadget_id).checked = false;
-			$("div_gadget_"+ channel_list[i].id +"_"+ channel_list[i].name).style.backgroundColor = "";
-			$("lbl_"+ chk_gadget_id).style.fontWeight = "normal";
+		    $("channel_"+ this.last_checked).style.backgroundColor = "";
+		    channels = this.wiring.connections(this.last_checked);
+		    if (channels) {
+		        channel_list = channels["input"].concat(channels["output"]);
+		        for(var i = 0; i < channel_list.length; i++) {
+			        var chk_gadget_id = "chk_gadget_"+ channel_list[i].id +"_"+ channel_list[i].name;
+			        $(chk_gadget_id).checked = false;
+			        $("div_gadget_"+ channel_list[i].id +"_"+ channel_list[i].name).style.backgroundColor = "";
+			        $("lbl_"+ chk_gadget_id).style.fontWeight = "normal";
+		        }
 		    }
-		}
 	    }
 	    
 	    $("channel_"+ channel_name).style.backgroundColor = this.highlight_color;
 	    channels = this.wiring.connections(channel_name);
 	    
 	    if (channels) {
-		channel_list = channels["input"].concat(channels["output"]);
-		for(var i = 0; i < channel_list.length; i++) {
-		    var chk_gadget_id = "chk_gadget_"+ channel_list[i].id +"_"+ channel_list[i].name;
-		    $(chk_gadget_id).checked = true;
-		    $("div_gadget_"+ channel_list[i].id +"_"+ channel_list[i].name).style.backgroundColor = this.highlight_color;
-		    $("lbl_"+ chk_gadget_id).style.fontWeight = "bold";
-		}
+		    channel_list = channels["input"].concat(channels["output"]);
+		    for(var i = 0; i < channel_list.length; i++) {
+		        var chk_gadget_id = "chk_gadget_"+ channel_list[i].id +"_"+ channel_list[i].name;
+		        $(chk_gadget_id).checked = true;
+		        $("div_gadget_"+ channel_list[i].id +"_"+ channel_list[i].name).style.backgroundColor = this.highlight_color;
+		        $("lbl_"+ chk_gadget_id).style.fontWeight = "bold";
+		    }
 	    }
 
 	    this.last_checked = channel_name;

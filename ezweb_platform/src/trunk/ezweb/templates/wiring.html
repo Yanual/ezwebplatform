@@ -9,7 +9,7 @@
         </td><td class="columnCell borderLeftCell">
             <div class="wiresTitle">{% trans "Channels" %}</div>
             {% trans "New" %}: <input type="text" id="channel_name" name="channel_name"/>
-            <input id="add_channel" type="image" src="{{ MEDIA_URL }}js/wiring/add.png" title="Create channel" alt= "Create channel" onclick="javascript:{wiringInterface.addChannel();}"/>
+            <input id="add_channel" type="image" src="{{ MEDIA_URL }}js/wiring/add.png" title='{% trans "Create channel" %}' alt='{% trans "Create channel" %}' onclick="javascript:{wiringInterface.addChannel();}"/>
             <ul id="channels_list"></ul>
 
         </td><td class="columnCell borderLeftCell">

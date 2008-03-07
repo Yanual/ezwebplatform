@@ -39,16 +39,14 @@
 from os import path
 from django.conf.urls.defaults import *
 from django.conf import settings
-from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
 
 from django_restapi.resource import Resource
 
 #from resource.views import addToPlatform
 
-#JavaScript tranlation
+#JavaScript translation
 js_info_dict = {
-    'packages': ('ezweb',),
+    'packages': ('ezweb', )
 }
 
 urlpatterns = patterns('',
@@ -58,7 +56,6 @@ urlpatterns = patterns('',
     # EzWeb
     (r'^', include('ezweb.urls')),
     (r'^user/(?P<user_name>[_\w]+)/$', include('ezweb.urls')),
-    (r'^trial/', include('trial.urls')),
 
     # Gadgets
     (r'^user/(?P<user_name>[_\w]+)/gadget(s)?', include('gadget.urls')),
@@ -73,15 +70,15 @@ urlpatterns = patterns('',
     (r'^user/(?P<user_name>[_\w]+)/context(s)?', include('context.urls')),
     
     # Catalogue Resource
-    (r'^user/(?P<user_name>[_\w]+)/catalogue/resource(s)?',include('resource.urls')),
+    (r'^user/(?P<user_name>[_\w]+)/catalogue/resource(s)?', include('resource.urls')),
     
     #(r'^user/(?P<user_name>[_\w]+)/platform/$', addToPlatform),
 
     # Catalogue Tag
-    (r'^user/(?P<user_name>[_\w]+)/catalogue/tag(s)?/',include('tag.urls')),
+    (r'^user/(?P<user_name>[_\w]+)/catalogue/tag(s)?/', include('tag.urls')),
     
     # Catalogue Search
-    (r'^user/(?P<user_name>[_\w]+)/catalogue/search/',include('searching.urls')),
+    (r'^user/(?P<user_name>[_\w]+)/catalogue/search/', include('searching.urls')),
     
     # Proxy
     (r'^proxy', include('proxy.urls')),
@@ -89,7 +86,7 @@ urlpatterns = patterns('',
     # Django contrib
     (r'^registration/login_form/$', 'registration.views.login_form'),
     (r'^accounts/login/$', 'django.contrib.auth.views.login'),
-    (r'^logout$', 'django.contrib.auth.views.logout'),
+    (r'^logout$', 'django.contrib.auth.views.login'),
     (r'^admin/', include('django.contrib.admin.urls')),
     
     # Django "set language" (internacionalitation)

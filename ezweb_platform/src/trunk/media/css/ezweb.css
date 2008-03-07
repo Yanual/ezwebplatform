@@ -325,6 +325,12 @@ a:hover{
 /*    list-style-image: url(/ezweb/images/connect_no.png);*/
 }
 
+.form-row input[type="submit"] {
+    background-image: url(/ezweb/images/kgpg.png);
+    background-repeat: no-repeat;
+    padding-left: 18px;
+}
+
 /* logs -------------------------------------------------------------------------------------------- */
 
 #header .tab_section #logs_tab {
