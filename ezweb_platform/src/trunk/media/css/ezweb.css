@@ -69,7 +69,7 @@ a:hover{
 }
 
 .disabled {
-  display: none;
+  display: none !important;
 }
 
 #header .tab_section .current {
@@ -347,11 +347,14 @@ a:hover{
 }
 
 #logs_console .icon {
-  margin: 0px 0.5ex;
+  margin: 1.1ex 10px 0px 10px;
+  vertical-align: bottom;
+  float: left;
+  clear: both;
 }
 
 #logs_console p {
-  margin: 1ex 1ex 1ex 3ex;
+  margin: 1ex 10px 0px 36px;
 }
 
 /* footer ------------------------------------------------------------------------------------------ */

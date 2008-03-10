@@ -90,6 +90,15 @@ UserPref.prototype.setDefaultValueInInterface = function (element) {
 	element.value = this.defaultValue;
 }
 
+UserPref.prototype.getLabel = function () {
+	var label = document.createElement("label");
+	label.appendChild(document.createTextNode(this.label));
+	label.setAttribute("title", this.desc);
+	label.setAttribute("for", this.varName);
+
+	return label;
+}
+
 //////////////////////////////////////////////
 // PUBLIC CONSTANTS
 //////////////////////////////////////////////
@@ -112,15 +121,10 @@ function ListUserPref(name_, label_, desc_, defaultValue_, ValueOptions_) {
 ListUserPref.prototype = new UserPref();
 
 ListUserPref.prototype.makeInterface = function (iGadgetId) {
-	var element, select;
-
-	element = document.createElement("label");
-	element.setAttribute("title", this.desc);
-	element.appendChild(document.createTextNode(this.label));
+	var select;
 
 	select = document.createElement("select");
 	select.setAttribute("name", this.varName);
-	element.appendChild(select);
 
 	var currentValue = this.getCurrentValue(iGadgetId);
 	var output = "";
@@ -134,7 +138,7 @@ ListUserPref.prototype.makeInterface = function (iGadgetId) {
 		
 	select.innerHTML = output;
 
-	return element;
+	return select;
 }
 
 ListUserPref.prototype.validate = function (newValue) {
@@ -160,18 +164,14 @@ IntUserPref.prototype = new UserPref();
 IntUserPref.prototype.makeInterface = function (IGadgetId) {
 	var element;
 
-	element = document.createElement("label");
-	element.setAttribute("title", this.desc);
+	element = document.createElement("input");
+	element.setAttribute("name", this.varName);
+	element.setAttribute("type", "text");
 
-	var output = this.label;
-	output += "<input name=\"" + this.varName + "\" type=\"text\" ";
-
-	var currentValue =this.getCurrentValue(IGadgetId);
+	var currentValue = this.getCurrentValue(IGadgetId);
 	if (currentValue != null)
-		output += "value=\"" + currentValue + "\" ";
-	output += "/>";
+		element.setAttribute("value", currentValue);
 
-	element.innerHTML = output;
 	return element;
 }
 
@@ -192,19 +192,14 @@ TextUserPref.prototype = new UserPref();
 TextUserPref.prototype.makeInterface = function (IGadgetId) {
 	var element;
 
-	element = document.createElement("label");
-	element.setAttribute("title", this.desc);
-
-	var output = this.label;
-	output += "<input name=\"" + this.varName + "\" type=\"text\" ";
+	element = document.createElement("input");
+	element.setAttribute("name", this.varName);
+	element.setAttribute("type", "text");
 
 	var currentValue = this.getCurrentValue(IGadgetId);
 	if (currentValue != null)
-		output += "value=\"" + currentValue + "\" ";
+		element.setAttribute("value", currentValue);
 
-	output += "/>";
-
-	element.innerHTML = output;
 	return element;
 }
 
@@ -219,18 +214,17 @@ function DateUserPref(name_, label_, desc_, defaultValue_) {
 DateUserPref.prototype = new UserPref();
 
 DateUserPref.prototype.makeInterface = function (IGadgetId) {
-	var output = "";
+	var element;
 
-	output += "<label title=\"" + this.desc + "\">" + this.label;
-	output += "<input name=\"" + this.varName + "\" type=\"text\" ";
+	element = document.createElement("input");
+	element.setAttribute("name", this.varName);
+	element.setAttribute("type", "text");
 
 	var currentValue = this.getCurrentValue(IGadgetId);
 	if (currentValue != null)
-		output += "value=\"" + currentValue + "\" ";
+		element.setAttribute("value", currentValue);
 
-	output += "/></label>";
-
-	return output;
+	return element;
 }
 
 /**
@@ -246,19 +240,14 @@ BoolUserPref.prototype = new UserPref();
 BoolUserPref.prototype.makeInterface = function (IGadgetId) {
 	var element;
 
-	element = document.createElement("label");
-	element.setAttribute("title", this.desc);
-
-	var output = this.label;
-	output += "<input name=\"" + this.varName +"\" type=\"checkbox\" ";
+	element = document.createElement("input");
+	element.setAttribute("name", this.varName);
+	element.setAttribute("type", "checkbox");
 
 	var currentValue = this.getCurrentValue(IGadgetId);
 	if (currentValue.strip().toLowerCase() == "true")
-		output += "checked=\"true\" ";
+		element.setAttribute("checked", "true");
 
-	output += "/>";
-
-	element.innerHTML = output;
 	return element;
 }
 

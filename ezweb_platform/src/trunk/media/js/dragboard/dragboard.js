@@ -661,6 +661,11 @@ var DragboardFactory = function () {
 			    _repaint();
 		}
 
+		Dragboard.prototype.notifyErrorOnIGadget = function (iGadgetId) {
+			var igadget = iGadgets[iGadgetId];
+			igadget.notifyError();
+		}
+
 		/**
 		 * Calculate what cell is at a given position
 		 */
@@ -774,7 +779,7 @@ var DragboardFactory = function () {
 		// INITIALIZING CODE
 		// *******************
 		dragboard = $("dragboard");
-		dragboardStyle = new DragboardStyle(dragboard, 3, 15); // 3 columns, cell height = 15px
+		dragboardStyle = new DragboardStyle(dragboard, 3, 12); // TODO 3 columns, cell height = 12px
 
 		_clearMatrix();
 
@@ -824,7 +829,11 @@ function IGadget(gadget, iGadgetId, screen, position, width, height, minimized) 
 	this.element = null;
 	this.contentWrapper = null, this.content = null;
 	this.configurationElement = null;
+	this.settingsButtonElement = null;
 	this.minimizeButtonElement = null;
+	this.errorButtonElement = null;
+
+	this.errorCount = 0;
 }
 
 IGadget.prototype.getGadget = function() {
@@ -925,36 +934,53 @@ IGadget.prototype.paint = function(where) {
 	var button;
 
 	// close button
-	button = document.createElement("div");
-	button.setAttribute("class", "floatright button");
+	button = document.createElement("input");
+	button.setAttribute("type", "button");
+	button.setAttribute("class", "closebutton");
 	button.setAttribute("onclick", "javascript:OpManagerFactory.getInstance().removeInstance(" + this.id + ");");
 	button.setAttribute("title", gettext("Close"));
-	button.innerHTML = "X";
+	button.setAttribute("alt", gettext("Close"));
 	gadgetMenu.appendChild(button);
 
 	// settings button
-	button = document.createElement("div");
-	button.setAttribute("class", "floatright button");
+	button = document.createElement("input");
+	button.setAttribute("type", "button");
+	button.setAttribute("class", "settingsbutton");
 	button.addEventListener("click", function() {DragboardFactory.getInstance().setConfigurationVisible(this.id, 'toggle');}.bind(this), true);
 	button.setAttribute("title", gettext("Preferences"));
-	button.innerHTML = "P";
+	button.setAttribute("alt", gettext("Close"));
 	gadgetMenu.appendChild(button);
+	this.settingsButtonElement = button;
 
 	// minimize button
-	button = document.createElement("div");
-	button.setAttribute("class", "floatright button");
+	button = document.createElement("input");
+	button.setAttribute("type", "button");
 	button.addEventListener("click", function() {DragboardFactory.getInstance().toggleMinimizeStatus(this.id)}.bind(this), true);
-	if (this.minimized)
+	if (this.minimized) {
 		button.setAttribute("title", gettext("Maximize"));
-	else
+		button.setAttribute("alt", gettext("Maximize"));
+		button.addClassName("maximizebutton");
+	} else {
 		button.setAttribute("title", gettext("Minimize"));
+		button.setAttribute("alt", gettext("Minimize"));
+		button.addClassName("minimizebutton");
+	}
 
-	button.innerHTML = "-";
 	gadgetMenu.appendChild(button);
 	this.minimizeButtonElement = button;
 
+	// error button
+	button = document.createElement("input");
+	button.setAttribute("type", "button");
+	button.setAttribute("class", "button errorbutton disabled");
+	button.addEventListener("click", function() {showInterface("logs");}, true);
+	gadgetMenu.appendChild(button);
+	this.errorButtonElement = button;
+
 	// Gadget title
-	gadgetMenu.appendChild(document.createTextNode(this.gadget.getName() + " (Gadget " + this.id + ")")); // TODO
+	var title = this.gadget.getName() + " (Gadget " + this.id + ")"; // TODO
+	gadgetMenu.appendChild(document.createTextNode(title));
+	gadgetMenu.setAttribute("title", title);
 	gadgetElement.appendChild(gadgetMenu);
 
 	// Content wrapper
@@ -1088,11 +1114,27 @@ IGadget.prototype._makeConfigureInterface = function() {
 
 	this.prefElements = new Array();
 
+	var row, cell, label, table = document.createElement("table");
 	for (var i = 0; i < prefs.length; i++) {
+		row = document.createElement("tr");
+
+		// Settings label
+		cell = document.createElement("td");
+		cell.setAttribute("style", "width: 40%"); // TODO
+		label = prefs[i].getLabel();
+		cell.appendChild(label);
+		row.appendChild(cell);
+
+		// Settings control
+		cell = document.createElement("td");
 		curPrefInterface = prefs[i].makeInterface(this.id);
 		this.prefElements[i] = curPrefInterface;
-		interfaceDiv.appendChild(curPrefInterface);
+		cell.appendChild(curPrefInterface);
+		row.appendChild(cell);
+
+		table.appendChild(row);
 	}
+	interfaceDiv.appendChild(table);
 
 	var buttons = document.createElement("div");
 	buttons.setAttribute("class", "buttons");
@@ -1124,6 +1166,11 @@ IGadget.prototype._makeConfigureInterface = function() {
 	buttons.appendChild(button);
 	interfaceDiv.appendChild(buttons);
 
+	// clean floats
+	var floatClearer = document.createElement("div");
+	floatClearer.setAttribute("class", "floatclearer");
+	interfaceDiv.appendChild(floatClearer);
+
 	return interfaceDiv;
 }
 
@@ -1139,13 +1186,31 @@ IGadget.prototype.setMinimizeStatus = function(newStatus) {
 
 	if (this.minimized) {
 	    this.contentWrapper.setStyle({"visibility": "hidden" , "border": "0px"});
+	    this.configurationElement.setStyle({"display": "none"});
 	    this.minimizeButtonElement.setAttribute("title", gettext("Maximize"));
+	    this.minimizeButtonElement.setAttribute("alt", gettext("Maximize"));
+	    this.minimizeButtonElement.removeClassName("minimizebutton");
+	    this.minimizeButtonElement.addClassName("maximizebutton");
 	} else {
 	    this.contentWrapper.setStyle({"visibility": "visible", "border": ""});
+	    if (this.configurationVisible == true)
+		this.configurationElement.setStyle({"display": "block"});
 	    this.minimizeButtonElement.setAttribute("title", gettext("Minimize"));
+	    this.minimizeButtonElement.setAttribute("alt", gettext("Minimize"));
+	    this.minimizeButtonElement.removeClassName("maximizebutton");
+	    this.minimizeButtonElement.addClassName("minimizebutton");
 	}
 
 	this.height = null; // force refreshing sizes (see getHeight function)
+}
+
+IGadget.prototype.notifyError = function() {
+	if (this.errorCount++ == 0) { // First time
+	    this.errorButtonElement.removeClassName("disabled");
+	}
+	label = ngettext("%(errorCount)s error", "%(errorCount)s errors", this.errorCount);
+	label = interpolate(label, {errorCount: this.errorCount}, true);
+	this.errorButtonElement.setAttribute("title", label);
 }
 
 IGadget.prototype.isConfigurationVisible = function() {
@@ -1159,12 +1224,19 @@ IGadget.prototype.setConfigurationVisible = function(newValue) {
 	if (newValue == true) {
 		this.configurationVisible = true;
 		this.configurationElement.appendChild(this._makeConfigureInterface());
-		this.configurationElement.setStyle({"display": "block"});
+		if (this.isMinimized())
+			this.configurationElement.setStyle({"display": "none"});
+		else
+			this.configurationElement.setStyle({"display": "block"});
+		this.settingsButtonElement.removeClassName("settingsbutton");
+		this.settingsButtonElement.addClassName("settings2button");
 		this.height = null; // force refreshing sizes (see getHeight function)
 	} else {
 		this.configurationElement.innerHTML = "";
 		this.configurationElement.hide();
 		this.configurationVisible = false;
+		this.settingsButtonElement.removeClassName("settings2button");
+		this.settingsButtonElement.addClassName("settingsbutton");
 		this.height = null; // force refreshing sizes (see getHeight function)
 	}
 }

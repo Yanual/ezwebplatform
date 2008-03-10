@@ -122,8 +122,8 @@ RVariable.prototype.get = function () {
 			break;
 	}
 }  
-    
-    
+
+
 RVariable.prototype.set = function (newValue) { 
 	switch (this.aspect){
 		case Variable.prototype.USER_PREF:
@@ -137,10 +137,9 @@ RVariable.prototype.set = function (newValue) {
 			try {
 				if (this.handler) this.handler(newValue);
 			} catch (e) {
-				var gadgetInfo = DragboardFactory.getInstance().getGadget(this.iGadget).getInfoString();
-				var transObj = {iGadgetId: this.iGadgetId, varName: this.name, exceptionMsg: e, GadgetInfo: gadgetInfo};
-				var msg = interpolate(gettext("Error in the handler of the \"%(varName)s\" RVariable in iGadget %(iGadgetId)s: %(exceptionMsg)s.\n%(GadgetInfo)s."), transObj, true);
-				OpManagerFactory.getInstance().log(msg, Constants.Logging.ERROR_MSG);
+				var transObj = {iGadgetId: this.iGadgetId, varName: this.name, exceptionMsg: e};
+				var msg = interpolate(gettext("Error in the handler of the \"%(varName)s\" RVariable in iGadget %(iGadgetId)s: %(exceptionMsg)s."), transObj, true);
+				OpManagerFactory.getInstance().logIGadgetError(this.iGadget, msg, Constants.Logging.ERROR_MSG);
 			}
 			break;
 		default:

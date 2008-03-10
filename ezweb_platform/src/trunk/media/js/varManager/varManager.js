@@ -162,10 +162,9 @@ var VarManagerFactory = function () {
 			if (variable) {
 				variable.setHandler(handler);
 			} else {
-				var gadgetInfo = DragboardFactory.getInstance().getGadget(iGadgetId).getInfoString();
-				var transObj = {iGadgetId: iGadgetId, varName: variableName, GadgetInfo: gadgetInfo};
-				var msg = interpolate(gettext("IGadget %(iGadgetId)s does not have any variable named \"%(varName)s\".\nIf you need it, please insert it into the gadget's template.\n%(GadgetInfo)s."), transObj, true);
-				OpManagerFactory.getInstance().log(msg, Constants.Logging.ERROR_MSG);
+				var transObj = {iGadgetId: iGadgetId, varName: variableName};
+				var msg = interpolate(gettext("IGadget %(iGadgetId)s does not have any variable named \"%(varName)s\".\nIf you need it, please insert it into the gadget's template."), transObj, true);
+				OpManagerFactory.getInstance().logIGadgetError(iGadgetId, msg, Constants.Logging.ERROR_MSG);
 			}
 		}
 		

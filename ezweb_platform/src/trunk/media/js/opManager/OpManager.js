@@ -152,6 +152,15 @@ var OpManagerFactory = function () {
 			}
 		}
 		
+		OpManager.prototype.logIGadgetError = function(iGadgetId, msg, level) {
+			var dragboard = DragboardFactory.getInstance();
+			var gadgetInfo = dragboard.getGadget(iGadgetId).getInfoString();
+			msg = msg + "\n" + gadgetInfo;
+
+			this.log(msg, level);
+			dragboard.notifyErrorOnIGadget(iGadgetId);
+		}
+
 		OpManager.prototype.log = function(msg, level) {
 			if (errorCount++ == 0) {
 				$("logs_tab").className="tab";
@@ -169,27 +178,39 @@ var OpManagerFactory = function () {
 				icon.setAttribute("src", "/ezweb/images/error.png");
 				icon.setAttribute("class", "icon");
 				icon.setAttribute("alt", "[Error] ");
-				logentry.appendChild(icon);
-				if (console) console.error(msg);
+				$("logs_console").appendChild(icon);
+				try {
+					console.error(msg);
+				} catch (e) {}
 				break;
 			case Constants.Logging.WARN_MSG:
 				icon = document.createElement("img");
 				icon.setAttribute("src", "/ezweb/images/warning.png");
 				icon.setAttribute("class", "icon"); 
 				icon.setAttribute("alt", "[Warning] ");
-				logentry.appendChild(icon);
-				if (console) console.warn(msg);
+				$("logs_console").appendChild(icon);
+				try {
+					if (console) console.warn(msg);
+				} catch (e) {}
 				break;
 			case Constants.Logging.INFO_MSG:
 				icon = document.createElement("img");
 				icon.setAttribute("src", "/ezweb/images/info.png");
 				icon.setAttribute("class", "icon");
 				icon.setAttribute("alt", "[Info] ");
-				logentry.appendChild(icon);
-				if (console) console.info(msg);
+				$("logs_console").appendChild(icon);
+				try {
+					if (console) console.info(msg);
+				} catch (e) {}
 				break;
 			}
 
+			var index;
+			while ((index = msg.indexOf("\n")) != -1) {
+			  logentry.appendChild(document.createTextNode(msg.substring(0, index)));
+			  logentry.appendChild(document.createElement("br"));
+			  msg = msg.substring(index + 1);
+			}
 			logentry.appendChild(document.createTextNode(msg));
 			$("logs_console").appendChild(logentry);
 		}
