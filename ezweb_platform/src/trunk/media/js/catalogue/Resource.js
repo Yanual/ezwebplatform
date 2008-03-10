@@ -92,24 +92,26 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 									"<div id='add_tags_panel' class='new_tags' style='display:none;'>" +
 										"<div class='title'>" + gettext ('New tags') + ":</div>" +
 										"<div id='my_tags' class='my_tags'>" +
-											"<div id='new_tag_text' class='new_tag_text'><input id='new_tag_text_input' type='text' onkeypress=\"UIUtils.onReturn(event,UIUtils.addTag,this);\"/></div>" +
+											"<div id='new_tag_text' class='new_tag_text'><input id='new_tag_text_input' type='text' size=5 maxlength=20 onkeyup=\"UIUtils.enlargeInput(this);\" onkeypress=\"UIUtils.onReturn(event,UIUtils.addTag,this);\"/></div>" +
 										"</div>" +
+										"<div id=\"tag_alert\" class=\"tag_alert\"></div>" +
 										"<div class='buttons'>" +
-											"<button onclick='javascript:UIUtils.sendTags();'>" + gettext ('Tag') + "</button>" +
-											"<button onClick='javascript:UIUtils.toggle(\"add_tags_panel\");UIUtils.toggle(\"add_tags_link\");UIUtils.removeAllTags();'>" + gettext ('Cancel') + "</button>" +
+											"<button onClick='javascript:UIUtils.sendTags();'>" + gettext ('Tag') + "</button>" +
+											"<button onClick='javascript:UIUtils.addTag(document.getElementById(\"new_tag_text_input\"));'>" + gettext ('Save & New') + "</button>" +
+											"<button onClick='javascript:UIUtils.toggle_elements([\"add_tags_panel\",\"add_tags_link\",\"access_wiki_link\",\"access_template_link\",\"update_code_link\",\"delete_gadget_link\"]);UIUtils.show(\"add_gadget_button\");UIUtils.removeAllTags();'>" + gettext ('Cancel') + "</button>" +
 										"</div>" +
 									"</div>" +
 									
-"<div id='add_tags_link' class='link'><a href='javascript:UIUtils.toggle(\"add_tags_link\");UIUtils.toggle(\"add_tags_panel\");document.getElementById(\"new_tag_text_input\").focus();'>" + gettext ('Tag the resource') + "</a></div>" +
-"<div class='link'><a href='" + state.getUriWiki() + "' target='_blank'>" + gettext ('Access to the Wiki') + "</a></div>" +
+"<div id='add_tags_link' class='link'><a href='javascript:UIUtils.toggle_elements([\"add_tags_link\",\"add_tags_panel\",\"access_wiki_link\",\"access_template_link\",\"update_code_link\",\"delete_gadget_link\",\"add_gadget_button\"]);document.getElementById(\"new_tag_text_input\").focus();'>" + gettext ('Tag the resource') + "</a></div>" +
+"<div id='access_wiki_link' class='link'><a href='" + state.getUriWiki() + "' target='_blank'>" + gettext ('Access to the Wiki') + "</a></div>" +
 
-"<div class='link'><a href='" + state.getUriTemplate() + "' target='_blank'>" + gettext ('Access to the Template') + "</a></div>" + 
+"<div id='access_template_link' class='link'><a href='" + state.getUriTemplate() + "' target='_blank'>" + gettext ('Access to the Template') + "</a></div>" + 
 
-"<div class='link'><a href='javascript:UIUtils.updateGadgetXHTML();'>" + gettext ('Update gadget code') + "</a></div>" + 
+"<div id='update_code_link' class='link'><a href='javascript:UIUtils.updateGadgetXHTML();'>" + gettext ('Update gadget code') + "</a></div>" + 
 
-"<div class='link'>" + _deleteGadget() + "</div>" +
+"<div id='delete_gadget_link' class='link'>" + _deleteGadget() + "</div>" +
 
-"</div><button onclick='CatalogueFactory.getInstance().addResourceToShowCase(UIUtils.getSelectedResource());'>" + gettext ('Add Instance') + "</button>";
+"</div><button id='add_gadget_button' onclick='CatalogueFactory.getInstance().addResourceToShowCase(UIUtils.getSelectedResource());' style='align:center;'>" + gettext ('Add Instance') + "</button>";
 	}
 	
 	this.paginate = function(items) {
@@ -131,6 +133,11 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 			}
 		}
 	}
+
+	this.closeTagcloudBalloon = function()
+	{
+		tagcloudBalloon.hide();
+	}
 	
 	this.changeIconDescriptionBalloon = function(src_)
 	{
@@ -143,24 +150,24 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 	}
 
 	this.changeTagcloud = function(type){
-		var opciones = {}
+		var option = {}
 		var viewTagsHTML = "";
 		if (type=='mytags')
 		{
-			opciones = {tags: type}
+			option = {tags: type}
 			viewTagsHTML = "<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"all\");'>" + gettext ('View all tags') + "</a>" +
 						"&nbsp&nbsp&nbsp <a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('View others tags') + "</a>";
 			document.getElementById('view_tags_links').innerHTML = viewTagsHTML;
 		}
 		else {
 			if (type=='others') {
-				opciones = {tags: type}
+				option = {tags: type}
 				viewTagsHTML = "<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"all\");'>" + gettext ('View all tags') + "</a>" +
 						"&nbsp&nbsp&nbsp <a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('View my tags') + "</a>";
 				document.getElementById('view_tags_links').innerHTML = viewTagsHTML;
 			}
 			else {
-				opciones = {tags: type}
+				option = {tags: type}
 				viewTagsHTML = "<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('View my tags') + "</a>" +
 						"&nbsp&nbsp&nbsp <a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('View others tags') + "</a>";
 				document.getElementById('view_tags_links').innerHTML = viewTagsHTML;
@@ -169,7 +176,7 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 		
 		if (document.getElementById(id + '_tagcloud'))
 		{
-			document.getElementById(id + '_tagcloud').innerHTML= _tagsToTagcloud('description',opciones);
+			document.getElementById(id + '_tagcloud').innerHTML= _tagsToTagcloud('description',option);
 		}
 	}
 
@@ -319,7 +326,7 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 		{
 			
 			var jsCall = 'javascript:UIUtils.searchByWiring(URIs.GET_RESOURCES_BY_WIRING, "' + slotsAux[i] + '", "' + 'connectSlot' + '");';
-			slotsHTML += ("<span class='multiple_size_tag'>"+"<a title=" + gettext ('Search by ') + slotsAux[i] +"' href='" + jsCall + "'>" + slotsAux[i] + "</a>" + ((i<(slotsAux.length-1))?",":"") + "</span> ");
+			slotsHTML += ("<span class='multiple_size_tag'>"+"<a title='" + gettext ('Search by ') + slotsAux[i] +"' href='" + jsCall + "'>" + slotsAux[i] + "</a>" + ((i<(slotsAux.length-1))?",":"") + "</span> ");
 		}
 		return slotsHTML;
 	}
@@ -329,22 +336,22 @@ function Resource( id_, resourceJSON_, urlTemplate_, items) {
 		var tagsHTML = '';
 		var URL = '';
 		var tagsAux = state.getTags();
-		var opciones = arguments[1] || {tags:'all'};
+		var option = arguments[1] || {tags:'all'};
 
 		for (var i=0; i<tagsAux.length; i++)
 		{
 			var version = state.getVersion();
 			var added = tagsAux[i].getAdded_by();
 			
-			if(tagsAux[i].getAdded_by() == 'Yes' && (opciones.tags=='all' || opciones.tags=='mytags')){  
+			if(tagsAux[i].getAdded_by() == 'Yes' && (option.tags=='all' || option.tags=='mytags')){  
 
 				var jsCall = 'javascript:UIUtils.removeTagUser("' + tagsAux[i].getValue() + '","'+id+'");';
-				tagsHTML += ("<a title='" + gettext ('Delete tag') + "' href='" + jsCall + "' ><img id='"+id+"_deleteIcon_"+i+"_"+loc+"' onMouseOver=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/delete.png';\" onMouseOut=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/cancel_gray.png';\" src='/ezweb/images/cancel_gray.png' border=0 name=op1></a><span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML() + ((i<(tagsAux.length-1))?",":"") + "</span>");
+				tagsHTML += ("<a title='" + gettext ('Delete tag') + "' href='" + jsCall + "' ><img id='"+id+"_deleteIcon_"+i+"_"+loc+"' onMouseOver=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/delete.png';\" onMouseOut=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/cancel_gray.png';\" src='/ezweb/images/cancel_gray.png' border=0 name=op1></a><span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML(id) + ((i<(tagsAux.length-1))?",":"") + "</span>");
 			}
 			else{
-				if (tagsAux[i].getAdded_by() == 'No' && (opciones.tags=='all' || opciones.tags=='others'))
+				if (tagsAux[i].getAdded_by() == 'No' && (option.tags=='all' || option.tags=='others'))
 				{
-					tagsHTML += ("<span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML() + ((i<(tagsAux.length-1))?",":"") + "</span>");		  
+					tagsHTML += ("<span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML(id) + ((i<(tagsAux.length-1))?",":"") + "</span>");		  
 				}
 			}
 		}

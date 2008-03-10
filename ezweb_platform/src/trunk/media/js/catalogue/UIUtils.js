@@ -196,6 +196,13 @@ UIUtils.updateGadgetXHTML = function() {
     PersistenceEngineFactory.getInstance().send_update(resourceURI, "", this, onSuccess, onError);
 
 }
+
+UIUtils.toggle_elements = function(elementIds_) {
+	for (i=0;i<elementIds_.length ;i++ )
+	{
+		UIUtils.toggle(elementIds_[i]);
+	}
+}
 	
 UIUtils.toggle = function(elementId_) {
 	var element = document.getElementById(elementId_);
@@ -227,16 +234,22 @@ UIUtils.changeImage = function(elementId_, newImage_) {
 UIUtils.searchByTag = function(url, tag) {
 	this.closeInfoResource();
 	var opManager = OpManagerFactory.getInstance();
+	var option = arguments[2] || {from:'none'};
+
+	if (option.from != 'none')
+	{
+		CatalogueFactory.getInstance().getResource(UIUtils.balloonResource).closeTagcloudBalloon();
+	}
 
   if (tag == ""){
   	alert("Introduzca un valor en el formulario de búsqueda");
   }
   else{
-  	UIUtils.setPage(1);
+	  UIUtils.setPage(1);
       UIUtils.search = 'tag';
       UIUtils.searchValue = tag;
       UIUtils.searchCriteria = 'tag' ;
-	    opManager.repaintCatalogue(url + "/" + tag  + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
+	  opManager.repaintCatalogue(url + "/" + tag  + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
 }
 }
 
@@ -249,7 +262,7 @@ UIUtils.searchByWiring = function(url, value, wiring) {
 	}
   
   else{
-  	UIUtils.setPage(1);
+	  UIUtils.setPage(1);
   UIUtils.search = 'wiring';
   UIUtils.searchValue = value;
   UIUtils.searchCriteria = wiring ;
@@ -353,6 +366,7 @@ UIUtils.removeTag = function(id_) {
 UIUtils.removeAllTags = function() {
 	var tagger = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).getTagger();
 	tagger.removeAll();
+	document.getElementById("tag_alert").style.display='none';
 }
 
 UIUtils.removeTagUser = function(tag,id) {	
@@ -368,7 +382,16 @@ UIUtils.sendTags = function() {
 	var resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
 	var tagger = resource.getTagger();
 	var resourceURI = "/" + resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion();
-
+	if (document.getElementById('new_tag_text_input').value.length >2 || (tagger.getTags().size() != 0 && document.getElementById('new_tag_text_input').value.length== 0))
+	{
+		UIUtils.toggle_elements(["add_tags_panel","add_tags_link","access_wiki_link","access_template_link","update_code_link","delete_gadget_link"]);
+		UIUtils.show("add_gadget_button");
+	}
+	if (tagger.getTags().size() == 0 || document.getElementById('new_tag_text_input').value.length!= 0)
+	{
+		UIUtils.addTag(document.getElementById('new_tag_text_input'));
+	}
+	
 	tagger.sendTags(URIs.POST_RESOURCE_TAGS, resourceURI);
 }
 
@@ -392,6 +415,7 @@ UIUtils.addTag = function(inputText_) {
 	tagger.addTag(inputText_.value);
 	inputText_.value = '';
 	inputText_.focus();
+	inputText_.size = 5;
 }
 
 UIUtils.setResourcesWidth = function() {
@@ -524,9 +548,16 @@ UIUtils.SlideAdvancedSearchOutOfView = function(element) {
   );
 }
 
+//enlarge an input depending on the size of the text
+UIUtils.enlargeInput = function(inputText_) {
+	
+	if (inputText_.value.length>5) document.getElementById('new_tag_text_input').size = inputText_.value.length;
+}
 
 // Enables you to react to return being pressed in an input
 UIUtils.onReturn = function(event_, handler_, inputText_) {
   if (!event_) event_ = window.event;
-  if (event_ && event_.keyCode && event_.keyCode == 13) handler_(inputText_);
+  if (event_ && event_.keyCode && event_.keyCode == 13) {
+	  handler_(inputText_);
+  }
 };

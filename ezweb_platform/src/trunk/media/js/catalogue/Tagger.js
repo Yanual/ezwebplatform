@@ -43,15 +43,21 @@ function Tagger(){
 	
 	this.addTag = function(tag_) {
 		if (tag_.length < 3) {
-			alert(gettext ("Tag must have at least three characters."));
+			document.getElementById("tag_alert").style.display='inline';
+			document.getElementById("tag_alert").innerHTML = gettext ("Tag must have at least three characters.");
 		}
 		else {
 			if (!tags.contains(tag_)) {
 				var id = 'new_tag_' + tags.size();
 				tags.addElement(id, tag_);
 				paintTag(id, tag_);
+				document.getElementById("tag_alert").style.display='none';
 			}
 		}
+	}
+
+	this.getTags = function(){
+		return tags;
 	}
 
 	this.removeTag = function(id_) { 
@@ -66,8 +72,7 @@ function Tagger(){
 	
 	this.sendTags = function(url, resourceURI)
 	{
-		UIUtils.toggle('add_tags_panel');
-		UIUtils.toggle('add_tags_link');
+
 		if (tags.size()>0)
 		{
 			var onError = function(transport) {
