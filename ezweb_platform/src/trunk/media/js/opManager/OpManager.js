@@ -128,21 +128,21 @@ var OpManagerFactory = function () {
 			}
 			
 			if (module == Modules.prototype.SHOWCASE) {
-				this.dragboardModule = DragboardFactory.getInstance();
-				return;
-			}
-				
-			if (module == Modules.prototype.DRAGBOARD) {
 				this.wiringModule = WiringFactory.getInstance();
 				return;
 			}
 			
-						if (module == Modules.prototype.WIRING) {
+			if (module == Modules.prototype.WIRING) {
 				this.contextManagerModule = ContextManagerFactory.getInstance();
 				return;
 			}
-			
-			if (module == Modules.prototype.CONTEXT_MANAGER) {
+
+		    if (module == Modules.prototype.CONTEXT_MANAGER) {
+				this.dragboardModule = DragboardFactory.getInstance();
+				return;
+			}
+		    
+			if (module == Modules.prototype.DRAGBOARD) {
 				this.catalogue = CatalogueFactory.getInstance();
 				this.catalogue.loadCatalogue(URIs.GET_POST_RESOURCES);
 

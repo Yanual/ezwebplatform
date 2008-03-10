@@ -188,11 +188,12 @@ var WiringFactory = function () {
 					var itemList = [];
 					gadget["id"] = iGadgetId;
 
-					var gadgetModel = DragboardFactory.getInstance().getGadget(iGadgetId);
+					//var gadgetModel = DragboardFactory.getInstance().getGadget(iGadgetId);
 
-					gadget["vendor"] = gadgetModel.getVendor();
-					gadget["version"] = gadgetModel.getVersion();	
-					gadget["name"] = gadgetModel.getName();	
+					//gadget["vendor"] = gadgetModel.getVendor();
+					//gadget["version"] = gadgetModel.getVersion();	
+					//gadget["name"] = gadgetModel.getName();	
+					
 					// The instance of the iGadget doesn't exist.
 					for (var i = 0; i < events.length; i++){
 						var item = new Object();
@@ -203,6 +204,7 @@ var WiringFactory = function () {
 						itemList.push(item);
 								
 					}
+					
 					for (var j = 0; j < slots.length; j++){
 						var item = new Object();
 						item["name"] = slots[j].name;
@@ -211,6 +213,7 @@ var WiringFactory = function () {
 						item["ref"] = new wSlot(iGadgetId, item["name"]);
 						itemList.push(item);
 					}
+					
 					gadget["list"] = itemList;
 					iGadgetList[iGadgetId] = gadget;
 					return 0;
@@ -225,10 +228,10 @@ var WiringFactory = function () {
 				gadget["list"] = [];
 				gadget["id"] = arguments[0]["id"];
 	
-				var gadgetModel = DragboardFactory.getInstance().getGadget(arguments[0]["id"]);
-				gadget["vendor"] = gadgetModel.getVendor();
-				gadget["version"] = gadgetModel.getVersion();		
-				gadget["name"] = gadgetModel.getName();
+//				var gadgetModel = DragboardFactory.getInstance().getGadget(arguments[0]["id"]);
+//				gadget["vendor"] = gadgetModel.getVendor();
+//				gadget["version"] = gadgetModel.getVersion();		
+//				gadget["name"] = gadgetModel.getName();
 				
 				list = arguments[0].list;
 				for (var j = 0; j < list.length; j++){
