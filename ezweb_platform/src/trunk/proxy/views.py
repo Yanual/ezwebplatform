@@ -83,7 +83,7 @@ class Proxy(Resource):
             try:
                 proxy = settings.PROXY_SERVER
             except Exception:
-                pass
+                proxy = ""
 
             if (proxy != ""):
                 conn = httplib.HTTPConnection("nube.hi.inet:8080")
@@ -111,6 +111,27 @@ class Proxy(Resource):
                 conn.request(method, cgi, params, headers)
 	    	
             res = conn.getresponse()
+
+	    # Redirect resolution
+            while (res.status >= 300) and (res.status < 400):
+                url = unquote(res.getheader('Location'))
+                proto, host, cgi, param, auxquery = urlparse.urlparse(url)[:5]
+                conn = httplib.HTTPConnection(host)
+
+                if query != '':
+                    query = query + "&" + auxquery
+                else:
+                    query = auxquery
+
+                if query != '':
+                    cgi = cgi + '?%s' % query
+
+                if (proxy != ""):
+                    conn.request(method, url, params, headers)
+                else:
+                    conn.request(method, cgi, params, headers)
+
+                res = conn.getresponse()
                 
             # Add content-type header to the response
             if res.getheader('content-type'):
@@ -118,11 +139,16 @@ class Proxy(Resource):
             else:
                 response = HttpResponse (res.read())
 
+	    # Set status code to the response
+            response.status_code = res.status
+
             # Add all the headers recieved to the response
             headers = res.getheaders()
             for header in headers:
                 if is_valid_header (string.lower(header[0])):
                     response[header[0]] = header[1]
+
             return response
+
         except Exception, e:
-            return HttpResponseServerError("<html><head><title>Error</title></head><body>%s</body></html>" % e, mimetype='text/html; charset=UTF-8')
+            return HttpResponseServerError("<html><head><title>Error HTTP 500</title></head><body>%s</body></html>" % e, mimetype='text/html; charset=UTF-8')
