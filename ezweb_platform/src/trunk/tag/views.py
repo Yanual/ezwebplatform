@@ -72,7 +72,7 @@ class GadgetTagsCollection(Resource):
 
         # Get the xml containing the tags from the request
         tags_xml = request.__getitem__('tags_xml')
-
+        tags_xml = tags_xml.encode("utf-8")
         # Parse the xml containing the tags
 	parser = make_parser()
 	handler = TagsXMLHandler()
@@ -142,4 +142,3 @@ class GadgetTagsCollection(Resource):
         tag.delete()
 
         return get_tag_response(gadget,user, format)
-
