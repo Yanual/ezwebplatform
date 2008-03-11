@@ -117,12 +117,15 @@ var WiringFactory = function () {
 		// *****************
 		//  PRIVATE METHODS
 		// *****************
-		var loaded = false
+		var loaded = false;
 		var persistenceEngine = PersistenceEngineFactory.getInstance();
 		var iGadgetList = new Hash();
 		var inOutList = new Hash();
 		// copy is the list that is used for making new connections or disconnections with the interface.
 		var copyList = new Hash(); 
+
+		// Avoiding dependence between Wiring and Dragboard modules! Now the Wiring load before Dragboard!
+		var igadgetInfoCompleted = false;
 
 		// Allow to pack in an only PUT request, all the variable changes of a VariablePlatform.set invocation
 		var modifiedVars = [];
@@ -139,13 +142,34 @@ var WiringFactory = function () {
 		// this method is used in the first version for painting the connections for the user.
 		Wiring.prototype.getGadgetsId = function (){
 			var gadgetsId = iGadgetList.keys();
-			var result = []
-			for (var i = 0; i<gadgetsId.length; i++){
-				var iGadget = new Object();
-				iGadget.name = iGadgetList[gadgetsId[i]].name;
-				iGadget.id = gadgetsId[i];
-				result.push(iGadget);
+			var result = [];
+
+			// Initialization of igadget template info!
+			// Only done one time!
+			if (!this.igadgetInfoComplete) {
+			    var dragboard = DragboardFactory.getInstance();
+			    
+			    for (var i = 0; i<gadgetsId.length; i++){
+				var gadgetId = gadgetsId[i];
+				var gadget = dragboard.getGadget(gadgetId);
+			    
+				iGadgetList[gadgetId].vendor = gadget.getVendor();
+				iGadgetList[gadgetId].name = gadget.getName();
+				iGadgetList[gadgetId].version = gadget.getVersion();
+			    }
+
+			    this.igadgetInfoComplet = true;
 			}
+
+			for (var i = 0; i<gadgetsId.length; i++){
+			    var gadgetId = gadgetsId[i];
+
+			    var iGadget = new Object();
+			    iGadget.name = iGadgetList[gadgetId].name;
+			    iGadget.id = gadgetId;
+			    result.push(iGadget);
+			}
+
 			return result;
 		}
 		
