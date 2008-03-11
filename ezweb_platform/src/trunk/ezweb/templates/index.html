@@ -182,8 +182,16 @@ var URIs = new _URIConstants();
 
 	
 	function setLanguage(language) {
-		document.setlanguage.language.value = language; 
-		document.setlanguage.submit()
+		var onSuccess = function() {
+			window.location.reload();
+		}
+		
+		var onError = function() {}
+		
+		var persistenceEngine = PersistenceEngineFactory.getInstance();
+		var params = {language: language};
+		persistenceEngine.send_post("/i18n/setlang/", params, this, onSuccess, onError);
+		return false;
 	}
 
 	var currentInterface = "dragboard";
@@ -205,10 +213,6 @@ var URIs = new _URIConstants();
 <!-- HEADER -->
 <div id="header">
   <div id="greeting">{% trans "Welcome" %}, {{ user.username }}{% for lang in LANGUAGES %} | <a href="/" onclick="return setLanguage('{{ lang.0 }}')" >{{ lang.1 }}</a>{% endfor %} | <a href="/logout">{% trans "Exit" %}</a>
-  <form name="setlanguage" action="/i18n/setlang/" method="post">
-	<input name="next" type="hidden" value="/" />
-	<input name="language" type="hidden"/>
-  </form>
   </div>
   <img id="logo" src="{{ MEDIA_URL }}images/logo.gif" alt="EzWeb Logo">
   <div class="tab_section">
