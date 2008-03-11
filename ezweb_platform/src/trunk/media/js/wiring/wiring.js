@@ -158,7 +158,7 @@ var WiringFactory = function () {
 				iGadgetList[gadgetId].version = gadget.getVersion();
 			    }
 
-			    this.igadgetInfoComplet = true;
+			    this.igadgetInfoComplete = true;
 			}
 
 			for (var i = 0; i<gadgetsId.length; i++){
