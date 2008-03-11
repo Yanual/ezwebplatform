@@ -71,7 +71,7 @@ class GadgetsCollection(Resource):
 	try:
     	    templateParser = TemplateParser(template_uri, user)
 
-    	    templateParser.parse()
+            templateParser.parse()
     	    transaction.commit()
         except IntegrityError, e:
             # Gadget already exists. Rollback transaction

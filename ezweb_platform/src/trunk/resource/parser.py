@@ -135,7 +135,7 @@ class TemplateHandler(handler.ContentHandler):
             gadget=GadgetResource()
 	    gadget.short_name=self._name
 	    gadget.vendor=self._vendor
-	    gadget.added_by_user_id = get_object_or_404(User, username=self._user).id
+	    gadget.added_by_user = self._user
 	    gadget.version=self._version
 	    gadget.author=self._author
 	    gadget.description=self._description
@@ -144,9 +144,10 @@ class TemplateHandler(handler.ContentHandler):
 	    gadget.wiki_page_uri=self._wikiURI
 	    gadget.template_uri=self._uri
 	    gadget.creation_date=datetime.today()
-            gadget.save()
-            self._flag = 'add'
 
+            gadget.save()
+
+            self._flag = 'add'
 	elif (self._flag == 'add'):
             return
         else:
