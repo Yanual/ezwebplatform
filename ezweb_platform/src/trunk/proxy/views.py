@@ -86,7 +86,7 @@ class Proxy(Resource):
                 proxy = ""
 
             if (proxy != ""):
-                conn = httplib.HTTPConnection("nube.hi.inet:8080")
+                conn = httplib.HTTPConnection(proxy)
             else:
                 conn = httplib.HTTPConnection(host)
                 
