@@ -101,6 +101,11 @@ class GadgetsCollection(Resource):
 	except:
 	    format = 'default'
 
+        try:
+	    orderby = request.__getitem__('orderby')
+	except:
+	    orderby = '-creation_date'
+
 	#paginate
 	a= int(pag)
 	b= int(offset)
@@ -109,7 +114,7 @@ class GadgetsCollection(Resource):
 
         # Get all the gadgets in the catalogue
 	if a == 0 or b == 0:
-	    gadgetlist = GadgetResource.objects.all()
+	    gadgetlist = GadgetResource.objects.order_by(orderby)
 	# Get the requested gadgets
 	else:
 	    c=((a-1)*b)
@@ -117,7 +122,7 @@ class GadgetsCollection(Resource):
 	
 	    if a==1:
 	        c=0
-            gadgetlist = GadgetResource.objects.all()[c:d]
+            gadgetlist = GadgetResource.objects.order_by(orderby)[c:d]
 	
         return get_resource_response(gadgetlist, format, items, user)
 

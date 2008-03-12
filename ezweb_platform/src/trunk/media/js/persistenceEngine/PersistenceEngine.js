@@ -51,6 +51,7 @@ var PersistenceEngineFactory = function () {
 		PersitenceEngine.prototype.send_get = function (url, context, successHandler, errorHandler) {
 			new Ajax.Request(url, {
 				method: 'get',
+				parameters: arguments[4],
 				onSuccess: successHandler.bind(context),
 				onFailure: errorHandler.bind(context),
 				onException: errorHandler.bind(context)

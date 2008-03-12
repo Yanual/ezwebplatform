@@ -82,6 +82,11 @@ var CatalogueFactory  = function () {
 			var pageInfo = document.getElementById("paginate");
 			pageInfo.innerHTML = 	"<center>" + _paginate(items) + "</center>";
 		}
+
+		this.orderby = function(items){
+			var orderbyInfo = document.getElementById("orderby");
+			orderbyInfo.innerHTML = _orderby();
+		}
 		
 		this.loadCatalogue = function(urlCatalogue_) {
 		
@@ -119,8 +124,8 @@ var CatalogueFactory  = function () {
 								
 				var responseJSON = transport.responseText;
 				var items = transport.getResponseHeader('items');
-			  var jsonResourceList = eval ('(' + responseJSON + ')');
-			  jsonResourceList = jsonResourceList.resourceList
+			    var jsonResourceList = eval ('(' + responseJSON + ')');
+			    jsonResourceList = jsonResourceList.resourceList
 			  		  
 				//var resourcesXML = response.getElementsByTagName("resource");
 				
@@ -129,12 +134,15 @@ var CatalogueFactory  = function () {
 					this.addResource(jsonResourceList[i], null);
 				}
 				this.paginate(items);
+				this.orderby();
 			}
+
+			var param = {orderby: UIUtils.orderby};
 			
 			var persistenceEngine = PersistenceEngineFactory.getInstance();
 			
 			// Get Resources from PersistenceEngine. Asyncrhonous call!
-			persistenceEngine.send_get(urlCatalogue_, this, loadResources, onError);
+			persistenceEngine.send_get(urlCatalogue_, this, loadResources, onError, param);
 		}
 
 	var _paginate = function(items){
@@ -198,6 +206,43 @@ var CatalogueFactory  = function () {
 
 		return paginationHTML;
 	}
+
+    var _orderby = function(items) {
+		orderbyHTML = '';
+
+		orderbyHTML=( "<label for='combo_order_by'>" + gettext(" Order by") + ": </label>" +
+		                "<select id='combo_order_by' onChange=" + 
+		                "'javascript:UIUtils.setOrderby(this);UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, document.getElementById(\"combo_results_per_page\").options[document.getElementById(\"combo_results_per_page\").selectedIndex].value.toString(), \"first\", \"" + items + "\");'" +
+		                "\">" +
+						"<option value=\"-creation_date\"");
+		if (UIUtils.orderby == "-creation_date" )
+		{
+			orderbyHTML+=(" SELECTED");
+		}
+		orderbyHTML+=(   ">" + gettext("Creation date") + "</option>" +
+			            "<option value=\"short_name\"");
+		if (UIUtils.orderby == "short_name" )
+		{
+			orderbyHTML+=(" SELECTED");
+		}
+		orderbyHTML+=(   ">" + gettext("Name") + "</option>" +
+			            "<option value=\"vendor\"");
+		if (UIUtils.orderby == "vendor" )
+		{
+			orderbyHTML+=(" SELECTED");
+		}
+		orderbyHTML+=(   ">" + gettext("Vendor") + "</option>" +
+			            "<option value=\"author\"");
+		if (UIUtils.orderby == "author" )
+		{
+			orderbyHTML+=(" SELECTED");
+		}
+		orderbyHTML+=(   ">" + gettext("Author") + "</option>" +
+			            "</select>");
+
+		return orderbyHTML;
+	}
+
 	}
 	
 	// ************************

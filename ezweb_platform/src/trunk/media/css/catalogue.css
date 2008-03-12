@@ -87,6 +87,12 @@
 	border-top: 1px solid #efefef;
 }
 
+#catalogue .center .orderby {
+    margin-top:1em;
+    margin-bottom:1em;
+	vertical-align:middle;
+}
+
 #catalogue .center .paginate img{
     border-style:none;	
 }

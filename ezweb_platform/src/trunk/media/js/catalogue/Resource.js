@@ -65,7 +65,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 								"</div>";
 		newResource.innerHTML = content;
 		var parentHTML = document.getElementById("resources");
-		parentHTML.insertBefore(newResource, parentHTML.firstChild);
+		parentHTML.insertBefore(newResource, parentHTML.lastChild);
 		
 		_createDescriptionBalloon();
 		_createTagcloudBalloon();

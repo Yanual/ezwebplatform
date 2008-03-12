@@ -54,6 +54,7 @@ UIUtils.infoResourcesWidth = 400;
 UIUtils.isInfoResourcesOpen = false;
 UIUtils.page = 1;
 UIUtils.off = 4;
+UIUtils.orderby = '-creation_date';
 UIUtils.num_items = 0;
 UIUtils.search = 'false';
 UIUtils.searchValue = '';
@@ -61,8 +62,8 @@ UIUtils.searchCriteria = '';
 
 UIUtils.addResource = function(url, paramName, paramValue) {
 	var newResourceOnSuccess = function (response) {
-		//OpManagerFactory.getInstance().repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + Math.ceil(UIUtils.getNum_items()/UIUtils.getOffset()) + "/" + UIUtils.getOffset());
-	    UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, UIUtils.getOffset(), Math.ceil(UIUtils.getNum_items()/UIUtils.getOffset()), UIUtils.getNum_items());
+		UIUtils.orderby = '-creation_date';
+		UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, UIUtils.getOffset(), 1, UIUtils.getNum_items());
 	}
 	
 	var newResourceOnError = function (transport, e) {
@@ -319,7 +320,10 @@ UIUtils.cataloguePaginate = function(url, offset, pag, items) {
   UIUtils.page = pag; 
   
 	opManager.repaintCatalogue(url + "/" + pag + "/" + UIUtils.getOffset());
-	
+}
+
+UIUtils.setOrderby = function(orderby) {
+    UIUtils.orderby = orderby.value;
 }
 
 UIUtils.getPage = function() {
