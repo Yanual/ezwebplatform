@@ -85,7 +85,7 @@ var CatalogueFactory  = function () {
 
 		this.orderby = function(items){
 			var orderbyInfo = document.getElementById("orderby");
-			orderbyInfo.innerHTML = _orderby();
+			orderbyInfo.innerHTML = _orderby(items);
 		}
 		
 		this.loadCatalogue = function(urlCatalogue_) {
@@ -128,13 +128,12 @@ var CatalogueFactory  = function () {
 			    jsonResourceList = jsonResourceList.resourceList
 			  		  
 				//var resourcesXML = response.getElementsByTagName("resource");
-				
 				for (var i = 0; i<jsonResourceList.length; i++)
 				{
 					this.addResource(jsonResourceList[i], null);
 				}
 				this.paginate(items);
-				this.orderby();
+				this.orderby(items);
 			}
 
 			var param = {orderby: UIUtils.orderby};
@@ -147,31 +146,37 @@ var CatalogueFactory  = function () {
 
 	var _paginate = function(items){
 		var paginationHTML = '';
-
-		paginationHTML=( "<div id='results_per_page' class='results_per_page'>" +
+		if(items==0) {
+			paginationHTML=( "<div id='results_per_page' class='results_per_page'>" +
+		                  "<label for='combo_results_per_page'>" + gettext("Gadgets per page: ") + "</label>" +
+		                  "<select id='combo_results_per_page' size=1 disabled onChange=" + 
+		                  "'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, document.getElementById(\"combo_results_per_page\").options[document.getElementById(\"combo_results_per_page\").selectedIndex].value.toString(), \"first\", \"" + items + "\");'" + "\">");			
+		} else {
+			paginationHTML=( "<div id='results_per_page' class='results_per_page'>" +
 		                  "<label for='combo_results_per_page'>" + gettext("Gadgets per page: ") + "</label>" +
 		                  "<select id='combo_results_per_page' size=1 onChange=" + 
-		                      "'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, document.getElementById(\"combo_results_per_page\").options[document.getElementById(\"combo_results_per_page\").selectedIndex].value.toString(), \"first\", \"" + items + "\");'" +
-		                  "\">");
-        var max;
-        if(items>20) {
-            max = 20;
-        } else {
-            max = Math.ceil(items/4);
-        }
-		for (var i=1; i<=max; i++)
-		{
-		  paginationHTML+=("<option value=\"" + i*4 + "\"");
-		      if(UIUtils.getOffset() == i*4)
-		      {
-		          paginationHTML+=(" SELECTED");
-		      }
-		  paginationHTML+=(">" + i*4);
+		                  "'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, document.getElementById(\"combo_results_per_page\").options[document.getElementById(\"combo_results_per_page\").selectedIndex].value.toString(), \"first\", \"" + items + "\");'" + "\">");
+		
+   	    	var max;
+   	    	if(items>20) {
+   	        	max = 20;
+   	     	} else {
+   	         	max = Math.ceil(items/4);
+   	     	}
+			for (var i=1; i<=max; i++)
+			{
+			  	paginationHTML+=("<option value=\"" + i*4 + "\"");
+				if(UIUtils.getOffset() == i*4)
+			    {
+					paginationHTML+=(" SELECTED");
+				}
+				paginationHTML+=(">" + i*4);
+			}
 		}
 		paginationHTML+=("</select></div></br>");
           
 		var end_page = Math.ceil(items/UIUtils.getOffset());
-        
+        if (end_page==0){end_page=1;}
         if(UIUtils.getPage()!=1)
         {
            var jsCall_first = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, ' + UIUtils.getOffset() + ',"first", "' + items + '");';
@@ -209,37 +214,42 @@ var CatalogueFactory  = function () {
 
     var _orderby = function(items) {
 		orderbyHTML = '';
-
-		orderbyHTML=( "<label for='combo_order_by'>" + gettext(" Order by") + ": </label>" +
+		if (items==0){
+			orderbyHTML=( "<label for='combo_order_by'>" + gettext(" Order by") + ": </label>" +
+		                "<select id='combo_order_by' disabled onChange=" + 
+		                "'javascript:UIUtils.setOrderby(this);UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, document.getElementById(\"combo_results_per_page\").options[document.getElementById(\"combo_results_per_page\").selectedIndex].value.toString(), \"first\", \"" + items + "\");'" +
+		                "\"></select>");
+		}else{
+			orderbyHTML=( "<label for='combo_order_by'>" + gettext(" Order by") + ": </label>" +
 		                "<select id='combo_order_by' onChange=" + 
 		                "'javascript:UIUtils.setOrderby(this);UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, document.getElementById(\"combo_results_per_page\").options[document.getElementById(\"combo_results_per_page\").selectedIndex].value.toString(), \"first\", \"" + items + "\");'" +
 		                "\">" +
 						"<option value=\"-creation_date\"");
-		if (UIUtils.orderby == "-creation_date" )
-		{
-			orderbyHTML+=(" SELECTED");
-		}
-		orderbyHTML+=(   ">" + gettext("Creation date") + "</option>" +
+			if (UIUtils.orderby == "-creation_date" )
+			{
+				orderbyHTML+=(" SELECTED");
+			}
+			orderbyHTML+=(   ">" + gettext("Creation date") + "</option>" +
 			            "<option value=\"short_name\"");
-		if (UIUtils.orderby == "short_name" )
-		{
-			orderbyHTML+=(" SELECTED");
-		}
-		orderbyHTML+=(   ">" + gettext("Name") + "</option>" +
+			if (UIUtils.orderby == "short_name" )
+			{
+				orderbyHTML+=(" SELECTED");
+			}
+			orderbyHTML+=(   ">" + gettext("Name") + "</option>" +
 			            "<option value=\"vendor\"");
-		if (UIUtils.orderby == "vendor" )
-		{
-			orderbyHTML+=(" SELECTED");
-		}
-		orderbyHTML+=(   ">" + gettext("Vendor") + "</option>" +
+			if (UIUtils.orderby == "vendor" )
+			{
+				orderbyHTML+=(" SELECTED");
+			}
+			orderbyHTML+=(   ">" + gettext("Vendor") + "</option>" +
 			            "<option value=\"author\"");
-		if (UIUtils.orderby == "author" )
-		{
-			orderbyHTML+=(" SELECTED");
-		}
-		orderbyHTML+=(   ">" + gettext("Author") + "</option>" +
+			if (UIUtils.orderby == "author" )
+			{
+				orderbyHTML+=(" SELECTED");
+			}
+			orderbyHTML+=(   ">" + gettext("Author") + "</option>" +
 			            "</select>");
-
+		}
 		return orderbyHTML;
 	}
 
