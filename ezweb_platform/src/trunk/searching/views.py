@@ -56,40 +56,55 @@ from commons.utils import get_xml_error
 
 class GadgetsCollectionByGenericSearch(Resource):
 
-    def __get_gadgetlist__(self, value):
-        
-	gadgetlist = []
-        taglist = []
-
-        for e in value:
-            # Get a list of elements that matches the given value
-            gadgetlist += GadgetResource.objects.filter(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
-            taglist += UserTag.objects.filter(tag__icontains = e)
-
-	for b in taglist:
-	    gadgetlist += get_list_or_404(GadgetResource, id=b.idResource_id)
-
-	return gadgetlist
-
     def read(self, request, user_name, value, criteria, pag=0, offset=0):
 
         user = user_authentication(request, user_name)
 
-	gadgetlist = []
-
-        value = value.split(' ')
+	try:
+	    orderby = request.__getitem__('orderby')
+	except:
+	    orderby = '-creation_date'
 
 	try:
 	    format = request.__getitem__('format')
 	except:
 	    format = 'default'
 
+        value = value.split()
+
+        gadgetlist = []
+	taglist = []
+	resultlist = []
+
         if criteria == 'and':
-            gadgetlist = self.__get_gadgetlist__(value)
-	    gadgetlist = get_uniquelist(gadgetlist, value) 
+	    count = 0
+            for e in value:
+                # Get a list of elements that match the given value
+                if count == 0:
+                    gadgetlist = GadgetResource.objects.filter(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e)).order_by(orderby)
+		    taglist = GadgetResource.objects.filter(usertag__tag__icontains = e)
+		    if taglist:
+		        gadgetlist = gadgetlist | taglist
+                    count = count + 1
+                else:
+		    taglist = GadgetResource.objects.filter(usertag__tag__icontains = e)
+		    if taglist:
+		        taglist = gadgetlist & taglist
+
+                    gadgetlist = gadgetlist.filter(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
+		    if taglist:
+		        gadgetlist = gadgetlist | taglist
+
+	    gadgetlist = get_uniquelist(gadgetlist)
 
         elif criteria == 'or':
-            gadgetlist = self.__get_gadgetlist__(value)        
+            for e in value:
+                # Get a list of elements that matches the given value
+                gadgetlist += GadgetResource.objects.filter(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e)).order_by(orderby)
+                taglist += UserTag.objects.filter(tag__icontains = e)
+            for b in taglist:
+	        gadgetlist += get_list_or_404(GadgetResource.objects.order_by(orderby), id=b.idResource_id)
+
             gadgetlist = get_uniquelist(gadgetlist)
 
         elif criteria == 'not':
@@ -97,12 +112,19 @@ class GadgetsCollectionByGenericSearch(Resource):
             for e in value:
                 # Get a list of elements that doesn't match the given value
                 if count == 0:
-		    gadgetlist = GadgetResource.objects.exclude(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
-	            count = count + 1                    
+		    gadgetlist = GadgetResource.objects.exclude(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e)).order_by(orderby)
+		    
+		    count = count + 1
                 else:
 		    gadgetlist = gadgetlist.exclude(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
+	    resultlist = get_uniquelist(gadgetlist)
+	    for e in value:
+	        taglist = GadgetResource.objects.filter(usertag__tag__icontains = e)
+	        for b in taglist:
+	            if (b in resultlist):
+		        resultlist.remove(b)
  
-	    gadgetlist = get_uniquelist(gadgetlist)
+	    gadgetlist = get_uniquelist(resultlist)
         
 	items = len(gadgetlist)
 	#paginate
