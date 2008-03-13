@@ -179,7 +179,7 @@ var DragboardFactory = function () {
 			msg = interpolate(gettext("Error retreiving dragboard data from persistence: %(errorMsg)s."), {errorMsg: msg}, true);
 			OpManagerFactory.getInstance().log(msg);
 
-			alert (gettext("Error retreiving dragboard data from persistence, please check the logs for further info."));
+			alert (gettext("Error retrieving dragboard data from persistence, please check the logs for further info."));
 		}
 
 		function _getPositionOn(_matrix, gadget) {
@@ -948,7 +948,7 @@ IGadget.prototype.paint = function(where) {
 	button.setAttribute("class", "settingsbutton");
 	button.addEventListener("click", function() {DragboardFactory.getInstance().setConfigurationVisible(this.id, 'toggle');}.bind(this), true);
 	button.setAttribute("title", gettext("Preferences"));
-	button.setAttribute("alt", gettext("Close"));
+	button.setAttribute("alt", gettext("Preferences"));
 	gadgetMenu.appendChild(button);
 	this.settingsButtonElement = button;
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: EzWeb-Platform 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-26 12:39+0100\n"
+"POT-Creation-Date: 2008-03-12 15:41+0100\n"
 "PO-Revision-Date: 2008-02-20 15:55+0100\n"
 "Last-Translator: JOSÉ FERNANDES JUNIOR <jose.fernandes@valenti.com.br>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
@@ -118,7 +118,7 @@ msgstr "A tela referida %(screen_id)s não existe."
 
 #: connectable/views.py:164
 #, fuzzy, python-format
-msgid "refered igadget %(igadget)s does not exist."
+msgid "referred igadget %(igadget)s does not exist."
 msgstr "gadget referido %(gadget_uri)s não existe."
 
 #: connectable/views.py:171
@@ -126,8 +126,8 @@ msgid "referred variable does not exist."
 msgstr "variável referida não existe."
 
 #: connectable/views.py:177
-#, python-format
-msgid "connectables cannot be save: %(exc)s"
+#, fuzzy, python-format
+msgid "connectables cannot be saved: %(exc)s"
 msgstr "connectables não pode ser salvo: %(exc)s"
 
 #: context/models.py:45 context/models.py:56 gadget/models.py:114
@@ -151,7 +151,7 @@ msgstr ""
 msgid "Attempted update. You must use PUT HTTP method in this case"
 msgstr "Tentativa de atualização. Você deve usar o método PUT HTTP neste caso"
 
-#: context/views.py:168
+#: context/views.py:167
 msgid "Concept does not exist. You must use POST HTTP method in this case"
 msgstr ""
 "Concept(conceito) não existe. Você deve usar o Método POST HTTP neste caso"
@@ -165,30 +165,30 @@ msgid "Object successfully deleted."
 msgstr ""
 
 #: django_restapi/resource.py:134
-msgid "Authorization Required"
+msgid "Authorization required"
 msgstr ""
 
-#: ezweb/templates/index.html:9
+#: ezweb/templates/index.html:9 ezweb/templates/registration/login.html:9
 msgid "EzWeb Platform"
 msgstr "Plataforma EzWeb"
 
-#: ezweb/templates/index.html:193
+#: ezweb/templates/index.html:215
 msgid "Welcome"
 msgstr "Bem-vindo"
 
-#: ezweb/templates/index.html:193
+#: ezweb/templates/index.html:215
 msgid "Exit"
 msgstr "Saída"
 
-#: ezweb/templates/index.html:201
+#: ezweb/templates/index.html:219
 msgid "My Wires"
 msgstr "Meus Wires"
 
-#: ezweb/templates/index.html:202
+#: ezweb/templates/index.html:220
 msgid "My Catalogue"
 msgstr "Meus Catálogos"
 
-#: ezweb/templates/index.html:203
+#: ezweb/templates/index.html:221
 msgid "My Gadgets"
 msgstr "Meus Gadgets"
 
@@ -247,11 +247,7 @@ msgstr "Busca:"
 msgid "Advanced Search"
 msgstr "Busca avançada:"
 
-#: ezweb/templates/showcase.html:78
-msgid "Show resource details"
-msgstr "Mostrar detalhes do recurso:"
-
-#: ezweb/templates/showcase.html:81
+#: ezweb/templates/showcase.html:83
 msgid "Hide resource details"
 msgstr "Esconder detalhes do recurso"
 
@@ -267,11 +263,29 @@ msgstr "Canais"
 msgid "New"
 msgstr "Novo"
 
+#: ezweb/templates/wiring.html:12
+#, fuzzy
+msgid "Create channel"
+msgstr "Canais"
+
 #: ezweb/templates/wiring.html:16
 msgid "Slots"
 msgstr "Slots"
 
-#: gadget/gadgetCodeParser.py:66 gadget/views.py:172
+#: ezweb/templates/registration/login.html:37
+#, fuzzy
+msgid "Username:"
+msgstr "Usuário"
+
+#: ezweb/templates/registration/login.html:38
+msgid "Password:"
+msgstr ""
+
+#: ezweb/templates/registration/login.html:41
+msgid "Log in"
+msgstr ""
+
+#: gadget/gadgetCodeParser.py:65 gadget/views.py:169
 msgid "XHTML code is not accessible"
 msgstr "Código XHTML não acessível"
 
@@ -384,57 +398,57 @@ msgstr "Compartilhado"
 msgid "Last update"
 msgstr "Última atualização"
 
-#: gadget/templateParser.py:119
+#: gadget/templateParser.py:106
 msgid "ERROR: unkown TEXT TYPE "
 msgstr "ERRO: TIPO TEXTO desconhecido"
 
-#: gadget/templateParser.py:144
+#: gadget/templateParser.py:131
 msgid "ERROR: missing attribute at Property element"
 msgstr "ERRO: atributo faltando no elemento Property (Propriedade)"
 
-#: gadget/templateParser.py:181
+#: gadget/templateParser.py:168
 msgid "ERROR: missing attribute at UserPreference element"
 msgstr "ERRO: atributo faltando no elemento UserPreference (UsuarioPreferencia"
 
-#: gadget/templateParser.py:218
+#: gadget/templateParser.py:205
 msgid "ERROR: missing attribute at Event element"
 msgstr "ERRO: atributo faltando no elemento Event (Evento)"
 
-#: gadget/templateParser.py:255
+#: gadget/templateParser.py:242
 msgid "ERROR: missing attribute at Slot element"
 msgstr "ERRO: atributo faltando no elemento Slot"
 
-#: gadget/templateParser.py:287
+#: gadget/templateParser.py:274
 msgid "ERROR: missing attribute at Gadget Context element"
 msgstr "ERRO: atributo faltando no elemento Gadget Context"
 
-#: gadget/templateParser.py:318
+#: gadget/templateParser.py:305
 msgid "ERROR: missing attribute at External Context element"
 msgstr ""
 "ERRO: atributo faltando no elemento External Context (Contexto externo)"
 
-#: gadget/templateParser.py:335
+#: gadget/templateParser.py:322
 msgid "ERROR: XHTML could not be read"
 msgstr "ERRO: XHTML não pode ser lido"
 
-#: gadget/templateParser.py:337
+#: gadget/templateParser.py:324
 msgid "ERROR: missing attribute at XHTML element"
 msgstr "ERRO: atributo faltando no elemento XHTML"
 
-#: gadget/templateParser.py:355
+#: gadget/templateParser.py:342
 msgid "ERROR: missing attribute at Option element"
 msgstr "ERRO: atributo faltando no elemento Option (Opção)"
 
-#: gadget/templateParser.py:372
+#: gadget/templateParser.py:359
 msgid "ERROR: missing attribute at Rendering element"
 msgstr "ERRO: atributo faltando no elemento Rendering (Renderização)"
 
-#: gadget/templateParser.py:515
+#: gadget/templateParser.py:499
 #, fuzzy, python-format
-msgid "Missing required filed(s): %(fields)s"
+msgid "Missing required field(s): %(fields)s"
 msgstr "Faltando arquivado(s) requerido(s)"
 
-#: gadget/views.py:108
+#: gadget/views.py:106
 msgid "Gadget already exists"
 msgstr "Gadget já existe"
 
@@ -475,8 +489,8 @@ msgid "Malformed iGadget JSON: expecting igadget uri."
 msgstr "Malformed iGadget JSON: igadget uri esperado."
 
 #: igadget/views.py:121
-#, python-format
-msgid "refered gadget %(gadget_uri)s does not exist."
+#, fuzzy, python-format
+msgid "referred gadget %(gadget_uri)s does not exist."
 msgstr "gadget referido %(gadget_uri)s não existe."
 
 #: igadget/views.py:147 igadget/views.py:153 igadget/views.py:159
@@ -512,7 +526,7 @@ msgstr "iGadgets não podem ser atualizados: "
 msgid "iGadget variables JSON expected"
 msgstr "iGadget variáveis JSON esperadas"
 
-#: proxy/views.py:59
+#: proxy/views.py:61
 msgid "Url not specified"
 msgstr "URL não especificada"
 
@@ -536,26 +550,29 @@ msgstr "templateURI"
 msgid "Wiring"
 msgstr "Wiring"
 
-#: resource/parser.py:113
+#: resource/parser.py:104
 #, fuzzy
 msgid "ERROR: missing attribute at Event or Slot element"
 msgstr "ERRO: Atributo faltando no Evento ou no Elemento Slot"
 
-#: resource/parser.py:165
+#: resource/parser.py:154
+#, fuzzy
 msgid ""
-"ERROR: missing Resource description info at Resource element! Check schema!"
+"ERROR: missing Resource description field at Resource element! Check schema!"
 msgstr ""
 "ERRO: Recurso faltando na descrição descrevendo info no elemento Resource! "
 "Veja o schema!"
-
-#: resource/views.py:154
-msgid "Error, could not read config"
-msgstr "Erro, impossível ler config  "
 
 #: tag/views.py:127
 #, fuzzy
 msgid "This tag cannot be deleted: "
 msgstr "iGadgets não podem ser atualizados: "
+
+#~ msgid "Show resource details"
+#~ msgstr "Mostrar detalhes do recurso:"
+
+#~ msgid "Error, could not read config"
+#~ msgstr "Erro, impossível ler config  "
 
 #~ msgid "User authentication failed!"
 #~ msgstr "Falha ao autenticar usuário!"

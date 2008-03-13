@@ -496,7 +496,7 @@ class TemplateHandler(handler.ContentHandler):
         
         if len(emptyRequiredFields) > 0:
             print emptyRequiredFields
-	    raise TemplateParseException(_("Missing required filed(s): %(fields)s") % {fields: unicode(emptyRequiredFields)})
+	    raise TemplateParseException(_("Missing required field(s): %(fields)s") % {fields: unicode(emptyRequiredFields)})
 
         self._gadget = Gadget (uri=self._gadgetURI, vendor=self._gadgetVendor, 
                           name=self._gadgetName, version=self._gadgetVersion, 

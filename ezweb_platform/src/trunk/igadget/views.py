@@ -118,7 +118,7 @@ def SaveIGadget(igadget, user, screen_id, igadget_id):
             var.save() 
 
     except Gadget.DoesNotExist:
-        raise Gadget.DoesNotExist(_('refered gadget %(gadget_uri)s does not exist.') % {'gadget_uri': gadget_uri})
+        raise Gadget.DoesNotExist(_('referred gadget %(gadget_uri)s does not exist.') % {'gadget_uri': gadget_uri})
     except VariableDef.DoesNotExist:
         #iGadget has no variables. It's normal
         pass

@@ -161,7 +161,7 @@ class ConnectableEntry(Resource):
         except IGadget.DoesNotExist:
             transaction.rollback()
 
-            msg = _('refered igadget %(igadget)s does not exist.')
+            msg = _('referred igadget %(igadget)s does not exist.')
             log(msg, request)
             return HttpResponseBadRequest(get_xml_error(msg))
 
@@ -174,7 +174,7 @@ class ConnectableEntry(Resource):
 
         except Exception, e:
             transaction.rollback()
-            msg = _('connectables cannot be save: %(exc)s') % {'exc': e}
+            msg = _('connectables cannot be saved: %(exc)s') % {'exc': e}
             log(msg, request)
             return HttpResponseBadRequest(msg)
 

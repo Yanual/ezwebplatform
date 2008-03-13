@@ -108,10 +108,10 @@ var CatalogueFactory  = function () {
 					msg = "HTTP Error " + transport.status + " - " + transport.statusText;
 				}
 
-				msg = interpolate(gettext("Error retreiving catalogue data: %(errorMsg)s."), {errorMsg: msg}, true);
+				msg = interpolate(gettext("Error retrieving catalogue data: %(errorMsg)s."), {errorMsg: msg}, true);
 				OpManagerFactory.getInstance().log(msg);
 
-				alert (gettext("Error retreiving catalogue data, please check the logs for further info."));
+				alert (gettext("Error retrieving catalogue data, please check the logs for further info."));
 			}
 			
 			var loadResources = function(transport) {

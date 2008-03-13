@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: EzWeb-Platform 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-26 14:19+0100\n"
+"POT-Creation-Date: 2008-03-12 13:16+0100\n"
 "PO-Revision-Date: 2008-02-19 13:46+0100\n"
 "Last-Translator: manuel <miglesia@pegaso.ls.fi.upm.es>\n"
 "Language-Team: English <en@li.org>\n"
@@ -113,7 +113,7 @@ msgstr ""
 
 #: connectable/views.py:164
 #, python-format
-msgid "refered igadget %(igadget)s does not exist."
+msgid "referred igadget %(igadget)s does not exist."
 msgstr ""
 
 #: connectable/views.py:171
@@ -122,7 +122,7 @@ msgstr ""
 
 #: connectable/views.py:177
 #, python-format
-msgid "connectables cannot be save: %(exc)s"
+msgid "connectables cannot be saved: %(exc)s"
 msgstr ""
 
 #: context/models.py:45 context/models.py:56 gadget/models.py:114
@@ -146,7 +146,7 @@ msgstr ""
 msgid "Attempted update. You must use PUT HTTP method in this case"
 msgstr ""
 
-#: context/views.py:168
+#: context/views.py:167
 msgid "Concept does not exist. You must use POST HTTP method in this case"
 msgstr ""
 
@@ -159,30 +159,30 @@ msgid "Object successfully deleted."
 msgstr ""
 
 #: django_restapi/resource.py:134
-msgid "Authorization Required"
+msgid "Authorization required"
 msgstr ""
 
-#: ezweb/templates/index.html:9
+#: ezweb/templates/index.html:9 ezweb/templates/registration/login.html:9
 msgid "EzWeb Platform"
 msgstr ""
 
-#: ezweb/templates/index.html:193
+#: ezweb/templates/index.html:215
 msgid "Welcome"
 msgstr ""
 
-#: ezweb/templates/index.html:193
+#: ezweb/templates/index.html:215
 msgid "Exit"
 msgstr ""
 
-#: ezweb/templates/index.html:201
+#: ezweb/templates/index.html:219
 msgid "My Wires"
 msgstr ""
 
-#: ezweb/templates/index.html:202
+#: ezweb/templates/index.html:220
 msgid "My Catalogue"
 msgstr ""
 
-#: ezweb/templates/index.html:203
+#: ezweb/templates/index.html:221
 msgid "My Gadgets"
 msgstr ""
 
@@ -241,11 +241,7 @@ msgstr ""
 msgid "Advanced Search"
 msgstr ""
 
-#: ezweb/templates/showcase.html:78
-msgid "Show resource details"
-msgstr ""
-
-#: ezweb/templates/showcase.html:81
+#: ezweb/templates/showcase.html:83
 msgid "Hide resource details"
 msgstr ""
 
@@ -261,11 +257,27 @@ msgstr ""
 msgid "New"
 msgstr ""
 
+#: ezweb/templates/wiring.html:12
+msgid "Create channel"
+msgstr ""
+
 #: ezweb/templates/wiring.html:16
 msgid "Slots"
 msgstr ""
 
-#: gadget/gadgetCodeParser.py:66 gadget/views.py:172
+#: ezweb/templates/registration/login.html:37
+msgid "Username:"
+msgstr ""
+
+#: ezweb/templates/registration/login.html:38
+msgid "Password:"
+msgstr ""
+
+#: ezweb/templates/registration/login.html:41
+msgid "Log in"
+msgstr ""
+
+#: gadget/gadgetCodeParser.py:65 gadget/views.py:169
 msgid "XHTML code is not accessible"
 msgstr ""
 
@@ -378,56 +390,56 @@ msgstr ""
 msgid "Last update"
 msgstr ""
 
-#: gadget/templateParser.py:119
+#: gadget/templateParser.py:106
 msgid "ERROR: unkown TEXT TYPE "
 msgstr ""
 
-#: gadget/templateParser.py:144
+#: gadget/templateParser.py:131
 msgid "ERROR: missing attribute at Property element"
 msgstr ""
 
-#: gadget/templateParser.py:181
+#: gadget/templateParser.py:168
 msgid "ERROR: missing attribute at UserPreference element"
 msgstr ""
 
-#: gadget/templateParser.py:218
+#: gadget/templateParser.py:205
 msgid "ERROR: missing attribute at Event element"
 msgstr ""
 
-#: gadget/templateParser.py:255
+#: gadget/templateParser.py:242
 msgid "ERROR: missing attribute at Slot element"
 msgstr ""
 
-#: gadget/templateParser.py:287
+#: gadget/templateParser.py:274
 msgid "ERROR: missing attribute at Gadget Context element"
 msgstr ""
 
-#: gadget/templateParser.py:318
+#: gadget/templateParser.py:305
 msgid "ERROR: missing attribute at External Context element"
 msgstr ""
 
-#: gadget/templateParser.py:335
+#: gadget/templateParser.py:322
 msgid "ERROR: XHTML could not be read"
 msgstr ""
 
-#: gadget/templateParser.py:337
+#: gadget/templateParser.py:324
 msgid "ERROR: missing attribute at XHTML element"
 msgstr ""
 
-#: gadget/templateParser.py:355
+#: gadget/templateParser.py:342
 msgid "ERROR: missing attribute at Option element"
 msgstr ""
 
-#: gadget/templateParser.py:372
+#: gadget/templateParser.py:359
 msgid "ERROR: missing attribute at Rendering element"
 msgstr ""
 
-#: gadget/templateParser.py:515
+#: gadget/templateParser.py:499
 #, python-format
-msgid "Missing required filed(s): %(fields)s"
+msgid "Missing required field(s): %(fields)s"
 msgstr ""
 
-#: gadget/views.py:108
+#: gadget/views.py:106
 msgid "Gadget already exists"
 msgstr ""
 
@@ -469,7 +481,7 @@ msgstr ""
 
 #: igadget/views.py:121
 #, python-format
-msgid "refered gadget %(gadget_uri)s does not exist."
+msgid "referred gadget %(gadget_uri)s does not exist."
 msgstr ""
 
 #: igadget/views.py:147 igadget/views.py:153 igadget/views.py:159
@@ -502,7 +514,7 @@ msgstr ""
 msgid "iGadget variables JSON expected"
 msgstr ""
 
-#: proxy/views.py:59
+#: proxy/views.py:61
 msgid "Url not specified"
 msgstr ""
 
@@ -526,17 +538,13 @@ msgstr ""
 msgid "Wiring"
 msgstr ""
 
-#: resource/parser.py:113
+#: resource/parser.py:104
 msgid "ERROR: missing attribute at Event or Slot element"
 msgstr ""
 
-#: resource/parser.py:165
+#: resource/parser.py:154
 msgid ""
-"ERROR: missing Resource description info at Resource element! Check schema!"
-msgstr ""
-
-#: resource/views.py:154
-msgid "Error, could not read config"
+"ERROR: missing Resource description field at Resource element! Check schema!"
 msgstr ""
 
 #: tag/views.py:127
