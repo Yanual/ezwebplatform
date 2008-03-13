@@ -84,9 +84,9 @@ urlpatterns = patterns('',
     (r'^proxy', include('proxy.urls')),
    
     # Django contrib
-    (r'^registration/login_form/$', 'registration.views.login_form'),
+    #(r'^registration/login_form/$', 'registration.views.login_form'),
     (r'^accounts/login/$', 'django.contrib.auth.views.login'),
-    (r'^logout$', 'django.contrib.auth.views.login'),
+    (r'^logout$', 'django.contrib.auth.views.logout'),
     (r'^admin/', include('django.contrib.admin.urls')),
     
     # Django "set language" (internacionalitation)
