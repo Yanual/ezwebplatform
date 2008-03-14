@@ -40,6 +40,7 @@ function Tagger(){
 	
 	var _this = this;
 	var tags  = new HashTable();
+	var counter = 0;
 	
 	this.addTag = function(tag_) {
 		if (tag_.length < 3) {
@@ -48,7 +49,8 @@ function Tagger(){
 		}
 		else {
 			if (!tags.contains(tag_)) {
-				var id = 'new_tag_' + tags.size();
+				var id = 'new_tag_' + counter;
+				counter++;
 				tags.addElement(id, tag_);
 				paintTag(id, tag_);
 				document.getElementById("tag_alert").style.display='none';
