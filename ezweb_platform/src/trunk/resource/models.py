@@ -58,7 +58,7 @@ class GadgetResource(models.Model):
 
      gadget_uri = models.URLField(_('gadgetURI'), null=True) 
      creation_date = models.DateTimeField('creation_date', null=True)
-     image_uri = models.URLField(_('imageURI')) 
+     image_uri = models.URLField(_('imageURI'), null=True) 
      wiki_page_uri = models.URLField(_('wikiURI')) 
      template_uri= models.URLField(_('templateURI'))
 

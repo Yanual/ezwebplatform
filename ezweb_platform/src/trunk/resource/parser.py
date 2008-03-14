@@ -124,7 +124,10 @@ class TemplateHandler(handler.ContentHandler):
 	    self._mail = self._accumulator[0]
 	    return
 	if (name == 'ImageURI'):
-	    self._imageURI = self._accumulator[0]
+	    if (self._accumulator == []):
+	        self._imageURI = 'no_url'
+	    else:
+	        self._imageURI = self._accumulator[0]
 	    return
 	if (name == 'WikiURI'):
 	    self._wikiURI = self._accumulator[0]

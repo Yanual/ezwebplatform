@@ -48,7 +48,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 									"</div>" +
 									"<div id='" + id + "_content' class='content'>" +
 										"<div class='title'>" + state.getName() + "</div>" +
-										"<div class='image'><a title='" + gettext ('Show resource details') + "' href='javascript:UIUtils.showResourceInfo(\"" + id + "\");UIUtils.openInfoResource();UIUtils.selectConnectableResources(\"" + id + "\");'><img src='" + state.getUriImage() + "'></img></a></div>" +
+										"<div class='image'><a title='" + gettext ('Show resource details') + "' href='javascript:UIUtils.showResourceInfo(\"" + id + "\");UIUtils.openInfoResource();UIUtils.selectConnectableResources(\"" + id + "\");'><img id='" + id + "_img' src='" + state.getUriImage() + "' onError=\"UIUtils.changeImage('" + id + "_img', '/ezweb/images/not_available.jpg');\" onAbort=\"UIUtils.changeImage('" + id + "_img', '/ezweb/images/not_available.jpg');\"></img></a></div>" +
 										"<div class='tags'>" +
 											"<div id='" + id + "_important_tags' class='important_tags'>" + 
 												_tagsToMoreImportantTags(3) +
@@ -78,7 +78,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 									"<div class='title'><span class='name'>" + state.getName() + "</span>" +
 									"<span class='version'>" + state.getVersion() + "</span></div>" +
 									"<div class='vendor'>" + state.getVendor() + "</div>" +
-									"<div class='image'><img src='" + state.getUriImage() + "' alt='" + state.getName()+ "&nbsp;" + state.getVersion() + "'/></div>" +
+									"<div class='image'><img  id='" + id + "_info_img' src='" + state.getUriImage() + "' alt='" + state.getName()+ "&nbsp;" + state.getVersion() + "' onError=\"UIUtils.changeImage('" + id + "_info_img', '/ezweb/images/not_available.jpg');\" onAbort=\"UIUtils.changeImage('" + id + "_info_img', '/ezweb/images/not_available.jpg');\"/></div>" +
 									"<div class='description'>" + gettext ('Description') + ":<br/><div class='text'>" + state.getDescription() + "</div></div><br/>" +
 									"<div class='connect'>" + gettext ('Gadget connectivity') + ":</div><br/>" +
 									"<div class='Events'>" + gettext ('Events: ') + _events()+ "</div>" +
