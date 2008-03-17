@@ -212,11 +212,11 @@ var WiringFactory = function () {
 					var itemList = [];
 					gadget["id"] = iGadgetId;
 
-					//var gadgetModel = DragboardFactory.getInstance().getGadget(iGadgetId);
+					var gadgetModel = DragboardFactory.getInstance().getGadget(iGadgetId);
 
-					//gadget["vendor"] = gadgetModel.getVendor();
-					//gadget["version"] = gadgetModel.getVersion();	
-					//gadget["name"] = gadgetModel.getName();	
+					gadget["vendor"] = gadgetModel.getVendor();
+					gadget["version"] = gadgetModel.getVersion();	
+					gadget["name"] = gadgetModel.getName();	
 					
 					// The instance of the iGadget doesn't exist.
 					for (var i = 0; i < events.length; i++){
