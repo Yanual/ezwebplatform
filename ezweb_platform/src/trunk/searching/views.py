@@ -160,12 +160,12 @@ class GadgetsCollectionByCriteria(Resource):
         if criteria == 'event':
             value = value.split()
             for e in value:
-                gadgetlist += GadgetResource.objects.filter(Q(gadgetwiring__friendcode__icontains = e), Q(gadgetwiring__wiring = 'out')).order_by(orderby)
+                gadgetlist += GadgetResource.objects.filter(Q(gadgetwiring__friendcode__icontains = e), Q(gadgetwiring__wiring = 'out'))
 		print(gadgetlist)
         elif criteria == 'slot':
             value = value.split()
             for e in value:
-                gadgetlist += GadgetResource.objects.filter(Q(gadgetwiring__friendcode__icontains = e), Q(gadgetwiring__wiring = 'in')).order_by(orderby)
+                gadgetlist += GadgetResource.objects.filter(Q(gadgetwiring__friendcode__icontains = e), Q(gadgetwiring__wiring = 'in'))
 
         elif criteria == 'tag':
             value = value.split()

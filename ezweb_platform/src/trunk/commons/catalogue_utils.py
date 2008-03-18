@@ -65,9 +65,9 @@ def get_sortedlist(list, orderby):
     elif orderby=='short_name':
         list.sort(lambda x,y: cmp(x.short_name.lower(),y.short_name.lower()))
     elif orderby=='vendor':
-        list.sort(lambda x,y: cmp(x.vendor,y.vendor))
+        list.sort(lambda x,y: cmp(x.vendor.lower(),y.vendor.lower()))
     elif orderby=='author':
-        list.sort(lambda x,y: cmp(x.author,y.author))
+        list.sort(lambda x,y: cmp(x.author.lower(),y.author.lower()))
     return list
 
 
