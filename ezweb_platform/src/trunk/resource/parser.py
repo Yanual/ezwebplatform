@@ -87,6 +87,9 @@ class TemplateHandler(handler.ContentHandler):
 
         if (attrs.has_key('friendcode')==True):
             _friendCode = attrs.get('friendcode')
+	
+	if (attrs.has_key('type')==False or attrs.has_key('name')==False):
+	    raise TemplateParseException(_("ERROR: missing attribute at Event or Slot element"))
 
 	if (wire == 'Slot'):
             _wiring = 'in'

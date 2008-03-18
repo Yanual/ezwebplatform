@@ -59,6 +59,17 @@ def get_uniquelist(list, value = None):
 
     return uniquelist
 
+def get_sortedlist(list, orderby):
+    if orderby=='-creation_date':
+        list.sort(lambda x,y: cmp(y.creation_date,x.creation_date))
+    elif orderby=='short_name':
+        list.sort(lambda x,y: cmp(x.short_name.lower(),y.short_name.lower()))
+    elif orderby=='vendor':
+        list.sort(lambda x,y: cmp(x.vendor,y.vendor))
+    elif orderby=='author':
+        list.sort(lambda x,y: cmp(x.author,y.author))
+    return list
+
 
 def get_resource_response(gadgetlist, format, items, user):
 
