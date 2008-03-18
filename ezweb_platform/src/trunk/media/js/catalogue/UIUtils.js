@@ -243,7 +243,7 @@ UIUtils.searchByTag = function(url, tag) {
 	}
 
   if (tag == ""){
-  	alert("Introduzca un valor en el formulario de búsqueda");
+  	alert(gettext ("Indicate a criteria in search formulary"));
   }
   else{
 	  UIUtils.setPage(1);
@@ -427,7 +427,7 @@ UIUtils.setResourcesWidth = function() {
 	var head = document.getElementById('head');
 	var resources = document.getElementById('resources');
 	var center = document.getElementById('center');
-	UIUtils.search = false;
+	//UIUtils.search = false;
 	center.style.width = head.offsetWidth + 'px';
 	resources.style.width = (center.offsetWidth - (tab.offsetWidth + (UIUtils.isInfoResourcesOpen?UIUtils.infoResourcesWidth:0))) + 'px';
 }
