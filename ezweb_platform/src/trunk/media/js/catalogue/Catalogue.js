@@ -50,6 +50,8 @@ var CatalogueFactory  = function () {
 		// *********************************
 		
 		var resources = new HashTable();
+		var selectedResources = [];
+		var globalTags = [];
 		
 		// ********************
 		//  PRIVILEGED METHODS
@@ -58,6 +60,7 @@ var CatalogueFactory  = function () {
 	 	this.emptyResourceList = function() {
 			document.getElementById("resources").innerHTML="\n";
 			document.getElementById("info_resource_content").innerHTML="\n";
+			CatalogueFactory.getInstance().clearSelectedResources();
 			resources.clear();
 		}	
 
@@ -67,6 +70,44 @@ var CatalogueFactory  = function () {
 		
 		this.getResource = function(id_) {
 			return resources.getValue(id_);
+		}
+		
+		this.addSelectedResource = function(id_) {
+			if(!CatalogueFactory.getInstance().isSelectedResource(id_)) {
+				selectedResources.push(id_);
+			}
+		}
+		this.isSelectedResource = function(id_) {
+			for (var i=0; i<selectedResources.length; i++){
+					if (selectedResources[i] == id_) {
+						return true;
+					}
+				}
+			return false;
+		}
+		
+		this.removeSelectedResource = function(id_) {
+			for (var i=0; i<selectedResources.length; i++){
+				if (selectedResources[i] == id_) {
+					selectedResources = selectedResources.without(selectedResources[i]);
+				}
+			}
+		}
+		
+		this.clearSelectedResources = function() {
+			selectedResources = [];
+		}
+	
+		this.toggleSelectedResource = function(id_) {
+			if(isSelectedResources(id_)) {
+				removeSelectedResource(id_)
+			}else{
+				addSelectedResource(id_);
+			}
+		}
+		
+		this.getSelectedResources = function() {
+			return selectedResources;
 		}
 		
 		this.addResource = function(resourceJSON_, urlTemplate_) { 
@@ -86,6 +127,82 @@ var CatalogueFactory  = function () {
 		this.orderby = function(items){
 			var orderbyInfo = document.getElementById("orderby");
 			orderbyInfo.innerHTML = _orderby(items);
+		}
+		
+		this.changeGlobalTagcloud = function(type){	
+			// TBD
+			/*
+			var option = {}
+			var viewTagsHTML = "";
+			switch (type) {
+				case 'mytags':
+					option = {tags: type}
+					viewTagsHTML =	"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"all\");'>" + gettext ('View all tags') + "</a>" +
+									"&nbsp&nbsp&nbsp <a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('View others tags') + "</a>";
+					document.getElementById('view_tags_links').innerHTML = viewTagsHTML;
+					break;
+					
+				case 'others':
+					option = {tags: type}
+					viewTagsHTML =	"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"all\");'>" + gettext ('View all tags') + "</a>" +
+									"&nbsp&nbsp&nbsp <a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('View my tags') + "</a>";
+					document.getElementById('view_tags_links').innerHTML = viewTagsHTML;
+					break;
+					
+				default:
+					option = {tags: type}
+					viewTagsHTML = "<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('View my tags') + "</a>" +
+							"&nbsp&nbsp&nbsp <a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('View others tags') + "</a>";
+					document.getElementById('view_tags_links').innerHTML = viewTagsHTML;
+					break;
+			}	
+			if (document.getElementById('global_tagcloud'))
+			{
+				document.getElementById("global_tagcloud").innerHTML = _globalTagsToTagcloud('description',option);
+			}
+			*/
+		}
+		
+		this.updateGlobalTags = function() {
+			if(UIUtils.tagmode){
+				if(selectedResources.length==0){
+					globalTags = [];
+					document.getElementById("global_tagcloud").innerHTML = _globalTagsToTagcloud('description');
+					return;
+				}
+				globalTags=CatalogueFactory.getInstance().getResource(selectedResources[0]).getTags();
+				var auxTags = [];
+				var bool = [];
+				for (var i=1; i<selectedResources.length; i++){
+					auxTags = CatalogueFactory.getInstance().getResource(selectedResources[i]).getTags();
+					for(var k=0;k<globalTags.length; k++){
+						bool[k] = false;
+						for(var j=0;j<auxTags.length;j++)
+						{
+							if (auxTags[j].getValue()==globalTags[k].getValue()){
+								bool[k] = true;
+								break;
+							}
+						}
+	
+					}
+	
+					var auxGlobalTags = [];
+					var counter=0;
+					for(var k=0;k<globalTags.length; k++){
+						if(bool[k]){
+							auxGlobalTags[counter]=globalTags[k];
+							counter++;
+						}
+					}
+					globalTags=auxGlobalTags;						
+				}
+				document.getElementById("global_tagcloud").innerHTML = _globalTagsToTagcloud('description');
+			}
+		}
+		
+		this.getGlobalTags = function() {
+			return globalTags;
 		}
 		
 		this.loadCatalogue = function(urlCatalogue_) {
@@ -125,7 +242,7 @@ var CatalogueFactory  = function () {
 				var responseJSON = transport.responseText;
 				var items = transport.getResponseHeader('items');
 			    var jsonResourceList = eval ('(' + responseJSON + ')');
-			    jsonResourceList = jsonResourceList.resourceList
+			    jsonResourceList = jsonResourceList.resourceList;
 			  		  
 				//var resourcesXML = response.getElementsByTagName("resource");
 				for (var i = 0; i<jsonResourceList.length; i++)
@@ -134,6 +251,10 @@ var CatalogueFactory  = function () {
 				}
 				this.paginate(items);
 				this.orderby(items);
+				this.updateGlobalTags();
+				
+				//UIUtils.removeAllGlobalTags();
+				document.getElementById("global_tagcloud").innerHTML = '';
 			}
 
 			var param = {orderby: UIUtils.orderby};
@@ -163,18 +284,24 @@ var CatalogueFactory  = function () {
    	     	} else {
    	         	max = Math.ceil(items/4);
    	     	}
-			for (var i=1; i<=max; i++)
-			{
+   	     	var some_selected = false;
+			for (var i=1; i<=max; i++){
 			  	paginationHTML+=("<option value=\"" + i*4 + "\"");
-				if(UIUtils.getOffset() == i*4)
-			    {
+				if(UIUtils.getOffset() == i*4){
 					paginationHTML+=(" SELECTED");
+					some_selected=true;
+				}
+				if((i==max)&&(!some_selected)){
+					paginationHTML+=(" SELECTED");
+					UIUtils.offset=max;
 				}
 				paginationHTML+=(">" + i*4);
 			}
 		}
 		paginationHTML+=("</select></div></br>");
-          
+		
+
+
 		var end_page = Math.ceil(items/UIUtils.getOffset());
         if (end_page==0){end_page=1;}
         if(UIUtils.getPage()!=1)
@@ -251,6 +378,34 @@ var CatalogueFactory  = function () {
 			            "</select>");
 		}
 		return orderbyHTML;
+	}
+	
+	var _globalTagsToTagcloud = function(loc){
+		var tagsHTML = '';
+
+		var option = arguments[1] || {tags:'all'};
+/*
+		for (var i=0; i<globalTags.length; i++)
+		{
+			if(globalTags[i].getAdded_by() == 'Yes' && (option.tags=='all' || option.tags=='mytags')){  
+
+				var jsCall = 'javascript:UIUtils.removeTagUser("' + globalTags[i].getValue() + '","'+id+'");';
+				tagsHTML += ("<a title='" + gettext ('Delete tag') + "' href='" + jsCall + "' ><img id='"+id+"_deleteIcon_"+i+"_"+loc+"' onMouseOver=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/delete.png';\" onMouseOut=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/cancel_gray.png';\" src='/ezweb/images/cancel_gray.png' border=0 name=op1></a>"+
+					"<span class='multiple_size_tag'>" + globalTags[i].tagToTypedHTML(id) + ((i<(globalTags.length-1))?",":"") + "</span>");
+			}
+			else{
+				if (globalTags[i].getAdded_by() == 'No' && (option.tags=='all' || option.tags=='others'))
+				{
+					tagsHTML += ("<span class='multiple_size_tag'>" + globalTags[i].tagToTypedHTML(id) + ((i<(globalTags.length-1))?",":"") + "</span>");		  
+				}
+			}
+		}
+		*/
+		for (var i=0; i<globalTags.length; i++)
+		{
+			tagsHTML += ("<span class='multiple_size_tag'>" + globalTags[i].tagToTypedHTML() + ((i<(globalTags.length-1))?",":"") + "</span>");
+		}
+		return tagsHTML;
 	}
 
 	}

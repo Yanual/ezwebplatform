@@ -57,6 +57,14 @@ function Tagger(){
 			}
 		}
 	}
+	
+	this.addGlobalTag = function(tag_) {
+		if (!tags.contains(tag_)) {
+			var id = 'new_tag_' + counter;
+			counter++;
+			tags.addElement(id, tag_);
+		}
+	}
 
 	this.getTags = function(){
 		return tags;
@@ -69,10 +77,11 @@ function Tagger(){
 	
 	this.removeAll = function() {
 		tags.clear();
-		eraserAll();
+		counter=0;
+		if(!UIUtils.tagmode)eraserAll();
 	}
-	
-	this.sendTags = function(url, resourceURI)
+
+	this.sendTags = function(url, resourceURI, resource)
 	{
 
 		if (tags.size()>0)
@@ -83,7 +92,6 @@ function Tagger(){
 			}
 			
 			var loadTags = function(transport) {
-				var resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
 				var responseJSON = transport.responseText;
 				var jsonResourceList = eval ('(' + responseJSON + ')');
 				resource.setTags(jsonResourceList.tagList);

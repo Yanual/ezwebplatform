@@ -44,6 +44,7 @@ function UIUtils()
 	// *********************************
 }
 
+UIUtils.tagmode = false;
 UIUtils.selectedResource = null;
 UIUtils.balloonResource = null;
 UIUtils.imageBottom = '';
@@ -59,11 +60,12 @@ UIUtils.num_items = 0;
 UIUtils.search = 'false';
 UIUtils.searchValue = '';
 UIUtils.searchCriteria = '';
+UIUtils.counter=0;
 
 UIUtils.addResource = function(url, paramName, paramValue) {
 	var newResourceOnSuccess = function (response) {
 		UIUtils.orderby = '-creation_date';
-		UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, UIUtils.getOffset(), 1, UIUtils.getNum_items());
+		UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, UIUtils.getOffset(), Math.ceil(UIUtils.getNum_items()/UIUtils.getOffset()), UIUtils.getNum_items());
 	}
 	
 	var newResourceOnError = function (transport, e) {
@@ -95,21 +97,18 @@ UIUtils.getSelectedResource = function() {
 	return UIUtils.selectedResource;
 }
 
-	
 UIUtils.selectResource = function(resourceId_) {
 	var bottom = document.getElementById(resourceId_ + '_bottom');
-	UIUtils.imageBottom = bottom.style.backgroundImage;
 	bottom.style.backgroundImage = 'url(/ezweb/images/resource-left-bottom-select.png)';
 	var content = document.getElementById(resourceId_ + '_content');
-	UIUtils.imageContent = content.style.backgroundImage;
 	content.style.backgroundImage = 'url(/ezweb/images/resource-left-fill-select.png)';
 }
-	
+
 UIUtils.deselectResource = function(resourceId_) {
 	var bottom = document.getElementById(resourceId_ + '_bottom');
-	bottom.style.backgroundImage = UIUtils.imageBottom;
+	bottom.style.backgroundImage = 'url(/ezweb/images/resource-left-bottom.gif)';
 	var content = document.getElementById(resourceId_ + '_content');
-	content.style.backgroundImage = UIUtils.imageContent;
+	content.style.backgroundImage = 'url(/ezweb/images/resource-left-fill.gif)';
 }
 
 UIUtils.selectConnectableResources = function(resourceId_) {
@@ -260,15 +259,13 @@ UIUtils.searchByWiring = function(url, value, wiring) {
 	
 	if (value == ""){
 		alert(gettext ("Indicate a criteria in search formulary"));
+	}else{
+		UIUtils.setPage(1);
+		UIUtils.search = 'wiring';
+		UIUtils.searchValue = value;
+		UIUtils.searchCriteria = wiring ;
+		opManager.repaintCatalogue(url + "/" + wiring + "/" + value  + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
 	}
-  
-  else{
-	  UIUtils.setPage(1);
-  UIUtils.search = 'wiring';
-  UIUtils.searchValue = value;
-  UIUtils.searchCriteria = wiring ;
-	opManager.repaintCatalogue(url + "/" + wiring + "/" + value  + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
-}
 }
 
 UIUtils.cataloguePaginate = function(url, offset, pag, items) {
@@ -277,47 +274,42 @@ UIUtils.cataloguePaginate = function(url, offset, pag, items) {
 	UIUtils.num_items=items;
 	var opManager = OpManagerFactory.getInstance();
 	var pages = Math.ceil(UIUtils.getNum_items()/UIUtils.getOffset());
-	
-	
+
 	if (UIUtils.search == 'false'){
-		 url = URIs.GET_POST_RESOURCES;
+		url = URIs.GET_POST_RESOURCES;
 	}
 	if (UIUtils.search == 'generic'){
 		url = URIs.GET_RESOURCES_SEARCH_GENERIC + "/" + UIUtils.searchValue + "/" + UIUtils.searchCriteria;
 	}
-  if (UIUtils.search == 'wiring'){
+	if (UIUtils.search == 'wiring'){
 		url = URIs.GET_RESOURCES_BY_WIRING + "/" + UIUtils.searchCriteria + "/" + UIUtils.searchValue;
 	}
-  if (UIUtils.search == 'tag'){
+	if (UIUtils.search == 'tag'){
 		url = URIs.GET_RESOURCES_BY_TAG + "/" + UIUtils.searchValue;
 	}
-	
 	if (pag == "first"){
-          pag = 1;
+		pag = 1;
     }
-	
-  if (pag == "prev"){
-  	
-  	if(UIUtils.page == 1){
-  		pag = 1;
+	if (pag == "prev"){
+		if(UIUtils.page == 1){
+  			pag = 1;
+  		}
+   		else{
+  			pag = UIUtils.page - 1;
+  		}
   	}
-    else{
-  		pag = UIUtils.page - 1;
+	if (pag == "next"){
+  		if(UIUtils.page == pages){
+  			pag = pages;
+  		}
+    	else{
+  	  		pag = parseInt(UIUtils.page) + 1;
+  		}
   	}
-  }
-  
-  if (pag == "next"){
-  	if(UIUtils.page == pages){
-  		pag = pages;
-  	}
-    else{
-  	  pag = parseInt(UIUtils.page) + 1;
-  }
-  }
     if (pag == "last"){
           pag = pages;
     }
-  UIUtils.page = pag; 
+	UIUtils.page = pag; 
   
 	opManager.repaintCatalogue(url + "/" + pag + "/" + UIUtils.getOffset());
 }
@@ -373,6 +365,23 @@ UIUtils.removeAllTags = function() {
 	document.getElementById("tag_alert").style.display='none';
 }
 
+UIUtils.removeAllGlobalTags = function() {
+	if(UIUtils.tagmode){
+		selectedResources=CatalogueFactory.getInstance().getSelectedResources();
+		for(var i=0; i<selectedResources.length;i++){
+			tagger = CatalogueFactory.getInstance().getResource(selectedResources[i]).getTagger();
+			tagger.removeAll();
+		}
+	}
+	var parentHTML = $("my_global_tags");
+	while(parentHTML.childNodes.length > 1)
+	{
+		parentHTML.removeChild(parentHTML.childNodes[0]);
+	}
+	document.getElementById("global_tag_alert").style.display='none';
+	
+}
+
 UIUtils.removeTagUser = function(tag,id) {	
 	
 	var resource = CatalogueFactory.getInstance().getResource(id);
@@ -396,7 +405,30 @@ UIUtils.sendTags = function() {
 		UIUtils.addTag(document.getElementById('new_tag_text_input'));
 	}
 	
-	tagger.sendTags(URIs.POST_RESOURCE_TAGS, resourceURI);
+	tagger.sendTags(URIs.POST_RESOURCE_TAGS, resourceURI, resource);
+}
+
+UIUtils.sendGlobalTags = function() {
+	//TBD
+	/*
+	var resource;
+	var tagger;
+	var resourceURI;
+	for(var i=0; i<CatalogueFactory.getInstance().selectedResources.length;i++){
+		resource = CatalogueFactory.getInstance().getResource(CatalogueFactory.getInstance().selectedResource[i]);
+		tagger = resource.getTagger();
+		resourceURI = "/" + resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion();
+		
+		if (tagger.getTags().size() == 0 || document.getElementById('new_global_tag_text_input').value.length!= 0)
+		{
+			//TODO control de errores
+			UIUtils.addGlobalTag(document.getElementById('new_global_tag_text_input'));
+		}
+		//TODO Aviso de si todo ha ido bien o no
+		
+		tagger.sendGlobalTags(URIs.POST_RESOURCE_TAGS, resourceURI, resource);
+	}
+ 	*/
 }
 
 UIUtils.deleteGadget = function(id) {
@@ -420,6 +452,47 @@ UIUtils.addTag = function(inputText_) {
 	inputText_.value = '';
 	inputText_.focus();
 	inputText_.size = 5;
+}
+
+UIUtils.addGlobalTag = function(inputText_) {
+	if(inputText_.value.length<3)	{
+		document.getElementById("global_tag_alert").style.display='inline';
+	}else{
+		var id = 'new_global_tag_' + UIUtils.counter;
+		UIUtils.counter++;
+		var tagger;
+		selectedResources=CatalogueFactory.getInstance().getSelectedResources();
+		for(var i=0; i<selectedResources.length;i++){
+			tagger = CatalogueFactory.getInstance().getResource(selectedResources[i]).getTagger();
+			tagger.addGlobalTag(inputText_.value);
+		}
+		UIUtils.paintGlobalTag(id,inputText_.value);
+		document.getElementById("global_tag_alert").style.display='none';
+		
+		inputText_.value = '';
+		inputText_.focus();
+		inputText_.size = 5;
+	}
+}
+
+UIUtils.paintGlobalTag = function(id_, tag_) {
+	var newTag = document.createElement("div");
+	newTag.setAttribute('id', id_);
+	newTag.innerHTML = 	"<div class='new_global_tag' onmouseover=\"UIUtils.hidde('button_disable_" + id_ + "');UIUtils.show('button_enable_" + id_ + "');\" onmouseout=\"UIUtils.hidde('button_enable_" + id_ + "');UIUtils.show('button_disable_" + id_ + "');\">" + 
+							tag_ + 
+							"<div id='button_disable_" + id_ + "'>" +
+								"<a>" +
+									"<img src='/ezweb/images/cancel_gray.png' alt=''></img>" +
+								"</a>" +
+							"</div>" +
+							"<div id='button_enable_" + id_ + "' style='display:none;'>" +
+								"<a href='javascript:UIUtils.removeTag(\"" + id_ + "\");'>" +
+									"<img src='/ezweb/images/cancel.png' alt=''></img>" +
+								"</a>" +
+							"</div>," + 
+						"</div> ";
+	var parentHTML = document.getElementById("my_global_tags");
+	parentHTML.insertBefore(newTag,parentHTML.lastChild);
 }
 
 UIUtils.setResourcesWidth = function() {
@@ -484,6 +557,160 @@ UIUtils.SlideInfoResourceOutOfView = function(element) {
         { Element.hide(effect.element); UIUtils.setResourcesWidth(); UIUtils.hidde('tab_info_resource_close'); }
     })
   );
+}
+
+UIUtils.restoreSlide = function() {
+	var div = $("head");
+    var nodeList = div.childNodes;
+    var aux = '';
+    var tab = '';
+    for(i=0;i<nodeList.length;i++){
+    	if(nodeList.item(i).nodeName=="DIV" && nodeList.item(i).id!='header_always'){
+	        if(Element.visible(nodeList.item(i))==true){
+	        	nodeList.item(i).style.display = "none";
+	           	//Effect.BlindUp(nodeList.item(i),{queue:{position:'end',scope:'menuScope',limit:2},});
+	            aux = nodeList.item(i).id.split("_");
+	            switch (aux[1].toLowerCase()) {
+	            	case "tag":
+	            		tab = gettext("Advanced Tagging");
+	            		break;
+	            	case "search":
+	            		tab = gettext("Advanced Search");
+	            		break;
+	            	default:
+	            		break;
+	            }
+	            $(nodeList.item(i).id+"_toggle").innerHTML = tab;
+	            $(nodeList.item(i).id+"_toggle").style.background="lightBlue";
+	            if(nodeList.item(i).id=="advanced_tag"){UIUtils.deactivateTagMode();}
+	        }
+	    }
+    }
+}
+
+UIUtils.SlideAdvanced = function(element,container) {
+    var div = $(container);
+    var nodeList = div.childNodes;
+    var queue = Effect.Queues.get('menuScope');
+    var aux = '';
+    var tab = '';
+    
+    if(queue.toArray().length<1){
+        if(Element.visible(element)==false){
+            for(i=0;i<nodeList.length;i++){
+                if(nodeList.item(i).nodeName=="DIV" && nodeList.item(i).id!=element && nodeList.item(i).id!='header_always'){
+                    if(Element.visible(nodeList.item(i))==true){
+                        Effect.BlindUp(nodeList.item(i),{queue:{position:'end',scope:'menuScope',limit:2},});
+                        aux = nodeList.item(i).id.split("_");
+                        switch (aux[1].toLowerCase()) {
+			            	case "tag":
+			            		tab = gettext("Advanced Tagging");
+			            		break;
+			            	case "search":
+			            		tab = gettext("Advanced Search");
+			            		break;
+			            	default:
+			            		break;
+			            }
+                        $(nodeList.item(i).id+"_toggle").innerHTML = tab;
+                        $(nodeList.item(i).id+"_toggle").style.background="lightBlue";
+                        if(nodeList.item(i).id=="advanced_tag"){UIUtils.deactivateTagMode();}
+                    }
+                }
+            }
+            Effect.BlindDown(element,{queue:{position:'end',scope:'menuScope',limit:2}});
+            aux = element.split("_");
+            switch (aux[1].toLowerCase()) {
+            	case "tag":
+            		tab = gettext("Hide Tagging");
+            		break;
+            	case "search":
+            		tab = gettext("Simple Search");
+            		break;
+            	default:
+            		break;
+            }
+            $(element+"_toggle").innerHTML = tab;
+			$(element+"_toggle").style.background="darkBlue";
+			if(element=="advanced_tag"){UIUtils.activateTagMode();}
+       }
+       else {
+       		Effect.BlindUp(element,{queue:{position:'end',scope:'menuScope',limit:2}});
+            aux = element.split("_");
+            switch (aux[1].toLowerCase()) {
+            	case "tag":
+            		tab = gettext("Advanced Tagging");
+            		break;
+            	case "search":
+            		tab = gettext("Advanced Search");
+            		break;
+            	default:
+            		break;
+            }
+            $(element+"_toggle").innerHTML = tab;
+            $(element+"_toggle").style.background="lightBlue"; 
+            if(element=="advanced_tag"){UIUtils.deactivateTagMode();}      
+       }
+   }
+}
+
+UIUtils.SlideAdvanced2 = function(element) {
+	switch (element) {
+		case "advanced_tag":
+			element1=$(element).cleanWhitespace();
+			element2=$("advanced_search").cleanWhitespace();
+			event="Tag";
+			break;
+		case "advanced_search":
+			element1=$(element).cleanWhitespace();
+			element2=$("advanced_tag").cleanWhitespace();
+			event="Search";
+			break;
+		default:
+			alert ("error de SlideAdvanced");
+			break;
+	}
+	if (element1.style.display == 'none') {
+		new Effect.BlindDown(element1,
+			{
+				duration:1,
+				beforeStart: function() {
+					if(element2.style.display != 'none')
+					{
+						new Effect.BlindUp(element2,
+						{
+							duration:1,
+							beforeStart: function() {
+								element1.style.zIndex=2;
+								element2.style.zIndex=1;
+							},
+							afterFinish: function() {
+								element2.style.display = 'none';
+								$(element2.id+"_toggle").innerHTML = gettext("Advanced "+event);
+								$(element2.id+"_toggle").style.background="lightBlue";
+							}
+						});
+					}
+					element1.style.zIndex=2;
+					element2.style.zIndex=1;
+					element1.style.display='true';
+				},
+				afterFinish: function() {
+					$(element1.id+"_toggle").innerHTML = gettext("Simple "+event);
+					$(element1.id+"_toggle").style.background="darkBlue";
+				}
+			});
+	} else {
+		new Effect.BlindUp(element1,
+			{
+				duration:1,
+				afterFinish: function() {
+					element1.style.display='none';
+					$(element1.id+"_toggle").innerHTML = gettext("Advanced "+event);
+					$(element1.id+"_toggle").style.background="lightBlue";
+				}
+			});
+	}
 }
 
 UIUtils.SlideAdvancedSearchIntoView = function(element) {
@@ -552,10 +779,63 @@ UIUtils.SlideAdvancedSearchOutOfView = function(element) {
   );
 }
 
+UIUtils.activateTagMode = function() {
+	UIUtils.tagmode = true;
+	UIUtils.removeAllGlobalTags();
+	document.getElementById("global_tagcloud").innerHTML = '';
+	UIUtils.closeInfoResource();
+	//document.getElementById("tab_info_resource").style.display='none';
+	
+}
+
+UIUtils.deactivateTagMode = function() {
+	UIUtils.tagmode = false;
+	selectedResources=CatalogueFactory.getInstance().getSelectedResources();
+	for(var i=0; i<selectedResources.length;i++){
+		UIUtils.deselectResource(selectedResources[i]);
+	}
+	CatalogueFactory.getInstance().clearSelectedResources();
+	//document.getElementById("tab_info_resource").style.display='true';
+}
+
+UIUtils.clickOnResource = function(id_) {
+	if(UIUtils.tagmode){
+		UIUtils.toggleSelectedResource(id_);
+	}else{
+		UIUtils.showResourceInfo(id_);
+		UIUtils.openInfoResource();
+		UIUtils.selectConnectableResources(id_);
+	}
+}
+
+UIUtils.toggleSelectedResource = function(id_) {
+	if(CatalogueFactory.getInstance().isSelectedResource(id_)){
+		UIUtils.deselectResource(id_);
+		CatalogueFactory.getInstance().removeSelectedResource(id_);
+	}else{
+		UIUtils.selectResource(id_);
+		CatalogueFactory.getInstance().addSelectedResource(id_);
+	}
+	CatalogueFactory.getInstance().updateGlobalTags();
+}
+
+UIUtils.mouseOverResource = function(id_) {
+	if(!((UIUtils.tagmode)&&(CatalogueFactory.getInstance().isSelectedResource(id_)))){
+			UIUtils.selectResource(id_);
+	}
+	UIUtils.show(id_ + "_toolbar");
+}
+
+UIUtils.mouseOutResource = function(id_) {
+	if(!((UIUtils.tagmode)&&(CatalogueFactory.getInstance().isSelectedResource(id_)))){
+			UIUtils.deselectResource(id_);
+	}
+	UIUtils.hidde(id_ + "_toolbar");
+}
+
 //enlarge an input depending on the size of the text
 UIUtils.enlargeInput = function(inputText_) {
-	
-	if (inputText_.value.length>5) document.getElementById('new_tag_text_input').size = inputText_.value.length;
+	if (inputText_.value.length>5) inputText_.size = inputText_.value.length+1;
 }
 
 // Enables you to react to return being pressed in an input
@@ -565,3 +845,4 @@ UIUtils.onReturn = function(event_, handler_, inputText_) {
 	  handler_(inputText_);
   }
 };
+
