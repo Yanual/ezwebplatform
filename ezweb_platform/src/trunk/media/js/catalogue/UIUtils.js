@@ -99,16 +99,28 @@ UIUtils.getSelectedResource = function() {
 
 UIUtils.selectResource = function(resourceId_) {
 	var bottom = document.getElementById(resourceId_ + '_bottom');
-	bottom.style.backgroundImage = 'url(/ezweb/images/resource-left-bottom-select.png)';
 	var content = document.getElementById(resourceId_ + '_content');
+	if (!UIUtils.tagmode)
+	{
+	    UIUtils.imageBottom = bottom.style.backgroundImage;
+	    UIUtils.imageContent = content.style.backgroundImage;
+	}
+	bottom.style.backgroundImage = 'url(/ezweb/images/resource-left-bottom-select.png)';
 	content.style.backgroundImage = 'url(/ezweb/images/resource-left-fill-select.png)';
+    
 }
 
 UIUtils.deselectResource = function(resourceId_) {
 	var bottom = document.getElementById(resourceId_ + '_bottom');
-	bottom.style.backgroundImage = 'url(/ezweb/images/resource-left-bottom.gif)';
 	var content = document.getElementById(resourceId_ + '_content');
-	content.style.backgroundImage = 'url(/ezweb/images/resource-left-fill.gif)';
+	if (!UIUtils.tagmode)
+	{
+	    bottom.style.backgroundImage = UIUtils.imageBottom;
+	    content.style.backgroundImage = UIUtils.imageContent;
+	} else {
+	    bottom.style.backgroundImage = 'url(/ezweb/images/resource-left-bottom.gif)';
+	    content.style.backgroundImage = 'url(/ezweb/images/resource-left-fill.gif)';
+	}
 }
 
 UIUtils.selectConnectableResources = function(resourceId_) {
