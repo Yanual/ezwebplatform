@@ -835,10 +835,16 @@ UIUtils.clickOnResource = function(id_) {
 
 UIUtils.toggleSelectedResource = function(id_) {
 	if(CatalogueFactory.getInstance().isSelectedResource(id_)){
-		UIUtils.deselectResource(id_);
+		var bottom = document.getElementById(id_ + '_bottom');
+	    var content = document.getElementById(id_ + '_content');
+	    bottom.style.backgroundImage = 'url(/ezweb/images/resource-left-bottom.gif)';
+	    content.style.backgroundImage = 'url(/ezweb/images/resource-left-fill.gif)';
 		CatalogueFactory.getInstance().removeSelectedResource(id_);
-	}else{
-		UIUtils.selectResource(id_);
+	} else{
+		var bottom = document.getElementById(id_ + '_bottom');
+	    var content = document.getElementById(id_ + '_content');
+	    bottom.style.backgroundImage = 'url(/ezweb/images/resource-left-bottom-tagmode.png)';
+	    content.style.backgroundImage = 'url(/ezweb/images/resource-left-fill-tagmode.png)';
 		CatalogueFactory.getInstance().addSelectedResource(id_);
 	}
 	CatalogueFactory.getInstance().updateGlobalTags();
