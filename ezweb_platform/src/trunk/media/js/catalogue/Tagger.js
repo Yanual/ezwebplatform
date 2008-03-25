@@ -148,7 +148,7 @@ this.removeTagUser = function(url, resourceURI,id)
 								"</div>" +
 								"<div id='button_enable_" + id_ + "' style='display:none;'>" +
 									"<a href='javascript:UIUtils.removeTag(\"" + id_ + "\");'>" +
-										"<img src='/ezweb/images/cancel.png' alt=''></img>" +
+										"<img src='/ezweb/images/delete.png' alt=''></img>" +
 									"</a>" +
 								"</div>," + 
 							"</div> ";

@@ -512,7 +512,7 @@ UIUtils.paintGlobalTag = function(id_, tag_) {
 							"</div>" +
 							"<div id='button_enable_" + id_ + "' style='display:none;'>" +
 								"<a href='javascript:UIUtils.removeGlobalTag(\"" + id_ + "\");'>" +
-									"<img src='/ezweb/images/cancel.png' alt=''></img>" +
+									"<img src='/ezweb/images/delete.png' alt=''></img>" +
 								"</a>" +
 							"</div>," + 
 						"</div> ";

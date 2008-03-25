@@ -98,9 +98,9 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 										"</div>" +
 										"<div id=\"tag_alert\" class=\"tag_alert\"></div>" +
 										"<div class='buttons'>" +
-											"<button onClick='javascript:UIUtils.sendTags();'>" + gettext ('Tag') + "</button>" +
-											"<button onClick='javascript:UIUtils.addTag(document.getElementById(\"new_tag_text_input\"));'>" + gettext ('Save & New') + "</button>" +
-											"<button onClick='javascript:UIUtils.toggle_elements([\"add_tags_panel\",\"add_tags_link\",\"access_wiki_link\",\"access_template_link\",\"update_code_link\",\"delete_gadget_link\"]);UIUtils.show(\"add_gadget_button\");UIUtils.removeAllTags();'>" + gettext ('Cancel') + "</button>" +
+											"<a href=\"#\" onClick='javascript:UIUtils.sendTags();'>" + gettext ('Tag') + "</a>" +
+											"<a href=\"#\" onClick='javascript:UIUtils.addTag(document.getElementById(\"new_tag_text_input\"));'>" + gettext ('Save & New') + "</a>" +
+											"<a href=\"#\" onClick='javascript:UIUtils.toggle_elements([\"add_tags_panel\",\"add_tags_link\",\"access_wiki_link\",\"access_template_link\",\"update_code_link\",\"delete_gadget_link\"]);UIUtils.show(\"add_gadget_button\");UIUtils.removeAllTags();'>" + gettext ('Cancel') + "</a>" +
 										"</div>" +
 									"</div>" +
 									
