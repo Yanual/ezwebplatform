@@ -213,6 +213,7 @@ def get_igadget_data(data):
 
     data_ret['pk'] = data['pk']
     data_ret['code'] = data_fields['code']
+    data_ret['tab'] = data_fields['tab']
     data_ret['gadget'] = gadget.uri
     data_ret['top'] = position.posY 
     data_ret['left'] = position.posX
@@ -222,7 +223,7 @@ def get_igadget_data(data):
           data_ret['minimized'] = "true"
     else:
           data_ret['minimized'] = "false"
-    variables = Variable.objects.filter (igadget__id=data['pk'])
+    variables = Variable.objects.filter (igadget__pk=data['pk'])
     data = serializers.serialize('python', variables, ensure_ascii=False)
     data_ret['variables'] = [get_variable_data(d) for d in data]
    

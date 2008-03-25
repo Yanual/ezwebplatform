@@ -76,7 +76,7 @@ def SaveIGadget(igadget, user, tab):
         # Creates the new IGadget
         gadget = Gadget.objects.get(uri=gadget_uri, user=user)
 
-        new_igadget = IGadget(code=igadget_code ,uri=uri, gadget=gadget, tab=tab, position=position)
+        new_igadget = IGadget(code=igadget_code ,gadget=gadget, tab=tab, position=position)
         new_igadget.save()
 
         # Creates all IGadgte's variables

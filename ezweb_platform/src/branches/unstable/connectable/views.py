@@ -49,12 +49,12 @@ from django_restapi.responder import *
 from django.db import transaction
 
 from commons.authentication import get_user_authentication
-from commons.get_data import get_inout_data, get_igadget_data, get_wiring_data
+from commons.get_data import get_inout_data, get_igadget_data, get_wiring_data, get_tab_data
 from commons.utils import json_encode
 
 from gadget.models import VariableDef
 from igadget.models import IGadget, Variable
-from tabspace.models import TabSpace
+from tabspace.models import TabSpace, Tab
 from connectable.models import In, Out, InOut
 
 class ConnectableEntry(Resource):
@@ -64,18 +64,21 @@ class ConnectableEntry(Resource):
 
         try:
             igadgets = IGadget.objects.filter(tab__tabspace__pk=tabspace_id)
-            
             igadget_data_list = get_wiring_data(igadgets)
-            
             wiring['iGadgetList'] = igadget_data_list
+            
+            tabs = Tab.objects.filter(tabspace__pk=tabspace_id)
+            tab_data = serializers.serialize('python', tabs, ensure_ascii=False)
+            wiring['tabList'] = [get_tab_data(d) for d in tab_data]
+            
         except TabSpace.DoesNotExist:
             wiring['iGadgetList'] = []
+            wiring['tabList'] = []
         
         # InOut list
         inouts = InOut.objects.filter(tabspace__pk=tabspace_id)
         inout_data = serializers.serialize('python', inouts, ensure_ascii=False)
-        inout_data_list = [get_inout_data(d) for d in inout_data]
-        wiring['inOutList'] = inout_data_list
+        wiring['inOutList'] = [get_inout_data(d) for d in inout_data]
         
         return HttpResponse(json_encode(wiring), mimetype='application/json; charset=UTF-8')
     
