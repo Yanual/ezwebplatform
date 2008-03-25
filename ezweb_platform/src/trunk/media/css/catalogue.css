@@ -155,7 +155,6 @@
 #catalogue .head .advanced_tag .advanced_tag_left .link
 {
 	display:block;
-	color:#0000ff;
 	font-size:12px;
 	width:100%;
 }
@@ -551,6 +550,29 @@
 	display:block;
 	background: url(../images/info-resource-right-fill.png) repeat-y top right;
 	text-align:center;
+}
+
+#catalogue .center .info_resource .content a {
+   background-color: transparent;
+   border: none;
+   color: darkBlue;
+   text-decoration: underline;
+   cursor: pointer;
+   cursor: hand;
+   padding: 2px;
+   margin-rigth: 8px;
+}
+
+#catalogue .center .info_resource .content a:hover {
+	background-color: transparent;
+}
+
+#catalogue .center .info_resource .content a:active {
+	outline: none;
+}
+
+#catalogue .center .info_resource .content a:focus {
+	outline: none;
 }
 
 #catalogue .center .info_resource .content .title_fieldset

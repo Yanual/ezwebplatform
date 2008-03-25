@@ -18,55 +18,42 @@
 				<a id="advanced_tag_toggle" class="header_link" href="#" onclick="UIUtils.SlideAdvanced('advanced_tag','head');">{% trans  "Advanced Tagging" %}</a>
 			</div>
 		</div>
-
 		<div id="advanced_search" class="advanced_search" style="display:none;">	
 			<div id="advanced_search_left" class="advanced_search_left">
 				<table>
 					<tr>
-						<form action="#" onsubmit="return false;">
- 							<td><label for="advanced_search_text_tag">{% trans  "Search by tags:" %}</label></td>
-							<td><input type="text" id="advanced_search_text_tag" name="advanced_search_text_tag" class="text" autocomplete="on"></input></td>
-							<td><button class="submit_link" onclick="UIUtils.searchByTag(URIs.GET_RESOURCES_BY_TAG, this.form.advanced_search_text_tag.value);">{% trans  "Search" %}</button></td>
-						</form>
+						<td><label for="advanced_search_text_tag">{% trans  "Search by tags:" %}</label></td>
+						<td><input type="text" id="advanced_search_text_tag" name="advanced_search_text_tag" class="text" autocomplete="on"></input></td>
+						<td><a href="#" class="submit_link" onclick="UIUtils.searchByTag(URIs.GET_RESOURCES_BY_TAG, $('advanced_search_text_tag').value);">{% trans  "Search" %}</a></td>
 					</tr>
 					<tr>
-						<form action="#" onsubmit="return false;">
- 							<td><label for="advanced_search_text_event">{% trans  "Search by events:" %}</label></td>
-							<td><input type="text" id="advanced_search_text_event" name="advanced_search_text_event" class="text" autocomplete="on"></input></td>
-							<td><button class="submit_link" onclick="UIUtils.searchByWiring(URIs.GET_RESOURCES_BY_WIRING, this.form.advanced_search_text_event.value, 'event');" />{% trans  "Search" %}</td>
-						</form>
+ 						<td><label for="advanced_search_text_event">{% trans  "Search by events:" %}</label></td>
+						<td><input type="text" id="advanced_search_text_event" name="advanced_search_text_event" class="text" autocomplete="on"></input></td>
+						<td><a href="#" class="submit_link" onclick="UIUtils.searchByWiring(URIs.GET_RESOURCES_BY_WIRING, $('advanced_search_text_event').value, 'event');">{% trans  "Search" %}</a></td>
 					</tr>
 					<tr>
-						<form action="#" onsubmit="return false;">
- 							<td><label for="advanced_search_text_slot">{% trans  "Search by slots:" %}</label></td>
-							<td><input type="text" id="advanced_search_text_slot" name="advanced_search_text_slot" class="text" autocomplete="on"></input></td>
-							<td><button class="submit_link" onclick="UIUtils.searchByWiring(URIs.GET_RESOURCES_BY_WIRING, this.form.advanced_search_text_slot.value, 'slot');" />{% trans "Search" %}</td>
-						</form>
+ 						<td><label for="advanced_search_text_slot">{% trans  "Search by slots:" %}</label></td>
+						<td><input type="text" id="advanced_search_text_slot" name="advanced_search_text_slot" class="text" autocomplete="on"></input></td>
+						<td><a href="#" class="submit_link" onclick="UIUtils.searchByWiring(URIs.GET_RESOURCES_BY_WIRING, $('advanced_search_text_slot').value, 'slot');">{% trans "Search" %}</a></td>
 					</tr>
 				</table>
 			</div>	
 			<div id="advanced_search_right" class="advanced_search_right">
 				<table>
 					<tr>
-						<form action="#" onsubmit="return false;">
-							<td><label for="advanced_search_text_and">{% trans  "All of these words:" %}</label></td>
-							<td><input type="text" id="advanced_search_text_and" name="advanced_search_text_and" class="text" autocomplete="on"></input></td>
-							<td><button class="submit_link" onclick="UIUtils.searchGeneric(URIs.GET_RESOURCES_SEARCH_GENERIC, this.form.advanced_search_text_and.value, 'and');">{% trans  "Search" %}</button></td>
-						</form>
+						<td><label for="advanced_search_text_and">{% trans  "All of these words:" %}</label></td>
+						<td><input type="text" id="advanced_search_text_and" name="advanced_search_text_and" class="text" autocomplete="on"></input></td>
+						<td><a href="#" class="submit_link" onclick="UIUtils.searchGeneric(URIs.GET_RESOURCES_SEARCH_GENERIC, $('advanced_search_text_and').value, 'and');">{% trans  "Search" %}</a></td>
 					</tr>
 					<tr>
-						<form action="#" onsubmit="return false;">
-							<td><label for="advanced_search_text_or">{% trans  "Any of these words:" %}</label></td>
-							<td><input type="text" id="advanced_search_text_or" name="advanced_search_text_or" class="text" autocomplete="on"></input></td>
-							<td><button class="submit_link" onclick="UIUtils.searchGeneric(URIs.GET_RESOURCES_SEARCH_GENERIC, this.form.advanced_search_text_or.value, 'or');">{% trans  "Search" %}</button></td>
-						</form>
+						<td><label for="advanced_search_text_or">{% trans  "Any of these words:" %}</label></td>
+						<td><input type="text" id="advanced_search_text_or" name="advanced_search_text_or" class="text" autocomplete="on"></input></td>
+						<td><a href="#" class="submit_link" onclick="UIUtils.searchGeneric(URIs.GET_RESOURCES_SEARCH_GENERIC, $('advanced_search_text_or').value, 'or');">{% trans  "Search" %}</a></td>
 					</tr>
 					<tr>
-						<form action="#" onsubmit="return false;">
-							<td><label for="advanced_search_text_not">{% trans  "None of these words:" %}</label></td>
-							<td><input type="text" id="advanced_search_text_not" name="advanced_search_text_not" class="text" autocomplete="on"></input></td>
-							<td><button class="submit_link" onclick="UIUtils.searchGeneric(URIs.GET_RESOURCES_SEARCH_GENERIC, this.form.advanced_search_text_not.value, 'not');">{% trans  "Search" %}</button></td>
-						</form>
+						<td><label for="advanced_search_text_not">{% trans  "None of these words:" %}</label></td>
+						<td><input type="text" id="advanced_search_text_not" name="advanced_search_text_not" class="text" autocomplete="on"></input></td>
+						<td><a href="#" class="submit_link" onclick="UIUtils.searchGeneric(URIs.GET_RESOURCES_SEARCH_GENERIC, $('advanced_search_text_not').value, 'not');">{% trans  "Search" %}</a></td>
 					</tr>
 				</table>
 			</div>		
@@ -76,8 +63,8 @@
 				<div class='tagcloud'>
 					<div class='title'>{% trans "Tagcloud" %} </div>
 					<div id='view_tags_links' class='link'>
-						<a href='javascript:CatalogueFactory.getInstance().changeGlobalTagcloud("mytags");'>{% trans "View my tags" %}</a>
-						<a href='javascript:CatalogueFactory.getInstance().changeGlobalTagcloud("others");'>{% trans "View others tags" %}</a>
+						<a class="header_link" href='javascript:CatalogueFactory.getInstance().changeGlobalTagcloud("mytags");'>{% trans "View my tags" %}</a>
+						<a class="header_link" href='javascript:CatalogueFactory.getInstance().changeGlobalTagcloud("others");'>{% trans "View others tags" %}</a>
 					</div>
 					<div id='global_tagcloud' class='tags'></div>
 				</div>
@@ -91,9 +78,9 @@
 					</div></div>
 					<div id="global_tag_alert" class="tag_alert"></div>
 					<div class='buttons'>
-						<button class="submit_link" onClick='javascript:UIUtils.sendGlobalTags();'>{% trans "Tag" %}</button>
-						<button class="submit_link" onClick='javascript:UIUtils.addGlobalTag(document.getElementById("new_global_tag_text_input"));'>{% trans "Save & New" %}</button>
-						<button class="submit_link" onClick='javascript:UIUtils.removeAllGlobalTags();'>{% trans "Cancel" %}</button>
+						<a href="#" class="submit_link" onClick='javascript:UIUtils.sendGlobalTags();'>{% trans "Tag" %}</a>
+						<a href="#" class="submit_link" onClick='javascript:UIUtils.addGlobalTag($("new_global_tag_text_input"));'>{% trans "Save & New" %}</a>
+						<a href="#" class="submit_link" onClick='javascript:UIUtils.removeAllGlobalTags();'>{% trans "Cancel" %}</a>
 					</div>
 				</div>
 			</div>		

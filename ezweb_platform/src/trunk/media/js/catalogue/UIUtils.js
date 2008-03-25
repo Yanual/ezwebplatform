@@ -807,10 +807,10 @@ UIUtils.SlideAdvancedSearchOutOfView = function(element) {
 UIUtils.activateTagMode = function() {
 	UIUtils.tagmode = true;
 	UIUtils.removeAllGlobalTags();
-	document.getElementById("global_tagcloud").innerHTML = '';
 	UIUtils.closeInfoResource();
+	$("global_tagcloud").innerHTML = '';
+	$("my_global_tags").childNodes[0].style.display="none";
 	//document.getElementById("tab_info_resource").style.display='none';
-	
 }
 
 UIUtils.deactivateTagMode = function() {
@@ -834,6 +834,7 @@ UIUtils.clickOnResource = function(id_) {
 }
 
 UIUtils.toggleSelectedResource = function(id_) {
+	UIUtils.removeAllGlobalTags();
 	if(CatalogueFactory.getInstance().isSelectedResource(id_)){
 		var bottom = document.getElementById(id_ + '_bottom');
 	    var content = document.getElementById(id_ + '_content');
@@ -848,6 +849,12 @@ UIUtils.toggleSelectedResource = function(id_) {
 		CatalogueFactory.getInstance().addSelectedResource(id_);
 	}
 	CatalogueFactory.getInstance().updateGlobalTags();
+	
+	if (CatalogueFactory.getInstance().getSelectedResources().length == 0){
+		$("my_global_tags").childNodes[0].style.display="none";
+	}else{
+		$("my_global_tags").childNodes[0].style.display="inline";
+	}
 }
 
 UIUtils.mouseOverResource = function(id_) {
