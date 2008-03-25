@@ -125,6 +125,7 @@
 	border:1px solid #bbbbbb;
 	background-color:#ddeeff;
 	height:80px;
+	margin-top:3px;
 }
 
 #catalogue .head .advanced_tag .advanced_tag_left .tagcloud .tags .multiple_size_tag
@@ -160,7 +161,7 @@
 #catalogue .head .advanced_tag .advanced_tag_right .new_tags .my_tags
 {
 	border:1px solid #bbbbbb;
-	margin-top:12px;
+	margin-top:15px;
 	margin-bottom:5px;
 	overflow:auto;
 	padding:5px;
@@ -493,7 +494,7 @@ padding-left:17px;
 {
 	position:relative;
 	width:400px;
-	height:750px;
+	height:780px;
 	float:right;
 	margin:0px;
 	text-align:center;
@@ -517,7 +518,7 @@ padding-left:17px;
 	height: 11px;
 	padding: 0px;
 	left:0px;
-	top: 733px;
+	top: 763px;
 	background: url(../images/info-resource-right-bottom.png) no-repeat bottom right;
 }
 
@@ -527,7 +528,7 @@ padding-left:17px;
 	left:0px;
 	top:7px;
 	width:400px;
-	height:732px;
+	height:762px;
 	float:right;
 	margin:0px;
 	display:block;
