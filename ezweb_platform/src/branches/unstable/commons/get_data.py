@@ -42,8 +42,9 @@ from django.core import serializers
 
 from gadget.models import Template, Gadget, XHTML, GadgetContext, ExternalContext, UserPrefOption
 from igadget.models import Variable, VariableDef, Position, IGadget
-from connectable.models import In, Out
+from connectable.models import In, Out, InOut
 from context.models import Concept, ConceptName
+from tabspace.models import Tab, TabSpace
 
 def get_wiring_variable_data(var, ig):
     res_data = {}
@@ -193,19 +194,30 @@ def get_tabspace_data(data):
         data_ret['active'] = "false"
     return data_ret
 
-def get_global_tabspace_data(data):
+def get_global_tabspace_data(data, tabSpaceDAO):
     data_ret = {}
-    data_fields = data['fields']
-
-    tabs = Tabs.objects.filter(pk=data_fields['pk'])
-    position = Position.objects.get(pk=data_fields['position'])
-
-    data_ret['pk'] = data['pk']
-    data_ret['name'] = data_fields['name']
-    if data_fields['active']:
-        data_ret['active'] = "true"
-    else:
-        data_ret['active'] = "false"
+    data_ret['tabspace'] = get_tabspace_data(data)  
+    
+    # Tabs processing              
+    tabs = get_list_or_404(Tab, tabspace=tabSpaceDAO)  
+    data = serializers.serialize('python', tabs, ensure_ascii=False)
+    tabs_data = [get_tab_data(d) for d in data]
+    
+    data_ret['tabspace']['tabList'] = tabs_data
+           
+    for tab in tabs_data:
+        tab_pk = tab['pk']
+        igadgets = IGadget.objects.filter(tab__id = tab_pk)
+        igadget_data = serializers.serialize('python', igadgets, ensure_ascii=False)
+        igadget_data = [get_igadget_data(d) for d in igadget_data]
+        tab['igadgetList'] = igadget_data
+        
+    #Channel processing
+    inouts = InOut.objects.filter(tabspace=tabSpaceDAO)  
+    data = serializers.serialize('python', inouts, ensure_ascii=False)
+    inout_data = [get_inout_data(d) for d in data]
+    
+    data_ret['tabspace']['inoutList'] = inout_data
     return data_ret
 
 def get_tab_data(data):

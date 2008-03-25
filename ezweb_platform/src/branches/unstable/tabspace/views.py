@@ -52,7 +52,7 @@ from django_restapi.responder import *
 from django.db import transaction
 
 from commons.authentication import get_user_authentication
-from commons.get_data import get_tabspace_data, get_tab_data
+from commons.get_data import get_tabspace_data, get_tab_data, get_global_tabspace_data
 from commons.logs import log
 from commons.utils import get_xml_error, json_encode
 
@@ -66,12 +66,18 @@ class TabSpaceCollection(Resource):
         try:
             tabspaces = TabSpace.objects.filter(user=user)
             if tabspaces.count()==0:
+                #Tabspace creation
                 tabspace = TabSpace (name=_("MyTabspace"), active=True, user=user)
                 tabspace.save()
-                tabspaces = TabSpace.objects.filter(pk=tabspace.id)
+                
+                #Tab creation
+                tab = Tab (name=_("MyTab"), visible=True, tabspace=tabspace)
+                tab.save()
+                
+                tabspaces = TabSpace.objects.filter(user=user)
         except Exception, e:
             return HttpResponseBadRequest(get_xml_error(unicode(e)), mimetype='application/xml; charset=UTF-8')
-
+            
         data = serializers.serialize('python', tabspaces, ensure_ascii=False)
         data_list['tabspaces'] = [get_tabspace_data(d) for d in  data]
 
@@ -82,9 +88,9 @@ class TabSpaceEntry(Resource):
     def read(self, request, tabspace_id):
         user = get_user_authentication(request)
         
-        tabspace = get_list_or_404(TabSpace, user=user, pk=tabspace_id)
-        data = serializers.serialize('python', tabspace, ensure_ascii=False)
-        tabspace_data = get_global_tabspace_data(data[0])
+        tabspaces = get_list_or_404(TabSpace, user=user, pk=tabspace_id)
+        data = serializers.serialize('python', tabspaces, ensure_ascii=False)
+        tabspace_data = get_global_tabspace_data(data[0], tabspaces[0])
         return HttpResponse(json_encode(tabspace_data), mimetype='application/json; charset=UTF-8')
     
     
