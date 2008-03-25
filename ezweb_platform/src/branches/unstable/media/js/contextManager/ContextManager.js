@@ -101,7 +101,7 @@ var ContextManagerFactory = function () {
 
 				// Continues loading next module								
 				_loaded = true;
-				OpManagerFactory.getInstance().continueLoading(Modules.prototype.CONTEXT_MANAGER);
+				OpManagerFactory.getInstance().continueLoadingSingletonModules(Modules.prototype.CONTEXT_MANAGER);
 
 			}
 			

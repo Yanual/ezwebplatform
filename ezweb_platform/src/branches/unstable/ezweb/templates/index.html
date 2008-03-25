@@ -24,7 +24,6 @@ _URIConstants.prototype.GET_GADGET = new Template ('/user/{{ user.username }}/ga
 _URIConstants.prototype.GET_GADGETS = '/user/{{ user.username }}/gadgets';
 _URIConstants.prototype.GET_CONTEXT = '/user/{{ user.username }}/context';
 _URIConstants.prototype.GET_CONTEXT_VALUE = new Template ('/user/{{ user.username }}/context/#{concept}/value');
-_URIConstants.prototype.GET_POST_WIRING = '/user/{{ user.username }}/connectable';
 _URIConstants.prototype.GET_POST_RESOURCES = '/user/{{ user.username }}/catalogue/resource';
 _URIConstants.prototype.GET_RESOURCES_BY_TAG = '/user/{{ user.username }}/catalogue/search/tag';
 _URIConstants.prototype.GET_RESOURCES_BY_WIRING = '/user/{{ user.username }}/catalogue/search';
@@ -37,6 +36,8 @@ _URIConstants.prototype.GET_IGADGET_VARIABLES = new Template ('/user/{{ user.use
 _URIConstants.prototype.GET_POST_GADGET_VARIABLE = new Template ('/user/{{ user.username }}/igadgets/#{iGadgetId}/variables/#{varName}');
 _URIConstants.prototype.GET_POST_CHANNEL = new Template ('/user/{{ user.username }}/channel/#{channelName}');
 _URIConstants.prototype.PUT_VARIABLES = '/user/{{ user.username }}/igadgets/variables';
+_URIConstants.prototype.GET_TABSPACES = '/tabspaces';
+_URIConstants.prototype.GET_POST_WIRING = new Template ('/tabspaces/#{id}/connectable');
 
 var URIs = new _URIConstants();
 </script>
@@ -52,6 +53,9 @@ var URIs = new _URIConstants();
 <script language="JavaScript" src="{{ MEDIA_URL }}js/gadgetModel/XHtml.js"></script>
 <script language="JavaScript" src="{{ MEDIA_URL }}js/gadgetModel/Template.js"></script>
 <script language="JavaScript" src="{{ MEDIA_URL }}js/gadgetModel/Gadget.js"></script>
+
+<script language="JavaScript" src="{{ MEDIA_URL }}js/opManager/TabSpace.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/opManager/Tab.js"></script>
 
 <script language="JavaScript" src="{{ MEDIA_URL }}js/opManager/OpManager.js"></script>
 <script language="JavaScript" src="{{ MEDIA_URL }}js/varManager/VariableGadget.js"></script>

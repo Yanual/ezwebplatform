@@ -42,6 +42,9 @@ function Modules () {
 
 Modules.prototype.VAR_MANAGER = 0;
 Modules.prototype.SHOWCASE = 1;
-Modules.prototype.WIRING = 2;
-Modules.prototype.DRAGBOARD = 3;
-Modules.prototype.CONTEXT_MANAGER = 4;
+Modules.prototype.CONTEXT_MANAGER = 2;
+Modules.prototype.CATALOGUE = 3;
+Modules.prototype.TABSPACES = 4;
+Modules.prototype.ONE_TABSPACE = 5;
+Modules.prototype.ONE_TAB = 6;
+

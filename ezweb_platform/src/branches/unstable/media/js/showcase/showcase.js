@@ -80,14 +80,14 @@ var ShowcaseFactory = function () {
 			
 			// Showcase loaded
 			_loaded = true;
-			_opManager.continueLoading (Modules.prototype.SHOWCASE);
+			_opManager.continueLoadingSingletonModules (Modules.prototype.SHOWCASE);
 			
 		}
 		
 		// Error callback (empty gadget list)
 		onErrorCallback = function (receivedData_) {
 			_loaded = true;
-			_opManager.continueLoading (Modules.prototype.SHOWCASE);
+			_opManager.continueLoadingSingletonModules (Modules.prototype.SHOWCASE);
 		}
 		
 		// *******************************

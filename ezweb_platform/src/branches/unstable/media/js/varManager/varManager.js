@@ -89,7 +89,7 @@ var VarManagerFactory = function () {
 			}
 			
 			loaded = true;
-			opManager.continueLoading (Modules.prototype.VAR_MANAGER);
+			opManager.continueLoadingSingletonModules(Modules.prototype.VAR_MANAGER);
 		}
 		
 		onError = function (transport) {

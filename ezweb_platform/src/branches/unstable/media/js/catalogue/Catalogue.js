@@ -52,6 +52,9 @@ var CatalogueFactory  = function () {
 		var resources = new HashTable();
 		var selectedResources = [];
 		var globalTags = [];
+		    
+		OpManagerFactory.getInstance().continueLoadingSingletonModules(Modules.prototype.CATALOGUE);
+
 		
 		// ********************
 		//  PRIVILEGED METHODS

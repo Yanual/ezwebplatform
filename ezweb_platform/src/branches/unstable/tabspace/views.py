@@ -84,7 +84,7 @@ class TabSpaceEntry(Resource):
         
         tabspace = get_list_or_404(TabSpace, user=user, pk=tabspace_id)
         data = serializers.serialize('python', tabspace, ensure_ascii=False)
-        tabspace_data = get_tabspace_data(data[0])
+        tabspace_data = get_global_tabspace_data(data[0])
         return HttpResponse(json_encode(tabspace_data), mimetype='application/json; charset=UTF-8')
     
     

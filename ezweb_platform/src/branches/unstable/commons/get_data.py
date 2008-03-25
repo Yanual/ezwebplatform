@@ -193,6 +193,21 @@ def get_tabspace_data(data):
         data_ret['active'] = "false"
     return data_ret
 
+def get_global_tabspace_data(data):
+    data_ret = {}
+    data_fields = data['fields']
+
+    tabs = Tabs.objects.filter(pk=data_fields['pk'])
+    position = Position.objects.get(pk=data_fields['position'])
+
+    data_ret['pk'] = data['pk']
+    data_ret['name'] = data_fields['name']
+    if data_fields['active']:
+        data_ret['active'] = "true"
+    else:
+        data_ret['active'] = "false"
+    return data_ret
+
 def get_tab_data(data):
     data_ret = {}
     data_fields = data['fields']
