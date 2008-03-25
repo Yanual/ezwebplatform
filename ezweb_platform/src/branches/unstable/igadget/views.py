@@ -50,7 +50,7 @@ from django_restapi.responder import *
 
 from django.db import transaction
 
-from commons.authentication import user_authentication
+from commons.authentication import get_user_authentication
 from commons.get_data import get_igadget_data, get_variable_data
 from commons.logs import log
 from commons.utils import get_xml_error, json_encode
