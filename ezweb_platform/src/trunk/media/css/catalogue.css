@@ -117,7 +117,7 @@
 
 #catalogue .head .advanced_tag
 {
-	height: 95px;
+	height: auto;
 	border-top: 1px solid #EFEFEF;
 }
 
