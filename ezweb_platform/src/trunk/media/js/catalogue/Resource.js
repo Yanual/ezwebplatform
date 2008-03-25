@@ -81,11 +81,11 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 									"<span class='version'>" + state.getVersion() + "</span></div>" +
 									"<div class='vendor'>" + state.getVendor() + "</div>" +
 									"<div class='image'><img src='" + state.getUriImage() + "' alt='" + state.getName()+ "&nbsp;" + state.getVersion() + "'/></div>" +
-									"<div class='description'>" + gettext ('Description') + ":<br/><div class='text'>" + state.getDescription() + "</div></div><br/>" +
-									"<div class='connect'>" + gettext ('Gadget connectivity') + ":</div><br/>" +
-									"<div class='Events'>" + gettext ('Events: ') + _events()+ "</div>" +
-									"<div class='Slots'>" + gettext ('Slots: ') +_slots()+ "</div>" +
-									"<div class='tagcloud'>" + gettext ('Tagcloud') + ":<br/>" +
+									"<div class='description'>" + gettext ('Description') + ":<div class='text'>" + state.getDescription() + "</div></div>" +
+									"<div class='connect'>" + gettext ('Gadget connectivity') + ":<div class='text'>" +
+									"<div class='events'>" + gettext ('Events') + ": " + _events()+ "</div>" +
+									"<div class='slots'>" + gettext ('Slots') + ": " + _slots()+ "</div></div></div>" +
+									"<div class='tagcloud'>" + gettext ('Tagcloud') + ":" +
 									"<div id='view_tags_links' class='link'>"+
 									"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('View my tags') + "</a>" +
 									"&nbsp&nbsp&nbsp <a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('View others tags') + "</a>" +

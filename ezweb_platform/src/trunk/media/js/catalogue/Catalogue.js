@@ -400,7 +400,7 @@ var CatalogueFactory  = function () {
 				}
 			}
 		}
-		*/
+*/
 		for (var i=0; i<globalTags.length; i++)
 		{
 			tagsHTML += ("<span class='multiple_size_tag'>" + globalTags[i].tagToTypedHTML() + ((i<(globalTags.length-1))?",":"") + "</span>");

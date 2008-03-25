@@ -55,21 +55,21 @@
 						<form action="#" onsubmit="return false;">
 							<td><label for="advanced_search_text_and">{% trans  "All of these words:" %}</label></td>
 							<td><input type="text" id="advanced_search_text_and" name="advanced_search_text_and" class="text" autocomplete="on"></input></td>
-							<td><button class="submit_link" onclick="UIUtils.searchGeneric(URIs.GET_RESOURCES_SEARCH_GENERIC, this.form.advanced_search_text_and.value, 'and');">{% trans  "Search" %}</button><br/></td>
+							<td><button class="submit_link" onclick="UIUtils.searchGeneric(URIs.GET_RESOURCES_SEARCH_GENERIC, this.form.advanced_search_text_and.value, 'and');">{% trans  "Search" %}</button></td>
 						</form>
 					</tr>
 					<tr>
 						<form action="#" onsubmit="return false;">
 							<td><label for="advanced_search_text_or">{% trans  "Any of these words:" %}</label></td>
 							<td><input type="text" id="advanced_search_text_or" name="advanced_search_text_or" class="text" autocomplete="on"></input></td>
-							<td><button class="submit_link" onclick="UIUtils.searchGeneric(URIs.GET_RESOURCES_SEARCH_GENERIC, this.form.advanced_search_text_or.value, 'or');">{% trans  "Search" %}</button><br/></td>
+							<td><button class="submit_link" onclick="UIUtils.searchGeneric(URIs.GET_RESOURCES_SEARCH_GENERIC, this.form.advanced_search_text_or.value, 'or');">{% trans  "Search" %}</button></td>
 						</form>
 					</tr>
 					<tr>
 						<form action="#" onsubmit="return false;">
 							<td><label for="advanced_search_text_not">{% trans  "None of these words:" %}</label></td>
 							<td><input type="text" id="advanced_search_text_not" name="advanced_search_text_not" class="text" autocomplete="on"></input></td>
-							<td><button class="submit_link" onclick="UIUtils.searchGeneric(URIs.GET_RESOURCES_SEARCH_GENERIC, this.form.advanced_search_text_not.value, 'not');">{% trans  "Search" %}</button><br/></td>
+							<td><button class="submit_link" onclick="UIUtils.searchGeneric(URIs.GET_RESOURCES_SEARCH_GENERIC, this.form.advanced_search_text_not.value, 'not');">{% trans  "Search" %}</button></td>
 						</form>
 					</tr>
 				</table>
