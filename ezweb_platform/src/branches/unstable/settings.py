@@ -132,6 +132,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'ezweb',
     'gadget',
+    'tabspace',
     'igadget',
     'connectable',
     'resource',

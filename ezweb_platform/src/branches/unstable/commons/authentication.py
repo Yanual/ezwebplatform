@@ -53,3 +53,10 @@ def user_authentication(request, user_name):
         raise Http403 (_("You do not have permission"))
 
     return user
+
+def get_user_authentication(request):
+    user = request.user
+    if not user.is_authenticated():
+        raise Http403 (_("You must be logged"))
+
+    return user

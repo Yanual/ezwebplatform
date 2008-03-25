@@ -284,21 +284,6 @@
         <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">18</field>
         <field type="CharField" name="codename">delete_position</field>
     </object>
-    <object pk="55" model="auth.permission">
-        <field type="CharField" name="name">Can add screen</field>
-        <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">19</field>
-        <field type="CharField" name="codename">add_screen</field>
-    </object>
-    <object pk="56" model="auth.permission">
-        <field type="CharField" name="name">Can change screen</field>
-        <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">19</field>
-        <field type="CharField" name="codename">change_screen</field>
-    </object>
-    <object pk="57" model="auth.permission">
-        <field type="CharField" name="name">Can delete screen</field>
-        <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">19</field>
-        <field type="CharField" name="codename">delete_screen</field>
-    </object>
     <object pk="58" model="auth.permission">
         <field type="CharField" name="name">Can add i gadget</field>
         <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">20</field>
@@ -433,5 +418,35 @@
         <field type="CharField" name="name">Can delete concept name</field>
         <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">28</field>
         <field type="CharField" name="codename">delete_conceptname</field>
+    </object>
+    <object pk="85" model="auth.permission">
+        <field type="CharField" name="name">Can add tabspace</field>
+        <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">29</field>
+        <field type="CharField" name="codename">add_tabspace</field>
+    </object>
+    <object pk="86" model="auth.permission">
+        <field type="CharField" name="name">Can change tabspace</field>
+        <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">29</field>
+        <field type="CharField" name="codename">change_tabspace</field>
+    </object>
+    <object pk="87" model="auth.permission">
+        <field type="CharField" name="name">Can delete tabspace</field>
+        <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">29</field>
+        <field type="CharField" name="codename">delete_tabspace</field>
+    </object>
+    <object pk="88" model="auth.permission">
+        <field type="CharField" name="name">Can add tab</field>
+        <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">30</field>
+        <field type="CharField" name="codename">add_tab</field>
+    </object>
+    <object pk="89" model="auth.permission">
+        <field type="CharField" name="name">Can change tab</field>
+        <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">30</field>
+        <field type="CharField" name="codename">change_tab</field>
+    </object>
+    <object pk="90" model="auth.permission">
+        <field type="CharField" name="name">Can delete tab</field>
+        <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">30</field>
+        <field type="CharField" name="codename">delete_tab</field>
     </object>
 </django-objects>

@@ -45,9 +45,9 @@ from django.contrib.contenttypes import generic
 from django.utils.translation import ugettext as  _
 
 from gadget.models import Gadget, VariableDef
+from tabspace.models import Tab
 
 class Position(models.Model):
-    uri = models.CharField(_('URI'), max_length=500, unique=True)
 
     posX = models.IntegerField(_('PositionX'))
     posY = models.IntegerField(_('PositionY'))
@@ -59,46 +59,26 @@ class Position(models.Model):
         pass
 
     def __unicode__(self):
-        return self.uri
-
-class Screen(models.Model):
-    uri = models.CharField(_('URI'), max_length=500, unique=True)
-    
-    name = models.CharField(_('Name'), max_length=30)
-    code = models.IntegerField(_('Code'))
-    user = models.ForeignKey(User, verbose_name=_('User'))
-
-    class Meta:
-        unique_together = ('user', 'code')
-
-    class Admin:
-        pass
-
-    def __unicode__(self):
-        return self.uri + " " + self.name
+        return self.pk
 
 class IGadget(models.Model):
-    uri = models.CharField(_('URI'), max_length=500)
 
     code = models.IntegerField(_('Code'))
         
     gadget = models.ForeignKey(Gadget, verbose_name=_('Gadget'))
-    screen = models.ForeignKey(Screen, verbose_name=_('Screen'))
+    tab = models.ForeignKey(Tab, verbose_name=_('Tab'))
     position = models.ForeignKey(Position, verbose_name=_('Position'))
     
     class Meta:
-        unique_together = ('gadget', 'screen', 'code')
+        unique_together = ('gadget', 'tab', 'code')
     
     class Admin:
         pass
 
     def __unicode__(self):
-        return self.uri
-
-
+        return self.pk
 
 class Variable(models.Model):
-    uri = models.CharField(_('URI'), max_length=500, unique=True)
     
     vardef = models.ForeignKey(VariableDef, verbose_name=_('Variable definition'))
     igadget = models.ForeignKey(IGadget, verbose_name=_('IGadget'))
@@ -108,5 +88,5 @@ class Variable(models.Model):
         pass
 
     def __unicode__(self):
-        return self.uri + " " + self.value
+        return self.pk + " " + self.value
 

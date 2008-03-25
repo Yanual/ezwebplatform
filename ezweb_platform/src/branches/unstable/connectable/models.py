@@ -41,26 +41,24 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 
 from igadget.models import Variable
-
+from tabspace.models import TabSpace
 
 class InOut(models.Model):
-    uri = models.CharField(_('URI'), max_length=500, unique=True)
     
     name = models.CharField(_('Name'), max_length=30)
     value = models.CharField(_('Value'), max_length=100, blank=True, null=True)
     friend_code = models.CharField(_('Friend code'), max_length=30, blank=True, null=True)
-    
-    user = models.ForeignKey(User, verbose_name=_('User'))
+
+    tabspace = models.ForeignKey(TabSpace, verbose_name=_('TabSpace'))
         
     class Admin:
         pass
 
     def __unicode__(self):
-        return self.uri + " " + self.name
+        return self.pk + " " + self.name
 
 
 class In(models.Model):
-    uri = models.CharField(_('URI'), max_length=500, unique=True)
     
     name = models.CharField(_('Name'), max_length=30)
     variable = models.ForeignKey(Variable, verbose_name=_('Variable'))  
@@ -73,11 +71,10 @@ class In(models.Model):
         pass
 
     def __unicode__(self):
-        return self.uri + " " + self.name
+        return self.pk + " " + self.name
 
 
 class Out(models.Model):
-    uri = models.CharField(_('URI'), max_length=500, unique=True)
     
     name = models.CharField(_('Name'), max_length=30)
     variable = models.ForeignKey(Variable, verbose_name=_('Variable'))
@@ -90,4 +87,4 @@ class Out(models.Model):
         pass
 
     def __unicode__(self):
-        return self.uri + " " + self.name
+        return self.pk + " " + self.name

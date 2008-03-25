@@ -53,31 +53,26 @@ from commons.get_data import get_inout_data, get_igadget_data, get_wiring_data
 from commons.utils import json_encode
 
 from gadget.models import VariableDef
-from igadget.models import IGadget, Screen, Variable
+from igadget.models import IGadget, Variable
+from tabspace.models import TabSpace
 from connectable.models import In, Out, InOut
 
 class ConnectableEntry(Resource):
-    def read(self, request, user_name, screen_id=1):
-        user = user_authentication(request, user_name)
+    def read(self, request, tabspace_id):
+        user = get_user_authentication(request)
         wiring = {}
-        
-        # IGadgets list
-        if not screen_id:
-            screen_id=1
 
         try:
-            screen = Screen.objects.get(user=user, code=screen_id)
-
-            igadgets = IGadget.objects.filter(screen=screen)
+            igadgets = IGadget.objects.filter(tab__tabspace__pk=tabspace_id)
             
             igadget_data_list = get_wiring_data(igadgets)
             
             wiring['iGadgetList'] = igadget_data_list
-        except Screen.DoesNotExist:
+        except TabSpace.DoesNotExist:
             wiring['iGadgetList'] = []
         
         # InOut list
-        inouts = InOut.objects.filter(user=user)
+        inouts = InOut.objects.filter(tabspace__pk=tabspace_id)
         inout_data = serializers.serialize('python', inouts, ensure_ascii=False)
         inout_data_list = [get_inout_data(d) for d in inout_data]
         wiring['inOutList'] = inout_data_list
@@ -85,30 +80,23 @@ class ConnectableEntry(Resource):
         return HttpResponse(json_encode(wiring), mimetype='application/json; charset=UTF-8')
     
     @transaction.commit_manually
-    def create(self, request, user_name, screen_id=None):
-        user = user_authentication(request, user_name)
+    def create(self, request, tabspace_id):
+        user = get_user_authentication(request)
 
         # Gets all needed parameters from request
         if request.POST.has_key('json'):
             json = simplejson.loads(request.POST['json'])
         else:
             return HttpResponseBadRequest (_(u'JSON parameter expected'))
-        
-        #TODO Remove this. Sets user screen by default 
-        if not screen_id:
-        		screen_id = 1
 
         try:
-            #Gets current user screen
-            screen = Screen.objects.get(user=user, code=screen_id)
-            
             igadgets = json['iGadgetList']
             for igadget in igadgets:
-                igadget_object = IGadget.objects.get(screen=screen, code=igadget['id'])
+                igadget_object = IGadget.objects.get(tab__tabspace__pk=tabspace_id, code=igadget['code'])
 
                 # Save all IGadget connections (in and out variables)
                 for var in igadget['list']:
-                    var_object = Variable.objects.get(uri=var['uri'], vardef__name=var['name'], igadget=igadget_object)
+                    var_object = Variable.objects.get(vardef__name=var['name'], igadget=igadget_object)
 
                     # Remove existed connections
                     Out.objects.filter(variable=var_object).delete()
@@ -116,45 +104,43 @@ class ConnectableEntry(Resource):
         
                     # Saves IN connection
                     if var['aspect'] == 'EVEN':
-                        uri_in = "/user/%s/igadgets/%s/in/%s" % (user_name, igadget_object.code, var['name'])
-                        in_object = In(uri=uri_in, name=var['name'], variable=var_object)
+                        in_object = In(name=var['name'], variable=var_object)
                         in_object.save()
 
                     # Saves OUT connection
                     if var['aspect'] == 'SLOT':
-                        uri_out = "/user/%s/igadgets/%s/out/%s" % (user_name, igadget_object.code, var['name'])
-                        out_object = Out(uri=uri_out, name=var['name'], variable=var_object)
+                        out_object = Out(name=var['name'], variable=var_object)
                         out_object.save()
             
             # Delete channels
-            InOut.objects.filter(user=user).delete()
+            InOut.objects.filter(tabspace__pk=tabspace_id).delete()
 
             # Saves all channels
             for inout in json['inOutList']:
                 inout_object = None
-                inout_object = InOut(user=user, uri=inout['uri'], name=inout['name'], friend_code=inout['friend_code'], value=inout['value'])
+                inout_object = InOut(tabspace__pk=tabspace_id, name=inout['name'], friend_code=inout['friend_code'], value=inout['value'])
                 inout_object.save()
                 
                 # Saves all channel inputs
                 for ins in inout['ins']:            
-                    igadget_object = IGadget.objects.get(screen=screen, code=ins['igadget'])
+                    igadget_object = IGadget.objects.get(tab__tabspace__pk=tabspace_id, code=ins['igadget'])
                     var_object = Variable.objects.get(vardef__name=ins['name'], igadget=igadget_object)
                     connected_in = In.objects.get(variable=var_object)
                     connected_in.inout.add(inout_object)
                     
                 # Saves all channel outputs
                 for out in inout['outs']:            
-                    igadget_object = IGadget.objects.get(screen=screen, code=out['igadget'])
+                    igadget_object = IGadget.objects.get(tab__tabspace__pk=tabspace_id, code=out['igadget'])
                     var_object = Variable.objects.get(vardef__name=out['name'], igadget=igadget_object)
                     connected_out = Out.objects.get(variable=var_object)
                     connected_out.inout.add(inout_object)
                                           
             transaction.commit()
             return HttpResponse ('ok')
-        except Screen.DoesNotExist:
+        except TabSpace.DoesNotExist:
             transaction.rollback()
 
-            msg = _('referred screen %(screen_id)s does not exist.') % {'screen_id': screen_id}
+            msg = _('referred tabspace %(tabspace_name)s does not exist.') % {'tabspace_name': tabspace_name}
             log(msg, request)
             return HttpResponseBadRequest(get_xml_error(msg));
 

@@ -51,10 +51,11 @@ def get_wiring_variable_data(var, ig):
     res_data['name'] = var.vardef.name
     res_data['aspect'] = var.vardef.aspect
     res_data['type'] = var.vardef.type
-    res_data['uri'] = var.uri
     res_data['value'] = var.value
     res_data['friend_code'] = var.vardef.friend_code
-    res_data['id'] = ig.code
+    res_data['code'] = ig.code
+    res_data['igadget_code'] = ig.code
+    res_data['igadget_pk'] = ig.pk
 
     return res_data
 
@@ -68,8 +69,8 @@ def get_wiring_data(igadgets):
         igObject = {}
         list = []
 
-        igObject['id'] = ig.code
-        igObject['uri'] = ig.uri
+        igObject['code'] = ig.code
+        igObject['pk'] = ig.pk
 
         #Searching wiring variables
         for var in variables:
@@ -145,9 +146,10 @@ def get_input_data (inout):
     inputs = In.objects.filter(inout=inout)    
     for ins in inputs:
         input_data = {}
-        input_data['uri'] = ins.uri
+        input_data['pk'] = ins.pk
         input_data['name'] = ins.name
-        input_data['igadget'] = ins.variable.igadget.code
+        input_data['igadget_pk'] = ins.variable.igadget.pk
+        input_data['igadget_code'] = ins.variable.igadget.code
         all_inputs.append(input_data)
     return all_inputs
     
@@ -156,9 +158,10 @@ def get_output_data (inout):
     outputs = Out.objects.filter(inout=inout)    
     for outs in outputs:
         output_data = {}
-        output_data['uri'] = outs.uri
+        output_data['pk'] = outs.pk
         output_data['name'] = outs.name
-        output_data['igadget'] = outs.variable.igadget.code
+        output_data['igadget_pk'] = outs.variable.igadget.pk
+        output_data['igadget_code'] = outs.variable.igadget.code
         all_outputs.append(output_data)
     return all_outputs    
     
@@ -166,7 +169,7 @@ def get_output_data (inout):
 def get_inout_data(data):
     data_ret = {}
     data_fields = data['fields']
-    data_ret['uri'] = data_fields['uri']
+    data_ret['pk'] = data['pk']
     data_ret['friend_code'] = data_fields['friend_code']
     data_ret['value'] = data_fields['value']
     data_ret['name'] = data_fields['name']
@@ -179,6 +182,27 @@ def get_inout_data(data):
         
     return data_ret
 
+def get_tabspace_data(data):
+    data_ret = {}
+    data_fields = data['fields']
+    data_ret['pk'] = data['pk']
+    data_ret['name'] = data_fields['name']
+    if data_fields['active']:
+        data_ret['active'] = "true"
+    else:
+        data_ret['active'] = "false"
+    return data_ret
+
+def get_tab_data(data):
+    data_ret = {}
+    data_fields = data['fields']
+    data_ret['pk'] = data['pk']
+    data_ret['name'] = data_fields['name']
+    if data_fields['visible']:
+        data_ret['visible'] = "true"
+    else:
+        data_ret['visible'] = "false"
+    return data_ret
 
 def get_igadget_data(data):
     data_ret = {}
@@ -187,8 +211,8 @@ def get_igadget_data(data):
     gadget = Gadget.objects.get(pk=data_fields['gadget'])
     position = Position.objects.get(pk=data_fields['position'])
 
-    data_ret['id'] = data_fields['code']
-    data_ret['uri'] = data_fields['uri']
+    data_ret['pk'] = data['pk']
+    data_ret['code'] = data_fields['code']
     data_ret['gadget'] = gadget.uri
     data_ret['top'] = position.posY 
     data_ret['left'] = position.posX
