@@ -157,9 +157,11 @@ this.removeTagUser = function(url, resourceURI,id)
 	}
 	
 	var eraserTag = function(id_) {
-		var parentHTML = document.getElementById("my_tags");
-		var tagHTML = document.getElementById(id_);
-		parentHTML.removeChild(tagHTML);
+		if(!UIUtils.tagmode){
+			var parentHTML = document.getElementById("my_tags");
+			var tagHTML = document.getElementById(id_);
+			parentHTML.removeChild(tagHTML);
+		}
 	}
 	
 	var eraserAll = function() {

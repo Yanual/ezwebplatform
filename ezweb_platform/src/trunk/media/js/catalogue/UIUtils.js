@@ -371,6 +371,18 @@ UIUtils.removeTag = function(id_) {
 	tagger.removeTag(id_);
 }
 
+UIUtils.removeGlobalTag = function(id_) {
+	var tagger;
+	selectedResources = CatalogueFactory.getInstance().getSelectedResources();
+	for(var i=0; i<selectedResources.length;i++){
+		tagger = CatalogueFactory.getInstance().getResource(selectedResources[i]).getTagger();
+		tagger.removeTag(id_);
+	}
+	var parentHTML = document.getElementById("my_global_tags");
+	var tagHTML = document.getElementById(id_);
+	parentHTML.removeChild(tagHTML);
+}
+
 UIUtils.removeAllTags = function() {
 	var tagger = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).getTagger();
 	tagger.removeAll();
@@ -469,6 +481,7 @@ UIUtils.addTag = function(inputText_) {
 UIUtils.addGlobalTag = function(inputText_) {
 	if(inputText_.value.length<3)	{
 		document.getElementById("global_tag_alert").style.display='inline';
+		document.getElementById("global_tag_alert").innerHTML = gettext ("Tags must have at least three characters.");
 	}else{
 		var id = 'new_global_tag_' + UIUtils.counter;
 		UIUtils.counter++;
@@ -498,7 +511,7 @@ UIUtils.paintGlobalTag = function(id_, tag_) {
 								"</a>" +
 							"</div>" +
 							"<div id='button_enable_" + id_ + "' style='display:none;'>" +
-								"<a href='javascript:UIUtils.removeTag(\"" + id_ + "\");'>" +
+								"<a href='javascript:UIUtils.removeGlobalTag(\"" + id_ + "\");'>" +
 									"<img src='/ezweb/images/cancel.png' alt=''></img>" +
 								"</a>" +
 							"</div>," + 
@@ -625,7 +638,7 @@ UIUtils.SlideAdvanced = function(element,container) {
 			            		break;
 			            }
                         $(nodeList.item(i).id+"_toggle").innerHTML = tab;
-                        $(nodeList.item(i).id+"_toggle").style.background="lightBlue";
+                        $(nodeList.item(i).id+"_toggle").style.background="transparent";
                         if(nodeList.item(i).id=="advanced_tag"){UIUtils.deactivateTagMode();}
                     }
                 }
@@ -643,7 +656,7 @@ UIUtils.SlideAdvanced = function(element,container) {
             		break;
             }
             $(element+"_toggle").innerHTML = tab;
-			$(element+"_toggle").style.background="darkBlue";
+			$(element+"_toggle").style.background="lightBlue";
 			if(element=="advanced_tag"){UIUtils.activateTagMode();}
        }
        else {
@@ -660,7 +673,7 @@ UIUtils.SlideAdvanced = function(element,container) {
             		break;
             }
             $(element+"_toggle").innerHTML = tab;
-            $(element+"_toggle").style.background="lightBlue"; 
+            $(element+"_toggle").style.background="transparent"; 
             if(element=="advanced_tag"){UIUtils.deactivateTagMode();}      
        }
    }

@@ -20,31 +20,48 @@
 }
 
 #catalogue .head .submit_link {
-   background-color: lightblue;
-   border: 1px solid darkBlue;
-   color: white;
-   text-decoration: none;
+   background-color: transparent;
+   border: none;
+   color: darkBlue;
+   text-decoration: underline;
    cursor: pointer;
    cursor: hand;
    padding: 1px;
 }
 
 #catalogue .head .submit_link:hover {
-	background-color: darkBlue;
+	background-color: transparent;
+}
+
+#catalogue .head .submit_link:active {
+	outline: none;
+}
+
+#catalogue .head .submit_link:focus {
+	outline: none;
 }
 
 #catalogue .head .header_link {
-   background-color: lightblue;
-   border: 1px solid darkBlue;
-   color: white;
-   text-decoration: none;
+   background-color: transparent;
+   border: none;
+   color: darkBlue;
+   text-decoration: underline;
    cursor: pointer;
    cursor: hand;
-   padding: 1px;
+   padding: 2px;
    margin-rigth: 8px;
 }
 
 #catalogue .head .header_link:hover {
+	background-color: transparent;
+}
+
+#catalogue .head .header_link:active {
+	outline: none;
+}
+
+#catalogue .head .header_link:focus {
+	outline: none;
 }
 
 #catalogue .head .header_always
@@ -171,20 +188,20 @@
 }
 
 #catalogue .head .advanced_tag .advanced_tag_right .new_tags .tag_alert {
-display:none;
-margin:5px 0pt 0pt 15px;
-background:transparent url(/ezweb/images/ico_error_mini.gif) no-repeat scroll 0%;
-color:#CE440E;
-font-family:Arial,Helvetica,sans-serif;
-font-size:0.8em;
-font-size-adjust:none;
-font-stretch:normal;
-font-style:normal;
-font-variant:normal;
-font-weight:normal;
-line-height:normal;
-margin-left:14px;
-padding-left:17px;
+	display:none;
+	margin:2px 0px;
+	background:transparent url(/ezweb/images/ico_error_mini.gif) no-repeat scroll 0%;
+	color:#CE440E;
+	font-family:Arial,Helvetica,sans-serif;
+	font-size:0.8em;
+	font-size-adjust:none;
+	font-stretch:normal;
+	font-style:normal;
+	font-variant:normal;
+	font-weight:normal;
+	line-height:normal;
+	padding-left:17px;
+	float:left;
 }
 
 #catalogue .head .advanced_tag .advanced_tag_right .new_tags .buttons
