@@ -42,7 +42,7 @@ import httplib
 import urlparse
 from django_restapi.resource import Resource
 from django_restapi.responder import *
-from proxy.utils import is_valid_header
+from proxy.utils import *
 
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import string_concat
@@ -68,15 +68,16 @@ class Proxy(Resource):
 
         # Params
         if request.POST.has_key('params'):
-            params = request.POST['params']
+            params = encode_query(request.POST['params'])
 	else:
 	    params = ''
 
         # HTTP call
         try:
             # Request creation
-            url = unquote(url)
             proto, host, cgi, param, query = urlparse.urlparse(url)[:5]
+
+	    query = encode_query(query)
             
             # Proxy support
             proxy = ""
@@ -113,10 +114,20 @@ class Proxy(Resource):
             res = conn.getresponse()
 
 	    # Redirect resolution
+	    MAX_REDIRECTS = 50
+	    index_redirects = 0
+
             while (res.status >= 300) and (res.status < 400):
-                url = unquote(res.getheader('Location'))
+		
+		if (index_redirects >= MAX_REDIRECTS):
+		    return HttpResponse('<error>Redirect limit has been exceeded</error>')
+		index_redirects = index_redirects + 1
+
+                url = res.getheader('Location')
                 proto, host, cgi, param, auxquery = urlparse.urlparse(url)[:5]
                 conn = httplib.HTTPConnection(host)
+
+		auxquery = encode_query(auxquery)
 
                 if query != '':
                     query = query + "&" + auxquery
