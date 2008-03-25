@@ -98,22 +98,18 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 										"</div>" +
 										"<div id=\"tag_alert\" class=\"tag_alert\"></div>" +
 										"<div class='buttons'>" +
-											"<a href=\"#\" onClick='javascript:UIUtils.sendTags();'>" + gettext ('Tag') + "</a>" +
-											"<a href=\"#\" onClick='javascript:UIUtils.addTag(document.getElementById(\"new_tag_text_input\"));'>" + gettext ('Save & New') + "</a>" +
-											"<a href=\"#\" onClick='javascript:UIUtils.toggle_elements([\"add_tags_panel\",\"add_tags_link\",\"access_wiki_link\",\"access_template_link\",\"update_code_link\",\"delete_gadget_link\"]);UIUtils.show(\"add_gadget_button\");UIUtils.removeAllTags();'>" + gettext ('Cancel') + "</a>" +
+											"<a class='submit_link' href=\"#\" onClick='javascript:UIUtils.sendTags();'>" + gettext ('Tag') + "</a>" +
+											"<a class='submit_link' href=\"#\" onClick='javascript:UIUtils.addTag(document.getElementById(\"new_tag_text_input\"));'>" + gettext ('Save & New') + "</a>" +
+											"<a class='submit_link' href=\"#\" onClick='javascript:UIUtils.toggle_elements([\"add_tags_panel\",\"add_tags_link\",\"access_wiki_link\",\"access_template_link\",\"update_code_link\",\"delete_gadget_link\"]);UIUtils.show(\"add_gadget_button\");UIUtils.removeAllTags();'>" + gettext ('Cancel') + "</a>" +
 										"</div>" +
-									"</div>" +
-									
-"<div id='add_tags_link' class='link'><a href='javascript:UIUtils.toggle_elements([\"add_tags_link\",\"add_tags_panel\",\"access_wiki_link\",\"access_template_link\",\"update_code_link\",\"delete_gadget_link\",\"add_gadget_button\"]);document.getElementById(\"new_tag_text_input\").focus();'>" + gettext ('Tag the resource') + "</a></div>" +
-"<div id='access_wiki_link' class='link'><a href='" + state.getUriWiki() + "' target='_blank'>" + gettext ('Access to the Wiki') + "</a></div>" +
-
-"<div id='access_template_link' class='link'><a href='" + state.getUriTemplate() + "' target='_blank'>" + gettext ('Access to the Template') + "</a></div>" + 
-
-"<div id='update_code_link' class='link'><a href='javascript:UIUtils.updateGadgetXHTML();'>" + gettext ('Update gadget code') + "</a></div>" + 
-
-"<div id='delete_gadget_link' class='link'>" + _deleteGadget() + "</div>" +
-
-"</div><button id='add_gadget_button' onclick='CatalogueFactory.getInstance().addResourceToShowCase(UIUtils.getSelectedResource());' style='align:center;'>" + gettext ('Add Instance') + "</button>";
+									"</div>" +									
+									"<div id='add_tags_link' class='link'><a class='submit_link' href='javascript:UIUtils.toggle_elements([\"add_tags_link\",\"add_tags_panel\",\"access_wiki_link\",\"access_template_link\",\"update_code_link\",\"delete_gadget_link\",\"add_gadget_button\"]);document.getElementById(\"new_tag_text_input\").focus();'>" + gettext ('Tag the resource') + "</a></div>" +
+									"<div id='access_wiki_link' class='link'><a class='submit_link' href='" + state.getUriWiki() + "' target='_blank'>" + gettext ('Access to the Wiki') + "</a></div>" +
+									"<div id='access_template_link' class='link'><a class='submit_link' href='" + state.getUriTemplate() + "' target='_blank'>" + gettext ('Access to the Template') + "</a></div>" + 
+									"<div id='update_code_link' class='link'><a class='submit_link' href='javascript:UIUtils.updateGadgetXHTML();'>" + gettext ('Update gadget code') + "</a></div>" + 
+									"<div id='delete_gadget_link' class='link'>" + _deleteGadget() + "</div>" +
+								"</div>" +
+								"<button id='add_gadget_button' class='add_gadget_button' onclick='CatalogueFactory.getInstance().addResourceToShowCase(UIUtils.getSelectedResource());' style='align:center;'>" + gettext ('Add Instance') + "</button>";
 	}
 	
 
@@ -241,9 +237,9 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 		var addedBy = state.getAddedBy();
 		
 		if (addedBy == 'Yes'){
-		
-	     deleteHTML += ("<a href='javascript:UIUtils.deleteGadget(\"" + id + "\")'>" + gettext ('Delete gadget') + "</a>");
-    }
+	    	deleteHTML += ("<a class='submit_link' href='javascript:UIUtils.deleteGadget(\"" + id + "\")'>" + gettext ('Delete gadget') + "</a>");
+    	}
+    	
 		return deleteHTML;
 	}
 	
@@ -275,7 +271,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 			if(tagsAux[i].getAdded_by() == 'Yes' && (option.tags=='all' || option.tags=='mytags')){  
 
 				var jsCall = 'javascript:UIUtils.removeTagUser("' + tagsAux[i].getValue() + '","'+id+'");';
-				tagsHTML += ("<a title='" + gettext ('Delete tag') + "' href='" + jsCall + "' ><img id='"+id+"_deleteIcon_"+i+"_"+loc+"' onMouseOver=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/delete.png';\" onMouseOut=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/cancel_gray.png';\" src='/ezweb/images/cancel_gray.png' border=0 name=op1></a><span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML(id) + ((i<(tagsAux.length-1))?",":"") + "</span>");
+				tagsHTML += ("<span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML(id) + "</span><a title='" + gettext ('Delete tag') + "' href='" + jsCall + "'><img id='"+id+"_deleteIcon_"+i+"_"+loc+"' onMouseOver=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/delete.png';\" onMouseOut=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/cancel_gray.png';\" src='/ezweb/images/cancel_gray.png' border=0 name=op1></a>"+((i<(tagsAux.length-1))?", ":""));
 			}
 			else{
 				if (tagsAux[i].getAdded_by() == 'No' && (option.tags=='all' || option.tags=='others'))

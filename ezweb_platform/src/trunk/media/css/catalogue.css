@@ -3,6 +3,14 @@
 	text-decoration:none;
 }
 
+#catalogue a:active {
+	outline: none;
+}
+
+#catalogue a:focus {
+	outline: none;
+}
+
 #catalogue a:hover
 {
 	text-decoration:underline;
@@ -456,11 +464,13 @@
 {
 	border:none;
 }
+
 #catalogue .center .resources .resource .content button{
 	background: url("/ezweb/images/button.gif") top left;
 	color:white;
 	border:none;
 	font-size:100%;
+	cursor:pointer;
 }
 
 .description_balloon
@@ -552,26 +562,26 @@
 	text-align:center;
 }
 
-#catalogue .center .info_resource .content a {
+#catalogue .center .info_resource .submit_link {
    background-color: transparent;
    border: none;
    color: darkBlue;
    text-decoration: underline;
    cursor: pointer;
    cursor: hand;
-   padding: 2px;
-   margin-rigth: 8px;
+   padding: 1px;
+   margin-right: 5px;
 }
 
-#catalogue .center .info_resource .content a:hover {
+#catalogue .center .info_resource .submit_link:hover {
 	background-color: transparent;
 }
 
-#catalogue .center .info_resource .content a:active {
+#catalogue .center .info_resource .submit_link:active {
 	outline: none;
 }
 
-#catalogue .center .info_resource .content a:focus {
+#catalogue .center .info_resource .submit_link:focus {
 	outline: none;
 }
 
@@ -804,4 +814,13 @@ padding-left:17px;
 	color:#0000ff;
 	font-size:12px;
 	width:100%;
+}
+
+#catalogue .center .info_resource .content .add_gadget_button
+{
+	background: url("/ezweb/images/button.gif") top left;
+	color:white;
+	border:none;
+	font-size:100%;
+	cursor:pointer;
 }
