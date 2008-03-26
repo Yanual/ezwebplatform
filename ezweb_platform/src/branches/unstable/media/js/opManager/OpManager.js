@@ -89,6 +89,9 @@ var OpManagerFactory = function () {
 		this.activeDragboard;
 		this.activeWiring;
 		
+		//Current interface selected by user {dragboard, catalogue, wiring}
+		this.currentInterface = "dragboard"
+		
 		this.loadCompleted = false;
 
 		// Variables for controlling the collection of wiring and dragboard instances of a user
@@ -108,6 +111,13 @@ var OpManagerFactory = function () {
 		OpManager.prototype.changeActiveTab = function (tab) {
 		    this.activeWorkSpace.setTab(tab);
 		    this.activeDragboard = this.activeWorkSpace.getActiveTab().getDragboard();
+		}
+		
+		OpManager.prototype.showCatalogue = function () {
+			this.activeWorkSpace.hideTabs();
+			
+			$("showcase_container").setStyle({"display": "block", "zIndex" : "2"});
+			$("showcase_tab").className = "tab current";
 		}
 
 		OpManager.prototype.getActiveWorkSpace = function (workSpace) {
@@ -173,6 +183,14 @@ var OpManagerFactory = function () {
 	 	    this.activeDragboard.igadgetLoaded();
 		}
 		
+		OpManager.prototype.paintActiveWorkSpace = function () {
+			dragboard = DragboardFactory.getInstance();
+			dragboard.repaint();
+	    	
+			wiring = WiringFactory.getInstance();
+			wiringInterface = WiringInterfaceFactory.getInstance();
+		}
+		
 		OpManager.prototype.continueLoadingGlobalModules = function (module) {
 		    // Asynchronous load of modules
 		    // Each singleton module notifies OpManager it has finished loading!
@@ -196,6 +214,7 @@ var OpManagerFactory = function () {
 		    
 		    if (module == Modules.prototype.ACTIVE_WORKSPACE) {
 		    	this.loadCompleted = true;
+		    	this.paintActiveWorkSpace();
 		    	environmentLoadedCallback();
 		    	return;
 		    }

@@ -504,6 +504,21 @@ function Dragboard(tabInfo, dragboardElementName) {
 		loaded = true;
 	}
 	
+	Dragboard.prototype.hideLayer = function () {
+		if (UIUtils.isInfoResourcesOpen) {
+			UIUtils.isInfoResourcesOpen = false;
+			UIUtils.SlideInfoResourceOutOfView('info_resource');
+		}
+		
+		// Hidden current interface
+		$(currentInterface + "_container").setStyle({"zIndex" : 1});
+		$(currentInterface + "_tab").className = "tab";
+	            if (currentInterface != "dragboard")
+	                $(currentInterface + "_container").setStyle({"display": "none"});
+	            
+	}
+	
+
 	Dragboard.prototype.addInstance = function (gadget) {
 		if ((gadget == null) || !(gadget instanceof Gadget))
 			return; // TODO exception

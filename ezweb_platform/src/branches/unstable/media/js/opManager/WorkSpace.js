@@ -75,7 +75,13 @@ function WorkSpace (workSpaceState) {
 		
 		PersistenceEngineFactory.getInstance().send_get(workSpaceUrl, this, loadWorkSpace, onError);
 	}
-    
+	
+	WorkSpace.prototype.hideTabs() {
+		this.tabInstances.each(function(tab) {
+			  tab.hideLayer();
+			});
+	}
+	    
     // *****************
     //  CONSTRUCTOR
     // *****************

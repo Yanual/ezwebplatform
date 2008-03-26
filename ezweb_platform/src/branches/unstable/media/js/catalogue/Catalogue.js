@@ -53,8 +53,6 @@ var CatalogueFactory  = function () {
 		var selectedResources = [];
 		var globalTags = [];
 		    
-		OpManagerFactory.getInstance().continueLoadingGlobalModules(Modules.prototype.CATALOGUE);
-
 		
 		// ********************
 		//  PRIVILEGED METHODS
@@ -411,6 +409,8 @@ var CatalogueFactory  = function () {
 		return tagsHTML;
 	}
 
+	OpManagerFactory.getInstance().continueLoadingGlobalModules(Modules.prototype.CATALOGUE);
+	
 	}
 	
 	// ************************

@@ -94,81 +94,6 @@ var URIs = new _URIConstants();
 
 <!-- Initialization code -->
 <script language="JavaScript">
-
-	function showInterface(interfaceToShow) {
-		var tabs = ["wiring", "showcase", "dragboard", "logs"];
-
-		if (interfaceToShow == currentInterface)
-		    return; // Do nothing
-
-		if (UIUtils.isInfoResourcesOpen) {
-			UIUtils.isInfoResourcesOpen = false;
-			UIUtils.SlideInfoResourceOutOfView('info_resource');
-		}
-		// Hidden current interface
-		$(currentInterface + "_container").setStyle({"zIndex" : 1});
-		$(currentInterface + "_tab").className = "tab";
-                if (currentInterface != "dragboard")
-                    $(currentInterface + "_container").setStyle({"display": "none"});
-
-		if (currentInterface == "wiring")
-		    wiringInterface.saveWiring();
-
-		// Show the interface
-		if (interfaceToShow == "wiring")
-		    wiringInterface.renewInterface();
-
-		$(interfaceToShow + "_container").setStyle({"display": "block", "zIndex" : "2"});
-		$(interfaceToShow + "_tab").className = "tab current";
-
-		currentInterface = interfaceToShow;
-	}
-
-    function show_showcase() {
-		UIUtils.search = false;
-		if (UIUtils.isInfoResourcesOpen) {
-			UIUtils.isInfoResourcesOpen = false;
-			UIUtils.SlideInfoResourceOutOfView('info_resource');
-		}
-
-		opManager.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
-
-		showInterface('showcase');
-		
-		UIUtils.setResourcesWidth();
-		
-		$('simple_search_text').focus();
-	}
-
-	function show_dragboard() {
-		showInterface('dragboard');
-	}
-
-	function show_wiring() {
-		showInterface('wiring');
-	}
-
-	// Platform initialization
-	function environmentLoadedCallback() {
-		dragboard = DragboardFactory.getInstance();
-		dragboard.repaint();
-    	
-		wiring = WiringFactory.getInstance();
-		wiringInterface = WiringInterfaceFactory.getInstance();
-
-		switch("{{ current_tab }}") {
-		    case 'dragboard':
-	    		show_dragboard();
-		    break;
-		    case 'showcase':
-	    		show_showcase();
-		    break;
-		    case 'wiring':
-		        show_wiring();
-		    break;
-        }
-
-	}
 	
 	function resizeWrapper() {
 		$("wrapper").setStyle({"height" : (window.innerHeight - $("header").offsetHeight - 20) + "px"});
@@ -197,12 +122,8 @@ var URIs = new _URIConstants();
 		persistenceEngine.send_post("/i18n/setlang/", params, this, onSuccess, onError);
 		return false;
 	}
-
-	var currentInterface = "dragboard";
-	var wiring;
-	var opManager;
-	var dragboard;
-	var wiringInterface;
+	
+	var opManager = OpManagerFactory.getInstance(); ;
 
     opManager = OpManagerFactory.getInstance();
     opManager.loadEnviroment();

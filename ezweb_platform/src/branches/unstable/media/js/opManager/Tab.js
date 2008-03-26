@@ -41,13 +41,18 @@ function Tab (tabInfo) {
     // ****************
     // PUBLIC METHODS
     // ****************
+	
+	Tab.prototype.hideLayer = function () {
+		this.dragboard.hideLayer();
+	}
 		
     // *****************
 	//  PRIVATE METHODS
     // *****************
 	
-	// Change this for an autogenerating-id
-	this.dragboardElement = "dragboard";
+	// The name of the dragboard HTML elements correspond to the Tab name
+	this.dragboardElement = tabInfo.name;
+	this.
 	
 	this.dragboard = new Dragboard(tabInfo, this.dragboardElement);
 }     	
