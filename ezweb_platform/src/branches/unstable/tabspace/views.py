@@ -52,7 +52,7 @@ from django_restapi.responder import *
 from django.db import transaction
 
 from commons.authentication import get_user_authentication
-from commons.get_data import get_tabspace_data, get_tab_data, get_global_tabspace_data
+from commons.get_data import get_workspace_data, get_tab_data, get_global_workspace_data
 from commons.logs import log
 from commons.utils import get_xml_error, json_encode
 
@@ -79,7 +79,7 @@ class TabSpaceCollection(Resource):
             return HttpResponseBadRequest(get_xml_error(unicode(e)), mimetype='application/xml; charset=UTF-8')
             
         data = serializers.serialize('python', tabspaces, ensure_ascii=False)
-        data_list['tabspaces'] = [get_tabspace_data(d) for d in  data]
+        data_list['workspaces'] = [get_workspace_data(d) for d in  data]
 
         return HttpResponse(json_encode(data_list), mimetype='application/json; charset=UTF-8')
 
@@ -90,7 +90,7 @@ class TabSpaceEntry(Resource):
         
         tabspaces = get_list_or_404(TabSpace, user=user, pk=tabspace_id)
         data = serializers.serialize('python', tabspaces, ensure_ascii=False)
-        tabspace_data = get_global_tabspace_data(data[0], tabspaces[0])
+        tabspace_data = get_global_workspace_data(data[0], tabspaces[0])
         return HttpResponse(json_encode(tabspace_data), mimetype='application/json; charset=UTF-8')
     
     

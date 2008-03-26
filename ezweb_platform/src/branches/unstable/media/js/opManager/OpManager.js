@@ -45,30 +45,30 @@ var OpManagerFactory = function () {
 
 	function OpManager () {
 	        
-	        // ****************
+	    // ****************
 		// CALLBACK METHODS 
 		// ****************
 		
-		loadEnvironment = function (transport) {
+		var loadEnvironment = function (transport) {
 			// JSON-coded user tabspaces
 			var response = transport.responseText;
-			var tabSpacesStructure = eval ('(' + response + ')');
+			var workSpacesStructure = eval ('(' + response + ')');
 
-			var tabSpaces = tabSpacesStructure.tabspaces;
+			var workSpaces = workSpacesStructure.workspaces;
 
-			for (i=0; i<tabSpaces.length; i++) {
-			    var tabSpace = tabSpaces[i];
-			    this.tabSpaceInstances[tabSpace.name] = new TabSpace(tabSpace);
+			for (i=0; i<workSpaces.length; i++) {
+			    var workSpace = workSpaces[i];
+			    this.workSpaceInstances[workSpace.name] = new WorkSpace(workSpace);
 
-			    if (tabSpace.active == "true") {
-				this.activeTabSpace=this.tabSpaceInstances[tabSpace.name];
-				return;
+			    if (workSpace.active == "true") {
+			    	this.activeWorkSpace=this.workSpaceInstances[workSpace.name];
+			    	return;
 			    }
 			}
 
 		}
 		
-		onError = function (transport) {
+		var onError = function (transport) {
 		    alert("error en loadEnvironment");
 		}
 
@@ -92,31 +92,31 @@ var OpManagerFactory = function () {
 		this.loadCompleted = false;
 
 		// Variables for controlling the collection of wiring and dragboard instances of a user
-		this.tabSpaceInstances = new Array();
-		this.activeTabSpace;
+		this.workSpaceInstances = new Array();
+		this.activeWorkSpace;
 
 		
 		// ****************
 		// PUBLIC METHODS 
 		// ****************
-		OpManager.prototype.changeActiveTabSpace = function (tabSpace) {
-		    this.activeTabSpace = this.getActiveTabSpace(tabSpace);
-		    this.activeDragboard = this.activeTabSpace.getActiveTab().getDragboard();
-		    this.activeWiring = this.activeTabSpace.getWiring();
+		OpManager.prototype.changeActiveWorkSpace = function (workSpace) {
+		    this.activeWorkSpace = this.getActiveWorkSpace(workSpace);
+		    this.activeDragboard = this.activeWorkSpace.getActiveTab().getDragboard();
+		    this.activeWiring = this.activeWorkSpace.getWiring();
 		}			
 
 		OpManager.prototype.changeActiveTab = function (tab) {
-		    this.activeTabSpace.setTab(tabName);
-		    this.activeDragboard = this.activeTabSpace.getActiveTab().getDragboard();
+		    this.activeWorkSpace.setTab(tab);
+		    this.activeDragboard = this.activeWorkSpace.getActiveTab().getDragboard();
 		}
 
-		OpManager.prototype.getActiveTabSpace = function (tabSpace) {
-		    var ts = this.tabSpaceInstances[tabSpace];
+		OpManager.prototype.getActiveWorkSpace = function (workSpace) {
+		    var ts = this.workSpaceInstances[workSpace];
 
 		    if (ts) {
-			return ts;
+		    	return ts;
 		    } else {
-			return this.activeTabSpace;
+		    	return this.activeWorkSpace;
 		    }
 		}
 
@@ -158,9 +158,10 @@ var OpManagerFactory = function () {
 		}
 
 		OpManager.prototype.loadEnviroment = function () {
-			//alert (gettext('Testing'));
-			//this.varManagerModule = VarManagerFactory.getInstance();
-		    this.loadActiveTabSpace();
+		    // First, global modules must be loades (Context, Showcase, Catalogue)
+			// Showcase is the first!
+			// When it finish, it will invoke continueLoadingGlobalModules method!
+			this.showcaseModule = ShowcaseFactory.getInstance();
 		}
 
 		OpManager.prototype.repaintCatalogue = function (url) {
@@ -172,63 +173,41 @@ var OpManagerFactory = function () {
 	 	    this.activeDragboard.igadgetLoaded();
 		}
 		
-		OpManager.prototype.continueLoadingSingletonModules = function (module) {
+		OpManager.prototype.continueLoadingGlobalModules = function (module) {
 		    // Asynchronous load of modules
 		    // Each singleton module notifies OpManager it has finished loading!
-
-		    /*		    
-		    if (module == Modules.prototype.VAR_MANAGER) {
-			this.showcaseModule = ShowcaseFactory.getInstance();
-			return; 
-		    }
 		    
 		    if (module == Modules.prototype.SHOWCASE) {
-			this.contextManagerModule = ContextManagerFactory.getInstance();
-			return;
+		    	this.contextManagerModule = ContextManagerFactory.getInstance();
+		    	return;
 		    }
 		    
 		    if (module == Modules.prototype.CONTEXT_MANAGER) {
-			this.catalogue = CatalogueFactory.getInstance();
-			return;
+		    	this.catalogue = CatalogueFactory.getInstance();
+		    	return;
 		    }
-
 
 		    if (module == Modules.prototype.CATALOGUE) {
-			// All singleton modules has been loaded!
-			// It's time for loading tabspace information!
-			this.loadActiveTabSpace();
+		    	// All singleton modules has been loaded!
+		    	// It's time for loading tabspace information!
+		    	this.loadActiveWorkSpace();
+		    	return;
 		    }
-
-		    */
-
-		    this.loadActiveTabSpace();
-
-		    if (module == Modules.prototype.ENVIRONMENT) {
-			this.loadCompleted = true;
-			environmentLoadedCallback();
-			return;
+		    
+		    if (module == Modules.prototype.ACTIVE_WORKSPACE) {
+		    	this.loadCompleted = true;
+		    	environmentLoadedCallback();
+		    	return;
 		    }
 		}
 
-		OpManager.prototype.loadActiveTabSpace = function () {
+		OpManager.prototype.loadActiveWorkSpace = function () {
 		    // Asynchronous load of modules
 		    // Each singleton module notifies OpManager it has finished loading!
 
-		    this.persistenceEngine.send_get(URIs.GET_TABSPACES, this, loadEnvironment, onError)
-		    
+		    this.persistenceEngine.send_get(URIs.GET_WORKSPACES, this, loadEnvironment, onError)   
 		}
-
-		OpManager.prototype.continueLoadingTabSpace = function (operation, name) {
-		    // Asynchronous load of modules
-		    // Each singleton module notifies OpManager it has finished loading!
-		    
-		    if (operation == Modules.prototype.ONE_TABSPACE) {
-			tabSpaceInstances[name].startLoadingTabs();
-			return; 
-		    }
-		    
-		}
-		
+	
 		OpManager.prototype.logIGadgetError = function(iGadgetId, msg, level) {
 			var gadgetInfo = this.activeDragboard.getGadget(iGadgetId).getInfoString();
 			msg = msg + "\n" + gadgetInfo;

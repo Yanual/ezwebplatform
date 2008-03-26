@@ -36,8 +36,8 @@ _URIConstants.prototype.GET_IGADGET_VARIABLES = new Template ('/user/{{ user.use
 _URIConstants.prototype.GET_POST_GADGET_VARIABLE = new Template ('/user/{{ user.username }}/igadgets/#{iGadgetId}/variables/#{varName}');
 _URIConstants.prototype.GET_POST_CHANNEL = new Template ('/user/{{ user.username }}/channel/#{channelName}');
 _URIConstants.prototype.PUT_VARIABLES = '/user/{{ user.username }}/igadgets/variables';
-_URIConstants.prototype.GET_TABSPACES = '/tabspaces';
-_URIConstants.prototype.GET_POST_WIRING = new Template ('/tabspaces/#{id}/connectable');
+_URIConstants.prototype.GET_WORKSPACES = '/workspaces';
+_URIConstants.prototype.GET_POST_WIRING = new Template ('/workspaces/#{id}');
 
 var URIs = new _URIConstants();
 </script>
@@ -54,7 +54,7 @@ var URIs = new _URIConstants();
 <script language="JavaScript" src="{{ MEDIA_URL }}js/gadgetModel/Template.js"></script>
 <script language="JavaScript" src="{{ MEDIA_URL }}js/gadgetModel/Gadget.js"></script>
 
-<script language="JavaScript" src="{{ MEDIA_URL }}js/opManager/TabSpace.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/opManager/WorkSpace.js"></script>
 <script language="JavaScript" src="{{ MEDIA_URL }}js/opManager/Tab.js"></script>
 
 <script language="JavaScript" src="{{ MEDIA_URL }}js/opManager/OpManager.js"></script>

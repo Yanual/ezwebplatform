@@ -53,7 +53,7 @@ var CatalogueFactory  = function () {
 		var selectedResources = [];
 		var globalTags = [];
 		    
-		OpManagerFactory.getInstance().continueLoadingSingletonModules(Modules.prototype.CATALOGUE);
+		OpManagerFactory.getInstance().continueLoadingGlobalModules(Modules.prototype.CATALOGUE);
 
 		
 		// ********************

@@ -101,7 +101,7 @@ var ContextManagerFactory = function () {
 
 				// Continues loading next module								
 				_loaded = true;
-				OpManagerFactory.getInstance().continueLoadingSingletonModules(Modules.prototype.CONTEXT_MANAGER);
+				OpManagerFactory.getInstance().continueLoadingGlobalModules(Modules.prototype.CONTEXT_MANAGER);
 
 			}
 			
@@ -114,7 +114,8 @@ var ContextManagerFactory = function () {
 				} else {
 					msg = transport.status + " " + transport.statusText;
 				}
-				alert (gettext("Error getting gadgets variables: ") + msg);
+				
+				OpManagerFactory.getInstance().continueLoadingGlobalModules(Modules.prototype.CONTEXT_MANAGER);
 			}
 			
 			// Start to load concepts
@@ -154,8 +155,8 @@ var ContextManagerFactory = function () {
 			} else {
 				msg = transport.status + " " + transport.statusText;
 			}
-
-			alert (gettext("Error receiving context manager data") + ": " + msg);
+			
+			OpManagerFactory.getInstance().continueLoadingGlobalModules(Modules.prototype.CONTEXT_MANAGER);
 		}
 		
 		PersistenceEngineFactory.getInstance().send_get(URIs.GET_CONTEXT, this, _loadConcepts, _onError);

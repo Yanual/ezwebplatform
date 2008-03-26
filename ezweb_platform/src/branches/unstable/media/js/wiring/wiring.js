@@ -36,97 +36,78 @@
  */
 
 
-function Wiring (tabSpaceObject) {
-
-    // ****************
-    // CALLBACK METHODS 
-    // ****************
-		
-    // Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
-    loadWiring = function (transport) {
-	// JSON-coded iGadget-variable mapping
-	var response = transport.responseText;
-	var tempList = eval ('(' + response + ')');
-
-	var gadgets = tempList.iGadgetList;
-	var inOuts = tempList.inOutList;
-	var connections = [];
-	var list = null;
-	
-	// restauring the iGadget structure
-	for (var i = 0; i < gadgets.length; i++) {
-	    this.addInstance(gadgets[i]);
-	}		
-	for (var i = 0; i < inOuts.length; i++) {
-	    var inputs = new Object();
-			
-	    this.createChannel(inOuts[i]);	
-	    inputs["from"] = inOuts[i].name; 
-	    inputs.inputHash = inOuts[i].ins;
-	    inputs.outputHash = inOuts[i].outs;
-	    connections.push(inputs);	
-	}
-	// reconnecting every thing at this moment
-	for (var r = 0; r < connections.length; r++){
-	    var item = connections[r];
-	    for (var i = 0; i < item.inputHash.length; i++){
-		var input = item.inputHash[i];		
-		if (input["igadget"] == "null"){
-		    //the input is a channel
-		    this.addChannelInput(input["name"],item["from"]);
-		}
-		else{
-		    // the input is an event
-		    this.addChannelInput(input["igadget"],input["name"],item["from"]);
-		}
-	    }
-	    for (var j = 0; j < item.outputHash.length; j++){
-		var output = item.outputHash[j];
-		if (output["igadget"] == "null"){
-		    //the output is a channel
-		    this.addChannelOutput(output["name"], item["from"]);
-		}
-		else{
-		    //the output is a slot
-		    this.addChannelOutput(output["igadget"], output["name"],item["from"]);
-		}
-	    }
-	}
-	loaded = true;
-    }
-		
-    onError = function (transport) {
-	// JSON-coded iGadget-variable mapping
-	alert("error wiring GET");
-			
-	// Procesamiento
-    }
+function Wiring (workSpaceGlobalInfo) {
 		
     // *****************
     //  PRIVATE METHODS
     // *****************
-
-    var tabSpaceInfo = tabSpaceObject;
-
-    var loaded = false;
-    var persistenceEngine = PersistenceEngineFactory.getInstance();
-    var iGadgetList = new Hash();
-    var inOutList = new Hash();
-    // copy is the list that is used for making new connections or disconnections with the interface.
-    var copyList = new Hash(); 
-
-    // Avoiding dependence between Wiring and Dragboard modules! Now the Wiring load before Dragboard!
-    var igadgetInfoCompleted = false;
-
-    // Allow to pack in an only PUT request, all the variable changes of a VariablePlatform.set invocation
-    var modifiedVars = [];		
+	
 		
     // ****************
     // PUBLIC METHODS
     // ****************
+	
+	Wiring.prototype.processTab = function (tabData) {
+		var igadgets = tabData['igadgetList'];
+		
+		for (var i = 0; i < igadgets.length; i++) {
+		    this.addInstance(igadgets[i]);
+		}	
+	}
+	
+	Wiring.prototype.loadWiring = function (workSpaceData) {
+		var workSpace = workSpaceData['workspace'];
+		var inOuts = workSpace['inoutList'];
+		var tabs = workSpace['tabList'];
+		
+		for (var i=0; i< tabs.length; i++) {
+			this.processTab(tabs[i]);
+		}
 		
 		
+		var connections = [];
+		var list = null;
 		
+		// restauring the iGadget structure
+	
+		for (var i = 0; i < inOuts.length; i++) {
+		    var inputs = new Object();
+				
+		    this.createChannel(inOuts[i]);	
+		    inputs["from"] = inOuts[i].name; 
+		    inputs.inputHash = inOuts[i].ins;
+		    inputs.outputHash = inOuts[i].outs;
+		    connections.push(inputs);	
+		}
+		// reconnecting every thing at this moment
+		for (var r = 0; r < connections.length; r++){
+		    var item = connections[r];
+		    for (var i = 0; i < item.inputHash.length; i++){
+			var input = item.inputHash[i];		
+			if (input["igadget"] == "null"){
+			    //the input is a channel
+			    this.addChannelInput(input["name"],item["from"]);
+			}
+			else{
+			    // the input is an event
+			    this.addChannelInput(input["igadget"],input["name"],item["from"]);
+			}
+		    }
+		    for (var j = 0; j < item.outputHash.length; j++){
+			var output = item.outputHash[j];
+			if (output["igadget"] == "null"){
+			    //the output is a channel
+			    this.addChannelOutput(output["name"], item["from"]);
+			}
+			else{
+			    //the output is a slot
+			    this.addChannelOutput(output["igadget"], output["name"],item["from"]);
+			}
+		    }
+		}
+		loaded = true;
+    }
+    
     // this method is used in the first version for painting the connections for the user.
     Wiring.prototype.getGadgetsId = function (){
 	var gadgetsId = iGadgetList.keys();
@@ -732,6 +713,26 @@ function Wiring (tabSpaceObject) {
 	PersistenceEngineFactory.getInstance().send_post(URIs.GET_POST_WIRING, param, this, this.serializationSuccess, this.serializationError); 
 		    
     }
+    
+    // ***************
+    // CONSTRUCTOR
+	// ***************
+    this.workSpaceInfo = workSpaceGlobalInfo;
+
+    this.loaded = false;
+    this.persistenceEngine = PersistenceEngineFactory.getInstance();
+    this.iGadgetList = new Hash();
+    this.inOutList = new Hash();
+    // copy is the list that is used for making new connections or disconnections with the interface.
+    this.copyList = new Hash(); 
+
+    // Avoiding dependence between Wiring and Dragboard modules! Now the Wiring load before Dragboard!
+    this.igadgetInfoCompleted = false;
+
+    // Allow to pack in an only PUT request, all the variable changes of a VariablePlatform.set invocation
+    this.modifiedVars = [];	
+    
+    this.loadWiring(this.workSpaceInfo);
 
 }     	
 	

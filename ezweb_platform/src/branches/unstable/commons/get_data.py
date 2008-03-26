@@ -183,7 +183,7 @@ def get_inout_data(data):
         
     return data_ret
 
-def get_tabspace_data(data):
+def get_workspace_data(data):
     data_ret = {}
     data_fields = data['fields']
     data_ret['pk'] = data['pk']
@@ -194,16 +194,16 @@ def get_tabspace_data(data):
         data_ret['active'] = "false"
     return data_ret
 
-def get_global_tabspace_data(data, tabSpaceDAO):
+def get_global_workspace_data(data, tabSpaceDAO):
     data_ret = {}
-    data_ret['tabspace'] = get_tabspace_data(data)  
+    data_ret['workspace'] = get_workspace_data(data)  
     
     # Tabs processing              
     tabs = get_list_or_404(Tab, tabspace=tabSpaceDAO)  
     data = serializers.serialize('python', tabs, ensure_ascii=False)
     tabs_data = [get_tab_data(d) for d in data]
     
-    data_ret['tabspace']['tabList'] = tabs_data
+    data_ret['workspace']['tabList'] = tabs_data
            
     for tab in tabs_data:
         tab_pk = tab['pk']
@@ -217,7 +217,7 @@ def get_global_tabspace_data(data, tabSpaceDAO):
     data = serializers.serialize('python', inouts, ensure_ascii=False)
     inout_data = [get_inout_data(d) for d in data]
     
-    data_ret['tabspace']['inoutList'] = inout_data
+    data_ret['workspace']['inoutList'] = inout_data
     return data_ret
 
 def get_tab_data(data):

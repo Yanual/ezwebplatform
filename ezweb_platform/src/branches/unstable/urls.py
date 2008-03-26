@@ -61,13 +61,13 @@ urlpatterns = patterns('',
     (r'^user/(?P<user_name>[_\w]+)/gadget(s)?', include('gadget.urls')),
 
     # TabSpaces
-    (r'^tabspace(s)?', include('tabspace.urls')),
+    (r'^workspace(s)?', include('tabspace.urls')),
 
     # IGadgets
-    (r'^tabspace(s)?/(?P<tabspace_id>\d+)/tab(s)?/(?P<tab_id>\d+)/igadget(s)?', include('igadget.urls')),
+    (r'^workspace(s)?/(?P<tabspace_id>\d+)/tab(s)?/(?P<tab_id>\d+)/igadget(s)?', include('igadget.urls')),
 
     # Connectables
-    (r'^tabspace(s)?/(?P<tabspace_id>\d+)/connectable(s)?', include('connectable.urls')),
+    (r'^workspace(s)?/(?P<tabspace_id>\d+)/connectable(s)?', include('connectable.urls')),
     
     # context
     (r'^user/(?P<user_name>[_\w]+)/context(s)?', include('context.urls')),

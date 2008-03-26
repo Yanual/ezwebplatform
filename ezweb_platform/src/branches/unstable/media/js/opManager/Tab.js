@@ -36,21 +36,18 @@
  */
 
 
-function TabSpace (tabSpaceInfo) {
-
-    // ****************
-    // CALLBACK METHODS 
-    // ****************
-		
-		
-    // *****************
-    //  PRIVATE METHODS
-    // *****************
-
-		
+function Tab (tabInfo) {
+				
     // ****************
     // PUBLIC METHODS
     // ****************
 		
-
+    // *****************
+	//  PRIVATE METHODS
+    // *****************
+	
+	// Change this for an autogenerating-id
+	this.dragboardElement = "dragboard";
+	
+	this.dragboard = new Dragboard(tabInfo, this.dragboardElement);
 }     	
