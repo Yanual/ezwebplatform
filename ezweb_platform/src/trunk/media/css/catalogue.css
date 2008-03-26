@@ -1,5 +1,4 @@
-#catalogue a
-{
+#catalogue a {
 	text-decoration:none;
 }
 
@@ -11,13 +10,11 @@
 	outline: none;
 }
 
-#catalogue a:hover
-{
+#catalogue a:hover {
 	text-decoration:underline;
 }
 
-#catalogue .head
-{
+#catalogue .head {
 	position:relative;
 	width:100%;
 	padding:0px;
@@ -72,62 +69,53 @@
 	outline: none;
 }
 
-#catalogue .head .header_always
-{
+#catalogue .head .header_always {
 	height: auto;
 	padding: 5px;
 }
-#catalogue .head .header_always .new_resource
-{
+
+#catalogue .head .header_always .new_resource {
 	display: inline;
 }
 
 
-#catalogue .head .header_always .simple_search
-{
+#catalogue .head .header_always .simple_search {
 	display: inline;
 	margin-right: 20px;
 	margin-left: 20px;
 }
 
-#catalogue .head .header_always .advanced_options
-{
+#catalogue .head .header_always .advanced_options {
 	display: inline;
 }
 
-#catalogue .head .advanced_search
-{
+#catalogue .head .advanced_search {
 	height: 95px;
 	border-top: 1px solid #EFEFEF;
 }
 
-#catalogue .head .advanced_search .advanced_search_left
-{
+#catalogue .head .advanced_search .advanced_search_left {
 	padding-left: 10px;
 	padding-top: 10px;
 	width: 50%;
 	float: left;
 }
 
-#catalogue .head .advanced_search .advanced_search_right
-{
+#catalogue .head .advanced_search .advanced_search_right {
 	padding-top: 10px;
 	width: 100%;
 }
 
-#catalogue .head .advanced_search .advanced_search_right table
-{
+#catalogue .head .advanced_search .advanced_search_right table {
 	padding-left: 5px;
 }
 
-#catalogue .head .advanced_tag
-{
+#catalogue .head .advanced_tag {
 	height: auto;
 	border-top: 1px solid #EFEFEF;
 }
 
-#catalogue .head .advanced_tag .advanced_tag_left
-{
+#catalogue .head .advanced_tag .advanced_tag_left {
 	padding-left: 10px;
 	padding-top: 10px;
 	margin-right: 10px;
@@ -135,52 +123,45 @@
 	float: left;
 }
 
-#catalogue .head .advanced_tag .advanced_tag_left .tagcloud
-{
+#catalogue .head .advanced_tag .advanced_tag_left .tagcloud {
 	margin-bottom:10px;
 	display:block;
 	font-size:12px;
 }
 
-#catalogue .head .advanced_tag .advanced_tag_left .tagcloud .tags
-{
+#catalogue .head .advanced_tag .advanced_tag_left .tagcloud .tags {
 	border:1px solid #bbbbbb;
 	background-color:#ddeeff;
 	height:80px;
 	margin-top:3px;
 }
 
-#catalogue .head .advanced_tag .advanced_tag_left .tagcloud .tags .multiple_size_tag
-{
+#catalogue .head .advanced_tag .advanced_tag_left .tagcloud .tags .multiple_size_tag {
 	float:left;
 	padding-left:5px;
 	padding-top:5px;
 }
 
-#catalogue .head .advanced_tag .advanced_tag_left .link
-{
+#catalogue .head .advanced_tag .advanced_tag_left .link {
 	display:block;
 	font-size:12px;
 	width:100%;
 }
 
-#catalogue .head .advanced_tag .advanced_tag_right
-{
+#catalogue .head .advanced_tag .advanced_tag_right {
 	padding-top: 10px;
 	padding-right: 10px;
 	padding-left: 0px;
 	width: 100%;
 }
 
-#catalogue .head .advanced_tag .advanced_tag_right .new_tags
-{
+#catalogue .head .advanced_tag .advanced_tag_right .new_tags {
 	display:block;
 	margin-bottom:10px;
 	padding-right:10px;
 }
 
-#catalogue .head .advanced_tag .advanced_tag_right .new_tags .my_tags
-{
+#catalogue .head .advanced_tag .advanced_tag_right .new_tags .my_tags {
 	border:1px solid #bbbbbb;
 	margin-top:15px;
 	margin-bottom:5px;
@@ -208,49 +189,41 @@
 	float:left;
 }
 
-#catalogue .head .advanced_tag .advanced_tag_right .new_tags .buttons
-{
+#catalogue .head .advanced_tag .advanced_tag_right .new_tags .buttons {
 	text-align:right;
 }
 
-#catalogue .head .advanced_tag .advanced_tag_right .new_tags .my_tags *
-{
+#catalogue .head .advanced_tag .advanced_tag_right .new_tags .my_tags * {
 	display:inline;
 }
 
-#catalogue .head .advanced_tag .advanced_tag_right .new_tags .my_tags .new_global_tag
-{
+#catalogue .head .advanced_tag .advanced_tag_right .new_tags .my_tags .new_global_tag {
 	white-space:nowrap;
 	margin-right:8px;
 }
 
-#catalogue .head .advanced_tag .advanced_tag_right .new_tags .my_tags .new_global_tag img
-{
+#catalogue .head .advanced_tag .advanced_tag_right .new_tags .my_tags .new_global_tag img {
 	margin-left:2px;
 	border:none;
 }
 
-#catalogue .head .advanced_tag .advanced_tag_right .new_tags .my_tags .new_global_tag div a
-{
+#catalogue .head .advanced_tag .advanced_tag_right .new_tags .my_tags .new_global_tag div a {
 	padding-bottom:6px;
 }
 
-#catalogue .head .advanced_tag .advanced_tag_right .new_tags .my_tags .new_global_tag a:hover
-{
+#catalogue .head .advanced_tag .advanced_tag_right .new_tags .my_tags .new_global_tag a:hover {
 	text-decoration:none;
 }
 
-#catalogue .head .advanced_tag .advanced_tag_right .new_tags .my_tags .new_global_tag *
-{
+#catalogue .head .advanced_tag .advanced_tag_right .new_tags .my_tags .new_global_tag * {
 	vertical-align:middle;
 }
 
-#catalogue .head .advanced_tag .advanced_tag_right .new_tags .my_tags .new_tag_text input
-{
+#catalogue .head .advanced_tag .advanced_tag_right .new_tags .my_tags .new_tag_text input {
 	border:1px solid #bbbbbb;
 }
 
-#catalogue .center{
+#catalogue .center {
 	width:100%;
 	height:100%;
 	position:relative;
@@ -264,50 +237,37 @@
 #catalogue .center .resources_header {
 	width:100%;
 	text-align:center;
+	margin-top: 5px;
+	margin-bottom: 0px;
 }
 
-#catalogue .center .resources_header table {
-	text-align:center;
-	margin-left:auto;
-	margin-right:auto;
-}
-
-#catalogue .center td {
-	vertical-align:top;
-}
+#catalogue .center .paginate_show {
+    display: inline;
+}	
 
 #catalogue .center .orderby {
-    margin-top:1em;
-    margin-bottom:1em;
+	display:inline;
 }
 
 #catalogue .center .paginate {
-    margin-top:1em;
-    margin-bottom:1em;
+	padding-top:5px;
+	padding-bottom:5px;
 }	
 
-#catalogue .center .paginate img{
-    border-style:none;	
+#catalogue .center .paginate img {
+    border-style:none;
 }
 
-#catalogue .center .paginate .multiple_size_tag
-{
+#catalogue .center .paginate .multiple_size_tag {
 	display:inline;
 	margin-right:5px;
 }
 
-#catalogue .center .paginate .results_per_page{
-    margin-top:1em;
-    margin-bottom:1em;
-    vertical-align:middle;
-}
-
-#catalogue .center .resources
-{
+#catalogue .center .resources {
 	height:100%;
 	width:100%;
 	float:left;
-	padding-top:10px;
+	padding-top:5px;
 }
 
 #catalogue .center .resources .resource

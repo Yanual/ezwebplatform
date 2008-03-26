@@ -120,8 +120,10 @@ var CatalogueFactory  = function () {
 		}
 
 		this.paginate = function(items) {
+			var pageInfo = document.getElementById("paginate_show");
+			pageInfo.innerHTML = _paginate_show(items);
 			var pageInfo = document.getElementById("paginate");
-			pageInfo.innerHTML = 	"<center>" + _paginate(items) + "</center>";
+			pageInfo.innerHTML = _paginate(items);
 		}
 
 		this.orderby = function(items){
@@ -265,16 +267,14 @@ var CatalogueFactory  = function () {
 			persistenceEngine.send_get(urlCatalogue_, this, loadResources, onError, param);
 		}
 
-	var _paginate = function(items){
+	var _paginate_show = function(items){
 		var paginationHTML = '';
 		if(items==0) {
-			paginationHTML=( "<div id='results_per_page' class='results_per_page'>" +
-		                  "<label for='combo_results_per_page'>" + gettext("Gadgets per page: ") + "</label>" +
+			paginationHTML=("<label for='combo_results_per_page'>" + gettext("Gadgets per page: ") + "</label>" +
 		                  "<select id='combo_results_per_page' size=1 disabled onChange=" + 
 		                  "'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, document.getElementById(\"combo_results_per_page\").options[document.getElementById(\"combo_results_per_page\").selectedIndex].value.toString(), \"first\", \"" + items + "\");'" + "\">");			
 		} else {
-			paginationHTML=( "<div id='results_per_page' class='results_per_page'>" +
-		                  "<label for='combo_results_per_page'>" + gettext("Gadgets per page: ") + "</label>" +
+			paginationHTML=( "<label for='combo_results_per_page'>" + gettext("Gadgets per page: ") + "</label>" +
 		                  "<select id='combo_results_per_page' size=1 onChange=" + 
 		                  "'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, document.getElementById(\"combo_results_per_page\").options[document.getElementById(\"combo_results_per_page\").selectedIndex].value.toString(), \"first\", \"" + items + "\");'" + "\">");
 		
@@ -298,10 +298,12 @@ var CatalogueFactory  = function () {
 				paginationHTML+=(">" + i*4);
 			}
 		}
-		paginationHTML+=("</select></div></br>");
-		
-
-
+		paginationHTML+=("</select>");
+		return paginationHTML;
+	}
+	
+	var _paginate = function(items){
+		var paginationHTML = '';
 		var end_page = Math.ceil(items/UIUtils.getOffset());
         if (end_page==0){end_page=1;}
         if(UIUtils.getPage()!=1)
