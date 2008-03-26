@@ -246,9 +246,8 @@ UIUtils.changeImage = function(elementId_, newImage_) {
 UIUtils.searchByTag = function(url, tag) {
 	this.closeInfoResource();
 	var opManager = OpManagerFactory.getInstance();
-	var option = arguments[2] || {from:'none'};
 
-	if (option.from != 'none')
+	if (UIUtils.balloonResource)
 	{
 		CatalogueFactory.getInstance().getResource(UIUtils.balloonResource).closeTagcloudBalloon();
 	}
@@ -272,6 +271,10 @@ UIUtils.searchByWiring = function(url, value, wiring) {
 	if (value == ""){
 		alert(gettext ("Indicate a criteria in search formulary"));
 	}else{
+		if (UIUtils.balloonResource)
+		{
+			CatalogueFactory.getInstance().getResource(UIUtils.balloonResource).closeTagcloudBalloon();
+		}
 		UIUtils.setPage(1);
 		UIUtils.search = 'wiring';
 		UIUtils.searchValue = value;
@@ -358,6 +361,10 @@ UIUtils.searchGeneric = function(url, param, criteria) {
 		alert(gettext ("Indicate a criteria in search formulary"));
 	}
 	else{ 
+		if (UIUtils.balloonResource)
+		{
+			CatalogueFactory.getInstance().getResource(UIUtils.balloonResource).closeTagcloudBalloon();
+		}
 		UIUtils.setPage(1);
 		UIUtils.searchValue = param;
 		UIUtils.searchCriteria = criteria ;
