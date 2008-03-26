@@ -41,16 +41,26 @@ from tag.models import UserTag
 
 def get_tag_data (gadget_id, user_id):
     all_tags = []
-    tags = UserTag.objects.filter(idResource=gadget_id)    
+    tags = UserTag.objects.filter(idResource=gadget_id).order_by('tag')
     for t in tags:
         tag_data = {}
+	flag= 'Yes'
         tag_data['value'] = t.tag
+	tag_data['appearances'] = tags.filter(tag=t.tag).count()
 	if t.idUser_id == user_id:
 	    tag_data['added_by'] = 'Yes'
+	    for e in all_tags:
+	        if t.tag==e['value']:
+	            all_tags.remove(e)
+    	    all_tags.append(tag_data)
 	else:
 	    tag_data['added_by'] = 'No'
-        all_tags.append(tag_data)
-    
+	    for e in all_tags:
+	        if t.tag==e['value']:
+	            flag= 'No'
+            if flag=='Yes':
+	        all_tags.append(tag_data)
+
     return all_tags
 
 def get_event_data (gadget_id):

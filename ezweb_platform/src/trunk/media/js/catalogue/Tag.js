@@ -59,7 +59,7 @@ function Tag(tagJSON_)
 		
 		var jsCall = 'javascript:UIUtils.searchByTag(URIs.GET_RESOURCES_BY_TAG, "' + state.getValue() + ((typeof id == "undefined")?'");':'");');
 
-		var result = "<a class='" + classAux + "' title='" + gettext ('Search by ') + state.getValue() +"' href='" + jsCall + "'>" + state.getValue() + "</a>";
+		var result = "<a class='" + classAux + "' title='" + gettext ('Search by ') + state.getValue() +"' href='" + jsCall + "'>" + state.getValue() + " (" + state.getAppearances() + ")</a>";
 
 		return result;
 	}
@@ -78,8 +78,8 @@ function Tag(tagJSON_)
 function StateTag(tagJSON_) 
 {
     var value = tagJSON_.value;
-	  var appearances = 1;
-	  var added_by = tagJSON_.added_by;
+	var appearances = tagJSON_.appearances;
+	var added_by = tagJSON_.added_by;
 	//var value = tagXML_.getElementsByTagName("value")[0].firstChild.nodeValue;
 	//var appearances = parseInt(tagXML_.getElementsByTagName("appearances")[0].firstChild.nodeValue);
 	

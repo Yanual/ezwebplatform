@@ -182,7 +182,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 		for (var i=0; i<list1_.length; i++) {
 			if (!_containsTag(list1_[i], list2_)) return list1_[i];
 		}
-		return list_[0];
+		return;
 	}
 	
 	var _containsTag = function(element_, list_)
@@ -199,15 +199,20 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 		var tagsHTML = '';
 		var tagsAux = state.getTags();
 		var moreImportantTags = [];
+		var firstTag;
 		
 		for (var i=0; i<((tagsNumber_<tagsAux.length)?tagsNumber_:tagsAux.length); i++)
 		{
-			moreImportantTags[i] = _getFirstTagNonRepeat(tagsAux, moreImportantTags);
-			for (var j=0; j<tagsAux.length; j++)
-			{
-				if ((!_containsTag(tagsAux[j], moreImportantTags)) && (moreImportantTags[i].compareTo(tagsAux[j]) < 0)) {
-					moreImportantTags[i] = tagsAux[j];
-				}
+			if (firstTag =_getFirstTagNonRepeat(tagsAux, moreImportantTags)){
+				moreImportantTags[i] = firstTag;
+				for (var j=0; j<tagsAux.length; j++)
+			    {
+				    if ((!_containsTag(tagsAux[j], moreImportantTags)) && (moreImportantTags[i].compareTo(tagsAux[j]) < 0)) {
+					    moreImportantTags[i] = tagsAux[j];
+				    }
+			    }
+			} else {
+				break;
 			}
 		}
 		
@@ -259,27 +264,44 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 
 	var _tagsToTagcloud = function(loc){
 		var tagsHTML = '';
-		var URL = '';
 		var tagsAux = state.getTags();
 		var option = arguments[1] || {tags:'all'};
-
-		for (var i=0; i<tagsAux.length; i++)
-		{
-			var version = state.getVersion();
-			var added = tagsAux[i].getAdded_by();
 			
-			if(tagsAux[i].getAdded_by() == 'Yes' && (option.tags=='all' || option.tags=='mytags')){  
-
-				var jsCall = 'javascript:UIUtils.removeTagUser("' + tagsAux[i].getValue() + '","'+id+'");';
-				tagsHTML += ("<span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML(id) + "</span><a title='" + gettext ('Delete tag') + "' href='" + jsCall + "'><img id='"+id+"_deleteIcon_"+i+"_"+loc+"' onMouseOver=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/delete.png';\" onMouseOut=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/cancel_gray.png';\" src='/ezweb/images/cancel_gray.png' border=0 name=op1></a>"+((i<(tagsAux.length-1))?", ":""));
-			}
-			else{
-				if (tagsAux[i].getAdded_by() == 'No' && (option.tags=='all' || option.tags=='others'))
-				{
-					tagsHTML += ("<span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML(id) + ((i<(tagsAux.length-1))?",":"") + "</span>");		  
-				}
+		if (option.tags=='all')
+		{
+			for (var i=0; i<tagsAux.length; i++) {
+				tagsHTML += ("<span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML(id) + ((i<(tagsAux.length-1))?",":"") + "</span>");
 			}
 		}
+		else if (option.tags=='mytags'){
+			var tags = [];
+			var j = 0;
+			for (var i=0; i<tagsAux.length; i++) {
+				if (tagsAux[i].getAdded_by() == 'Yes')
+				{
+					tags[j] = tagsAux[i];
+					j++;
+				}
+			}
+			for (var i=0; i<tags.length; i++) {
+				var jsCall = 'javascript:UIUtils.removeTagUser("' + tags[i].getValue() + '","'+id+'");';
+				tagsHTML += ("<span class='multiple_size_tag'>" + tags[i].tagToTypedHTML(id) + "</span><a title='" + gettext ('Delete tag') + "' href='" + jsCall + "'><img id='"+id+"_deleteIcon_"+i+"_"+loc+"' onMouseOver=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/delete.png';\" onMouseOut=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/cancel_gray.png';\" src='/ezweb/images/cancel_gray.png' border=0 name=op1></a>"+((i<(tags.length-1))?", ":""));
+			}
+		} else {
+			var tags = [];
+			var j = 0;
+			for (var i=0; i<tagsAux.length; i++) {
+				if (tagsAux[i].getAdded_by() == 'No' || tagsAux[i].getAppearances()>1)
+				{
+					tags[j] = tagsAux[i];
+					j++;
+				}
+			}
+			for (var i=0; i<tags.length; i++) {
+			    tagsHTML += ("<span class='multiple_size_tag'>" + tags[i].tagToTypedHTML(id) + ((i<(tags.length-1))?",":"") + "</span>");
+			}
+		}
+			
 		return tagsHTML;
 	}
 
