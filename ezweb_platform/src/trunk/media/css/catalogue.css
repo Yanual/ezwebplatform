@@ -765,6 +765,11 @@
 	border:1px solid #bbbbbb;
 }
 
+#catalogue .center .info_resource .content #add_tags_link
+{
+	display:none;
+}
+
 #catalogue .center .info_resource .content .link
 {
 	display:block;

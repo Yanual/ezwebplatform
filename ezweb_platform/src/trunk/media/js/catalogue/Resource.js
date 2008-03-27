@@ -104,7 +104,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 											"<a class='submit_link' href=\"#\" onClick='javascript:UIUtils.toggle_elements([\"add_tags_panel\",\"add_tags_link\",\"access_wiki_link\",\"access_template_link\",\"update_code_link\",\"delete_gadget_link\"]);UIUtils.show(\"add_gadget_button\");UIUtils.removeAllTags();'>" + gettext ('Cancel') + "</a>" +
 										"</div>" +
 									"</div>" +									
-									"<div id='add_tags_link' class='link'><a class='submit_link' href='javascript:UIUtils.toggle_elements([\"add_tags_link\",\"add_tags_panel\",\"access_wiki_link\",\"access_template_link\",\"update_code_link\",\"delete_gadget_link\",\"add_gadget_button\"]);document.getElementById(\"new_tag_text_input\").focus();'>" + gettext ('Tag the resource') + "</a></div>" +
+									"<div id='add_tags_link' class='link' align='right'><a class='submit_link' href='javascript:UIUtils.toggle_elements([\"add_tags_link\",\"add_tags_panel\",\"access_wiki_link\",\"access_template_link\",\"update_code_link\",\"delete_gadget_link\",\"add_gadget_button\"]);document.getElementById(\"new_tag_text_input\").focus();'>" + gettext ('Tag the resource') + "</a></div>" +
 									"<div id='access_wiki_link' class='link'><a class='submit_link' href='" + state.getUriWiki() + "' target='_blank'>" + gettext ('Access to the Wiki') + "</a></div>" +
 									"<div id='access_template_link' class='link'><a class='submit_link' href='" + state.getUriTemplate() + "' target='_blank'>" + gettext ('Access to the Template') + "</a></div>" + 
 									"<div id='update_code_link' class='link'><a class='submit_link' href='javascript:UIUtils.updateGadgetXHTML();'>" + gettext ('Update gadget code') + "</a></div>" + 
@@ -152,18 +152,21 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 			case "mytags":
 				viewTagsHTML =	"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"all\");'>" + gettext ('All tags') + "</a>" +
 								"<span>" + gettext ('My tags') + "</span>" +
-								"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('Others tags') + "</a>";			
+								"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('Others tags') + "</a>";
+				UIUtils.show("add_tags_link");
 				break;
 			case "others":
 				viewTagsHTML =	"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"all\");'>" + gettext ('All tags') + "</a>" +
 								"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('My tags') + "</a>" +
 								"<span>" + gettext ('Others tags') + "</span>";		
+				UIUtils.hidde("add_tags_link");
 				break;
 			case "all":
 			default:
 				viewTagsHTML =	"<span>" + gettext ('All tags') + "</span>" +
 								"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('My tags') + "</a>" +
 								"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('Others tags') + "</a>";
+				UIUtils.hidde("add_tags_link");
 		}
 		$("view_tags_links").innerHTML = viewTagsHTML;
 		if ($(id + '_tagcloud'))
