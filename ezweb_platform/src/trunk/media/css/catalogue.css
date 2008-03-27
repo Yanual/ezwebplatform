@@ -670,7 +670,7 @@
 #catalogue .center .info_resource .content .tagcloud .tags
 {
 	border:1px solid #bbbbbb;
-	margin-top:5px;
+	margin-top:3px;
 	overflow:auto;
 	padding:5px;
 	background-color:#ddeeff;
@@ -771,11 +771,27 @@
 	color:#0000ff;
 	font-size:12px;
 	width:100%;
+	margin-top:2px;
 }
 
-#catalogue .center .info_resource .content .link *
+#catalogue .center .info_resource .content .link a
 {
-	padding-right:5px;
+	padding-left: 2px;
+	padding-right: 2px;
+	padding-bottom: 5px;
+	margin-top:5px;
+	margin-left:1px;
+	margin-right:1px;
+}
+
+#catalogue .center .info_resource .content .link span
+{
+	border: 1px solid #BBBBBB;
+	background-color: #DDEEFF;
+	padding-left: 2px;
+	padding-right: 2px;
+	padding-bottom: 5px;
+	margin-top:5px;
 }
 
 #catalogue .center .info_resource .content .add_gadget_button

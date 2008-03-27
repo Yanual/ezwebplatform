@@ -87,9 +87,9 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 									"<div class='slots'>" + gettext ('Slots') + ": " + _slots()+ "</div></div></div>" +
 									"<div class='tagcloud'>" + gettext ('Tagcloud') + ":" +
 									"<div id='view_tags_links' class='link'>"+
-									"<a id='view_all_tags' href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"all\");'>" + gettext ('All tags') + "</a>" +
-									"<a id='view_my_tags' href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('My tags') + "</a>" +
-									"<a id='view_others_tags' href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('Others tags') + "</a>" +
+									"<span>" + gettext ('All tags') + "</span>" +
+									"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('My tags') + "</a>" +
+									"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('Others tags') + "</a>" +
 									"</div>" +
 									"<div id='" + id + "_tagcloud' class='tags'>" + _tagsToTagcloud('description') + "</div></div>" +
 									"<div id='add_tags_panel' class='new_tags' style='display:none;'>" +
