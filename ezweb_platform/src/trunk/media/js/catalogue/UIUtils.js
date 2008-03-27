@@ -420,7 +420,7 @@ UIUtils.removeTagUser = function(tag,id) {
     var tagger = resource.getTagger();
     var resourceURI = "/" + resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion() + "/" + tag;
 	tagger.removeTagUser(URIs.DELETE_TAG, resourceURI,id);		
-	}
+}
 
 UIUtils.sendTags = function() {
 	var resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);

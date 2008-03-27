@@ -309,12 +309,12 @@ var CatalogueFactory  = function () {
         if(UIUtils.getPage()!=1)
         {
            var jsCall_first = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, ' + UIUtils.getOffset() + ',"first", "' + items + '");';
-           paginationHTML += ("<span class='multiple_size_tag'><a title='" + gettext ('Go to first page') + "' href='" + jsCall_first + "'>" + "<img src='/ezweb/images/go-first.png'/>" + "</a></span>");
+           paginationHTML += ("<span class='pagination_button'><a title='" + gettext ('Go to first page') + "' href='" + jsCall_first + "'>" + "<img src='/ezweb/images/go-first.png'/>" + "</a></span>");
 		   var jsCall_prev = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, ' + UIUtils.getOffset() + ',"prev", "' + items + '");';
-	       paginationHTML += ("<span class='multiple_size_tag'><a title='" + gettext ('Go to previous page') + "' href='" + jsCall_prev + "'>" + "<img src='/ezweb/images/go-previous.png'/>" + "</a></span>");
+	       paginationHTML += ("<span class='pagination_button'><a title='" + gettext ('Go to previous page') + "' href='" + jsCall_prev + "'>" + "<img src='/ezweb/images/go-previous.png'/>" + "</a></span>");
         } else {
-           paginationHTML += ("<span class='multiple_size_tag'>" + "<img src='/ezweb/images/go-first-dim.png'/>" + "</span>");
-		   paginationHTML += ("<span class='multiple_size_tag'>" + "<img src='/ezweb/images/go-previous-dim.png'/>" + "</span>");
+           paginationHTML += ("<span class='pagination_button'>" + "<img src='/ezweb/images/go-first-dim.png'/>" + "</span>");
+		   paginationHTML += ("<span class='pagination_button'>" + "<img src='/ezweb/images/go-previous-dim.png'/>" + "</span>");
         }
 
 		for (var i=1; i<=end_page; i++)
@@ -322,20 +322,20 @@ var CatalogueFactory  = function () {
             if(UIUtils.getPage()!=i)
             {
 			     var jsCall_num = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, ' + UIUtils.getOffset() + ', "' + i + '", "' + items + '");';
-			     paginationHTML += ("<span class='multiple_size_tag'>"+"<a title='" + gettext ('Go to page ') + i + "' href='" + jsCall_num + "'>" + i + "</a></span>");
+			     paginationHTML += ("<span class='pagination_button'>"+"<a title='" + gettext ('Go to page ') + i + "' href='" + jsCall_num + "'>" + i + "</a></span>");
 		    } else {
-                 paginationHTML += ("<span class='multiple_size_tag'>" + i + "</span>");
+                 paginationHTML += ("<span class='pagination_button'>" + i + "</span>");
 		    }
 		}
 		if(end_page == UIUtils.getPage())
         {
-          paginationHTML += ("<span class='multiple_size_tag'>" + "<img src='/ezweb/images/go-next-dim.png'/>" + "</span>");
-		  paginationHTML += ("<span class='multiple_size_tag'>" + "<img src='/ezweb/images/go-last-dim.png'/>" + "</span>");
+          paginationHTML += ("<span class='pagination_button'>" + "<img src='/ezweb/images/go-next-dim.png'/>" + "</span>");
+		  paginationHTML += ("<span class='pagination_button'>" + "<img src='/ezweb/images/go-last-dim.png'/>" + "</span>");
         } else {
 		  var jsCall_next = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, ' + UIUtils.getOffset() + ',"next", "' + items + '");';
-		  paginationHTML += ("<span class='multiple_size_tag'><a title='" + gettext ('Go to next page') + "' href='" + jsCall_next + "'>" + "<img src='/ezweb/images/go-next.png'/>" + "</a></span>");
+		  paginationHTML += ("<span class='pagination_button'><a title='" + gettext ('Go to next page') + "' href='" + jsCall_next + "'>" + "<img src='/ezweb/images/go-next.png'/>" + "</a></span>");
 		  var jsCall_last = 'javascript:UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, ' + UIUtils.getOffset() + ',"last", "' + items + '");';
-          paginationHTML += ("<span class='multiple_size_tag'><a title='" + gettext ('Go to last page') + "' href='" + jsCall_last + "'>" + "<img src='/ezweb/images/go-last.png'/>" + "</a></span>");
+          paginationHTML += ("<span class='pagination_button'><a title='" + gettext ('Go to last page') + "' href='" + jsCall_last + "'>" + "<img src='/ezweb/images/go-last.png'/>" + "</a></span>");
 		}
 
 		return paginationHTML;

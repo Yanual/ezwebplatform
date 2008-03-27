@@ -123,7 +123,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 		if (id == UIUtils.selectedResource || id == UIUtils.balloonResource) {
 			if (document.getElementById(id + "_tagcloud") != null)
 			{
-				document.getElementById(id + "_tagcloud").innerHTML = _tagsToTagcloud('description');
+				document.getElementById(id + "_tagcloud").innerHTML = _tagsToTagcloud('description',{tags:'mytags'});
 			}
 		}
 	}
@@ -270,7 +270,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 		if (option.tags=='all')
 		{
 			for (var i=0; i<tagsAux.length; i++) {
-				tagsHTML += ("<span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML(id) + ((i<(tagsAux.length-1))?",":"") + "</span>");
+				tagsHTML += ("<span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML() + ((i<(tagsAux.length-1))?",":"") + "</span>");
 			}
 		}
 		else if (option.tags=='mytags'){
@@ -285,7 +285,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 			}
 			for (var i=0; i<tags.length; i++) {
 				var jsCall = 'javascript:UIUtils.removeTagUser("' + tags[i].getValue() + '","'+id+'");';
-				tagsHTML += ("<span class='multiple_size_tag'>" + tags[i].tagToTypedHTML(id) + "</span><a title='" + gettext ('Delete tag') + "' href='" + jsCall + "'><img id='"+id+"_deleteIcon_"+i+"_"+loc+"' onMouseOver=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/delete.png';\" onMouseOut=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/cancel_gray.png';\" src='/ezweb/images/cancel_gray.png' border=0 name=op1></a>"+((i<(tags.length-1))?", ":""));
+				tagsHTML += ("<span class='multiple_size_tag'>" + tags[i].tagToTypedHTML(option) + "</span><a title='" + gettext ('Delete tag') + "' href='" + jsCall + "'><img id='"+id+"_deleteIcon_"+i+"_"+loc+"' onMouseOver=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/delete.png';\" onMouseOut=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/cancel_gray.png';\" src='/ezweb/images/cancel_gray.png' border=0 name=op1></a>"+((i<(tags.length-1))?", ":""));
 			}
 		} else {
 			var tags = [];
@@ -298,7 +298,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 				}
 			}
 			for (var i=0; i<tags.length; i++) {
-			    tagsHTML += ("<span class='multiple_size_tag'>" + tags[i].tagToTypedHTML(id) + ((i<(tags.length-1))?",":"") + "</span>");
+			    tagsHTML += ("<span class='multiple_size_tag'>" + tags[i].tagToTypedHTML() + ((i<(tags.length-1))?",":"") + "</span>");
 			}
 		}
 			

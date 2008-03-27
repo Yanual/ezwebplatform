@@ -50,16 +50,21 @@ function Tag(tagJSON_)
 		return "<a title='" + gettext ('Search by ') + state.getValue() +"' href='" + jsCall + "'>" + state.getValue() + "</a>";
 	}
 	
-	this.tagToTypedHTML = function(id) {
+	this.tagToTypedHTML = function() {
 		var classAux = '';
+		var option = arguments[0] || {tags:'undefined'};
 		if (state.getAppearances()<5)		classAux = 'tag_type_1';
 		else if (state.getAppearances()<15) classAux = 'tag_type_2';
 		else if (state.getAppearances()<25) classAux = 'tag_type_3';
 		else classAux = 'tag_type_4';
 		
-		var jsCall = 'javascript:UIUtils.searchByTag(URIs.GET_RESOURCES_BY_TAG, "' + state.getValue() + ((typeof id == "undefined")?'");':'");');
-
-		var result = "<a class='" + classAux + "' title='" + gettext ('Search by ') + state.getValue() +"' href='" + jsCall + "'>" + state.getValue() + " (" + state.getAppearances() + ")</a>";
+		var jsCall = 'javascript:UIUtils.searchByTag(URIs.GET_RESOURCES_BY_TAG, "' + state.getValue() + '");';
+        if (option.tags == 'undefined')
+        {
+		    var result = "<a class='" + classAux + "' title='" + gettext ('Search by ') + state.getValue() +"' href='" + jsCall + "'>" + state.getValue() + " (" + state.getAppearances() + ")</a>";
+        } else {
+		    var result = "<a class='" + classAux + "' title='" + gettext ('Search by ') + state.getValue() +"' href='" + jsCall + "'>" + state.getValue() + "</a>";
+		}
 
 		return result;
 	}
