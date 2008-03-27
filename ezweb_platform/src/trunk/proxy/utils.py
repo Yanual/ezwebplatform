@@ -36,7 +36,9 @@
 #   http://morfeo-project.org/
 #
 
-from urllib2 import *
+from urllib import unquote
+from django.utils.http import urlencode
+
 
 def is_valid_header (header):
     	if (header == 'connection') or (header== 'keep-alive') or (header == 'proxy-authenticate') or (header == 'proxy-authorization') or (header == 'te') or (header == 'trailers') or (header == 'transfer-encoding') or (header == 'upgrade'):
@@ -46,10 +48,10 @@ def is_valid_header (header):
 
 def encode_query (query):
 	params = query.split("&")
+	query_params = {}
         for i in range(len(params)):
                 elements = params[i].split("=")
 		if len(elements) > 1:
-                	elements[1] = quote(unquote(elements[1]))
-                	params[i] = "=".join(elements)
-        return "&".join(params)
+			query_params[unquote(elements[0])] = unquote(elements[1])
+	return urlencode(query_params)
 
