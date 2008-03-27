@@ -41,7 +41,7 @@
 /**
  * @author aarranz
  */
-function Dragboard(tabInfo, dragboardElementName) {
+function Dragboard(tabInfo, dragboardElement) {
 	// *********************************
 	// PRIVATE VARIABLES
 	// *********************************
@@ -502,22 +502,7 @@ function Dragboard(tabInfo, dragboardElementName) {
 		}
 
 		loaded = true;
-	}
-	
-	Dragboard.prototype.hideLayer = function () {
-		if (UIUtils.isInfoResourcesOpen) {
-			UIUtils.isInfoResourcesOpen = false;
-			UIUtils.SlideInfoResourceOutOfView('info_resource');
-		}
-		
-		// Hidden current interface
-		$(currentInterface + "_container").setStyle({"zIndex" : 1});
-		$(currentInterface + "_tab").className = "tab";
-	            if (currentInterface != "dragboard")
-	                $(currentInterface + "_container").setStyle({"display": "none"});
-	            
-	}
-	
+	}	
 
 	Dragboard.prototype.addInstance = function (gadget) {
 		if ((gadget == null) || !(gadget instanceof Gadget))
@@ -764,7 +749,7 @@ function Dragboard(tabInfo, dragboardElementName) {
 	// *******************
 	// INITIALIZING CODE
 	// *******************
-	dragboard = $(dragboardElementName);
+	dragboard = dragboardElement;
 	dragboardStyle = new DragboardStyle(dragboard, 3, 12); // TODO 3 columns, cell height = 12px
 
 	_clearMatrix();

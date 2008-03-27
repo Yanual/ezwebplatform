@@ -48,14 +48,23 @@ function WorkSpace (workSpaceState) {
 		var response = transport.responseText;
 		this.workSpaceGlobalInfo = eval ('(' + response + ')');
 		
+		// Name of the wiring layer regarding this workspace
+		this.wiringLayer = "wiring_" + this.workSpaceState.name;
+		
 		this.wiring = new Wiring(this.workSpaceGlobalInfo);
+		this.wiringInterface = new WiringInterface(this.wiringLayer, this.wiring);
+		
 		this.varManager = new VarManager(this.workSpaceGlobalInfo);
 		
 		var tabs = this.workSpaceGlobalInfo['workspace']['tabList'];
 		
 		for (var i=0; i<tabs.length; i++) {
 			var tab = tabs[i];
-			this.tabInstances[tab.name] = new Tab(tab);
+			this.tabInstances[tab.name] = new Tab(tab, this.workSpaceState.name);
+			
+			if (tab.visible == 'true') {
+				this.visibleTab = this.tabInstances[tab.name];
+			}
 		}
 		
 		OpManagerFactory.getInstance().continueLoadingGlobalModules(Modules.prototype.ACTIVE_WORKSPACE);
@@ -76,10 +85,50 @@ function WorkSpace (workSpaceState) {
 		PersistenceEngineFactory.getInstance().send_get(workSpaceUrl, this, loadWorkSpace, onError);
 	}
 	
-	WorkSpace.prototype.hideTabs() {
-		this.tabInstances.each(function(tab) {
-			  tab.hideLayer();
-			});
+	WorkSpace.prototype.unmarkCommonTabs = function() {
+		$("wiring_tab").className = "tab";
+		$("showcase_tab").className = "tab";
+	}
+	
+	WorkSpace.prototype.showWiring = function() {
+		this.hide();
+		this.wiringInterface.show();
+	}
+	
+	WorkSpace.prototype.hide = function() {
+		this.unmarkCommonTabs();
+		
+		var tabList = this.tabInstances.keys();
+		
+		for (var i=0; i<tabList.length; i++) {
+			var tab = this.tabInstances[tabList[i]];
+			
+			tab.hide();
+		}
+	}
+	
+	WorkSpace.prototype.show = function() {
+		this.unmarkCommonTabs();
+		
+		var tabList = this.tabInstances.keys();
+		
+		for (var i=0; i<tabList.length; i++) {
+			var tab = this.tabInstances[tabList[i]];
+			
+			tab.show();
+		}
+	}
+	
+	WorkSpace.prototype.setTab = function(tabName) {
+		this.unmarkCommonTabs();
+		
+		this.visibleTab = this.tabInstances[tabName];
+		this.hide();
+		this.visibleTab.show();
+	}
+	
+	WorkSpace.prototype.getVisibleTab = function(tabName) {
+		return this.visibleTab;
 	}
 	    
     // *****************
@@ -88,13 +137,9 @@ function WorkSpace (workSpaceState) {
 
 	this.workSpaceState = workSpaceState;
 	this.workSpaceGlobal = null;
-	this.tabInstances = new Array();
+	this.tabInstances = new Hash();
 	this.wiring = null;
 	this.loaded = false;
-	
-	if (this.workSpaceState.active == "true") {
-		// If the tabSpace is active, the tabSpace info must be downloaded!
-		this.downloadWorkSpaceInfo();
-	}
-	
+	this.wiringLayer = null;
+	this.visibleTab = null;
 }     	

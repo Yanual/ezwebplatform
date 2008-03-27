@@ -36,14 +36,29 @@
  */
 
 
-function Tab (tabInfo) {
+function Tab (tabInfo, workSpaceName) {
 				
     // ****************
     // PUBLIC METHODS
     // ****************
 	
-	Tab.prototype.hideLayer = function () {
-		this.dragboard.hideLayer();
+	Tab.prototype.hide = function () {
+		this.dragboardElement.setStyle("{zIndex: 1}");
+		this.tabHTMLElement.className = "tab";
+	}
+	
+	Tab.prototype.show = function () {
+		if (this.tabInfo.visible == "true") {
+			this.dragboardElement.setStyle("{zIndex: 2}");
+			this.tabHTMLElement.className = "tab current";
+		} else {
+			this.dragboardElement.setStyle("{zIndex: 1}");
+			this.tabHTMLElement.className = "tab";
+		}
+	}
+	
+	Tab.prototype.getDragboard = function () {
+		return this.dragboard;
 	}
 		
     // *****************
@@ -51,8 +66,21 @@ function Tab (tabInfo) {
     // *****************
 	
 	// The name of the dragboard HTML elements correspond to the Tab name
-	this.dragboardElement = tabInfo.name;
-	this.
+	this.workSpaceName = workSpaceName;
+	this.dragboardLayerName = "dragboard_" + workSpaceName + "_" + tabInfo.name;
+	this.tabInfo = tabInfo;
 	
+	this.tabHTMLElement = $("tab_" + workSpaceName + "_" + tabInfo.name);
+	
+    //Initial interface construction
+    var dragboardHTML = $("dragboard_template").innerHTML;
+    var wrapper = $("wrapper");
+    
+    new Insertion.Top(wrapper, dragboardHTML);
+    
+    this.dragboardElement = wrapper.firstDescendant();
+        
+    this.dragboardElement.setAttribute('id', this.dragboardLayerName);
+            	
 	this.dragboard = new Dragboard(tabInfo, this.dragboardElement);
 }     	

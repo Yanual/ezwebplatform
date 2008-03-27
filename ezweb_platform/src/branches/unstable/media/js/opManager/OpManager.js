@@ -58,14 +58,16 @@ var OpManagerFactory = function () {
 
 			for (i=0; i<workSpaces.length; i++) {
 			    var workSpace = workSpaces[i];
+			    
 			    this.workSpaceInstances[workSpace.name] = new WorkSpace(workSpace);
 
 			    if (workSpace.active == "true") {
 			    	this.activeWorkSpace=this.workSpaceInstances[workSpace.name];
-			    	return;
 			    }
 			}
-
+			
+			// Total information of the active workspace must be downloaded!
+			this.activeWorkSpace.downloadWorkSpaceInfo();
 		}
 		
 		var onError = function (transport) {
@@ -95,29 +97,33 @@ var OpManagerFactory = function () {
 		this.loadCompleted = false;
 
 		// Variables for controlling the collection of wiring and dragboard instances of a user
-		this.workSpaceInstances = new Array();
+		this.workSpaceInstances = new Hash();
 		this.activeWorkSpace;
 
 		
 		// ****************
 		// PUBLIC METHODS 
 		// ****************
+		OpManager.prototype.show_wiring = function () {
+		    this.activeWorkSpace.showWiring();
+		}
+		
+		OpManager.prototype.show_catalogue = function () {
+			this.activeWorkSpace.hide();
+			
+			$("showcase_container").setStyle({"display": "block", "zIndex" : "2"});
+			$("showcase_tab").className = "tab current";
+		}
+		
 		OpManager.prototype.changeActiveWorkSpace = function (workSpace) {
 		    this.activeWorkSpace = this.getActiveWorkSpace(workSpace);
 		    this.activeDragboard = this.activeWorkSpace.getActiveTab().getDragboard();
 		    this.activeWiring = this.activeWorkSpace.getWiring();
 		}			
 
-		OpManager.prototype.changeActiveTab = function (tab) {
-		    this.activeWorkSpace.setTab(tab);
-		    this.activeDragboard = this.activeWorkSpace.getActiveTab().getDragboard();
-		}
-		
-		OpManager.prototype.showCatalogue = function () {
-			this.activeWorkSpace.hideTabs();
-			
-			$("showcase_container").setStyle({"display": "block", "zIndex" : "2"});
-			$("showcase_tab").className = "tab current";
+		OpManager.prototype.changeVisibleTab = function (tabName) {
+		    this.activeWorkSpace.setTab(tabName);
+		    this.activeDragboard = this.activeWorkSpace.getVisibleTab().getDragboard();
 		}
 
 		OpManager.prototype.getActiveWorkSpace = function (workSpace) {
@@ -131,7 +137,7 @@ var OpManagerFactory = function () {
 		}
 
 		OpManager.prototype.addInstance = function (gadgetId) {
-		        if (!this.loadCompleted)
+		    if (!this.loadCompleted)
 				return;
 
 			var gadget = this.showcaseModule.getGadget(gadgetId);
@@ -182,15 +188,21 @@ var OpManagerFactory = function () {
 		OpManager.prototype.igadgetLoaded = function () {
 	 	    this.activeDragboard.igadgetLoaded();
 		}
-		
-		OpManager.prototype.paintActiveWorkSpace = function () {
-			dragboard = DragboardFactory.getInstance();
-			dragboard.repaint();
-	    	
-			wiring = WiringFactory.getInstance();
-			wiringInterface = WiringInterfaceFactory.getInstance();
+				
+		OpManager.prototype.showActiveWorkSpace = function () {
+			var workSpaceNames = this.workSpaceInstances.keys();
+			
+			for (var i=0; i<workSpaceNames.length; i++) {
+				var workSpace = this.workSpaceInstances[workSpaceNames[i]];
+				
+				if (workSpace == this.activeWorkSpace) {
+					workSpace.show();
+				} else {
+					workSpace.hide();
+				}
+			}
 		}
-		
+
 		OpManager.prototype.continueLoadingGlobalModules = function (module) {
 		    // Asynchronous load of modules
 		    // Each singleton module notifies OpManager it has finished loading!
@@ -214,8 +226,7 @@ var OpManagerFactory = function () {
 		    
 		    if (module == Modules.prototype.ACTIVE_WORKSPACE) {
 		    	this.loadCompleted = true;
-		    	this.paintActiveWorkSpace();
-		    	environmentLoadedCallback();
+		    	this.showActiveWorkSpace();
 		    	return;
 		    }
 		}

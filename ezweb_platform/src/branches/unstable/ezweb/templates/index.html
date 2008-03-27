@@ -141,31 +141,36 @@ var URIs = new _URIConstants();
   </div>
   <img id="logo" src="{{ MEDIA_URL }}images/logo.gif" alt="EzWeb Logo">
   <div class="tab_section">
-    <span id="wiring_tab" class="tab" onclick="showInterface('wiring');">{% trans "My Wires" %}</span>
-    <span id="showcase_tab" class="tab" onclick="show_showcase();">{% trans "My Catalogue" %}</span>
-    <span id="dragboard_tab" class="tab current" onclick="showInterface('dragboard');">{% trans "My Gadgets" %}</span>
+    <span id="wiring_tab" class="tab" onclick="OpManagerFactory.getInstance().show_wiring();">{% trans "My Wires" %}</span>
+    <span id="showcase_tab" class="tab" onclick="OpManagerFactory.getInstance().show_catalogue()">{% trans "My Catalogue" %}</span>
+    <span id="tab_MyTabspace_MyTab"" class="tab current" onclick="OpManagerFactory.getInstance().changeVisibleTab('MyTab')">{% trans "My Gadgets" %}</span>
     <span id="logs_tab" class="tab disabled" onclick="showInterface('logs')"></span>
   </div>
 </div>
 
 <div id="wrapper">
   <!-- DRAGBOARD LAYER -->
-  <div id="dragboard_container" class="container">
-    {% include "dragboard.html" %}
+  <div id="dragboard_template">
+  	<div class="container">
+    	<div class="container_content">
+    	</div>
+    </div>
   </div>
-  <!-- DRAGBOARD LAYER -->
+  <!-- SHOWCASE LAYER -->
+  
+  <!-- WIRING LAYER -->
+  <div id="wiring_template">
+    <div class="container">
+      {% include "wiring.html" %}
+    </div>
+  </div>
+  <!-- WIRING LAYER -->
   
   <!-- SHOWCASE LAYER -->
   <div id="showcase_container" class="container">
      {% include "showcase.html" %}
   </div>
   <!-- SHOWCASE LAYER -->
-
-  <!-- WIRING LAYER -->
-  <div id="wiring_container" class="container">
-    {% include "wiring.html" %}
-  </div>
-  <!-- WIRING LAYER -->
 
   <!-- LOGS LAYER -->
   <div id="logs_container" class="container">
