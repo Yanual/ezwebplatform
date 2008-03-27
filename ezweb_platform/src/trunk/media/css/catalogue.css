@@ -674,7 +674,9 @@
 	overflow:auto;
 	padding:5px;
 	background-color:#ddeeff;
-	height:80px;
+	height:auto;
+	min-height:1em;
+	max-height:6em;
 }
 
 #catalogue .center .info_resource .content .tagcloud .tags .multiple_size_tag
@@ -686,6 +688,13 @@
 #catalogue .center .info_resource .content .tagcloud .tags .multiple_size_tag *
 {
 	vertical-align:text-bottom;
+}
+
+#catalogue .center .info_resource .content .tagcloud .tags img
+{
+	vertical-align:text-bottom;
+	height:13px;
+	margin-left:5px;
 }
 
 #catalogue .center .info_resource .content .new_tags
@@ -703,7 +712,7 @@
 	padding:5px;
 	font-size:12px;
 	background-color:#ddeeff;
-	height:50px;
+	height:auto;
 }
 
 #catalogue .center .info_resource .content .new_tags .tag_alert {
