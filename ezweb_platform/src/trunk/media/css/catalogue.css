@@ -773,6 +773,11 @@
 	width:100%;
 }
 
+#catalogue .center .info_resource .content .link *
+{
+	padding-right:5px;
+}
+
 #catalogue .center .info_resource .content .add_gadget_button
 {
 	background: url("/ezweb/images/button.gif") top left;

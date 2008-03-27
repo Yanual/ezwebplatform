@@ -87,8 +87,9 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 									"<div class='slots'>" + gettext ('Slots') + ": " + _slots()+ "</div></div></div>" +
 									"<div class='tagcloud'>" + gettext ('Tagcloud') + ":" +
 									"<div id='view_tags_links' class='link'>"+
-									"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('View my tags') + "</a>" +
-									"&nbsp&nbsp&nbsp <a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('View others tags') + "</a>" +
+									"<a id='view_all_tags' href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"all\");'>" + gettext ('All tags') + "</a>" +
+									"<a id='view_my_tags' href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('My tags') + "</a>" +
+									"<a id='view_others_tags' href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('Others tags') + "</a>" +
 									"</div>" +
 									"<div id='" + id + "_tagcloud' class='tags'>" + _tagsToTagcloud('description') + "</div></div>" +
 									"<div id='add_tags_panel' class='new_tags' style='display:none;'>" +
@@ -144,33 +145,30 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 	}
 
 	this.changeTagcloud = function(type){
-		var option = {}
+		var option = {};
 		var viewTagsHTML = "";
-		if (type=='mytags')
-		{
-			option = {tags: type}
-			viewTagsHTML = "<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"all\");'>" + gettext ('View all tags') + "</a>" +
-						"&nbsp&nbsp&nbsp <a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('View others tags') + "</a>";
-			document.getElementById('view_tags_links').innerHTML = viewTagsHTML;
+		option = {tags: type};
+		switch(type){
+			case "mytags":
+				viewTagsHTML =	"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"all\");'>" + gettext ('All tags') + "</a>" +
+								"<span>" + gettext ('My tags') + "</span>" +
+								"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('Others tags') + "</a>";			
+				break;
+			case "others":
+				viewTagsHTML =	"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"all\");'>" + gettext ('All tags') + "</a>" +
+								"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('My tags') + "</a>" +
+								"<span>" + gettext ('Others tags') + "</span>";		
+				break;
+			case "all":
+			default:
+				viewTagsHTML =	"<span>" + gettext ('All tags') + "</span>" +
+								"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('My tags') + "</a>" +
+								"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('Others tags') + "</a>";
 		}
-		else {
-			if (type=='others') {
-				option = {tags: type}
-				viewTagsHTML = "<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"all\");'>" + gettext ('View all tags') + "</a>" +
-						"&nbsp&nbsp&nbsp <a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('View my tags') + "</a>";
-				document.getElementById('view_tags_links').innerHTML = viewTagsHTML;
-			}
-			else {
-				option = {tags: type}
-				viewTagsHTML = "<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('View my tags') + "</a>" +
-						"&nbsp&nbsp&nbsp <a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('View others tags') + "</a>";
-				document.getElementById('view_tags_links').innerHTML = viewTagsHTML;
-			}
-		}
-		
-		if (document.getElementById(id + '_tagcloud'))
+		$("view_tags_links").innerHTML = viewTagsHTML;
+		if ($(id + '_tagcloud'))
 		{
-			document.getElementById(id + '_tagcloud').innerHTML= _tagsToTagcloud('description',option);
+			$(id + '_tagcloud').innerHTML= _tagsToTagcloud('description',option);
 		}
 	}
 
@@ -267,39 +265,41 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 		var tagsAux = state.getTags();
 		var option = arguments[1] || {tags:'all'};
 			
-		if (option.tags=='all')
-		{
-			for (var i=0; i<tagsAux.length; i++) {
-				tagsHTML += ("<span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML() + ((i<(tagsAux.length-1))?",":"") + "</span>");
-			}
-		}
-		else if (option.tags=='mytags'){
-			var tags = [];
-			var j = 0;
-			for (var i=0; i<tagsAux.length; i++) {
-				if (tagsAux[i].getAdded_by() == 'Yes')
-				{
-					tags[j] = tagsAux[i];
-					j++;
+		switch(option.tags) {
+			case 'all':
+				for (var i=0; i<tagsAux.length; i++) {
+					tagsHTML += ("<span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML() + ((i<(tagsAux.length-1))?",":"") + "</span>");
 				}
-			}
-			for (var i=0; i<tags.length; i++) {
-				var jsCall = 'javascript:UIUtils.removeTagUser("' + tags[i].getValue() + '","'+id+'");';
-				tagsHTML += ("<span class='multiple_size_tag'>" + tags[i].tagToTypedHTML(option) + "</span><a title='" + gettext ('Delete tag') + "' href='" + jsCall + "'><img id='"+id+"_deleteIcon_"+i+"_"+loc+"' onMouseOver=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/delete.png';\" onMouseOut=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/cancel_gray.png';\" src='/ezweb/images/cancel_gray.png' border=0 name=op1></a>"+((i<(tags.length-1))?", ":""));
-			}
-		} else {
-			var tags = [];
-			var j = 0;
-			for (var i=0; i<tagsAux.length; i++) {
-				if (tagsAux[i].getAdded_by() == 'No' || tagsAux[i].getAppearances()>1)
-				{
-					tags[j] = tagsAux[i];
-					j++;
+				break;
+			case 'mytags':
+				var tags = [];
+				var j = 0;
+				for (var i=0; i<tagsAux.length; i++) {
+					if (tagsAux[i].getAdded_by() == 'Yes')
+					{
+						tags[j] = tagsAux[i];
+						j++;
+					}
 				}
-			}
-			for (var i=0; i<tags.length; i++) {
-			    tagsHTML += ("<span class='multiple_size_tag'>" + tags[i].tagToTypedHTML() + ((i<(tags.length-1))?",":"") + "</span>");
-			}
+				for (var i=0; i<tags.length; i++) {
+					var jsCall = 'javascript:UIUtils.removeTagUser("' + tags[i].getValue() + '","'+id+'");';
+					tagsHTML += ("<span class='multiple_size_tag'>" + tags[i].tagToTypedHTML(option) + "</span><a title='" + gettext ('Delete tag') + "' href='" + jsCall + "'><img id='"+id+"_deleteIcon_"+i+"_"+loc+"' onMouseOver=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/delete.png';\" onMouseOut=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/cancel_gray.png';\" src='/ezweb/images/cancel_gray.png' border=0 name=op1></a>"+((i<(tags.length-1))?", ":""));
+				}
+				break;
+			case 'others':
+			default:
+				var tags = [];
+				var j = 0;
+				for (var i=0; i<tagsAux.length; i++) {
+					if (tagsAux[i].getAdded_by() == 'No' || tagsAux[i].getAppearances()>1)
+					{
+						tags[j] = tagsAux[i];
+						j++;
+					}
+				}
+				for (var i=0; i<tags.length; i++) {
+				    tagsHTML += ("<span class='multiple_size_tag'>" + tags[i].tagToTypedHTML() + ((i<(tags.length-1))?",":"") + "</span>");
+				}
 		}
 			
 		return tagsHTML;

@@ -141,21 +141,21 @@ var CatalogueFactory  = function () {
 					option = {tags: type}
 					viewTagsHTML =	"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"all\");'>" + gettext ('View all tags') + "</a>" +
 									"&nbsp&nbsp&nbsp <a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('View others tags') + "</a>";
-					document.getElementById('view_tags_links').innerHTML = viewTagsHTML;
+					document.getElementById('view_global_tags_links').innerHTML = viewTagsHTML;
 					break;
 					
 				case 'others':
 					option = {tags: type}
 					viewTagsHTML =	"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"all\");'>" + gettext ('View all tags') + "</a>" +
 									"&nbsp&nbsp&nbsp <a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('View my tags') + "</a>";
-					document.getElementById('view_tags_links').innerHTML = viewTagsHTML;
+					document.getElementById('view_global_tags_links').innerHTML = viewTagsHTML;
 					break;
 					
 				default:
 					option = {tags: type}
 					viewTagsHTML = "<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('View my tags') + "</a>" +
 							"&nbsp&nbsp&nbsp <a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('View others tags') + "</a>";
-					document.getElementById('view_tags_links').innerHTML = viewTagsHTML;
+					document.getElementById('view_global_tags_links').innerHTML = viewTagsHTML;
 					break;
 			}	
 			if (document.getElementById('global_tagcloud'))
