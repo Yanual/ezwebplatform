@@ -426,11 +426,7 @@ UIUtils.sendTags = function() {
 	var resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
 	var tagger = resource.getTagger();
 	var resourceURI = "/" + resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion();
-	if (document.getElementById('new_tag_text_input').value.length >2 || (tagger.getTags().size() != 0 && document.getElementById('new_tag_text_input').value.length== 0))
-	{
-		UIUtils.toggle_elements(["add_tags_panel","add_tags_link","access_wiki_link","access_template_link","update_code_link","delete_gadget_link"]);
-		UIUtils.show("add_gadget_button");
-	}
+
 	if (tagger.getTags().size() == 0 || document.getElementById('new_tag_text_input').value.length!= 0)
 	{
 		UIUtils.addTag(document.getElementById('new_tag_text_input'));
