@@ -394,6 +394,9 @@ UIUtils.removeAllTags = function() {
 	var tagger = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).getTagger();
 	tagger.removeAll();
 	document.getElementById("tag_alert").style.display='none';
+	document.getElementById("new_tag_text_input").value="";
+	document.getElementById("new_tag_text_input").size=5;
+	document.getElementById("new_tag_text_input").focus();
 }
 
 UIUtils.removeAllGlobalTags = function() {

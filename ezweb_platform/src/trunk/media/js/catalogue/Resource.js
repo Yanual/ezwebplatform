@@ -95,7 +95,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 									"<div id='add_tags_panel' class='new_tags' style='display:none;'>" +
 										"<div class='title'>" + gettext ('New tags') + ":</div>" +
 										"<div id='my_tags' class='my_tags'>" +
-											"<div id='new_tag_text' class='new_tag_text'><input id='new_tag_text_input' type='text' size=5 maxlength=20 onkeyup=\"UIUtils.enlargeInput(this);\" onkeypress=\"UIUtils.onReturn(event,UIUtils.addTag,this);\"/></div>" +
+											"<div id='new_tag_text' class='new_tag_text'><input id='new_tag_text_input' type='text' maxlength=20 onkeyup=\"UIUtils.enlargeInput(this);\" onkeypress=\"UIUtils.onReturn(event,UIUtils.addTag,this);\"/></div>" +
 										"</div>" +
 										"<div id=\"tag_alert\" class=\"tag_alert\"></div>" +
 										"<div class='buttons'>" +
@@ -157,6 +157,8 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 								"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('Others tags') + "</a>";
 				UIUtils.hidde("add_tags_link");
 				UIUtils.show("add_tags_panel");
+				document.getElementById("new_tag_text_input").value="";
+				document.getElementById("new_tag_text_input").size=5;
 				document.getElementById("new_tag_text_input").focus();
 				break;
 			case "others":

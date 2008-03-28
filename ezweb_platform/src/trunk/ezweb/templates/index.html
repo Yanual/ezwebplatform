@@ -121,19 +121,24 @@ var URIs = new _URIConstants();
 	}
 
     function show_showcase() {
-		UIUtils.search = false;
+		
 		if (UIUtils.isInfoResourcesOpen) {
 			UIUtils.isInfoResourcesOpen = false;
 			UIUtils.SlideInfoResourceOutOfView('info_resource');
 		}
-
-		opManager.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
-
+		if (currentInterface == "showcase")
+		    UIUtils.search = 'false';
+		if (UIUtils.search == 'false')
+		{
+			opManager.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
+		}
+		UIUtils.search = 'false';
 		showInterface('showcase');
 		
 		UIUtils.setResourcesWidth();
 		
 		$('simple_search_text').focus();
+		$('template_uri').value="";
 	}
 
 	function show_dragboard() {
