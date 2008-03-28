@@ -52,6 +52,6 @@ def encode_query (query):
         for i in range(len(params)):
                 elements = params[i].split("=")
 		if len(elements) > 1:
-			query_params[unquote(elements[0])] = unquote(elements[1])
+			query_params[unquote(elements[0].encode('utf8')).decode('utf8')] = unquote(elements[1].encode('utf8')).decode('utf8')
 	return urlencode(query_params)
 
