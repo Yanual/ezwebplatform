@@ -63,11 +63,24 @@ function Tab (tabInfo, workSpaceName) {
 	// The name of the dragboard HTML elements correspond to the Tab name
 	this.workSpaceName = workSpaceName;
 	this.dragboardLayerName = "dragboard_" + workSpaceName + "_" + tabInfo.name;
+	this.tabName = "tab_" + workSpaceName + "_" + tabInfo.name;
 	this.tabInfo = tabInfo;
 	
-	this.tabHTMLElement = $("tab_" + workSpaceName + "_" + tabInfo.name);
+	// Tab creation
+    var tabSection = $("tab_section");
+    var tabHTML = "<span>" + this.tabInfo.name + "</span>";
+    
+    new Insertion.Top(tabSection, tabHTML);
+    
+	this.tabHTMLElement =  tabSection.firstDescendant();
 	
-    //Initial interface construction
+	this.tabHTMLElement.setAttribute('id', this.tabName);
+	
+	var opManagerInvocation = 'OpManagerFactory.getInstance().changeVisibleTab("' + this.tabInfo.name + '")';
+	
+	this.tabHTMLElement.setAttribute('onclick', opManagerInvocation);
+		
+    // Dragboard layer creation
     var dragboardHTML = $("dragboard_template").innerHTML;
     var wrapper = $("wrapper");
     
@@ -78,4 +91,11 @@ function Tab (tabInfo, workSpaceName) {
     this.dragboardElement.setAttribute('id', this.dragboardLayerName);
                 	
 	this.dragboard = new Dragboard(tabInfo, this.dragboardElement);
+	
+	// Show tab depending of its visible attribute
+	if (this.tabInfo.visible == "true") {
+		this.show();
+	} else {
+		this.hide();
+	}
 }     	

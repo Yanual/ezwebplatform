@@ -140,11 +140,11 @@ var URIs = new _URIConstants();
   <div id="greeting">{% trans "Welcome" %}, {{ user.username }}{% for lang in LANGUAGES %} | <a href="/" onclick="return setLanguage('{{ lang.0 }}')" >{{ lang.1 }}</a>{% endfor %} | <a href="/logout">{% trans "Exit" %}</a>
   </div>
   <img id="logo" src="{{ MEDIA_URL }}images/logo.gif" alt="EzWeb Logo">
-  <div class="tab_section">
-    <span id="wiring_tab" class="tab" onclick="OpManagerFactory.getInstance().show_wiring();">{% trans "My Wires" %}</span>
-    <span id="showcase_tab" class="tab" onclick="OpManagerFactory.getInstance().show_catalogue()">{% trans "My Catalogue" %}</span>
-    <span id="tab_MyTabspace_MyTab"" class="tab current" onclick="OpManagerFactory.getInstance().changeVisibleTab('MyTab')">{% trans "My Gadgets" %}</span>
-    <span id="logs_tab" class="tab disabled" onclick="showInterface('logs')"></span>
+  <div id="tab_section" class="tab_section">
+    <div id="toolbar_section" class="toolbar_section">
+    <span id="catalogue_link"  class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().show_catalogue()"><a href="#">{% trans "Catalogue" %}</a></span>
+    <span id="wiring_link" class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().show_wiring();"><a href="#">{% trans "Wires" %}</a></span>
+  </div>
   </div>
 </div>
 

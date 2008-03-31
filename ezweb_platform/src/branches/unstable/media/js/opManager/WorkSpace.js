@@ -63,7 +63,7 @@ function WorkSpace (workSpaceState) {
 			this.tabInstances[tab.name] = new Tab(tab, this.workSpaceState.name);
 			
 			if (tab.visible == 'true') {
-				this.visibleTab = this.tabInstances[tab.name];
+				this.setTab(tab.name);
 			}
 		}
 		
@@ -133,6 +133,5 @@ function WorkSpace (workSpaceState) {
 	this.loaded = false;
 	this.wiringLayer = null;
 	this.visibleTab = null;
-	
 	
 }     	

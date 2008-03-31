@@ -64,6 +64,7 @@ var OpManagerFactory = function () {
 			    if (workSpace.active == "true") {
 			    	this.activeWorkSpace=this.workSpaceInstances[workSpace.name];
 			    }
+			    
 			}
 			
 			// Total information of the active workspace must be downloaded!
@@ -96,11 +97,10 @@ var OpManagerFactory = function () {
 		
 		this.loadCompleted = false;
 		
-		// Tabs managed by OpManager: {showcase_tab, wiring_tab}
-		// Remaining tabs managed by WorkSpaces!! 
-		// They must be assigned after initialization! With user events!
-		this.showCaseTab = null;
-		this.wiringTab = null;
+		// Global links managed by OpManager: {showcase, wiring}
+		// Tabs are managed by WorkSpaces!! 
+		this.showCaseLink = null;
+		this.wiringLink = null;
 		
 		// Container managed by OpManager: {showcase_tab}
 		// Remaining containers managed by WorkSpaces!!
@@ -116,15 +116,15 @@ var OpManagerFactory = function () {
 		// ****************
 		
 		OpManager.prototype.unMarkGlobalTabs = function () {
-			if (!this.showCaseTab) {
-				this.showCaseTab = $('showcase_tab');
+			if (!this.showCaseLink) {
+				this.showCaseLink = $('catalogue_link');
 				this.showCase = $('showcase_container');
 				
-				this.wiringTab = $('wiring_tab');
+				this.wiringLink = $('wiring_link');
 			}
 			
-			this.showCaseTab.className = 'tab';
-			this.wiringTab.className = 'tab';
+			this.showCaseLink.className = 'toolbar_unmarked';
+			this.wiringLink.className = 'toolbar_unmarked';
 			this.showCase.setStyle({'display': 'block', 'zIndex': 1});
 		}
 		
@@ -137,7 +137,7 @@ var OpManagerFactory = function () {
 			this.unMarkGlobalTabs();
 			this.activeWorkSpace.hide();
 			
-			this.showCaseTab.className = 'tab current';
+			this.showCaseLink.className = 'toolbar_marked';
 			this.showCase.setStyle({'display': 'block', 'zIndex': 2});
 			
 		}

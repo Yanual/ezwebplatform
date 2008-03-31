@@ -73,7 +73,7 @@ function WiringInterface(wiringDivName, wiring) {
     
 	WiringInterface.prototype.show = function (){
 		this.wiringElement.setStyle({'zIndex' : 2, 'display': 'block'});
-		$("wiring_tab").className = "tab current";
+		$("wiring_link").className = "toolbar_marked";
 	}
 	
 	WiringInterface.prototype.hide = function (){
@@ -474,11 +474,7 @@ function WiringInterface(wiringDivName, wiring) {
 	    
 	    this.disabled_all = false;
 	}
-    
-	WiringInterface.prototype.currentTab = function(tab) {
-	    var current_tab = {"tab": tab}
-	}
-	
+    	
 	// ***********************************
     //  COLOR SCHEME FOR HIGHLIGTHS
     //  More colors in color_scheme.js file but now it's not used!

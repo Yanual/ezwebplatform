@@ -51,10 +51,30 @@ a:hover{
 
 #header .tab_section {
   position: absolute;
-  padding-left: 10px;
+  padding-left: 20px;
   bottom: -2px;
   z-index: 3;
   right: 4px;
+}
+
+#header .tab_section .toolbar_section {
+  position: absolute;
+  padding-right: 10px;
+  bottom: 0px;
+  z-index: 3;
+  left: 4px;
+}
+
+.toolbar_unmarked a{
+  color: blue;
+  padding-right: 3px;
+  padding-left: 3px;
+}
+
+.toolbar_marked a{
+  color: red;
+  padding-right: 3px;
+  padding-left: 3px;
 }
 
 #header .tab_section .tab {
