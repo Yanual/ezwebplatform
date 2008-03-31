@@ -90,7 +90,7 @@
 }
 
 #catalogue .head .header_always .header_always_error {
-	background-color:red;
+	background-color:#FFFF00;
 	border:1px solid #B22222;
 	display:none;
 	color:#B22222;
