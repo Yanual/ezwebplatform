@@ -67,6 +67,8 @@ function WorkSpace (workSpaceState) {
 			}
 		}
 		
+		this.loaded = true;
+		
 		OpManagerFactory.getInstance().continueLoadingGlobalModules(Modules.prototype.ACTIVE_WORKSPACE);
     }
 		
@@ -86,11 +88,17 @@ function WorkSpace (workSpaceState) {
 	}
 	
 	WorkSpace.prototype.showWiring = function() {
+		if (!this.loaded)
+			return;
+		
 		this.hide();
 		this.wiringInterface.show();
 	}
 		
-	WorkSpace.prototype.hide = function() {		
+	WorkSpace.prototype.hide = function() {
+		if (!this.loaded)
+			return;
+		
 		this.wiringInterface.hide();
 		
 		var tabList = this.tabInstances.keys();
@@ -102,7 +110,10 @@ function WorkSpace (workSpaceState) {
 		}
 	}
 	
-	WorkSpace.prototype.show = function() {		
+	WorkSpace.prototype.show = function() {	
+		if (!this.loaded)
+			return;
+		
 		var tabList = this.tabInstances.keys();
 		
 		for (var i=0; i<tabList.length; i++) {
@@ -112,13 +123,19 @@ function WorkSpace (workSpaceState) {
 		}
 	}
 	
-	WorkSpace.prototype.setTab = function(tabName) {		
+	WorkSpace.prototype.setTab = function(tabName) {
+		if (!this.loaded)
+			return;
+		
 		this.visibleTab = this.tabInstances[tabName];
 		this.hide();
 		this.visibleTab.show();
 	}
 	
 	WorkSpace.prototype.getVisibleTab = function() {
+		if (!this.loaded)
+			return;
+		
 		return this.visibleTab;
 	}
 	    
@@ -128,6 +145,7 @@ function WorkSpace (workSpaceState) {
 
 	this.workSpaceState = workSpaceState;
 	this.workSpaceGlobal = null;
+	this.wiringInterface = null;
 	this.tabInstances = new Hash();
 	this.wiring = null;
 	this.loaded = false;
