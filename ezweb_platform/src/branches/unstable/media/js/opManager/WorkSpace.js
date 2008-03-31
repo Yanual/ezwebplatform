@@ -57,17 +57,20 @@ function WorkSpace (workSpaceState) {
 		this.varManager = new VarManager(this.workSpaceGlobalInfo);
 		
 		var tabs = this.workSpaceGlobalInfo['workspace']['tabList'];
+		var visibleTabName = null;
 		
 		for (var i=0; i<tabs.length; i++) {
 			var tab = tabs[i];
 			this.tabInstances[tab.name] = new Tab(tab, this.workSpaceState.name);
 			
 			if (tab.visible == 'true') {
-				this.setTab(tab.name);
+				visibleTabName = tab.name;
 			}
 		}
 		
 		this.loaded = true;
+		
+		this.setTab(visibleTabName);
 		
 		OpManagerFactory.getInstance().continueLoadingGlobalModules(Modules.prototype.ACTIVE_WORKSPACE);
     }
@@ -80,6 +83,18 @@ function WorkSpace (workSpaceState) {
     // ****************
     // PUBLIC METHODS
     // ****************
+	
+    WorkSpace.prototype.getName = function () {
+    	return this.workSpaceState.name;
+	}
+    
+    WorkSpace.prototype.getWiring = function () {
+    	return this.wiring;
+	}
+    
+    WorkSpace.prototype.getVarManager = function () {
+    	return this.varManager;
+	}
 
 	WorkSpace.prototype.downloadWorkSpaceInfo = function () {
 		var workSpaceUrl = URIs.GET_POST_WIRING.evaluate({'id': this.workSpaceState.pk});

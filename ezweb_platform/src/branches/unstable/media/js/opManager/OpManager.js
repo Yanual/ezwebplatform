@@ -82,7 +82,6 @@ var OpManagerFactory = function () {
 		this.errorCount = 0;
 			
 		// Singleton modules
-		this.varManagerModule = null;
 		this.showcaseModule = null;
 		this.contextManagerModule = null;
 		this.catalogue = null;
@@ -91,6 +90,7 @@ var OpManagerFactory = function () {
 		// Active instance for non-singleton modules
 		this.activeDragboard;
 		this.activeWiring;
+		this.activeVarManager = null;
 		
 		//Current interface selected by user {dragboard, catalogue, wiring}
 		this.currentInterface = "dragboard"
@@ -136,16 +136,31 @@ var OpManagerFactory = function () {
 		OpManager.prototype.show_catalogue = function () {
 			this.unMarkGlobalTabs();
 			this.activeWorkSpace.hide();
-			
+		
 			this.showCaseLink.className = 'toolbar_marked';
 			this.showCase.setStyle({'display': 'block', 'zIndex': 2});
 			
+			if (UIUtils.isInfoResourcesOpen) {
+				UIUtils.isInfoResourcesOpen = false;
+				UIUtils.SlideInfoResourceOutOfView('info_resource');
+			}
+			
+			
+			// Load catalogue data!
+			this.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
+					
+			UIUtils.setResourcesWidth();
+			
+			$('simple_search_text').focus();
 		}
 		
 		OpManager.prototype.changeActiveWorkSpace = function (workSpace) {
 		    this.activeWorkSpace = this.getActiveWorkSpace(workSpace);
-		    this.activeDragboard = this.activeWorkSpace.getActiveTab().getDragboard();
+		    this.activeDragboard = this.activeWorkSpace.getVisibleTab().getDragboard();
 		    this.activeWiring = this.activeWorkSpace.getWiring();
+		    this.activeVarManager = this.activeWorkSpace.getVarManager();
+		    
+		    this.showActiveWorkSpace();
 		}			
 
 		OpManager.prototype.changeVisibleTab = function (tabName) {
@@ -172,7 +187,7 @@ var OpManagerFactory = function () {
 				
 			var iGadgetId = this.activeDragboard.addInstance(gadget);
 			
-			this.varManagerModule.addInstance(iGadgetId, gadget.getTemplate());
+			this.activeVarManager.addInstance(iGadgetId, gadget.getTemplate());
 			this.activeWiring.addInstance(iGadgetId, gadget.getTemplate());
 			
 			this.contextManagerModule.addInstance(iGadgetId, gadget);
@@ -188,7 +203,7 @@ var OpManagerFactory = function () {
 				return;
 
 			this.activeDragboard.removeInstance(iGadgetId); // TODO split into hideInstance and removeInstance
-			this.varManagerModule.removeInstance(iGadgetId);
+			this.activeVarManager.removeInstance(iGadgetId);
 			this.activeWiring.removeInstance(iGadgetId);
 		}
 		
@@ -230,7 +245,7 @@ var OpManagerFactory = function () {
 				}
 			}
 		}
-
+		
 		OpManager.prototype.continueLoadingGlobalModules = function (module) {
 		    // Asynchronous load of modules
 		    // Each singleton module notifies OpManager it has finished loading!
@@ -254,7 +269,7 @@ var OpManagerFactory = function () {
 		    
 		    if (module == Modules.prototype.ACTIVE_WORKSPACE) {
 		    	this.loadCompleted = true;
-		    	this.showActiveWorkSpace();
+		    	this.changeActiveWorkSpace(this.activeWorkSpace.getName());
 		    	return;
 		    }
 		}
