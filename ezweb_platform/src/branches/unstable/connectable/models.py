@@ -55,7 +55,7 @@ class InOut(models.Model):
         pass
 
     def __unicode__(self):
-        return self.pk + " " + self.name
+        return str(self.pk) + " " + self.name
 
 
 class In(models.Model):
@@ -71,7 +71,7 @@ class In(models.Model):
         pass
 
     def __unicode__(self):
-        return self.pk + " " + self.name
+        return str(self.pk) + " " + self.name
 
 
 class Out(models.Model):
@@ -87,4 +87,4 @@ class Out(models.Model):
         pass
 
     def __unicode__(self):
-        return self.pk + " " + self.name
+        return str(self.pk) + " " + self.name

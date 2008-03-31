@@ -59,7 +59,7 @@ class Position(models.Model):
         pass
 
     def __unicode__(self):
-        return self.pk
+        return str(self.pk)
 
 class IGadget(models.Model):
 
@@ -76,7 +76,7 @@ class IGadget(models.Model):
         pass
 
     def __unicode__(self):
-        return self.pk
+        return str(self.pk)
 
 class Variable(models.Model):
     
@@ -88,5 +88,5 @@ class Variable(models.Model):
         pass
 
     def __unicode__(self):
-        return self.pk + " " + self.value
+        return str(self.pk) + " " + self.value
 

@@ -60,7 +60,7 @@ class WorkSpace(models.Model):
         pass
 
     def __unicode__(self):
-        return self.pk + " " + self.name
+        return str(self.pk) + " " + self.name
     
 class Tab(models.Model):
     
@@ -76,5 +76,5 @@ class Tab(models.Model):
         pass
 
     def __unicode__(self):
-        return self.pk + " " + self.name
+        return str(self.pk) + " " + self.name
 
