@@ -97,7 +97,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 										"<div id='my_tags' class='my_tags'>" +
 											"<div id='new_tag_text' class='new_tag_text'><input id='new_tag_text_input' type='text' maxlength=20 onkeyup=\"UIUtils.enlargeInput(this);\" onkeypress=\"UIUtils.onReturn(event,UIUtils.addTag,this);\"/></div>" +
 										"</div>" +
-										"<div id=\"tag_alert\" class=\"tag_alert\"></div>" +
+										"<div id=\"tag_alert\" class=\"message_error\"></div>" +
 										"<div class='buttons'>" +
 											"<a class='submit_link' href=\"#\" onClick='javascript:UIUtils.sendTags();'>" + gettext ('Tag') + "</a>" +
 											"<a class='submit_link' href=\"#\" onClick='javascript:UIUtils.addTag(document.getElementById(\"new_tag_text_input\"));'>" + gettext ('Save & New') + "</a>" +

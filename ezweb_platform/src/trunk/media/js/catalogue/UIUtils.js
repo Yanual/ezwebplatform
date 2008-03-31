@@ -266,7 +266,7 @@ UIUtils.searchByTag = function(url, tag) {
 }
 
 UIUtils.searchByWiring = function(url, value, wiring) {
-	this.closeInfoResource();
+	UIUtils.closeInfoResource();
 	var opManager = OpManagerFactory.getInstance();
 	
 	if (value == ""){
@@ -355,12 +355,12 @@ UIUtils.getNum_items = function() {
 }
 
 UIUtils.searchGeneric = function(url, param, criteria) {
-	this.closeInfoResource();
+	UIUtils.closeInfoResource();
 	var opManager = OpManagerFactory.getInstance();
 	
 	if (param == ""){
-		$('header_always_error').innerHTML = "<img src='/ezweb/images/ico_error_mini.gif'></img>" + gettext ("Indicate a criteria in search formulary");
-		$('header_always_error').style.display = 'block';
+		$('header_always_error').style.display="block";
+		UIUtils.getError($('header_always_error'),gettext("Indicate a criteria in search formulary"));
 	}
 	else{
 		$('header_always_error').style.display = 'none';
@@ -415,7 +415,7 @@ UIUtils.removeAllGlobalTags = function() {
 	{
 		parentHTML.removeChild(parentHTML.childNodes[0]);
 	}
-	document.getElementById("global_tag_alert").style.display='none';
+	$("global_tag_alert").style.display='none';
 	
 }
 
@@ -489,8 +489,8 @@ UIUtils.addTag = function(inputText_) {
 
 UIUtils.addGlobalTag = function(inputText_) {
 	if(inputText_.value.length<3)	{
-		document.getElementById("global_tag_alert").style.display='inline';
-		document.getElementById("global_tag_alert").innerHTML = gettext ("Tags must have at least three characters.");
+		$("global_tag_alert").style.display='inline';
+		UIUtils.getError($("global_tag_alert"),gettext("Tags must have at least three characters."));
 	}else{
 		var id = 'new_global_tag_' + UIUtils.counter;
 		UIUtils.counter++;
@@ -501,7 +501,7 @@ UIUtils.addGlobalTag = function(inputText_) {
 			tagger.addGlobalTag(inputText_.value);
 		}
 		UIUtils.paintGlobalTag(id,inputText_.value);
-		document.getElementById("global_tag_alert").style.display='none';
+		$("global_tag_alert").style.display='none';
 		
 		inputText_.value = '';
 		inputText_.focus();
@@ -885,11 +885,17 @@ UIUtils.enlargeInput = function(inputText_) {
 	if (inputText_.value.length>5) inputText_.size = inputText_.value.length+1;
 }
 
+UIUtils.getError = function(element, error) {
+	element.innerHTML = "<img src='/ezweb/images/ico_error_mini.gif'></img>" + error;
+	new Effect.Highlight(element,{duration:0.5, startcolor:'#FF0000', endcolor:'#FFFF00'});
+}
+
 // Enables you to react to return being pressed in an input
 UIUtils.onReturn = function(event_, handler_, inputText_) {
   if (!event_) event_ = window.event;
   if (event_ && event_.keyCode && event_.keyCode == 13) {
-	  handler_(inputText_);
+	  //handler_(inputText_);
+	  handler_(inputText_,arguments[3],arguments[4]);
   }
 };
 

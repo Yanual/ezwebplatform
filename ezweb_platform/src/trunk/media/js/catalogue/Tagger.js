@@ -44,8 +44,8 @@ function Tagger(){
 	
 	this.addTag = function(tag_) {
 		if (tag_.length < 3) {
-			document.getElementById("tag_alert").style.display='inline';
-			document.getElementById("tag_alert").innerHTML = gettext ("Tags must have at least three characters.");
+			$("tag_alert").style.display="block";
+			UIUtils.getError($("tag_alert"),gettext ("Tags must have at least three characters."));
 		}
 		else {
 			if (!tags.contains(tag_)) {
@@ -53,7 +53,7 @@ function Tagger(){
 				counter++;
 				tags.addElement(id, tag_);
 				paintTag(id, tag_);
-				document.getElementById("tag_alert").style.display='none';
+				$("tag_alert").style.display='none';
 			}
 		}
 	}

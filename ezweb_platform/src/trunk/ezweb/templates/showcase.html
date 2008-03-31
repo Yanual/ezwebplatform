@@ -10,14 +10,14 @@
 			</div>
 			<div id="simple_search" name="simple_search" class="simple_search">	
 				<label for="simple_search_text">{% trans  "Search:" %}</label>
-				<input type="text" id="simple_search_text" name="simple_search_text" class="text" autocomplete="on" onKeyUp="if(this.value.length < 20){;}else if (this.value.length >= 16 && this.value.length < 50){this.size=this.value.length + 2;}"></input>
+				<input type="text" id="simple_search_text" name="simple_search_text" class="text" autocomplete="on" onKeyUp="if(this.value.length < 20){;}else if (this.value.length >= 16 && this.value.length < 50){this.size=this.value.length + 2;}" onkeypress="UIUtils.onReturn(event,UIUtils.searchGeneric,URIs.GET_RESOURCES_SEARCH_GENERIC, this.value, 'or');"></input>
 				<a class="submit_link" href="#" onclick="UIUtils.searchGeneric(URIs.GET_RESOURCES_SEARCH_GENERIC, $('simple_search_text').value, 'or');">{% trans  "Search" %}</a>
 			</div>
 			<div id="advanced_options" class="advanced_options">
 				<a id="advanced_search_toggle" class="header_link" href="#" onclick="UIUtils.SlideAdvanced('advanced_search','head');">{% trans  "Advanced Search" %}</a>
 				<a id="advanced_tag_toggle" class="header_link" href="#" onclick="UIUtils.SlideAdvanced('advanced_tag','head');">{% trans  "Advanced Tagging" %}</a>
 			</div>
-			<div id="header_always_error" class="header_always_error"></div>
+			<div id="header_always_error" class="message_error"></div>
 		</div>
 		<div id="advanced_search" class="advanced_search" style="display:none;">	
 			<div id="advanced_search_left" class="advanced_search_left">
@@ -78,7 +78,7 @@
 						<div id='new_global_tag_text' class='new_tag_text'>
 							<input id='new_global_tag_text_input' type='text' size=5 maxlength=20 onkeyup="UIUtils.enlargeInput(this);" onkeypress="UIUtils.onReturn(event,UIUtils.addGlobalTag,this);" />
 					</div></div>
-					<div id="global_tag_alert" class="tag_alert"></div>
+					<div id="global_tag_alert" class="message_error"></div>
 					<div class='buttons'>
 						<a href="#" class="submit_link" onClick='javascript:UIUtils.sendGlobalTags();'>{% trans "Tag" %}</a>
 						<a href="#" class="submit_link" onClick='javascript:UIUtils.addGlobalTag($("new_global_tag_text_input"));'>{% trans "Save & New" %}</a>
