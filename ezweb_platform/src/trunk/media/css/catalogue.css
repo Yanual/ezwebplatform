@@ -166,11 +166,35 @@
 	padding-top:5px;
 }
 
-#catalogue .head .advanced_tag .advanced_tag_left .link {
+#catalogue .head .advanced_tag .advanced_tag_left .tagcloud .link
+{
 	display:block;
+	color:#0000ff;
 	font-size:12px;
 	width:100%;
+	margin-top:2px;
 }
+
+#catalogue .head .advanced_tag .advanced_tag_left .tagcloud .link a
+{
+	padding-left: 2px;
+	padding-right: 2px;
+	padding-bottom: 5px;
+	margin-top:5px;
+	margin-left:1px;
+	margin-right:1px;
+}
+
+#catalogue .head .advanced_tag .advanced_tag_left .tagcloud .link span
+{
+	border: 1px solid #BBBBBB;
+	background-color: #DDEEFF;
+	padding-left: 2px;
+	padding-right: 2px;
+	padding-bottom: 3px;
+	margin-top:5px;
+}
+
 
 #catalogue .head .advanced_tag .advanced_tag_right {
 	padding-top: 10px;

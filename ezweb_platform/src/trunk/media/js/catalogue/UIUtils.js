@@ -61,6 +61,7 @@ UIUtils.search = 'false';
 UIUtils.searchValue = '';
 UIUtils.searchCriteria = '';
 UIUtils.counter=0;
+UIUtils.globalTags='all';
 
 UIUtils.addResource = function(url, paramName, paramValue) {
 	var newResourceOnSuccess = function (response) {

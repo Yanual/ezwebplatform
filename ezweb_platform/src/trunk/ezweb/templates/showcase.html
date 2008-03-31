@@ -64,8 +64,9 @@
 				<div class='tagcloud'>
 					<div class='title'>{% trans "Tagcloud" %} </div>
 					<div id='view_global_tags_links' class='link'>
-						<a class="header_link" href='javascript:CatalogueFactory.getInstance().changeGlobalTagcloud("mytags");'>{% trans "View my tags" %}</a>
-						<a class="header_link" href='javascript:CatalogueFactory.getInstance().changeGlobalTagcloud("others");'>{% trans "View others tags" %}</a>
+						<span>{% trans "All tags" %}  </span>
+						<a href='javascript:CatalogueFactory.getInstance().changeGlobalTagcloud("mytags");'>{% trans "My tags" %} </a>
+						<a href='javascript:CatalogueFactory.getInstance().changeGlobalTagcloud("common");'>{% trans "Common tags" %}</a>
 					</div>
 					<div id='global_tagcloud' class='tags'></div>
 				</div>
