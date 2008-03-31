@@ -358,9 +358,11 @@ UIUtils.searchGeneric = function(url, param, criteria) {
 	var opManager = OpManagerFactory.getInstance();
 	
 	if (param == ""){
-		alert(gettext ("Indicate a criteria in search formulary"));
+		$('header_always_error').innerHTML = "<img src='/ezweb/images/ico_error_mini.gif'></img>" + gettext ("Indicate a criteria in search formulary");
+		$('header_always_error').style.display = 'block';
 	}
-	else{ 
+	else{
+		$('header_always_error').style.display = 'none';
 		if (UIUtils.balloonResource)
 		{
 			CatalogueFactory.getInstance().getResource(UIUtils.balloonResource).closeTagcloudBalloon();
