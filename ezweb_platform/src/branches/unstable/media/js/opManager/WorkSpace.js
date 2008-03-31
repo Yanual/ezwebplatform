@@ -85,18 +85,13 @@ function WorkSpace (workSpaceState) {
 		PersistenceEngineFactory.getInstance().send_get(workSpaceUrl, this, loadWorkSpace, onError);
 	}
 	
-	WorkSpace.prototype.unmarkCommonTabs = function() {
-		$("wiring_tab").className = "tab";
-		$("showcase_tab").className = "tab";
-	}
-	
 	WorkSpace.prototype.showWiring = function() {
 		this.hide();
 		this.wiringInterface.show();
 	}
-	
-	WorkSpace.prototype.hide = function() {
-		this.unmarkCommonTabs();
+		
+	WorkSpace.prototype.hide = function() {		
+		this.wiringInterface.hide();
 		
 		var tabList = this.tabInstances.keys();
 		
@@ -107,9 +102,7 @@ function WorkSpace (workSpaceState) {
 		}
 	}
 	
-	WorkSpace.prototype.show = function() {
-		this.unmarkCommonTabs();
-		
+	WorkSpace.prototype.show = function() {		
 		var tabList = this.tabInstances.keys();
 		
 		for (var i=0; i<tabList.length; i++) {
@@ -119,15 +112,13 @@ function WorkSpace (workSpaceState) {
 		}
 	}
 	
-	WorkSpace.prototype.setTab = function(tabName) {
-		this.unmarkCommonTabs();
-		
+	WorkSpace.prototype.setTab = function(tabName) {		
 		this.visibleTab = this.tabInstances[tabName];
 		this.hide();
 		this.visibleTab.show();
 	}
 	
-	WorkSpace.prototype.getVisibleTab = function(tabName) {
+	WorkSpace.prototype.getVisibleTab = function() {
 		return this.visibleTab;
 	}
 	    
@@ -142,4 +133,6 @@ function WorkSpace (workSpaceState) {
 	this.loaded = false;
 	this.wiringLayer = null;
 	this.visibleTab = null;
+	
+	
 }     	

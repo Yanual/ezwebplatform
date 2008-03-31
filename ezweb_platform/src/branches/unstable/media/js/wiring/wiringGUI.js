@@ -75,6 +75,10 @@ function WiringInterface(wiringDivName, wiring) {
 		this.wiringElement.setStyle({'zIndex' : 2, 'display': 'block'});
 		$("wiring_tab").className = "tab current";
 	}
+	
+	WiringInterface.prototype.hide = function (){
+		this.wiringElement.setStyle({'zIndex' : 1, 'display': 'block'});
+	}
 
 	WiringInterface.prototype.unloaded = function (){
 	    this.disabled_all = true;

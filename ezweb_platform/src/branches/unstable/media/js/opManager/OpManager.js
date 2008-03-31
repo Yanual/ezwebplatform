@@ -95,7 +95,17 @@ var OpManagerFactory = function () {
 		this.currentInterface = "dragboard"
 		
 		this.loadCompleted = false;
-
+		
+		// Tabs managed by OpManager: {showcase_tab, wiring_tab}
+		// Remaining tabs managed by WorkSpaces!! 
+		// They must be assigned after initialization! With user events!
+		this.showCaseTab = null;
+		this.wiringTab = null;
+		
+		// Container managed by OpManager: {showcase_tab}
+		// Remaining containers managed by WorkSpaces!!
+		this.showCase = null;
+		
 		// Variables for controlling the collection of wiring and dragboard instances of a user
 		this.workSpaceInstances = new Hash();
 		this.activeWorkSpace;
@@ -104,15 +114,32 @@ var OpManagerFactory = function () {
 		// ****************
 		// PUBLIC METHODS 
 		// ****************
+		
+		OpManager.prototype.unMarkGlobalTabs = function () {
+			if (!this.showCaseTab) {
+				this.showCaseTab = $('showcase_tab');
+				this.showCase = $('showcase_container');
+				
+				this.wiringTab = $('wiring_tab');
+			}
+			
+			this.showCaseTab.className = 'tab';
+			this.wiringTab.className = 'tab';
+			this.showCase.setStyle({'display': 'block', 'zIndex': 1});
+		}
+		
 		OpManager.prototype.show_wiring = function () {
+			this.unMarkGlobalTabs();
 		    this.activeWorkSpace.showWiring();
 		}
 		
 		OpManager.prototype.show_catalogue = function () {
+			this.unMarkGlobalTabs();
 			this.activeWorkSpace.hide();
 			
-			$("showcase_container").setStyle({"display": "block", "zIndex" : "2"});
-			$("showcase_tab").className = "tab current";
+			this.showCaseTab.className = 'tab current';
+			this.showCase.setStyle({'display': 'block', 'zIndex': 2});
+			
 		}
 		
 		OpManager.prototype.changeActiveWorkSpace = function (workSpace) {
@@ -122,6 +149,7 @@ var OpManagerFactory = function () {
 		}			
 
 		OpManager.prototype.changeVisibleTab = function (tabName) {
+			this.unMarkGlobalTabs();
 		    this.activeWorkSpace.setTab(tabName);
 		    this.activeDragboard = this.activeWorkSpace.getVisibleTab().getDragboard();
 		}

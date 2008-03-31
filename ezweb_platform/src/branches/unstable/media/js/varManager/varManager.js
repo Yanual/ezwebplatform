@@ -91,7 +91,6 @@ function VarManager (workSpaceInfo) {
 		}
 		
 		loaded = true;
-		opManager.continueLoadingSingletonModules(Modules.prototype.VAR_MANAGER);
 	}
 	
 	VarManager.prototype.writeSlot = function (iGadgetId, slotName, value) {
