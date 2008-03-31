@@ -40,17 +40,17 @@ from django.conf.urls.defaults import *
 from django_restapi.model_resource import Collection
 from django_restapi.responder import *
 
-from tabspace.views import *
+from workspace.views import *
 
-urlpatterns = patterns('tabspace.views',
+urlpatterns = patterns('workspace.views',
 
-    # TabSpace
-    (r'^[/]?$', TabSpaceCollection(permitted_methods=('GET',))),
-    (r'^/((?P<tabspace_id>[-ÑñáéíóúÁÉÍÓÚ\w]+)[/]?)?$',
-	    TabSpaceEntry(permitted_methods=('GET', 'POST', 'PUT', 'DELETE',))),
+    # WorkSpace
+    (r'^[/]?$', WorkSpaceCollection(permitted_methods=('GET',))),
+    (r'^/((?P<workspace_id>[-ÑñáéíóúÁÉÍÓÚ\w]+)[/]?)?$',
+	    WorkSpaceEntry(permitted_methods=('GET', 'POST', 'PUT', 'DELETE',))),
     # Tab
-    (r'^/((?P<tabspace_id>\d+)/tab(s)?[/]?)?$',
+    (r'^/((?P<workspace_id>\d+)/tab(s)?[/]?)?$',
         TabCollection(permitted_methods=('GET',))),
-    (r'^/((?P<tabspace_id>\d+)/tab(s)?/(?P<tab_id>[-ÑñáéíóúÁÉÍÓÚ\w]+)[/]?)?$',
+    (r'^/((?P<workspace_id>\d+)/tab(s)?/(?P<tab_id>[-ÑñáéíóúÁÉÍÓÚ\w]+)[/]?)?$',
         TabEntry(permitted_methods=('GET', 'POST', 'PUT', 'DELETE',))),
 )

@@ -56,7 +56,7 @@ from commons.logs import log
 from commons.utils import get_xml_error, json_encode
 
 from gadget.models import Gadget, VariableDef
-from tabspace.models import Tab
+from workspace.models import Tab
 from igadget.models import *
 
 def SaveIGadget(igadget, user, tab):
@@ -143,18 +143,18 @@ def UpdateIGadget(igadget, user, tab):
     position.save()  
 
 class IGadgetCollection(Resource):
-    def read(self, request, tabspace_id, tab_id):
+    def read(self, request, workspace_id, tab_id):
         user = get_user_authentication(request)
         
         data_list = {}
-        igadget = IGadget.objects.filter(tab__tabspace__user=user, tab__tabspace__pk=tabspace_id, tab__pk=tab_id)
+        igadget = IGadget.objects.filter(tab__workspace__user=user, tab__workspace__pk=workspace_id, tab__pk=tab_id)
         data = serializers.serialize('python', igadget, ensure_ascii=False)
         data_list['iGadgets'] = [get_igadget_data(d) for d in  data]
 
         return HttpResponse(json_encode(data_list), mimetype='application/json; charset=UTF-8')
 
     @transaction.commit_manually
-    def create(self, request, tabspace_id, tab_id):
+    def create(self, request, workspace_id, tab_id):
         user = get_user_authentication(request)
         
         if not request.has_key('igadgets'):
@@ -164,7 +164,7 @@ class IGadgetCollection(Resource):
         received_json = request.POST['igadgets']
 	    
         try:
-            tab = Tab.objects.get(tabspace__user=user, tabspace__pk=tabspace_id, pk=tab_id) 
+            tab = Tab.objects.get(workspace__user=user, workspace__pk=workspace_id, pk=tab_id) 
             received_data = eval(received_json)
             igadgets = received_data.get('iGadgets')
             for igadget in igadgets:
@@ -183,7 +183,7 @@ class IGadgetCollection(Resource):
 
 
     @transaction.commit_manually
-    def update(self, request, tabspace_id, tab_id):
+    def update(self, request, workspace_id, tab_id):
         user = get_user_authentication(request)
 
         if not request.PUT.has_key('igadgets'):
@@ -193,7 +193,7 @@ class IGadgetCollection(Resource):
         received_json = request.PUT['igadgets']
         
         try:
-            tab = Tab.objects.get(tabspace__user=user, tabspace__pk=tabspace_id, pk=tab_id) 
+            tab = Tab.objects.get(workspace__user=user, workspace__pk=workspace_id, pk=tab_id) 
             received_data = eval(received_json)
             igadgets = received_data.get('iGadgets')
             for igadget in igadgets:
@@ -211,16 +211,16 @@ class IGadgetCollection(Resource):
             return HttpResponseServerError(get_xml_error(msg), mimetype='application/xml; charset=UTF-8')
 
 class IGadgetEntry(Resource):
-    def read(self, request, tabspace_id, tab_id, igadget_id):
+    def read(self, request, workspace_id, tab_id, igadget_id):
         user = get_user_authentication(request)
         
-        igadget = get_list_or_404(IGadget, tab__tabspace__user=user, tab__tabspace__pk=tabspace_id, tab__pk=tab_id, pk=igadget_id)
+        igadget = get_list_or_404(IGadget, tab__workspace__user=user, tab__workspace__pk=workspace_id, tab__pk=tab_id, pk=igadget_id)
         data = serializers.serialize('python', igadget, ensure_ascii=False)
         igadget_data = get_igadget_data(data[0])
         return HttpResponse(json_encode(igadget_data), mimetype='application/json; charset=UTF-8')
     
     @transaction.commit_on_success
-    def create(self, request, tabspace_id, tab_id, igadget_id):
+    def create(self, request, workspace_id, tab_id, igadget_id):
         user = get_user_authentication(request)
 
         if not request.has_key('igadget'):
@@ -229,11 +229,11 @@ class IGadgetEntry(Resource):
         try:
             received_json = request.POST['igadget']
             igadget = eval(received_json)
-            tab = Tab.objects.get(tabspace__user=user, tabspace__pk=tabspace_id, pk=tab_id) 
+            tab = Tab.objects.get(workspace__user=user, workspace__pk=workspace_id, pk=tab_id) 
             SaveIGadget(igadget, user, tab)
             return HttpResponse('ok')
-        except TabSpace.DoesNotExist:
-            msg = _('refered tabspace %(tabspace_id)s does not exist.')
+        except WorkSpace.DoesNotExist:
+            msg = _('refered workspace %(workspace_id)s does not exist.')
             log(msg, request)
             return HttpResponseBadRequest(get_xml_error(msg))
         except Exception, e:
@@ -244,7 +244,7 @@ class IGadgetEntry(Resource):
 
 
     @transaction.commit_on_success
-    def update(self, request, tabspace_id, tab_id, igadget_id):
+    def update(self, request, workspace_id, tab_id, igadget_id):
         user = get_user_authentication(request)
 
         if not request.PUT.has_key('igadget'):
@@ -253,7 +253,7 @@ class IGadgetEntry(Resource):
         try:
             received_json = request.PUT['igadget']
             igadget = eval(received_json)
-            tab = Tab.objects.get(tabspace__user=user, tabspace__pk=tabspace_id, pk=tab_id) 
+            tab = Tab.objects.get(workspace__user=user, workspace__pk=workspace_id, pk=tab_id) 
             UpdateIGadget(igadget, user, tab)
             return HttpResponse('ok')
         except Tab.DoesNotExist:
@@ -268,11 +268,11 @@ class IGadgetEntry(Resource):
 
 
     @transaction.commit_on_success
-    def delete(self, request, tabspace_id, tab_id, igadget_id):
+    def delete(self, request, workspace_id, tab_id, igadget_id):
         user = get_user_authentication(request)
         
         # Gets Igadget, if it does not exist, a http 404 error is returned
-        igadget = get_object_or_404(IGadget, tab__tabspace__user=user, tab__tabspace__pk=tabspace_id, tab__pk=tab_id, pk=igadget_id)
+        igadget = get_object_or_404(IGadget, tab__workspace__user=user, tab__workspace__pk=workspace_id, tab__pk=tab_id, pk=igadget_id)
         
         # Delete all IGadget's variables
         variables = Variable.objects.filter(igadget=igadget)
@@ -287,17 +287,17 @@ class IGadgetEntry(Resource):
         
 
 class IGadgetVariableCollection(Resource):
-    def read(self, request, tabspace_id, tab_id, igadget_id):
+    def read(self, request, workspace_id, tab_id, igadget_id):
         user = get_user_authentication(request)
         
-        tab = Tab.objects.get(tabspace__user=user, tabspace__pk=tabspace_id, pk=tab_id) 
+        tab = Tab.objects.get(workspace__user=user, workspace__pk=workspace_id, pk=tab_id) 
         variables = Variable.objects.filter(igadget__tab=tab, igadget__id=igadget_id)
         data = serializers.serialize('python', variables, ensure_ascii=False)
         vars_data = [get_variable_data(d) for d in data]
         return HttpResponse(json_encode(vars_data), mimetype='application/json; charset=UTF-8')
 
     @transaction.commit_manually
-    def update(self, request, tabspace_id, tab_id, igadget_id):
+    def update(self, request, workspace_id, tab_id, igadget_id):
         user = get_user_authentication(request)
 
         # Gets JSON parameter from request
@@ -308,7 +308,7 @@ class IGadgetVariableCollection(Resource):
         
         try:
             received_variables = eval(variables_JSON)
-            tab = Tab.objects.get(tabspace__user=user, tabspace__pk=tabspace_id, pk=tab_id) 
+            tab = Tab.objects.get(workspace__user=user, workspace__pk=workspace_id, pk=tab_id) 
             server_variables = Variable.objects.filter(igadget__tab=tab)
             
             # Gadget variables collection update
@@ -331,19 +331,19 @@ class IGadgetVariableCollection(Resource):
         return HttpResponse("<ok>", mimetype='text/xml; charset=UTF-8')
 
 class IGadgetVariable(Resource):
-    def read(self, request, tabspace_id, tab_id, igadget_id, var_id):
+    def read(self, request, workspace_id, tab_id, igadget_id, var_id):
         user = get_user_authentication(request)
         
-        tab = Tab.objects.get(tabspace__user=user, tabspace__pk=tabspace_id, pk=tab_id) 
+        tab = Tab.objects.get(workspace__user=user, workspace__pk=workspace_id, pk=tab_id) 
         variable = get_list_or_404(Variable, igadget__tab=tab, igadget__pk=igadget_id, vardef__pk=var_id)
         data = serializers.serialize('python', variable, ensure_ascii=False)
         var_data = get_variable_data(data[0])
         return HttpResponse(json_encode(var_data), mimetype='application/json; charset=UTF-8')
     
-    def create(self, request, tabspace_id, tab_id, igadget_id, var_id):
-        return self.update(request, tabspace_id, tab_id, igadget_id, var_id)
+    def create(self, request, workspace_id, tab_id, igadget_id, var_id):
+        return self.update(request, workspace_id, tab_id, igadget_id, var_id)
     
-    def update(self, request, tabspace_id, tab_id, igadget_id, var_id):
+    def update(self, request, workspace_id, tab_id, igadget_id, var_id):
         user = get_user_authentication(request)
         
         # Gets value parameter from request
@@ -352,7 +352,7 @@ class IGadgetVariable(Resource):
         
         new_value = request.PUT['value']
         
-        tab = Tab.objects.get(tabspace__user=user, tabspace__pk=tabspace_id, pk=tab_id) 
+        tab = Tab.objects.get(workspace__user=user, workspace__pk=workspace_id, pk=tab_id) 
         variable = get_object_or_404(Variable, igadget__tab=tab, igadget__pk=igadget_id, vardef__pk=var_id)
         try:
             variable.value = new_value

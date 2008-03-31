@@ -44,11 +44,12 @@ from gadget.models import Template, Gadget, XHTML, GadgetContext, ExternalContex
 from igadget.models import Variable, VariableDef, Position, IGadget
 from connectable.models import In, Out, InOut
 from context.models import Concept, ConceptName
-from tabspace.models import Tab, TabSpace
+from workspace.models import Tab, WorkSpace
 
 def get_wiring_variable_data(var, ig):
     res_data = {}
 
+    res_data['pk'] = var.vardef.pk
     res_data['name'] = var.vardef.name
     res_data['aspect'] = var.vardef.aspect
     res_data['type'] = var.vardef.type
@@ -194,12 +195,12 @@ def get_workspace_data(data):
         data_ret['active'] = "false"
     return data_ret
 
-def get_global_workspace_data(data, tabSpaceDAO):
+def get_global_workspace_data(data, workSpaceDAO):
     data_ret = {}
     data_ret['workspace'] = get_workspace_data(data)  
     
     # Tabs processing              
-    tabs = get_list_or_404(Tab, tabspace=tabSpaceDAO)  
+    tabs = get_list_or_404(Tab, workspace=workSpaceDAO)  
     data = serializers.serialize('python', tabs, ensure_ascii=False)
     tabs_data = [get_tab_data(d) for d in data]
     
@@ -213,7 +214,7 @@ def get_global_workspace_data(data, tabSpaceDAO):
         tab['igadgetList'] = igadget_data
         
     #Channel processing
-    inouts = InOut.objects.filter(tabspace=tabSpaceDAO)  
+    inouts = InOut.objects.filter(workspace=workSpaceDAO)  
     data = serializers.serialize('python', inouts, ensure_ascii=False)
     inout_data = [get_inout_data(d) for d in data]
     
@@ -261,7 +262,8 @@ def get_variable_data(data):
     data_fields = data['fields']
     
     var_def = VariableDef.objects.get(id=data_fields['vardef'])
-   
+    
+    data_ret['pk'] = var_def.pk
     data_ret['name'] = var_def.name
     data_ret['aspect'] = var_def.aspect
     

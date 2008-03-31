@@ -41,7 +41,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 
 from igadget.models import Variable
-from tabspace.models import TabSpace
+from workspace.models import WorkSpace
 
 class InOut(models.Model):
     
@@ -49,7 +49,7 @@ class InOut(models.Model):
     value = models.CharField(_('Value'), max_length=100, blank=True, null=True)
     friend_code = models.CharField(_('Friend code'), max_length=30, blank=True, null=True)
 
-    tabspace = models.ForeignKey(TabSpace, verbose_name=_('TabSpace'))
+    workspace = models.ForeignKey(WorkSpace, verbose_name=_('WorkSpace'))
         
     class Admin:
         pass

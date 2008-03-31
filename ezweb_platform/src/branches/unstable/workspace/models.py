@@ -46,7 +46,7 @@ from django.utils.translation import ugettext as  _
 
 from gadget.models import Gadget, VariableDef
 
-class TabSpace(models.Model):
+class WorkSpace(models.Model):
     
     name = models.CharField(_('Name'), max_length=30)
     active = models.BooleanField(_('Active'))
@@ -67,10 +67,10 @@ class Tab(models.Model):
     name = models.CharField(_('Name'), max_length=30)
     visible = models.BooleanField(_('Visible'))
     
-    tabspace = models.ForeignKey(TabSpace, verbose_name=_('TabSpace'))
+    workspace = models.ForeignKey(WorkSpace, verbose_name=_('WorkSpace'))
 
     class Meta:
-        unique_together = ('tabspace', 'name')
+        unique_together = ('workspace', 'name')
 
     class Admin:
         pass

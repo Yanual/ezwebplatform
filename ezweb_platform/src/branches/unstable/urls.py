@@ -60,14 +60,14 @@ urlpatterns = patterns('',
     # Gadgets
     (r'^user/(?P<user_name>[_\w]+)/gadget(s)?', include('gadget.urls')),
 
-    # TabSpaces
-    (r'^workspace(s)?', include('tabspace.urls')),
+    # WorkSpaces
+    (r'^workspace(s)?', include('workspace.urls')),
 
     # IGadgets
-    (r'^workspace(s)?/(?P<tabspace_id>\d+)/tab(s)?/(?P<tab_id>\d+)/igadget(s)?', include('igadget.urls')),
+    (r'^workspace(s)?/(?P<workspace_id>\d+)/tab(s)?/(?P<tab_id>\d+)/igadget(s)?', include('igadget.urls')),
 
     # Connectables
-    (r'^workspace(s)?/(?P<tabspace_id>\d+)/connectable(s)?', include('connectable.urls')),
+    (r'^workspace(s)?/(?P<workspace_id>\d+)/connectable(s)?', include('connectable.urls')),
     
     # context
     (r'^user/(?P<user_name>[_\w]+)/context(s)?', include('context.urls')),

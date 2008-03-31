@@ -45,7 +45,7 @@ from django.contrib.contenttypes import generic
 from django.utils.translation import ugettext as  _
 
 from gadget.models import Gadget, VariableDef
-from tabspace.models import Tab
+from workspace.models import Tab
 
 class Position(models.Model):
 

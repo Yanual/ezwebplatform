@@ -54,36 +54,36 @@ from commons.utils import json_encode
 
 from gadget.models import VariableDef
 from igadget.models import IGadget, Variable
-from tabspace.models import TabSpace, Tab
+from workspace.models import WorkSpace, Tab
 from connectable.models import In, Out, InOut
 
 class ConnectableEntry(Resource):
-    def read(self, request, tabspace_id):
+    def read(self, request, workspace_id):
         user = get_user_authentication(request)
         wiring = {}
 
         try:
-            igadgets = IGadget.objects.filter(tab__tabspace__pk=tabspace_id)
+            igadgets = IGadget.objects.filter(tab__workspace__pk=workspace_id)
             igadget_data_list = get_wiring_data(igadgets)
             wiring['iGadgetList'] = igadget_data_list
             
-            tabs = Tab.objects.filter(tabspace__pk=tabspace_id)
+            tabs = Tab.objects.filter(workspace__pk=workspace_id)
             tab_data = serializers.serialize('python', tabs, ensure_ascii=False)
             wiring['tabList'] = [get_tab_data(d) for d in tab_data]
             
-        except TabSpace.DoesNotExist:
+        except WorkSpace.DoesNotExist:
             wiring['iGadgetList'] = []
             wiring['tabList'] = []
         
         # InOut list
-        inouts = InOut.objects.filter(tabspace__pk=tabspace_id)
+        inouts = InOut.objects.filter(workspace__pk=workspace_id)
         inout_data = serializers.serialize('python', inouts, ensure_ascii=False)
         wiring['inOutList'] = [get_inout_data(d) for d in inout_data]
         
         return HttpResponse(json_encode(wiring), mimetype='application/json; charset=UTF-8')
     
     @transaction.commit_manually
-    def create(self, request, tabspace_id):
+    def create(self, request, workspace_id):
         user = get_user_authentication(request)
 
         # Gets all needed parameters from request
@@ -95,7 +95,7 @@ class ConnectableEntry(Resource):
         try:
             igadgets = json['iGadgetList']
             for igadget in igadgets:
-                igadget_object = IGadget.objects.get(tab__tabspace__pk=tabspace_id, code=igadget['code'])
+                igadget_object = IGadget.objects.get(tab__workspace__pk=workspace_id, code=igadget['code'])
 
                 # Save all IGadget connections (in and out variables)
                 for var in igadget['list']:
@@ -116,34 +116,34 @@ class ConnectableEntry(Resource):
                         out_object.save()
             
             # Delete channels
-            InOut.objects.filter(tabspace__pk=tabspace_id).delete()
+            InOut.objects.filter(workspace__pk=workspace_id).delete()
 
             # Saves all channels
             for inout in json['inOutList']:
                 inout_object = None
-                inout_object = InOut(tabspace__pk=tabspace_id, name=inout['name'], friend_code=inout['friend_code'], value=inout['value'])
+                inout_object = InOut(workspace__pk=workspace_id, name=inout['name'], friend_code=inout['friend_code'], value=inout['value'])
                 inout_object.save()
                 
                 # Saves all channel inputs
                 for ins in inout['ins']:            
-                    igadget_object = IGadget.objects.get(tab__tabspace__pk=tabspace_id, code=ins['igadget'])
+                    igadget_object = IGadget.objects.get(tab__workspace__pk=workspace_id, code=ins['igadget'])
                     var_object = Variable.objects.get(vardef__name=ins['name'], igadget=igadget_object)
                     connected_in = In.objects.get(variable=var_object)
                     connected_in.inout.add(inout_object)
                     
                 # Saves all channel outputs
                 for out in inout['outs']:            
-                    igadget_object = IGadget.objects.get(tab__tabspace__pk=tabspace_id, code=out['igadget'])
+                    igadget_object = IGadget.objects.get(tab__workspace__pk=workspace_id, code=out['igadget'])
                     var_object = Variable.objects.get(vardef__name=out['name'], igadget=igadget_object)
                     connected_out = Out.objects.get(variable=var_object)
                     connected_out.inout.add(inout_object)
                                           
             transaction.commit()
             return HttpResponse ('ok')
-        except TabSpace.DoesNotExist:
+        except WorkSpace.DoesNotExist:
             transaction.rollback()
 
-            msg = _('referred tabspace %(tabspace_name)s does not exist.') % {'tabspace_name': tabspace_name}
+            msg = _('referred workspace %(workspace_name)s does not exist.') % {'workspace_name': workspace_name}
             log(msg, request)
             return HttpResponseBadRequest(get_xml_error(msg));
 
