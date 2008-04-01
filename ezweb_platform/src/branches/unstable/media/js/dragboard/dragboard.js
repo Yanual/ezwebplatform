@@ -1314,27 +1314,27 @@ DragboardStyle.prototype.fromVCellsToPixels = function(cells) {
 
 DragboardStyle.prototype.fromHCellsToPixels = function(cells) {
 	// TODO
-	var tmp = cells * 0.30;
+	var tmp = cells * 0.32;
 	if (cells > 1)
-	  tmp += ((cells - 1) * 0.02);
+	  tmp += ((cells - 1) * 0.01);
 	return (this.dragboardElement.offsetWidth * tmp);
 }
 
 DragboardStyle.prototype.fromHCellsToPercentage = function(cells) {
 	// TODO
-	var tmp = cells * 30;
+	var tmp = cells * 32;
 	if (cells > 1)
-	  tmp += (cells - 1) * 2;
+	  tmp += (cells - 1) * 1;
 	return tmp;
 }
 
 DragboardStyle.prototype.getColumnOffsetLeftInPixels = function(column) {
-	var percentage = 3 + (column * 32); // TODO this is only for 3 columns
+	var percentage = 1 + (column * 33); // TODO this is only for 3 columns
 	return ((this.dragboardElement.offsetWidth * percentage) / 100);
 }
 
 DragboardStyle.prototype.getColumnOffsetLeft = function(column) {
-	return (3 + (column * 32)) + "%"; // TODO this is only for 3 columns
+	return (1 + (column * 33)) + "%"; // TODO this is only for 3 columns
 }
 
 /////////////////////////////////////
