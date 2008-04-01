@@ -416,6 +416,9 @@ UIUtils.removeAllGlobalTags = function() {
 		parentHTML.removeChild(parentHTML.childNodes[0]);
 	}
 	$("global_tag_alert").style.display='none';
+	$("new_global_tag_text_input").value="";
+	$("new_global_tag_text_input").size=5;
+	$("new_global_tag_text_input").focus();
 	
 }
 
@@ -426,6 +429,25 @@ UIUtils.removeTagUser = function(tag,id) {
     var tagger = resource.getTagger();
     var resourceURI = "/" + resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion() + "/" + tag;
 	tagger.removeTagUser(URIs.DELETE_TAG, resourceURI,id);		
+}
+
+UIUtils.removeGlobalTagUser = function(tag) {	
+	
+	var resources = CatalogueFactory.getInstance().getSelectedResources();
+	for (var i=0; i<resources.length; i++) {
+		var resource = CatalogueFactory.getInstance().getResource(resources[i]);
+		var tags = resource.getTags();
+		for (var j=0;j<tags.length ; j++)
+		{
+			if (tag == tags[j].getValue())
+			{
+				var tagger = resource.getTagger();
+				var resourceURI = "/" + resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion() + "/" + tag;
+				tagger.removeTagUser(URIs.DELETE_TAG, resourceURI,resources[i]);
+				//break;
+			}
+		}
+	}
 }
 
 UIUtils.sendTags = function() {
@@ -443,12 +465,12 @@ UIUtils.sendTags = function() {
 
 UIUtils.sendGlobalTags = function() {
 	//TBD
-	/*
+	var resources = CatalogueFactory.getInstance().getSelectedResources();
 	var resource;
 	var tagger;
 	var resourceURI;
-	for(var i=0; i<CatalogueFactory.getInstance().selectedResources.length;i++){
-		resource = CatalogueFactory.getInstance().getResource(CatalogueFactory.getInstance().selectedResource[i]);
+	for(var i=0; i<resources.length; i++){
+		resource = CatalogueFactory.getInstance().getResource(resources[i]);
 		tagger = resource.getTagger();
 		resourceURI = "/" + resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion();
 		
@@ -459,9 +481,13 @@ UIUtils.sendGlobalTags = function() {
 		}
 		//TODO Aviso de si todo ha ido bien o no
 		
-		tagger.sendGlobalTags(URIs.POST_RESOURCE_TAGS, resourceURI, resource);
+		tagger.sendTags(URIs.POST_RESOURCE_TAGS, resourceURI, resource);
 	}
- 	*/
+	var parentHTML = $("my_global_tags");
+	while(parentHTML.childNodes.length > 1)
+	{
+		parentHTML.removeChild(parentHTML.childNodes[0]);
+	}
 }
 
 UIUtils.deleteGadget = function(id) {

@@ -203,7 +203,6 @@ var CatalogueFactory  = function () {
 								}
 							}
 						}
-	
 						var auxGlobalTags = [];
 						var counter=0;
 						for(var k=0;k<globalTags.length; k++){
@@ -219,14 +218,15 @@ var CatalogueFactory  = function () {
 					var tags=[];
 					for (var i=0; i<selectedResources.length; i++){
 						auxTags = auxTags.concat(CatalogueFactory.getInstance().getResource(selectedResources[i]).getTags());
-
 					}
 					for (var i=0; i<auxTags.length ; i++) {
-						tags.push(auxTags[i]);
-						for (var j=0; j<tags.length-1 ; j++) {
-							if ((auxTags[i].getValue() == tags[j].getValue()) || (auxTags[i].getAdded_by() == 'No')) {
-								tags.pop();
-								break;
+						if (auxTags[i].getAdded_by() == 'Yes') {
+							tags.push(auxTags[i]);
+							for (var j=0; j<tags.length-1 ; j++) {
+								if (auxTags[i].getValue() == tags[j].getValue()) {
+									tags.pop();
+									break;
+								}
 							}
 						}
 					}
@@ -285,9 +285,7 @@ var CatalogueFactory  = function () {
 				}
 				this.paginate(items);
 				this.orderby(items);
-				this.updateGlobalTags();
-				
-				//UIUtils.removeAllGlobalTags();
+
 				document.getElementById("global_tagcloud").innerHTML = '';
 			}
 
@@ -416,28 +414,20 @@ var CatalogueFactory  = function () {
 	
 	var _globalTagsToTagcloud = function(){
 		var tagsHTML = '';
-/*
-		for (var i=0; i<globalTags.length; i++)
-		{
-			if(globalTags[i].getAdded_by() == 'Yes' && (option.tags=='all' || option.tags=='mytags')){  
 
-				var jsCall = 'javascript:UIUtils.removeTagUser("' + globalTags[i].getValue() + '","'+id+'");';
-				tagsHTML += ("<a title='" + gettext ('Delete tag') + "' href='" + jsCall + "' ><img id='"+id+"_deleteIcon_"+i+"_"+loc+"' onMouseOver=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/delete.png';\" onMouseOut=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/cancel_gray.png';\" src='/ezweb/images/cancel_gray.png' border=0 name=op1></a>"+
-					"<span class='multiple_size_tag'>" + globalTags[i].tagToTypedHTML(id) + ((i<(globalTags.length-1))?",":"") + "</span>");
+		if (UIUtils.globalTags == "mytags") {
+			for (var i=0; i<globalTags.length; i++) {
+				var jsCall = 'javascript:UIUtils.removeGlobalTagUser("' + globalTags[i].getValue() + '");';
+				tagsHTML += ("<a title='" + gettext ('Delete tag') + "' href='" + jsCall + "' ><img id='deleteIcon_"+i+"' onMouseOver=\"getElementById('deleteIcon_"+i+"').src='/ezweb/images/delete.png';\" onMouseOut=\"getElementById('deleteIcon_"+i+"').src='/ezweb/images/cancel_gray.png';\" src='/ezweb/images/cancel_gray.png' border=0 name=op1></a>"+
+							"<span class='multiple_size_tag'>" + globalTags[i].tagToTypedHTML({tags:'multiple'}) + ((i<(globalTags.length-1))?",":"") + "</span>");
 			}
-			else{
-				if (globalTags[i].getAdded_by() == 'No' && (option.tags=='all' || option.tags=='others'))
-				{
-					tagsHTML += ("<span class='multiple_size_tag'>" + globalTags[i].tagToTypedHTML(id) + ((i<(globalTags.length-1))?",":"") + "</span>");		  
-				}
+			return tagsHTML;
+		} else {
+			for (var i=0; i<globalTags.length; i++) {
+				tagsHTML += ("<span class='multiple_size_tag'>" + globalTags[i].tagToTypedHTML({tags:'multiple'}) + ((i<(globalTags.length-1))?",":"") + "</span>");
 			}
+			return tagsHTML;
 		}
-*/
-		for (var i=0; i<globalTags.length; i++)
-		{
-			tagsHTML += ("<span class='multiple_size_tag'>" + globalTags[i].tagToTypedHTML({tags:'multiple'}) + ((i<(globalTags.length-1))?",":"") + "</span>");
-		}
-		return tagsHTML;
 	}
 
 	}
