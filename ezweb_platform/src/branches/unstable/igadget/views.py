@@ -56,7 +56,7 @@ from commons.logs import log
 from commons.utils import get_xml_error, json_encode
 
 from gadget.models import Gadget, VariableDef
-from workspace.models import Tab
+from workspace.models import Tab, WorkSpace
 from igadget.models import *
 
 def SaveIGadget(igadget, user, tab):
