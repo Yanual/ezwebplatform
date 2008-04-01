@@ -110,31 +110,31 @@ function Wiring (workSpaceGlobalInfo) {
     
     // this method is used in the first version for painting the connections for the user.
     Wiring.prototype.getGadgetsId = function (){
-	var gadgetsId = iGadgetList.keys();
+	var gadgetsId = this.iGadgetList.keys();
 	var result = [];
 
 	// Initialization of igadget template info!
 	// Only done one time!
-	if (!this.igadgetInfoComplete) {
-	    var dragboard = DragboardFactory.getInstance();
-			    
-	    for (var i = 0; i<gadgetsId.length; i++){
-		var gadgetId = gadgetsId[i];
-		var gadget = dragboard.getGadget(gadgetId);
-			    
-		iGadgetList[gadgetId].vendor = gadget.getVendor();
-		iGadgetList[gadgetId].name = gadget.getName();
-		iGadgetList[gadgetId].version = gadget.getVersion();
-	    }
-
-	    this.igadgetInfoComplete = true;
-	}
+//	if (!this.igadgetInfoComplete) {
+//	    var dragboard = DragboardFactory.getInstance();
+//			    
+//	    for (var i = 0; i<gadgetsId.length; i++){
+//		var gadgetId = gadgetsId[i];
+//		var gadget = dragboard.getGadget(gadgetId);
+//			    
+//		this.iGadgetList[gadgetId].vendor = gadget.getVendor();
+//		this.iGadgetList[gadgetId].name = gadget.getName();
+//		this.iGadgetList[gadgetId].version = gadget.getVersion();
+//	    }
+//
+//	    this.igadgetInfoComplete = true;
+//	}
 
 	for (var i = 0; i<gadgetsId.length; i++){
 	    var gadgetId = gadgetsId[i];
 
 	    var iGadget = new Object();
-	    iGadget.name = iGadgetList[gadgetId].name;
+	    iGadget.name = this.iGadgetList[gadgetId].name;
 	    iGadget.id = gadgetId;
 	    result.push(iGadget);
 	}
@@ -143,24 +143,24 @@ function Wiring (workSpaceGlobalInfo) {
     }
 		
     Wiring.prototype.getInOutsId = function (){
-	return copyList.keys();
+	return this.copyList.keys();
     }
 		
     // this method is used in the first version for painting the connections for the user.
     Wiring.prototype.connections = function (channel) {
-	var channel = copyList[channel].ref;
+	var channel = this.copyList[channel].ref;
 	var connections = channel.connections();
 	return connections;
     }
 
     Wiring.prototype.gadgetConnections = function (gadgetId) {
 	var list = [];
-	if (iGadgetList[gadgetId] != undefined){
-	    for (var i = 0;i < iGadgetList[gadgetId].list.length ;i++){
+	if (this.iGadgetList[gadgetId] != undefined){
+	    for (var i = 0;i < this.iGadgetList[gadgetId].list.length ;i++){
 		var item = new Object();
-		item.name = iGadgetList[gadgetId].list[i].name;
-		item.aspect = iGadgetList[gadgetId].list[i].aspect;
-		item.friend_code = iGadgetList[gadgetId].list[i].friend_code;
+		item.name = this.iGadgetList[gadgetId].list[i].name;
+		item.aspect = this.iGadgetList[gadgetId].list[i].aspect;
+		item.friend_code = this.iGadgetList[gadgetId].list[i].friend_code;
 		list.push(item);
 	    }
 	    return list;
@@ -174,18 +174,18 @@ function Wiring (workSpaceGlobalInfo) {
 	var gadget = new Object();
 			
 	if (arguments.length == 2){
-	    if (iGadgetList[iGadgetId] == undefined) {
+	    if (this.iGadgetList[iGadgetId] == undefined) {
 		var events = template.getEvents();
 		var slots = template.getSlots();
 					
 		var itemList = [];
 		gadget["id"] = iGadgetId;
 
-		var gadgetModel = DragboardFactory.getInstance().getGadget(iGadgetId);
+		//var gadgetModel = DragboardFactory.getInstance().getGadget(iGadgetId);
 
-		gadget["vendor"] = gadgetModel.getVendor();
-		gadget["version"] = gadgetModel.getVersion();	
-		gadget["name"] = gadgetModel.getName();	
+		//gadget["vendor"] = gadgetModel.getVendor();
+		//gadget["version"] = gadgetModel.getVersion();	
+		//gadget["name"] = gadgetModel.getName();	
 					
 		// The instance of the iGadget doesn't exist.
 		for (var i = 0; i < events.length; i++){
@@ -208,7 +208,7 @@ function Wiring (workSpaceGlobalInfo) {
 		}
 					
 		gadget["list"] = itemList;
-		iGadgetList[iGadgetId] = gadget;
+		this.iGadgetList[iGadgetId] = gadget;
 		return 0;
 	    }
 	    else{
@@ -243,12 +243,12 @@ function Wiring (workSpaceGlobalInfo) {
 		}
 		gadget["list"].push(connectable);
 	    }
-	    iGadgetList[gadget["id"]] = gadget;
+	    this.iGadgetList[gadget["id"]] = gadget;
 	}
     } 
 		
     Wiring.prototype.removeInstance = function (iGadgetId) {
-	var instance = iGadgetList[iGadgetId];
+	var instance = this.iGadgetList[iGadgetId];
 			
 	if (instance != undefined){
 	    // the iGadget exists in the hash, we have to delete that entrance
@@ -258,7 +258,7 @@ function Wiring (workSpaceGlobalInfo) {
 		// We need to delete every connection with inOut objects
 		list[i].ref.clear();
 	    }
-	    iGadgetList.remove(iGadgetId)
+	    this.iGadgetList.remove(iGadgetId)
 		return 0;
 	}
 	else{
@@ -271,11 +271,11 @@ function Wiring (workSpaceGlobalInfo) {
 	var channel = new Object();			
 	if (!(newChannel instanceof Object)){
 	    // this way is ejecuted when we create a new channel.
-	    if (copyList[newChannel] == undefined){
+	    if (this.copyList[newChannel] == undefined){
 		channel["name"] = newChannel;
 	
 		channel["ref"] = new wInOut(null, newChannel);
-		copyList[newChannel] = channel;
+		this.copyList[newChannel] = channel;
 		return 0;
 	    }
 	    else{
@@ -287,19 +287,19 @@ function Wiring (workSpaceGlobalInfo) {
 	    // this way is ejecuted when channels are added from persistence.
 	    channel["name"] = newChannel["name"];
 	    channel["ref"] = new wInOut(null, null, newChannel);
-	    inOutList[newChannel["name"]] = channel;
+	    this.inOutList[newChannel["name"]] = channel;
 	    return 0;	
 	}
     }
 		
     Wiring.prototype.removeChannel = function (channelName){
-	var channel = copyList[channelName];
+	var channel = this.copyList[channelName];
 
 	if (channel != undefined){
 	    // The selected channel exists
 	    channel.ref.clear();
 				
-	    copyList.remove(channelName);
+	    this.copyList.remove(channelName);
 	    // alert("Channel deleted")
 	    return 0;
 	}
@@ -312,7 +312,7 @@ function Wiring (workSpaceGlobalInfo) {
     Wiring.prototype.viewValue = function (channelName){
 	// this method returns the actual value of the channel if it exits, if doesn't exists returns -1
 	// ***********************
-	var channel = inOutList[channelName];
+	var channel = this.inOutList[channelName];
 			
 	if (channel != undefined){
 	    return channel.ref.getValue();
@@ -322,11 +322,11 @@ function Wiring (workSpaceGlobalInfo) {
 		
     Wiring.prototype.sendEvent = function (iGadgetId, event, value) {
 	// asynchronous
-	var gadget = iGadgetList[iGadgetId];
+	var gadget = this.iGadgetList[iGadgetId];
 	var channelList;
 
 	// Reset modifiedVars variable
-	modifiedVars = []
+	this.modifiedVars = []
 
 	if (gadget != undefined){
 	    // The channel and the gadget selected exist.
@@ -343,7 +343,7 @@ function Wiring (workSpaceGlobalInfo) {
 
 	    channelList = list.setValue(value);
 
-	    return modifiedVars;
+	    return this.modifiedVars;
 	}
 	else {
 	    alert("gadget doesn't exist");
@@ -356,8 +356,8 @@ function Wiring (workSpaceGlobalInfo) {
 	var modVar;
 	var found = false;
 
-	for (j=0; j<modifiedVars.length; j++) {
-	    modVar = modifiedVars[j];
+	for (j=0; j<this.modifiedVars.length; j++) {
+	    modVar = this.modifiedVars[j];
 			
 	    if (modVar.iGadget == varInfo.iGadget && modVar.name == varInfo.name) {
 		modVar.value = varInfo.value;
@@ -367,17 +367,17 @@ function Wiring (workSpaceGlobalInfo) {
 	}
 		    
 	if (found == false) {
-	    modifiedVars.push(varInfo);
+	    this.modifiedVars.push(varInfo);
 	}			    
     }
 		 
     Wiring.prototype.addChannelInput = function () {
 	if (arguments.length == 3){
 	    // Wiring.prototype.addChannelInput = function (idGadgetId, inputName, channelName) {
-	    if (loaded){var channel = copyList[arguments[2]];}
-	    else{var channel = inOutList[arguments[2]];}
+	    if (loaded){var channel = this.copyList[arguments[2]];}
+	    else{var channel = this.inOutList[arguments[2]];}
 				
-	    var gadget = iGadgetList[arguments[0]];
+	    var gadget = this.iGadgetList[arguments[0]];
 
 	    if ((channel != undefined) && (gadget != undefined)){
 		// The channel and the gadget selected exist.
@@ -402,12 +402,12 @@ function Wiring (workSpaceGlobalInfo) {
 	else if (arguments.length == 2){
 	    // Wiring.prototype.addChannelInput = function (inputName, channelName) {
 	    if (loaded){
-		var channel = copyList[arguments[1]];
-		var input = copyList[arguments[0]];	
+		var channel = this.copyList[arguments[1]];
+		var input = this.copyList[arguments[0]];	
 	    }
 	    else{
-		var channel = inOutList[arguments[1]];
-		var input = inOutList[arguments[0]];
+		var channel = this.inOutList[arguments[1]];
+		var input = this.inOutList[arguments[0]];
 	    }
 				
 				
@@ -428,10 +428,10 @@ function Wiring (workSpaceGlobalInfo) {
 			
 	if (arguments.length == 3){
 	    //		Wiring.prototype.addChannelOutput = function (idGadgetId, outputName, channelName) {
-	    if (loaded){var channel = copyList[arguments[2]];}
-	    else{var channel = inOutList[arguments[2]];}
+	    if (loaded){var channel = this.copyList[arguments[2]];}
+	    else{var channel = this.inOutList[arguments[2]];}
 				
-	    var gadget = iGadgetList[arguments[0]];
+	    var gadget = this.iGadgetList[arguments[0]];
 	
 	    if ((channel != undefined) && (gadget != undefined)){
 		// The channel and the gadget selected exist.
@@ -455,12 +455,12 @@ function Wiring (workSpaceGlobalInfo) {
 	if (arguments.length == 2){
 	    //		Wiring.prototype.addChannelOutput = function (outputName, channelName) {
 	    if (loaded){
-		var channel = copyList[arguments[1]];
-		var output = copyList[arguments[0]];	
+		var channel = this.copyList[arguments[1]];
+		var output = this.copyList[arguments[0]];	
 	    }
 	    else{
-		var channel = inOutList[arguments[1]];
-		var output = inOutList[arguments[0]];
+		var channel = this.inOutList[arguments[1]];
+		var output = this.inOutList[arguments[0]];
 	    }
 				
 	    if ((channel != undefined) && (output != undefined)){
@@ -476,10 +476,10 @@ function Wiring (workSpaceGlobalInfo) {
 			
 	//Wiring.prototype.removeChannelInput = function (idGadgetId, inputName, channelName) {
 	if (arguments.length == 3){
-	    if (loaded){var channel = copyList[arguments[2]];}
-	    else{var channel = inOutList[arguments[2]];}
+	    if (loaded){var channel = this.copyList[arguments[2]];}
+	    else{var channel = this.inOutList[arguments[2]];}
 				
-	    var gadget = iGadgetList[arguments[0]];
+	    var gadget = this.iGadgetList[arguments[0]];
 	
 	    if ((channel != undefined) && (gadget != undefined)){
 		// The channel and the gadget selected exist.
@@ -504,12 +504,12 @@ function Wiring (workSpaceGlobalInfo) {
 	if (arguments.length == 2){		
 	    //Wiring.prototype.removeChannelInput = function (inputName, channelName) {
 	    if (loaded){
-		var channel = copyList[arguments[1]];
-		var input = copyList[arguments[0]];	
+		var channel = this.copyList[arguments[1]];
+		var input = this.copyList[arguments[0]];	
 	    }
 	    else{
-		var channel = inOutList[arguments[1]];
-		var input = inOutList[arguments[0]];
+		var channel = this.inOutList[arguments[1]];
+		var input = this.inOutList[arguments[0]];
 	    }
 				
 	    if ((channel != undefined) && (input != undefined)){
@@ -526,10 +526,10 @@ function Wiring (workSpaceGlobalInfo) {
 			
 	//	Wiring.prototype.removeChannelOutput = function (idGadgetId, outputName, channelName) {
 	if (arguments.length == 3){
-	    if (loaded){var channel = copyList[arguments[2]];}
-	    else{var channel = inOutList[arguments[2]];}
+	    if (loaded){var channel = this.copyList[arguments[2]];}
+	    else{var channel = this.inOutList[arguments[2]];}
 				
-	    var gadget = iGadgetList[arguments[0]];
+	    var gadget = this.iGadgetList[arguments[0]];
 	
 	    if ((channel != undefined) && (gadget != undefined)){
 		// The channel and the gadget selected exist.
@@ -554,12 +554,12 @@ function Wiring (workSpaceGlobalInfo) {
 	if (arguments.length == 2){
 	    //Wiring.prototype.removeChannelOutput = function (outputName, channelName) {
 	    if (loaded){
-		var channel = copyList[arguments[1]];
-		var output = copyList[arguments[0]];	
+		var channel = this.copyList[arguments[1]];
+		var output = this.copyList[arguments[0]];	
 	    }
 	    else{
-		var channel = inOutList[arguments[1]];
-		var output = inOutList[arguments[0]];
+		var channel = this.inOutList[arguments[1]];
+		var output = this.inOutList[arguments[0]];
 	    }
 				
 	    if ((channel != undefined) && (output != undefined)){
@@ -573,18 +573,18 @@ function Wiring (workSpaceGlobalInfo) {
     }
 		
     Wiring.prototype.edition = function () {
-	copyList = new Hash();
-	var keys = inOutList.keys();
+	this.copyList = new Hash();
+	var keys = this.inOutList.keys();
 	var channelConnections = new Hash();
 		
 	for (var i = 0; i < keys.length; i++){
-	    var element = inOutList[keys[i]].ref;
+	    var element = this.inOutList[keys[i]].ref;
 	    var newElement = element.duplicate();
 	    // newElement has the new object channel with the connectios to the channel's names which have to reconnect
 	    var item = new Object();
 	    item["name"] = keys[i];
 	    item["ref"] = newElement["InOut"];
-	    copyList[keys[i]] = item;
+	    this.copyList[keys[i]] = item;
 				
 	    var channel = new Object();
 	    channel["inputs"] = newElement["input"];
@@ -609,30 +609,30 @@ function Wiring (workSpaceGlobalInfo) {
 		
     Wiring.prototype.restaure = function () {
 	// we nedd to reconnect every thing to this part
-	var keys = inOutList.keys();
-	var copyKeys = copyList.keys();
-	var iGadgets = iGadgetList.keys();
+	var keys = this.inOutList.keys();
+	var copyKeys = this.copyList.keys();
+	var iGadgets = this.iGadgetList.keys();
 			
 	for (var t = 0; t<iGadgets.length; t++){
-	    var list = iGadgetList[iGadgets[t]].list;
+	    var list = this.iGadgetList[iGadgets[t]].list;
 	    for (var z = 0; z < list.length; z++){
 		list[z].ref.eraseConnections();
 	    }	
 	}
 			
 	for (var i = 0; i < copyKeys.length; i++){
-	    var channel = copyList[copyKeys[i]];
+	    var channel = this.copyList[copyKeys[i]];
 	    if (keys.indexOf(copyKeys[i]) != -1){
-		channel.ref.value = inOutList[copyKeys[i]].ref.getValue();
+		channel.ref.value = this.inOutList[copyKeys[i]].ref.getValue();
 	    }
 	    channel.ref.refresh(channel.ref);
 	    keys = keys.without(copyKeys[i]);
 	}
 	for (var j= 0; j < keys.length; j++){
-	    var deletedChannel = inOutList[keys[j]].ref;
+	    var deletedChannel = this.inOutList[keys[j]].ref;
 	    deletedChannel.delConnections();	
 	}
-	inOutList = copyList;
+	this.inOutList = this.copyList;
     }
 
     Wiring.prototype.serializationSuccess = function (response){
@@ -646,31 +646,31 @@ function Wiring (workSpaceGlobalInfo) {
 
     Wiring.prototype.serialize = function (){
 	var gadgets = [], inouts = [];
-	var gadgetKeys = iGadgetList.keys();
-	var inOutKeys = copyList.keys();
+	var gadgetKeys = this.iGadgetList.keys();
+	var inOutKeys = this.copyList.keys();
 		    
 	// IGadgets
 	for (var i = 0; i < gadgetKeys.length; i++){
 	    var list = [];
-	    for (var j = 0; j < iGadgetList[gadgetKeys[i]].list.length; j++){
+	    for (var j = 0; j < this.iGadgetList[gadgetKeys[i]].list.length; j++){
 		var connectablejson = new Object();
 
-		connectablejson.name = iGadgetList[gadgetKeys[i]].list[j].name;
-		connectablejson.uri =  iGadgetList[gadgetKeys[i]].list[j].ref.getURI();
-		connectablejson.value =  iGadgetList[gadgetKeys[i]].list[j].ref.getValue();
-		connectablejson.aspect =  iGadgetList[gadgetKeys[i]].list[j].aspect;
-		connectablejson.type =  iGadgetList[gadgetKeys[i]].list[j].ref.getType();
-		connectablejson.igadget =  iGadgetList[gadgetKeys[i]].list[j].ref.getId();
+		connectablejson.name = this.iGadgetList[gadgetKeys[i]].list[j].name;
+		connectablejson.uri =  this.iGadgetList[gadgetKeys[i]].list[j].ref.getURI();
+		connectablejson.value =  this.iGadgetList[gadgetKeys[i]].list[j].ref.getValue();
+		connectablejson.aspect =  this.iGadgetList[gadgetKeys[i]].list[j].aspect;
+		connectablejson.type =  this.iGadgetList[gadgetKeys[i]].list[j].ref.getType();
+		connectablejson.igadget =  this.iGadgetList[gadgetKeys[i]].list[j].ref.getId();
 
 		list.push(connectablejson);
 	    }
 
 	    var iGadget = new Object();	
 		
-	    var iGadgetId = {iGadgetId: iGadgetList[gadgetKeys[i]].id};
+	    var iGadgetId = {iGadgetId: this.iGadgetList[gadgetKeys[i]].id};
 
 	    iGadget.uri = URIs.POST_IGADGET.evaluate(iGadgetId);
-	    iGadget.id = iGadgetList[gadgetKeys[i]].id;
+	    iGadget.id = this.iGadgetList[gadgetKeys[i]].id;
 	    iGadget.list = list;
 	    gadgets.push(iGadget);
 	}
@@ -678,14 +678,14 @@ function Wiring (workSpaceGlobalInfo) {
 	// Channels
 	for(var t = 0; t < inOutKeys.length; t++){
 	    inouts[t] = new Object();
-	    inouts[t].uri = copyList[inOutKeys[t]].ref.getURI();
+	    inouts[t].uri = this.copyList[inOutKeys[t]].ref.getURI();
 	    inouts[t].friend_code = ''
-	    inouts[t].value = copyList[inOutKeys[t]].ref.getValue();
-	    inouts[t].name = copyList[inOutKeys[t]].ref.getName();
+	    inouts[t].value = this.copyList[inOutKeys[t]].ref.getValue();
+	    inouts[t].name = this.copyList[inOutKeys[t]].ref.getName();
     			
 	    inouts[t].ins = [];
-	    for (var v = 0; v < copyList[inOutKeys[t]].ref.inputList.length; v++){
-		var nextIn = copyList[inOutKeys[t]].ref.inputList[v];
+	    for (var v = 0; v < this.copyList[inOutKeys[t]].ref.inputList.length; v++){
+		var nextIn = this.copyList[inOutKeys[t]].ref.inputList[v];
 		inouts[t].ins[v] = new Object();
 		inouts[t].ins[v].name = nextIn.getName();
 		inouts[t].ins[v].uri = nextIn.getURI();
@@ -693,8 +693,8 @@ function Wiring (workSpaceGlobalInfo) {
 	    }
 
 	    inouts[t].outs = [];
-	    for (var v = 0; v < copyList[inOutKeys[t]].ref.outputList.length; v++){
-		var nextOut = copyList[inOutKeys[t]].ref.outputList[v];
+	    for (var v = 0; v < this.copyList[inOutKeys[t]].ref.outputList.length; v++){
+		var nextOut = this.copyList[inOutKeys[t]].ref.outputList[v];
 		inouts[t].outs[v] = new Object();
 		inouts[t].outs[v].name = nextOut.getName();
 		inouts[t].outs[v].uri = nextOut.getURI();

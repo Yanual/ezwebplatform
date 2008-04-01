@@ -192,10 +192,18 @@ var OpManagerFactory = function () {
 			
 			this.contextManagerModule.addInstance(iGadgetId, gadget);
 			
-			this.dragboardModule.showInstance(iGadgetId);
+			this.activeDragboard.showInstance(iGadgetId);
 
 			// The dragboard must be shown after an igadget insertion
-			show_dragboard()
+			this.unMarkGlobalTabs();
+			this.activeWorkSpace.showVisibleTab();
+		}
+		
+		OpManager.prototype.getActiveVarManager = function () {
+		    if (!this.loadCompleted)
+				return;
+
+		    return this.activeVarManager;
 		}
 
 		OpManager.prototype.removeInstance = function (iGadgetId) {

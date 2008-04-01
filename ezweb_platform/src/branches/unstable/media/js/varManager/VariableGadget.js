@@ -53,7 +53,7 @@ function GadgetVariable (iGadgetId, name) {
 //////////////////////////////////////////////
  
 GadgetVariable.prototype.GadgetVariable = function (iGadget_, name_) {
-    this.varManager = VarManagerFactory.getInstance();  
+    this.varManager = OpManagerFactory.getInstance().getActiveVarManager();  
   
     this.iGadgetId = iGadget_;
     this.name = name_;

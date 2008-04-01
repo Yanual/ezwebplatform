@@ -143,8 +143,7 @@ function WorkSpace (workSpaceState) {
 			return;
 		
 		this.visibleTab = this.tabInstances[tabName];
-		this.hide();
-		this.visibleTab.show();
+		this.showVisibleTab();
 	}
 	
 	WorkSpace.prototype.getVisibleTab = function() {
@@ -152,6 +151,11 @@ function WorkSpace (workSpaceState) {
 			return;
 		
 		return this.visibleTab;
+	}
+	
+	WorkSpace.prototype.showVisibleTab = function() {
+		this.hide();
+		this.visibleTab.show();
 	}
 	    
     // *****************
