@@ -136,29 +136,29 @@ var CatalogueFactory  = function () {
 			var viewTagsHTML = "";
 			switch (type) {
 				case 'all':
-					viewTagsHTML =	"<span>"+ gettext ('All tags') + "</span>" +
-						"<a href='javascript:CatalogueFactory.getInstance().changeGlobalTagcloud(\"mytags\");'>"+ gettext ('My tags') +"</a>"+
-						"<a href='javascript:CatalogueFactory.getInstance().changeGlobalTagcloud(\"common\");'>"+ gettext ('Common tags') +"</a>";
+					viewTagsHTML =	"<span>"+ gettext ('All common tags') + "</span>" +
+						"<a href='javascript:CatalogueFactory.getInstance().changeGlobalTagcloud(\"mytags\");'>"+ gettext ('My common tags') +"</a>"+
+						"<a href='javascript:CatalogueFactory.getInstance().changeGlobalTagcloud(\"others\");'>"+ gettext ('Others common tags') +"</a>";
 					document.getElementById('view_global_tags_links').innerHTML = viewTagsHTML;
 					UIUtils.globalTags = "all";
 					this.updateGlobalTags();
 					break;
 					
 				case 'mytags':
-					viewTagsHTML ="<a href='javascript:CatalogueFactory.getInstance().changeGlobalTagcloud(\"all\");'>"+ gettext ('All tags') +"</a>"+
-						"<span>"+ gettext ('My tags') + "</span>"+
-						"<a href='javascript:CatalogueFactory.getInstance().changeGlobalTagcloud(\"common\");'>"+ gettext ('Common tags') +"</a>";
+					viewTagsHTML ="<a href='javascript:CatalogueFactory.getInstance().changeGlobalTagcloud(\"all\");'>"+ gettext ('All common tags') +"</a>"+
+						"<span>"+ gettext ('My common tags') + "</span>"+
+						"<a href='javascript:CatalogueFactory.getInstance().changeGlobalTagcloud(\"others\");'>"+ gettext ('Others common tags') +"</a>";
 					document.getElementById('view_global_tags_links').innerHTML = viewTagsHTML;
 					UIUtils.globalTags = "mytags";
 					this.updateGlobalTags();
 					break;
 					
 				default:
-					viewTagsHTML = "<a href='javascript:CatalogueFactory.getInstance().changeGlobalTagcloud(\"all\");'>"+ gettext ('All tags') +"</a>"+
-						"<a href='javascript:CatalogueFactory.getInstance().changeGlobalTagcloud(\"mytags\");'>"+ gettext ('My tags') +"</a>"+
-						"<span>"+ gettext ('Common tags') + "</span>";
+					viewTagsHTML = "<a href='javascript:CatalogueFactory.getInstance().changeGlobalTagcloud(\"all\");'>"+ gettext ('All common tags') +"</a>"+
+						"<a href='javascript:CatalogueFactory.getInstance().changeGlobalTagcloud(\"mytags\");'>"+ gettext ('My common tags') +"</a>"+
+						"<span>"+ gettext ('Others common tags') + "</span>";
 					document.getElementById('view_global_tags_links').innerHTML = viewTagsHTML;
-					UIUtils.globalTags = "common";
+					UIUtils.globalTags = "others";
 					this.updateGlobalTags();
 					break;
 			}
@@ -172,23 +172,6 @@ var CatalogueFactory  = function () {
 					return;
 				}
 				if (UIUtils.globalTags == "all") {
-					var auxTags = [];
-					var tags=[];
-					for (var i=0; i<selectedResources.length; i++){
-						auxTags = auxTags.concat(CatalogueFactory.getInstance().getResource(selectedResources[i]).getTags());
-
-					}
-					for (var i=0; i<auxTags.length ; i++) {
-						tags.push(auxTags[i]);
-						for (var j=0; j<tags.length-1 ; j++) {
-							if (auxTags[i].getValue() == tags[j].getValue()) {
-								tags.pop();
-								break;
-							}
-						}
-					}
-					globalTags = tags;
-				} else if (UIUtils.globalTags == "common") {
 					globalTags=CatalogueFactory.getInstance().getResource(selectedResources[0]).getTags();
 					var auxTags = [];
 					var bool = [];
@@ -213,24 +196,56 @@ var CatalogueFactory  = function () {
 						}
 						globalTags=auxGlobalTags;
 					}
-				} else {
+				} else if (UIUtils.globalTags == "mytags") {
+					globalTags=CatalogueFactory.getInstance().getResource(selectedResources[0]).getTags();
 					var auxTags = [];
-					var tags=[];
-					for (var i=0; i<selectedResources.length; i++){
-						auxTags = auxTags.concat(CatalogueFactory.getInstance().getResource(selectedResources[i]).getTags());
-					}
-					for (var i=0; i<auxTags.length ; i++) {
-						if (auxTags[i].getAdded_by() == 'Yes') {
-							tags.push(auxTags[i]);
-							for (var j=0; j<tags.length-1 ; j++) {
-								if (auxTags[i].getValue() == tags[j].getValue()) {
-									tags.pop();
+					var bool = [];
+					for (var i=1; i<selectedResources.length; i++){
+						auxTags = CatalogueFactory.getInstance().getResource(selectedResources[i]).getTags();
+						for(var k=0;k<globalTags.length; k++){
+							bool[k] = false;
+							for(var j=0;j<auxTags.length;j++) {
+								if (auxTags[j].getValue()==globalTags[k].getValue()){
+									bool[k] = true;
 									break;
 								}
 							}
 						}
+						var auxGlobalTags = [];
+						var counter=0;
+						for(var k=0;k<globalTags.length; k++){
+							if(bool[k] && globalTags[k].getAdded_by()=='Yes'){
+								auxGlobalTags[counter]=globalTags[k];
+								counter++;
+							}
+						}
+						globalTags=auxGlobalTags;
 					}
-					globalTags = tags;
+				} else {
+					globalTags=CatalogueFactory.getInstance().getResource(selectedResources[0]).getTags();
+					var auxTags = [];
+					var bool = [];
+					for (var i=1; i<selectedResources.length; i++){
+						auxTags = CatalogueFactory.getInstance().getResource(selectedResources[i]).getTags();
+						for(var k=0;k<globalTags.length; k++){
+							bool[k] = false;
+							for(var j=0;j<auxTags.length;j++) {
+								if (auxTags[j].getValue()==globalTags[k].getValue()){
+									bool[k] = true;
+									break;
+								}
+							}
+						}
+						var auxGlobalTags = [];
+						var counter=0;
+						for(var k=0;k<globalTags.length; k++){
+							if(bool[k] && globalTags[k].getAdded_by()=='No'){
+								auxGlobalTags[counter]=globalTags[k];
+								counter++;
+							}
+						}
+						globalTags=auxGlobalTags;
+					}
 				}
 				document.getElementById("global_tagcloud").innerHTML = _globalTagsToTagcloud();
 			}

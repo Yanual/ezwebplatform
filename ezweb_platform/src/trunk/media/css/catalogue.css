@@ -169,6 +169,10 @@
 }
 #catalogue .head .advanced_tag .advanced_tag_left .tagcloud .tags a {
 	float:left;
+	margin-right:5px;
+}
+#catalogue .head .advanced_tag .advanced_tag_left .tagcloud .tags a {
+	float:left;
 }
 
 #catalogue .head .advanced_tag .advanced_tag_left .tagcloud .link
