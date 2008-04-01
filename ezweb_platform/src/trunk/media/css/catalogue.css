@@ -89,6 +89,24 @@
 	display: inline;
 }
 
+#catalogue .header_always_status {
+	background-color:#2E9AFE;
+	border:none;
+	display:none;
+	color:#FFFFFF;
+	font-family:Arial,Helvetica,sans-serif;
+	font-size:0.8em;
+	font-size-adjust:none;
+	font-stretch:normal;
+	font-style:normal;
+	font-variant:normal;
+	font-weight:normal;
+	line-height:normal;
+	margin-top:5px;
+	margin-bottom:0px;
+	padding: 3px;
+}
+
 #catalogue .message_error {
 	background-color:#FFFF00;
 	border:1px solid #B22222;
@@ -148,7 +166,7 @@
 }
 
 #catalogue .head .advanced_tag .advanced_tag_left .tagcloud {
-	margin-bottom:10px;
+	margin-bottom:0px;
 	display:block;
 	font-size:12px;
 }
@@ -156,10 +174,10 @@
 #catalogue .head .advanced_tag .advanced_tag_left .tagcloud .tags {
 	border:1px solid #bbbbbb;
 	background-color:#ddeeff;
-	height:auto;
-	max-height:6.3em;
-	min-height:2em;
+	height:86.3px;
+	overflow:auto;
 	margin-top:3px;
+	margin-bottom:0px;
 }
 
 #catalogue .head .advanced_tag .advanced_tag_left .tagcloud .tags .multiple_size_tag {
