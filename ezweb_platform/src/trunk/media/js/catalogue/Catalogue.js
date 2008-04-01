@@ -300,13 +300,93 @@ var CatalogueFactory  = function () {
 				}
 				this.paginate(items);
 				this.orderby(items);
-
-				document.getElementById("global_tagcloud").innerHTML = '';
+				$('global_tagcloud').innerHTML = '';
 			}
 
 			var param = {orderby: UIUtils.orderby};
 			
 			var persistenceEngine = PersistenceEngineFactory.getInstance();
+			
+			var auxiliar = urlCatalogue_.toString().split("/");
+			var header=urlCatalogue_;
+			for (var i=0;i<auxiliar.length;i++){
+				switch(auxiliar[i]){
+					case "catalogue":
+						if (auxiliar[i+1]=="search"){
+							switch(auxiliar[i+2]){
+								case "generic":
+									header=gettext('Generic Search') + ': ';
+									break;
+								case "tag":
+									header=gettext('Search by Tag') + ': ';
+									break;
+								case "event":
+									header=gettext('Search by Event') + ': ';
+									break;	
+								case "slot":
+									header=gettext('Search by slot') + ': ';
+									break;
+							}
+							var auxiliar2=auxiliar[i+3].split(" ");
+							var searching='';
+							switch(auxiliar[i+4]){
+								case "or":
+									for (var j=0;j<auxiliar2.length;j++){
+										if(j==auxiliar2.length-1){
+											searching += auxiliar2[j];
+										}else if(j==auxiliar2.length-2){
+											searching += auxiliar2[j] + ' ' + gettext('or') + ' ';
+										}else{
+											searching += auxiliar2[j] + ', ';
+										}
+									}
+									break;
+								case "not":
+									for (var j=0;j<auxiliar2.length;j++){
+										if(j==0){
+											if(auxiliar2.length==1){
+												searching += gettext('not') + ' ' + auxiliar2[j];
+											}else{
+												searching += gettext('neither') + ' ' + auxiliar2[j] + ', ' + gettext('nor') + ' ';
+											}
+										}else if(j==auxiliar2.length-1){
+											searching += auxiliar2[j];
+										}else{
+											searching += auxiliar2[j] + ', ' + gettext('nor') + ' ';
+										}						
+									}
+									break;
+								case "and":
+									for (var j=0;j<auxiliar2.length;j++){
+										if(j==auxiliar2.length-1){
+											searching += auxiliar2[j];
+										}else if(j==auxiliar2.length-2){
+											searching += auxiliar2[j] + ' ' + gettext('and') + ' ';
+										}else{
+											searching += auxiliar2[j] + ', ';
+										}									
+									}
+									break;
+								default:
+									for (var j=0;j<auxiliar2.length;j++){
+										if(j==auxiliar2.length-1){
+											searching += auxiliar2[j];
+										}else if(j==auxiliar2.length-2){
+											searching += auxiliar2[j] + ' ' + gettext('or') + ' ';
+										}else{
+											searching += auxiliar2[j] + ', ';
+										}
+									}
+							}
+							header+=searching;					
+						}
+						break;
+					case "resource":
+						header=gettext('Complete catalogue');
+						break;
+				}
+			}
+			$('header_always_status').innerHTML=header;
 			
 			// Get Resources from PersistenceEngine. Asyncrhonous call!
 			persistenceEngine.send_get(urlCatalogue_, this, loadResources, onError, param);

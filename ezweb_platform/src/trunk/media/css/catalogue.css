@@ -92,7 +92,7 @@
 #catalogue .header_always_status {
 	background-color:#2E9AFE;
 	border:none;
-	display:none;
+	display:block;
 	color:#FFFFFF;
 	font-family:Arial,Helvetica,sans-serif;
 	font-size:0.8em;
