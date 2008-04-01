@@ -140,11 +140,11 @@
 }
 
 #catalogue .head .advanced_tag .advanced_tag_left {
-	padding-left: 10px;
-	padding-top: 10px;
-	margin-right: 10px;
-	width: 50%;
+	padding: 0px;
+	margin: 1% 0.5%;
+	width: 49%;
 	float: left;
+	display: block;
 }
 
 #catalogue .head .advanced_tag .advanced_tag_left .tagcloud {
@@ -156,14 +156,15 @@
 #catalogue .head .advanced_tag .advanced_tag_left .tagcloud .tags {
 	border:1px solid #bbbbbb;
 	background-color:#ddeeff;
-	height:80px;
+	height:auto;
+	max-height:6.3em;
+	min-height:2em;
 	margin-top:3px;
 }
 
 #catalogue .head .advanced_tag .advanced_tag_left .tagcloud .tags .multiple_size_tag {
     float:left;
-	padding-left:5px;
-	padding-top:5px;
+    padding:2.5px 5px;
 	margin-right:5px;
 }
 #catalogue .head .advanced_tag .advanced_tag_left .tagcloud .tags a {
@@ -201,21 +202,21 @@
 
 
 #catalogue .head .advanced_tag .advanced_tag_right {
-	padding-top: 10px;
-	padding-right: 10px;
-	padding-left: 0px;
-	width: 100%;
+	padding: 0px;
+	margin: 1% 0.5%;
+	width: 49%;
+	float: right;
+	display: block;
 }
 
 #catalogue .head .advanced_tag .advanced_tag_right .new_tags {
 	display:block;
 	margin-bottom:10px;
-	padding-right:10px;
 }
 
 #catalogue .head .advanced_tag .advanced_tag_right .new_tags .my_tags {
 	border:1px solid #bbbbbb;
-	margin-top:15px;
+	margin-top:17px;
 	margin-bottom:5px;
 	overflow:auto;
 	padding:5px;
@@ -242,8 +243,9 @@
 }
 
 #catalogue .head .advanced_tag .advanced_tag_right .new_tags .buttons {
-	text-align:right;
-	display:inline;
+	float:right;
+	display:block;
+	padding:3px;
 }
 
 #catalogue .head .advanced_tag .advanced_tag_right .new_tags .my_tags * {
@@ -274,6 +276,31 @@
 
 #catalogue .head .advanced_tag .advanced_tag_right .new_tags .my_tags .new_tag_text input {
 	border:1px solid #bbbbbb;
+}
+
+#catalogue .head .advanced_tag .advanced_tag_right .new_tags .global_tag_alert {
+	background-color:#FFFF00;
+	border:1px solid #B22222;
+	display:none;
+	color:#B22222;
+	font-family:Arial,Helvetica,sans-serif;
+	font-size:0.8em;
+	font-size-adjust:none;
+	font-stretch:normal;
+	font-style:normal;
+	font-variant:normal;
+	font-weight:normal;
+	line-height:normal;
+	margin-top:0px;
+	margin-bottom:0px;
+	padding: 2px;
+	float: left;
+}
+
+#catalogue .head .advanced_tag .advanced_tag_right .new_tags .global_tag_alert img {
+	vertical-align: bottom;
+	margin:0px 2px 0px 0px;
+	border: 1px solid #B22222;
 }
 
 #catalogue .center {

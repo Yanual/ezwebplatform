@@ -913,7 +913,7 @@ UIUtils.enlargeInput = function(inputText_) {
 
 UIUtils.getError = function(element, error) {
 	element.innerHTML = "<img src='/ezweb/images/ico_error_mini.gif'></img>" + error;
-	new Effect.Highlight(element,{duration:0.5, startcolor:'#FF0000', endcolor:'#FFFF00'});
+	new Effect.Highlight(element,{duration:0.5, startcolor:'#FF0000', endcolor:'#FFFF00', restorecolor:'#FFFF00'});
 }
 
 // Enables you to react to return being pressed in an input
