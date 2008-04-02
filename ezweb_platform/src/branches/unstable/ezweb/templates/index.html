@@ -18,8 +18,8 @@
 <script type="text/javascript" language="javascript">
 _URIConstants = function(){}
 _URIConstants.prototype.USER = '/user/{{ user.username }}';
-_URIConstants.prototype.GET_IGADGET = new Template ('/user/{{ user.username }}/igadgets/#{id}');
-_URIConstants.prototype.GET_IGADGETS = '/user/{{ user.username }}/igadgets';
+_URIConstants.prototype.GET_IGADGET = new Template ('/workspace/#{workspaceId}/tab/#{tabId}/igadgets/#{iGadgetId}');
+_URIConstants.prototype.GET_IGADGETS = new Template ('/workspace/#{workspaceId}/tab/#{tabId}/igadgets/');
 _URIConstants.prototype.GET_GADGET = new Template ('/user/{{ user.username }}/gadgets/#{vendor}/#{name}/#{version}');
 _URIConstants.prototype.GET_GADGETS = '/user/{{ user.username }}/gadgets';
 _URIConstants.prototype.GET_CONTEXT = '/user/{{ user.username }}/context';
@@ -30,7 +30,7 @@ _URIConstants.prototype.GET_RESOURCES_BY_WIRING = '/user/{{ user.username }}/cat
 _URIConstants.prototype.DELETE_TAG = '/user/{{ user.username }}/catalogue/tag';
 _URIConstants.prototype.POST_RESOURCE_TAGS = '/user/{{ user.username }}/catalogue/tag';
 _URIConstants.prototype.GET_RESOURCES_SEARCH_GENERIC = '/user/{{ user.username }}/catalogue/search/generic';
-_URIConstants.prototype.POST_IGADGET = new Template ('/user/{{ user.username }}/igadgets/#{iGadgetId}');
+_URIConstants.prototype.POST_IGADGET = new Template ('/workspace/#{workspaceId}/tab/#{tabId}/igadgets/#{iGadgetId}');
 _URIConstants.prototype.PROXY = '/proxy';
 _URIConstants.prototype.GET_IGADGET_VARIABLES = new Template ('/user/{{ user.username }}/igadgets/#{iGadgetId}/variables');
 _URIConstants.prototype.GET_POST_GADGET_VARIABLE = new Template ('/user/{{ user.username }}/igadgets/#{iGadgetId}/variables/#{varName}');
@@ -102,17 +102,6 @@ var URIs = new _URIConstants();
 		// Total 8px
 		$("wrapper").setStyle({"height" : (window.innerHeight - $("header").offsetHeight - 8) + "px"});
 	}
-
-	function onSuccess() {alert ("OK");}
-	function onError(transport, e) {
-			var msg;
-			if (e)
-				msg = e;
-			else
-				msg = transport.status + " " + transport.statusText;
-			alert (gettext("Error setting language: ") + msg);
-	}
-
 	
 	function setLanguage(language) {
 		var onSuccess = function() {
@@ -127,10 +116,9 @@ var URIs = new _URIConstants();
 		return false;
 	}
 	
-	var opManager = OpManagerFactory.getInstance(); ;
-
-    opManager = OpManagerFactory.getInstance();
-    opManager.loadEnviroment();
+	var opManager = OpManagerFactory.getInstance();
+	
+	opManager.loadEnviroment();
 
 </script>
 

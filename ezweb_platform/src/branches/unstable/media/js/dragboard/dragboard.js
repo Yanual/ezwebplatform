@@ -41,7 +41,7 @@
 /**
  * @author aarranz
  */
-function Dragboard(tabInfo, dragboardElement) {
+function Dragboard(tabInfo, workSpacePk, dragboardElement) {
 	// *********************************
 	// PRIVATE VARIABLES
 	// *********************************
@@ -53,6 +53,8 @@ function Dragboard(tabInfo, dragboardElement) {
 	var dragboardCursor = null;
 	var gadgetToMove = null;
 	var iGadgets = new Hash();
+	this.tabId = tabInfo.pk;
+	this.workSpaceId = workSpacePk;
 
 	// ***********************
 	// PRIVATED FUNCTIONS 
@@ -492,7 +494,7 @@ function Dragboard(tabInfo, dragboardElement) {
 			minimized = curIGadget.minimized == "true" ? true : false;
 
 			// Create instance model
-			igadget = new IGadget(gadget, curIGadget.id, dragboardStyle, position, width, height, minimized);
+			igadget = new IGadget(gadget, curIGadget.id, dragboardStyle, position, width, height, minimized, this);
 			iGadgets[curIGadget.id] = igadget;
 
 			if (curIGadget.id >= currentId) // TODO remove, persistenceEngine will manage ids
@@ -517,7 +519,7 @@ function Dragboard(tabInfo, dragboardElement) {
 		var position = _searchFreeSpace(width, height + 2);
 
 		// Create the instance
-		var iGadget = new IGadget(gadget, currentId, dragboardStyle, position, width, height, false);
+		var iGadget = new IGadget(gadget, currentId, dragboardStyle, position, width, height, false, this);
 		iGadget.save();
 		iGadgets[currentId] = iGadget;
 		currentId++;
@@ -765,13 +767,15 @@ function Dragboard(tabInfo, dragboardElement) {
  * This class represents a instance of one Gadget.
  * @author aarranz
  */
-function IGadget(gadget, iGadgetId, screen, position, width, height, minimized) {
+function IGadget(gadget, iGadgetId, screen, position, width, height, minimized, dragboard) {
 	this.id = iGadgetId;
 	this.gadget = gadget;
 	this.screen = screen;
 	this.position = position;
 	this.width = width;
 	this.contentHeight = height;
+	
+	this.dragboard = dragboard;
 
 	this.height = 2; // TODO 2 is a estimation of the menu's height
 	if (!minimized)
@@ -1253,7 +1257,9 @@ IGadget.prototype.save = function() {
 	data['top'] = this.position.y;
 	data['width'] = this.width;
 	data['height'] = this.contentHeight;
- 	var uri = URIs.GET_IGADGET.evaluate({id: this.id});
+	
+ 	var uri = URIs.POST_IGADGET.evaluate({iGadgetId: this.id, tabId: this.dragboard.tabId, workspaceId: this.dragboard.workSpaceId});
+ 	
  	data['uri'] = uri;
 	data['gadget'] = URIs.GET_GADGET.evaluate({vendor: this.gadget.getVendor(),
 	                                           name: this.gadget.getName(),

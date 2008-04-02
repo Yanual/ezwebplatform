@@ -59,11 +59,12 @@ function WorkSpace (workSpaceState) {
 		var tabs = this.workSpaceGlobalInfo['workspace']['tabList'];
 		
 		var visibleTabName = null;
+		
 		if(tabs.length>0){
 			visibleTabName = tabs[0].name;
 			for (var i=0; i<tabs.length; i++) {
 				var tab = tabs[i];
-				this.tabInstances[tab.name] = new Tab(tab, this.workSpaceState.name);
+				this.tabInstances[tab.name] = new Tab(tab, this.workSpaceState);
 				
 				if (tab.visible == 'true') {
 					visibleTabName = tab.name;
