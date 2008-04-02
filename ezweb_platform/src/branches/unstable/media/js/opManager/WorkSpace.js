@@ -57,15 +57,19 @@ function WorkSpace (workSpaceState) {
 		this.varManager = new VarManager(this.workSpaceGlobalInfo);
 		
 		var tabs = this.workSpaceGlobalInfo['workspace']['tabList'];
-		var visibleTabName = null;
 		
-		for (var i=0; i<tabs.length; i++) {
-			var tab = tabs[i];
-			this.tabInstances[tab.name] = new Tab(tab, this.workSpaceState.name);
-			
-			if (tab.visible == 'true') {
-				visibleTabName = tab.name;
+		var visibleTabName = null;
+		if(tabs.length>0){
+			visibleTabName = tabs[0].name;
+			for (var i=0; i<tabs.length; i++) {
+				var tab = tabs[i];
+				this.tabInstances[tab.name] = new Tab(tab, this.workSpaceState.name);
+				
+				if (tab.visible == 'true') {
+					visibleTabName = tab.name;
+				}
 			}
+			
 		}
 		
 		this.loaded = true;
