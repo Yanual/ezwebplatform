@@ -139,7 +139,10 @@ function WorkSpace (workSpaceState) {
 		for (var i=0; i<tabList.length; i++) {
 			var tab = this.tabInstances[tabList[i]];
 			
-			tab.show();
+			if (tab == this.visibleTab)
+				tab.show();
+			else
+				tab.hide();
 		}
 	}
 	

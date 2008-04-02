@@ -50,11 +50,6 @@ function Tab (tabInfo, workSpaceState) {
 	Tab.prototype.show = function () {
 		this.dragboardElement.setStyle({'zIndex': 2, 'display': 'block'});
 		this.tabHTMLElement.className = "tab current";
-		
-		if(!this.painted){
-			this.dragboard.paint();
-			this.painted = true;
-		}
 	}
 	
 	Tab.prototype.getDragboard = function () {
@@ -97,13 +92,4 @@ function Tab (tabInfo, workSpaceState) {
     this.dragboardElement.setAttribute('id', this.dragboardLayerName);
                 	
 	this.dragboard = new Dragboard(tabInfo, workSpaceState, this.dragboardElement);
-	
-	this.painted = false;
-	
-	// Show tab depending of its visible attribute
-	if (this.tabInfo.visible == "true") {
-		this.show();
-	} else {
-		this.hide();
-	}
 }     	
