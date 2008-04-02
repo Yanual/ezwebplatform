@@ -436,7 +436,7 @@ function Dragboard(tabInfo, workSpaceState, dragboardElement) {
 		iGadgets.each( function (pair) {
 			iGadget = pair.value;
 			iGadgetInfo = new Hash();
-			uri = URIs.GET_IGADGET.evaluate({id: iGadget.getId()});
+			uri = URIs.GET_IGADGET.evaluate({id: iGadget.getId(), workspaceId: this.workspaceId, tabId: this.tabId});
 			iGadgetInfo['uri'] = uri;
 			position = iGadget.getPosition();
 			iGadgetInfo['top'] = position.y;
