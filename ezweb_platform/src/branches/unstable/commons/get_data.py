@@ -49,7 +49,7 @@ from workspace.models import Tab, WorkSpace
 def get_wiring_variable_data(var, ig):
     res_data = {}
 
-    res_data['pk'] = var.vardef.pk
+    res_data['id'] = var.vardef.pk
     res_data['name'] = var.vardef.name
     res_data['aspect'] = var.vardef.aspect
     res_data['type'] = var.vardef.type
@@ -57,7 +57,7 @@ def get_wiring_variable_data(var, ig):
     res_data['friend_code'] = var.vardef.friend_code
     res_data['code'] = ig.code
     res_data['igadget_code'] = ig.code
-    res_data['igadget_pk'] = ig.pk
+    res_data['igadget_id'] = ig.id
 
     return res_data
 
@@ -72,7 +72,7 @@ def get_wiring_data(igadgets):
         list = []
 
         igObject['code'] = ig.code
-        igObject['pk'] = ig.pk
+        igObject['id'] = ig.pk
 
         #Searching wiring variables
         for var in variables:
@@ -148,9 +148,9 @@ def get_input_data (inout):
     inputs = In.objects.filter(inout=inout)    
     for ins in inputs:
         input_data = {}
-        input_data['pk'] = ins.pk
+        input_data['id'] = ins.pk
         input_data['name'] = ins.name
-        input_data['igadget_pk'] = ins.variable.igadget.pk
+        input_data['igadget_id'] = ins.variable.igadget.pk
         input_data['igadget_code'] = ins.variable.igadget.code
         all_inputs.append(input_data)
     return all_inputs
@@ -160,9 +160,9 @@ def get_output_data (inout):
     outputs = Out.objects.filter(inout=inout)    
     for outs in outputs:
         output_data = {}
-        output_data['pk'] = outs.pk
+        output_data['id'] = outs.pk
         output_data['name'] = outs.name
-        output_data['igadget_pk'] = outs.variable.igadget.pk
+        output_data['igadget_id'] = outs.variable.igadget.pk
         output_data['igadget_code'] = outs.variable.igadget.code
         all_outputs.append(output_data)
     return all_outputs    
@@ -171,7 +171,7 @@ def get_output_data (inout):
 def get_inout_data(data):
     data_ret = {}
     data_fields = data['fields']
-    data_ret['pk'] = data['pk']
+    data_ret['id'] = data['pk']
     data_ret['friend_code'] = data_fields['friend_code']
     data_ret['value'] = data_fields['value']
     data_ret['name'] = data_fields['name']
@@ -187,7 +187,7 @@ def get_inout_data(data):
 def get_workspace_data(data):
     data_ret = {}
     data_fields = data['fields']
-    data_ret['pk'] = data['pk']
+    data_ret['id'] = data['pk']
     data_ret['name'] = data_fields['name']
     if data_fields['active']:
         data_ret['active'] = "true"
@@ -207,7 +207,7 @@ def get_global_workspace_data(data, workSpaceDAO):
     data_ret['workspace']['tabList'] = tabs_data
            
     for tab in tabs_data:
-        tab_pk = tab['pk']
+        tab_pk = tab['id']
         igadgets = IGadget.objects.filter(tab__id = tab_pk)
         igadget_data = serializers.serialize('python', igadgets, ensure_ascii=False)
         igadget_data = [get_igadget_data(d) for d in igadget_data]
@@ -224,7 +224,7 @@ def get_global_workspace_data(data, workSpaceDAO):
 def get_tab_data(data):
     data_ret = {}
     data_fields = data['fields']
-    data_ret['pk'] = data['pk']
+    data_ret['id'] = data['pk']
     data_ret['name'] = data_fields['name']
     if data_fields['visible']:
         data_ret['visible'] = "true"
@@ -239,7 +239,7 @@ def get_igadget_data(data):
     gadget = Gadget.objects.get(pk=data_fields['gadget'])
     position = Position.objects.get(pk=data_fields['position'])
 
-    data_ret['pk'] = data['pk']
+    data_ret['id'] = data['pk']
     data_ret['code'] = data_fields['code']
     data_ret['tab'] = data_fields['tab']
     data_ret['gadget'] = gadget.uri
@@ -263,7 +263,7 @@ def get_variable_data(data):
     
     var_def = VariableDef.objects.get(id=data_fields['vardef'])
     
-    data_ret['pk'] = var_def.pk
+    data_ret['id'] = var_def.pk
     data_ret['name'] = var_def.name
     data_ret['aspect'] = var_def.aspect
     

@@ -105,7 +105,7 @@ function Wiring (workSpaceGlobalInfo) {
 			}
 		    }
 		}
-		loaded = true;
+		this.loaded = true;
     }
     
     // this method is used in the first version for painting the connections for the user.
@@ -218,15 +218,10 @@ function Wiring (workSpaceGlobalInfo) {
 	}
 	else if (arguments.length == 1){
 	    var gadget = new Object();
-	    gadget["list"] = [];
-	    gadget["id"] = arguments[0]["id"];
-	
-	    //				var gadgetModel = DragboardFactory.getInstance().getGadget(arguments[0]["id"]);
-	    //				gadget["vendor"] = gadgetModel.getVendor();
-	    //				gadget["version"] = gadgetModel.getVersion();		
-	    //				gadget["name"] = gadgetModel.getName();
-				
-	    list = arguments[0].list;
+	    gadget["variables"] = [];
+	    gadget["id"] = arguments[0]["code"];
+
+		list = arguments[0].variables;
 	    for (var j = 0; j < list.length; j++){
 		var connectable = new Object();
 
@@ -241,7 +236,7 @@ function Wiring (workSpaceGlobalInfo) {
 		    connectable.ref = new wSlot(null, null, list[j]);												
 		    break;
 		}
-		gadget["list"].push(connectable);
+		gadget["variables"].push(connectable);
 	    }
 	    this.iGadgetList[gadget["id"]] = gadget;
 	}

@@ -41,33 +41,26 @@
 /**
  * @author aarranz
  */
-function Dragboard(tabInfo, workSpacePk, dragboardElement) {
+function Dragboard(tabInfo, workSpaceState, dragboardElement) {
 	// *********************************
 	// PRIVATE VARIABLES
 	// *********************************
 	var loaded = false;
-	var currentId = 1;
+	var currentCode = 1;
 	var matrix = null;
 	var shadowMatrix = null; shadowPositions = null;
 	var dragboard, dragboardStyle;
 	var dragboardCursor = null;
 	var gadgetToMove = null;
 	var iGadgets = new Hash();
-	this.tabId = tabInfo.pk;
-	this.workSpaceId = workSpacePk;
+	this.tabId = tabInfo.id;
+	this.workSpaceId = workSpaceState.id;
 
 	// ***********************
 	// PRIVATED FUNCTIONS 
 	// ***********************
-	function _repaint(receivedData) {
+	Dragboard.prototype.paint = function (receivedData) {
 		var iGadget, position, iGadgetsToReinsert = new Array(); // oldWidth, oldHeight
-
-		// Clear dragboard
-		iGadgets.each( function (pair) {
-			iGadget = pair.value;
-
-			iGadget.destroy();
-		});
 
 		dragboard.innerHTML = "";
 
@@ -463,18 +456,16 @@ function Dragboard(tabInfo, workSpacePk, dragboardElement) {
 	Dragboard.prototype.parseTab = function(tabInfo) {
 		var curIGadget, position, width, height, igadget, gadget, gadgetid, minimized;
 
-		iGadgetsJson = tabInfo;
-
 		var opManager = OpManagerFactory.getInstance();
 
-		currentId = 1; // TODO remove, persistenceEngine will manage ids
+		currentCode = 1; // TODO remove, persistenceEngine will manage ids
 		iGadgets = new Hash();
 
 		// For controlling when the igadgets are totally loaded!
-		this.igadgetsToLoad = iGadgetsJson.length;
+		this.igadgetsToLoad = tabInfo.igadgetList;
 
-		for (var i = 0; i < iGadgetsJson.length; i++) {
-			curIGadget = iGadgetsJson[i];
+		for (var i = 0; i < this.igadgetsToLoad.length; i++) {
+			curIGadget = this.igadgetsToLoad[i];
 
 			position = new DragboardPosition(parseInt(curIGadget.left), parseInt(curIGadget.top));
 			width = parseInt(curIGadget.width);
@@ -486,23 +477,21 @@ function Dragboard(tabInfo, workSpacePk, dragboardElement) {
 			// Get gadget model
 			gadget = ShowcaseFactory.getInstance().getGadget(gadgetid);
 
-			// Parse instance id
-			curIGadget.id = curIGadget.uri.split("/");
-			curIGadget.id = parseInt(curIGadget.id[curIGadget.id.length - 1]);
-
 			// Parse minimize status
 			minimized = curIGadget.minimized == "true" ? true : false;
 
 			// Create instance model
-			igadget = new IGadget(gadget, curIGadget.id, dragboardStyle, position, width, height, minimized, this);
-			iGadgets[curIGadget.id] = igadget;
+			igadget = new IGadget(gadget, curIGadget.id, curIGadget.code, dragboardStyle, position, width, height, minimized, this);
+			iGadgets[curIGadget.code] = igadget;
 
-			if (curIGadget.id >= currentId) // TODO remove, persistenceEngine will manage ids
-				currentId =  curIGadget.id + 1;
+			if (curIGadget.code >= currentCode) // TODO remove, persistenceEngine will manage ids
+				currentCode =  curIGadget.code + 1;
 
 //				_reserveSpace(matrix, igadget);
 		}
 
+		this.paint();
+		
 		loaded = true;
 	}	
 
@@ -519,10 +508,10 @@ function Dragboard(tabInfo, workSpacePk, dragboardElement) {
 		var position = _searchFreeSpace(width, height + 2);
 
 		// Create the instance
-		var iGadget = new IGadget(gadget, currentId, dragboardStyle, position, width, height, false, this);
+		var iGadget = new IGadget(gadget, null, currentCode, dragboardStyle, position, width, height, false, this);
 		iGadget.save();
-		iGadgets[currentId] = iGadget;
-		currentId++;
+		iGadgets[currentCode] = iGadget;
+		currentCode++;
 
 		// Reserve the cells for the gadget instance
 		_reserveSpace(matrix, iGadget);
@@ -626,12 +615,6 @@ function Dragboard(tabInfo, workSpacePk, dragboardElement) {
 	Dragboard.prototype.setDefaultPrefs = function (iGadgetId) {
 		var igadget = iGadgets[iGadgetId];
 		igadget.setDefaultPrefs();
-	}
-
-
-	Dragboard.prototype.repaint = function (iGadgetId) {
-		if (loaded)
-		    _repaint();
 	}
 
 	Dragboard.prototype.notifyErrorOnIGadget = function (iGadgetId) {
@@ -753,8 +736,6 @@ function Dragboard(tabInfo, workSpacePk, dragboardElement) {
 	// *******************
 	dragboard = dragboardElement;
 	dragboardStyle = new DragboardStyle(dragboard, 3, 12); // TODO 3 columns, cell height = 12px
-
-	_clearMatrix();
 	
 	this.parseTab(tabInfo);
 }
@@ -767,8 +748,9 @@ function Dragboard(tabInfo, workSpacePk, dragboardElement) {
  * This class represents a instance of one Gadget.
  * @author aarranz
  */
-function IGadget(gadget, iGadgetId, screen, position, width, height, minimized, dragboard) {
+function IGadget(gadget, iGadgetId, iGadgetCode, screen, position, width, height, minimized, dragboard) {
 	this.id = iGadgetId;
+	this.code = iGadgetCode;
 	this.gadget = gadget;
 	this.screen = screen;
 	this.position = position;
@@ -1034,8 +1016,8 @@ IGadget.prototype.destroy = function() {
 		this.element.parentNode.removeChild(this.element);
 		this.element = null;
 		var persistenceEngine = PersistenceEngineFactory.getInstance();
-		persistenceEngine.send_delete(URIs.GET_IGADGET.evaluate({id: this.id}),
-		                              this, onSuccess, onError);
+		var uri = URIs.GET_IGADGET.evaluate({workspaceId: this.dragboard.workSpaceId, tabId: this.dragboard.tabId, iGadgetId: this.id})
+		persistenceEngine.send_delete(uri, this, onSuccess, onError);
 	}
 }
 
@@ -1257,8 +1239,9 @@ IGadget.prototype.save = function() {
 	data['top'] = this.position.y;
 	data['width'] = this.width;
 	data['height'] = this.contentHeight;
+	data['code'] = this.code;
 	
- 	var uri = URIs.POST_IGADGET.evaluate({iGadgetId: this.id, tabId: this.dragboard.tabId, workspaceId: this.dragboard.workSpaceId});
+ 	var uri = URIs.POST_IGADGET.evaluate({iGadgetId: this.code, tabId: this.dragboard.tabId, workspaceId: this.dragboard.workSpaceId});
  	
  	data['uri'] = uri;
 	data['gadget'] = URIs.GET_GADGET.evaluate({vendor: this.gadget.getVendor(),

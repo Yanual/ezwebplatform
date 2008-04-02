@@ -49,48 +49,38 @@ function VarManager (workSpaceInfo) {
 			var igadgets = tabs[i]['igadgetList'];
 			
 			for (var j=0; j<igadgets.length; j++) {
-				var vars = igadget[j]['variableList'];
-				
-				this.parseIGadgetVariables(vars);
+				this.parseIGadgetVariables(igadgets[j]);
 			}
 		}
 	}	
 	
-	VarManager.prototype.parseIGadgetVariables = function (igadgetVars) {		
-		// Constructing the structure
-		tempList = igadgetVars;
+	VarManager.prototype.parseIGadgetVariables = function (igadget) {		
 		
-		var objVars = [];
-		var id = -1;
-		var rawVars = null;
-		var rawVar = null;
-		
-		for (i = 0; i<tempList.length; i++) {
-			id = tempList[i].id;
-			rawVars = tempList[i].variables;
-			objVars = []
-			
-			for (j = 0; j<rawVars.length; j++) {
-				rawVar = rawVars[j];
+		var igadgetVars = igadget['variables'];
+		var objVars = []
+		for (i = 0; i<igadgetVars.length; i++) {
+			var id = igadgetVars[i].id;
+			var name = igadgetVars[i].name;
+			var aspect = igadgetVars[i].aspect;
+			var value = igadgetVars[i].value;
 				
-				switch (rawVar.aspect) {
-					case Variable.prototype.PROPERTY:
-					case Variable.prototype.EVENT:
-						objVars[rawVar.name] = new RWVariable(id, rawVar.name, rawVar.aspect, rawVar.value);
-						break;
-					case Variable.prototype.EXTERNAL_CONTEXT:
-					case Variable.prototype.GADGET_CONTEXT:						
-					case Variable.prototype.SLOT:
-					case Variable.prototype.USER_PREF:
-						objVars[rawVar.name] = new RVariable(id, rawVar.name, rawVar.aspect, rawVar.value);
-						break;
-				}
+			switch (aspect) {
+				case Variable.prototype.PROPERTY:
+				case Variable.prototype.EVENT:
+					objVars[name] = new RWVariable(id, name, aspect, value);
+					break;
+				case Variable.prototype.EXTERNAL_CONTEXT:
+				case Variable.prototype.GADGET_CONTEXT:						
+				case Variable.prototype.SLOT:
+				case Variable.prototype.USER_PREF:
+					objVars[name] = new RVariable(id, name, aspect, value);
+					break;
 			}
-			
-			iGadgets[id] = objVars;
 		}
 		
-		loaded = true;
+		iGadgets[igadget['id']] = objVars;
+		
+		this.loaded = true;
 	}
 	
 	VarManager.prototype.writeSlot = function (iGadgetId, slotName, value) {
