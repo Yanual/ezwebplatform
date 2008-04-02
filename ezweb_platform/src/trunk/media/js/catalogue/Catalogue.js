@@ -324,7 +324,7 @@ var CatalogueFactory  = function () {
 									header=gettext('Search by Event') + ': ';
 									break;	
 								case "slot":
-									header=gettext('Search by slot') + ': ';
+									header=gettext('Search by Slot') + ': ';
 									break;
 							}
 							var auxiliar2=auxiliar[i+3].split(" ");
@@ -382,7 +382,7 @@ var CatalogueFactory  = function () {
 						}
 						break;
 					case "resource":
-						header=gettext('Complete catalogue');
+						header=gettext('Complete Catalogue');
 						break;
 				}
 			}

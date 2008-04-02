@@ -254,7 +254,8 @@ UIUtils.searchByTag = function(url, tag) {
 	}
 
   if (tag == ""){
-  	alert(gettext ("Indicate a criteria in search formulary"));
+  		$('header_always_error').style.display="block";
+		UIUtils.getError($('header_always_error'),gettext("Indicate a criteria in search formulary"));
   }
   else{
 	  UIUtils.setPage(1);
@@ -270,7 +271,8 @@ UIUtils.searchByWiring = function(url, value, wiring) {
 	var opManager = OpManagerFactory.getInstance();
 	
 	if (value == ""){
-		alert(gettext ("Indicate a criteria in search formulary"));
+		$('header_always_error').style.display="block";
+		UIUtils.getError($('header_always_error'),gettext("Indicate a criteria in search formulary"));
 	}else{
 		if (UIUtils.balloonResource)
 		{
@@ -699,10 +701,10 @@ UIUtils.SlideAdvanced = function(element,container) {
             aux = element.split("_");
             switch (aux[1].toLowerCase()) {
             	case "tag":
-            		tab = gettext("Advanced Tagging");
+            		tab = gettext('Advanced Tagging');
             		break;
             	case "search":
-            		tab = gettext("Advanced Search");
+            		tab = gettext('Advanced Search');
             		break;
             	default:
             		break;
