@@ -101,6 +101,10 @@ function Gadget(gadget_, url_) {
 		persistenceEngine.send_post(URIs.GET_GADGETS, param, this, loadGadget, onError);
 	}
 	
+	this.getId = function() {
+		return this.getVendor() + '_'+ this.getName() + '_' + this.getVersion();
+	}
+	
 	// *******************
 	//  PRIVATE VARIABLES
 	// *******************

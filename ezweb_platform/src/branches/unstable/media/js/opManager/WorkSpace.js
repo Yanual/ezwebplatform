@@ -64,7 +64,7 @@ function WorkSpace (workSpaceState) {
 			visibleTabName = tabs[0].name;
 			for (var i=0; i<tabs.length; i++) {
 				var tab = tabs[i];
-				this.tabInstances[tab.name] = new Tab(tab, this.workSpaceState);
+				this.tabInstances[tab.name] = new Tab(tab, this);
 				
 				if (tab.visible == 'true') {
 					visibleTabName = tab.name;
@@ -165,6 +165,20 @@ function WorkSpace (workSpaceState) {
 		this.hide();
 		this.visibleTab.show();
 	}
+	
+	WorkSpace.prototype.addIGadget = function(igadget) {
+		var gadget = ShowcaseFactory.getInstance().getGadget(igadget.gadget.getId());
+		this.varManager.addInstance(igadget, gadget.getTemplate());
+		this.wiring.addInstance(igadget, gadget.getTemplate());
+			
+		//this.contextManagerModule.addInstance(igadget, gadget);
+			
+		this.getVisibleTab().getDragboard().showInstance(igadget);
+
+		// The dragboard must be shown after an igadget insertion
+		OpManagerFactory.getInstance().unMarkGlobalTabs();
+		this.showVisibleTab();
+	}
 	    
     // *****************
     //  CONSTRUCTOR
@@ -173,6 +187,7 @@ function WorkSpace (workSpaceState) {
 	this.workSpaceState = workSpaceState;
 	this.workSpaceGlobal = null;
 	this.wiringInterface = null;
+	this.varManager = null;
 	this.tabInstances = new Hash();
 	this.wiring = null;
 	this.loaded = false;

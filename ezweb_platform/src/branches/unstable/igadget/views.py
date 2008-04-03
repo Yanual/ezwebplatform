@@ -89,7 +89,9 @@ def SaveIGadget(igadget, user, tab):
                 var_value = ''
                 
             var = Variable (vardef=varDef, igadget=new_igadget, value=var_value)
-            var.save() 
+            var.save()
+            
+        return new_igadget;
 
     except Gadget.DoesNotExist:
         raise Gadget.DoesNotExist(_('referred gadget %(gadget_uri)s does not exist.') % {'gadget_uri': gadget_uri})
@@ -153,32 +155,27 @@ class IGadgetCollection(Resource):
 
         return HttpResponse(json_encode(data_list), mimetype='application/json; charset=UTF-8')
 
-    @transaction.commit_manually
+    @transaction.commit_on_success
     def create(self, request, workspace_id, tab_id):
         user = get_user_authentication(request)
-        
-        if not request.has_key('igadgets'):
+
+        if not request.has_key('igadget'):
             return HttpResponseBadRequest(get_xml_error(_("iGadget JSON expected")), mimetype='application/xml; charset=UTF-8')
-        
-        #TODO we can make this with deserializers (simplejson)      
-        received_json = request.POST['igadgets']
-	    
+
         try:
+            received_json = request.POST['igadget']
+            igadget = eval(received_json)
             tab = Tab.objects.get(workspace__user=user, workspace__pk=workspace_id, pk=tab_id) 
-            received_data = eval(received_json)
-            igadgets = received_data.get('iGadgets')
-            for igadget in igadgets:
-                SaveIGadget(igadget, user, tab)
-            transaction.commit()
-            return HttpResponse('ok')
-        except Tab.DoesNotExist:
-            msg = _('refered tab %(tab_id)s does not exist.')
+            new_igadget = SaveIGadget(igadget, user, tab)
+            return HttpResponse(new_igadget.pk)
+        except WorkSpace.DoesNotExist:
+            msg = _('refered workspace %(workspace_id)s does not exist.')
             log(msg, request)
             return HttpResponseBadRequest(get_xml_error(msg))
         except Exception, e:
             transaction.rollback()
-            msg = _("iGadgets cannot be created: ") + unicode(e)
-            log (msg, request)
+            msg = _("iGadget cannot be created: ") + unicode(e)
+            log(msg, request)
             return HttpResponseServerError(get_xml_error(msg), mimetype='application/xml; charset=UTF-8')
 
 
@@ -218,30 +215,6 @@ class IGadgetEntry(Resource):
         data = serializers.serialize('python', igadget, ensure_ascii=False)
         igadget_data = get_igadget_data(data[0])
         return HttpResponse(json_encode(igadget_data), mimetype='application/json; charset=UTF-8')
-    
-    @transaction.commit_on_success
-    def create(self, request, workspace_id, tab_id, igadget_id):
-        user = get_user_authentication(request)
-
-        if not request.has_key('igadget'):
-            return HttpResponseBadRequest(get_xml_error(_("iGadget JSON expected")), mimetype='application/xml; charset=UTF-8')
-
-        try:
-            received_json = request.POST['igadget']
-            igadget = eval(received_json)
-            tab = Tab.objects.get(workspace__user=user, workspace__pk=workspace_id, pk=tab_id) 
-            SaveIGadget(igadget, user, tab)
-            return HttpResponse('ok')
-        except WorkSpace.DoesNotExist:
-            msg = _('refered workspace %(workspace_id)s does not exist.')
-            log(msg, request)
-            return HttpResponseBadRequest(get_xml_error(msg))
-        except Exception, e:
-            transaction.rollback()
-            msg = _("iGadget cannot be created: ") + unicode(e)
-            log(msg, request)
-            return HttpResponseServerError(get_xml_error(msg), mimetype='application/xml; charset=UTF-8')
-
 
     @transaction.commit_on_success
     def update(self, request, workspace_id, tab_id, igadget_id):

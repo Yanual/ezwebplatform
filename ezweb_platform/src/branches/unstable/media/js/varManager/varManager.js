@@ -148,13 +148,13 @@ function VarManager (workSpaceInfo) {
 		return variable.set(value, wiring);
 	}
 
-	VarManager.prototype.addInstance = function (iGadgetId, template) {
+	VarManager.prototype.addInstance = function (iGadget, template) {
 		if (! loaded)
 			return;
 
-		var templateVariables = template.getVariables(iGadgetId);
+		var templateVariables = template.getVariables(iGadget.id);
 		
-		iGadgets[iGadgetId] = templateVariables;
+		iGadgets[iGadget.id] = templateVariables;
 	}
 	
 	VarManager.prototype.removeInstance = function (iGadgetId) {

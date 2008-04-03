@@ -170,22 +170,16 @@ function Wiring (workSpaceGlobalInfo) {
 	}
     }
 
-    Wiring.prototype.addInstance = function (iGadgetId, template) {
+    Wiring.prototype.addInstance = function (iGadget, template) {
 	var gadget = new Object();
 			
 	if (arguments.length == 2){
-	    if (this.iGadgetList[iGadgetId] == undefined) {
+	    if (this.iGadgetList[iGadget.id] == undefined) {
 		var events = template.getEvents();
 		var slots = template.getSlots();
 					
 		var itemList = [];
-		gadget["id"] = iGadgetId;
-
-		//var gadgetModel = DragboardFactory.getInstance().getGadget(iGadgetId);
-
-		//gadget["vendor"] = gadgetModel.getVendor();
-		//gadget["version"] = gadgetModel.getVersion();	
-		//gadget["name"] = gadgetModel.getName();	
+		gadget["id"] = iGadget.id;
 					
 		// The instance of the iGadget doesn't exist.
 		for (var i = 0; i < events.length; i++){
@@ -193,7 +187,7 @@ function Wiring (workSpaceGlobalInfo) {
 		    item["name"] = events[i].name;
 		    item["aspect"] = events[i].aspect;
 		    item["friend_code"] = events[i].friend_code;
-		    item["ref"] = new wEvent(iGadgetId, item["name"]);
+		    item["ref"] = new wEvent(iGadget.id, item["name"]);
 		    itemList.push(item);
 								
 		}
@@ -203,12 +197,12 @@ function Wiring (workSpaceGlobalInfo) {
 		    item["name"] = slots[j].name;
 		    item["aspect"] = slots[j].aspect;
 		    item["friend_code"] = slots[j].friend_code;
-		    item["ref"] = new wSlot(iGadgetId, item["name"]);
+		    item["ref"] = new wSlot(iGadget.id, item["name"]);
 		    itemList.push(item);
 		}
 					
 		gadget["list"] = itemList;
-		this.iGadgetList[iGadgetId] = gadget;
+		this.iGadgetList[iGadget.id] = gadget;
 		return 0;
 	    }
 	    else{
@@ -664,7 +658,8 @@ function Wiring (workSpaceGlobalInfo) {
 		
 	    var iGadgetId = {iGadgetId: this.iGadgetList[gadgetKeys[i]].id};
 
-	    iGadget.uri = URIs.POST_IGADGET.evaluate(iGadgetId);
+		//TODO: reconstruir uri
+	    iGadget.uri = URIs.GET_IGADGET.evaluate(iGadgetId);
 	    iGadget.id = this.iGadgetList[gadgetKeys[i]].id;
 	    iGadget.list = list;
 	    gadgets.push(iGadget);

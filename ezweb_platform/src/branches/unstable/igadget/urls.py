@@ -47,7 +47,7 @@ urlpatterns = patterns('igadget.views',
     # IGadgets
     (r'^[/]?$', IGadgetCollection(permitted_methods=('GET', 'POST', 'PUT',))),
     (r'^/((?P<igadget_id>\d+)[/]?)?$',
-	    IGadgetEntry(permitted_methods=('GET', 'POST', 'PUT', 'DELETE',))),
+	    IGadgetEntry(permitted_methods=('GET', 'PUT', 'DELETE',))),
     (r'^/((?P<igadget_id>\d+)/variables[/]?)?$',
         IGadgetVariableCollection(permitted_methods=('GET',))),
     (r'^/((?P<igadget_id>\d+)/variables/(?P<var_id>[-ÑñáéíóúÁÉÍÓÚ\w]+)[/]?)?$',
