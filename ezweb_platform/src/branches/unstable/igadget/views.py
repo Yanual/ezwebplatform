@@ -167,7 +167,7 @@ class IGadgetCollection(Resource):
             igadget = eval(received_json)
             tab = Tab.objects.get(workspace__user=user, workspace__pk=workspace_id, pk=tab_id) 
             new_igadget = SaveIGadget(igadget, user, tab)
-            return HttpResponse(new_igadget.pk)
+            return HttpResponse(str(new_igadget.pk))
         except WorkSpace.DoesNotExist:
             msg = _('refered workspace %(workspace_id)s does not exist.')
             log(msg, request)

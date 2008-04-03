@@ -49,7 +49,8 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 	this.currentCode = 1;
 	var matrix = null;
 	var shadowMatrix = null; shadowPositions = null;
-	var dragboard, dragboardStyle;
+	this.dragboard = null;
+	var dragboardStyle;
 	var dragboardCursor = null;
 	var gadgetToMove = null;
 	this.iGadgets = new Hash();
@@ -61,32 +62,35 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 	// PRIVATED FUNCTIONS 
 	// ***********************
 	Dragboard.prototype.paint = function (receivedData) {
-		var iGadget, position, iGadgetsToReinsert = new Array(); // oldWidth, oldHeight
+		var iGadget, key, position, iGadgetsToReinsert = new Array(); // oldWidth, oldHeight
 
-		dragboard.innerHTML = "";
+		this.dragboard.innerHTML = "";
 
 		_clearMatrix();
 
 		// Insert igadgets
-		this.iGadgets.each( function (pair) {
-			iGadget = pair.value;
+		var igadgetKeys = this.iGadgets.keys();
+		for (var i=0; i<igadgetKeys.length; i++) {
+			key = igadgetKeys[i];
+			
+			iGadget = this.iGadgets[key];
 
 			position = iGadget.getPosition();
 			// height + 2 for check that there is space with margins (1 cell at top and another at bottom)
 			if (_hasSpaceFor(matrix, position.x, position.y - 1, iGadget.getContentWidth(), iGadget.getHeight() + 2)) {
-				iGadget.paint(dragboard);
+				iGadget.paint(this.dragboard);
 				_reserveSpace(matrix, iGadget);
 			} else {
 				iGadgetsToReinsert.push(iGadget);
 			}
-		});
+		}
 
 		// Reinsert the igadgets that didn't fit in their positions
 		for (i = 0; i < iGadgetsToReinsert.length; i++) {
 			position = _searchFreeSpace(iGadgetsToReinsert[i].getContentWidth(),
 			                            iGadgetsToReinsert[i].getHeight());
 			iGadgetsToReinsert[i].setPosition(position);
-			iGadgetsToReinsert[i].paint(dragboard);
+			iGadgetsToReinsert[i].paint(this.dragboard);
 			_reserveSpace(matrix, iGadgetsToReinsert[i]);
 		}
 
@@ -633,7 +637,7 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 
 
 	Dragboard.prototype.showInstance = function (iGadget) {
-		iGadget.paint(dragboard, dragboardStyle);
+		iGadget.paint(this.dragboard, dragboardStyle);
 	}
 
 	Dragboard.prototype.initializeMove = function (iGadgetId) {
@@ -660,7 +664,7 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 
 			// Create dragboard cursor
 			dragboardCursor = new DragboardCursor(gadgetToMove);
-			dragboardCursor.paint(dragboard, dragboardStyle);
+			dragboardCursor.paint(this.dragboard, dragboardStyle);
 			_reserveSpace(matrix, dragboardCursor);
 		} /* else {
 			TODO exception
@@ -737,8 +741,8 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 	// *******************
 	// INITIALIZING CODE
 	// *******************
-	dragboard = dragboardElement;
-	dragboardStyle = new DragboardStyle(dragboard, 3, 12); // TODO 3 columns, cell height = 12px
+	this.dragboard = dragboardElement;
+	dragboardStyle = new DragboardStyle(this.dragboard, 3, 12); // TODO 3 columns, cell height = 12px
 	
 	this.parseTab(tabInfo);
 }
