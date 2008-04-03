@@ -111,8 +111,23 @@ function WorkSpace (workSpaceState) {
 		if (!this.loaded)
 			return;
 		
-		this.hide();
+		this.hideAndUnmark();
 		this.wiringInterface.show();
+	}
+	
+	WorkSpace.prototype.hideAndUnmark = function() {
+		if (!this.loaded)
+			return;
+		
+		this.wiringInterface.hide();
+		
+		var tabList = this.tabInstances.keys();
+		
+		for (var i=0; i<tabList.length; i++) {
+			var tab = this.tabInstances[tabList[i]];
+			
+			tab.hideAndUnmark();
+		}
 	}
 		
 	WorkSpace.prototype.hide = function() {
@@ -142,7 +157,7 @@ function WorkSpace (workSpaceState) {
 			if (tab == this.visibleTab)
 				tab.show();
 			else
-				tab.hide();
+				tab.hideAndUnmark();
 		}
 	}
 	
@@ -162,7 +177,7 @@ function WorkSpace (workSpaceState) {
 	}
 	
 	WorkSpace.prototype.showVisibleTab = function() {
-		this.hide();
+		this.hideAndUnmark();
 		this.visibleTab.show();
 	}
 	

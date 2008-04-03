@@ -42,9 +42,13 @@ function Tab (tabInfo, workSpace) {
     // PUBLIC METHODS
     // ****************
 	
+	Tab.prototype.hideAndUnmark = function () {
+		this.hide();
+		this.tabHTMLElement.className = "tab";
+	}
+	
 	Tab.prototype.hide = function () {
 		this.dragboardElement.setStyle({'zIndex': 1, 'display': 'block'});
-		this.tabHTMLElement.className = "tab";
 	}
 	
 	Tab.prototype.show = function () {

@@ -238,7 +238,7 @@ var OpManagerFactory = function () {
 				if (workSpace == this.activeWorkSpace) {
 					workSpace.show();
 				} else {
-					workSpace.hide();
+					workSpace.hideAndUnmark();
 				}
 			}
 		}
