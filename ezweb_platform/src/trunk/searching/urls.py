@@ -45,14 +45,12 @@ from django_restapi.responder import *
 urlpatterns = patterns('searching.views',
     
     # Search Gadgets
-    (r'^generic/(?P<value>[\@_\%_\._\!_\s_\-_\|_\&_\/_\:_\(_\)_\w]+)/(?P<criteria>\w+)/(?P<pag>\d+)/(?P<offset>\d+)$', 
+    (r'^generic/(?P<value1>[\@_\%_\._\!_\s_\-_\|_\&_\/_\:_\(_\)_\w]+)/(?P<value2>[\@_\%_\._\!_\s_\-_\|_\&_\/_\:_\(_\)_\w]+)/(?P<value3>[\@_\%_\._\!_\s_\-_\|_\&_\/_\:_\(_\)_\w]+)/(?P<pag>\d+)/(?P<offset>\d+)$', 
         GadgetsCollectionByGenericSearch(permitted_methods=('GET', ))),
-    (r'^generic/(?P<value>[\@_\%_\._\!_\s_\-_\|_\&_\/_\:_\(_\)_\w]+)/(?P<criteria>\w+)$', 
+    (r'^generic/(?P<value1>[\@_\%_\._\!_\s_\-_\|_\&_\/_\:_\(_\)_\w]+)/(?P<value2>[\@_\%_\._\!_\s_\-_\|_\&_\/_\:_\(_\)_\w]+)/(?P<value3>[\@_\%_\._\!_\s_\-_\|_\&_\/_\:_\(_\)_\w]+)$', 
         GadgetsCollectionByGenericSearch(permitted_methods=('GET', ))),
     (r'^(?P<criteria>\w+)/(?P<value>[\@_\%_\._\-_\!_\s_\|_\&_\(_\)_\w]+)$', 
         GadgetsCollectionByCriteria(permitted_methods=('GET', ))),
     (r'^(?P<criteria>\w+)/(?P<value>[\@_\%_\._\-_\!_\s_\|_\&_\(_\)_\w]+)/(?P<pag>\d+)/(?P<offset>\d+)$', 
-        GadgetsCollectionByCriteria(permitted_methods=('GET', ))),
-    #(r'^advanced$', GadgetsCollectionByCriteria(permitted_methods=('GET', ))),
-    
+        GadgetsCollectionByCriteria(permitted_methods=('GET', ))),    
  )

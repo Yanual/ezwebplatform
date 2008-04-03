@@ -50,11 +50,11 @@ def get_uniquelist(list, value = None):
 
     uniquelist = []
 
-    if value==None or len(value) == 1:
+    if value==None or value == 1:
         [uniquelist.append(x) for x in list if x not in uniquelist]
     else:
         for x in list:
-            if x not in uniquelist and list.count(x) >= len(value):
+            if x not in uniquelist and list.count(x) >= value:
                 uniquelist.append(x)
 
     return uniquelist

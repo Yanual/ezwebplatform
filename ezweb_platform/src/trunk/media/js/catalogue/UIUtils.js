@@ -297,7 +297,7 @@ UIUtils.cataloguePaginate = function(url, offset, pag, items) {
 		url = URIs.GET_POST_RESOURCES;
 	}
 	if (UIUtils.search == 'generic'){
-		url = URIs.GET_RESOURCES_SEARCH_GENERIC + "/" + UIUtils.searchValue + "/" + UIUtils.searchCriteria;
+		url = URIs.GET_RESOURCES_SEARCH_GENERIC + "/" + UIUtils.searchValue;
 	}
 	if (UIUtils.search == 'wiring'){
 		url = URIs.GET_RESOURCES_BY_WIRING + "/" + UIUtils.searchCriteria + "/" + UIUtils.searchValue;
@@ -356,11 +356,11 @@ UIUtils.getNum_items = function() {
     return UIUtils.num_items;
 }
 
-UIUtils.searchGeneric = function(url, param, criteria) {
+UIUtils.searchGeneric = function(url, param1, param2, param3) {
 	UIUtils.closeInfoResource();
 	var opManager = OpManagerFactory.getInstance();
 	
-	if (param == ""){
+	if (param1 == "" && param2 == "" && param3 == ""){
 		$('header_always_error').style.display="block";
 		UIUtils.getError($('header_always_error'),gettext("Indicate a criteria in search formulary"));
 	}
@@ -370,11 +370,15 @@ UIUtils.searchGeneric = function(url, param, criteria) {
 		{
 			CatalogueFactory.getInstance().getResource(UIUtils.balloonResource).closeTagcloudBalloon();
 		}
+		if (param1=="") param1=" ";
+		if (param2=="") param2=" ";
+		if (param3=="") param3=" ";
+
 		UIUtils.setPage(1);
-		UIUtils.searchValue = param;
-		UIUtils.searchCriteria = criteria ;
+		UIUtils.searchValue = param1+"/"+param2+"/"+param3;
+		UIUtils.searchCriteria = 'generic';
 		UIUtils.search = 'generic';
-		opManager.repaintCatalogue(url + "/" + param + "/" + criteria + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
+		opManager.repaintCatalogue(url + "/" + param1 + "/" + param2 + "/" + param3 + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
 	}
 }
 
@@ -562,7 +566,6 @@ UIUtils.setResourcesWidth = function() {
 	var head = document.getElementById('head');
 	var resources = document.getElementById('resources');
 	var center = document.getElementById('center');
-	//UIUtils.search = false;
 	center.style.width = head.offsetWidth + 'px';
 	resources.style.width = (center.offsetWidth - (tab.offsetWidth + (UIUtils.isInfoResourcesOpen?UIUtils.infoResourcesWidth:0))) + 'px';
 }
@@ -923,7 +926,7 @@ UIUtils.onReturn = function(event_, handler_, inputText_) {
   if (!event_) event_ = window.event;
   if (event_ && event_.keyCode && event_.keyCode == 13) {
 	  //handler_(inputText_);
-	  handler_(inputText_,arguments[3],arguments[4]);
+	  handler_(inputText_,arguments[3],arguments[4], arguments[5]);
   }
 };
 
