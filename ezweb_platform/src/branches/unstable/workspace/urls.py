@@ -45,12 +45,12 @@ from workspace.views import *
 urlpatterns = patterns('workspace.views',
 
     # WorkSpace
-    (r'^[/]?$', WorkSpaceCollection(permitted_methods=('GET',))),
+    (r'^[/]?$', WorkSpaceCollection(permitted_methods=('GET','POST', ))),
     (r'^/((?P<workspace_id>[-ÑñáéíóúÁÉÍÓÚ\w]+)[/]?)?$',
 	    WorkSpaceEntry(permitted_methods=('GET', 'POST', 'PUT', 'DELETE',))),
     # Tab
     (r'^/((?P<workspace_id>\d+)/tab(s)?[/]?)?$',
-        TabCollection(permitted_methods=('GET',))),
+        TabCollection(permitted_methods=('GET', 'POST',))),
     (r'^/((?P<workspace_id>\d+)/tab(s)?/(?P<tab_id>[-ÑñáéíóúÁÉÍÓÚ\w]+)[/]?)?$',
-        TabEntry(permitted_methods=('GET', 'POST', 'PUT', 'DELETE',))),
+        TabEntry(permitted_methods=('GET', 'PUT', 'POST', 'DELETE',))),
 )

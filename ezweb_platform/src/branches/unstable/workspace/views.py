@@ -82,20 +82,9 @@ class WorkSpaceCollection(Resource):
         data_list['workspaces'] = [get_workspace_data(d) for d in  data]
 
         return HttpResponse(json_encode(data_list), mimetype='application/json; charset=UTF-8')
-
-
-class WorkSpaceEntry(Resource):
-    def read(self, request, workspace_id):
-        user = get_user_authentication(request)
-        
-        workspaces = get_list_or_404(WorkSpace, user=user, pk=workspace_id)
-        data = serializers.serialize('python', workspaces, ensure_ascii=False)
-        workspace_data = get_global_workspace_data(data[0], workspaces[0])
-        return HttpResponse(json_encode(workspace_data), mimetype='application/json; charset=UTF-8')
-    
     
     @transaction.commit_on_success
-    def create(self, request, workspace_id):
+    def create(self, request):
         user = get_user_authentication(request)
 
         if not request.has_key('workspace'):
@@ -111,12 +100,22 @@ class WorkSpaceEntry(Resource):
             workspace_name = ts.get('name')
             workspace = WorkSpace (name=workspace_name, active=False, user=user)
             workspace.save()
-            return HttpResponse('ok')
+            return HttpResponse(str(workspace.pk))
         except Exception, e:
             transaction.rollback()
             msg = _("workspace cannot be created: ") + unicode(e)
             log(msg, request)
             return HttpResponseServerError(get_xml_error(msg), mimetype='application/xml; charset=UTF-8')
+
+
+class WorkSpaceEntry(Resource):
+    def read(self, request, workspace_id):
+        user = get_user_authentication(request)
+        
+        workspaces = get_list_or_404(WorkSpace, user=user, pk=workspace_id)
+        data = serializers.serialize('python', workspaces, ensure_ascii=False)
+        workspace_data = get_global_workspace_data(data[0], workspaces[0])
+        return HttpResponse(json_encode(workspace_data), mimetype='application/json; charset=UTF-8')
 
     @transaction.commit_on_success
     def update(self, request, workspace_id):
@@ -195,19 +194,8 @@ class TabCollection(Resource):
 
         return HttpResponse(json_encode(data_list), mimetype='application/json; charset=UTF-8')
     
-
-class TabEntry(Resource):
-    def read(self, request, workspace_id, tab_id):
-        user = get_user_authentication(request)
-        
-        tab = get_list_or_404(Tab, workspace__user=user, workspace__pk=workspace_id, pk=tab_id)
-        data = serializers.serialize('python', tab, ensure_ascii=False)
-        tab_data = get_tab_data(data[0])
-        return HttpResponse(json_encode(tab_data), mimetype='application/json; charset=UTF-8')
-
-
     @transaction.commit_on_success
-    def create(self, request, workspace_id, tab_id):
+    def create(self, request, workspace_id):
         user = get_user_authentication(request)
 
         if not request.has_key('tab'):
@@ -224,13 +212,23 @@ class TabEntry(Resource):
             workspace = WorkSpace.objects.get(user=user, pk=workspace_id)
             tab = Tab (name=tab_name, visible=False, workspace=workspace)
             tab.save()
-            return HttpResponse('ok')
+            return HttpResponse(str(tab.pk))
         except Exception, e:
             transaction.rollback()
             msg = _("tab cannot be created: ") + unicode(e)
             log(msg, request)
             return HttpResponseServerError(get_xml_error(msg), mimetype='application/xml; charset=UTF-8')
 
+    
+
+class TabEntry(Resource):
+    def read(self, request, workspace_id, tab_id):
+        user = get_user_authentication(request)
+        
+        tab = get_list_or_404(Tab, workspace__user=user, workspace__pk=workspace_id, pk=tab_id)
+        data = serializers.serialize('python', tab, ensure_ascii=False)
+        tab_data = get_tab_data(data[0])
+        return HttpResponse(json_encode(tab_data), mimetype='application/json; charset=UTF-8')
 
     def update(self, request, workspace_id, tab_id):
         user = get_user_authentication(request)

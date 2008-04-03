@@ -200,7 +200,7 @@ def get_global_workspace_data(data, workSpaceDAO):
     data_ret['workspace'] = get_workspace_data(data)  
     
     # Tabs processing              
-    tabs = get_list_or_404(Tab, workspace=workSpaceDAO)  
+    tabs = Tab.objects.filter(workspace=workSpaceDAO)  
     data = serializers.serialize('python', tabs, ensure_ascii=False)
     tabs_data = [get_tab_data(d) for d in data]
     
