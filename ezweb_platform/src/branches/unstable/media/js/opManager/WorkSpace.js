@@ -37,13 +37,13 @@
 
 
 function WorkSpace (workSpaceState) {
-	
+
 	// ****************
-    // CALLBACK METHODS 
-    // ****************
-		
-    // Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
-    var loadWorkSpace = function (transport) {
+	// CALLBACK METHODS
+	// ****************
+
+	// Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
+	var loadWorkSpace = function (transport) {
 		// JSON-coded iGadget-variable mapping
 		var response = transport.responseText;
 		this.workSpaceGlobalInfo = eval ('(' + response + ')');
@@ -78,17 +78,26 @@ function WorkSpace (workSpaceState) {
 		this.setTab(visibleTabName);
 		
 		OpManagerFactory.getInstance().continueLoadingGlobalModules(Modules.prototype.ACTIVE_WORKSPACE);
-    }
-		
-    var onError = function (transport) {
-		// JSON-coded iGadget-variable mapping
-		alert("error TabSpace GET");
-    }
-	
-    // ****************
-    // PUBLIC METHODS
-    // ****************
-	
+	}
+
+	var onError = function (transport, e) {
+		var msg;
+		if (e) {
+			msg = interpolate(gettext("JavaScript exception on file %(errorFile)s (line: %(errorLine)s): %(errorDesc)s"),
+					                  {errorFile: e.fileName, errorLine: e.lineNumber, errorDesc: e},
+							  true);
+		} else {
+			msg = transport.status + " " + transport.statusText;
+		}
+		msg = interpolate(gettext("Error retreiving workspace data: %(errorMsg)s."),
+		                          {errorMsg: msg}, true);
+		OpManagerFactory.getInstance().log(msg);
+	}
+
+	// ****************
+	// PUBLIC METHODS
+	// ****************
+
     WorkSpace.prototype.getName = function () {
     	return this.workSpaceState.name;
 	}
@@ -161,6 +170,13 @@ function WorkSpace (workSpaceState) {
 		}
 	}
 	
+	WorkSpace.prototype.getTab = function(tabName) {
+		if (!this.loaded)
+			return;
+		
+		return this.tabInstances[tabName];
+	}
+	
 	WorkSpace.prototype.setTab = function(tabName) {
 		if (!this.loaded)
 			return;
@@ -209,4 +225,4 @@ function WorkSpace (workSpaceState) {
 	this.wiringLayer = null;
 	this.visibleTab = null;
 	
-}     	
+}

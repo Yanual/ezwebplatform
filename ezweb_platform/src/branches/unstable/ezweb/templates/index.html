@@ -134,8 +134,9 @@ var URIs = new _URIConstants();
   <img id="logo" src="{{ MEDIA_URL }}images/logo.gif" alt="EzWeb Logo">
   <div id="tab_section" class="tab_section">
     <div id="toolbar_section" class="toolbar_section">
-    <span id="catalogue_link"  class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().show_catalogue()"><a href="#">{% trans "Catalogue" %}</a></span>
-    <span id="wiring_link" class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().show_wiring();"><a href="#">{% trans "Wires" %}</a></span>
+    <span id="catalogue_link"  class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().show_catalogue()">{% trans "Catalogue" %}</span>
+    <span id="wiring_link" class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().show_wiring();">{% trans "Wires" %}</span>
+    <span id="logs_link" class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().show_logs();">Logs</span>
   </div>
   </div>
 </div>

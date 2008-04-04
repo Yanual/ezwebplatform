@@ -80,7 +80,7 @@ var OpManagerFactory = function () {
 		// PRIVATE VARIABLES AND FUNCTIONS
 		// *********************************
 		this.errorCount = 0;
-			
+
 		// Singleton modules
 		this.showcaseModule = null;
 		this.contextManagerModule = null;
@@ -105,6 +105,8 @@ var OpManagerFactory = function () {
 		// Container managed by OpManager: {showcase_tab}
 		// Remaining containers managed by WorkSpaces!!
 		this.showCase = null;
+		this.logsConsole = null;
+		this.logsLink = null;
 		
 		// Variables for controlling the collection of wiring and dragboard instances of a user
 		this.workSpaceInstances = new Hash();
@@ -120,12 +122,17 @@ var OpManagerFactory = function () {
 				this.showCaseLink = $('catalogue_link');
 				this.showCase = $('showcase_container');
 				
+				this.logsConsole = $('logs_container');
+				this.logsLink = $('logs_link');
+				
 				this.wiringLink = $('wiring_link');
 			}
 			
 			this.showCaseLink.className = 'toolbar_unmarked';
 			this.wiringLink.className = 'toolbar_unmarked';
-			this.showCase.setStyle({'display': 'block', 'zIndex': 1});
+			this.logsLink.className = 'toolbar_unmarked';
+			this.showCase.setStyle({'zIndex': 1});
+			this.logsConsole.setStyle({'zIndex': 1});
 		}
 		
 		OpManager.prototype.show_wiring = function () {
@@ -138,7 +145,7 @@ var OpManagerFactory = function () {
 			this.activeWorkSpace.hide();
 		
 			this.showCaseLink.className = 'toolbar_marked';
-			this.showCase.setStyle({'display': 'block', 'zIndex': 2});
+			this.showCase.setStyle({'zIndex': 2, 'display': 'block'});
 			
 			if (UIUtils.isInfoResourcesOpen) {
 				UIUtils.isInfoResourcesOpen = false;
@@ -154,8 +161,13 @@ var OpManagerFactory = function () {
 			$('simple_search_text').focus();
 		}
 		
+		OpManager.prototype.show_logs = function () {
+			this.unMarkGlobalTabs();
+			this.logsConsole.setStyle({'zIndex': 2, 'display': 'block'});
+		}
+		
 		OpManager.prototype.changeActiveWorkSpace = function (workSpace) {
-		    this.activeWorkSpace = this.getActiveWorkSpace(workSpace);
+		    this.activeWorkSpace = this.workSpaceInstances[workSpace];
 		    this.activeDragboard = this.activeWorkSpace.getVisibleTab().getDragboard();
 		    this.activeWiring = this.activeWorkSpace.getWiring();
 		    this.activeVarManager = this.activeWorkSpace.getVarManager();
@@ -167,16 +179,6 @@ var OpManagerFactory = function () {
 			this.unMarkGlobalTabs();
 		    this.activeWorkSpace.setTab(tabName);
 		    this.activeDragboard = this.activeWorkSpace.getVisibleTab().getDragboard();
-		}
-
-		OpManager.prototype.getActiveWorkSpace = function (workSpace) {
-		    var ts = this.workSpaceInstances[workSpace];
-
-		    if (ts) {
-		    	return ts;
-		    } else {
-		    	return this.activeWorkSpace;
-		    }
 		}
 
 		OpManager.prototype.addInstance = function (gadgetId) {
@@ -287,12 +289,12 @@ var OpManagerFactory = function () {
 		}
 
 		OpManager.prototype.log = function(msg, level) {
-			if (this.errorCount++ == 0) {
-				$("logs_tab").className="tab";
-			}
+//			if (this.errorCount++ == 0) {
+//				$("logs_tab").className="tab";
+//			}
 			label = ngettext("%(errorCount)s error", "%(errorCount)s errors", this.errorCount);
 			label = interpolate(label, {errorCount: this.errorCount}, true);
-			$("logs_tab").innerHTML = label;
+			this.logsLink.innerHTML = label;
 
 			var logentry = document.createElement("p");
 
@@ -303,7 +305,7 @@ var OpManagerFactory = function () {
 				icon.setAttribute("src", "/ezweb/images/error.png");
 				icon.setAttribute("class", "icon");
 				icon.setAttribute("alt", "[Error] ");
-				$("logs_console").appendChild(icon);
+				this.logsConsole.appendChild(icon);
 				try {
 					console.error(msg);
 				} catch (e) {}
@@ -313,7 +315,7 @@ var OpManagerFactory = function () {
 				icon.setAttribute("src", "/ezweb/images/warning.png");
 				icon.setAttribute("class", "icon"); 
 				icon.setAttribute("alt", "[Warning] ");
-				$("logs_console").appendChild(icon);
+				this.logsConsole.appendChild(icon);
 				try {
 					if (console) console.warn(msg);
 				} catch (e) {}
@@ -323,7 +325,7 @@ var OpManagerFactory = function () {
 				icon.setAttribute("src", "/ezweb/images/info.png");
 				icon.setAttribute("class", "icon");
 				icon.setAttribute("alt", "[Info] ");
-				$("logs_console").appendChild(icon);
+				this.logsConsole.appendChild(icon);
 				try {
 					if (console) console.info(msg);
 				} catch (e) {}

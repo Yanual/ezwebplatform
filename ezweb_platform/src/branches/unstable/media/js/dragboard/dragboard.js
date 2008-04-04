@@ -45,14 +45,14 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 	// *********************************
 	// PRIVATE VARIABLES
 	// *********************************
-	var loaded = false;
+	this.loaded = false;
 	this.currentCode = 1;
-	var matrix = null;
-	var shadowMatrix = null; shadowPositions = null;
-	this.dragboard = null;
-	var dragboardStyle;
-	var dragboardCursor = null;
-	var gadgetToMove = null;
+	this.matrix = null;          // Matrix of gadget
+	this.shadowMatrix = null;    // Temporal matrix of gadgets used for D&D
+	this.shadowPositions = null;
+	this.dragboardElement, this.dragboardStyle;
+	this.dragboardCursor = null;
+	this.gadgetToMove = null;
 	this.iGadgets = new Hash();
 	this.tabId = tabInfo.id;
 	this.workSpace = workSpace;
@@ -64,9 +64,9 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 	Dragboard.prototype.paint = function (receivedData) {
 		var iGadget, key, position, iGadgetsToReinsert = new Array(); // oldWidth, oldHeight
 
-		this.dragboard.innerHTML = "";
+		this.dragboardElement.innerHTML = "";
 
-		_clearMatrix();
+		this._clearMatrix();
 
 		// Insert igadgets
 		var igadgetKeys = this.iGadgets.keys();
@@ -77,9 +77,9 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 
 			position = iGadget.getPosition();
 			// height + 2 for check that there is space with margins (1 cell at top and another at bottom)
-			if (_hasSpaceFor(matrix, position.x, position.y - 1, iGadget.getContentWidth(), iGadget.getHeight() + 2)) {
-				iGadget.paint(this.dragboard);
-				_reserveSpace(matrix, iGadget);
+			if (this._hasSpaceFor(this.matrix, position.x, position.y - 1, iGadget.getContentWidth(), iGadget.getHeight() + 2)) {
+				iGadget.paint(this.dragboardElement);
+				this._reserveSpace(this.matrix, iGadget);
 			} else {
 				iGadgetsToReinsert.push(iGadget);
 			}
@@ -87,56 +87,57 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 
 		// Reinsert the igadgets that didn't fit in their positions
 		for (i = 0; i < iGadgetsToReinsert.length; i++) {
-			position = _searchFreeSpace(iGadgetsToReinsert[i].getContentWidth(),
+			position = this._searchFreeSpace(iGadgetsToReinsert[i].getContentWidth(),
 			                            iGadgetsToReinsert[i].getHeight());
 			iGadgetsToReinsert[i].setPosition(position);
-			iGadgetsToReinsert[i].paint(this.dragboard);
-			_reserveSpace(matrix, iGadgetsToReinsert[i]);
+			iGadgetsToReinsert[i].paint(this.dragboardElement);
+			this._reserveSpace(this.matrix, iGadgetsToReinsert[i]);
 		}
 
 		// remove holes moving igadgets to the topmost positions
-		this.iGadgets.each( function (pair) {
-			iGadget = pair.value;
-
+		var iGadget;
+		var keys = this.iGadgets.keys();
+		for (var i = 0; i < keys.length; i++) {
+			iGadget = this.iGadgets[keys[i]];
 //				oldWidth = iGadget.getContentWidth();
 //				oldHeight = iGadget.getHeight();
 //				iGadget.height = null;
 //				_resize(iGadget, oldWidth, oldHeight, iGadget.getContentWidth(), iGadget.getHeight());
-			_moveSpaceUp(matrix, iGadget);
-		});
+			this._moveSpaceUp(this.matrix, iGadget);
+		};
 	}
 
-	function _getPositionOn(_matrix, gadget) {
-		if (_matrix == matrix)
+	this._getPositionOn = function(_matrix, gadget) {
+		if (_matrix == this.matrix)
 			return gadget.getPosition();
 		else
-			return shadowPositions[gadget.getId()];
+			return this.shadowPositions[gadget.getId()];
 	}
 
-	function _setPositionOn(_matrix, gadget, position) {
-		if (_matrix == matrix)
+	this._setPositionOn = function(_matrix, gadget, position) {
+		if (_matrix == this.matrix)
 			gadget.setPosition(position);
 		else
-			shadowPositions[gadget.getId()] = position;
+			this.shadowPositions[gadget.getId()] = position;
 	}
 
-	function _destroyCursor(clearSpace) {
-		if (dragboardCursor != null) {
-			dragboardCursor.destroy();
+	this._destroyCursor = function(clearSpace) {
+		if (this.dragboardCursor != null) {
+			this.dragboardCursor.destroy();
 			if (clearSpace)
-				_removeFromMatrix(matrix, dragboardCursor);
-			dragboardCursor = null;
+				this._removeFromMatrix(this.matrix, this.dragboardCursor);
+			this.dragboardCursor = null;
 		}
 	}
 
-	function _clearMatrix() {
-		matrix = new Array();
+	this._clearMatrix = function() {
+		this.matrix = new Array();
 
-		for (var x = 0; x < dragboardStyle.getColumns(); x++)
-			matrix[x] = new Array();
+		for (var x = 0; x < this.dragboardStyle.getColumns(); x++)
+			this.matrix[x] = new Array();
 	}
 
-	function _hasSpaceFor(_matrix, positionX, positionY, width, height) {
+	this._hasSpaceFor = function(_matrix, positionX, positionY, width, height) {
 		var x, y;
 
 		for (x = 0; x < width; x++)
@@ -147,9 +148,9 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 		return true;
 	}
 
-	function _reserveSpace(_matrix, iGadget) {
+	this._reserveSpace = function(_matrix, iGadget) {
 		var x, y;
-		var position = _getPositionOn(_matrix, iGadget);
+		var position = this._getPositionOn(_matrix, iGadget);
 		var width = iGadget.getContentWidth();
 		var height = iGadget.getHeight();
 
@@ -158,9 +159,9 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 				_matrix[position.x + x][position.y + y] = iGadget;
 	}
 
-	function _clearSpace(_matrix, iGadget) {
+	this._clearSpace = function(_matrix, iGadget) {
 		var x, y;
-		var position = _getPositionOn(_matrix, iGadget);
+		var position = this._getPositionOn(_matrix, iGadget);
 		var width = iGadget.getContentWidth();
 		var height = iGadget.getHeight();
 
@@ -169,12 +170,12 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 				delete _matrix[position.x + x][position.y + y];
 	}
 
-	function _searchInsertPoint(_matrix, x, y, width, height) {
+	this._searchInsertPoint = function(_matrix, x, y, width, height) {
 		// Search the topmost position for the gadget
 
 		// First if in the current position there is a gadget then... use atleat its position
 		if (_matrix[x][y] != null) {
-   				y = _getPositionOn(_matrix, _matrix[x][y]).y - 1;
+   				y = this._getPositionOn(_matrix, _matrix[x][y]).y - 1;
 		}
 
 		// If we are
@@ -184,7 +185,7 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 			var originalY = y;
 			var lastY;
 			var found = false;
-			while ((y > 0) && (_hasSpaceFor(_matrix, x, y - 1, width, 1))) {
+			while ((y > 0) && (this._hasSpaceFor(_matrix, x, y - 1, width, 1))) {
 //					if (_hasSpaceFor(_matrix, x, y, width, 1)) { // Skip margins spaces
 					found = true;
 					lastY = y;
@@ -201,7 +202,7 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 				for (offsetX = 1; offsetX < width; offsetX++) {
 					curGadget = _matrix[x + offsetX][originalY];
 					if ((curGadget != null)) {
-						y = _getPositionOn(_matrix, curGadget).y;
+						y = this._getPositionOn(_matrix, curGadget).y;
 
 						if (y > lastY) lastY = y;
 					}
@@ -217,9 +218,9 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 		return y;
 	}
 
-	function _moveSpaceDown(_matrix, iGadget, offsetY) {
+	this._moveSpaceDown = function(_matrix, iGadget, offsetY) {
 		var affectedIGadgets = new Hash();
-		var position = _getPositionOn(_matrix, iGadget);
+		var position = this._getPositionOn(_matrix, iGadget);
 		var finalPosition = position.clone();
 		finalPosition.y += offsetY;
 
@@ -243,22 +244,22 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 		for (i = 0; i < keys.length; i++) {
 			key = keys[i];
 			igadget = this.iGadgets[key];
-			_moveSpaceDown(_matrix, igadget, affectedIGadgets[key]);
+			this._moveSpaceDown(_matrix, igadget, affectedIGadgets[key]);
 		}
 
 		// Move the gadget
-		_clearSpace(_matrix, iGadget);
-		_setPositionOn(_matrix, iGadget, finalPosition);
-		_reserveSpace(_matrix, iGadget);
+		this._clearSpace(_matrix, iGadget);
+		this._setPositionOn(_matrix, iGadget, finalPosition);
+		this._reserveSpace(_matrix, iGadget);
 	}
 
-	function _moveSpaceUp(_matrix, iGadget) {
-		var position = _getPositionOn(_matrix, iGadget);
+	this._moveSpaceUp = function(_matrix, iGadget) {
+		var position = this._getPositionOn(_matrix, iGadget);
 		var edgeY = position.y + iGadget.getHeight() + 1; // we have to take in care the border so +1
 
 		var offsetY;
 		for (offsetY = 1;
-             ((position.y - offsetY) >= 0) && _hasSpaceFor(_matrix, position.x, position.y - offsetY, iGadget.getContentWidth(), 1);
+             ((position.y - offsetY) >= 0) && this._hasSpaceFor(_matrix, position.x, position.y - offsetY, iGadget.getContentWidth(), 1);
              offsetY++);
 
 		if (offsetY > 1) {
@@ -281,24 +282,24 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 			}
 
 			// Move the representation of the gadget
-			_clearSpace(_matrix, iGadget);
-			_setPositionOn(_matrix, iGadget, finalPosition);
-			_reserveSpace(_matrix, iGadget);
+			this._clearSpace(_matrix, iGadget);
+			this._setPositionOn(_matrix, iGadget, finalPosition);
+			this._reserveSpace(_matrix, iGadget);
 
 			// Move affected gadgets instances
 			var keys = affectedIGadgets.keys();
 			var i;
 			for (i = 0; i < keys.length; i++)
-				_moveSpaceUp(_matrix, affectedIGadgets[keys[i]]);
+				this._moveSpaceUp(_matrix, affectedIGadgets[keys[i]]);
 		}
 	}
 
-	function _removeFromMatrix(_matrix, iGadget) {
-		_clearSpace(_matrix, iGadget);
+	this._removeFromMatrix = function(_matrix, iGadget) {
+		this._clearSpace(_matrix, iGadget);
 
 		var affectedIGadgets = new Hash();
 		var affectedgadget, x, y, columnsize;
-		var position = _getPositionOn(_matrix, iGadget);
+		var position = this._getPositionOn(_matrix, iGadget);
 		var edgeY = position.y + iGadget.getHeight() + 1; // we have to take in care the border so +1
 
 		// check if we have to update the representations of the gadget instances
@@ -308,14 +309,14 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 				affectedgadget = _matrix[position.x + x][y];
 				if ((affectedgadget != null) && (affectedIGadgets[affectedgadget.getId()] == undefined)) {
 					affectedIGadgets[affectedgadget.getId()] = 1;
-					_moveSpaceUp(_matrix, affectedgadget);
+					this._moveSpaceUp(_matrix, affectedgadget);
 					break;
 				}
 			}
 		}
 	}
 
-	function _reserveSpace2(_matrix, iGadget, positionX, positionY, width, height) {
+	this._reserveSpace2 = function(_matrix, iGadget, positionX, positionY, width, height) {
 		var x, y;
 
 		for (x = 0; x < width; x++)
@@ -323,7 +324,7 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 				_matrix[positionX + x][positionY + y] = iGadget;
 	}
 
-	function _clearSpace2(_matrix, positionX, positionY, width, height) {
+	this._clearSpace2 = function(_matrix, positionX, positionY, width, height) {
 		var x, y;
 
 		for (x = 0; x < width; x++)
@@ -331,7 +332,7 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 				delete _matrix[positionX + x][positionY + y];
 	}
 
-	function _resize(iGadget, oldWidth, oldHeight, newWidth, newHeight) {
+	this._resize = function(iGadget, oldWidth, oldHeight, newWidth, newHeight) {
 		var x, y, step2Width = oldWidth;
 		var position = iGadget.getPosition();
 
@@ -341,7 +342,7 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 			// Calculate the width for the next step
 //				step2Width = oldWidth; // don't needed (default value)
 		} else if (newWidth < oldWidth) {
-			_clearSpace2(matrix, position.x + newWidth, position.y, oldWidth - newWidth, oldHeight);
+			this._clearSpace2(this.matrix, position.x + newWidth, position.y, oldWidth - newWidth, oldHeight);
 			// TODO implement this
 			// Calculate the width for the next step
 			step2Width = newWidth;
@@ -356,24 +357,24 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 			var limitX = position.x + step2Width;
 			for (y = position.y + oldHeight + 1; y < limitY; y++)
 				for (x = position.x; x < limitX; x++)
-					if (matrix[x][y] != null)
-						_moveSpaceDown(matrix, matrix[x][y], limitY - y);
+					if (this.matrix[x][y] != null)
+						this._moveSpaceDown(this.matrix, this.matrix[x][y], limitY - y);
 
 			// Reserve Space
-			_reserveSpace2(matrix, iGadget, position.x, position.y + oldHeight, step2Width, newHeight - oldHeight);
+			this._reserveSpace2(this.matrix, iGadget, position.x, position.y + oldHeight, step2Width, newHeight - oldHeight);
 		} else if (newHeight < oldHeight) {
 			// Clear freed space
-			_clearSpace2(matrix, position.x, position.y + newHeight, step2Width, oldHeight - newHeight);
+			this._clearSpace2(this.matrix, position.x, position.y + newHeight, step2Width, oldHeight - newHeight);
 
 			y = position.y + oldHeight + 1; // Search in the edge of the gadget
 			var limitX = position.x + step2Width;
 			for (x = position.x; x < limitX; x++)
-				if (matrix[x][y] != null)
-					_moveSpaceUp(matrix, matrix[x][y]);
+				if (this.matrix[x][y] != null)
+					this._moveSpaceUp(this.matrix, this.matrix[x][y]);
 		}
 	}
 
-	function _insertAt(iGadget, x, y) {
+	this._insertAt = function(iGadget, x, y) {
 		var newPosition = new DragboardPosition(x, y);
 
 		// Move other instances
@@ -382,7 +383,7 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 
 		for (x = 0; x < iGadget.getContentWidth(); x++)
 			for (y = 0; y < iGadget.getHeight(); y++) {
-				affectedgadget = matrix[newPosition.x + x][newPosition.y + y];
+				affectedgadget = this.matrix[newPosition.x + x][newPosition.y + y];
 				if ((affectedgadget != null) && (affectedIGadgets[affectedgadget.getId()] == undefined)) {
 					// only move the gadget if we didn't move it before
 					affectedIGadgets[affectedgadget.getId()] = null;
@@ -392,7 +393,7 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 					affectedY = affectedgadget.getPosition().y;
 					if (affectedY < y)
 						offset += y - affectedY;
-					_moveSpaceDown(matrix, affectedgadget,  offset);
+					this._moveSpaceDown(this.matrix, affectedgadget,  offset);
 					// move only the topmost gadget in the column
 					break;
 				}
@@ -401,22 +402,22 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 		// Change Gadget instance position (insert it)
 		iGadget.setPosition(newPosition);
 
-		_reserveSpace(matrix, iGadget);
+		this._reserveSpace(this.matrix, iGadget);
 	}
 
-	function _searchFreeSpace(width, height) {
+	this._searchFreeSpace = function(width, height) {
 		var positionX = 0, positionY = 0;
-		var columns = dragboardStyle.getColumns() - width + 1;
+		var columns = this.dragboardStyle.getColumns() - width + 1;
 		height += 2; // margins
 
 		for (positionY = 0; true ; positionY++)
 			for (positionX = 0; positionX < columns; positionX++)
-				if (_hasSpaceFor(matrix, positionX, positionY, width, height)) {
+				if (this._hasSpaceFor(this.matrix, positionX, positionY, width, height)) {
 					return new DragboardPosition(positionX, positionY + 1);
 				}
 	}
 
-	function _commitChanges() {
+	this._commitChanges = function() {
 		// Update igadgets positions in persistence
 		function onSuccess() {}
 
@@ -438,8 +439,10 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 		var iGadgetInfo, uri, position;
 		var data = new Hash();
 		data['iGadgets'] = new Array();
-		this.iGadgets.each( function (pair) {
-			iGadget = pair.value;
+
+		var keys = this.iGadgets.keys();
+		for (var i = 0; i < keys.length; i++) {
+			iGadget = this.iGadgets[keys[i]];
 			iGadgetInfo = new Hash();
 			uri = URIs.GET_IGADGET.evaluate({id: iGadget.getId(), workspaceId: this.workspaceId, tabId: this.tabId});
 			iGadgetInfo['uri'] = uri;
@@ -448,9 +451,10 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 			iGadgetInfo['left'] = position.x;
 			data['iGadgets'].push(iGadgetInfo);
 			iGadgetInfo['minimized'] = iGadget.isMinimized() ? "true" : "false";
-		});
+		}
 
 		data = {igadgets: data.toJSON()};
+		var persistenceEngine = PersistenceEngineFactory.getInstance();
 		persistenceEngine.send_update(URIs.GET_IGADGETS, data, this, onSuccess, onError);
 	}
 
@@ -458,12 +462,16 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 	// PUBLIC METHODS 
 	// ****************
 	
+	Dragboard.prototype.recomputeSize = function() {
+	    this.dragboardStyle.recomputeSize();
+	}
+
 	Dragboard.prototype.parseTab = function(tabInfo) {
 		var curIGadget, position, width, height, igadget, gadget, gadgetid, minimized;
 
 		var opManager = OpManagerFactory.getInstance();
 
-		this.currentCode = 1; // TODO remove, persistenceEngine will manage ids
+		this.currentCode = 1;
 		this.iGadgets = new Hash();
 
 		// For controlling when the igadgets are totally loaded!
@@ -486,19 +494,18 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 			minimized = curIGadget.minimized == "true" ? true : false;
 
 			// Create instance model
-			igadget = new IGadget(gadget, curIGadget.id, curIGadget.code, dragboardStyle, position, width, height, minimized, this);
+			igadget = new IGadget(gadget, curIGadget.id, curIGadget.code, this.dragboardStyle, position, width, height, minimized, this);
 			this.iGadgets[curIGadget.id] = igadget;
 
-			if (curIGadget.code >= this.currentCode) // TODO remove, persistenceEngine will manage ids
+			if (curIGadget.code >= this.currentCode)
 				this.currentCode =  curIGadget.code + 1;
 
-//				_reserveSpace(matrix, igadget);
+//				this._reserveSpace(this.matrix, igadget);
 		}
 
 		this.paint();
-		
-		loaded = true;
-	}	
+		this.loaded = true;
+	}
 
 	Dragboard.prototype.addInstance = function (gadget) {
 		if ((gadget == null) || !(gadget instanceof Gadget))
@@ -510,11 +517,10 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 
 		// Search a position for the gadget
 		// TODO height +2 for the menu
-		var position = _searchFreeSpace(width, height + 2);
+		var position = this._searchFreeSpace(width, height + 2);
 
 		// Create the instance
-		// The Id is generated by the Server side so, the code attribute it's used ad if until reload!
-		var iGadget = new IGadget(gadget, null, this.currentCode, dragboardStyle, position, width, height, false, this);
+		var iGadget = new IGadget(gadget, null, this.currentCode, this.dragboardStyle, position, width, height, false, this);
 		iGadget.save();
 	}
 
@@ -523,7 +529,7 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 		this.iGadgets.remove(iGadgetId);
 
 		var position = igadget.getPosition();
-		_removeFromMatrix(matrix, igadget);
+		this._removeFromMatrix(this.matrix, igadget);
 		igadget.destroy();
 	}
 
@@ -548,9 +554,9 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 
 		var newHeight = igadget.getHeight();
 		if (oldHeight != newHeight) {
-			_resize(igadget, oldWidth, oldHeight, oldWidth, newHeight);
+			this._resize(igadget, oldWidth, oldHeight, oldWidth, newHeight);
 			// Save new positions into persistence
-			_commitChanges();
+			this._commitChanges();
 		}
 	}
 
@@ -570,9 +576,9 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 
 		var newHeight = igadget.getHeight();
 		if (oldHeight != newHeight) {
-			_resize(igadget, oldWidth, oldHeight, oldWidth, newHeight);
+			this._resize(igadget, oldWidth, oldHeight, oldWidth, newHeight);
 			// Save new positions into persistence
-			_commitChanges();
+			this._commitChanges();
 		}
 	}
 
@@ -592,12 +598,12 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 			var oldWidth = igadget.getContentWidth();
 			var oldHeight = igadget.getHeight();
 			igadget.setConfigurationVisible(!igadget.isConfigurationVisible());
-			_resize(igadget, oldWidth, oldHeight, oldWidth, igadget.getHeight());
+			this._resize(igadget, oldWidth, oldHeight, oldWidth, igadget.getHeight());
 		} else {
 			var oldWidth = igadget.getContentWidth();
 			var oldHeight = igadget.getHeight();
 			igadget.setConfigurationVisible(newStatus);
-			_resize(igadget, oldWidth, oldHeight, oldWidth, igadget.getHeight());
+			this._resize(igadget, oldWidth, oldHeight, oldWidth, igadget.getHeight());
 		}
 	}
 
@@ -625,47 +631,49 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 	 * Calculate what cell is at a given position
 	 */
 	Dragboard.prototype.getCellAt = function (x, y) {
-		var dragboardWidth = dragboardStyle.getWidth();
+		var dragboardWidth = this.dragboardStyle.getWidth();
 		if ((x < 0) || (x > dragboardWidth) || (y < 0))
 			return null;
 
-		var columnWidth = dragboardWidth / dragboardStyle.getColumns();
+		var columnWidth = dragboardWidth / this.dragboardStyle.getColumns();
 
 		return new DragboardPosition(Math.floor(x / columnWidth),
-			                    Math.floor(y / dragboardStyle.getCellHeight()));
+			                    Math.floor(y / this.dragboardStyle.getCellHeight()));
 	}
 
 
-	Dragboard.prototype.showInstance = function (iGadget) {
-		iGadget.paint(this.dragboard, dragboardStyle);
+	Dragboard.prototype.showInstance = function (igadget) {
+		igadget.paint(this.dragboardElement, this.dragboardStyle);
 	}
 
 	Dragboard.prototype.initializeMove = function (iGadgetId) {
-		if (gadgetToMove != null) {
+		if (this.gadgetToMove != null) {
 			OpManagerFactory.getInstance().log(gettext("There was a pending move that was cancelled because initializedMove function was called before it was finished."), Constants.WARN_MSG);
 			this.cancelMove();
 		}
 
-		gadgetToMove = this.iGadgets[iGadgetId];
+		this.gadgetToMove = this.iGadgets[iGadgetId];
 
-		if (dragboardCursor == null) {
+		if (this.dragboardCursor == null) {
 			// Make a copy of the positions of the gadgets
-			shadowPositions = new Array();
-			this.iGadgets.each( function (pair) {
-				shadowPositions[pair.key] = pair.value.getPosition().clone();
-			});
+			this.shadowPositions = new Array();
+
+			var keys = this.iGadgets.keys();
+			for (var i = 0; i < keys.length; i++) {
+				this.shadowPositions[keys[i]] = this.iGadgets[keys[i]].getPosition().clone();
+			}
 
 			// Shadow matrix = current matrix without the gadget to move
 			var i;
-			shadowMatrix = new Array();
-			for (i = 0; i < dragboardStyle.getColumns(); i++)
-				shadowMatrix[i] = matrix[i].clone();
-			_removeFromMatrix(shadowMatrix, gadgetToMove);
+			this.shadowMatrix = new Array();
+			for (i = 0; i < this.dragboardStyle.getColumns(); i++)
+				this.shadowMatrix[i] = this.matrix[i].clone();
+			this._removeFromMatrix(this.shadowMatrix, this.gadgetToMove);
 
 			// Create dragboard cursor
-			dragboardCursor = new DragboardCursor(gadgetToMove);
-			dragboardCursor.paint(this.dragboard, dragboardStyle);
-			_reserveSpace(matrix, dragboardCursor);
+			this.dragboardCursor = new DragboardCursor(this.gadgetToMove);
+			this.dragboardCursor.paint(this.dragboardElement, this.dragboardStyle);
+			this._reserveSpace(this.matrix, this.dragboardCursor);
 		} /* else {
 			TODO exception
 		}*/
@@ -673,55 +681,55 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 	}
 
 	Dragboard.prototype.moveTemporally = function (x, y) {
-		if (dragboardCursor == null) {
+		if (this.dragboardCursor == null) {
 			OpManagerFactory.getInstance().log(gettext("Dragboard: You must call initializeMove function before calling to this function (moveTemporally)."), Constants.WARN_MSG);
 			return;
 		}
 
-		var maxX = dragboardStyle.getColumns() - dragboardCursor.getContentWidth();
+		var maxX = this.dragboardStyle.getColumns() - this.dragboardCursor.getContentWidth();
 		if (x > maxX) x = maxX;
 
 		// Check if we have to change the position of the cursor
-		y = _searchInsertPoint(shadowMatrix, x, y, dragboardCursor.getContentWidth(), dragboardCursor.getHeight());
+		y = this._searchInsertPoint(this.shadowMatrix, x, y, this.dragboardCursor.getContentWidth(), this.dragboardCursor.getHeight());
 
-		var cursorpos = dragboardCursor.getPosition();
+		var cursorpos = this.dragboardCursor.getPosition();
 
 		if ((cursorpos.y != y) || (cursorpos.x != x)) {
 			// Change cursor position
-			_removeFromMatrix(matrix, dragboardCursor);
-			_insertAt(dragboardCursor, x, y);
+			this._removeFromMatrix(this.matrix, this.dragboardCursor);
+			this._insertAt(this.dragboardCursor, x, y);
 		}
 	}
 
 	Dragboard.prototype.cancelMove = function() {
-		if (gadgetToMove == null) {
+		if (this.gadgetToMove == null) {
 			OpManagerFactory.getInstance().log(gettext("Dragboard: Trying to cancel an inexistant temporal move."), Constants.WARN_MSG);
 			return;
 		}
 
-		_destroyCursor(true);
-		var position = gadgetToMove.getPosition();
-		_insertAt(gadgetToMove, position.x, position.y);
-		gadgetToMove = null;
-		shadowMatrix = null;
+		this._destroyCursor(true);
+		var position = this.gadgetToMove.getPosition();
+		this._insertAt(this.gadgetToMove, position.x, position.y);
+		this.gadgetToMove = null;
+		this.shadowMatrix = null;
 	}
 
 	Dragboard.prototype.acceptMove = function() {
-		if (gadgetToMove == null)
+		if (this.gadgetToMove == null)
 			throw new Exception(gettext("Dragboard: function acceptMove called when there is not any igadget's move started."));
 
-		var oldposition = gadgetToMove.getPosition();
-		var newposition = dragboardCursor.getPosition();
-		_destroyCursor(false);
+		var oldposition = this.gadgetToMove.getPosition();
+		var newposition = this.dragboardCursor.getPosition();
+		this._destroyCursor(false);
 
-		gadgetToMove.setPosition(newposition);
-		_reserveSpace(matrix, gadgetToMove);
-		gadgetToMove = null;
-		shadowMatrix = null;
+		this.gadgetToMove.setPosition(newposition);
+		this._reserveSpace(this.matrix, this.gadgetToMove);
+		this.gadgetToMove = null;
+		this.shadowMatrix = null;
 
 		// Update igadgets positions in persistence
 		if (oldposition.y != newposition.y || oldposition.x != newposition.x)
-			_commitChanges();
+			this._commitChanges();
 	}
 
 	// TODO rename this method to something like getGadgetFromIGadget
@@ -734,16 +742,18 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 		this.iGadgets[iGadget.id] = iGadget;
 		this.currentCode++;
 		// Reserve the cells for the gadget instance
-		_reserveSpace(matrix, iGadget);
+		this._reserveSpace(this.matrix, iGadget);
 		this.workSpace.addIGadget(iGadget);
 	}
 	
 	// *******************
 	// INITIALIZING CODE
 	// *******************
-	this.dragboard = dragboardElement;
-	dragboardStyle = new DragboardStyle(this.dragboard, 3, 12); // TODO 3 columns, cell height = 12px
-	
+	this.dragboardElement = dragboardElement;
+	this.dragboardStyle = new DragboardStyle(this.dragboardElement, 3, 12); // TODO 3 columns, cell height = 12px
+
+	this._clearMatrix();
+
 	this.parseTab(tabInfo);
 }
 
@@ -871,7 +881,7 @@ IGadget.prototype.paint = function(where) {
 	var gadgetElement, gadgetMenu;
 
 	gadgetElement = document.createElement("div");
-	gadgetElement.setAttribute("id", "gadget_" + this.id + "_container");
+	//gadgetElement.setAttribute("id", "gadget_" + this.id + "_container");
 	gadgetElement.setAttribute("class", "gadget_window");
 
 	// Gadget Menu
@@ -885,7 +895,7 @@ IGadget.prototype.paint = function(where) {
 	button = document.createElement("input");
 	button.setAttribute("type", "button");
 	button.setAttribute("class", "closebutton");
-	button.setAttribute("onclick", "javascript:OpManagerFactory.getInstance().removeInstance(" + this.id + ");");
+	button.addEventListener("click", function() {OpManagerFactory.getInstance().removeInstance(this.id);}.bind(this), true);
 	button.setAttribute("title", gettext("Close"));
 	button.setAttribute("alt", gettext("Close"));
 	gadgetMenu.appendChild(button);
@@ -894,7 +904,7 @@ IGadget.prototype.paint = function(where) {
 	button = document.createElement("input");
 	button.setAttribute("type", "button");
 	button.setAttribute("class", "settingsbutton");
-	button.addEventListener("click", function() {DragboardFactory.getInstance().setConfigurationVisible(this.id, 'toggle');}.bind(this), true);
+	button.addEventListener("click", function() {this.dragboard.setConfigurationVisible(this.id, 'toggle');}.bind(this), true);
 	button.setAttribute("title", gettext("Preferences"));
 	button.setAttribute("alt", gettext("Preferences"));
 	gadgetMenu.appendChild(button);
@@ -903,7 +913,7 @@ IGadget.prototype.paint = function(where) {
 	// minimize button
 	button = document.createElement("input");
 	button.setAttribute("type", "button");
-	button.addEventListener("click", function() {DragboardFactory.getInstance().toggleMinimizeStatus(this.id)}.bind(this), true);
+	button.addEventListener("click", function() {this.dragboard.toggleMinimizeStatus(this.id)}.bind(this), true);
 	if (this.minimized) {
 		button.setAttribute("title", gettext("Maximize"));
 		button.setAttribute("alt", gettext("Maximize"));
@@ -977,23 +987,25 @@ IGadget.prototype.paint = function(where) {
 	this.contentWrapper.iGadgetId = this.id;
 
 	var dragboardStyle = this.screen;
+	var dragboard = this.dragboard;
+
 	var startFunc = function (draggable, iGadgetId) {
-		DragboardFactory.getInstance().initializeMove(iGadgetId);
-		draggable.setXOffset(dragboardStyle.fromHCellsToPixels(1) / 2);
-		draggable.setYOffset(dragboardStyle.getCellHeight());
+		dragboard.initializeMove(iGadgetId);
+		draggable.setXOffset(dragboard.dragboardStyle.fromHCellsToPixels(1) / 2);
+		draggable.setYOffset(dragboard.dragboardStyle.getCellHeight());
 	}
 
 	var updateFunc = function (draggable, iGadgetId, x, y) {
-		var position = DragboardFactory.getInstance().getCellAt(x, y);
+		var position = dragboard.getCellAt(x, y);
 
 		// If the mouse is inside of the dragboard and we have enought columns =>
 		// check if we have to change the cursor position
 		if (position != null)
-			DragboardFactory.getInstance().moveTemporally(position.x, position.y);
+			dragboard.moveTemporally(position.x, position.y);
 	};
 
 	var finishFunc = function (draggable, iGadgetId) {
-		DragboardFactory.getInstance().acceptMove(iGadgetId);
+		dragboard.acceptMove(iGadgetId);
 	};
 
 	// Mark as draggable
@@ -1284,11 +1296,17 @@ function DragboardStyle(dragboardElement, columns, cellHeight) {
 
 	var dragboardStyle = this;
 
-	var updateColumnSize = function(e) {
+	var recomputeSize = function(e) {
 		dragboardStyle.dragboardWidth = parseInt(dragboardElement.offsetWidth);
 	}
 
-	window.addEventListener("resize", updateColumnSize, true); // TODO w3c compilant navigator dependent (this don't work in ie)
+	// We can't use legacy event handlers for having multiple handlers of a given event
+	// (There are more functions listening to this event, see ezweb/templates/index.html)
+	window.addEventListener("resize", recomputeSize, true); // TODO this depends on a w3c compilant navigator (=> don't work on ie)
+}
+
+DragboardStyle.prototype.recomputeSize = function() {
+    this.dragboardWidth = parseInt(this.dragboardElement.offsetWidth);
 }
 
 DragboardStyle.prototype.getWidth = function() {
@@ -1374,9 +1392,6 @@ DragboardCursor.prototype.paint = function(dragboard, style) {
 	// assign the created element
 	dragboard.appendChild(dragboardCursor);
 	this.element = dragboardCursor;
-
-	// Ajust sizes
-//	dragboardCursor.style.height -= 2 * (dragboardCursor.style.borderWidth);
 }
 
 DragboardCursor.prototype.destroy = function() {

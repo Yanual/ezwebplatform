@@ -65,13 +65,15 @@ a:hover{
   left: 4px;
 }
 
-.toolbar_unmarked a{
+.toolbar_unmarked {
   color: blue;
   padding-right: 3px;
   padding-left: 3px;
+  cursor: pointer;
+  text-decoration: underline;
 }
 
-.toolbar_marked a{
+.toolbar_marked {
   color: red;
   padding-right: 3px;
   padding-left: 3px;
@@ -380,7 +382,11 @@ a:hover{
 /* footer ------------------------------------------------------------------------------------------ */
 
 
-
 #footer {}
 
 #footer p {}
+
+/* wiring and dragboard templates ------------------------------------------------------------------ */
+#wiring_template, #dragboard_template {
+  display: none;
+}
