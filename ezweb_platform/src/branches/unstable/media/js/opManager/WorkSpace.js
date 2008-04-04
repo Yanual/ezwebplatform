@@ -205,6 +205,7 @@ function WorkSpace (workSpaceState) {
 	WorkSpace.prototype.addIGadget = function(igadget) {
 		var gadget = ShowcaseFactory.getInstance().getGadget(igadget.gadget.getId());
 		this.varManager.addInstance(igadget, gadget.getTemplate());
+		this.contextManager.addInstance(igadget, gadget.getTemplate());
 		this.wiring.addInstance(igadget, gadget.getTemplate());
 			
 		//this.contextManagerModule.addInstance(igadget, gadget);
