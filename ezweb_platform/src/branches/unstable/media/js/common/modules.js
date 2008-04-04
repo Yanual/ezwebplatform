@@ -42,11 +42,10 @@ function Modules () {
 
 // Singleton modules (valid for every WorkSpace)
 Modules.prototype.SHOWCASE = 0;
-Modules.prototype.CONTEXT_MANAGER = 1;
-Modules.prototype.CATALOGUE = 2;
+Modules.prototype.CATALOGUE = 1;
 
 //Each workspace loads one instance of VarManager and Wiring
 // Each workspace loads loads n instaces of Drabgoard!
-Modules.prototype.ACTIVE_WORKSPACE = 3;
+Modules.prototype.ACTIVE_WORKSPACE = 2;
 
 

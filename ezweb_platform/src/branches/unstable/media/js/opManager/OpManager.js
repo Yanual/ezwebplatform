@@ -91,6 +91,7 @@ var OpManagerFactory = function () {
 		this.activeDragboard;
 		this.activeWiring;
 		this.activeVarManager = null;
+		this.activeContextManager = null;
 		
 		//Current interface selected by user {dragboard, catalogue, wiring}
 		this.currentInterface = "dragboard"
@@ -171,6 +172,7 @@ var OpManagerFactory = function () {
 		    this.activeDragboard = this.activeWorkSpace.getVisibleTab().getDragboard();
 		    this.activeWiring = this.activeWorkSpace.getWiring();
 		    this.activeVarManager = this.activeWorkSpace.getVarManager();
+			this.activeContextManager = this.activeWorkSpace.getContextManager();
 		    
 		    this.showActiveWorkSpace();
 		}			
@@ -196,6 +198,13 @@ var OpManagerFactory = function () {
 
 		    return this.activeVarManager;
 		}
+		
+		OpManager.prototype.getActiveContextManager = function () {
+		    if (!this.loadCompleted)
+				return;
+
+		    return this.activeContextManager;
+		}
 
 		OpManager.prototype.removeInstance = function (iGadgetId) {
 			if (!this.loadCompleted)
@@ -204,6 +213,7 @@ var OpManagerFactory = function () {
 			this.activeDragboard.removeInstance(iGadgetId); // TODO split into hideInstance and removeInstance
 			this.activeVarManager.removeInstance(iGadgetId);
 			this.activeWiring.removeInstance(iGadgetId);
+			this.activeContextManager.removeInstance(iGadgetId);
 		}
 		
 		
@@ -216,7 +226,7 @@ var OpManagerFactory = function () {
 		}
 
 		OpManager.prototype.loadEnviroment = function () {
-		    // First, global modules must be loades (Context, Showcase, Catalogue)
+		    // First, global modules must be loades (Showcase, Catalogue)
 			// Showcase is the first!
 			// When it finish, it will invoke continueLoadingGlobalModules method!
 			this.showcaseModule = ShowcaseFactory.getInstance();
@@ -250,15 +260,10 @@ var OpManagerFactory = function () {
 		    // Each singleton module notifies OpManager it has finished loading!
 		    
 		    if (module == Modules.prototype.SHOWCASE) {
-		    	this.contextManagerModule = ContextManagerFactory.getInstance();
-		    	return;
-		    }
-		    
-		    if (module == Modules.prototype.CONTEXT_MANAGER) {
 		    	this.catalogue = CatalogueFactory.getInstance();
 		    	return;
 		    }
-
+		    
 		    if (module == Modules.prototype.CATALOGUE) {
 		    	// All singleton modules has been loaded!
 		    	// It's time for loading tabspace information!

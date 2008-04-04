@@ -138,12 +138,14 @@ Concept.prototype.addIGadgetVar = function (ivar_) {
 				this._igadgetVars.push(ivar_);		
 			}else{
 				this._igadgetVars.push(ivar_);
-				this._initAdaptor(null);
+				if (this._adaptor)
+					this._initAdaptor(null);
 			}
 			break;
 		case Concept.prototype.IGADGET:
 			this._igadgetVars.push(ivar_);
-			this._initAdaptor(ivar_);
+			if (this._adaptor)
+				this._initAdaptor(ivar_);
 			break;
 		default:
 			throw gettext("Concept does not have type yet.");
@@ -169,5 +171,4 @@ Concept.prototype.getIGadgetVar = function (igadgetId_) {
 			throw gettext("Concept does not have type yet.");
 	}
 }
-
 

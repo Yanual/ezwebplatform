@@ -55,6 +55,7 @@ function WorkSpace (workSpaceState) {
 		this.wiringInterface = new WiringInterface(this.wiringLayer, this.wiring);
 		
 		this.varManager = new VarManager(this.workSpaceGlobalInfo);
+		this.contextManager = new ContextManager(this.workSpaceGlobalInfo);
 		
 		var tabs = this.workSpaceGlobalInfo['workspace']['tabList'];
 		
@@ -108,6 +109,10 @@ function WorkSpace (workSpaceState) {
     
     WorkSpace.prototype.getVarManager = function () {
     	return this.varManager;
+	}
+	
+	WorkSpace.prototype.getContextManager = function () {
+    	return this.contextManager;
 	}
 
 	WorkSpace.prototype.downloadWorkSpaceInfo = function () {
@@ -221,6 +226,8 @@ function WorkSpace (workSpaceState) {
 	this.varManager = null;
 	this.tabInstances = new Hash();
 	this.wiring = null;
+	this.varManager = null;
+	this.contextManager = null;
 	this.loaded = false;
 	this.wiringLayer = null;
 	this.visibleTab = null;

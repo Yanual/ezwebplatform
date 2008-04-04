@@ -52,6 +52,7 @@ function VarManager (workSpaceInfo) {
 				this.parseIGadgetVariables(igadgets[j]);
 			}
 		}
+		this.loaded = true;
 	}	
 	
 	VarManager.prototype.parseIGadgetVariables = function (igadget) {		
@@ -80,7 +81,6 @@ function VarManager (workSpaceInfo) {
 		
 		iGadgets[igadget['id']] = objVars;
 		
-		this.loaded = true;
 	}
 	
 	VarManager.prototype.writeSlot = function (iGadgetId, slotName, value) {
