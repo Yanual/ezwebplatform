@@ -156,25 +156,21 @@ function ContextManager (workSpaceInfo) {
 		this._addContextVarsFromTemplate(template.getGadgetContextVars(iGadgetId), Concept.prototype.IGADGET);
 	}
 
-//	ContextManager.prototype.setConceptValue = function (concept, value) {
-//		if (! _loaded)
-//		    return;
-//			
-//		_concepts[concept].setValue(value);
-//	}
-//	
-//	ContextManager.prototype.setGadgetConceptValue = function (igadgetid, concept, value) {
-//		if (! _loaded)
-//		    return;
-//			
-//		_concepts[concept].getIGadgetVar(igadgetid).setValue(value);
-//	}
-	
-	ContextManager.prototype.notifyModifiedConcept = function (igadgetid, concept, value) {
+	ContextManager.prototype.notifyModifiedConcept = function (concept, value) {
 		if (! _loaded)
 		    return;
 			
-		if (_concepts[concept])
+		if (! _concepts[concept])
+			return;
+			
+		_concepts[concept].setValue(value);
+	}
+	
+	ContextManager.prototype.notifyModifiedGadgetConcept = function (igadgetid, concept, value) {
+		if (! _loaded)
+		    return;
+			
+		if (! _concepts[concept])
 			return;
 			
 		try{
@@ -183,8 +179,6 @@ function ContextManager (workSpaceInfo) {
 			// Do nothing, igadget has not variables related to this concept
 		}
 	}
-	
-	
 	
 
 	// *********************************************

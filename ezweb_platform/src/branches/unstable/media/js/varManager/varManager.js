@@ -52,7 +52,7 @@ function VarManager (workSpaceInfo) {
 				this.parseIGadgetVariables(igadgets[j]);
 			}
 		}
-		this.loaded = true;
+		loaded = true;
 	}	
 	
 	VarManager.prototype.parseIGadgetVariables = function (igadget) {		

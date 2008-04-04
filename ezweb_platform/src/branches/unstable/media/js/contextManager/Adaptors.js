@@ -48,7 +48,7 @@ function UserAdaptor() {
 	function _onSuccess(receivedData) {
 		var usernameJson = eval ('(' + receivedData.responseText + ')');
 		var value = usernameJson.username;
-		ContextManagerFactory.getInstance().setConceptValue(UserAdaptor.prototype.CONCEPT, value);
+		OpManagerFactory.getInstance().getActiveContextManager().notifyModifiedConcept(UserAdaptor.prototype.CONCEPT, value);
 	}
 
 	function _onError(transport, e) {
@@ -81,7 +81,7 @@ function LanguageAdaptor() {
 	function _onSuccess(receivedData) {
 		var json = eval ('(' + receivedData.responseText + ')');
 		var value = json.language;
-		ContextManagerFactory.getInstance().setConceptValue(LanguageAdaptor.prototype.CONCEPT, value)
+		OpManagerFactory.getInstance().getActiveContextManager().notifyModifiedConcept(LanguageAdaptor.prototype.CONCEPT, value);
 	}
 
 	function _onError(transport, e) {
