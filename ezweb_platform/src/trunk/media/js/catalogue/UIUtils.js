@@ -926,7 +926,7 @@ UIUtils.getError = function(element, error) {
 UIUtils.splitString = function(element){
 	var ret = [''];
 	element = element.replace(/^\s+|\s+$/g, '');
-	ret = element.split(" ");
+	ret = element.split(/\s+/);
 	return ret;
 }
 
