@@ -59,6 +59,7 @@ def get_and_list(value):
     taglist = []
     result = []
     value = value.split()
+    counter = 0
 
     for e in value:
         # Get a list of elements that match the given value
@@ -68,9 +69,12 @@ def get_and_list(value):
             gadgetlist = gadgetlist | taglist
 	gadgetlist = get_uniquelist(gadgetlist)
 	result.append(gadgetlist)
-    if len(result)>1:
-        for j, k in result, result:
-            gadgetlist = get_uniquelist(j + k,2)
+    for j in result:
+        if counter == 0:
+            gadgetlist = j
+	    counter = counter + 1
+	else:
+	    gadgetlist = get_uniquelist(gadgetlist+j, 2)
     return gadgetlist
 
 def get_or_list(value):
