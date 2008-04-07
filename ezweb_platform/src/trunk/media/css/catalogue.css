@@ -100,11 +100,18 @@
 	font-stretch:normal;
 	font-style:normal;
 	font-variant:normal;
-	font-weight:normal;
+	font-weight:bold;
 	line-height:normal;
 	margin-top:5px;
 	margin-bottom:0px;
 	padding: 3px;
+}
+
+#catalogue .header_always_status a{
+	margin-left:10px;
+	color:#FFFFFF;
+	cursor:pointer;
+	text-decoration:underline;
 }
 
 #catalogue .message_error {
@@ -118,17 +125,27 @@
 	font-stretch:normal;
 	font-style:normal;
 	font-variant:normal;
-	font-weight:normal;
+	font-weight:bolder;
 	line-height:normal;
 	margin-top:5px;
 	margin-bottom:0px;
 	padding: 3px;
 }
 
-#catalogue .message_error img {
+#catalogue .message_error .warning {
 	vertical-align: bottom;
 	margin:0px 2px 0px 0px;
 	border: 1px solid #B22222;
+}
+
+#catalogue .message_error .close {
+	vertical-align: bottom;
+	margin:0px 2px 0px 0px;
+	border: none;
+	vertical-align:top;
+	margin-left:5px;
+	width:13px;
+	cursor:pointer;
 }
 
 #catalogue .head .advanced_search {
