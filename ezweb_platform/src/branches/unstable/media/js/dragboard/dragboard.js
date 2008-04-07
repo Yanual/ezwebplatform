@@ -444,18 +444,18 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 		for (var i = 0; i < keys.length; i++) {
 			iGadget = this.iGadgets[keys[i]];
 			iGadgetInfo = new Hash();
-			uri = URIs.GET_IGADGET.evaluate({id: iGadget.getId(), workspaceId: this.workspaceId, tabId: this.tabId});
-			iGadgetInfo['uri'] = uri;
 			position = iGadget.getPosition();
+			iGadgetInfo['id'] = iGadget.id;
 			iGadgetInfo['top'] = position.y;
 			iGadgetInfo['left'] = position.x;
-			data['iGadgets'].push(iGadgetInfo);
 			iGadgetInfo['minimized'] = iGadget.isMinimized() ? "true" : "false";
+			data['iGadgets'].push(iGadgetInfo);	
 		}
 
 		data = {igadgets: data.toJSON()};
 		var persistenceEngine = PersistenceEngineFactory.getInstance();
-		persistenceEngine.send_update(URIs.GET_IGADGETS, data, this, onSuccess, onError);
+		uri = URIs.GET_IGADGETS.evaluate({workspaceId: this.workSpaceId, tabId: this.tabId});
+		persistenceEngine.send_update(uri, data, this, onSuccess, onError);
 	}
 
 	// ****************

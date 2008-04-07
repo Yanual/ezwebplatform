@@ -101,13 +101,14 @@ def SaveIGadget(igadget, user, tab):
 
 def UpdateIGadget(igadget, user, tab):
     
-    # Checks
-    igadget = get_object_or_404(IGadget, tab=tab, pk=igadget_pk)  
+    igadget_pk = igadget.get('id')
     
-    igadget_pk = igadget.get('pk')
+    # Checks
+    ig = get_object_or_404(IGadget, tab=tab, pk=igadget_pk)  
+    
     
     # get IGadget's position
-    position = Position.objects.get(pk=igadget.position)
+    position = ig.position
 
     # update the requested attributes
     if igadget.has_key('width'):

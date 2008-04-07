@@ -40,6 +40,7 @@ from resource.views import *
 
 from django_restapi.model_resource import Collection
 from django_restapi.responder import *
+from resource.views import GadgetsCollection
 
 urlpatterns = patterns('resource.views',
 
