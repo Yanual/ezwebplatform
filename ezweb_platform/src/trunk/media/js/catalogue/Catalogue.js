@@ -356,22 +356,22 @@ var CatalogueFactory  = function () {
 										if(auxiliar_and_bool){
 											for (var j=0;j<auxiliar_and.length;j++){
 												if(j==auxiliar_and.length-1){
-													searching += auxiliar_and[j] + ((auxiliar_or_bool||auxiliar_not_bool)?"; ":".");
+													searching += auxiliar_and[j] + ((auxiliar_or_bool||auxiliar_not_bool)?" AND ":".");
 												}else if(j==auxiliar_and.length-2){
 													searching += auxiliar_and[j] + ' ' + gettext('and') + ' ';
 												}else{
-													searching += auxiliar_and[j] + ', ';
+													searching += auxiliar_and[j] + ' ' + gettext('and') + ' ';
 												}									
 											}
 										}
 										if(auxiliar_or_bool){
 											for (var j=0;j<auxiliar_or.length;j++){
 												if(j==auxiliar_or.length-1){
-													searching += auxiliar_or[j] + ((auxiliar_not_bool)?"; ":".");	
+													searching += auxiliar_or[j] + ((auxiliar_not_bool)?" AND ":".");	
 												}else if(j==auxiliar_or.length-2){
 													searching += auxiliar_or[j] + ' ' + gettext('or') + ' ';
 												}else{
-													searching += auxiliar_or[j] + ', ';
+													searching += auxiliar_or[j] + ' ' + gettext('or') + ' ';
 												}
 											}
 										}
@@ -381,12 +381,12 @@ var CatalogueFactory  = function () {
 													if(auxiliar_not.length==1){
 														searching += gettext('not') + ' ' + auxiliar_not[j] + ".";
 													}else{
-														searching += gettext('neither') + ' ' + auxiliar_not[j] + ', ' + gettext('nor') + ' ';
+														searching += gettext('neither') + ' ' + auxiliar_not[j] + ' ' + gettext('nor') + ' ';
 													}
 												}else if(j==auxiliar_not.length-1){
 													searching += auxiliar_not[j] + ".";
 												}else{
-													searching += auxiliar_not[j] + ', ' + gettext('nor') + ' ';
+													searching += auxiliar_not[j] + ' ' + gettext('nor') + ' ';
 												}						
 											}
 										}
@@ -415,7 +415,7 @@ var CatalogueFactory  = function () {
 						break;
 				}
 			}
-			header+="<a href='#' onClick='CatalogueFactory.getInstance().loadCatalogue(\"" + urlCatalogue_ + "\")'>" + gettext("Reload") + "</a>";
+			header+="<a href='#' onClick='CatalogueFactory.getInstance().emptyResourceList();CatalogueFactory.getInstance().loadCatalogue(\"" + urlCatalogue_ + "\")'>" + gettext("Reload") + "</a>";
 			$('header_always_status').innerHTML=header;
 			
 			// Get Resources from PersistenceEngine. Asyncrhonous call!
