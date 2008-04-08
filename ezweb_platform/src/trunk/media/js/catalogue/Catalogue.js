@@ -57,6 +57,12 @@ var CatalogueFactory  = function () {
 		//  PRIVILEGED METHODS
 		// ********************
 		
+		this.reloadCompleteCatalogue = function() {
+			this.emptyResourceList();
+			UIUtils.search = 'false';
+			opManager.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
+		}
+		
 	 	this.emptyResourceList = function() {
 			document.getElementById("resources").innerHTML="\n";
 			document.getElementById("info_resource_content").innerHTML="\n";
@@ -416,6 +422,7 @@ var CatalogueFactory  = function () {
 				}
 			}
 			header+="<a href='#' onClick='CatalogueFactory.getInstance().emptyResourceList();CatalogueFactory.getInstance().loadCatalogue(\"" + urlCatalogue_ + "\")'>" + gettext("Reload") + "</a>";
+			header+="<a id='reload_catalogue_link' href='#' onClick='CatalogueFactory.getInstance().reloadCompleteCatalogue();'>" + gettext("Reload Catalogue") + "</a>";
 			$('header_always_status').innerHTML=header;
 			
 			// Get Resources from PersistenceEngine. Asyncrhonous call!

@@ -107,6 +107,11 @@
 	padding: 3px;
 }
 
+#catalogue .header_always_status #reload_catalogue_link {
+	position: absolute;
+	right:2%;
+}
+
 #catalogue .header_always_status a{
 	margin-left:10px;
 	color:#FFFFFF;
