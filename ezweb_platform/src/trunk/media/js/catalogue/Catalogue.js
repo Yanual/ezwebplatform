@@ -344,17 +344,17 @@ var CatalogueFactory  = function () {
 										var auxiliar_not=[""];
 										var auxiliar_not_bool=true;
 										
-										if(auxiliar[i+3]==" "){
+										if(auxiliar[i+3]=="_"){
 											auxiliar_and_bool=false;
 										}else{
 											auxiliar_and=UIUtils.splitString(auxiliar[i+3]);
 										}
-										if(auxiliar[i+4]==" "){
+										if(auxiliar[i+4]=="_"){
 											auxiliar_or_bool=false;
 										}else{
 											auxiliar_or=UIUtils.splitString(auxiliar[i+4]);
 										}
-										if(auxiliar[i+5]==" "){
+										if(auxiliar[i+5]=="_"){
 											auxiliar_not_bool=false;
 										}else{
 											auxiliar_not=UIUtils.splitString(auxiliar[i+5]);
