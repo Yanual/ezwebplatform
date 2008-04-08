@@ -258,6 +258,7 @@ UIUtils.searchByTag = function(url, tag) {
 		UIUtils.getError($('header_always_error'),gettext("Indicate a criteria in search formulary"));
 	}
 	else{
+	  $('header_always_error').style.display = 'none';
 	  UIUtils.setPage(1);
       UIUtils.search = 'tag';
       UIUtils.searchValue = tag;
@@ -280,6 +281,7 @@ UIUtils.searchByWiring = function(url, value, wiring) {
 		{
 			CatalogueFactory.getInstance().getResource(UIUtils.balloonResource).closeTagcloudBalloon();
 		}
+		$('header_always_error').style.display = 'none';
 		UIUtils.setPage(1);
 		UIUtils.search = 'wiring';
 		UIUtils.searchValue = value;
