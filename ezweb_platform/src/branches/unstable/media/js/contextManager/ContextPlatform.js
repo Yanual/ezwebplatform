@@ -86,8 +86,17 @@ function Concept(semanticConcept_, adaptor_) {
 	
 }
 
+// Known concept types
 Concept.prototype.EXTERNAL = 'ECTX';
 Concept.prototype.IGADGET = 'GCTX';
+
+// Known concepts
+Concept.prototype.USERNAME = "username";
+Concept.prototype.LANGUAGE = "language";
+Concept.prototype.WIDTH = "width";
+Concept.prototype.HEIGHT = "height";
+Concept.prototype.XPOSITION = "xPosition";
+Concept.prototype.YPOSITION = "yPosition";
 
 Concept.prototype.getSemanticConcept = function () {
 	return this._semanticConcept;

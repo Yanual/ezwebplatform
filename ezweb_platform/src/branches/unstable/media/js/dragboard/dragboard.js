@@ -50,7 +50,8 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 	this.matrix = null;          // Matrix of gadget
 	this.shadowMatrix = null;    // Temporal matrix of gadgets used for D&D
 	this.shadowPositions = null;
-	this.dragboardElement, this.dragboardStyle;
+	this.dragboardElement = null;
+	this.dragboardStyle = null;
 	this.dragboardCursor = null;
 	this.gadgetToMove = null;
 	this.iGadgets = new Hash();
@@ -738,6 +739,10 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 		return igadget.getGadget();
 	}
 	
+	Dragboard.prototype.getWorkspace = function () {
+		return this.workSpace;
+	}
+	
 	Dragboard.prototype.addIGadget = function (iGadget) {
 		this.iGadgets[iGadget.id] = iGadget;
 		this.currentCode++;
@@ -785,13 +790,15 @@ function IGadget(gadget, iGadgetId, iGadgetCode, screen, position, width, height
 
 	// Elements
 	this.element = null;
-	this.contentWrapper = null, this.content = null;
+	this.contentWrapper = null;
+	this.content = null;
 	this.configurationElement = null;
 	this.settingsButtonElement = null;
 	this.minimizeButtonElement = null;
 	this.errorButtonElement = null;
 
 	this.errorCount = 0;
+	
 }
 
 IGadget.prototype.getGadget = function() {
@@ -804,6 +811,10 @@ IGadget.prototype.getGadget = function() {
  */
 IGadget.prototype.setPosition = function(position) {
 	this.position = position;
+	
+	// Notify that igadget position has been modified
+	this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.XPOSITION, this.position.x); 
+	this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.YPOSITION, this.position.y);
 
 	if (this.element != null) { // if visible
 		this.element.style.left = this.screen.getColumnOffsetLeft(position.x);
@@ -821,6 +832,8 @@ IGadget.prototype.getPosition = function() {
 
 IGadget.prototype.setContentWidth = function(width) {
 	this.width = width;
+	// Notify that igadget width has been modified
+	this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.WIDTH, this.width);
 }
 
 IGadget.prototype.getContentWidth = function() {
@@ -856,6 +869,8 @@ IGadget.prototype.getHeight = function() {
 		} else {
 			this.height = 0;
 		}
+		// Notify that igadget height has been modified 
+		this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.HEIGHT, this.height);
 	}
 
 	return this.height;

@@ -42,6 +42,19 @@ function WorkSpace (workSpaceState) {
 	// CALLBACK METHODS
 	// ****************
 
+	// we need to load context data before workspace data. Otherwise, loadWorkSpace wont
+	// have all necessary data and will throw an exception. 
+	// This is a callback function to process AJAX requests, so must be public.
+	var loadContextData = function (transport) {
+		var conceptsJson = eval ('(' + transport.responseText + ')');
+		this.contextInfo = conceptsJson.concepts;
+		
+		// Now, we can load workspace data
+		var workSpaceUrl = URIs.GET_POST_WIRING.evaluate({'id': this.workSpaceState.id});
+		PersistenceEngineFactory.getInstance().send_get(workSpaceUrl, this, loadWorkSpace, onError); 
+	}
+
+
 	// Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
 	var loadWorkSpace = function (transport) {
 		// JSON-coded iGadget-variable mapping
@@ -55,7 +68,7 @@ function WorkSpace (workSpaceState) {
 		this.wiringInterface = new WiringInterface(this.wiringLayer, this.wiring);
 		
 		this.varManager = new VarManager(this.workSpaceGlobalInfo);
-		this.contextManager = new ContextManager(this.workSpaceGlobalInfo);
+		this.contextManager = new ContextManager(this.workSpaceGlobalInfo, this.contextInfo);
 		
 		var tabs = this.workSpaceGlobalInfo['workspace']['tabList'];
 		
@@ -71,7 +84,6 @@ function WorkSpace (workSpaceState) {
 					visibleTabName = tab.name;
 				}
 			}
-			
 		}
 		
 		this.loaded = true;
@@ -116,9 +128,7 @@ function WorkSpace (workSpaceState) {
 	}
 
 	WorkSpace.prototype.downloadWorkSpaceInfo = function () {
-		var workSpaceUrl = URIs.GET_POST_WIRING.evaluate({'id': this.workSpaceState.id});
-		
-		PersistenceEngineFactory.getInstance().send_get(workSpaceUrl, this, loadWorkSpace, onError);
+		PersistenceEngineFactory.getInstance().send_get(URIs.GET_CONTEXT, this, loadContextData, onError);
 	}
 	
 	WorkSpace.prototype.showWiring = function() {
@@ -224,6 +234,7 @@ function WorkSpace (workSpaceState) {
 	this.workSpaceState = workSpaceState;
 	this.workSpaceGlobal = null;
 	this.wiringInterface = null;
+	this.contextInfo = null;
 	this.varManager = null;
 	this.tabInstances = new Hash();
 	this.wiring = null;

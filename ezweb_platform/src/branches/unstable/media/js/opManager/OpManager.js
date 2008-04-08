@@ -193,14 +193,14 @@ var OpManagerFactory = function () {
 		}
 		
 		OpManager.prototype.getActiveVarManager = function () {
-		    if (!this.loadCompleted)
+			if (!this.loadCompleted)
 				return;
 
 		    return this.activeVarManager;
 		}
 		
 		OpManager.prototype.getActiveContextManager = function () {
-		    if (!this.loadCompleted)
+			if (!this.loadCompleted)
 				return;
 
 		    return this.activeContextManager;

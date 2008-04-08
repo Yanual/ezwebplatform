@@ -36,7 +36,7 @@
  */
 
 
-function ContextManager (workSpaceInfo) {
+function ContextManager (workSpaceInfo_, contextInfo_) {
 	
 	
 	// ***********************
@@ -44,21 +44,47 @@ function ContextManager (workSpaceInfo) {
 	// ***********************
 	
 	// Adds all variables from workspace data model
-	this._addContextVarsFromTemplate = function (cVars, type_) {
-		for (var i = 0; i < cVars.length; i++){
-			var cVar = cVars[i];
-			if (_name2Concept[cVar.getConceptName()] == null){
+	this._addContextVarsFromTemplate = function (cVars_, type_) {
+		for (var i = 0; i < cVars_.length; i++){
+			var cVar = cVars_[i];
+			if (this._name2Concept[cVar.getConceptName()] == null){
 				alert (gettext("Context variable") + " [" + cVar.getName() + "] " + gettext("without related concept. Its value cannot be established"));
 				return;
 			}
-			var relatedConcept = _concepts[_name2Concept[cVar.getConceptName()]];
+			var relatedConcept = this._concepts[this._name2Concept[cVar.getConceptName()]];
 			relatedConcept.setType(type_);
 			relatedConcept.addIGadgetVar(cVar);							
 		}
 	}
+
+	// Loads all concept from platform. 
+	// This information is not in workspace data model!!
+	this._loadConcepts = function (conceptsJson) {
+		
+		this._concepts = new Hash();
+		this._name2Concept = new Hash();
+
+		// Parses concepts json
+		for (var i = 0; i < conceptsJson.length; i++) {
+			var curConcept = conceptsJson[i];
+			// Creates the concept
+			var concept = new Concept(curConcept.concept, curConcept.adaptor);
+			this._concepts[curConcept.concept] = concept; 
+
+			// Relates the concept name to all its concept
+			for (var j = 0; j < curConcept.names.length; j++) {
+				var cname = curConcept.names[j];
+				
+				if (this._name2Concept[cname] != null){
+					alert (gettext("WARNING: concept name") + " '" + cname + "' " + gettext("is already related to") + " '" + this._name2Concept[cname] + "'. " + gettext("New related concept is") + " '" + curConcept.concept + "'");
+				}
+				this._name2Concept[cname] = curConcept.concept;	
+			}	
+		}
+	}
 	
 	// Load igadget's context variables from workspace data model
-	var _loadIGadgetContextVarsFromWorkspace = function (workSpaceInfo) {
+	this._loadIGadgetContextVarsFromWorkspace = function (workSpaceInfo) {
 		
 		var tabs = workSpaceInfo['workspace']['tabList'];
 		
@@ -79,7 +105,7 @@ function ContextManager (workSpaceInfo) {
 					case Variable.prototype.EXTERNAL_CONTEXT:
 					case Variable.prototype.GADGET_CONTEXT:
 						var contextVar = new ContextVar(currentIGadget.id, currentVar.name, currentVar.concept)
-						var relatedConcept = _concepts[_name2Concept[currentVar.concept]];
+						var relatedConcept = this._concepts[this._name2Concept[currentVar.concept]];
 						relatedConcept.setType(currentVar.aspect);
 						relatedConcept.addIGadgetVar(contextVar);								
 						break;
@@ -91,53 +117,7 @@ function ContextManager (workSpaceInfo) {
 		}
 
 		// Continues loading next module								
-		_loaded = true;
-	}
-	
-	// ****************
-	// CALLBACK METHODS 
-	// ****************
-	
-	// Loads all concept from platform. 
-	// This information is not in workspace data model!!
-	var _loadConcepts = function (receivedData) {
-		
-		// Start to load concepts
-		var conceptsJson = eval ('(' + receivedData.responseText + ')');
-		conceptsJson = conceptsJson.concepts; 
-
-		_concepts = new Hash();
-		_name2Concept = new Hash();
-
-		for (var i = 0; i < conceptsJson.length; i++) {
-			var curConcept = conceptsJson[i];
-			// Creates the concept
-			var concept = new Concept(curConcept.concept, curConcept.adaptor);
-			_concepts[curConcept.concept] = concept; 
-
-			// Relates the concept name to all its concept
-			for (var j = 0; j < curConcept.names.length; j++) {
-				var cname = curConcept.names[j];
-				
-				if (_name2Concept[cname] != null){
-					alert (gettext("WARNING: concept name") + " '" + cname + "' " + gettext("is already related to") + " '" + _name2Concept[cname] + "'. " + gettext("New related concept is") + " '" + curConcept.concept + "'");
-				}
-				_name2Concept[cname] = curConcept.concept;	
-			}	
-		}
-		_loadIGadgetContextVarsFromWorkspace(_workSpaceInfo);
-	}
-	
-	// Shows a error message
-	var _onError = function (transport, e) {
-		var msg;
-		if (e) {
-			msg = interpolate(gettext("JavaScript exception on file %(errorFile)s (line: %(errorLine)s): %(errorDesc)s"),
-					                  {errorFile: e.fileName, errorLine: e.lineNumber, errorDesc: e},
-							  true);
-		} else {
-			msg = transport.status + " " + transport.statusText;
-		}
+		this._loaded = true;
 	}
 	
 	// ****************
@@ -145,7 +125,7 @@ function ContextManager (workSpaceInfo) {
 	// ****************
 	
 	ContextManager.prototype.addInstance = function (iGadgetId, gadget) {
-		if (! _loaded)
+		if (! this._loaded)
 		    return;
 		
 		if ((gadget == null) || !(gadget instanceof Gadget))
@@ -157,24 +137,24 @@ function ContextManager (workSpaceInfo) {
 	}
 
 	ContextManager.prototype.notifyModifiedConcept = function (concept, value) {
-		if (! _loaded)
+		if (! this._loaded)
 		    return;
 			
-		if (! _concepts[concept])
+		if (! this._concepts[concept])
 			return;
 			
-		_concepts[concept].setValue(value);
+		this._concepts[concept].setValue(value);
 	}
 	
 	ContextManager.prototype.notifyModifiedGadgetConcept = function (igadgetid, concept, value) {
-		if (! _loaded)
+		if (! this._loaded)
 		    return;
 			
-		if (! _concepts[concept])
+		if (! this._concepts[concept])
 			return;
 			
 		try{
-			_concepts[concept].getIGadgetVar(igadgetid).setValue(value);	
+			this._concepts[concept].getIGadgetVar(igadgetid).setValue(value);	
 		}catch(e){
 			// Do nothing, igadget has not variables related to this concept
 		}
@@ -185,15 +165,13 @@ function ContextManager (workSpaceInfo) {
 	// PRIVATE VARIABLES AND CONSTRUCTOR OPERATIONS
 	// *********************************************
 
-	var _loaded = false;
-	var _concepts = new Hash();     // a concept is its adaptor an its value
-	var _name2Concept = new Hash(); // relates the name to its concept
-	
-	// Temporary variables
-	var _workSpaceInfo = workSpaceInfo;
-	
-	// Load all igadget context variables from persistence system
-	PersistenceEngineFactory.getInstance().send_get(URIs.GET_CONTEXT, this, _loadConcepts, _onError);
+	this._loaded = false;
+	this._concepts = new Hash();     // a concept is its adaptor an its value
+	this._name2Concept = new Hash(); // relates the name to its concept
+		
+	// Load all igadget context variables and concepts (in this order!)
+	this._loadConcepts (contextInfo_);
+	this._loadIGadgetContextVarsFromWorkspace (workSpaceInfo_);
 	
 	
 }
