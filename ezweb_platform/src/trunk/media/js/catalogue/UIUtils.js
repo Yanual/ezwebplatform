@@ -252,24 +252,26 @@ UIUtils.searchByTag = function(url, tag) {
 	{
 		CatalogueFactory.getInstance().getResource(UIUtils.balloonResource).closeTagcloudBalloon();
 	}
-
-  if (tag == ""){
+	tag=UIUtils.filterString(tag);
+	if (tag == ""){
   		$('header_always_error').style.display="block";
 		UIUtils.getError($('header_always_error'),gettext("Indicate a criteria in search formulary"));
-  }
-  else{
+	}
+	else{
 	  UIUtils.setPage(1);
       UIUtils.search = 'tag';
       UIUtils.searchValue = tag;
       UIUtils.searchCriteria = 'tag' ;
 	  opManager.repaintCatalogue(url + "/" + tag  + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
-}
+	}
 }
 
 UIUtils.searchByWiring = function(url, value, wiring) {
 	UIUtils.closeInfoResource();
 	var opManager = OpManagerFactory.getInstance();
-	
+
+	value=UIUtils.filterString(value);
+
 	if (value == ""){
 		$('header_always_error').style.display="block";
 		UIUtils.getError($('header_always_error'),gettext("Indicate a criteria in search formulary"));
