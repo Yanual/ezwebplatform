@@ -359,8 +359,14 @@ UIUtils.getNum_items = function() {
 UIUtils.searchGeneric = function(url, param1, param2, param3) {
 	UIUtils.closeInfoResource();
 	var opManager = OpManagerFactory.getInstance();
-	
-	if (param1 == "" && param2 == "" && param3 == ""){
+	var param1=UIUtils.filterString(param1);
+	var param2=UIUtils.filterString(param2);
+	var param3=UIUtils.filterString(param3);
+	if (param1=="") param1="_";
+	if (param2=="") param2="_";
+	if (param3=="") param3="_";
+
+	if (param1 == "_" && param2 == "_" && param3 == "_"){
 		$('header_always_error').style.display="block";
 		UIUtils.getError($('header_always_error'),gettext("Indicate a criteria in search formulary"));
 	}
@@ -370,12 +376,6 @@ UIUtils.searchGeneric = function(url, param1, param2, param3) {
 		{
 			CatalogueFactory.getInstance().getResource(UIUtils.balloonResource).closeTagcloudBalloon();
 		}
-		param1=UIUtils.filterString(param1);
-		param2=UIUtils.filterString(param2);
-		param3=UIUtils.filterString(param3);
-		if (param1=="") param1="_";
-		if (param2=="") param2="_";
-		if (param3=="") param3="_";
 
 		UIUtils.setPage(1);
 		UIUtils.searchValue = param1+"/"+param2+"/"+param3;
