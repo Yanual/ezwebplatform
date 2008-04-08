@@ -412,7 +412,8 @@ var CatalogueFactory  = function () {
 										}
 										break;
 								}
-								header+=searching;					
+								header+=searching;
+								header+="<a href='#' onClick='CatalogueFactory.getInstance().emptyResourceList();CatalogueFactory.getInstance().loadCatalogue(\"" + urlCatalogue_ + "\")'>" + gettext("Reload") + "</a>";				
 								break;
 							case "resource":
 								header=gettext('Complete Catalogue');
@@ -421,7 +422,7 @@ var CatalogueFactory  = function () {
 						break;
 				}
 			}
-			header+="<a href='#' onClick='CatalogueFactory.getInstance().emptyResourceList();CatalogueFactory.getInstance().loadCatalogue(\"" + urlCatalogue_ + "\")'>" + gettext("Reload") + "</a>";
+			
 			header+="<a id='reload_catalogue_link' href='#' onClick='javascript:$(\"header_always_error\").style.display=\"none\";CatalogueFactory.getInstance().reloadCompleteCatalogue();'>" + gettext("Reload Catalogue") + "</a>";
 			$('header_always_status').innerHTML=header;
 			
