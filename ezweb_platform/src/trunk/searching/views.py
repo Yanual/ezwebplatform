@@ -134,13 +134,13 @@ class GadgetsCollectionByGenericSearch(Resource):
 	notlist = []
 	fields = 0
 
-	if (value1 != " "):
+	if (value1 != "_"):
             andlist = get_and_list(value1)
 	    fields = fields+1
-	if (value2 != " "):
+	if (value2 != "_"):
             orlist = get_or_list(value2)
 	    fields = fields+1
-	if (value3 != " "):
+	if (value3 != "_"):
             notlist = get_not_list(value3)
 	    fields = fields+1
 

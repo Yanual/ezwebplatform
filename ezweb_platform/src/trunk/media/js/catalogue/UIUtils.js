@@ -370,9 +370,9 @@ UIUtils.searchGeneric = function(url, param1, param2, param3) {
 		{
 			CatalogueFactory.getInstance().getResource(UIUtils.balloonResource).closeTagcloudBalloon();
 		}
-		if (param1=="") param1=" ";
-		if (param2=="") param2=" ";
-		if (param3=="") param3=" ";
+		if (param1=="") param1="_";
+		if (param2=="") param2="_";
+		if (param3=="") param3="_";
 
 		UIUtils.setPage(1);
 		UIUtils.searchValue = param1+"/"+param2+"/"+param3;
