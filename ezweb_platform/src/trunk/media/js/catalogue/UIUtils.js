@@ -370,6 +370,9 @@ UIUtils.searchGeneric = function(url, param1, param2, param3) {
 		{
 			CatalogueFactory.getInstance().getResource(UIUtils.balloonResource).closeTagcloudBalloon();
 		}
+		param1=UIUtils.filterString(param1);
+		param2=UIUtils.filterString(param2);
+		param3=UIUtils.filterString(param3);
 		if (param1=="") param1="_";
 		if (param2=="") param2="_";
 		if (param3=="") param3="_";
@@ -929,6 +932,12 @@ UIUtils.splitString = function(element){
 	ret = element.split(/\s+/);
 	return ret;
 }
+
+UIUtils.filterString = function(element){
+	element = element.replace(/^\s+|\s+$/g, '');
+	element = element.replace(/\s+/g, ' ');
+	return element;	
+} 
 
 // Enables you to react to return being pressed in an input
 UIUtils.onReturn = function(event_, handler_, inputText_) {
