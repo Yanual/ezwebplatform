@@ -150,8 +150,9 @@ def get_input_data (inout):
         input_data = {}
         input_data['id'] = ins.pk
         input_data['name'] = ins.name
-        input_data['igadget_id'] = ins.variable.igadget.pk
-        input_data['igadget_code'] = ins.variable.igadget.code
+        var = ins.variable;
+        input_data['varId'] = var.pk
+        input_data['type'] = var.vardef.aspect
         all_inputs.append(input_data)
     return all_inputs
     
@@ -162,8 +163,9 @@ def get_output_data (inout):
         output_data = {}
         output_data['id'] = outs.pk
         output_data['name'] = outs.name
-        output_data['igadget_id'] = outs.variable.igadget.pk
-        output_data['igadget_code'] = outs.variable.igadget.code
+        var = outs.variable;
+        output_data['varId'] = var.pk
+        output_data['type'] = var.vardef.aspect
         all_outputs.append(output_data)
     return all_outputs    
     
@@ -172,15 +174,16 @@ def get_inout_data(data):
     data_ret = {}
     data_fields = data['fields']
     data_ret['id'] = data['pk']
+    data_ret['type'] = 'CHANNEL'
     data_ret['friend_code'] = data_fields['friend_code']
     data_ret['value'] = data_fields['value']
     data_ret['name'] = data_fields['name']
     
     data_ins = get_input_data(inout=data['pk'])
-    data_ret['ins'] = [d for d in data_ins]
+    data_ret['inputs'] = [d for d in data_ins]
     
     data_outs = get_output_data(inout=data['pk'])
-    data_ret['outs'] = [d for d in data_outs]
+    data_ret['outputs'] = [d for d in data_outs]
         
     return data_ret
 
@@ -263,7 +266,9 @@ def get_variable_data(data):
     
     var_def = VariableDef.objects.get(id=data_fields['vardef'])
     
-    data_ret['id'] = var_def.pk
+    data_ret['id'] = data['pk']
+    data_ret['igadgetId'] = data_fields['igadget']
+    data_ret['vardefId'] = var_def.pk
     data_ret['name'] = var_def.name
     data_ret['aspect'] = var_def.aspect
     
