@@ -68,7 +68,7 @@ function WorkSpace (workSpaceState) {
 		this.wiringInterface = new WiringInterface(this.wiringLayer, this.wiring);
 		
 		this.varManager = new VarManager(this.workSpaceGlobalInfo);
-		this.contextManager = new ContextManager(this.workSpaceGlobalInfo, this.contextInfo);
+		this.contextManager = new ContextManager(this, this.workSpaceGlobalInfo, this.contextInfo);
 		
 		var tabs = this.workSpaceGlobalInfo['workspace']['tabList'];
 		

@@ -36,7 +36,7 @@
  */
 
 
-function ContextManager (workSpaceInfo_, contextInfo_) {
+function ContextManager (workspace_, workSpaceInfo_, contextInfo_) {
 	
 	
 	// ***********************
@@ -104,7 +104,7 @@ function ContextManager (workSpaceInfo_, contextInfo_) {
 					switch (currentVar.aspect) {
 					case Variable.prototype.EXTERNAL_CONTEXT:
 					case Variable.prototype.GADGET_CONTEXT:
-						var contextVar = new ContextVar(currentIGadget.id, currentVar.name, currentVar.concept)
+						var contextVar = new ContextVar(this._workspace.getVarManager(), currentIGadget.id, currentVar.name, currentVar.concept)
 						var relatedConcept = this._concepts[this._name2Concept[currentVar.concept]];
 						relatedConcept.setType(currentVar.aspect);
 						relatedConcept.addIGadgetVar(contextVar);								
@@ -124,26 +124,34 @@ function ContextManager (workSpaceInfo_, contextInfo_) {
 	// PUBLIC METHODS 
 	// ****************
 	
-	ContextManager.prototype.addInstance = function (iGadgetId, gadget) {
-		if (! this._loaded)
+	ContextManager.prototype.addInstance = function (iGadgetId_, template_) {
+		if (!this._loaded)
 		    return;
 		
-		if ((gadget == null) || !(gadget instanceof Gadget))
-			return; // TODO exception
+		if (template_ == null)
+			return;
 
-		var template = gadget.getTemplate();
-		this._addContextVarsFromTemplate(template.getExternalContextVars(iGadgetId), Concept.prototype.EXTERNAL);
-		this._addContextVarsFromTemplate(template.getGadgetContextVars(iGadgetId), Concept.prototype.IGADGET);
+		this._addContextVarsFromTemplate(template_.getExternalContextVars(iGadgetId_), Concept.prototype.EXTERNAL);
+		this._addContextVarsFromTemplate(template_.getGadgetContextVars(iGadgetId_), Concept.prototype.IGADGET);
+	}
+	
+	ContextManager.prototype.removeInstance = function (iGadgetId_) {
+		if (! this._loaded)
+		    return;
+	
+		for (var concept in this._concepts) {
+			this._concepts[concept].deleteIGadgetVars(iGadgetId_);
+		}
 	}
 
-	ContextManager.prototype.notifyModifiedConcept = function (concept, value) {
+	ContextManager.prototype.notifyModifiedConcept = function (concept_, value_) {
 		if (! this._loaded)
 		    return;
 			
-		if (! this._concepts[concept])
+		if (! this._concepts[concept_])
 			return;
 			
-		this._concepts[concept].setValue(value);
+		this._concepts[concept_].setValue(value_);
 	}
 	
 	ContextManager.prototype.notifyModifiedGadgetConcept = function (igadgetid, concept, value) {
@@ -160,6 +168,9 @@ function ContextManager (workSpaceInfo_, contextInfo_) {
 		}
 	}
 	
+	ContextManager.prototype.getWorkspace = function () {
+		return this._workspace;
+	}	
 
 	// *********************************************
 	// PRIVATE VARIABLES AND CONSTRUCTOR OPERATIONS
@@ -168,6 +179,7 @@ function ContextManager (workSpaceInfo_, contextInfo_) {
 	this._loaded = false;
 	this._concepts = new Hash();     // a concept is its adaptor an its value
 	this._name2Concept = new Hash(); // relates the name to its concept
+	this._workspace = workspace_;
 		
 	// Load all igadget context variables and concepts (in this order!)
 	this._loadConcepts (contextInfo_);

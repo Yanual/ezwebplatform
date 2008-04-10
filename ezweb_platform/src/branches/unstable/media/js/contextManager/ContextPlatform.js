@@ -35,10 +35,11 @@
  *   http://morfeo-project.org/
  */
 
-function ContextVar(igadget_, varName_, conceptName_) {
+function ContextVar(varManager_, igadget_, varName_, conceptName_) {
 	this._igadget = igadget_;
 	this._varName = varName_;
 	this._conceptName = conceptName_;
+	this._varManager = varManager_;
 	this._value = null;
 }
 
@@ -60,7 +61,7 @@ ContextVar.prototype.getValue = function () {
 
 ContextVar.prototype.setValue = function (newValue_) {
 	this._value = newValue_;
-	OpManagerFactory.getInstance().getActiveVarManager().updateContextVar(this._igadget, this._varName, newValue_);
+	this._varManager.updateContextVar(this._igadget, this._varName, newValue_);
 }
 
 //////////////////////////////////////////////////////////
@@ -73,7 +74,7 @@ function Concept(semanticConcept_, adaptor_) {
 	this._value = null;
 
 	this._igadgetVars = new Array();
-	
+
 	this._initAdaptor = function (ivar_) {
 		if (ivar_ == null){
 			// Adaptor of External Context variable doesn't receives any parameter   
@@ -159,6 +160,18 @@ Concept.prototype.addIGadgetVar = function (ivar_) {
 		default:
 			throw gettext("Concept does not have type yet.");
 			break;
+	}
+}
+
+Concept.prototype.deleteIGadgetVars = function (igadgetId_) {
+	var i = 0;
+	while (i < this._igadgetVars.length){
+		var ivar = this._igadgetVars[i];
+		if (ivar.getIGadget() == igadgetId_){
+				this._igadgetVars.splice(i, 1);
+		}else{
+			i++;
+		}
 	}
 }
 
