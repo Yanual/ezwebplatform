@@ -71,7 +71,7 @@ function Template(template_) {
 		var objVars = [];
 		var rawVars = variableList;
 		var rawVar = null;
-		for (i = 0; i<rawVars.length; i++) {
+		for (var i = 0; i<rawVars.length; i++) {
 			rawVar = rawVars[i];
 			switch (rawVar.aspect) {
 				case Variable.prototype.PROPERTY:
@@ -99,7 +99,7 @@ function Template(template_) {
 		 
 			this.prefs = new Array();
 			var rawVar = null;
-			for (i = 0; i < variableList.length; i++) {
+			for (var i = 0; i < variableList.length; i++) {
 				rawVar = variableList[i];
 				if (rawVar.aspect == Variable.prototype.USER_PREF) {
 					switch (rawVar.type) {
@@ -134,7 +134,7 @@ function Template(template_) {
 		 
 			this.extCtxtVars = new Array();
 			var rVar = null;
-			for (i = 0; i < variableList.length; i++) {
+			for (var i = 0; i < variableList.length; i++) {
 				rVar = variableList[i];
 				switch (rVar.aspect) {
 					case Variable.prototype.EXTERNAL_CONTEXT:
@@ -156,7 +156,7 @@ function Template(template_) {
 		 
 			this.gCtxtVars = new Array();
 			var rVar = null;
-			for (i = 0; i < variableList.length; i++) {
+			for (var i = 0; i < variableList.length; i++) {
 				rVar = variableList[i];
 				switch (rVar.aspect) {
 					case Variable.prototype.GADGET_CONTEXT:
@@ -179,7 +179,7 @@ function Template(template_) {
 		var objVars = [];
 		var rawVars = variableList;
 		var rawVar = null;
-		for (i = 0; i<rawVars.length; i++) {
+		for (var i = 0; i<rawVars.length; i++) {
 			rawVar = rawVars[i];
 			if (rawVar.aspect == Variable.prototype.USER_PREF)
 			{
@@ -233,7 +233,7 @@ function Template(template_) {
 		var objVars = [];
 		var rawVars = variableList;
 		var rawVar = null;
-		for (i = 0; i<rawVars.length; i++) {
+		for (var i = 0; i<rawVars.length; i++) {
 			rawVar = rawVars[i];
 			if (rawVar.aspect == Variable.prototype.EVENT)
 			{
@@ -252,7 +252,7 @@ function Template(template_) {
 		var objVars = [];
 		var rawVars = variableList;
 		var rawVar = null;
-		for (i = 0; i<rawVars.length; i++) {
+		for (var i = 0; i<rawVars.length; i++) {
 			rawVar = rawVars[i];
 			if (rawVar.aspect == Variable.prototype.PROPERTY)
 			{
