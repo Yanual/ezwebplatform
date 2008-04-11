@@ -826,8 +826,8 @@ IGadget.prototype.setPosition = function(position) {
 		this.element.style.top = this.screen.fromVCellsToPixels(position.y) + "px";
 		
 		// Notify that igadget position has been modified		
-		//this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.XPOSITION, this.position.x); 
-		//this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.YPOSITION, this.position.y);
+		this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.XPOSITION, this.position.x); 
+		this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.YPOSITION, this.position.y);
 	}
 }
 
@@ -843,9 +843,9 @@ IGadget.prototype.setContentWidth = function(width) {
 	this.width = width;
 	
 	// Notify that igadget width has been modified
-	//if (this.dragboard != null){
-	//	this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.WIDTH, this.width);
-	//}
+	if (this.dragboard != null){
+		this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.WIDTH, this.width);
+	}
 }
 
 IGadget.prototype.getContentWidth = function() {
@@ -856,9 +856,9 @@ IGadget.prototype.setContentHeight = function(height) {
 	this.contentHeight = height;
 	
 	// Notify igadget height
-//	if (this.dragboard != null){
-//		this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.HEIGHT, this.contentHeight);
-//	}
+	if (this.dragboard != null){
+		this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.HEIGHT, this.contentHeight);
+	}
 }
 
 /**

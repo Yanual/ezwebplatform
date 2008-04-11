@@ -35,11 +35,11 @@
  *   http://morfeo-project.org/
  */
 
-function ContextVar(varManager_, igadget_, varName_, conceptName_) {
-	this._igadget = igadget_;
+function ContextVar(igadgetId_, varName_, conceptName_) {
+	this._igadgetId = igadgetId_;
 	this._varName = varName_;
 	this._conceptName = conceptName_;
-	this._varManager = varManager_;
+	this._varManager = null;
 	this._value = null;
 }
 
@@ -47,8 +47,8 @@ ContextVar.prototype.getName = function () {
 	return this._varName;
 }
 
-ContextVar.prototype.getIGadget = function () {
-	return this._igadget;
+ContextVar.prototype.getIGadgetId = function () {
+	return this._igadgetId;
 }
 
 ContextVar.prototype.getConceptName = function () {
@@ -61,7 +61,12 @@ ContextVar.prototype.getValue = function () {
 
 ContextVar.prototype.setValue = function (newValue_) {
 	this._value = newValue_;
-	this._varManager.updateContextVar(this._igadget, this._varName, newValue_);
+	if (this._varManager !=null)
+		this._varManager.updateContextVar(this._igadgetId, this._varName, newValue_);
+}
+
+ContextVar.prototype.setVarManager = function (varManager_) {
+	this._varManager = varManager_;
 }
 
 //////////////////////////////////////////////////////////
@@ -81,7 +86,7 @@ function Concept(semanticConcept_, adaptor_) {
 			eval ('new ' + adaptor_ + "()"); 
 		}else{
 			// Adaptor of Gadget Context variable receives the IGadget as parameter			
-			eval ('new ' + adaptor_ + "("+ ivar_.getIGadget() +")");
+			eval ('new ' + adaptor_ + "("+ ivar_.getIGadgetId() +")");
 		}
 	}
 	
@@ -167,7 +172,7 @@ Concept.prototype.deleteIGadgetVars = function (igadgetId_) {
 	var i = 0;
 	while (i < this._igadgetVars.length){
 		var ivar = this._igadgetVars[i];
-		if (ivar.getIGadget() == igadgetId_){
+		if (ivar.getIGadgetId() == igadgetId_){
 				this._igadgetVars.splice(i, 1);
 		}else{
 			i++;
@@ -180,7 +185,7 @@ Concept.prototype.getIGadgetVar = function (igadgetId_) {
 		case Concept.prototype.IGADGET:
 			for (var i = 0; i < this._igadgetVars.length; i++){
 				var ivar = this._igadgetVars[i];
-				if (ivar.getIGadget() == igadgetId_){
+				if (ivar.getIGadgetId() == igadgetId_){
 					return ivar;
 				}
 			}

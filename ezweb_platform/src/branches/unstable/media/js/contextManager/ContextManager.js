@@ -47,6 +47,7 @@ function ContextManager (workspace_, workSpaceInfo_, contextInfo_) {
 	this._addContextVarsFromTemplate = function (cVars_, type_) {
 		for (var i = 0; i < cVars_.length; i++){
 			var cVar = cVars_[i];
+			cVar.setVarManager(this._workspace.getVarManager());
 			if (this._name2Concept[cVar.getConceptName()] == null){
 				alert (gettext("Context variable") + " [" + cVar.getName() + "] " + gettext("without related concept. Its value cannot be established"));
 				return;
@@ -104,7 +105,8 @@ function ContextManager (workspace_, workSpaceInfo_, contextInfo_) {
 					switch (currentVar.aspect) {
 					case Variable.prototype.EXTERNAL_CONTEXT:
 					case Variable.prototype.GADGET_CONTEXT:
-						var contextVar = new ContextVar(this._workspace.getVarManager(), currentIGadget.id, currentVar.name, currentVar.concept)
+						var contextVar = new ContextVar(currentIGadget.id, currentVar.name, currentVar.concept)
+						contextVar.setVarManager(this._workspace.getVarManager());
 						var relatedConcept = this._concepts[this._name2Concept[currentVar.concept]];
 						relatedConcept.setType(currentVar.aspect);
 						relatedConcept.addIGadgetVar(contextVar);								
@@ -124,23 +126,25 @@ function ContextManager (workspace_, workSpaceInfo_, contextInfo_) {
 	// PUBLIC METHODS 
 	// ****************
 	
-	ContextManager.prototype.addInstance = function (iGadgetId_, template_) {
+	ContextManager.prototype.addInstance = function (iGadget_, template_) {
 		if (!this._loaded)
 		    return;
 		
 		if (template_ == null)
 			return;
 
-		this._addContextVarsFromTemplate(template_.getExternalContextVars(iGadgetId_), Concept.prototype.EXTERNAL);
-		this._addContextVarsFromTemplate(template_.getGadgetContextVars(iGadgetId_), Concept.prototype.IGADGET);
+		this._addContextVarsFromTemplate(template_.getExternalContextVars(iGadget_.id), Concept.prototype.EXTERNAL);
+		this._addContextVarsFromTemplate(template_.getGadgetContextVars(iGadget_.id), Concept.prototype.IGADGET);
 	}
 	
 	ContextManager.prototype.removeInstance = function (iGadgetId_) {
 		if (! this._loaded)
 		    return;
 	
-		for (var concept in this._concepts) {
-			this._concepts[concept].deleteIGadgetVars(iGadgetId_);
+		var keys = this._concepts.keys();
+		for (i = 0; i < keys.length; i++) {
+			var key = keys[i];
+			this._concepts[key].deleteIGadgetVars(iGadgetId_);
 		}
 	}
 
