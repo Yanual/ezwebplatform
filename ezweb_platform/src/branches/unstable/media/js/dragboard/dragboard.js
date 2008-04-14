@@ -798,16 +798,6 @@ function IGadget(gadget, iGadgetId, iGadgetCode, screen, position, width, height
 	this.errorButtonElement = null;
 
 	this.errorCount = 0;
-	
-	// Notify Context Manager of igadget height, width and position
-	this.notifyContext = function() {
-		if (this.dragboard != null){ 
-			this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.HEIGHT, this.contentHeight);
-			this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.WIDTH, this.width);
-			this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.XPOSITION, this.position.x); 
-			this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.YPOSITION, this.position.y);
-		}
-	}		
 }
 
 IGadget.prototype.getGadget = function() {
@@ -820,14 +810,10 @@ IGadget.prototype.getGadget = function() {
  */
 IGadget.prototype.setPosition = function(position) {
 	this.position = position;
-	
+
 	if (this.element != null) { // if visible
 		this.element.style.left = this.screen.getColumnOffsetLeft(position.x);
 		this.element.style.top = this.screen.fromVCellsToPixels(position.y) + "px";
-		
-		// Notify that igadget position has been modified		
-		this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.XPOSITION, this.position.x); 
-		this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.YPOSITION, this.position.y);
 	}
 }
 
@@ -841,11 +827,6 @@ IGadget.prototype.getPosition = function() {
 
 IGadget.prototype.setContentWidth = function(width) {
 	this.width = width;
-	
-	// Notify that igadget width has been modified
-	if (this.dragboard != null){
-		this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.WIDTH, this.width);
-	}
 }
 
 IGadget.prototype.getContentWidth = function() {
@@ -854,11 +835,6 @@ IGadget.prototype.getContentWidth = function() {
 
 IGadget.prototype.setContentHeight = function(height) {
 	this.contentHeight = height;
-	
-	// Notify igadget height
-	if (this.dragboard != null){
-		this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.HEIGHT, this.contentHeight);
-	}
 }
 
 /**
@@ -999,6 +975,10 @@ IGadget.prototype.paint = function(where) {
 	gadgetElement.style.left = this.screen.getColumnOffsetLeft(this.position.x);
 	gadgetElement.style.top = this.screen.fromVCellsToPixels(this.position.y) + "px";
 
+	// Notify Context Manager of igadget's position  
+	this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.XPOSITION, this.position.x); 
+	this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.YPOSITION, this.position.y);
+
 	// Sizes
 	gadgetElement.style.width = this.screen.fromHCellsToPercentage(this.width) + "%";
 	var contentHeight = this.screen.fromVCellsToPixels(this.contentHeight) + "px";
@@ -1010,6 +990,10 @@ IGadget.prototype.paint = function(where) {
 	} else {
 		this.contentWrapper.style.height = contentHeight;
 	}
+	
+	// Notify Context Manager of igadget's size
+	this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.HEIGHT, this.contentHeight);
+	this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.WIDTH, this.width);
 
 	// References
 	gadgetElement.iGadgetId = this.id;
@@ -1270,10 +1254,8 @@ IGadget.prototype.save = function() {
 	function onSuccess(transport) {
 		this.id = transport.responseText;
 		this.dragboard.addIGadget(this);
-		// Now, all modules (particularly VarManager) have loaded the IGadget's variables
-		// and we can notify context manager of new values of context variables
-		this.notifyContext();
 	}
+
 	function onError(transport, e) {
 		var msg;
 		if (transport.responseXML) {
