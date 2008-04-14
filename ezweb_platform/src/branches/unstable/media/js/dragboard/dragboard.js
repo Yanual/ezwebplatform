@@ -815,6 +815,12 @@ IGadget.prototype.setPosition = function(position) {
 		this.element.style.left = this.screen.getColumnOffsetLeft(position.x);
 		this.element.style.top = this.screen.fromVCellsToPixels(position.y) + "px";
 	}
+	
+	// Notify Context Manager of igadget's position  
+	if (this.dragboard != null){
+		this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.XPOSITION, this.position.x); 
+		this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.YPOSITION, this.position.y);
+	}
 }
 
 /**
