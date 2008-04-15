@@ -42,7 +42,9 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function Variable (iGadget, name) {
+function Variable (id, iGadget, name, varManager) {
+	this.varManager = null;
+	this.id = null;
 	this.iGadget = null;
 	this.name = null;
 	this.aspect = null;
@@ -50,12 +52,14 @@ function Variable (iGadget, name) {
 }
 
 //////////////////////////////////////////////
-// PARENT CONTRUCTOR (Super keyboard emulation)
+// PARENT CONTRUCTOR (Super class emulation)
 //////////////////////////////////////////////
  
-Variable.prototype.Variable = function (iGadget_, name_, aspect_, value_) {
-    	this.iGadget = iGadget_;
-    	this.name = name_;
+Variable.prototype.Variable = function (id, iGadget_, name_, aspect_, varManager_,  value_) {
+	this.varManager = varManager_;
+	this.id = id;
+	this.iGadget = iGadget_;
+    this.name = name_;
 	this.aspect = aspect_;
 	this.value = value_;
 }
@@ -80,13 +84,14 @@ Variable.prototype.USER_PREF = "PREF"
 Variable.prototype.PROPERTY = "PROP"  
 Variable.prototype.EXTERNAL_CONTEXT = "ECTX"
 Variable.prototype.GADGET_CONTEXT = "GCTX"
+Variable.prototype.INOUT = "INOUT"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // RVARIABLE (Derivated class) <<PLATFORM>>
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function RVariable(iGadget_, name_, aspect_, value_) {
-	Variable.prototype.Variable.call(this, iGadget_, name_, aspect_, value_);
+function RVariable(id, iGadget_, name_, aspect_, varManager_, value_) {
+	Variable.prototype.Variable.call(this, id, iGadget_, name_, aspect_, varManager_, value_);
   
 	this.handler = null;
 }
@@ -127,9 +132,8 @@ RVariable.prototype.get = function () {
 RVariable.prototype.set = function (newValue) { 
 	switch (this.aspect){
 		case Variable.prototype.USER_PREF:
-			varManager = VarManagerFactory.getInstance();
 			var varInfo = [{iGadget: this.iGadget, name: this.name, value: newValue}];
-			varManager.markVariablesAsModified(varInfo);
+			this.varManager.markVariablesAsModified(varInfo);
 		case Variable.prototype.GADGET_CONTEXT:
 		case Variable.prototype.EXTERNAL_CONTEXT:
 		case Variable.prototype.SLOT:
@@ -152,8 +156,8 @@ RVariable.prototype.set = function (newValue) {
 // RWVARIABLE (Derivated class)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function RWVariable(iGadget_, name_, aspect_, value_) {
-	Variable.prototype.Variable.call(this, iGadget_, name_, aspect_, value_);
+function RWVariable(id, iGadget_, name_, aspect_, varManager_, value_) {
+	Variable.prototype.Variable.call(this, id, iGadget_, name_, aspect_, varManager_, value_);
 }
 
 //////////////////////////////////////////////
@@ -169,13 +173,12 @@ RWVariable.prototype = new Variable;
 RWVariable.prototype.set = function (value_) {  
     
     wiring = WiringFactory.getInstance();
-    varManager = VarManagerFactory.getInstance();
 
-    varManager.incNestingLevel();
+    this.varManager.incNestingLevel();
 
     // This variable was modified
     if (this.value != value_) {
-	var varInfo = new Object();
+    	var varInfo = new Object();
         
         varInfo.iGadget = this.iGadget;
         varInfo.name = this.name;
@@ -184,33 +187,33 @@ RWVariable.prototype.set = function (value_) {
         var variables = [];
         variables[0] = varInfo;
 	
-	varManager.markVariablesAsModified(variables);
+        this.varManager.markVariablesAsModified(variables);
     }
     
     this.value = value_;
 
     // Propagate changes to wiring module
     switch (this.aspect){
-    case Variable.prototype.PROPERTY:
-	break;
-    case Variable.prototype.EVENT:
-        var modVars = wiring.sendEvent(this.iGadget, this.name, value_);
-	varManager.markVariablesAsModified(modVars);
-
-	// Notify to SLOTs their new values
-	var modVar;
-
-	for (var i=0; i<modVars.length; i++) {
-	    modVar = modVars[i];
-	    varManager.writeSlot(modVar.iGadget, modVar.name, modVar.value);
-	}
-	    
-
-	break;
+	    case Variable.prototype.PROPERTY:
+	    	break;
+	    case Variable.prototype.EVENT:
+	        var modVars = wiring.sendEvent(this.iGadget, this.name, value_);
+			this.varManager.markVariablesAsModified(modVars);
+		
+			// Notify to SLOTs their new values
+			var modVar;
+		
+			for (var i=0; i<modVars.length; i++) {
+			    modVar = modVars[i];
+			    this.varManager.writeSlot(modVar.iGadget, modVar.name, modVar.value);
+			}
+			    
+		
+			break;
     }
 
     // This will save all modified vars if we are the root event
-    varManager.decNestingLevel();
+    this.varManager.decNestingLevel();
 
 }  
 

@@ -42,7 +42,8 @@ function VarManager (workSpaceInfo) {
 	// PUBLIC METHODS 
 	// ****************
 	
-	VarManager.prototype.parseWorkSpaceVariables = function (workSpaceInfo) {	
+	VarManager.prototype.parseVariables = function (workSpaceInfo) {	
+		// Igadget variables!
 		var tabs = workSpaceInfo['workspace']['tabList'];
 		
 		for (var i=0; i<tabs.length; i++) {
@@ -52,15 +53,38 @@ function VarManager (workSpaceInfo) {
 				this.parseIGadgetVariables(igadgets[j]);
 			}
 		}
+		
+		// Workspace variables (Connectables and future variables!)
+		var inouts = workSpaceInfo['workspace']['inoutList'];
+				
+		this.parseWorkspaceVariables(inouts);
+		
 		loaded = true;
 	}	
 	
+	VarManager.prototype.parseWorkspaceVariables = function (inouts) {
+		var objVars = []
+		for (var i = 0; i<inouts.length; i++) {
+			var id = inouts[i].id;
+			var name = inouts[i].name;
+			var aspect = inouts[i].aspect;
+			var value = inouts[i].value;
+				
+			switch (aspect) {
+				case Variable.prototype.INOUT:
+					objVars[name] = new RWVariable(id, null, name, aspect, this, value);
+					variables[id] = objVars[name];
+					break;
+			}
+		}		
+	}
+	
 	VarManager.prototype.parseIGadgetVariables = function (igadget) {		
-		
 		var igadgetVars = igadget['variables'];
 		var objVars = []
 		for (i = 0; i<igadgetVars.length; i++) {
 			var id = igadgetVars[i].id;
+			var igadgetId = igadgetVars[i].igadgetId;
 			var name = igadgetVars[i].name;
 			var aspect = igadgetVars[i].aspect;
 			var value = igadgetVars[i].value;
@@ -68,13 +92,15 @@ function VarManager (workSpaceInfo) {
 			switch (aspect) {
 				case Variable.prototype.PROPERTY:
 				case Variable.prototype.EVENT:
-					objVars[name] = new RWVariable(id, name, aspect, value);
+					objVars[name] = new RWVariable(id, igadgetId, name, aspect, this, value);
+					variables[id] = objVars[name];
 					break;
 				case Variable.prototype.EXTERNAL_CONTEXT:
 				case Variable.prototype.GADGET_CONTEXT:						
 				case Variable.prototype.SLOT:
 				case Variable.prototype.USER_PREF:
-					objVars[name] = new RVariable(id, name, aspect, value);
+					objVars[name] = new RVariable(id, igadgetId, name, aspect, this, value);
+					variables[id] = objVars[name];
 					break;
 			}
 		}
@@ -266,6 +292,10 @@ function VarManager (workSpaceInfo) {
 	    modifiedVars = [];
 	}
 	
+	VarManager.prototype.getVariableObject = function (varId) {
+		return variables[varId];
+	}
+	
 	// *********************************
 	// PRIVATE VARIABLES AND CONSTRUCTOR
 	// *********************************
@@ -281,10 +311,11 @@ function VarManager (workSpaceInfo) {
 	var persistenceEngine = PersistenceEngineFactory.getInstance();
 	var opManager = OpManagerFactory.getInstance();
 	var wiring = null; 
-	var iGadgets = [];
+	var iGadgets = new Hash();
+	var variables = new Hash();
 	var modifiedVars = [];
 	var nestingLevel = 0;
 	
 	// Creation of ALL EzWeb variables regarding one workspace
-	this.parseWorkSpaceVariables(workSpaceInfo);
+	this.parseVariables(workSpaceInfo);
 }

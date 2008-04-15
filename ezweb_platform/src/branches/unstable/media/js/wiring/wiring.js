@@ -722,7 +722,7 @@ function Wiring (workSpaceGlobalInfo) {
     // Allow to pack in an only PUT request, all the variable changes of a VariablePlatform.set invocation
     this.modifiedVars = [];	
     
-    this.loadWiring(this.workSpaceInfo);
+    //this.loadWiring(this.workSpaceInfo);
 
 }     	
 	
