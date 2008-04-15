@@ -62,12 +62,11 @@ class WorkSpace(models.Model):
     def __unicode__(self):
         return str(self.pk) + " " + self.name
     
-class Tab(models.Model):
+class WorkSpaceVariable(models.Model):
     
     name = models.CharField(_('Name'), max_length=30)
-    visible = models.BooleanField(_('Visible'))
-    
     workspace = models.ForeignKey(WorkSpace, verbose_name=_('WorkSpace'))
+    value = models.TextField(_('Value'))
 
     class Meta:
         unique_together = ('workspace', 'name')
@@ -78,3 +77,18 @@ class Tab(models.Model):
     def __unicode__(self):
         return str(self.pk) + " " + self.name
 
+    
+class Tab(models.Model):
+    
+    name = models.CharField(_('Name'), max_length=30)
+    visible = models.BooleanField(_('Visible'))
+    workspace = models.ForeignKey(WorkSpace, verbose_name=_('WorkSpace'))
+
+    class Meta:
+        unique_together = ('workspace', 'name')
+
+    class Admin:
+        pass
+
+    def __unicode__(self):
+        return str(self.pk) + " " + self.name
