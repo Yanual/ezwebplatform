@@ -44,7 +44,7 @@ from gadget.models import Template, Gadget, XHTML, GadgetContext, ExternalContex
 from igadget.models import Variable, VariableDef, Position, IGadget
 from connectable.models import In, Out, InOut
 from context.models import Concept, ConceptName
-from workspace.models import Tab, WorkSpace
+from workspace.models import Tab, WorkSpace, WorkSpaceVariable
 
 def get_wiring_variable_data(var, ig):
     res_data = {}
@@ -172,12 +172,17 @@ def get_output_data (inout):
 
 def get_inout_data(data):
     data_ret = {}
+    
     data_fields = data['fields']
     data_ret['id'] = data['pk']
-    data_ret['type'] = 'CHANNEL'
+    data_ret['aspect'] = 'INOUT'
     data_ret['friend_code'] = data_fields['friend_code']
-    data_ret['value'] = data_fields['value']
     data_ret['name'] = data_fields['name']
+    
+    workSpaceVariableDAO = WorkSpaceVariable.objects.get(id=data_fields['workspace_variable'])
+    
+    data_ret['value'] = workSpaceVariableDAO.value
+    data_ret['variableId'] = workSpaceVariableDAO.id
     
     data_ins = get_input_data(inout=data['pk'])
     data_ret['inputs'] = [d for d in data_ins]
@@ -217,7 +222,7 @@ def get_global_workspace_data(data, workSpaceDAO):
         tab['igadgetList'] = igadget_data
         
     #Channel processing
-    inouts = InOut.objects.filter(workspace=workSpaceDAO)  
+    inouts = InOut.objects.filter(workspace_variable__workspace=workSpaceDAO)  
     data = serializers.serialize('python', inouts, ensure_ascii=False)
     inout_data = [get_inout_data(d) for d in data]
     
