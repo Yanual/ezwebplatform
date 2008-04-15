@@ -107,14 +107,19 @@ var ShowcaseFactory = function () {
 		// ****************
 		
 		// Add a new gadget from Internet
-		Showcase.prototype.addGadget = function (url_) {
-			var gadget = new Gadget (null, url_);
-			//TODO esto es raruno, la variable gadget va en la hash, no gusta el _this = this de gadget
+		Showcase.prototype.addGadget = function (vendor_, name_, version_, url_) {
+			var gadgetId = vendor_ + '_' + name_ + '_' + version_;
+			var gadget = _gadgets[gadgetId];
+			if (gadget == null){
+				gadget = new Gadget (null, url_);		
+			}else{
+				_opManager.addInstance(gadgetId);
+			}
 		}
 		
 		// Insert gadget object in showcase object model
 		Showcase.prototype.gadgetToShowcaseGadgetModel = function(gadget_) {
-			var gadgetId = gadget_.getVendor() + '_' + gadget_.getName() + '_' + gadget_.getVersion();
+			var gadgetId = gadget_.getId();
 			_gadgets[gadgetId] = gadget_;
 			_opManager.addInstance(gadgetId);
 		}

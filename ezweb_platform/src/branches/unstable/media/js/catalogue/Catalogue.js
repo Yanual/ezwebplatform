@@ -117,7 +117,8 @@ var CatalogueFactory  = function () {
 		
 		this.addResourceToShowCase = function(resourceId_) {
 			UIUtils.showResourceInfo(resourceId_);
-			ShowcaseFactory.getInstance().addGadget(resources.getValue(resourceId_).getUriTemplate());
+			var currentResource = resources.getValue(resourceId_);
+			ShowcaseFactory.getInstance().addGadget(currentResource.getVendor(), currentResource.getName(),  currentResource.getVersion(), currentResource.getUriTemplate());
 		}
 
 		this.paginate = function(items) {

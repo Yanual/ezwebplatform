@@ -45,7 +45,7 @@ function ContextManager (workspace_, workSpaceInfo_, contextInfo_) {
 	
 	// Adds all variables from workspace data model
 	this._addContextVarsFromTemplate = function (cVars_, type_) {
-		for (var i = 0; i < cVars_.length; i++){
+		for (var i = 0; i < cVars_.size(); i++){
 			var cVar = cVars_[i];
 			cVar.setVarManager(this._workspace.getVarManager());
 			if (this._name2Concept[cVar.getConceptName()] == null){

@@ -4,18 +4,18 @@
         <field type="CharField" name="adaptor">UserAdaptor</field>
     </object>
     <object pk="width" model="context.concept">
-        <field type="CharField" name="adaptor">WidthAdaptor</field>
+        <field type="CharField" name="adaptor"></field>
     </object>
     <object pk="height" model="context.concept">
-        <field type="CharField" name="adaptor">HeightAdaptor</field>
+        <field type="CharField" name="adaptor"></field>
     </object>
-	<object pk="xPosition" model="context.concept">
-        <field type="CharField" name="adaptor">XPositionAdaptor</field>
+    <object pk="xPosition" model="context.concept">
+        <field type="CharField" name="adaptor"></field>
     </object>
     <object pk="yPosition" model="context.concept">
-        <field type="CharField" name="adaptor">YPositionAdaptor</field>
+        <field type="CharField" name="adaptor"></field>
     </object>
-	<object pk="language" model="context.concept">
+    <object pk="language" model="context.concept">
         <field type="CharField" name="adaptor">LanguageAdaptor</field>
     </object>
     <object pk="1" model="context.conceptname">
@@ -38,7 +38,7 @@
         <field type="CharField" name="name">yPosition</field>
         <field to="context.concept" name="concept" rel="ManyToOneRel">yPosition</field>
     </object>
-	<object pk="6" model="context.conceptname">
+    <object pk="6" model="context.conceptname">
         <field type="CharField" name="name">language</field>
         <field to="context.concept" name="concept" rel="ManyToOneRel">language</field>
     </object>

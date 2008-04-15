@@ -127,47 +127,49 @@ function Template(template_) {
 	}
 	
 	this.getExternalContextVars = function (igadget_) {
+		
+		// JSON-coded Template-Variables mapping	
+		// Constructing the structure 
 
-		if (this.extCtxtVars == null) {
-			// JSON-coded Template-Variables mapping	
-			// Constructing the structure 
-		 
-			this.extCtxtVars = new Array();
-			var rVar = null;
-			for (var i = 0; i < variableList.length; i++) {
-				rVar = variableList[i];
-				switch (rVar.aspect) {
-					case Variable.prototype.EXTERNAL_CONTEXT:
-						this.extCtxtVars.push(new ContextVar(igadget_, rVar.name, rVar.concept)); 
-						break;
-					default:
-						break;
-				}
+		var objVars = [];
+		var rawVars = variableList;
+		var rawVar = null;
+		var currentContextVar = null;
+		for (var i = 0; i<rawVars.length; i++) {
+			rawVar = rawVars[i];
+			switch (rawVar.aspect) {
+				case Variable.prototype.EXTERNAL_CONTEXT:
+					currentContextVar = new ContextVar(igadget_, rawVar.name, rawVar.concept) 
+					objVars.push(currentContextVar); 
+					break;
+				default:
+					break;
 			}
 		}
-		return this.extCtxtVars;
+		return objVars;
 	}
 	
 	this.getGadgetContextVars = function (igadget_) {
 
-		if (this.gCtxtVars == null) {
-			// JSON-coded Template-Variables mapping	
-			// Constructing the structure 
+		// JSON-coded Template-Variables mapping	
+		// Constructing the structure 
 		 
-			this.gCtxtVars = new Array();
-			var rVar = null;
-			for (var i = 0; i < variableList.length; i++) {
-				rVar = variableList[i];
-				switch (rVar.aspect) {
-					case Variable.prototype.GADGET_CONTEXT:
-						this.gCtxtVars.push(new ContextVar(igadget_, rVar.name, rVar.concept)); 
-						break;
-					default:
-						break;
-				}
+		var objVars = [];
+		var rawVars = variableList;
+		var rawVar = null;
+		var currentContextVar = null;
+		for (var i = 0; i<rawVars.length; i++) {
+			rawVar = rawVars[i];
+			switch (rawVar.aspect) {
+				case Variable.prototype.GADGET_CONTEXT:
+					currentContextVar = new ContextVar(igadget_, rawVar.name, rawVar.concept) 
+					objVars.push(currentContextVar); 
+					break;
+				default:
+					break;
 			}
 		}
-		return this.gCtxtVars;
+		return objVars;
 	}
 
 	
