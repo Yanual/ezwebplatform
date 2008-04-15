@@ -115,17 +115,14 @@ var URIs = new _URIConstants();
 		persistenceEngine.send_post("/i18n/setlang/", params, this, onSuccess, onError);
 		return false;
 	}
-	
-	var opManager = OpManagerFactory.getInstance();
-	
-	opManager.loadEnviroment();
 
+	var opManager = OpManagerFactory.getInstance();
 </script>
 
 
 </head>
 
-<body onload="resizeWrapper();" onresize="resizeWrapper();">
+<body onload="resizeWrapper();opManager.loadEnviroment();" onresize="resizeWrapper();">
 
 <!-- HEADER -->
 <div id="header">
