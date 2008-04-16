@@ -116,6 +116,14 @@ RVariable.prototype.setHandler = function (handler_) {
 	this.handler = handler_;
 } 
 
+RVariable.prototype.assignSlot = function (connectable) {
+  this.slotConnectable = connectable;
+}
+
+RVariable.prototype.getAssignedSlot = function () {
+  return this.slotConnectable;
+}
+
 RVariable.prototype.get = function () { 
 	switch (this.aspect){
 		case Variable.prototype.GADGET_CONTEXT:
@@ -158,6 +166,7 @@ RVariable.prototype.set = function (newValue) {
 
 function RWVariable(id, iGadget_, name_, aspect_, varManager_, value_) {
 	Variable.prototype.Variable.call(this, id, iGadget_, name_, aspect_, varManager_, value_);
+	this.eventConnectable = null;
 }
 
 //////////////////////////////////////////////
@@ -170,14 +179,22 @@ RWVariable.prototype = new Variable;
 // PUBLIC METHODS TO BE INHERITANCED
 //////////////////////////////////////////////
 
-RWVariable.prototype.set = function (value_) {  
-    
-    wiring = WiringFactory.getInstance();
 
+RWVariable.prototype.assignEvent = function (connectable) {
+  this.eventConnectable = connectable;
+}
+
+RWVariable.prototype.getAssignedEvent = function () {
+  return this.eventConnectable;
+}
+
+RWVariable.prototype.set = function (value_) {
     this.varManager.incNestingLevel();
 
-    // This variable was modified
     if (this.value != value_) {
+    	// This variable was modified
+    	this.value = value_;
+
     	var varInfo = new Object();
         
         varInfo.iGadget = this.iGadget;
@@ -189,33 +206,14 @@ RWVariable.prototype.set = function (value_) {
 	
         this.varManager.markVariablesAsModified(variables);
     }
-    
-    this.value = value_;
 
     // Propagate changes to wiring module
-    switch (this.aspect){
-	    case Variable.prototype.PROPERTY:
-	    	break;
-	    case Variable.prototype.EVENT:
-	        var modVars = wiring.sendEvent(this.iGadget, this.name, value_);
-			this.varManager.markVariablesAsModified(modVars);
-		
-			// Notify to SLOTs their new values
-			var modVar;
-		
-			for (var i=0; i<modVars.length; i++) {
-			    modVar = modVars[i];
-			    this.varManager.writeSlot(modVar.iGadget, modVar.name, modVar.value);
-			}
-			    
-		
-			break;
-    }
+    if (this.eventConnectable != null)
+      this.eventConnectable.propagate(this.value);
 
     // This will save all modified vars if we are the root event
     this.varManager.decNestingLevel();
-
-}  
+}
 
 //////////////////////////////////////////////
 // OVERWRITTEN METHODS

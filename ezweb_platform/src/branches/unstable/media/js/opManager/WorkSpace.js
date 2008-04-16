@@ -60,21 +60,15 @@ function WorkSpace (workSpaceState) {
 		// JSON-coded iGadget-variable mapping
 		var response = transport.responseText;
 		this.workSpaceGlobalInfo = eval ('(' + response + ')');
-		
-		// Name of the wiring layer regarding this workspace
-		this.wiringLayer = "wiring_" + this.workSpaceState.name;
-		
-		this.wiring = new Wiring(this.workSpaceGlobalInfo);
-		this.wiringInterface = new WiringInterface(this.wiringLayer, this.wiring);
-		
+
 		this.varManager = new VarManager(this.workSpaceGlobalInfo);
 		this.contextManager = new ContextManager(this, this.workSpaceGlobalInfo, this.contextInfo);
 		
 		var tabs = this.workSpaceGlobalInfo['workspace']['tabList'];
-		
+
 		var visibleTabName = null;
-		
-		if(tabs.length>0){
+
+		if (tabs.length>0) {
 			visibleTabName = tabs[0].name;
 			for (var i=0; i<tabs.length; i++) {
 				var tab = tabs[i];
@@ -85,11 +79,18 @@ function WorkSpace (workSpaceState) {
 				}
 			}
 		}
-		
+
+		this.wiring = new Wiring(this, this.workSpaceGlobalInfo);
+		this.wiringInterface = new WiringInterface(this.wiring, this, $("wiring"), $("wiring_link"));
+
+		if (tabs.length > 0) {
+			for (i = 0; i < tabs.length; i++)
+				this.tabInstances[tabs[i].name].getDragboard().paint();
+		}
+
 		this.loaded = true;
-		
 		this.setTab(visibleTabName);
-		
+
 		OpManagerFactory.getInstance().continueLoadingGlobalModules(Modules.prototype.ACTIVE_WORKSPACE);
 	}
 
@@ -97,8 +98,8 @@ function WorkSpace (workSpaceState) {
 		var msg;
 		if (e) {
 			msg = interpolate(gettext("JavaScript exception on file %(errorFile)s (line: %(errorLine)s): %(errorDesc)s"),
-					                  {errorFile: e.fileName, errorLine: e.lineNumber, errorDesc: e},
-							  true);
+ 			                  {errorFile: e.fileName, errorLine: e.lineNumber, errorDesc: e},
+			                  true);
 		} else {
 			msg = transport.status + " " + transport.statusText;
 		}
@@ -186,9 +187,6 @@ function WorkSpace (workSpaceState) {
 	}
 	
 	WorkSpace.prototype.getTab = function(tabName) {
-		if (!this.loaded)
-			return;
-		
 		return this.tabInstances[tabName];
 	}
 	
@@ -212,21 +210,31 @@ function WorkSpace (workSpaceState) {
 		this.visibleTab.show();
 	}
 	
-	WorkSpace.prototype.addIGadget = function(igadget) {
-		var gadget = ShowcaseFactory.getInstance().getGadget(igadget.gadget.getId());
-		this.varManager.addInstance(igadget, gadget.getTemplate());
-		this.contextManager.addInstance(igadget, gadget.getTemplate());
-		this.wiring.addInstance(igadget, gadget.getTemplate());
-			
-		//this.contextManagerModule.addInstance(igadget, gadget);
-			
-		this.getVisibleTab().getDragboard().showInstance(igadget);
+	WorkSpace.prototype.addIGadget = function(tab, igadget, igadgetJSON) {
+		this.varManager.addInstance(igadget, igadgetJSON);
+		this.contextManager.addInstance(igadget, igadget.getGadget().getTemplate());
+		this.wiring.addInstance(igadget);
+		
+		tab.getDragboard().showInstance(igadget);
 
 		// The dragboard must be shown after an igadget insertion
 		OpManagerFactory.getInstance().unMarkGlobalTabs();
 		this.showVisibleTab();
 	}
-	    
+
+	WorkSpace.prototype.getIGadgets = function() {
+		if (!this.loaded)
+			return;
+
+		var iGadgets = new Array();
+		var keys = this.tabInstances.keys();
+		for (var i = 0; i < keys.length; i++) {
+			iGadgets = iGadgets.concat(this.tabInstances[keys[i]].getDragboard().getIGadgets());
+		}
+
+		return iGadgets;
+	}
+
     // *****************
     //  CONSTRUCTOR
     // *****************

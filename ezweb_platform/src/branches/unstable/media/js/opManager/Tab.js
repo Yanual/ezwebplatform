@@ -48,11 +48,11 @@ function Tab (tabInfo, workSpace) {
 	}
 	
 	Tab.prototype.hide = function () {
-		this.dragboardElement.setStyle({'zIndex': 1});
+		this.dragboardElement.setStyle({'zIndex': 1, 'visibility' : 'hidden'});
 	}
 
 	Tab.prototype.show = function () {
-	    this.dragboardElement.setStyle({'zIndex': 2});
+	    this.dragboardElement.setStyle({'zIndex': 2, 'visibility' : 'visible'});
 	    this.dragboard.recomputeSize();
 	    this.tabHTMLElement.className = "tab current";
 	}
@@ -96,5 +96,5 @@ function Tab (tabInfo, workSpace) {
     this.dragboardElement.setAttribute('id', this.dragboardLayerName);
     this.dragboardElement.setStyle({'display': 'block'});
                 	
-	this.dragboard = new Dragboard(tabInfo, this.workSpace, this.dragboardElement);
+	this.dragboard = new Dragboard(this, this.workSpace, this.dragboardElement);
 }

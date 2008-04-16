@@ -4,7 +4,7 @@
  * 
  * Component: EzWeb
  * 
- * (C) Copyright 2004 Telefónica Investigación y Desarrollo 
+ * (C) Copyright 2008 Telefónica Investigación y Desarrollo 
  *     S.A.Unipersonal (Telefónica I+D) 
  * 
  * Info about members and contributors of the MORFEO project 
@@ -36,446 +36,370 @@
  */
 
 
+function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
 
-function WiringInterface(wiringDivName, wiring) {
+  // ***********************************
+  //  PRIVATE METHODS AND ATTRIBUTES
+  // ***********************************
 
-    // ***********************************
-    //  PRIVATE METHODS AND ATTRIBUTES
-    // ***********************************
+  this.workspace = workspace;
+  this.wiring = wiring;
+  this.wiringContainer = wiringContainer;
+  this.wiringLink = wiringLink;
 
-    this.wiring = wiring;
-    this.wiringLayerName = wiringDivName;
-    this.wiringElement = null;
-    this.opmanager = OpManagerFactory.getInstance();
+  this.opmanager = OpManagerFactory.getInstance();
+  this.currentChannel = null;
+  this.channels = new Hash();
+  this.enabled = false;
+  this.friend_codes = {};
+  this.highlight_color = "#FFFFE0"; // TODO remove
+  this.friend_codes_counter = 0;
+  this.channels_counter = 1;
+  this.channelBaseName = gettext("Wire");
+
+  this.event_list = $('events_list');//wiringContainer.getElementById('events_list');
+  this.slot_list = $('slots_list');//wiringContainer.getElementById('slots_list');
+  this.channels_list = $('channels_list');//wiringContainer.getElementById('channels_list');
+  this.channel_name = $('channel_name');//wiringContainer.getElementById('channel_name');
+  this.channelForm = $('newChannelForm');
+
+  this.eventCreateChannel = function (e) {
+    Event.stop(e);
+    this._createChannel();
+  }.bind(this)
+  
+  WiringInterface.prototype.show = function () {
+    this.renewInterface();
+    this.wiringContainer.setStyle({'zIndex' : 2, 'visibility': 'visible'});
+    this.wiringLink.className = "toolbar_marked";
+    Event.observe($('newChannelForm'), 'submit', this.eventCreateChannel);
+  }
+
+  WiringInterface.prototype.hide = function () {
+    this.saveWiring();
+    Event.stopObserving(this.channelForm, 'submit', this.eventCreateChannel);
+    this.wiringContainer.setStyle({'zIndex' : 1, 'visibility': 'hidden'});
+  }
+
+  WiringInterface.prototype.saveWiring = function () {
+    // Only it's needed to save wiring structure when it has been modified!
+    if (this.modified == true) {
+      this.wiring.serialize();
+      this.modified = false;
+    }
+  }
+
+  WiringInterface.prototype._addChannelInterface = function (channel) {
+    var context = {channel: channel, wiringGUI:this};
+    var channelElement = document.createElement("div");
+    channelElement.addClassName("channel");
+    var itemName = "channel_chk_" + channel.getName();
+    Event.observe(channelElement, "click",
+                      function (e) {
+                        Event.stop(e);
+                        this.wiringGUI._changeChannel(this.channel);
+                      }.bind(context));
+
+    var inputDel = document.createElement("img");
+    inputDel.setAttribute("alt", gettext("Remove"));
+    inputDel.setAttribute("src", "/ezweb/images/dialog-cancel.png");
+    Event.observe(inputDel, "click",
+                            function () {
+                              this.wiringGUI._removeChannel(this.channel);
+                            }.bind(context));
+    channelElement.appendChild(inputDel);
+    channelElement.appendChild(document.createTextNode(channel.getName()));
+
+    var channelContent = document.createElement("div");
+    channelContent.addClassName("channelContent");
+    var textNodeValue = document.createTextNode(channel.getValue());
+    var liVal = document.createElement("li");
+    liVal.appendChild(textNodeValue);
+    channelContent.appendChild(liVal);
+    channelElement.appendChild(channelContent);
+
+    this.channels_list.appendChild(channelElement);
+    channel.assignInterface(channelElement);
+
+    this.channels[channel.getName()] = channel;
+  }
+
+  WiringInterface.prototype._addIGadget = function (iGadget) {
+    // TODO mirar esto
+    var ulEvents = document.createElement("div");
+    ulEvents.addClassName("igadgetContent");
+    var ulSlots = document.createElement("div");
+    ulSlots.addClassName("igadgetContent");
+
+    var connectables = this.wiring.getIGadgetConnectables(iGadget);
+
+    // Events & Slots
+    for (var i = 0; i < connectables.length; i++) {
+      var connectable = connectables[i];
+
+      var connectableElement = document.createElement("div");
+      connectableElement.appendChild(document.createTextNode(connectable.getName()));
+
+      var chkItem = document.createElement("div");
+      chkItem.addClassName("chkItem");
+      connectableElement.appendChild(chkItem);
+
+      var context = {connectable: connectable, chkItem: chkItem, wiringGUI:this};
+      Event.observe(chkItem, "click",
+                             function () {
+                               this.wiringGUI._changeConnectionStatus(this.connectable, this.chkItem);
+                             }.bind(context));
+
+      // Harvest info about the friendCode of the connectable
+      var friendCode = connectable.getFriendCode();
+      if (friendCode != null) {
+        if (!this.friend_codes[friendCode]) {
+          // Create the friend code entry in the list of friend codes
+          this.friend_codes[friendCode] = {};
+          this.friend_codes[friendCode].list = [];
+          this.friend_codes[friendCode].color = this.color_scheme[this.friend_codes_counter++];
+        }
+
+        this.friend_codes[friendCode].list.push(connectableElement);
+
+        var context = {friendCode: friendCode, wiringGUI:this};
+
+        connectableElement.addEventListener("mouseover",
+                                function () {this.wiringGUI._highlight_friend_code(this.friendCode, true);}.bind(context),
+                                false);
+        connectableElement.addEventListener("mouseout",
+                                function () {this.wiringGUI._highlight_friend_code(this.friendCode, false);}.bind(context),
+                                false);
+      }
+
+      // Cancel bubbling of _toggle
+      function cancelbubbling(e) {
+        if (e.stopPropagation) e.stopPropagation();
+      }
+
+      connectableElement.addEventListener("click", cancelbubbling, false);
+
+      // Insert it on the correct list of connectables
+      if (connectable instanceof wIn)
+        ulEvents.appendChild(connectableElement);
+      else if (connectable instanceof wOut)
+        ulSlots.appendChild(connectableElement);
+    }
+
+    // Generic information about the iGadget
+    var gadget = iGadget.getGadget();
+    var IGadgetName = gadget.getName() + " [" + iGadget.id + "]";
+
+    // Event column
+    if (ulEvents.childNodes.length > 0) {
+      var igadgetDiv = document.createElement("div");
+      igadgetDiv.addClassName("igadget");
+      igadgetDiv.appendChild(document.createTextNode(IGadgetName));
+
+      var context = {element: igadgetDiv, wiringGUI:this};
+      Event.observe(igadgetDiv,
+                    "click",
+                    function () {this.wiringGUI._toggle(this.element);}.bind(context));
+
+      igadgetDiv.appendChild(ulEvents);
+      this.event_list.appendChild(igadgetDiv);
+    }
+
+    // Slot column
+    if (ulSlots.childNodes.length > 0) {
+      var igadgetDiv = document.createElement("div");
+      igadgetDiv.addClassName("igadget");
+      igadgetDiv.appendChild(document.createTextNode(IGadgetName));
+
+      var context = {element: igadgetDiv, wiringGUI:this};
+      Event.observe(igadgetDiv,
+                    "click",
+                    function () {this.wiringGUI._toggle(this.element);}.bind(context));
+      igadgetDiv.appendChild(ulSlots);
+      this.slot_list.appendChild(igadgetDiv);
+    }
+  }
+
+  WiringInterface.prototype.renewInterface = function () {
+    // Clean the interface
+    this.event_list.innerHTML = "";
+    this.slot_list.innerHTML = "";
+    this.channels_list.innerHTML = "";
     this.friend_codes = {};
-    this.highlight_color = "#FFFFE0";
-    this.friend_codes_counter = 0;
-    this.channels_counter = 1;
-    this.last_checked = null;
-    this.disabled_all = true;
-    this.modified = false;
-    this.wire_word = gettext("Wire_");
+
+    // Build the interface
+    var iGadgets = this.workspace.getIGadgets();
+    var channels = this.wiring.getChannels();
+
+    for (var i = 0; i < iGadgets.length; i++) {
+      this._addIGadget(iGadgets[i]);
+    }
+
+    for (var j = 0; j < channels.length; j++) {
+      this._addChannelInterface(new ChannelInterface(channels[j]));
+    }
+
+    this.channels_counter = channels.length + 1;
+  }
+
+  WiringInterface.prototype._changeConnectionStatus = function (connectable, chkItem) {
+    if (connectable instanceof wIn) {
+      if (chkItem.checked == true)
+        this.currentChannel.addInputConnection(connectable);
+      else
+        this.currentChannel.removeInputConnection(connectable);
+    } else if (connectable instanceof wOut) {
+      if (chkItem.checked == true)
+        this.currentChannel.addOutputConnection(connectable);
+      else
+        this.currentChannel.removeOutputConnection(connectable);
+    }
+  }
+
+  WiringInterface.prototype._createChannel = function () {
+    var result = null;
+    var channelName = this.channel_name.value;
+
+    if (channelName == "") {
+      // Build an initial channel name
+      channelName = this.channelBaseName + "_" + this.channels_counter;
+      this.channels_counter++;
+    }
+
+    // Check if there is another channel with the same name
+    while (this.channels[channelName] != undefined) {
+      // Build another channel name
+      channelName = this.channelBaseName + "_" + this.channels_counter;
+      this.channels_counter++;
+    }
+
+    var channel = new ChannelInterface(channelName, null);
+    this._addChannelInterface(channel);
+    this._changeChannel(channel);
+  }
+
+  WiringInterface.prototype._removeChannel = function (channel) {
+    var channelName = channel.getName()
+    if (this.channels[channelName] == null)
+      return; // Nothing to do
+
+    // Check whether this channel exists in the current wiring model
+    // or when it was created with the wiring interface and removed
+    // before commiting changes
+    if (channel.exists())
+      this.channelsForRemove.push(channel);
+
+    this._setEnableStatus(false);
+    this.channels_list.removeChild(channel.getInterface());
+    delete this.channels[channelName];
+  }
+
+  WiringInterface.prototype._changeChannel = function(newChannel) {
+    var oldChannel = this.currentChannel;
+    this.currentChannel = newChannel;
     
-    //Initial interface construction
-    var wiringHTML = $("wiring_template").innerHTML;
-    var wrapper = $("wrapper");
-    
-    new Insertion.Top(wrapper, wiringHTML);
-    
-    this.wiringElement = wrapper.firstDescendant();
-    
-    this.wiringElement.setAttribute('id', wiringDivName);
-    
-    this.event_list = $('events_list').descendantOf(this.wiringLayerName);
-    this.slot_list = $('slots_list').descendantOf(this.wiringLayerName);
-    this.channels_list = $('channels_list').descendantOf(this.wiringLayerName);
-    this.channel_name = $('channel_name').descendantOf(this.wiringLayerName);
-    
-	WiringInterface.prototype.show = function (){
-		this.wiringElement.setStyle({'zIndex' : 2, 'display': 'block'});
-		$("wiring_link").className = "toolbar_marked";
-	}
-	
-	WiringInterface.prototype.hide = function (){
-		this.wiringElement.setStyle({'zIndex' : 1, 'display': 'block'});
-	}
+    if (oldChannel) {
+      this._uncheckChannel(oldChannel);
+    }
 
-	WiringInterface.prototype.unloaded = function (){
-	    this.disabled_all = true;
+    if (oldChannel != newChannel) {
+      this._highlightChannel(newChannel);
+      this._setEnableStatus(true);
+    } else {
+      this._setEnableStatus(false);
+    }
+  }
 
-	    this.event_list = innerHTML = "";
-	    this.slots_list.innerHTML = "";
-	    this.channels_list.innerHTML = "";
-	    this.channel_name.value = this.wire_word + this.channels_counter;
-	}
+  WiringInterface.prototype._toggle = function (element) {
+    element.toggleClassName("folded");
+  }
 
-	WiringInterface.prototype.saveWiring = function (){
-	    // Only it's needed to save wiring structure when it has been modified!
-	    if (this.modified == true) {
-			this.opmanager.restaure();
-			this.wiring.serialize();
-		
-			this.modified=false;
-	    }
-	}
+  WiringInterface.prototype._highlight = function (chk, friendCode) {
+    if (!this.friend_codes[friend_code]) {
+    }
 
-	WiringInterface.prototype.addChannelInterface = function (name){
-	    var idChannel = "channel_"+ name;
-	    var li = document.createElement("li");
-	    
-	    var inputDel = document.createElement("input");
-	    inputDel.setAttribute("type", "image");
-	    inputDel.setAttribute("onclick", "javascript:wiringInterface.deleteChannel('"+ name +"');");
-	    inputDel.setAttribute("src", "/ezweb/images/dialog-cancel.png");
-	    
-	    li.appendChild(inputDel);
-	    
-	    var chkChannel = document.createElement("input");
-	    chkChannel.setAttribute("type", "radio");
-	    chkChannel.setAttribute("name", "channels_options");
-	    chkChannel.setAttribute("id", "chk_"+ idChannel);
-	    chkChannel.setAttribute("onclick", "javascript:{wiringInterface._highlight_channel('chk_"+ idChannel +"', '"+ name +"');}");
-	    
-	    var textNode = document.createTextNode(name);
-	    chkChannel.appendChild(textNode);
-	    li.appendChild(chkChannel);
+    var fcList = this.friend_codes[friendCode].list;
+    var fcColor = this.friend_codes[friend_code].color;
 
-	    var labelItem = document.createElement("label");
-	    labelItem.setAttribute("for", "chk_"+ idChannel);
-	    labelItem.setAttribute("style", "cursor: pointer; cursor: hand;");
-	    labelItem.appendChild(textNode);
-	    li.appendChild(labelItem);
-	    li.setAttribute("id", idChannel);
-	    
-	    var ulVal = document.createElement("ul");
-	    var textNodeValue = document.createTextNode(this.wiring.viewValue(name));
-	    var liVal = document.createElement("li");
-	    liVal.appendChild(textNodeValue);
-	    ulVal.appendChild(liVal);
-	    li.appendChild(ulVal);
-	    
-	    this.channels_list.appendChild(li);
-	    
-	    this._highlight_channel("chk_"+ idChannel, name);
-	}
+    if (chk.checked) {
+      for (var i = 0; i < fcList.length; i++) {
+        var currentElement = fcList[i];
+        currentElement.style.backgroundColor = fcColor;
+      }
+    } else {
+      var allUnchecked = true;
+      for (var i = 0; i < fcList.length; i++) {
+        var currentElement = fcList[i];
+        allUnchecked &= !currentElement.checked;
+      }
 
-	WiringInterface.prototype.addGadgetInterface = function (object){
-	    var ulEvents = document.createElement("ul");
-	    ulEvents.setAttribute("id", "events_ul_gadget_"+ object.id);
-	    
-	    var ulSlots = document.createElement("ul");
-	    ulSlots.setAttribute("id", "slots_ul_gadget_"+ object.id);
-	    
-	    var connections = this.wiring.gadgetConnections(object.id);
-	    
-	    if (connections) {
-		    for (var i = 0; i < connections.length; i++) {
-		        var liItem = document.createElement("li");
-		        var divItem = document.createElement("div");
-		        var chkItem = document.createElement("input");
-		        var idItem = "gadget_"+ object.id +"_"+ connections[i].name;
-		        
-		        divItem.setAttribute("id", "div_"+ idItem);
-		        
-		        chkItem.setAttribute("id", "chk_"+ idItem);
-		        chkItem.setAttribute("disabled", "disabled");
-		        chkItem.setAttribute("type", "checkbox");
-		        chkItem.setAttribute("onClick", "javascript:{wiringInterface.changeConnectionStatus(this, " + object.id + ", '"  + connections[i].name + "', '" + connections[i].aspect + "')}");
-		        
-		        divItem.appendChild(chkItem);
-		        
-		        var labelItem = document.createElement("label");
-		        labelItem.setAttribute("for", "chk_"+ idItem);
-		        labelItem.setAttribute("id", "lbl_chk_"+ idItem);
-		        
-		        var textNodeItem = document.createTextNode(connections[i].name);
-		        if ((connections[i].friend_code != "undefined") || (connections[i].friend_code != undefined)) {
-			        if (!this.friend_codes[connections[i].friend_code]) {
-			            this.friend_codes[connections[i].friend_code] = {};
-			            this.friend_codes[connections[i].friend_code].list = [];
-			            this.friend_codes[connections[i].friend_code].color = 
-				        this.color_scheme[this.friend_codes_counter++];
-			        }
-                        
-			        this.friend_codes[connections[i].friend_code].list.push(idItem);
+      if (allUnchecked) {
+         for (var i = 0; i < fcList.length; i++) {
+           var currentElement = fcList[i];
+           currentElement.style.backgroundColor = null;
+         }
+      }
+    }
+  }
 
-			        liItem.setAttribute("onclick", "javascript:{wiringInterface._changeChannel('"+ idItem +"', '"+ object.id +"', '"+ connections[i].name +"', '"+ connections[i].aspect +"', '"+ connections[i].friend_code +"');}");
-			        liItem.setAttribute("onmouseover", "javascript:wiringInterface._highlight_friend_code('"+ connections[i].friend_code +"', true);");
-			        liItem.setAttribute("onmouseout", "javascript:wiringInterface._highlight_friend_code('"+ connections[i].friend_code +"', false);");
-			
-		        }    
-		        
-		        labelItem.appendChild(textNodeItem);
-		        divItem.appendChild(labelItem);
-		        liItem.appendChild(divItem);
-		        liItem.setAttribute("id", idItem);
+  WiringInterface.prototype._highlight_friend_code = function (friend_code, highlight) {
+    if (!this.enabled && highlight)
+      return; // Don't highligh if the interface is disabled
 
-		        if (connections[i].aspect == "EVEN") {
-        			ulEvents.appendChild(liItem);
-		        } else if (connections[i].aspect == "SLOT") {
-	        		ulSlots.appendChild(liItem);
-		        }
-		    }
-	    }
+    if (!this.friend_codes[friend_code]) {
+      // Error
+      return;
+    }
 
-	    var li = document.createElement("li");
-	    li.id = "events_list_gadget_"+ object.id;
+    var fcList = this.friend_codes[friend_code].list;
+    var fcColor = this.friend_codes[friend_code].color;
+    var fcBgColor = "";
 
-	    var textNode = document.createTextNode(object.name+ " [" +object.id+ "]");
-	    li.setAttribute("onclick", "javascript:{wiringInterface._toggle('EVEN', '"+ object.id +"');}");
-	    li.appendChild(textNode);
+    for (var i = 0; i < fcList.length; i++) {
+      if (fcElement = fcList[i]) {
+        if (highlight) {
+          fcElement.style.backgroundColor = fcColor;
+        } else {
+          fcElement.style.backgroundColor = fcBgColor;
+        }
+        fcElement.parentNode.parentNode.removeClassName("folded");
+      }
+    }
+  }
 
-	    if (ulEvents.childNodes.length > 0) {
-			li.appendChild(ulEvents);
-			this.events_list.appendChild(li);
-	    }
+  WiringInterface.prototype._uncheckChannel = function (channel) {
+    channel.uncheck();
+//    connectables = channel.getConnectables();
+//    for (var i = 0; i < connectables.lenght; ++i) {
+//      connectables[i].uncheck();
+//    }
+  }
 
-	    var li = document.createElement("li");
-	    li.setAttribute("onclick", "javascript:{wiringInterface._toggle('SLOT', '"+ object.id +"');}");
+  WiringInterface.prototype._highlightChannel = function (channel) {
+    channel.check();
+//	    channels = this.wiring.connections(channel_name);
+//	    
+//	    if (channels) {
+//		    channel_list = channels["input"].concat(channels["output"]);
+//		    for(var i = 0; i < channel_list.length; i++) {
+//		        var chk_gadget_id = "chk_gadget_"+ channel_list[i].id +"_"+ channel_list[i].name;
+//		        $(chk_gadget_id).descendantOf(this.wiringLayerName).checked = true;
+//		        $("div_gadget_"+ channel_list[i].id +"_"+ channel_list[i].name).descendantOf(this.wiringLayerName).style.backgroundColor = this.highlight_color;
+//		        $("lbl_"+ chk_gadget_id).descendantOf(this.wiringLayerName).style.fontWeight = "bold";
+//		    }
+//	    }
 
-	    var textNode = document.createTextNode(object.name+ " [" +object.id+ "]");
-	    li.id = "slots_list_gadget_"+ object.id;
-	    li.appendChild(textNode);
-    
-	    if (ulSlots.childNodes.length > 0) {    
-			li.appendChild(ulSlots);
-			this.slots_list.appendChild(li);
-	    }
-	}
+  }
 
-	WiringInterface.prototype.renewInterface = function () {
-	    this.unloaded();
-	    this.wiring.edition();
-	    
-	    var iGadgets = this.wiring.getGadgetsId();
-	    var channels = this.wiring.getInOutsId();
-	    
-	    for (var i = 0; i<iGadgets.length; i++){
-	    	this.addGadgetInterface(iGadgets[i]);
-	    }
-	    
-	    for (var j = 0; j<channels.length; j++){
-	    	this.addChannelInterface(channels[j])
-	    }
-	    
-	    //this.addChannelsAsGadgetInterface(channels)
-	    this.channels_counter = channels.length + 1;
-	    
-	    this.channel_name.value = this.wire_word + this.channels_counter;
-	    
-	    while(channels.include(this.channel_name.value)) {
-			this.channels_counter++;
-			this.channel_name.value = this.wire_word + this.channels_counter;
-	    }    
-	}
-	
-	WiringInterface.prototype.addChannel = function () {
-	    var result = null;
-	    var name = this.channel_name.value;
-	    
-	    while(this.wiring.getInOutsId().include(this.channel_name.value)) {
-			this.channels_counter++;
-			this.channel_name.value = this.wire_word + this.channels_counter;
-	    }
-	    
-	    name = name.strip();
-	    
-	    if (!name.empty()) {
-			if (!(result = this.wiring.createChannel(name))){	
-			    this.addChannelInterface(name);
-			    this.channels_counter++;
-			    this.channel_name.value = this.wire_word + this.channels_counter;
-			    
-			    this.modified=true;
-			}
-	    }
-	}
-	
-	WiringInterface.prototype.changeConnectionStatus = function (checkbox_element, iGadgetId, connectableName, typeOfConnectable){
-	    var channelName = this.last_checked;
-	    
-	    if (checkbox_element.checked == true) {
-	    	this.addConnection(channelName, iGadgetId, connectableName, typeOfConnectable);
-	    }
-	    
-	    // Delete connection
-	    this.deleteConnection(channelName, iGadgetId, connectableName, typeOfConnectable);
-	}
-	
+  WiringInterface.prototype._setEnableStatus = function(enabled) {
+    if (this.enabled == enabled)
+      return; // Nothing to do
 
-	WiringInterface.prototype.addConnection = function (channelName, iGadgetId, connectableName, typeOfConnectable){
-	    this.modified=true;
-	    
-	    if (typeOfConnectable == 'EVEN') {
-			this.wiring.addChannelInput(iGadgetId, connectableName, channelName);
-			return;
-	    }
-	    
-	    if (typeOfConnectable == 'SLOT') {
-			this.wiring.addChannelOutput(iGadgetId, connectableName, channelName);
-			return;
-	    }
-	}
+    // TODO
+    this.enabled = enabled;
+  }
 
-	WiringInterface.prototype.deleteConnection = function (channelName, iGadgetId, connectableName, typeOfConnectable){
-	    this.modified=true;
-	    
-	    if (typeOfConnectable == 'EVEN') {
-			this.wiring.removeChannelInput(iGadgetId, connectableName, channelName);
-			return;
-	    }
-	    
-	    if (typeOfConnectable == 'SLOT') {
-			this.wiring.removeChannelOutput(iGadgetId, connectableName, channelName);
-			return;
-	    }
-	}
-	
-	WiringInterface.prototype.deleteChannel = function (object){
-	    var result = null;
-    
-	    if (!(result = this.wiring.removeChannel(object))){
-			var idChannel = "channel_"+ object;
-			
-			$(idChannel).descendantOf(this.wiringLayerName).remove();
-			this._enable_all(false);
-			this.channels_counter--;
-	    }
-	    
-	    this.modified=true;
-	}
-	
-	WiringInterface.prototype._changeChannel = function(item_id, gadget_id, event_name, aspect, friend_code) {
-	    var channel_name = this.last_checked;
-	    var chk_id = "chk_"+ item_id;
-	    
-	    var chk_element = $(chk_id).descendantOf(this.wiringLayerName);
-	    
-	    if (chk_element.getAttribute("disabled") != "disabled") {
-			var div_chk_element = $("div_"+ item_id).descendantOf(this.wiringLayerName);
-			var label_chk_element = $("lbl_"+ chk_id).descendantOf(this.wiringLayerName);
-			
-			if (chk_element.checked) {				
-			    div_chk_element.style.backgroundColor = this.highlight_color;
-			    label_chk_element.style.fontWeight = "bold";
-			    
-			    if (aspect == "EVEN") {
-			    	this.wiring.addChannelInput(gadget_id, event_name, channel_name);
-			    } else {
-			    	this.wiring.addChannelOutput(gadget_id, event_name, channel_name);
-			    }
-			} else {
-				div_chk_element.style.backgroundColor = "";
-				label_chk_element.style.fontWeight = "normal";
-			    
-			    if (aspect == "EVEN") {
-			    	this.wiring.removeChannelInput(gadget_id, event_name, channel_name);
-			    } else {
-			    	this.wiring.removeChannelOutput(gadget_id, event_name, channel_name);
-			    }    
-			}
-	    }
-	}
-	
-	WiringInterface.prototype._toggle = function (aspect, id) {
-	    if (aspect == "EVEN") {
-	    	list = $("events_list_gadget_"+ id).descendantOf(this.wiringLayerName);
-	    } else {
-	    	list = $("slots_list_gadget_"+ id).descendantOf(this.wiringLayerName);
-	    }
-	    
-	    if (list.className == "off") {
-	    	list.className = "on";
-	    } else {
-	    	list.className = "off";
-	    }
-	}
-
-	WiringInterface.prototype._highlight = function (chk_id, friend_code) {
-	    if (this.friend_codes[friend_code]) {
-			var fcList = this.friend_codes[friend_code].list;
-			var fcColor = this.friend_codes[friend_code].color;
-			
-			if ($(chk_id).descendantOf(this.wiringLayerName).checked) {
-			    for (var i = 0; i < fcList.length; i++) {
-			    	$(fcList[i]).descendantOf(this.wiringLayerName).style.backgroundColor = fcColor;
-			    }
-			} else {
-			    var allUnchecked = true;
-			    for (var i = 0; i < fcList.length; i++) {
-			    	allUnchecked &= !$("chk_"+ fcList[i]).descendantOf(this.wiringLayerName).checked;
-			    }
-			    
-			    if (allUnchecked) {
-			    	for (var i = 0; i < fcList.length; i++) {
-			    		$(fcList[i]).descendantOf(this.wiringLayerName).style.backgroundColor = null;
-			    	}
-			    }
-			}
-	    }
-	}
-
-	WiringInterface.prototype._highlight_friend_code = function (friend_code, highlight) {
-	    if (this.friend_codes[friend_code]) {
-		    var fcList = this.friend_codes[friend_code].list;
-		    var fcColor = this.friend_codes[friend_code].color;
-		    var fcBgColor = "";
-		
-		    for (var i = 0; i < fcList.length; i++) {
-		        if (fcElement = $(fcList[i])) {
-		            if (highlight) {
-			            fcElement.style.backgroundColor = fcColor;
-		            } else {
-			            fcElement.style.backgroundColor = fcBgColor;            
-		            }
-		            fcElement.parentNode.parentNode.className = "on";
-                }
-		    }
-	    }
-	}
-	
-	WiringInterface.prototype._highlight_channel = function (chk_id, channel_name) {
-	    this._enable_all();
-	    
-	    if (this.last_checked && $("channel_"+ this.last_checked).descendantOf(this.wiringLayerName)) {
-		    $("channel_"+ this.last_checked).descendantOf(this.wiringLayerName).style.backgroundColor = "";
-		    channels = this.wiring.connections(this.last_checked);
-		    if (channels) {
-		        channel_list = channels["input"].concat(channels["output"]);
-		        for(var i = 0; i < channel_list.length; i++) {
-			        var chk_gadget_id = "chk_gadget_"+ channel_list[i].id +"_"+ channel_list[i].name;
-			        $(chk_gadget_id).descendantOf(this.wiringLayerName).checked = false;
-			        $("div_gadget_"+ channel_list[i].id +"_"+ channel_list[i].name).descendantOf(this.wiringLayerName).style.backgroundColor = "";
-			        $("lbl_"+ chk_gadget_id).descendantOf(this.wiringLayerName).style.fontWeight = "normal";
-		        }
-		    }
-	    }
-	    
-	    $("channel_"+ channel_name).style.backgroundColor = this.highlight_color;
-	    channels = this.wiring.connections(channel_name);
-	    
-	    if (channels) {
-		    channel_list = channels["input"].concat(channels["output"]);
-		    for(var i = 0; i < channel_list.length; i++) {
-		        var chk_gadget_id = "chk_gadget_"+ channel_list[i].id +"_"+ channel_list[i].name;
-		        $(chk_gadget_id).descendantOf(this.wiringLayerName).checked = true;
-		        $("div_gadget_"+ channel_list[i].id +"_"+ channel_list[i].name).descendantOf(this.wiringLayerName).style.backgroundColor = this.highlight_color;
-		        $("lbl_"+ chk_gadget_id).descendantOf(this.wiringLayerName).style.fontWeight = "bold";
-		    }
-	    }
-
-	    this.last_checked = channel_name;
-	}
-
-	WiringInterface.prototype._enable_all = function(enabled) {
-	    var iGadgets = this.wiring.getGadgetsId();
-	    for (var i = 0; i<iGadgets.length; i++){
-		var connections = this.wiring.gadgetConnections(iGadgets[i].id);
-		
-		for (var j = 0; j < connections.length; j++) {
-		    var idItem = "gadget_"+ iGadgets[i].id +"_"+ connections[j].name; 
-		    
-		    if ((enabled == null) || (enabled)) {
-		    	$("chk_"+ idItem).descendantOf(this.wiringLayerName).removeAttribute("disabled");
-		    } else {
-		    	$("chk_"+ idItem).descendantOf(this.wiringLayerName).setAttribute("disabled", "disabled");
-		    }
-		    
-		    $(idItem).descendantOf(this.wiringLayerName).style.backgroundColor = "";
-		    $("div_"+ idItem).descendantOf(this.wiringLayerName).style.backgroundColor = "";
-		    $("chk_"+ idItem).descendantOf(this.wiringLayerName).checked = false;
-		    $("lbl_chk_"+ idItem).descendantOf(this.wiringLayerName).style.fontWeight = "normal";
-		}
-	    }
-	    
-	    if (this.last_checked && $("channel_"+ this.last_checked)) {
-	    	$("channel_"+ this.last_checked).descendantOf(this.wiringLayerName).style.backgroundColor = "";
-	    }
-	    
-	    this.disabled_all = false;
-	}
-    	
-	// ***********************************
+    // ***********************************
     //  COLOR SCHEME FOR HIGHLIGTHS
     //  More colors in color_scheme.js file but now it's not used!
     //  Too many colors at that file, it's has been optimized!
@@ -577,5 +501,132 @@ function WiringInterface(wiringDivName, wiring) {
     this.color_scheme.push("#91ffba");
 
 }
-	
 
+/**********
+ *
+ **********/
+function ChannelInterface(channel) {
+  if (channel instanceof wChannel) {
+    // Existant channel
+    this.channel = channel;
+    this.name = channel.getName();
+    this.inputs = channel.inputs;
+    this.outpus = channel.outputs;
+  } else {
+    // New channel
+    this.channel = null;
+    this.name = channel;
+  }
+
+  this.inputsForAdding = new Hash();
+  this.inputsForRemoving = new Hash();
+  this.outputsForAdding = new Hash();
+  this.outputsForRemoving = new Hash();
+
+  // Draw the interface
+}
+
+//ChannelInterface.prototype.setName = function(newName) {
+//  this.name = newName;
+//}
+
+
+ChannelInterface.prototype.getName = function() {
+  return this.name;
+}
+
+ChannelInterface.prototype.getValue = function() {
+  if (this.channel) {
+    return this.channel.getValue();
+  } else {
+    return gettext("undefined"); // TODO
+  }
+}
+
+ChannelInterface.prototype.commitChanges = function(wiring) {
+  var changes = [];
+  var keys, i;
+
+  if (this.channel == null) {
+    // The channel don't exists
+    this.channel = wiring.createChannel(this.name);
+  }
+
+  // Inputs for removing
+  keys = this.inputsForRemoving.keys();
+  for (i = 0; i < keys.length; i++) {
+    this.inputsForRemoving[keys[i]].disconnect(this.channel);
+  }
+
+  // Outputs for removing
+  keys = this.outputsForRemoving.keys();
+  for (i = 0; i < keys.length; i++) {
+    this.channel.disconnect(this.outputsForRemoving[keys[i]]);
+  }
+
+  // Outputs for adding
+  keys = this.outputsForAdding.keys();
+  for (i = 0; i < keys.length; i++) {
+    this.channel.connect(outputsForAdding[keys[i]]);
+  }
+
+  // Inputs for adding
+  keys = this.inputsForAdding.keys();
+  for (i = 0; i < keys.length; i++) {
+    this.inputsForAdding[keys[i]].connect(this.channel);
+  }
+
+  return changes;
+}
+
+ChannelInterface.prototype.exists = function() {
+  return this.channel != null;
+}
+
+ChannelInterface.prototype.check = function() {
+  this.interface.addClassName("selected");
+}
+
+ChannelInterface.prototype.uncheck = function() {
+  this.interface.removeClassName("selected");
+}
+
+ChannelInterface.prototype.assignInterface = function(interface) {
+  this.interface = interface;
+}
+
+ChannelInterface.prototype.getInterface = function() {
+  return this.interface;
+}
+
+ChannelInterface.prototype.connectInput = function(wIn) {
+  if (this.channel.inputs[wIn.getQualifiedName()] != undefined) {
+    delete this.inputsForRemoving[wIn.getName()];
+  } else {
+    this.inputsForAdding[wIn.getName()] = wIn;
+  }
+}
+
+ChannelInterface.prototype.disconnectInput = function(wIn) {
+  if (this.channel.inputs[wIn.getQualifiedName()] != undefined) {
+    delete this.inputsForRemoving[wIn.getName()];
+  } else {
+    this.inputsForAdding[wIn.getName()] = wIn;
+  }
+}
+
+ChannelInterface.prototype.connectOutput = function(wOut) {
+  if (this.channel.outputs[wOut.getName()] != undefined) {
+    delete this.outputsForRemoving[wOut.getName()];
+  } else {
+    this.inputsForAdding[wOut.getQualifiedName()] = wIn;
+  }
+}
+
+ChannelInterface.prototype.disconnectOutput = function(wOut) {
+  if (this.channel.inputs[wIn.getQualifiedName()] != undefined) {
+    delete this.inputsForRemoving[wIn.getName()];
+  } else {
+    this.inputsForAdding[wIn.getName()] = wIn;
+  }
+}

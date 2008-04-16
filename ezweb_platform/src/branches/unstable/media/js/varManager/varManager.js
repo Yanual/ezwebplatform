@@ -42,6 +42,7 @@ function VarManager (workSpaceInfo) {
 	// PUBLIC METHODS 
 	// ****************
 	
+
 	VarManager.prototype.parseVariables = function (workSpaceInfo) {	
 		// Igadget variables!
 		var tabs = workSpaceInfo['workspace']['tabList'];
@@ -58,10 +59,9 @@ function VarManager (workSpaceInfo) {
 		var inouts = workSpaceInfo['workspace']['inoutList'];
 				
 		this.parseWorkspaceVariables(inouts);
-		
-		loaded = true;
-	}	
+	}
 	
+
 	VarManager.prototype.parseWorkspaceVariables = function (inouts) {
 		var objVars = []
 		for (var i = 0; i<inouts.length; i++) {
@@ -79,10 +79,10 @@ function VarManager (workSpaceInfo) {
 		}		
 	}
 	
-	VarManager.prototype.parseIGadgetVariables = function (igadget) {		
+	VarManager.prototype.parseIGadgetVariables = function (igadget) {
 		var igadgetVars = igadget['variables'];
 		var objVars = []
-		for (i = 0; i<igadgetVars.length; i++) {
+		for (var i = 0; i<igadgetVars.length; i++) {
 			var id = igadgetVars[i].id;
 			var igadgetId = igadgetVars[i].igadgetId;
 			var name = igadgetVars[i].name;
@@ -96,7 +96,7 @@ function VarManager (workSpaceInfo) {
 					variables[id] = objVars[name];
 					break;
 				case Variable.prototype.EXTERNAL_CONTEXT:
-				case Variable.prototype.GADGET_CONTEXT:						
+				case Variable.prototype.GADGET_CONTEXT:
 				case Variable.prototype.SLOT:
 				case Variable.prototype.USER_PREF:
 					objVars[name] = new RVariable(id, igadgetId, name, aspect, this, value);
@@ -110,36 +110,24 @@ function VarManager (workSpaceInfo) {
 	}
 	
 	VarManager.prototype.writeSlot = function (iGadgetId, slotName, value) {
-		if (! loaded)
-			return;
-		
 		var variable = findVariable(iGadgetId, slotName);
 		
 		variable.set(value);
 	} 
 
 	VarManager.prototype.updateUserPref = function (iGadgetId, slotName, value) {
-		if (! loaded)
-			return;
-		
 		var variable = findVariable(iGadgetId, slotName);
 		
 		variable.set(value);
 	} 
 	
 	VarManager.prototype.updateContextVar = function (iGadgetId, ctxVarName, value) {
-		if (! loaded)
-			return;
-		
 		var variable = findVariable(iGadgetId, ctxVarName);
 		
 		variable.set(value);
 	}  
 	
 	VarManager.prototype.registerVariable = function (iGadgetId, variableName, handler) {
-		if (! loaded)
-			return;
-			
 		var variable = findVariable(iGadgetId, variableName);
 
 		if (variable) {
@@ -151,10 +139,12 @@ function VarManager (workSpaceInfo) {
 		}
 	}
 	
+	VarManager.prototype.assignEventConnectable = function (iGadgetId, variableName, wEvent) {
+		var variable = findVariable(iGadgetId, variableName);
+		variable.assignEvent(wEvent);
+	}
+	
 	VarManager.prototype.getVariable = function (iGadgetId, variableName) {
-		if (! loaded)
-			return;
-			
 		var variable = findVariable(iGadgetId, variableName);
 		
 		// Error control
@@ -163,30 +153,30 @@ function VarManager (workSpaceInfo) {
 	}
 	
 	VarManager.prototype.setVariable = function (iGadgetId, variableName, value) {
-		if (! loaded)
-			return;
-			
-		if (wiring == null)
-			wiring = WiringFactory.getInstance();
-		
 		var variable = findVariable(iGadgetId, variableName);
 		
-		return variable.set(value, wiring);
+		variable.set(value);
 	}
 
-	VarManager.prototype.addInstance = function (iGadget, template) {
-		if (! loaded)
-			return;
+	VarManager.prototype.addInstance = function (iGadget, igadgetInfo) {
+		var templateVariables = igadget.getGadget().getTemplate().getVariables(iGadget.id);
+		var variableInfo = igadgetInfo['variableList'];
 
-		var templateVariables = template.getVariables(iGadget.id);
+		for (var templateVariable in templateVariables) {
+			var name = templateVariable.name;
+			
+			for (var variableNameIdMapping in variableInfo) {
+			      	if (name == variableNameIdMapping.name) {
+			        	templateVariable.id = variableNameIdMapping.id;
+					break;
+				}
+			}
+		}
 		
 		iGadgets[iGadget.id] = templateVariables;
 	}
 	
 	VarManager.prototype.removeInstance = function (iGadgetId) {
-		if (! loaded)
-		    return;
-
 		delete iGadgets[iGadgetId];
 	}
 
@@ -195,8 +185,19 @@ function VarManager (workSpaceInfo) {
 		function onSuccess(transport) {
 			//varManager.resetModifiedVariables(); Race Condition
 		}
-		function onError(transport) {
-			alert (transport.responseText);
+
+		function onError(transport, e) {
+			var msg;
+			if (e) {
+				msg = interpolate(gettext("JavaScript exception on file %(errorFile)s (line: %(errorLine)s): %(errorDesc)s"),
+				                  {errorFile: e.fileName, errorLine: e.lineNumber, errorDesc: e},
+				                  true);
+			} else {
+				msg = transport.status + " " + transport.statusText;
+			}
+			msg = interpolate(gettext("Error saving variables to persistence: %(errorMsg)s."),
+			                          {errorMsg: msg}, true);
+			OpManagerFactory.getInstance().log(msg);
 		}
 
 		if (modifiedVars.length > 0) {
@@ -204,19 +205,19 @@ function VarManager (workSpaceInfo) {
 			var param = {variables: Object.toJSON(modifiedVars)};
 
 			persistenceEngine.send_update(URIs.PUT_VARIABLES, param, this, onSuccess, onError);
-			varManager.resetModifiedVariables();
+			this.resetModifiedVariables();
 		}
 	}
 
-	VarManager.prototype.planInterfaceInitialization = function () {
-	    if (loaded == true) {
+/*	VarManager.prototype.planInterfaceInitialization = function () {
+	    if (this.loaded) {
 		try {
 		    setTimeout("VarManagerFactory.getInstance().initializeInterface()", 200);
 		} catch (e) {
 		    alert(e);
 		}
 	    }
-	}
+	}*/
 
 	VarManager.prototype.initializeInterface = function () {
 	    // Calling all SLOT vars handler
@@ -232,7 +233,7 @@ function VarManager (workSpaceInfo) {
 		    variable = vars[varIndex];
 
 		    if (variable.aspect == "SLOT" && variable.handler) {
-			try { 
+			try {
 			    variable.handler(variable.value);
 			} catch (e) {
 			}
@@ -292,8 +293,12 @@ function VarManager (workSpaceInfo) {
 	    modifiedVars = [];
 	}
 	
-	VarManager.prototype.getVariableObject = function (varId) {
+	VarManager.prototype.getVariableById = function (varId) {
 		return variables[varId];
+	}
+	
+	VarManager.prototype.getVariableByName = function (igadgetId, varName) {
+		return findVariable(igadgetId, varName);
 	}
 	
 	// *********************************
@@ -307,10 +312,9 @@ function VarManager (workSpaceInfo) {
 		return variable;
 	}
 
-	var loaded = false;
 	var persistenceEngine = PersistenceEngineFactory.getInstance();
 	var opManager = OpManagerFactory.getInstance();
-	var wiring = null; 
+	var wiring = null;
 	var iGadgets = new Hash();
 	var variables = new Hash();
 	var modifiedVars = [];

@@ -41,7 +41,7 @@
 /**
  * @author aarranz
  */
-function Dragboard(tabInfo, workSpace, dragboardElement) {
+function Dragboard(tab, workSpace, dragboardElement) {
 	// *********************************
 	// PRIVATE VARIABLES
 	// *********************************
@@ -55,7 +55,8 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 	this.dragboardCursor = null;
 	this.gadgetToMove = null;
 	this.iGadgets = new Hash();
-	this.tabId = tabInfo.id;
+	this.tab = tab;
+	this.tabId = tab.tabInfo.id;
 	this.workSpace = workSpace;
 	this.workSpaceId = workSpace.workSpaceState.id;
 
@@ -504,7 +505,6 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 //				this._reserveSpace(this.matrix, igadget);
 		}
 
-		this.paint();
 		this.loaded = true;
 	}
 
@@ -522,6 +522,12 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 
 		// Create the instance
 		var iGadget = new IGadget(gadget, null, this.currentCode, this.dragboardStyle, position, width, height, false, this);
+		this.currentCode++;
+
+		// TODO this can cause problems if errors are raised on the server
+		// Pre-reserve the cells for the gadget instance
+		this._reserveSpace(this.matrix, iGadget);
+
 		iGadget.save();
 	}
 
@@ -733,6 +739,14 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 			this._commitChanges();
 	}
 
+	Dragboard.prototype.getIGadgets = function() {
+		return this.iGadgets.values();
+	}
+
+	Dragboard.prototype.getIGadget = function (iGadgetId) {
+		return this.iGadgets[iGadgetId];
+	}
+
 	// TODO rename this method to something like getGadgetFromIGadget
 	Dragboard.prototype.getGadget = function (iGadgetId) {
 		var igadget = this.iGadgets[iGadgetId];
@@ -743,12 +757,19 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 		return this.workSpace;
 	}
 	
-	Dragboard.prototype.addIGadget = function (iGadget) {
+	Dragboard.prototype.addIGadget = function (iGadget, igadgetInfo) {
 		this.iGadgets[iGadget.id] = iGadget;
-		this.currentCode++;
-		// Reserve the cells for the gadget instance
-		this._reserveSpace(this.matrix, iGadget);
-		this.workSpace.addIGadget(iGadget);
+
+		if (iGadget.position == null) {
+			// Search a position for the gadget
+			// TODO height +2 for the menu
+			var position = this._searchFreeSpace(width, height + 2);
+
+			// Reserve the cells for the gadget instance
+			this._reserveSpace(this.matrix, iGadget);
+		}
+
+		this.workSpace.addIGadget(this.tab, iGadget, igadgetInfo);
 	}
 	
 	// *******************
@@ -759,7 +780,7 @@ function Dragboard(tabInfo, workSpace, dragboardElement) {
 
 	this._clearMatrix();
 
-	this.parseTab(tabInfo);
+	this.parseTab(tab.tabInfo);
 }
 
 /////////////////////////////////////
@@ -1258,8 +1279,9 @@ IGadget.prototype.saveConfig = function() {
 
 IGadget.prototype.save = function() {
 	function onSuccess(transport) {
-		this.id = transport.responseText;
-		this.dragboard.addIGadget(this);
+		var igadgetInfo = eval ('(' + transport.responseText + ')');
+		this.id = igadgetInfo['igadget']['id'];
+		this.dragboard.addIGadget(this, igadgetInfo);
 	}
 
 	function onError(transport, e) {

@@ -54,7 +54,7 @@ var OpManagerFactory = function () {
 			this.showCaseLink = $('catalogue_link');
 			this.showCase = $('showcase_container');
 			
-			this.logsConsole = $('logs_container');
+			this.logsConsole = $('logs_console');
 			this.logsLink = $('logs_link');
 			
 			this.wiringLink = $('wiring_link');
@@ -65,7 +65,7 @@ var OpManagerFactory = function () {
 
 			var workSpaces = workSpacesStructure.workspaces;
 
-			for (i=0; i<workSpaces.length; i++) {
+			for (var i = 0; i<workSpaces.length; i++) {
 			    var workSpace = workSpaces[i];
 			    
 			    this.workSpaceInstances[workSpace.name] = new WorkSpace(workSpace);
@@ -131,8 +131,8 @@ var OpManagerFactory = function () {
 			this.showCaseLink.className = 'toolbar_unmarked';
 			this.wiringLink.className = 'toolbar_unmarked';
 			this.logsLink.className = 'toolbar_unmarked';
-			this.showCase.setStyle({'zIndex': 1});
-			this.logsConsole.setStyle({'zIndex': 1});
+			this.showCase.setStyle({'zIndex': 1, 'visibility' : 'hidden'});
+			this.logsConsole.setStyle({'zIndex': 1, 'visibility' : 'hidden'});
 		}
 		
 		OpManager.prototype.show_wiring = function () {
@@ -145,7 +145,7 @@ var OpManagerFactory = function () {
 			this.activeWorkSpace.hide();
 		
 			this.showCaseLink.className = 'toolbar_marked';
-			this.showCase.setStyle({'zIndex': 2, 'display': 'block'});
+			this.showCase.setStyle({'zIndex': 2, 'visibility': 'visible'});
 			
 			if (UIUtils.isInfoResourcesOpen) {
 				UIUtils.isInfoResourcesOpen = false;
@@ -163,7 +163,8 @@ var OpManagerFactory = function () {
 		
 		OpManager.prototype.show_logs = function () {
 			this.unMarkGlobalTabs();
-			this.logsConsole.setStyle({'zIndex': 2, 'display': 'block'});
+			this.activeWorkSpace.hide();
+			this.logsConsole.setStyle({'zIndex': 2, 'visibility': 'visible'});
 		}
 		
 		OpManager.prototype.changeActiveWorkSpace = function (workSpace) {
@@ -180,6 +181,7 @@ var OpManagerFactory = function () {
 			this.unMarkGlobalTabs();
 		    this.activeWorkSpace.setTab(tabName);
 		    this.activeDragboard = this.activeWorkSpace.getVisibleTab().getDragboard();
+		    
 		}
 
 		OpManager.prototype.addInstance = function (gadgetId) {
@@ -218,10 +220,6 @@ var OpManagerFactory = function () {
 		
 		OpManager.prototype.sendEvent = function (gadget, event, value) {
 		    this.activeWiring.sendEvent(gadget, event, value);
-		}
-
-		OpManager.prototype.restaure = function () {
-		    this.activeWiring.restaure();
 		}
 
 		OpManager.prototype.loadEnviroment = function () {
@@ -297,7 +295,7 @@ var OpManagerFactory = function () {
 //				$("logs_tab").className="tab";
 //			}
 			
-			label = ngettext("%(errorCount)s error", "%(errorCount)s errors", this.errorCount);
+			label = ngettext("%(errorCount)s error", "%(errorCount)s errors", ++this.errorCount);
 			label = interpolate(label, {errorCount: this.errorCount}, true);
 			this.logsLink.innerHTML = label;
 
@@ -344,7 +342,7 @@ var OpManagerFactory = function () {
 			  msg = msg.substring(index + 1);
 			}
 			logentry.appendChild(document.createTextNode(msg));
-			$("logs_console").appendChild(logentry);
+			this.logsConsole.appendChild(logentry);
 		}
 	}
 	

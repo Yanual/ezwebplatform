@@ -199,7 +199,7 @@ function Template(template_) {
 		var objVars = [];
 		var rawVars = variableList;
 		var rawVar = null;
-		for (i = 0; i<rawVars.length; i++) {
+		for (var i = 0; i<rawVars.length; i++) {
 			rawVar = rawVars[i];
 			if (rawVar.aspect == Variable.prototype.EVENT)
 			{
@@ -217,7 +217,7 @@ function Template(template_) {
 		var objVars = [];
 		var rawVars = variableList;
 		var rawVar = null;
-		for (i = 0; i<rawVars.length; i++) {
+		for (var i = 0; i<rawVars.length; i++) {
 			rawVar = rawVars[i];
 			if (rawVar.aspect == Variable.prototype.SLOT)
 			{
