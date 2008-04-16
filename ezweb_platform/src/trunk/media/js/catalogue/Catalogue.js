@@ -333,6 +333,12 @@ var CatalogueFactory  = function () {
 									case "slot":
 										header=gettext('Search by Slot') + ': ';
 										break;
+									case "connectSlot":
+										header=gettext('Search by Slot connectivity') + ': ';
+										break;
+									case "connectEvent":
+										header=gettext('Search by Event connectivity') + ': ';
+										break;
 								}
 								var searching='';
 								switch(auxiliar[i+2]){
@@ -400,6 +406,8 @@ var CatalogueFactory  = function () {
 									case "tag":
 									case "event":
 									case "slot":
+									case "connectEvent":
+									case "connectSlot":
 										var auxiliar_or=UIUtils.splitString(auxiliar[i+3]);
 										for (var j=0;j<auxiliar_or.length;j++){
 											if(j==auxiliar_or.length-1){
