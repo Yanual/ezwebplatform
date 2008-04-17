@@ -90,11 +90,25 @@ class Proxy(Resource):
             else:
                 conn = httplib.HTTPConnection(host)
                 
-            # Add original request Headers to the request
+            # Adds original request Headers to the request (and modifies Content-Type for Servlets)
             headers = {}
+            has_content_type = False
+            http_content_type_value = ''
             for header in request.META.items():
+                if (header[0].lower() == 'content-type'):
+                    has_content_type = True
+                if (header[0].lower() == 'http_content_type'):
+                    http_content_type_value = header[1]
                 headers[header[0]] = header[1]
+                    
                 
+            # Add Content-Type (Servlets bug)
+            if ((method == 'POST' or method == 'PUT') and not has_content_type):
+                if (http_content_type_value != ''):
+                    headers['Content-Type'] = http_content_type_value
+                else:
+                    headers['Content-Type'] = 'application/x-www-form-urlencoded'
+            
             # The same with cookies
             cookies = ''
             for cookie in request.COOKIES.items():
