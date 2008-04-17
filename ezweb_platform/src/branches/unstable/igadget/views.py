@@ -76,10 +76,14 @@ def SaveIGadget(igadget, user, tab):
         # Creates the new IGadget
         gadget = Gadget.objects.get(uri=gadget_uri, user=user)
 
-        new_igadget = IGadget(code=igadget_code ,gadget=gadget, tab=tab, position=position)
+        new_igadget = IGadget(code=igadget_code, gadget=gadget, tab=tab, position=position)
         new_igadget.save()
+        ids = {}
+        ids['igadget'] = {}
+        ids['igadget']['id'] = unicode(new_igadget.pk)
 
         # Creates all IGadgte's variables
+        ids['variableList'] = []
         variableDefs = VariableDef.objects.filter(template=gadget.template)
         for varDef in variableDefs:
             # Sets the default value of variable
@@ -91,7 +95,13 @@ def SaveIGadget(igadget, user, tab):
             var = Variable (vardef=varDef, igadget=new_igadget, value=var_value)
             var.save()
             
-        return new_igadget;
+            # Add variable id to the variableList
+            varId = {}
+            varId['name'] = varDef.name
+            varId['id'] = var.id
+            ids['variableList'].append(varId)
+            
+        return ids;
 
     except Gadget.DoesNotExist:
         raise Gadget.DoesNotExist(_('referred gadget %(gadget_uri)s does not exist.') % {'gadget_uri': gadget_uri})
@@ -167,8 +177,8 @@ class IGadgetCollection(Resource):
             received_json = request.POST['igadget']
             igadget = eval(received_json)
             tab = Tab.objects.get(workspace__user=user, workspace__pk=workspace_id, pk=tab_id) 
-            new_igadget = SaveIGadget(igadget, user, tab)
-            return HttpResponse(str(new_igadget.pk))
+            ids = SaveIGadget(igadget, user, tab)
+            return HttpResponse(json_encode(ids), mimetype='application/json; charset=UTF-8')
         except WorkSpace.DoesNotExist:
             msg = _('refered workspace %(workspace_id)s does not exist.')
             log(msg, request)

@@ -159,15 +159,16 @@ function VarManager (workSpaceInfo) {
 	}
 
 	VarManager.prototype.addInstance = function (iGadget, igadgetInfo) {
-		var templateVariables = igadget.getGadget().getTemplate().getVariables(iGadget.id);
+		var templateVariables = iGadget.getGadget().getTemplate().getVariables(iGadget.id);
 		var variableInfo = igadgetInfo['variableList'];
 
-		for (var templateVariable in templateVariables) {
-			var name = templateVariable.name;
+		for (var templateVariableName in templateVariables) {
+		        var templateVar = templateVariables[templateVariableName];
+			for (var i in variableInfo) {
+				var currentVar = variableInfo[i];
 			
-			for (var variableNameIdMapping in variableInfo) {
-			      	if (name == variableNameIdMapping.name) {
-			        	templateVariable.id = variableNameIdMapping.id;
+				if (templateVariableName == currentVar.name) {
+					templateVar.id = currentVar.id;
 					break;
 				}
 			}
