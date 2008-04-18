@@ -1095,15 +1095,18 @@ IGadget.prototype._setDefaultPrefsInInterface = function() {
  */
 IGadget.prototype.setDefaultPrefs = function() {
 	var prefs = this.gadget.getTemplate().getUserPrefs();
+	var varManager = this.dragboard.workSpace.getVarManager();
 
-	for (var i = 0; i < prefs.length; i++)
-		prefs[i].setToDefault(this.id);
+	for (var i = 0; i < prefs.length; i++) {
+		prefs[i].setToDefault(varManager, this.id);
+	}
 
 	if (this.configurationVisible)
 		this._setDefaultPrefsInInterface();
 }
 
 IGadget.prototype._makeConfigureInterface = function() {
+	var varManager = this.dragboard.workSpace.getVarManager();
 	var prefs = this.gadget.getTemplate().getUserPrefs();
 
 	var interfaceDiv = document.createElement("div");
@@ -1128,7 +1131,7 @@ IGadget.prototype._makeConfigureInterface = function() {
 
 		// Settings control
 		cell = document.createElement("td");
-		curPrefInterface = prefs[i].makeInterface(this.id);
+		curPrefInterface = prefs[i].makeInterface(varManager, this.id);
 		this.prefElements[i] = curPrefInterface;
 		cell.appendChild(curPrefInterface);
 		row.appendChild(cell);
@@ -1153,7 +1156,7 @@ IGadget.prototype._makeConfigureInterface = function() {
 	button.setAttribute("type", "button");
 	button.setAttribute("value", gettext("Save"));
 	button.addEventListener("click",
-	                        function () {DragboardFactory.getInstance().saveConfig(this.id)}.bind(this),
+	                        function () {this.dragboard.saveConfig(this.id)}.bind(this),
 	                        true);
 	buttons.appendChild(button);
 
@@ -1162,7 +1165,7 @@ IGadget.prototype._makeConfigureInterface = function() {
 	button.setAttribute("type", "button");
 	button.setAttribute("value", gettext("Cancel"));
 	button.addEventListener("click",
-	                        function () {DragboardFactory.getInstance().setConfigurationVisible(this.id, false)}.bind(this),
+	                        function () {this.dragboard.setConfigurationVisible(this.id, false)}.bind(this),
 	                        true);
 	buttons.appendChild(button);
 	interfaceDiv.appendChild(buttons);
@@ -1246,6 +1249,7 @@ IGadget.prototype.saveConfig = function() {
 	if (this.configurationVisible == false)
 		throw new Error(""); // TODO
 
+	var varManager = this.dragboard.workSpace.getVarManager();
 	var i, curPref, prefElement, validData = true;
 	var prefs = this.gadget.getTemplate().getUserPrefs();
 
@@ -1263,18 +1267,22 @@ IGadget.prototype.saveConfig = function() {
 	if (!validData)
 		throw new Error("Invalid data found"); // Don't save if the data is invalid
 
+	// Start propagation of the new values of the user pref variables
+	varManager.incNestingLevel();
+
 	var oldValue, newValue;
 	for (i = 0; i < prefs.length; i++) {
 		curPref = prefs[i];
 		prefElement = this.configurationElement[curPref.getVarName()];
-		var oldValue = curPref.getCurrentValue(this.id);
+		var oldValue = curPref.getCurrentValue(varManager, this.id);
 		var newValue = curPref.getValueFromInterface(prefElement);
 
 		if (newValue != oldValue)
-			curPref.setValue(this.id, newValue);
+			curPref.setValue(varManager, this.id, newValue);
 	}
 
-	VarManagerFactory.getInstance().commitModifiedVariables();
+	// Commit
+	varManager.decNestingLevel();
 }
 
 IGadget.prototype.save = function() {

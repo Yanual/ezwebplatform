@@ -66,20 +66,20 @@ UserPref.prototype.validate = function (newValue) {
 	return true;
 }
 
-UserPref.prototype.getCurrentValue = function (iGadgetId) {
-	return VarManagerFactory.getInstance().getVariable(iGadgetId, this.varName);
+UserPref.prototype.getCurrentValue = function (varManager, iGadgetId) {
+	var variable = varManager.getVariableByName(iGadgetId, this.varName);
+	return variable.get();
 }
 
-UserPref.prototype.setValue = function (iGadgetId, newValue) {
+UserPref.prototype.setValue = function (varManager, iGadgetId, newValue) {
 	if (this.validate(newValue)) {
-		var varManager = VarManagerFactory.getInstance();
-		varManager.updateUserPref(iGadgetId, this.varName, newValue);
+		var variable = varManager.getVariableByName(iGadgetId, this.varName);
+		variable.set(newValue);
 	}
 }
 
-UserPref.prototype.setToDefault = function (iGadgetId) {
-    var varManager = VarManagerFactory.getInstance();
-	varManager.updateUserPref(iGadgetId, this.varName, this.defaultValue);
+UserPref.prototype.setToDefault = function (varManager, iGadgetId) {
+	this.setValue(varManager, this.defaultValue);
 }
 
 UserPref.prototype.getValueFromInterface = function (element) {
@@ -120,13 +120,13 @@ function ListUserPref(name_, label_, desc_, defaultValue_, ValueOptions_) {
 
 ListUserPref.prototype = new UserPref();
 
-ListUserPref.prototype.makeInterface = function (iGadgetId) {
+ListUserPref.prototype.makeInterface = function (varManager, iGadgetId) {
 	var select;
 
 	select = document.createElement("select");
 	select.setAttribute("name", this.varName);
 
-	var currentValue = this.getCurrentValue(iGadgetId);
+	var currentValue = this.getCurrentValue(varManager, iGadgetId);
 	var output = "";
 	for (var i = 0; i < this.options.length; i++) {
 		output += "<option value=\"" + this.options[i][0] + "\"";
@@ -161,14 +161,14 @@ function IntUserPref(name_, label_, desc_, defaultValue_) {
 
 IntUserPref.prototype = new UserPref();
 
-IntUserPref.prototype.makeInterface = function (IGadgetId) {
+IntUserPref.prototype.makeInterface = function (varManager, IGadgetId) {
 	var element;
 
 	element = document.createElement("input");
 	element.setAttribute("name", this.varName);
 	element.setAttribute("type", "text");
 
-	var currentValue = this.getCurrentValue(IGadgetId);
+	var currentValue = this.getCurrentValue(varManager, IGadgetId);
 	if (currentValue != null)
 		element.setAttribute("value", currentValue);
 
@@ -196,7 +196,7 @@ TextUserPref.prototype.makeInterface = function (IGadgetId) {
 	element.setAttribute("name", this.varName);
 	element.setAttribute("type", "text");
 
-	var currentValue = this.getCurrentValue(IGadgetId);
+	var currentValue = this.getCurrentValue(varManager, IGadgetId);
 	if (currentValue != null)
 		element.setAttribute("value", currentValue);
 
@@ -213,7 +213,7 @@ function DateUserPref(name_, label_, desc_, defaultValue_) {
 
 DateUserPref.prototype = new UserPref();
 
-DateUserPref.prototype.makeInterface = function (IGadgetId) {
+DateUserPref.prototype.makeInterface = function (varManager, IGadgetId) {
 	var element;
 
 	element = document.createElement("input");
@@ -237,14 +237,14 @@ function BoolUserPref(name_, label_, desc_, defaultValue_) {
 
 BoolUserPref.prototype = new UserPref();
 
-BoolUserPref.prototype.makeInterface = function (IGadgetId) {
+BoolUserPref.prototype.makeInterface = function (varManager, IGadgetId) {
 	var element;
 
 	element = document.createElement("input");
 	element.setAttribute("name", this.varName);
 	element.setAttribute("type", "checkbox");
 
-	var currentValue = this.getCurrentValue(IGadgetId);
+	var currentValue = this.getCurrentValue(varManager, IGadgetId);
 	if (currentValue.strip().toLowerCase() == "true")
 		element.setAttribute("checked", "true");
 
