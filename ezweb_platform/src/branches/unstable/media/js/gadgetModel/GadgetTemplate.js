@@ -41,7 +41,7 @@
 //                 TEMPLATE                 //
 //////////////////////////////////////////////
 
-function Template(template_) {
+function GadgetTemplate(template_) {
 
 	// *******************
 	//  PRIVATE VARIABLES
