@@ -76,15 +76,15 @@ function GadgetTemplate(template_) {
 			switch (rawVar.aspect) {
 				case Variable.prototype.PROPERTY:
 				case Variable.prototype.EVENT:
-					objVars[rawVar.name] = new RWVariable(igadget_, rawVar.name, rawVar.aspect, null);
+					objVars[rawVar.name] = new RWVariable(null, igadget_, rawVar.name, rawVar.aspect, null, null);
 					break;
 				case Variable.prototype.EXTERNAL_CONTEXT:
 				case Variable.prototype.GADGET_CONTEXT:
 				case Variable.prototype.SLOT:
-					objVars[rawVar.name] = new RVariable(igadget_, rawVar.name, rawVar.aspect, null);
+					objVars[rawVar.name] = new RVariable(null, igadget_, rawVar.name, rawVar.aspect, null, null);
 					break;
 				case Variable.prototype.USER_PREF:
-					objVars[rawVar.name] = new RVariable(igadget_, rawVar.name, rawVar.aspect, rawVar.default_value);
+					objVars[rawVar.name] = new RVariable(null, igadget_, rawVar.name, rawVar.aspect, rawVar.default_value);
 					break;
 			}
 		}
