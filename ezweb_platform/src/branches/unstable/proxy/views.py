@@ -96,7 +96,8 @@ class Proxy(Resource):
             http_content_type_value = ''
             for header in request.META.items():
                 if (header[0].lower() == 'content-type'):
-                    has_content_type = True
+                    if (header[1] != None and header[1].lower() != 'none'):
+                        has_content_type = True
                 if (header[0].lower() == 'http_content_type'):
                     http_content_type_value = header[1]
                 headers[header[0]] = header[1]
