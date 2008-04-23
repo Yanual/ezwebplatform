@@ -63,11 +63,13 @@ function GadgetTemplate(template_) {
         return height;
     }
 
-    this.getVariables = function (igadget_) {
+    this.getVariables = function (iGadget) {
         
-		// JSON-coded Template-Variables mapping	
-		// Constructing the structure 
-		 
+		// JSON-coded Template-Variables mapping
+		// Constructing the structure
+		var iGadgetId = iGadget.getId();
+		var varManager = iGadget.dragboard.workSpace.getVarManager();
+
 		var objVars = [];
 		var rawVars = variableList;
 		var rawVar = null;
@@ -76,15 +78,15 @@ function GadgetTemplate(template_) {
 			switch (rawVar.aspect) {
 				case Variable.prototype.PROPERTY:
 				case Variable.prototype.EVENT:
-					objVars[rawVar.name] = new RWVariable(null, igadget_, rawVar.name, rawVar.aspect, null, null);
+					objVars[rawVar.name] = new RWVariable(null, iGadgetId, rawVar.name, rawVar.aspect, varManager, null);
 					break;
 				case Variable.prototype.EXTERNAL_CONTEXT:
 				case Variable.prototype.GADGET_CONTEXT:
 				case Variable.prototype.SLOT:
-					objVars[rawVar.name] = new RVariable(null, igadget_, rawVar.name, rawVar.aspect, null, null);
+					objVars[rawVar.name] = new RVariable(null, iGadgetId, rawVar.name, rawVar.aspect, varManager, null);
 					break;
 				case Variable.prototype.USER_PREF:
-					objVars[rawVar.name] = new RVariable(null, igadget_, rawVar.name, rawVar.aspect, rawVar.default_value);
+					objVars[rawVar.name] = new RVariable(null, iGadgetId, rawVar.name, rawVar.aspect, varManager, rawVar.default_value);
 					break;
 			}
 		}

@@ -81,19 +81,19 @@ function wIn(name, type, friendCode) {
 
 wIn.prototype = new wConnectable();
 
-wIn.prototype.connect = function(inout) {
-  //if (!(inout instanceof wInOut))
+wIn.prototype.connect = function(out) {
+  //if (!(out instanceof wInOut))
   //  throw new Exception();
 
-  this.outputs[inout.getName()] = inout;
+  this.outputs[out.getQualifiedName()] = out;
 }
 
-wIn.prototype.disconnect = function(inout) {
-  //if (!(inout instanceof wInOut)) {
+wIn.prototype.disconnect = function(out) {
+  //if (!(out instanceof wInOut)) {
   //  throw new Exception();
 
-  if (this.outputs[inout.getQualifiedName()] == inout)
-    delete this.outputs[inout.getName()];
+  if (this.outputs[out.getQualifiedName()] == out)
+    delete this.outputs[out.getQualifiedName()];
 }
 
 wIn.prototype.propagate = function(value) {
@@ -108,7 +108,7 @@ wIn.prototype.propagate = function(value) {
 function wInOut(name, type, friendCode) {
   wIn.call(this, name, type, friendCode);
 
-  this.inputs = [];
+  this.inputs = new Hash();
 }
 
 wInOut.prototype = new wIn();
@@ -134,23 +134,23 @@ wEvent.prototype.getQualifiedName = function () {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // This class represents a wConnectable whose only purpose is to redistribute the data produced by an wIn object //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function wChannel (varManager, name) {
-  this._varManager = varManager;
+function wChannel (variable, name) {
+  this.variable = variable;
   wInOut.call(this, name, null, null);
 }
 
 wChannel.prototype = new wInOut();
 
 wChannel.prototype.getValue = function() {
-  return "undefined";// TODO this._varManager.getWorkspaceVariable(this._name);
+  return this.variable.get();
 }
 
 wChannel.prototype.propagate = function(newValue) {
-  //this._varManager.setWorkspaceVariable(this._name, newValue); TODO
+  this.variable.set(newValue);
   wInOut.prototype.propagate.call(this, newValue);
 }
 
-wEvent.prototype.getQualifiedName = function () {
+wChannel.prototype.getQualifiedName = function () {
   return "channel_" + this._name;
 }
 

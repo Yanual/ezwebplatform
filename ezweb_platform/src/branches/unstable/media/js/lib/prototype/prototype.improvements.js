@@ -104,6 +104,15 @@ Object.genGUID = function()
 	return output;
 }
 
+Hash.prototype.clone = function() {
+  var newHash = new Hash();
+    
+  this.each(function (pair) {
+    newHash[pair.key] = pair.value;
+  });
+
+  return newHash;
+}
 
 //    Hack for right HTTP verbs
 Ajax.Request.prototype.request = function(url) {

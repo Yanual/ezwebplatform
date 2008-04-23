@@ -55,6 +55,7 @@ a:hover{
   bottom: -2px;
   z-index: 3;
   right: 4px;
+  left: 4px;
 }
 
 #header .tab_section .toolbar_section {
@@ -202,7 +203,7 @@ a:hover{
   overflow-x: auto;
   overflow-y: auto;
   z-index: 1;
-  visible: hidden;
+  visibility: hidden;
 }
 
 .container_content {
@@ -227,215 +228,6 @@ a:hover{
   background: #FFF;
 }
 
-
-/* wiring ------------------------------------------------------------------------------------------ */
-
-#wiring {
-  display: block;
-}
-
-#wiring_container {
-  width: 100%;
-}
-
-#wiring #channels_list {
-  margin: 2ex 0px;
-  padding: 0px;
-}
-
-#wiring .tableCell {
-  border-collapse: collapse;
-  width: 100%;
-  margin-top: 1ex;
-}
-
-#wiring .connectableColumn {
-  width: 25%;
-  vertical-align: top;
-}
-
-#wiring .eventColumn, #wiring .slotColumn {
-  width: 25%;
-  padding: 1ex 20px;
-  vertical-align: top;
-}
-
-#wiring .connectionColumn {
-  width: 13%;
-  vertical-align: top;
-}
-
-#wiring .inoutColumn {
-  width: 24%;
-  vertical-align: top;
-}
-
-#wiring .title {
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 1ex;
-}
-
-#wiring .borderLeftCell {
-    border-collapse: collapse;
-    padding: 0 0 0 1ex;
-    border-top: none;
-    border-bottom: none;
-    border-left: 1px solid #AAA;
-    border-right: none;
-}
-
-#wiring .columnCell ul input[type="radio"] {
-	display: none;
-}
-
-#wiring .columnCell ul li {
-    padding: 2px;
-}
-
-#wiring .columnCell ul li div {
-    padding: 2px;
-}
-
-#wiring .columnCell .on {
-    cursor: pointer;
-}
-
-#wiring .columnCell .off {
-    background-repeat: no-repeat;
-    list-style-image: url(/ezweb/images/list-add.png);
-    background-position: 3px center;
-    list-style-position: inside;
-    list-style-type: none;
-    cursor: pointer;
-}
-
-#wiring .columnCell .on ul {
-    display: block;
-}
-
-#wiring .columnCell .off ul {
-    display: none;
-}
-
-#wiring .columnCell #channels_list li {
-/*    background-repeat: no-repeat;
-    list-style-image: url(/ezweb/images/connect_established.png);
-    list-style-position: inside;
-    list-style-type: none;*/
-    list-style: none;
-}
-
-#wiring .columnCell #channels_list li input[type="image"] {
-    padding-right: 5px;
-}
-
-
-#wiring .columnCell #channels_list ul li {
-/*    list-style-image: url(/ezweb/images/pencil.png);
-    list-style-position: inside;*/
-}
-
-#wiring .columnCell #slots_list ul li {
-    list-style: none;
-/*    background-repeat: no-repeat;*/
-/*    list-style-image: url(/ezweb/images/energy.png);*/
-}
-
-
-#wiring .columnCell #events_list ul li {
-    list-style: none;
-/*    background-repeat: no-repeat;*/
-/*    list-style-image: url(/ezweb/images/connect_no.png);*/
-}
-
-.form-row input[type="submit"] {
-    background-image: url(/ezweb/images/kgpg.png);
-    background-repeat: no-repeat;
-    padding-left: 18px;
-}
-
-#wiring #newChannelForm {
-    text-align: center;
-}
-
-#wiring .igadget {
-  border: 1px solid orange;
-  background: lightyellow;
-  margin: 2ex 0px;
-  position: relative;
-  font-weight: bold;
-}
-
-#wiring .igadget .igadgetContent {
-  padding: 0px 0px 10px 0px;
-  font-weight: normal;
-}
-
-#wiring .eventColumn .igadget .igadgetContent div {
-  padding: 0px 14px 0px 0px;
-  text-align: right;
-}
-
-#wiring .slotColumn .igadget .igadgetContent div {
-  padding: 0px 0px 0px 14px;
-  text-align: left;
-}
-
-#wiring .igadget.folded .igadgetContent {
-  display: none;
-}
-
-#wiring .igadget .igadgetContent div.chkItem {
-  position: absolute;
-  display: inline;
-  width: 18px;
-  height: 18px;
-  border: 1px solid black;
-  background: white;
-  padding: 0px;
-}
-
-#wiring .eventColumn .igadget .igadgetContent .chkItem {
-  right: -9px;
-}
-
-#wiring .slotColumn .igadget .chkItem {
-  left: -9px;
-}
-
-#wiring #newChannelForm .addSubmit {
-    cursor: pointer; cursor: hand;
-    padding: 0px;
-    height: 16px;
-    width: 16px;
-    background: url(/ezweb/js/wiring/add.png);
-    border: 0px none;
-}
-
-#wiring #channels_list .channel {
-  margin: 0px 1ex; 
-  border: 1px solid black;
-  background: #8ADE3A;
-  padding: 0px;
-  cursor: pointer; cursor: hand;
-}
-
-#wiring img {
-  margin: 2px;
-  vertical-align: middle;
-}
-
-#wiring .channel .channelContent {
-  border-top: 1px solid black;
-  display: none;
-  background: #FFFFE0;
-}
-
-#wiring .channel.selected .channelContent {
-  display: block;
-}
-
 /* logs -------------------------------------------------------------------------------------------- */
 
 #header .tab_section #logs_tab {
@@ -447,7 +239,7 @@ a:hover{
 }
 
 #logs_console {
-  overflow-x: none;
+  overflow-x: hidden;
   overflow-y: auto;
 }
 

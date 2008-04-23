@@ -70,7 +70,8 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 		for (var i = 0; i < inOuts.length; i++) {
 			var currentInout = inOuts[i];
 			// TODO Check inout type, for now we can assumme that it is "channel" always.
-			var channel = this.createChannel(currentInout.name);
+			var channelVar = varManager.getWorkspaceVariableById(currentInout.variableId);
+			var channel = this._insertChannel(currentInout.name, channelVar);
 
 			for (var j = 0; j < currentInout.inputs.length; j++) {
 				var input = currentInout.inputs[j];
@@ -92,7 +93,7 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 			}
 
 			for (var j = 0; j < inOuts[i].outputs.length; j++) {
-				// outputs are always of igadget type, because when an inout is used as
+				// outputs are always of slot type, because when an inout is used as
 				// input, they are automatically connected to the output of that inout.
 				// So here, we only see slots as outputs
 				var output = currentInout.outputs[j];
@@ -183,17 +184,23 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 		return this.channels.values();
 	}
 
-	Wiring.prototype.createChannel = function (channelName) {
+	Wiring.prototype._insertChannel = function (channelName, channelVar) {
 		if (this.channels[channelName] != undefined) {
 			var msg = gettext("Error creating channel %(channelName)s: Channel already exists");
 			msg = interpolate(msg, {channelName: channelName});
 			OpManagerFactory.getInstance().log(msg);
 			return;
-		}
+		}		
 
-		var channel = new wChannel(channelName);
+		var channel = new wChannel(channelVar, channelName);
 		this.channels[channelName] = channel;
 		return channel;
+	}
+
+	Wiring.prototype.createChannel = function (channelName) {
+		var channelVar = this.workspace.getVarManager().createWorkspaceVariable(channelName);
+
+		return this._insertChannel(channelName, channelVar);
 	}
 
 	Wiring.prototype.removeChannel = function (channelName) {

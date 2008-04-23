@@ -68,7 +68,9 @@ Variable.prototype.Variable = function (id, iGadget_, name_, aspect_, varManager
 // PUBLIC METHODS TO BE INHERITANCED
 //////////////////////////////////////////////
 
-Variable.prototype.get = function () { }  
+Variable.prototype.get = function () {
+	return this.value;
+}
 
 Variable.prototype.setHandler = function () { } 
 
@@ -123,19 +125,6 @@ RVariable.prototype.assignSlot = function (connectable) {
 RVariable.prototype.getAssignedSlot = function () {
   return this.slotConnectable;
 }
-
-RVariable.prototype.get = function () { 
-	switch (this.aspect){
-		case Variable.prototype.GADGET_CONTEXT:
-		case Variable.prototype.EXTERNAL_CONTEXT:
-		case Variable.prototype.USER_PREF:
-		case Variable.prototype.SLOT:
-			return this.value;
-		default:
-			break;
-	}
-}  
-
 
 RVariable.prototype.set = function (newValue) { 
 	switch (this.aspect){
@@ -213,20 +202,6 @@ RWVariable.prototype.set = function (value_) {
 
     // This will save all modified vars if we are the root event
     this.varManager.decNestingLevel();
-}
-
-//////////////////////////////////////////////
-// OVERWRITTEN METHODS
-//////////////////////////////////////////////
-
-RWVariable.prototype.get = function () {  
-  // Error control needed here!!!!!!!!
-	switch (this.aspect){
-		case Variable.prototype.PROPERTY:
-		return this.value;
-		case Variable.prototype.EVENT:
-		return this.value;
-	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 

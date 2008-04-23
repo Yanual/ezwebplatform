@@ -65,7 +65,7 @@ function VarManager (workSpaceInfo) {
 	VarManager.prototype.parseWorkspaceVariables = function (inouts) {
 		var objVars = []
 		for (var i = 0; i<inouts.length; i++) {
-			var id = inouts[i].id;
+			var id = inouts[i].variableId;
 			var name = inouts[i].name;
 			var aspect = inouts[i].aspect;
 			var value = inouts[i].value;
@@ -73,7 +73,7 @@ function VarManager (workSpaceInfo) {
 			switch (aspect) {
 				case Variable.prototype.INOUT:
 					objVars[name] = new RWVariable(id, null, name, aspect, this, value);
-					variables[id] = objVars[name];
+					workspaceVariables[id] = objVars[name]; // TODO mix with normal variables
 					break;
 			}
 		}		
@@ -159,7 +159,7 @@ function VarManager (workSpaceInfo) {
 	}
 
 	VarManager.prototype.addInstance = function (iGadget, igadgetInfo) {
-		var templateVariables = iGadget.getGadget().getTemplate().getVariables(iGadget.id);
+		var templateVariables = iGadget.getGadget().getTemplate().getVariables(iGadget);
 		var variableInfo = igadgetInfo['variableList'];
 
 		for (var templateVariableName in templateVariables) {
@@ -208,6 +208,16 @@ function VarManager (workSpaceInfo) {
 			persistenceEngine.send_update(URIs.PUT_VARIABLES, param, this, onSuccess, onError);
 			this.resetModifiedVariables();
 		}
+	}
+
+	VarManager.prototype.createWorkspaceVariable = function(name) {
+		// TODO
+		var newVar = new RWVariable(null, null, name, Variable.prototype.INOUT, this, null);
+		return newVar;
+	}
+
+	VarManager.prototype.getWorkspaceVariableById = function(varId) {
+		return workspaceVariables[varId]; // TODO
 	}
 
 /*	VarManager.prototype.planInterfaceInitialization = function () {
@@ -318,6 +328,10 @@ function VarManager (workSpaceInfo) {
 	var wiring = null;
 	var iGadgets = new Hash();
 	var variables = new Hash();
+	// TODO
+	// For now workspace variables must be in a separated hash table, because they have a
+	// different identifier space and can collide with the idenfiers of normal variables
+	var workspaceVariables = new Hash();
 	var modifiedVars = [];
 	var nestingLevel = 0;
 	
