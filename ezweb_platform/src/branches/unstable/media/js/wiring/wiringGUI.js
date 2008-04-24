@@ -98,15 +98,15 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
   }
 
   WiringInterface.prototype.saveWiring = function () {
+    // Remove channels
+    for (var i = 0; i < this.channelsForRemove.length; i++) {
+      this.wiring.removeChannel(this.channelsForRemove[i].getName());
+    }
+
     // Create & update channels
     var keys = this.channels.keys();
     for (var i = 0; i < keys.length; i++) {
       this.channels[keys[i]].commitChanges(this.wiring);
-    }
-
-    // Remove channels
-    for (var i = 0; i < this.channelsForRemove.length; i++) {
-      this.wiring.removeChannel(this.channelsForRemove[i].getName());
     }
   }
 
