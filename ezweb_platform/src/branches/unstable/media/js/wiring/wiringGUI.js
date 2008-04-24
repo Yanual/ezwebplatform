@@ -52,10 +52,11 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
   this.inputs = new Hash(); // Input connections (events & inouts)
   this.outputs = new Hash(); // Output connections (slots & inouts)
   this.channels = new Hash();
-  this.channelsForRemoving = new Hash();
+  this.channelsForRemove = new Array();
   this.enabled = false;
   this.friend_codes = {};
   this.highlight_color = "#FFFFE0"; // TODO remove
+  this.friend_codes_counter = 0;
   this.channels_counter = 1;
   this.channelBaseName = gettext("Wire");
   this.anchors = new Hash();
@@ -66,6 +67,7 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
   this.channels_list = $('channels_list');//wiringContainer.getElementById('channels_list');
   this.channel_name = $('channel_name');//wiringContainer.getElementById('channel_name');
   this.channelForm = $('newChannelForm');
+  this.msgsDiv = $('wiring_messages');
 
   this._eventCreateChannel = function (e) {
     Event.stop(e);
@@ -96,9 +98,15 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
   }
 
   WiringInterface.prototype.saveWiring = function () {
+    // Create & update channels
     var keys = this.channels.keys();
     for (var i = 0; i < keys.length; i++) {
       this.channels[keys[i]].commitChanges(this.wiring);
+    }
+
+    // Remove channels
+    for (var i = 0; i < this.channelsForRemove.length; i++) {
+      this.wiring.removeChannel(this.channelsForRemove[i].getName());
     }
   }
 
@@ -115,9 +123,10 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
 
     var inputDel = document.createElement("img");
     inputDel.setAttribute("alt", gettext("Remove"));
-    inputDel.setAttribute("src", "/ezweb/images/dialog-cancel.png");
+    inputDel.setAttribute("src", "/ezweb/images/remove.png");
     Event.observe(inputDel, "click",
-                            function () {
+                            function (e) {
+                              Event.stop(e);
                               this.wiringGUI._removeChannel(this.channel);
                             }.bind(context));
     channelElement.appendChild(inputDel);
@@ -237,17 +246,25 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
     }
   }
 
+  WiringInterface.prototype.clearMessages = function () {
+    this.msgsDiv.setStyle({display: null});
+  }
+
   WiringInterface.prototype.renewInterface = function () {
     // Clean the interface
     this.event_list.innerHTML = "";
     this.slot_list.innerHTML = "";
     this.channels_list.innerHTML = "";
+    this.clearMessages();
 
     // Clean data structures
+    this.friend_codes_counter = 0;
     this.friend_codes = {};
     this.inputs = new Hash();
     this.outputs = new Hash();
     this.currentChannel = null;
+    this.channelsForRemove = new Array();
+
 
     // Build the interface
     var iGadgets = this.workspace.getIGadgets();
@@ -267,10 +284,11 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
   WiringInterface.prototype._changeConnectionStatus = function (anchor) {
     if (this.currentChannel == null) {
       if (this.channels.size() == 0) {
-        // Warn user about creating a channel
+        this.msgsDiv.innerHTML = gettext("Please, create a new channel before creating connections.");
       } else {
-        // Warn user about selecting a channel
+        this.msgsDiv.innerHTML = gettext("Please, select a channel before creating connections.");
       }
+      this.msgsDiv.setStyle({display: "block"});
       
       return;
     }
@@ -316,6 +334,7 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
 
     var channel = new ChannelInterface(channelName, null);
     this._addChannelInterface(channel);
+    this.clearMessages();
     this._changeChannel(channel);
   }
 
@@ -330,7 +349,9 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
     if (channel.exists())
       this.channelsForRemove.push(channel);
 
-    this._setEnableStatus(false);
+    if (this.currentChannel == channel)
+      this._changeChannel(channel);
+
     this.channels_list.removeChild(channel.getInterface());
     delete this.channels[channelName];
   }
@@ -350,6 +371,7 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
       this.currentChannel = null;
       this._setEnableStatus(false);
     }
+    this.clearMessages();
   }
 
   WiringInterface.prototype._toggle = function (element) {
@@ -386,7 +408,7 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
 
   WiringInterface.prototype._highlight_friend_code = function (friend_code, highlight) {
     // Don't highligh if the interface is disabled
-    if (!this.enabled && highlight)
+    if (!this.enabled)
       return;
 
     if (!this.friend_codes[friend_code]) {
@@ -447,7 +469,7 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
   }
 
     // ***********************************
-    //  COLOR SCHEME FOR HIGHLIGTHS
+    //  COLOR SCHEME FOR HIGHLIGHTS
     //  More colors in color_scheme.js file but now it's not used!
     //  Too many colors at that file, it's has been optimized!
     // ***********************************

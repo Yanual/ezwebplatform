@@ -86,14 +86,20 @@ wIn.prototype.connect = function(out) {
   //  throw new Exception();
 
   this.outputs[out.getQualifiedName()] = out;
+  if (out instanceof wInOut)
+    out._addInput(this);
 }
 
 wIn.prototype.disconnect = function(out) {
   //if (!(out instanceof wInOut)) {
   //  throw new Exception();
 
-  if (this.outputs[out.getQualifiedName()] == out)
+  if (this.outputs[out.getQualifiedName()] == out) {
+    if (out instanceof wInOut)
+      out._removeInput(this);
+
     delete this.outputs[out.getQualifiedName()];
+  }
 }
 
 wIn.prototype.propagate = function(value) {
@@ -112,6 +118,27 @@ function wInOut(name, type, friendCode) {
 }
 
 wInOut.prototype = new wIn();
+
+wInOut.prototype._addInput = function(wIn) {
+  this.inputs[wIn.getQualifiedName()] = wIn;
+}
+
+wInOut.prototype._removeInput = function(wIn) {
+  if (this.inputs[wIn.getQualifiedName()] == wIn)
+    delete this.inputs[wIn.getQualifiedName()];
+}
+
+wInOut.prototype.fullDisconnect = function() {
+  // Inputs
+  var keys = this.inputs.keys();
+  for (var i = 0; i < keys.length; ++i)
+    this.inputs[keys[i]].disconnect(this);
+
+  // Outputs
+  var keys = this.outputs.keys();
+  for (var i = 0; i < keys.length; ++i)
+    this.disconnect(this.outputs[keys[i]]);
+}
 
 // TODO implement this function
 //wInOut.prototype.searchCycle = function(name)

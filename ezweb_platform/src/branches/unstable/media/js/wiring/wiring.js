@@ -213,6 +213,7 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 			return;
 		}
 
+		channel.fullDisconnect();
 		this.channels.remove(channelName);
 	}
 

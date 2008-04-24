@@ -81,6 +81,7 @@
   margin: 2ex 0px;
   position: relative;
   font-weight: bold;
+  padding: 3px;
 }
 
 #wiring .igadget .igadgetContent {
@@ -118,11 +119,11 @@
 }
 
 #wiring .eventColumn .igadget .igadgetContent .chkItem {
-  right: -9px;
+  right: -12px;
 }
 
 #wiring .slotColumn .igadget .chkItem {
-  left: -9px;
+  left: -12px;
 }
 
 #wiring #newChannelForm .addSubmit {
@@ -137,7 +138,7 @@
 #wiring #channels_list .channel {
   margin: 2ex 1ex; 
   border: 1px solid #525248;
-  background: #94a8a8;
+  background: #a8a894;
   padding: 0px;
   cursor: pointer; cursor: hand;
 }
@@ -150,15 +151,24 @@
 #wiring #channels_list .channel .channelContent {
   border-top: 1px solid #525248;
   display: none;
-  background: #fcfcde;
+  background: #defcfc;
+  padding: 0.5ex 1ex;
 }
 
 #wiring #channels_list .channel.selected {
-  background: #a8a894;
+  background: #94a8a8;
 }
 
 #wiring #channels_list .channel.selected .channelContent {
   display: block;
+}
+
+#wiring #wiring_messages {
+  border: 1px solid orange;
+  background: lightyellow;
+  margin: 1ex 20px;
+  padding: 1ex 2ex;
+  display: none;
 }
 
 
