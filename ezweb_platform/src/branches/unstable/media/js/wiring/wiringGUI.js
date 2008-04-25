@@ -58,7 +58,7 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
   this.highlight_color = "#FFFFE0"; // TODO remove
   this.friend_codes_counter = 0;
   this.channels_counter = 1;
-  this.channelBaseName = gettext("Wire");
+  this.channelBaseName = gettext("Channel");
   this.anchors = new Hash();
   this.visible = false; // TODO temporal workarround
 
@@ -66,8 +66,8 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
   this.slot_list = $('slots_list');//wiringContainer.getElementById('slots_list');
   this.channels_list = $('channels_list');//wiringContainer.getElementById('channels_list');
   this.channel_name = $('channel_name');//wiringContainer.getElementById('channel_name');
-  this.channelForm = $('newChannelForm');
   this.msgsDiv = $('wiring_messages');
+  this.newChannel = $('newChannel');
 
   this._eventCreateChannel = function (e) {
     Event.stop(e);
@@ -82,7 +82,7 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
 
     this.renewInterface();
     LayoutManagerFactory.getInstance().showWiring(this.wiringContainer);
-    Event.observe($('newChannelForm'), 'submit', this._eventCreateChannel);
+    Event.observe(this.newChannel, 'click', this._eventCreateChannel);
   }
 
   WiringInterface.prototype.hide = function () {
@@ -92,7 +92,7 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
     this.visible = false;
 
     this.saveWiring();
-    Event.stopObserving(this.channelForm, 'submit', this._eventCreateChannel);
+    Event.stopObserving(this.newChannel, 'click', this._eventCreateChannel);
     LayoutManagerFactory.getInstance().hideWiring(this.wiringContainer);
   }
 
@@ -114,6 +114,7 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
     var channelElement = document.createElement("div");
     channelElement.addClassName("channel");
     var itemName = "channel_chk_" + channel.getName();
+    
     Event.observe(channelElement, "click",
                       function (e) {
                         Event.stop(e);
@@ -123,17 +124,28 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
     var inputDel = document.createElement("img");
     inputDel.setAttribute("alt", gettext("Remove"));
     inputDel.setAttribute("src", "/ezweb/images/remove.png");
+    
     Event.observe(inputDel, "click",
                             function (e) {
                               Event.stop(e);
                               this.wiringGUI._removeChannel(this.channel);
                             }.bind(context));
+    
     channelElement.appendChild(inputDel);
-    channelElement.appendChild(document.createTextNode(channel.getName()));
-
+    
+    var channelNameInput = document.createElement("input");
+    
+    channelNameInput.value=channel.getName();
+    channelNameInput.className="channelNameInput";
+    
+    channelElement.appendChild(channelNameInput);
+    
     var channelContent = document.createElement("div");
     channelContent.addClassName("channelContent");
-    var textNodeValue = document.createTextNode(channel.getValue());
+    
+    // Channel information showed when the channel is selected
+    
+    var textNodeValue = document.createTextNode("Value: " + channel.getValue());
     var liVal = document.createElement("div");
     liVal.appendChild(textNodeValue);
     channelContent.appendChild(liVal);
@@ -157,14 +169,15 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
     // Events & Slots
     for (var i = 0; i < connectables.length; i++) {
       var connectable = connectables[i];
-      var anchor = new ConnectionAnchor(connectable);
 
       var connectableElement = document.createElement("div");
       connectableElement.appendChild(document.createTextNode(connectable.getName()));
 
       var chkItem = document.createElement("div");
-      chkItem.addClassName("chkItem");
+      chkItem.addClassName("unchkItem");
       connectableElement.appendChild(chkItem);
+      
+      var anchor = new ConnectionAnchor(connectable, chkItem);
 
       var context = {anchor: anchor, wiringGUI:this};
       Event.observe(chkItem, "click",
@@ -372,7 +385,7 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
     }
     this.clearMessages();
   }
-
+  
   WiringInterface.prototype._toggle = function (element) {
     element.toggleClassName("folded");
   }
@@ -573,9 +586,10 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
 /**********
  *
  **********/
-function ConnectionAnchor(connectable) {
+function ConnectionAnchor(connectable, anchorDiv) {
   this.connectable = connectable;
   this.connected = false;
+  this.htmlElement = anchorDiv;
 }
 
 ConnectionAnchor.prototype.getConnectable = function() {
@@ -592,6 +606,12 @@ ConnectionAnchor.prototype.getInterface = function() {
 
 ConnectionAnchor.prototype.setConnectionStatus = function(newStatus) {
   this.connected = newStatus;
+  
+  if (newStatus)
+	  this.htmlElement.className="chkItem";
+  else
+	  this.htmlElement.className="unchkItem";
+  
 }
 
 ConnectionAnchor.prototype.isConnected = function() {

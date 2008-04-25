@@ -76,7 +76,7 @@
 }
 
 #wiring .igadget {
-  border: 1px solid orange;
+  border: 1px solid black;
   background: lightyellow;
   margin: 2ex 0px;
   position: relative;
@@ -107,13 +107,24 @@
   display: none;
 }
 
-#wiring .igadget .igadgetContent div.chkItem {
+#wiring .igadget .igadgetContent div .chkItem {
   position: absolute;
   display: inline;
   width: 18px;
   height: 18px;
-  border: 1px solid black;
-  background: white;
+  border: 0px;
+  background: url(/ezweb/js/wiring/checked.png);
+  padding: 0px;
+  top: -8px;
+}
+
+#wiring .igadget .igadgetContent div .unchkItem {
+  position: absolute;
+  display: inline;
+  width: 18px;
+  height: 18px;
+  border: 0px;
+  background: url(/ezweb/js/wiring/unchecked.png);
   padding: 0px;
   top: -8px;
 }
@@ -122,7 +133,15 @@
   right: -12px;
 }
 
+#wiring .eventColumn .igadget .igadgetContent .unchkItem {
+  right: -12px;
+}
+
 #wiring .slotColumn .igadget .chkItem {
+  left: -12px;
+}
+
+#wiring .slotColumn .igadget .igadgetContent .unchkItem {
   left: -12px;
 }
 
@@ -135,7 +154,7 @@
   border: 0px none;
 }
 
-#wiring #channels_list .channel {
+#wiring #channels_list .channel, #wiring .newChannel {
   margin: 2ex 1ex; 
   border: 1px solid #525248;
   background: #a8a894;
@@ -148,18 +167,18 @@
   vertical-align: middle;
 }
 
-#wiring #channels_list .channel .channelContent {
+#wiring #channels_list .channel .channelContent, #wiring .newChannel .channelContent {
   border-top: 1px solid #525248;
   display: none;
-  background: #defcfc;
+  background: lightyellow;
   padding: 0.5ex 1ex;
 }
 
 #wiring #channels_list .channel.selected {
-  background: #94a8a8;
+  background: #000000;
 }
 
-#wiring #channels_list .channel.selected .channelContent {
+#wiring #channels_list .channel.selected .channelContent, #wiring .newChannel.selected .channelContent {
   display: block;
 }
 
@@ -169,6 +188,26 @@
   margin: 1ex 20px;
   padding: 1ex 2ex;
   display: none;
+}
+
+#wiring #newChannelForm .linkSubmit{
+   color: blue;
+   background-color:#E0E0E0;
+   border-style:none;
+   border-color:#FFFFFF;
+   cursor: pointer;
+   text-decoration: underline;
+}
+
+#wiring .newChannelInput {
+   border:1px solid #4C5054;
+   margin:0px 1ex;
+}
+
+#wiring .channelNameInput {
+   border:0px;
+   margin:0px 1ex;
+   background: #a8a894;
 }
 
 

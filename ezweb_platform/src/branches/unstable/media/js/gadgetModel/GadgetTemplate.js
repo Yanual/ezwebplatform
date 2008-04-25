@@ -93,7 +93,7 @@ function GadgetTemplate(template_) {
         return objVars;
     }
 	
-	this.getUserPrefs = function () {
+	this.getUserPrefs = function (varManager) {
 
 		if (this.prefs == null) {
 			// JSON-coded Template-Variables mapping	
@@ -106,19 +106,19 @@ function GadgetTemplate(template_) {
 				if (rawVar.aspect == Variable.prototype.USER_PREF) {
 					switch (rawVar.type) {
 						case UserPref.prototype.TEXT:  
-							this.prefs.push(new TextUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.default_value));
+							this.prefs.push(new TextUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.default_value, varManager));
 							break;
 						case UserPref.prototype.INTEGER:  
-							this.prefs.push(new IntUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.default_value));
+							this.prefs.push(new IntUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.default_value, varManager));
 							break;
 						case UserPref.prototype.BOOLEAN:
-							this.prefs.push(new BoolUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.default_value));
+							this.prefs.push(new BoolUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.default_value, varManager));
 							break;
 						case UserPref.prototype.DATE:
-							this.prefs.push(new DateUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.default_value));
+							this.prefs.push(new DateUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.default_value, varManager));
 							break;
 						case UserPref.prototype.LIST:
-							this.prefs.push(new ListUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.default_value, rawVar.value_options));
+							this.prefs.push(new ListUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.default_value, rawVar.value_options, varManager));
 							break;
 					}
 				}

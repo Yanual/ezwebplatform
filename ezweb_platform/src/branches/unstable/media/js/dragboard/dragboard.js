@@ -553,7 +553,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 
 		var oldWidth = igadget.getContentWidth();
 		var oldHeight = igadget.getHeight();
-		igadget.setMinimizeStatus(false);
+		igadget.setMinimizeStatus(false);etCurrentValue
 
 		var newHeight = igadget.getHeight();
 		if (oldHeight != newHeight) {
@@ -617,6 +617,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 
 			this.setConfigurationVisible(igadget.getId(), false);
 		} catch (e) {
+			OpManagerFactory.getInstance().log(e);
 		}
 	}
 
@@ -1098,7 +1099,7 @@ IGadget.prototype.destroy = function() {
 }
 
 IGadget.prototype._setDefaultPrefsInInterface = function() {
-	var prefs = this.gadget.getTemplate().getUserPrefs();
+	var prefs = this.gadget.getTemplate().getUserPrefs(this.dragboard.workSpace.getVarManager());
 	var curPref;
 
 	for (var i = 0; i < prefs.length; i++) {
@@ -1111,11 +1112,11 @@ IGadget.prototype._setDefaultPrefsInInterface = function() {
  * Set all preferences of this gadget instance to their default value
  */
 IGadget.prototype.setDefaultPrefs = function() {
-	var prefs = this.gadget.getTemplate().getUserPrefs();
+	var prefs = this.gadget.getTemplate().getUserPrefs(this.dragboard.workSpace.getVarManager());
 	var varManager = this.dragboard.workSpace.getVarManager();
 
 	for (var i = 0; i < prefs.length; i++) {
-		prefs[i].setToDefault(varManager, this.id);
+		prefs[i].setToDefault(this.id);
 	}
 
 	if (this.configurationVisible)
@@ -1125,7 +1126,7 @@ IGadget.prototype.setDefaultPrefs = function() {
 IGadget.prototype._makeConfigureInterface = function() {
 
 	var varManager = this.dragboard.workSpace.getVarManager();
-	var prefs = this.gadget.getTemplate().getUserPrefs();
+	var prefs = this.gadget.getTemplate().getUserPrefs(this.dragboard.workSpace.getVarManager());
 
 	var interfaceDiv = document.createElement("div");
 
@@ -1152,7 +1153,7 @@ IGadget.prototype._makeConfigureInterface = function() {
 		// Settings control
 		cell = document.createElement("td");
 		cell.setAttribute("width", "60%"); // TODO
-		curPrefInterface = prefs[i].makeInterface(varManager, this.id);
+		curPrefInterface = prefs[i].makeInterface(this.id);
 		this.prefElements[curPrefInterface.name] = curPrefInterface;
 		Element.extend(this.prefElements[curPrefInterface.name]);
 		cell.appendChild(curPrefInterface);
@@ -1280,7 +1281,7 @@ IGadget.prototype.saveConfig = function() {
 
 	var varManager = this.dragboard.workSpace.getVarManager();
 	var i, curPref, prefElement, validData = true;
-	var prefs = this.gadget.getTemplate().getUserPrefs();
+	var prefs = this.gadget.getTemplate().getUserPrefs(this.dragboard.workSpace.getVarManager());
 	var prefName = null;
 	
 	for (i = 0; i < prefs.length; i++) {
@@ -1306,11 +1307,11 @@ IGadget.prototype.saveConfig = function() {
 		curPref = prefs[i];
 		prefName = curPref.getVarName();
 		prefElement = this.prefElements[prefName];
-		var oldValue = curPref.getCurrentValue(varManager, this.id);
+		var oldValue = curPref.getCurrentValue(this.id);
 		var newValue = curPref.getValueFromInterface(prefElement);
 
 		if (newValue != oldValue)
-			curPref.setValue(varManager, this.id, newValue);
+			curPref.setValue(this.id, newValue);
 	}
 
 	// Commit

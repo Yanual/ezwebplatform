@@ -2,26 +2,31 @@
   <div id="wiring_messages"></div>
   <table class="tableCell"><tr>
       <td class="eventColumn">
-          <div class="title"><img src="/ezweb/images/go-last.png" alt="" />{% trans "Events" %}</div>
+          <div class="title">{% trans "EVENTS" %}</div>
           <div id="events_list"></div>
       </td>
 
-      <td class="connectionColumn"></td>
+      <td class="connectionColumn">
+          <img src="/ezweb/js/wiring/arrow.png" />
+      </td>
 
       <td class="inoutColumn">
-          <div class="title"><img src="/ezweb/images/connect_creating.png" alt="" />{% trans "Channels" %}</div>
-          <form id="newChannelForm">
-            <label>{% trans "New" %}: <input type="text" id="channel_name" name="channel_name"/></label>
-            <input type="submit" class="addSubmit" title='{% trans "Create channel" %}' alt='{% trans "Create channel" %}' value=""/>
-          </form>
+          <div class="title">{% trans "CHANNELS" %}</div>
+          <div align="center" class="newChannel" id="newChannel">
+          	{% trans "NEW CHANNEL" %}
+          	<div class="channelContent">
+	            <input class="newChannelInput" type="text" id="channel_name" name="channel_name"/>
+	        </div>
+          </div>
           <div id="channels_list"></div>
       </td>
 
-      <td class="connectionColumn"></td>
+      <td class="connectionColumn">
+          <img src="/ezweb/js/wiring/arrow.png" />
+      </td>
 
       <td class="slotColumn">
-          <div class="title"><img src="/ezweb/images/go-first.png" alt="" />{% trans "Slots" %}</div>
+          <div class="title">{% trans "SLOTS" %}</div>
           <div id="slots_list"></div>
-
       </td></tr>
   </tr></table>
