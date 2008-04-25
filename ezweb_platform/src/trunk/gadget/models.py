@@ -63,6 +63,7 @@ class VariableDef(models.Model):
         ('S', _('String')),
         ('D', _('Date')),
         ('B', _('Boolean')),
+        ('P', _('Password')),
     )
     type = models.CharField(_('Type'), max_length=1, choices=TYPES)
     ASPECTS = (
