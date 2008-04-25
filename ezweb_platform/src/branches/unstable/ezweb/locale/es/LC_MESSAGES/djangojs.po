@@ -308,7 +308,7 @@ msgid ""
 "Error committing dragboard changes to persistence, please check the logs for "
 "further info."
 msgstr ""
-"Error al almacenar los cambios del dragboar en la persistencia, por favor,"
+"Error al almacenar los cambios del dragboard en la persistencia, por favor,"
 " consulte los registros para obtener información más detallada."
 
 #: media/js/dragboard/dragboard.js:1011

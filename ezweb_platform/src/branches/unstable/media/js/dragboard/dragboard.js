@@ -50,8 +50,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 	this.matrix = null;          // Matrix of gadget
 	this.shadowMatrix = null;    // Temporal matrix of gadgets used for D&D
 	this.shadowPositions = null;
-	this.dragboardElement = null;
-	this.dragboardStyle = null;
+	this.dragboardElement, this.dragboardStyle;
 	this.dragboardCursor = null;
 	this.gadgetToMove = null;
 	this.iGadgets = new Hash();
@@ -421,9 +420,9 @@ function Dragboard(tab, workSpace, dragboardElement) {
 
 	this._commitChanges = function() {
 		// Update igadgets positions in persistence
-		function onSuccess() {}
+		var onSuccess = function(transport) { }
 
-		function onError(transport, e) {
+		var onError = function(transport, e) {
 			var msg;
 			if (transport.responseXML) {
 				msg = transport.responseXML.documentElement.textContent;
@@ -433,8 +432,6 @@ function Dragboard(tab, workSpace, dragboardElement) {
 
 			msg = interpolate(gettext("Error committing dragboard changes to persistence: %(errorMsg)s."), {errorMsg: msg}, true);
 			OpManagerFactory.getInstance().log(msg);
-
-			alert (gettext("Error committing dragboard changes to persistence, please check the logs for further info."));
 		}
 
 		// TODO only send changes
@@ -478,7 +475,6 @@ function Dragboard(tab, workSpace, dragboardElement) {
 
 		// For controlling when the igadgets are totally loaded!
 		this.igadgetsToLoad = tabInfo.igadgetList;
-
 		for (var i = 0; i < this.igadgetsToLoad.length; i++) {
 			curIGadget = this.igadgetsToLoad[i];
 
@@ -757,7 +753,9 @@ function Dragboard(tab, workSpace, dragboardElement) {
 		return this.workSpace;
 	}
 	
+
 	Dragboard.prototype.addIGadget = function (iGadget, igadgetInfo) {
+
 		this.iGadgets[iGadget.id] = iGadget;
 
 		if (iGadget.position == null) {
@@ -835,8 +833,8 @@ IGadget.prototype.setPosition = function(position) {
 	if (this.element != null) { // if visible
 		this.element.style.left = this.screen.getColumnOffsetLeft(position.x);
 		this.element.style.top = this.screen.fromVCellsToPixels(position.y) + "px";
+
 	}
-	
 	// Notify Context Manager of igadget's position  
 	if (this.dragboard != null){
 		this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.XPOSITION, this.position.x); 
@@ -854,6 +852,7 @@ IGadget.prototype.getPosition = function() {
 
 IGadget.prototype.setContentWidth = function(width) {
 	this.width = width;
+
 }
 
 IGadget.prototype.getContentWidth = function() {
@@ -879,10 +878,16 @@ IGadget.prototype.getHeight = function() {
 	if (this.height == null) {
 		if (this.element != null) {
 			if (!this.minimized) {
+				if (BrowserUtilsFactory.getInstance().getBrowser() == "IE6"){
+					this.content.height = this.screen.fromVCellsToPixels(this.contentHeight) + "px";
+				}
 				var wrapperHeight = this.content.offsetHeight + this.configurationElement.offsetHeight;
 				this.contentWrapper.setStyle({height: wrapperHeight + "px"});
 			} else {
 				this.contentWrapper.setStyle({height: 0 + "px"});
+				if (BrowserUtilsFactory.getInstance().getBrowser() == "IE6"){
+					this.content.height = 0;
+				}
 			}
 
 			this.height = this.screen.fromPixelsToVCells(this.element.offsetHeight);
@@ -912,14 +917,17 @@ IGadget.prototype.paint = function(where) {
 		return; // TODO exception
 
 	var gadgetElement, gadgetMenu;
+	var contentHeight = this.screen.fromVCellsToPixels(this.contentHeight) + "px";
 
 	gadgetElement = document.createElement("div");
 	//gadgetElement.setAttribute("id", "gadget_" + this.id + "_container");
 	gadgetElement.setAttribute("class", "gadget_window");
+	gadgetElement.setAttribute("className", "gadget_window"); //IE hack
 
 	// Gadget Menu
 	gadgetMenu = document.createElement("div");
 	gadgetMenu.setAttribute("class", "gadget_menu");
+	gadgetMenu.setAttribute("className", "gadget_menu"); //IE hack
 
 	// buttons. Inserted from right to left
 	var button;
@@ -928,7 +936,9 @@ IGadget.prototype.paint = function(where) {
 	button = document.createElement("input");
 	button.setAttribute("type", "button");
 	button.setAttribute("class", "closebutton");
-	button.addEventListener("click", function() {OpManagerFactory.getInstance().removeInstance(this.id);}.bind(this), true);
+	button.setAttribute("className", "closebutton"); //IE hack
+	//button.addEventListener("click", function() {OpManagerFactory.getInstance().removeInstance(this.id);}.bind(this), true);
+	Event.observe (button, "click", function() {OpManagerFactory.getInstance().removeInstance(this.id);}.bind(this), true);
 	button.setAttribute("title", gettext("Close"));
 	button.setAttribute("alt", gettext("Close"));
 	gadgetMenu.appendChild(button);
@@ -937,7 +947,9 @@ IGadget.prototype.paint = function(where) {
 	button = document.createElement("input");
 	button.setAttribute("type", "button");
 	button.setAttribute("class", "settingsbutton");
-	button.addEventListener("click", function() {this.dragboard.setConfigurationVisible(this.id, 'toggle');}.bind(this), true);
+	button.setAttribute("className", "settingsbutton"); //IE hack
+	//button.addEventListener("click", function() {this.dragboard.setConfigurationVisible(this.id, 'toggle');}.bind(this), true);
+	Event.observe (button, "click", function() {this.dragboard.setConfigurationVisible(this.id, 'toggle');}.bind(this), true);
 	button.setAttribute("title", gettext("Preferences"));
 	button.setAttribute("alt", gettext("Preferences"));
 	gadgetMenu.appendChild(button);
@@ -946,7 +958,8 @@ IGadget.prototype.paint = function(where) {
 	// minimize button
 	button = document.createElement("input");
 	button.setAttribute("type", "button");
-	button.addEventListener("click", function() {this.dragboard.toggleMinimizeStatus(this.id)}.bind(this), true);
+	//button.addEventListener("click", function() {this.dragboard.toggleMinimizeStatus(this.id)}.bind(this), true);
+	Event.observe (button, "click", function() {this.dragboard.toggleMinimizeStatus(this.id)}.bind(this), true);
 	if (this.minimized) {
 		button.setAttribute("title", gettext("Maximize"));
 		button.setAttribute("alt", gettext("Maximize"));
@@ -964,7 +977,9 @@ IGadget.prototype.paint = function(where) {
 	button = document.createElement("input");
 	button.setAttribute("type", "button");
 	button.setAttribute("class", "button errorbutton disabled");
-	button.addEventListener("click", function() {showInterface("logs");}, true);
+	button.setAttribute("className", "button errorbutton disabled"); //IE hack
+	//button.addEventListener("click", function() {showInterface("logs");}, true);
+	Event.observe (button, "click", function() {showInterface("logs");}, true);
 	gadgetMenu.appendChild(button);
 	this.errorButtonElement = button;
 
@@ -977,26 +992,28 @@ IGadget.prototype.paint = function(where) {
 	// Content wrapper
 	this.contentWrapper = document.createElement("div");
 	this.contentWrapper.setAttribute("class", "gadget_wrapper");
+	this.contentWrapper.setAttribute("className", "gadget_wrapper"); //IE hack
 	gadgetElement.appendChild(this.contentWrapper);
+	
+	// Gadget Content
+	if (BrowserUtilsFactory.getInstance().getBrowser()=="IE6"){
+		new Insertion.Top(this.contentWrapper , '<iframe src="'+ this.gadget.getXHtml().getURICode() + '?id=' + this.id+'" id="gadget_' + this.id +'" class="gadget_object" frameborder="0" width="100%" height="'+contentHeight+'" >Loading...</iframe>');
+	}
+	else{ //non IE6
+		new Insertion.Top(this.contentWrapper , '<object classid="clsid:25336920-03F9-11CF-8FD0-00AA00686F13" data="'+ this.gadget.getXHtml().getURICode() + '?id=' + this.id+'" type="text/html" id="gadget_' + this.id +'" class="gadget_object" standby="Loading..." style="width:100%; height:'+contentHeight+'">Loading...</object>');
+	}
+	this.content = this.contentWrapper.firstDescendant();
+	
 	
 	// Gadget configuration (Initially empty and hidden)
 	this.configurationElement = document.createElement("form");
 	this.configurationElement.setAttribute("class", "config_interface");
-	this.configurationElement.setAttribute("onsubmit", "javascript:return false;");
-	this.contentWrapper.appendChild(this.configurationElement);
+	this.configurationElement.setAttribute("className", "config_interface"); //IE hack
+	//this.configurationElement.setAttribute("onsubmit", "javascript:return false;");
+	Event.observe(this.configurationElement, "onsubmit", function(){return false;}) //W3C and IE compliant
+	this.contentWrapper.insertBefore(this.configurationElement, this.content);
 
-	// Gadget Content
-	this.content = document.createElement("object");
-	this.content.setAttribute("id", "gadget_" + this.id);
-	this.content.setAttribute("class", "gadget_object");
-	this.content.setAttribute("type", "text/html"); // TODO xhtml? => application/xhtml+xml
-	if (this.gadget != null) // TODO remove this line this.gadgte must be not null
-		this.content.setAttribute("data", this.gadget.getXHtml().getURICode() + "?id=" + this.id);
-	this.content.setAttribute("standby", "Loading...");
-	this.content.innerHTML = "<param name=\"IGadgetId\" value=\"" + this.id + "\" />Loading...."; // TODO add an animation
-
-	this.contentWrapper.appendChild(this.content);
-
+	
 	// TODO use setStyle from prototype
 	// Position
 	gadgetElement.style.left = this.screen.getColumnOffsetLeft(this.position.x);
@@ -1008,8 +1025,6 @@ IGadget.prototype.paint = function(where) {
 
 	// Sizes
 	gadgetElement.style.width = this.screen.fromHCellsToPercentage(this.width) + "%";
-	var contentHeight = this.screen.fromVCellsToPixels(this.contentHeight) + "px";
-	this.content.style.height = contentHeight;
 	if (this.minimized) {
 		this.contentWrapper.style.height = "0px";
 		this.contentWrapper.style.borderTop = "0px";
@@ -1021,6 +1036,7 @@ IGadget.prototype.paint = function(where) {
 	// Notify Context Manager of igadget's size
 	this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.HEIGHT, this.contentHeight);
 	this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.WIDTH, this.width);
+	
 
 	// References
 	gadgetElement.iGadgetId = this.id;
@@ -1084,9 +1100,10 @@ IGadget.prototype.destroy = function() {
 IGadget.prototype._setDefaultPrefsInInterface = function() {
 	var prefs = this.gadget.getTemplate().getUserPrefs();
 	var curPref;
+
 	for (var i = 0; i < prefs.length; i++) {
 		curPref = prefs[i];
-		curPref.setDefaultValueInInterface(this.configurationElement[curPref.getVarName()]);
+		curPref.setDefaultValueInInterface(this.prefElements[curPref.getVarName()]);
 	}		
 }
 
@@ -1106,6 +1123,7 @@ IGadget.prototype.setDefaultPrefs = function() {
 }
 
 IGadget.prototype._makeConfigureInterface = function() {
+
 	var varManager = this.dragboard.workSpace.getVarManager();
 	var prefs = this.gadget.getTemplate().getUserPrefs();
 
@@ -1119,60 +1137,71 @@ IGadget.prototype._makeConfigureInterface = function() {
 	this.prefElements = new Array();
 
 	var row, cell, label, table = document.createElement("table");
+	tbody = document.createElement("tbody");
+	table.appendChild(tbody);
 	for (var i = 0; i < prefs.length; i++) {
 		row = document.createElement("tr");
 
 		// Settings label
 		cell = document.createElement("td");
-		cell.setAttribute("style", "width: 40%"); // TODO
+		cell.setAttribute("width", "40%"); // TODO
 		label = prefs[i].getLabel();
 		cell.appendChild(label);
 		row.appendChild(cell);
 
 		// Settings control
 		cell = document.createElement("td");
+		cell.setAttribute("width", "60%"); // TODO
 		curPrefInterface = prefs[i].makeInterface(varManager, this.id);
-		this.prefElements[i] = curPrefInterface;
+		this.prefElements[curPrefInterface.name] = curPrefInterface;
+		Element.extend(this.prefElements[curPrefInterface.name]);
 		cell.appendChild(curPrefInterface);
 		row.appendChild(cell);
 
-		table.appendChild(row);
+		tbody.appendChild(row);
 	}
 	interfaceDiv.appendChild(table);
 
 	var buttons = document.createElement("div");
 	buttons.setAttribute("class", "buttons");
+	buttons.setAttribute("className", "buttons"); //IE hack
 	var button;
 
 	// "Set Defaults" button
 	button = document.createElement("input");
 	button.setAttribute("type", "button");
 	button.setAttribute("value", gettext("Set Defaults"));
-	button.addEventListener("click", this._setDefaultPrefsInInterface.bind(this), true);
+	//button.addEventListener("click", this._setDefaultPrefsInInterface.bind(this), true);
+	Event.observe (button, "click", this._setDefaultPrefsInInterface.bind(this), true);
 	buttons.appendChild(button);
 
 	// "Save" button
 	button = document.createElement("input");
 	button.setAttribute("type", "button");
 	button.setAttribute("value", gettext("Save"));
-	button.addEventListener("click",
-	                        function () {this.dragboard.saveConfig(this.id)}.bind(this),
-	                        true);
+
+	//button.addEventListener("click",
+	//                        function () {DragboardFactory.getInstance().saveConfig(this.id)}.bind(this),
+	//                        true);
+	Event.observe (button, "click", function () {this.dragboard.saveConfig(this.id)}.bind(this), true);
 	buttons.appendChild(button);
 
 	// "Cancel" button
 	button = document.createElement("input");
 	button.setAttribute("type", "button");
 	button.setAttribute("value", gettext("Cancel"));
-	button.addEventListener("click",
-	                        function () {this.dragboard.setConfigurationVisible(this.id, false)}.bind(this),
-	                        true);
+
+	//button.addEventListener("click",
+	//                        function () {DragboardFactory.getInstance().setConfigurationVisible(this.id, false)}.bind(this),
+	//                        true);
+	Event.observe (button, "click", function () {this.dragboard.setConfigurationVisible(this.id, false)}.bind(this), true);
 	buttons.appendChild(button);
 	interfaceDiv.appendChild(buttons);
 
 	// clean floats
 	var floatClearer = document.createElement("div");
 	floatClearer.setAttribute("class", "floatclearer");
+	floatClearer.setAttribute("className", "floatclearer"); //IE hack
 	interfaceDiv.appendChild(floatClearer);
 
 	return interfaceDiv;
@@ -1252,15 +1281,17 @@ IGadget.prototype.saveConfig = function() {
 	var varManager = this.dragboard.workSpace.getVarManager();
 	var i, curPref, prefElement, validData = true;
 	var prefs = this.gadget.getTemplate().getUserPrefs();
-
+	var prefName = null;
+	
 	for (i = 0; i < prefs.length; i++) {
 		curPref = prefs[i];
-		prefElement = this.configurationElement[curPref.getVarName()];
+		prefName = curPref.getVarName();
+		prefElement = this.prefElements[prefName];
 		if (!curPref.validate(curPref.getValueFromInterface(prefElement))) {
 			validData = false;
-			this.prefElements[i].addClassName("invalid");
+			prefElement.addClassName("invalid");
 		} else {
-			this.prefElements[i].removeClassName("invalid");
+			prefElement.removeClassName("invalid");
 		}
 	}
 
@@ -1273,7 +1304,8 @@ IGadget.prototype.saveConfig = function() {
 	var oldValue, newValue;
 	for (i = 0; i < prefs.length; i++) {
 		curPref = prefs[i];
-		prefElement = this.configurationElement[curPref.getVarName()];
+		prefName = curPref.getVarName();
+		prefElement = this.prefElements[prefName];
 		var oldValue = curPref.getCurrentValue(varManager, this.id);
 		var newValue = curPref.getValueFromInterface(prefElement);
 
@@ -1302,8 +1334,6 @@ IGadget.prototype.save = function() {
 
 		msg = interpolate(gettext("Error adding igadget to persistence: %(errorMsg)s."), {errorMsg: msg}, true);
 		OpManagerFactory.getInstance().log(msg);
-
-		alert (gettext("Error adding igadget to persistence, please check the logs for further info."));
 	}
 
 	var persistenceEngine = PersistenceEngineFactory.getInstance();
@@ -1353,7 +1383,8 @@ function DragboardStyle(dragboardElement, columns, cellHeight) {
 
 	// We can't use legacy event handlers for having multiple handlers of a given event
 	// (There are more functions listening to this event, see ezweb/templates/index.html)
-	window.addEventListener("resize", recomputeSize, true); // TODO this depends on a w3c compilant navigator (=> don't work on ie)
+	
+	Event.observe(window, 'resize', recomputeSize); //W3C and IE compliant
 }
 
 DragboardStyle.prototype.recomputeSize = function() {
@@ -1466,24 +1497,26 @@ function Draggable(draggableElement, handler, data, onStart, onDrag, onFinish) {
 
 	// remove the events
 	function enddrag(e) {
-		if (e.button != 0)  // Only attend to left button (or right button for left-handed persons) events
-			return false;
-
-		document.removeEventListener("mouseup", enddrag, false);
-		document.removeEventListener("mousemove", drag, false);
-
-		for (var i = 0; i < objects.length; i++) {
-			objects[i].contentDocument.onmouseup = null;
-			objects[i].contentDocument.onmousemove = null;
+		if (BrowserUtilsFactory.getInstance().isLeftButton(e.button)){  // Only attend to left button (or right button for left-handed persons) events	
+			//document.removeEventListener("mouseup", enddrag, false);
+			//document.removeEventListener("mousemove", drag, false);
+			Event.stopObserving (document, "mouseup", enddrag);
+			Event.stopObserving (document, "mousemove", drag);
+			
+			for (var i = 0; i < objects.length; i++) {
+				objects[i].contentDocument.onmouseup = null;
+				objects[i].contentDocument.onmousemove = null;
+			}
+	
+			onFinish(draggable, data);
+			draggableElement.style.zIndex = "";
+	
+			//handler.addEventListener("mousedown", startdrag, false);
+			Event.observe (handler, "mousedown", startdrag);
+	
+			document.onmousedown = null;
+			document.oncontextmenu = null;
 		}
-
-		onFinish(draggable, data);
-		draggableElement.style.zIndex = "";
-
-		handler.addEventListener("mousedown", startdrag, false);
-
-		document.onmousedown = null;
-		document.oncontextmenu = null;
 		return false;
 	}
 
@@ -1504,32 +1537,33 @@ function Draggable(draggableElement, handler, data, onStart, onDrag, onFinish) {
 
 	// initiate the drag
 	function startdrag(e) {
-		if (e.button != 0)  // Only attend to left button (or right button for left-handed persons) events
-			return false;
-
-		document.oncontextmenu = function() { return false; }; // disable context menu
-		document.onmousedown = function() { return false; }; // disable text selection
-		handler.removeEventListener("mousedown", startdrag, false);
-
-		xStart = parseInt(e.screenX);
-		yStart = parseInt(e.screenY);
-		y = draggableElement.offsetTop;
-		x = draggableElement.offsetLeft;
-		draggableElement.style.top = y + 'px';
-		draggableElement.style.left = x + 'px';
-		document.addEventListener("mouseup", enddrag, false);
-		document.addEventListener("mousemove", drag, false);
-
-		objects = document.getElementsByTagName("object");
-		for (var i = 0; i < objects.length; i++) {
-			objects[i].contentDocument.onmouseup = enddrag;
-			objects[i].contentDocument.onmousemove = drag;
+		if (BrowserUtilsFactory.getInstance().isLeftButton(e.button)){  // Only attend to left button (or right button for left-handed persons) events
+			document.oncontextmenu = function() { return false; }; // disable context menu
+			document.onmousedown = function() { return false; }; // disable text selection
+			//handler.removeEventListener("mousedown", startdrag, false);
+			Event.stopObserving (handler, "mousedown", startdrag);
+	
+			xStart = parseInt(e.screenX);
+			yStart = parseInt(e.screenY);
+			y = draggableElement.offsetTop;
+			x = draggableElement.offsetLeft;
+			draggableElement.style.top = y + 'px';
+			draggableElement.style.left = x + 'px';
+			//document.addEventListener("mouseup", enddrag, false);
+			//document.addEventListener("mousemove", drag, false);
+			Event.observe (document, "mouseup", enddrag);
+			Event.observe (document, "mousemove", drag);
+	
+			objects = document.getElementsByTagName("object");
+			for (var i = 0; i < objects.length; i++) {
+				objects[i].contentDocument.onmouseup = enddrag;
+				objects[i].contentDocument.onmousemove = drag;
+			}
+	
+			draggableElement.style.zIndex = "200"; // TODO
+			onStart(draggable, data);
 		}
-
-		draggableElement.style.zIndex = "200"; // TODO
-		onStart(draggable, data);
-
-		return false;
+			return false;
 	}
 
 	// cancels the call to startdrag function
@@ -1538,10 +1572,12 @@ function Draggable(draggableElement, handler, data, onStart, onDrag, onFinish) {
 	}
 
 	// add mousedown event listener
-	handler.addEventListener("mousedown", startdrag, false);
+	//handler.addEventListener("mousedown", startdrag, false);
+	Event.observe (handler, "mousedown", startdrag);
 	var children = handler.childElements();
 	for (var i = 0; i < children.length; i++)
-		children[i].addEventListener("mousedown", cancelbubbling, false);
+		//children[i].addEventListener("mousedown", cancelbubbling, false);
+		Event.observe (children[i], "mousedown", cancelbubbling);
 
 	this.setXOffset = function(offset) {
 		xOffset = offset;

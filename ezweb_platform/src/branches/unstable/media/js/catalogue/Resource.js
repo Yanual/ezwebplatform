@@ -332,7 +332,8 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 		// Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
 		
 		onError = function(transport) {
-			alert("Error Resource POST");
+			msg = interpolate(gettext("Error creating the resource: %(errorMsg)s."), {errorMsg: transport.status}, true);
+			OpManagerFactory.getInstance().log(msg);
 			// Process
 		}
 		

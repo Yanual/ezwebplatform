@@ -191,6 +191,7 @@ a:hover{
   right: 0px;
   border: 2px solid #4c5054;
   margin: 0 4px 4px 4px;
+  z-index: 1;
 }
 
 .container {

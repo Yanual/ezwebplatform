@@ -4,8 +4,8 @@
  * 
  * Component: EzWeb
  * 
- * (C) Copyright 2004 Telefónica Investigación y Desarrollo 
- *     S.A.Unipersonal (Telefónica I+D) 
+ * (C) Copyright 2004 Telefï¿½nica Investigaciï¿½n y Desarrollo 
+ *     S.A.Unipersonal (Telefï¿½nica I+D) 
  * 
  * Info about members and contributors of the MORFEO project 
  * is available at: 
@@ -82,7 +82,6 @@ UIUtils.addResource = function(url, paramName, paramValue) {
 
 		msg = interpolate(gettext("The resource could not be added to the catalogue: %(errorMsg)s."), {errorMsg: msg}, true);
 		OpManagerFactory.getInstance().log(msg);
-		alert (gettext("The resource could not be added to the catalogue, please check the logs for further info."));
 	}
 	
 	var persistenceEngine = PersistenceEngineFactory.getInstance();	
@@ -185,7 +184,8 @@ UIUtils.updateGadgetXHTML = function() {
     var resourceURI = URIs.GET_GADGET.evaluate(dict) + "/xhtml";
 
     var onError = function(transport) {
-	alert(gettext ("Error PUT"));
+		var	msg = interpolate(gettext("Error updating the XHTML: %(errorMsg)s."), {errorMsg: transport.status}, true);
+		OpManagerFactory.getInstance().log(msg);
 	// Process
     }
 			
@@ -436,7 +436,8 @@ UIUtils.deleteGadget = function(id) {
 	var resourceURI = URIs.GET_POST_RESOURCES + "/" + resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion();
 	
 	var onError = function(transport) {
-				alert(gettext ("Error DELETE"));
+				var msg = interpolate(gettext("Error deleting the Gadget: %(errorMsg)s."), {errorMsg: transport.status}, true);
+				OpManagerFactory.getInstance().log(msg);
 				// Process
 			}
 			
@@ -600,7 +601,7 @@ UIUtils.SlideAdvanced = function(element,container) {
             for(i=0;i<nodeList.length;i++){
                 if(nodeList.item(i).nodeName=="DIV" && nodeList.item(i).id!=element && nodeList.item(i).id!='header_always'){
                     if(Element.visible(nodeList.item(i))==true){
-                        Effect.BlindUp(nodeList.item(i),{queue:{position:'end',scope:'menuScope',limit:2},});
+                        Effect.BlindUp(nodeList.item(i),{queue:{position:'end',scope:'menuScope',limit:2}});
                         aux = nodeList.item(i).id.split("_");
                         switch (aux[1].toLowerCase()) {
 			            	case "tag":
@@ -667,7 +668,6 @@ UIUtils.SlideAdvanced2 = function(element) {
 			event="Search";
 			break;
 		default:
-			alert ("error de SlideAdvanced");
 			break;
 	}
 	if (element1.style.display == 'none') {

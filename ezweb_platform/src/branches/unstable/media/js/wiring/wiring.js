@@ -222,7 +222,8 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 
 	Wiring.prototype.serializationError = function (response) {
 		var p = response.responseText;
-		alert("ERROR: Channel and its connections cannot be saved");
+		msg = interpolate(gettext("Error : %(errorMsg)s."), {errorMsg: p}, true);
+		OpManagerFactory.getInstance().log(msg);
 	}
 
 	Wiring.prototype.serialize = function () {

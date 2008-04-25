@@ -85,7 +85,6 @@ function Gadget(gadget_, url_) {
 
 			msg = interpolate(gettext("The gadget could not be added to the showcase: %(errorMsg)s."), {errorMsg: msg}, true);
 			OpManagerFactory.getInstance().log(msg);
-			alert (gettext("The gadget could not be added to the showcase, please check the logs for further info."));
 		}
 		
 		var loadGadget = function(transport) {

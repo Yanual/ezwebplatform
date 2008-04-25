@@ -44,17 +44,19 @@ function Tab (tabInfo, workSpace) {
 	
 	Tab.prototype.hideAndUnmark = function () {
 		this.hide();
-		this.tabHTMLElement.className = "tab";
+		LayoutManagerFactory.getInstance().unmarkTab(this.tabHTMLElement);
 	}
 	
 	Tab.prototype.hide = function () {
-		this.dragboardElement.setStyle({'zIndex': 1, 'visibility' : 'hidden'});
+		LayoutManagerFactory.getInstance().hideDragboard(this.dragboardElement);
 	}
 
 	Tab.prototype.show = function () {
-	    this.dragboardElement.setStyle({'zIndex': 2, 'visibility' : 'visible'});
+
+		LayoutManagerFactory.getInstance().showDragboard(this.dragboardElement);
+
 	    this.dragboard.recomputeSize();
-	    this.tabHTMLElement.className = "tab current";
+	    LayoutManagerFactory.getInstance().markTab(this.tabHTMLElement);
 	}
 
 	Tab.prototype.getDragboard = function () {
@@ -81,10 +83,10 @@ function Tab (tabInfo, workSpace) {
 	
 	this.tabHTMLElement.setAttribute('id', this.tabName);
 	
-	var opManagerInvocation = 'OpManagerFactory.getInstance().changeVisibleTab("' + this.tabInfo.name + '")';
+	var opManagerInvocation = 'OpManagerFactory.getInstance().changeVisibleTab("' + this.tabInfo.name + '");';
+
+	Event.observe(this.tabHTMLElement, 'click', function(){OpManagerFactory.getInstance().changeVisibleTab(this.tabInfo.name);}.bind(this)); //W3C and IE compliant
 	
-	this.tabHTMLElement.setAttribute('onclick', opManagerInvocation);
-		
     // Dragboard layer creation
     var dragboardHTML = $("dragboard_template").innerHTML;
     var wrapper = $("wrapper");
@@ -92,9 +94,9 @@ function Tab (tabInfo, workSpace) {
     new Insertion.Top(wrapper, dragboardHTML);
     
     this.dragboardElement = wrapper.firstDescendant();
-        
+         
     this.dragboardElement.setAttribute('id', this.dragboardLayerName);
-    this.dragboardElement.setStyle({'display': 'block'});
+    this.dragboardElement.setStyle({'display': 'block'});    
                 	
 	this.dragboard = new Dragboard(this, this.workSpace, this.dragboardElement);
 }

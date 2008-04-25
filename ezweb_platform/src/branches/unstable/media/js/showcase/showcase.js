@@ -98,10 +98,6 @@ var ShowcaseFactory = function () {
 		var _opManager = OpManagerFactory.getInstance();
 		var _persistenceEngine = PersistenceEngineFactory.getInstance();			
 		
-		// Initial load from persitence system
-		_persistenceEngine.send_get(URIs.GET_GADGETS, this, loadGadgets, onErrorCallback);
-						
-
 		// ****************
 		// PUBLIC METHODS
 		// ****************
@@ -160,6 +156,11 @@ var ShowcaseFactory = function () {
 		Showcase.prototype.addInstance = function (gadgetId_) {
 			var gadget = _gadgets[gadgetId_];
 			_opManager.addInstance (gadget);
+		}
+		
+		Showcase.prototype.init = function () {
+			// Initial load from persitence system
+			_persistenceEngine.send_get(URIs.GET_GADGETS, this, loadGadgets, onErrorCallback);
 		}
 		
 	}

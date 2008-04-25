@@ -52,6 +52,7 @@ var CatalogueFactory  = function () {
 		var resources = new HashTable();
 		var selectedResources = [];
 		var globalTags = [];
+		var catalogueElement = $('catalogue');
 		    
 		
 		// ********************
@@ -207,6 +208,7 @@ var CatalogueFactory  = function () {
 			return globalTags;
 		}
 		
+		
 		this.loadCatalogue = function(urlCatalogue_) {
 		
 			// ******************
@@ -230,7 +232,6 @@ var CatalogueFactory  = function () {
 				msg = interpolate(gettext("Error retrieving catalogue data: %(errorMsg)s."), {errorMsg: msg}, true);
 				OpManagerFactory.getInstance().log(msg);
 
-				alert (gettext("Error retrieving catalogue data, please check the logs for further info."));
 			}
 			
 			var loadResources = function(transport) {
@@ -257,6 +258,7 @@ var CatalogueFactory  = function () {
 				
 				//UIUtils.removeAllGlobalTags();
 				document.getElementById("global_tagcloud").innerHTML = '';
+				
 			}
 
 			var param = {orderby: UIUtils.orderby};

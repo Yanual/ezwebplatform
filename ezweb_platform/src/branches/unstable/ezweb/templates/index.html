@@ -59,6 +59,8 @@ var URIs = new _URIConstants();
 <script language="JavaScript" src="{{ MEDIA_URL }}js/opManager/Tab.js"></script>
 
 <script language="JavaScript" src="{{ MEDIA_URL }}js/opManager/OpManager.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/layoutManager/LayoutManager.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/layoutManager/BrowserUtils.js"></script>
 <script language="JavaScript" src="{{ MEDIA_URL }}js/varManager/VariableGadget.js"></script>
 <script language="JavaScript" src="{{ MEDIA_URL }}js/varManager/VariablePlatform.js"></script>
 <script language="JavaScript" src="{{ MEDIA_URL }}js/varManager/varManager.js"></script>
@@ -96,14 +98,6 @@ var URIs = new _URIConstants();
 <!-- Initialization code -->
 <script language="JavaScript">
 	
-	function resizeWrapper() {
-		// We have to take into account the bottom margin and border widths.
-		// Bottom margin = 4px
-		// Border width = 2px => Top border + bottom border = 4px
-		// Total 8px
-		$("wrapper").setStyle({"height" : (window.innerHeight - $("header").offsetHeight - 8) + "px"});
-	}
-	
 	function setLanguage(language) {
 		var onSuccess = function() {
 			window.location.reload();
@@ -123,7 +117,7 @@ var URIs = new _URIConstants();
 
 </head>
 
-<body onload="resizeWrapper();opManager.loadEnviroment();" onresize="resizeWrapper();">
+<body onload="OpManagerFactory.getInstance().loadEnviroment()" onresize="LayoutManagerFactory.getInstance().resizeWrapper();">
 
 <!-- HEADER -->
 <div id="header">
@@ -132,9 +126,9 @@ var URIs = new _URIConstants();
   <img id="logo" src="{{ MEDIA_URL }}images/logo.gif" alt="EzWeb Logo">
   <div id="tab_section" class="tab_section">
     <div id="toolbar_section" class="toolbar_section">
-    <span id="catalogue_link"  class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().show_catalogue()">{% trans "Catalogue" %}</span>
-    <span id="wiring_link" class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().show_wiring();">{% trans "Wires" %}</span>
-    <span id="logs_link" class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().show_logs();">Logs</span>
+    <span id="catalogue_link"  class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().showCatalogue()">{% trans "Catalogue" %}</span>
+    <span id="wiring_link" class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().showWiring();">{% trans "Wires" %}</span>
+    <span id="logs_link" class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().showLogs();">Logs</span>
   </div>
   </div>
 </div>

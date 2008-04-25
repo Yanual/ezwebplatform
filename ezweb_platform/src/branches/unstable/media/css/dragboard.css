@@ -4,7 +4,7 @@ div.gadget_window {
   background: white;
 }
 
-div.gadget_window div.gadget_menu {
+div.gadget_menu {
   cursor: move;
   padding: 1px 3px 1px 7px;
   height: 16px;

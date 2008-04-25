@@ -107,17 +107,6 @@ var OpManagerFactory = function () {
 		
 		this.loadCompleted = false;
 		
-		// Global links managed by OpManager: {showcase, wiring}
-		// Tabs are managed by WorkSpaces!! 
-		this.showCaseLink = null;
-		this.wiringLink = null;
-		
-		// Container managed by OpManager: {showcase_tab}
-		// Remaining containers managed by WorkSpaces!!
-		this.showCase = null;
-		this.logsConsole = null;
-		this.logsLink = null;
-		
 		// Variables for controlling the collection of wiring and dragboard instances of a user
 		this.workSpaceInstances = new Hash();
 		this.activeWorkSpace;
@@ -127,31 +116,22 @@ var OpManagerFactory = function () {
 		// PUBLIC METHODS 
 		// ****************
 		
-		OpManager.prototype.unMarkGlobalTabs = function () {			
-			this.showCaseLink.className = 'toolbar_unmarked';
-			this.wiringLink.className = 'toolbar_unmarked';
-			this.logsLink.className = 'toolbar_unmarked';
-			this.showCase.setStyle({'zIndex': 1, 'visibility' : 'hidden'});
-			this.logsConsole.setStyle({'zIndex': 1, 'visibility' : 'hidden'});
-		}
-		
-		OpManager.prototype.show_wiring = function () {
-			this.unMarkGlobalTabs();
+		OpManager.prototype.showWiring = function () {
+			LayoutManagerFactory.getInstance().unMarkGlobalTabs();
 		    this.activeWorkSpace.showWiring();
 		}
 		
-		OpManager.prototype.show_catalogue = function () {
-			this.unMarkGlobalTabs();
+		OpManager.prototype.showCatalogue = function () {
+			
+			LayoutManagerFactory.getInstance().unMarkGlobalTabs();
 			this.activeWorkSpace.hide();
 		
-			this.showCaseLink.className = 'toolbar_marked';
-			this.showCase.setStyle({'zIndex': 2, 'visibility': 'visible'});
-			
+			LayoutManagerFactory.getInstance().showShowCase();
+
 			if (UIUtils.isInfoResourcesOpen) {
 				UIUtils.isInfoResourcesOpen = false;
 				UIUtils.SlideInfoResourceOutOfView('info_resource');
 			}
-			
 			
 			// Load catalogue data!
 			this.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
@@ -161,10 +141,11 @@ var OpManagerFactory = function () {
 			$('simple_search_text').focus();
 		}
 		
-		OpManager.prototype.show_logs = function () {
-			this.unMarkGlobalTabs();
+
+		OpManager.prototype.showLogs = function () {
+			LayoutManagerFactory.getInstance().unMarkGlobalTabs();
 			this.activeWorkSpace.hide();
-			this.logsConsole.setStyle({'zIndex': 2, 'visibility': 'visible'});
+			LayoutManagerFactory.getInstance().showLogs();
 		}
 		
 		OpManager.prototype.changeActiveWorkSpace = function (workSpace) {
@@ -178,7 +159,7 @@ var OpManagerFactory = function () {
 		}			
 
 		OpManager.prototype.changeVisibleTab = function (tabName) {
-			this.unMarkGlobalTabs();
+			LayoutManagerFactory.getInstance().unMarkGlobalTabs();
 		    this.activeWorkSpace.setTab(tabName);
 		    this.activeDragboard = this.activeWorkSpace.getVisibleTab().getDragboard();
 		    
@@ -227,11 +208,12 @@ var OpManagerFactory = function () {
 			// Showcase is the first!
 			// When it finish, it will invoke continueLoadingGlobalModules method!
 			this.showcaseModule = ShowcaseFactory.getInstance();
+			this.showcaseModule.init();
 		}
 
 		OpManager.prototype.repaintCatalogue = function (url) {
 	 	    this.catalogue.emptyResourceList();
-		    this.catalogue.loadCatalogue(url);	
+		    this.catalogue.loadCatalogue(url);
 		}
 
 		OpManager.prototype.igadgetLoaded = function () {
@@ -271,6 +253,7 @@ var OpManagerFactory = function () {
 		    if (module == Modules.prototype.ACTIVE_WORKSPACE) {
 		    	this.loadCompleted = true;
 		    	this.changeActiveWorkSpace(this.activeWorkSpace.getName());
+		    	LayoutManagerFactory.getInstance().resizeWrapper();
 		    	return;
 		    }
 		}
@@ -294,10 +277,10 @@ var OpManagerFactory = function () {
 //			if (this.errorCount++ == 0) {
 //				$("logs_tab").className="tab";
 //			}
-			
+
 			label = ngettext("%(errorCount)s error", "%(errorCount)s errors", ++this.errorCount);
 			label = interpolate(label, {errorCount: this.errorCount}, true);
-			this.logsLink.innerHTML = label;
+			LayoutManagerFactory.getInstance().logsLink.innerHTML = label;
 
 			var logentry = document.createElement("p");
 
@@ -308,7 +291,7 @@ var OpManagerFactory = function () {
 				icon.setAttribute("src", "/ezweb/images/error.png");
 				icon.setAttribute("class", "icon");
 				icon.setAttribute("alt", "[Error] ");
-				this.logsConsole.appendChild(icon);
+				LayoutManagerFactory.getInstance().logsConsole.appendChild(icon);
 				try {
 					console.error(msg);
 				} catch (e) {}
@@ -318,7 +301,7 @@ var OpManagerFactory = function () {
 				icon.setAttribute("src", "/ezweb/images/warning.png");
 				icon.setAttribute("class", "icon"); 
 				icon.setAttribute("alt", "[Warning] ");
-				this.logsConsole.appendChild(icon);
+				LayoutManagerFactory.getInstance().logsConsole.appendChild(icon);
 				try {
 					if (console) console.warn(msg);
 				} catch (e) {}
@@ -328,7 +311,7 @@ var OpManagerFactory = function () {
 				icon.setAttribute("src", "/ezweb/images/info.png");
 				icon.setAttribute("class", "icon");
 				icon.setAttribute("alt", "[Info] ");
-				this.logsConsole.appendChild(icon);
+				LayoutManagerFactory.getInstance().logsConsole.appendChild(icon);
 				try {
 					if (console) console.info(msg);
 				} catch (e) {}
@@ -342,7 +325,8 @@ var OpManagerFactory = function () {
 			  msg = msg.substring(index + 1);
 			}
 			logentry.appendChild(document.createTextNode(msg));
-			this.logsConsole.appendChild(logentry);
+			LayoutManagerFactory.getInstance().logsConsole.appendChild(logentry);
+
 		}
 	}
 	

@@ -81,8 +81,7 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
     this.visible = true;
 
     this.renewInterface();
-    this.wiringContainer.setStyle({'zIndex' : 2, 'visibility': 'visible'});
-    this.wiringLink.className = "toolbar_marked";
+    LayoutManagerFactory.getInstance().showWiring(this.wiringContainer);
     Event.observe($('newChannelForm'), 'submit', this._eventCreateChannel);
   }
 
@@ -94,7 +93,7 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
 
     this.saveWiring();
     Event.stopObserving(this.channelForm, 'submit', this._eventCreateChannel);
-    this.wiringContainer.setStyle({'zIndex' : 1, 'visibility': 'hidden'});
+    LayoutManagerFactory.getInstance().hideWiring(this.wiringContainer);
   }
 
   WiringInterface.prototype.saveWiring = function () {

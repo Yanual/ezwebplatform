@@ -189,7 +189,7 @@ function TextUserPref(name_, label_, desc_, defaultValue_) {
 
 TextUserPref.prototype = new UserPref();
 
-TextUserPref.prototype.makeInterface = function (IGadgetId) {
+TextUserPref.prototype.makeInterface = function (varManager, IGadgetId) {
 	var element;
 
 	element = document.createElement("input");

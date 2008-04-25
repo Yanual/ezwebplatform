@@ -57,6 +57,7 @@ function WorkSpace (workSpaceState) {
 
 	// Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
 	var loadWorkSpace = function (transport) {
+		
 		// JSON-coded iGadget-variable mapping
 		var response = transport.responseText;
 		this.workSpaceGlobalInfo = eval ('(' + response + ')');
@@ -160,6 +161,7 @@ function WorkSpace (workSpaceState) {
 			return;
 		
 		this.wiringInterface.hide();
+
 		
 		var tabList = this.tabInstances.keys();
 		
@@ -218,7 +220,7 @@ function WorkSpace (workSpaceState) {
 		tab.getDragboard().showInstance(igadget);
 
 		// The dragboard must be shown after an igadget insertion
-		OpManagerFactory.getInstance().unMarkGlobalTabs();
+		LayoutManagerFactory.getInstance().unMarkGlobalTabs();
 		this.showVisibleTab();
 	}
 

@@ -36,54 +36,70 @@
  */
 
 
-var PersistenceEngineFactory = function () {
+var BrowserUtilsFactory = function () {
 
 	// *********************************
 	// SINGLETON INSTANCE
 	// *********************************
 	var instance = null;
 
-	function PersitenceEngine () {
+	function BrowserUtils () {
 
+		
 		// ****************
 		// PUBLIC METHODS 
 		// ****************
-		PersitenceEngine.prototype.send_get = function (url, context, successHandler, errorHandler) {
-			new Ajax.Request(url, {
-				method: 'get',
-				parameters: arguments[4],
-				onSuccess: successHandler.bind(context),
-				onFailure: errorHandler.bind(context),
-				onException: errorHandler.bind(context)
-			    });
-		} 
 		
-		PersitenceEngine.prototype.send_post = function (url, params, context, successHandler, errorHandler) {
-			new Ajax.Request(url, {
-				method: 'post',
-				parameters: params,
-				onSuccess: successHandler.bind(context),
-				onFailure: errorHandler.bind(context)
-			    });
+		BrowserUtils.prototype.getHeight = function () {
+			var newHeight=window.innerHeight; //Non-IE (Firefox and Opera)
+			  
+			if( document.documentElement && document.documentElement.clientHeight ) {
+			  //IE 6+ in 'standards compliant mode'
+			  newHeight = document.documentElement.clientHeight;
+			} else if( document.body && document.body.clientHeight ) {
+			  //IE 4 compatible and IE 5-7 'quirk mode'
+			  newHeight = document.body.clientHeight;
+			}
+			return newHeight;
 		}
 		
-		PersitenceEngine.prototype.send_delete = function (url, context, successHandler, errorHandler){
-			new Ajax.Request(url, {
-				method: 'delete',
-				onSuccess: successHandler.bind(context),
-				onFailure: errorHandler.bind(context),
-				onException: errorHandler.bind(context)
-			});
+		BrowserUtils.prototype.isLeftButton = function(button){
+			
+			if (button == 0 || (this.isIE() && button == 1))
+				return true;
+			else
+				return false;	
+		}
+	
+		BrowserUtils.prototype.getBrowser = function(){ 
+			if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)){ //test for MSIE x.x;
+				var ieversion=new Number(RegExp.$1) // capture x.x portion and store as a number
+				if (ieversion>=8)
+					return "IE8";
+				else if (ieversion>=7)
+					return "IE7";
+				else if (ieversion>=6)
+					return "IE6";
+				else if (ieversion>=5)
+					return "IE5";
+			} else if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)){ //test for Firefox/x.x or Firefox x.x (ignoring remaining digits);
+				var ffversion=new Number(RegExp.$1) // capture x.x portion and store as a number
+				if (ffversion>=3)
+			 		return "FF3"
+				else if (ffversion>=2)
+			  		return "FF2"
+			 	else if (ffversion>=1)
+			  		return "FF1"
+			} else{
+				return "OTHER";
+			}			
 		}
 		
-		PersitenceEngine.prototype.send_update = function (url, params, context, successHandler, errorHandler){
-			new Ajax.Request(url, {
-				method: 'put',
-				parameters: params,
-				onSuccess: successHandler.bind(context),
-				onFailure: errorHandler.bind(context),
-				onException: errorHandler.bind(context)
-			});
+		BrowserUtils.prototype.isIE = function(){ 
+			if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)) //test for MSIE x.x;	
+				return true;
+			else
+				return false;		
 		}
 		
 	}
@@ -94,10 +110,11 @@ var PersistenceEngineFactory = function () {
 	return new function() {
     	this.getInstance = function() {
     		if (instance == null) {
-        		instance = new PersitenceEngine();
+        		instance = new BrowserUtils();
          	}
          	return instance;
        	}
 	}
 	
 }();
+

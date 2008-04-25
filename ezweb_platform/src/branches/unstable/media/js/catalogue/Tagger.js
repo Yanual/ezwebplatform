@@ -87,7 +87,8 @@ function Tagger(){
 		if (tags.size()>0)
 		{
 			var onError = function(transport) {
-				alert(gettext ("Error POST"));
+				var msg = interpolate(gettext("Error sending tags: %(errorMsg)s."), {errorMsg: transport.status}, true);
+				OpManagerFactory.getInstance().log(msg);
 				// Process
 			}
 			
@@ -119,7 +120,8 @@ this.removeTagUser = function(url, resourceURI,id)
 			var resource = CatalogueFactory.getInstance().getResource(id);
 
 			var onError = function(transport) {
-				alert(gettext ("Error DELETE"));
+				var msg = interpolate(gettext("Error removing tag: %(errorMsg)s."), {errorMsg: transport.status}, true);
+				OpManagerFactory.getInstance().log(msg);
 				// Process
 			}
 			
