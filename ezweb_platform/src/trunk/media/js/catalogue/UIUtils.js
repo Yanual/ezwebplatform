@@ -245,7 +245,7 @@ UIUtils.changeImage = function(elementId_, newImage_) {
 }
 
 UIUtils.searchByTag = function(url, tag) {
-	this.closeInfoResource();
+	UIUtils.closeInfoResource();
 	var opManager = OpManagerFactory.getInstance();
 
 	if (UIUtils.balloonResource)
@@ -291,7 +291,7 @@ UIUtils.searchByWiring = function(url, value, wiring) {
 }
 
 UIUtils.cataloguePaginate = function(url, offset, pag, items) {
-	this.closeInfoResource();
+	UIUtils.closeInfoResource();
 	UIUtils.off=offset;
 	UIUtils.num_items=items;
 	var opManager = OpManagerFactory.getInstance();

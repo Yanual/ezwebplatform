@@ -10,7 +10,7 @@
 			</div>
 			<div id="simple_search" name="simple_search" class="simple_search">	
 				<label for="simple_search_text">{% trans  "Search:" %}</label>
-				<input type="text" id="simple_search_text" name="simple_search_text" class="text" autocomplete="on" onKeyUp="if(this.value.length < 20){;}else if (this.value.length >= 16 && this.value.length < 30){this.size=this.value.length + 2;}" onkeypress="UIUtils.onReturn(event,UIUtils.searchGeneric,URIs.GET_RESOURCES_SEARCH_GENERIC, '', this.value, '');"></input>
+				<input type="text" id="simple_search_text" name="simple_search_text" class="text" autocomplete="on" onKeyUp="if(this.value.length<20){;}else if (this.value.length >= 16 && this.value.length < 30){this.size=this.value.length + 2;}" onkeypress="UIUtils.onReturn(event,UIUtils.searchGeneric,URIs.GET_RESOURCES_SEARCH_GENERIC, '', this.value, '');"></input>
 				<a class="submit_link" href="#" onclick="UIUtils.searchGeneric(URIs.GET_RESOURCES_SEARCH_GENERIC, '', $('simple_search_text').value, '');">{% trans  "Search" %}</a>
 			</div>
 			<div id="advanced_options" class="advanced_options">
@@ -25,17 +25,17 @@
 				<table>
 					<tr>
 						<td><label for="advanced_search_text_tag">{% trans  "Search by tags:" %}</label></td>
-						<td><input type="text" id="advanced_search_text_tag" name="advanced_search_text_tag" class="text" autocomplete="on"></input></td>
+						<td><input type="text" id="advanced_search_text_tag" name="advanced_search_text_tag" class="text" autocomplete="on" onkeypress="UIUtils.onReturn(event,UIUtils.searchByTag,URIs.GET_RESOURCES_BY_TAG, $('advanced_search_text_tag').value);"></input></td>
 						<td><a href="#" class="submit_link" onclick="UIUtils.searchByTag(URIs.GET_RESOURCES_BY_TAG, $('advanced_search_text_tag').value);">{% trans  "Search" %}</a></td>
 					</tr>
 					<tr>
  						<td><label for="advanced_search_text_event">{% trans  "Search by events:" %}</label></td>
-						<td><input type="text" id="advanced_search_text_event" name="advanced_search_text_event" class="text" autocomplete="on"></input></td>
+						<td><input type="text" id="advanced_search_text_event" name="advanced_search_text_event" class="text" autocomplete="on" onkeypress="UIUtils.onReturn(event,UIUtils.searchByWiring,URIs.GET_RESOURCES_BY_WIRING, $('advanced_search_text_event').value, 'event');"></input></td>
 						<td><a href="#" class="submit_link" onclick="UIUtils.searchByWiring(URIs.GET_RESOURCES_BY_WIRING, $('advanced_search_text_event').value, 'event');">{% trans  "Search" %}</a></td>
 					</tr>
 					<tr>
  						<td><label for="advanced_search_text_slot">{% trans  "Search by slots:" %}</label></td>
-						<td><input type="text" id="advanced_search_text_slot" name="advanced_search_text_slot" class="text" autocomplete="on"></input></td>
+						<td><input type="text" id="advanced_search_text_slot" name="advanced_search_text_slot" class="text" autocomplete="on"  onkeypress="UIUtils.onReturn(event,UIUtils.searchByWiring,URIs.GET_RESOURCES_BY_WIRING, $('advanced_search_text_slot').value, 'slot');"></input></td>
 						<td><a href="#" class="submit_link" onclick="UIUtils.searchByWiring(URIs.GET_RESOURCES_BY_WIRING, $('advanced_search_text_slot').value, 'slot');">{% trans "Search" %}</a></td>
 					</tr>
 				</table>
