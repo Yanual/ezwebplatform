@@ -36,7 +36,6 @@
 #   http://morfeo-project.org/
 #
 
-
 from urllib2 import *
 import httplib
 import urlparse
@@ -51,6 +50,12 @@ from django.http import Http404, HttpResponse, HttpResponseServerError
 from django.conf import settings
 
 import string
+
+def getConnection(protocol, proxy, host):
+    if (proxy != ""):
+        return httplib.HTTPConnection(proxy)
+    else:
+        return httplib.HTTPConnection(host)
 
 class Proxy(Resource):
     def create(self,request):
@@ -76,7 +81,7 @@ class Proxy(Resource):
         try:
             # Request creation
             proto, host, cgi, param, query = urlparse.urlparse(url)[:5]
-
+            
 	    query = encode_query(query)
             
             # Proxy support
@@ -85,17 +90,29 @@ class Proxy(Resource):
                 proxy = settings.PROXY_SERVER
             except Exception:
                 proxy = ""
-
-            if (proxy != ""):
-                conn = httplib.HTTPConnection(proxy)
-            else:
-                conn = httplib.HTTPConnection(host)
                 
-            # Add original request Headers to the request
+            conn = getConnection(proto, proxy, host)
+                
+            # Adds original request Headers to the request (and modifies Content-Type for Servlets)
             headers = {}
+            has_content_type = False
+            http_content_type_value = ''
             for header in request.META.items():
+                if (header[0].lower() == 'content-type'):
+                    if (header[1] != None and header[1].lower() != 'none'):
+                        has_content_type = True
+                if (header[0].lower() == 'http_content_type'):
+                    http_content_type_value = header[1]
                 headers[header[0]] = header[1]
+                    
                 
+            # Add Content-Type (Servlets bug)
+            if ((method == 'POST' or method == 'PUT') and not has_content_type):
+                if (http_content_type_value != ''):
+                    headers['Content-Type'] = http_content_type_value
+                else:
+                    headers['Content-Type'] = 'application/x-www-form-urlencoded'
+            
             # The same with cookies
             cookies = ''
             for cookie in request.COOKIES.items():
@@ -125,9 +142,9 @@ class Proxy(Resource):
 
                 url = res.getheader('Location')
                 proto, host, cgi, param, auxquery = urlparse.urlparse(url)[:5]
-                conn = httplib.HTTPConnection(host)
+                conn = getConnection(proto, proxy, host)
 
-		auxquery = encode_query(auxquery)
+                auxquery = encode_query(auxquery)
 
                 if query != '':
                     query = query + "&" + auxquery
@@ -150,7 +167,7 @@ class Proxy(Resource):
             else:
                 response = HttpResponse (res.read())
 
-	    # Set status code to the response
+            # Set status code to the response
             response.status_code = res.status
 
             # Add all the headers recieved to the response
