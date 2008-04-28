@@ -4,7 +4,7 @@
  * 
  * Component: EzWeb
  * 
- * (C) Copyright 2004 Telefónica Investigación y Desarrollo 
+ * (C) Copyright 2008 Telefónica Investigación y Desarrollo 
  *     S.A.Unipersonal (Telefónica I+D) 
  * 
  * Info about members and contributors of the MORFEO project 
@@ -45,24 +45,26 @@ var LayoutManagerFactory = function () {
 
 	function LayoutManager () {
 	        
-	    // *********************************
+		// *********************************
 		// PRIVATE VARIABLES 
 		// *********************************
 		
 		// z-index levels	
-			this.hideLevel = 1;
-			this.showLevel = 2;
+		this.hideLevel = 1;
+		this.showLevel = 2;
 			
-		// Global links managed by LayoutManager: {showcase, wiring}
+		// Global links managed by LayoutManager: {showcase, wiring & logs}
 		// Tabs are managed by WorkSpaces!! 
-			this.showCaseLink = $('catalogue_link');
-			this.wiringLink = $('wiring_link');
+		this.showCaseLink = $('catalogue_link');
+		this.wiringLink = $('wiring_link');
+		this.logsLink = $('logs_link');
 			
-		// Container managed by LayOutManager: {showcase_tab}
+		// Container managed by LayOutManager: {showcase_tab & logs container}
 		// Remaining containers managed by WorkSpaces!!
-			this.showCase = $('showcase_container');
-			this.logsConsole = $('logs_container');
-			this.logsLink = $('logs_link');
+		this.showCase = $('showcase_container');
+		this.logsContainer = $('logs_container');
+
+		this.logsConsole = $('logs_console');
 		
 		// ****************
 		// PUBLIC METHODS 
@@ -86,16 +88,6 @@ var LayoutManagerFactory = function () {
 		}
 		
 		LayoutManager.prototype.unMarkGlobalTabs = function () {
-			if (!this.showCaseLink) {
-				this.showCaseLink = $('catalogue_link');
-				this.showCase = $('showcase_container');
-				
-				this.logsConsole = $('logs_container');
-				this.logsLink = $('logs_link');
-				
-				this.wiringLink = $('wiring_link');
-			}
-			
 			this.showCaseLink.className = 'toolbar_unmarked';
 			this.wiringLink.className = 'toolbar_unmarked';
 			this.logsLink.className = 'toolbar_unmarked';
@@ -135,11 +127,11 @@ var LayoutManagerFactory = function () {
 		
 		// Logs operations
 		LayoutManager.prototype.showLogs = function(){
-			this.logsConsole.setStyle({'zIndex': this.showLevel, 'display': 'block', 'visibility': 'visible'});
+			this.logsContainer.setStyle({'zIndex': this.showLevel, 'display': 'block', 'visibility': 'visible'});
 		}
 		
 		LayoutManager.prototype.hideLogs = function(){
-			this.logsConsole.setStyle({'zIndex': this.hideLevel, 'visibility': 'hidden'});
+			this.logsContainer.setStyle({'zIndex': this.hideLevel, 'visibility': 'hidden'});
 		}
 		
 		//Wiring operations
@@ -158,12 +150,11 @@ var LayoutManagerFactory = function () {
 	// SINGLETON GET INSTANCE
 	// *********************************
 	return new function() {
-    	this.getInstance = function() {
-    		if (instance == null) {
-        		instance = new LayoutManager();
-         	}
-         	return instance;
-       	}
+		this.getInstance = function() {
+			if (instance == null) {
+				instance = new LayoutManager();
+			}
+			return instance;
+		}
 	}
-	
 }();

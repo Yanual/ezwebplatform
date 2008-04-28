@@ -50,15 +50,6 @@ var OpManagerFactory = function () {
 		// ****************
 		
 		var loadEnvironment = function (transport) {
-			// References to EzWeb containers
-			this.showCaseLink = $('catalogue_link');
-			this.showCase = $('showcase_container');
-			
-			this.logsConsole = $('logs_console');
-			this.logsLink = $('logs_link');
-			
-			this.wiringLink = $('wiring_link');
-			
 			// JSON-coded user tabspaces
 			var response = transport.responseText;
 			var workSpacesStructure = eval ('(' + response + ')');
