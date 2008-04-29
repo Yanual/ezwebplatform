@@ -269,7 +269,7 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
     for (var i = 0; i < tabs.length; i++) {
       var tab = workspace.tabInstances[tabs[i]];
       var connectableElement = document.createElement("div");
-      connectableElement.appendChild(document.createTextNode(tabs[i]));
+      connectableElement.appendChild(document.createTextNode(tab.tabInfo.name));
 
       var chkItem = document.createElement("div");
       chkItem.addClassName("unchkItem");
