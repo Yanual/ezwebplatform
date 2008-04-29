@@ -321,7 +321,7 @@ var LayoutManagerFactory = function () {
 		var FADE_STEP = 5;
 		var self = this;
 		LayoutManager.prototype.goTab = function(tab){
-			tab.className = "tab current";
+			this.markTab(tab);
 			var currentColour = [FADE_RED_INI, FADE_GREEN_INI, FADE_BLUE_INI];
 			tab.style.background = "rgb(" + currentColour[0] + "," + currentColour[1] + "," + currentColour[2] + ")";
 			setTimeout(function(){
