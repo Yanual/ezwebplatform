@@ -108,13 +108,13 @@ function Tab (tabInfo, workSpace) {
 	}
 
 	Tab.prototype.show = function () {
-
 		LayoutManagerFactory.getInstance().showDragboard(this.dragboardElement);
 
 	    this.dragboard.recomputeSize();
 	    this.markAsCurrent();
 	    
 	}
+	
 	Tab.prototype.markAsCurrent = function (){
 		LayoutManagerFactory.getInstance().markTab(this.tabHTMLElement);
 	}
@@ -123,6 +123,7 @@ function Tab (tabInfo, workSpace) {
 		LayoutManagerFactory.getInstance().hideTab(this.tabHTMLElement);
 		this.hideDragboard();
 	}
+	
 	Tab.prototype.deleteHTMLElement = function () {
 		Element.remove(this.tabHTMLElement);
 	}

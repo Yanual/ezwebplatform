@@ -56,28 +56,28 @@ function VarManager (_workSpace) {
 		}
 		
 		// Workspace variables (Connectables and future variables!)
-		var inouts = workSpaceInfo['workspace']['inoutList'];
+		var ws_vars = workSpaceInfo['workspace']['workSpaceVariableList'];
 				
-		this.parseWorkspaceVariables(inouts);
+		this.parseWorkspaceVariables(ws_vars);
 	}
 	
 
-	VarManager.prototype.parseWorkspaceVariables = function (inouts) {
+	VarManager.prototype.parseWorkspaceVariables = function (ws_vars) {
 		var objVars = []
-		for (var i = 0; i<inouts.length; i++) {
-			var id = inouts[i].variableId;
-			var name = inouts[i].name;
-			var aspect = inouts[i].aspect;
-			var value = inouts[i].value;
+		for (var i = 0; i<ws_vars.length; i++) {
+			var id = iws_vars[i].variableId;
+			var name = ws_vars[i].name;
+			var aspect = ws_vars[i].aspect;
+			var value = ws_vars[i].value;
 				
 			switch (aspect) {
 				case Variable.prototype.INOUT:
 					objVars[name] = new RWVariable(id, null, name, aspect, this, value);
-					workspaceVariables[id] = objVars[name]; // TODO mix with normal variables
+					workspaceVariables[id] = objVars[name]; 
 					break;
 				case Variable.prototype.TAB:
 					objVars[id] = new RVariable(id, null, name, aspect, this, value);
-					workspaceVariables[id] = objVars[id]; // TODO mix with normal variables
+					workspaceVariables[id] = objVars[id]; 
 					break;
 			}
 		}		
