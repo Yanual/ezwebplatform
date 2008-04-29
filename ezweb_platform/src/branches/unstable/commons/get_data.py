@@ -46,6 +46,12 @@ from connectable.models import In, Out, InOut
 from context.models import Concept, ConceptName
 from workspace.models import Tab, WorkSpace, WorkSpaceVariable
 
+def get_workspace_variable_data(data):
+    data_ret = {}
+    data_fields = data['fields']
+        
+    return data_ret
+
 def get_wiring_variable_data(var, ig):
     res_data = {}
 
@@ -203,6 +209,13 @@ def get_workspace_data(data):
         data_ret['active'] = "false"
     return data_ret
 
+def get_workspace_variables_data(workSpaceDAO):
+    ws_variables = WorkSpaceVariable.objects.filter(workspace=workSpaceDAO)  
+    data = serializers.serialize('python', ws_variables, ensure_ascii=False)
+    ws_variables_data = [get_workspace_variable_data(d) for d in data]
+    
+    return ws_variables_data
+
 def get_global_workspace_data(data, workSpaceDAO):
     data_ret = {}
     data_ret['workspace'] = get_workspace_data(data)  
@@ -221,12 +234,17 @@ def get_global_workspace_data(data, workSpaceDAO):
         igadget_data = [get_igadget_data(d) for d in igadget_data]
         tab['igadgetList'] = igadget_data
         
-    #Channel processing
+    #WorkSpace variables processing
+    workspace_variables_data = get_workspace_variables_data(workSpaceDAO)
+    data_ret['workspace']['workSpaceVariableList'] = workspace_variables_data
+    
+    #Wiring information
     inouts = InOut.objects.filter(workspace_variable__workspace=workSpaceDAO)  
     data = serializers.serialize('python', inouts, ensure_ascii=False)
-    inout_data = [get_inout_data(d) for d in data]
+    inouts_data = [get_inout_data(d) for d in data]
+                   
+    data_ret['workspace']['wiringInfo'] = inouts_data
     
-    data_ret['workspace']['inoutList'] = inout_data
     return data_ret
 
 def get_tab_data(data):
@@ -263,6 +281,28 @@ def get_igadget_data(data):
     data = serializers.serialize('python', variables, ensure_ascii=False)
     data_ret['variables'] = [get_variable_data(d) for d in data]
    
+    return data_ret
+
+def get_variable_data(data):
+    data_ret = {}
+    data_fields = data['fields']
+    
+    var_def = VariableDef.objects.get(id=data_fields['vardef'])
+    
+    data_ret['id'] = data['pk']
+    data_ret['igadgetId'] = data_fields['igadget']
+    data_ret['vardefId'] = var_def.pk
+    data_ret['name'] = var_def.name
+    data_ret['aspect'] = var_def.aspect
+    
+    if var_def.aspect == 'GCTX':
+          context = GadgetContext.objects.get(varDef=data_fields['vardef'])
+          data_ret['concept'] = context.concept
+    if var_def.aspect == 'ECTX':
+          context = ExternalContext.objects.get(varDef=data_fields['vardef'])
+          data_ret['concept'] = context.concept
+    data_ret['value'] = data_fields['value']
+    
     return data_ret
 
 def get_variable_data(data):

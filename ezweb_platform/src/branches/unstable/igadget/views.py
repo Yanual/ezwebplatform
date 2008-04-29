@@ -78,6 +78,7 @@ def SaveIGadget(igadget, user, tab):
 
         new_igadget = IGadget(code=igadget_code, gadget=gadget, tab=tab, position=position)
         new_igadget.save()
+        
         ids = {}
         ids['igadget'] = {}
         ids['igadget']['id'] = unicode(new_igadget.pk)
