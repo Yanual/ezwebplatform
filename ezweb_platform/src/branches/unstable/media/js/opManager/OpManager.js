@@ -227,7 +227,8 @@ var OpManagerFactory = function () {
 		}
 
 		OpManager.prototype.loadEnviroment = function () {
-		    // First, global modules must be loades (Showcase, Catalogue)
+			LayoutManagerFactory.getInstance().resizeWrapper();
+			// First, global modules must be loades (Showcase, Catalogue)
 			// Showcase is the first!
 			// When it finish, it will invoke continueLoadingGlobalModules method!
 			this.showcaseModule = ShowcaseFactory.getInstance();
