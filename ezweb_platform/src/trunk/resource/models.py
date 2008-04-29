@@ -62,6 +62,8 @@ class GadgetResource(models.Model):
      wiki_page_uri = models.URLField(_('wikiURI')) 
      template_uri= models.URLField(_('templateURI'))
 
+     popularity = models.DecimalField(_('popularity'), null=True, max_digits=2, decimal_places=1)
+
      class Meta:
          unique_together = ("short_name", "vendor","version")
 

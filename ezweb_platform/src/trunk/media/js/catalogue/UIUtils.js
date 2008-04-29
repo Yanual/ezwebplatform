@@ -245,7 +245,7 @@ UIUtils.changeImage = function(elementId_, newImage_) {
 }
 
 UIUtils.searchByTag = function(url, tag) {
-	UIUtils.closeInfoResource();
+	this.closeInfoResource();
 	var opManager = OpManagerFactory.getInstance();
 
 	if (UIUtils.balloonResource)
@@ -291,7 +291,7 @@ UIUtils.searchByWiring = function(url, value, wiring) {
 }
 
 UIUtils.cataloguePaginate = function(url, offset, pag, items) {
-	UIUtils.closeInfoResource();
+	this.closeInfoResource();
 	UIUtils.off=offset;
 	UIUtils.num_items=items;
 	var opManager = OpManagerFactory.getInstance();
@@ -952,3 +952,55 @@ UIUtils.onReturn = function(event_, handler_, inputText_) {
   }
 };
 
+UIUtils.rating = function(num)
+{
+	var star = num.id.replace("_", ''); // Get the selected star
+
+	for(var i=1; i<=5; i++){		
+		if(i<=star){
+			$("_"+i).className = "on";
+			//$("rateStatus").innerHTML = num.title;	
+		}else{
+			$("_"+i).className = "";
+		}
+	}
+}
+
+UIUtils.off_rating = function(num)
+{
+	var vote = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).getUserVote();
+
+	for(var i=1; i<=5; i++){		
+		if(i<=vote){
+			$("_"+i).className = "on";
+			//$("rateStatus").innerHTML = num.title;	
+		}else{
+			$("_"+i).className = "";
+		}
+	}
+}
+
+UIUtils.sendVotes = function(num) {
+	
+	var onError = function(transport) {
+		alert(gettext ("Error POST"));
+				// Process
+	}
+			
+	var loadVotes = function(transport) {
+		var responseJSON = transport.responseText;
+		var jsonVoteData = eval ('(' + responseJSON + ')');
+		resource.setVotes(jsonVoteData);
+	}
+
+	var resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
+	var resourceURI = "/" + resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion();
+	var star = num.id.replace("_", '');
+	var param = {vote: star};
+	if (resource.getUserVote() == 0) {
+		PersistenceEngineFactory.getInstance().send_post(URIs.POST_RESOURCE_VOTES + resourceURI, param, this, loadVotes, onError);
+	} else {
+		PersistenceEngineFactory.getInstance().send_update(URIs.POST_RESOURCE_VOTES + resourceURI, param, this, loadVotes, onError);
+	}
+
+}

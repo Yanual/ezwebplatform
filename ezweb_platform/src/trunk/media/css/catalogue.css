@@ -930,3 +930,60 @@
 	font-size:100%;
 	cursor:pointer;
 }
+
+#catalogue .center .info_resource .content #rateStatus
+{
+	float:left;
+	font-size: 90%;
+	margin-right:5px;
+}
+
+#catalogue .center .info_resource .content #rateResultStatus
+{
+	font-size: 90%;
+	margin-left:10px;
+	margin-right:5px;
+	float:left;
+}
+
+#catalogue .center .info_resource .content #rateMe a
+{
+	float:left; 
+	background:url("/ezweb/images/ico_vot_vo.gif") no-repeat; 
+	width:15px; 
+	height:15px;
+}
+
+#catalogue .center .info_resource .content #rateMe .on
+{
+	background:url("/ezweb/images/ico_vot_ok.gif") no-repeat;
+}
+
+#catalogue .center .info_resource .content #ratingSaved
+{
+	display:none;
+}
+
+#catalogue .center .info_resource .content #rateResult a
+{
+	float:left; 
+	background:url("/ezweb/images/ico_vot_no.gif") no-repeat; 
+	width:15px; 
+	height:15px;
+}
+
+#catalogue .center .info_resource .content #rateResult .on
+{
+	background:url("/ezweb/images/ico_vot_ok.gif") no-repeat;
+}
+
+#catalogue .center .info_resource .content #rateResult .md
+{
+	background:url("/ezweb/images/ico_vot_md.gif") no-repeat;
+}
+
+#catalogue .center .info_resource .content #votes
+{
+	font-size: 70%;
+	margin-left:10px;
+}

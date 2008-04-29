@@ -113,3 +113,11 @@ def get_tags_by_resource(gadget_id, user_id):
 	
     response='<Tags>'+xml_tag+'</Tags>'
     return response
+
+
+def get_vote_by_resource(gadget_id, user_id):
+		
+    xml_vote=''
+	
+    response='<Vote>'+xml_vote+'</Vote>'
+    return response

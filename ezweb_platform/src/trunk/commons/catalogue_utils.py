@@ -40,8 +40,8 @@ from django.core import serializers
 from django.http import HttpResponse, HttpResponseServerError
 
 from commons.utils import json_encode
-from commons.get_json_catalogue_data import get_gadgetresource_data, get_tag_data
-from commons.get_xml_catalogue_data import get_xml_description, get_tags_by_resource
+from commons.get_json_catalogue_data import get_gadgetresource_data, get_tag_data, get_vote_data
+from commons.get_xml_catalogue_data import get_xml_description, get_tags_by_resource, get_vote_by_resource
 from commons.utils import get_xml_error
 
 from django.utils.translation import ugettext as _
@@ -92,7 +92,7 @@ def get_resource_response(gadgetlist, format, items, user):
 
 def get_tag_response(gadget, user, format):
 
-    if format == 'json'or format == 'default':
+    if format == 'json' or format == 'default':
         tag = {}
         tag_data_list = get_tag_data(gadget, user.id)
         tag['tagList'] = tag_data_list
@@ -100,6 +100,20 @@ def get_tag_response(gadget, user, format):
     elif format == 'xml':
         response = '<?xml version="1.0" encoding="UTF-8" ?>\n'
         response += get_tags_by_resource(gadget, user)
+        return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
+    else:
+        return HttpResponseServerError(get_xml_error(_("Invalid format. Format must be either xml or json")), mimetype='application/xml; charset=UTF-8')
+
+
+def get_vote_response(gadget, user, format):
+    if format == 'json' or format == 'default':
+        vote = {}
+        vote_data = get_vote_data(gadget, user)
+        vote['voteData'] = vote_data
+        return HttpResponse(json_encode(vote), mimetype='application/json; charset=UTF-8')
+    elif format == 'xml':
+        response = '<?xml version="1.0" encoding="UTF-8" ?>\n'
+        response += get_vote_by_resource(gadget, user)
         return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
     else:
         return HttpResponseServerError(get_xml_error(_("Invalid format. Format must be either xml or json")), mimetype='application/xml; charset=UTF-8')

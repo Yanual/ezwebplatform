@@ -23,12 +23,17 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 	this.getEvents = function() { return state.getEvents(); }
 	this.setEvents = function(events_) { state.setEvents(events_); }
 	this.getTagger = function() { return tagger; }
+	this.setVotes = function(voteData_) { 
+		state.setVotes(voteData_);
+		_rateResource();
+	}
+	this.getVotes = function() {return state.getVotes();}
+	this.getUserVote = function() {return state.getUserVote();}
+	this.getPopularity = function() {return state.getPopularity();}
 	
 	this.paint = function(){
 		var newResource = document.createElement("div");
 		newResource.setAttribute('id', id);
-		
-		//content =				"<div class='resource' onMouseOver='UIUtils.selectResource(\"" + id + "\");UIUtils.show(\"" + id + "_toolbar\");' onMouseOut='UIUtils.deselectResource(\"" + id + "\");UIUtils.hidde(\"" + id + "_toolbar\");'>" +
 		content =				"<div class='resource' onMouseOver='UIUtils.mouseOverResource(\""+id+"\");' onMouseOut='UIUtils.mouseOutResource(\""+id+"\");'>" +
 									"<div class='top'></div>" +
 									"<div class='toolbar'>" +
@@ -80,6 +85,26 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 									"<div class='title'><span class='name'>" + state.getName() + "</span>" +
 									"<span class='version'>" + state.getVersion() + "</span></div>" +
 									"<div class='vendor'>" + state.getVendor() + "</div>" +
+									"<div class='rating'>"+
+									"<span id='rateStatus'>Vote Me... </span>"+
+									"<span id='ratingSaved'>Vote Saved </span>"+
+									"<span id='rateMe' title='Vote Me...'>"+
+									"<a id='_1' title='Ehh...' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
+									"<a id='_2' title='Not Bad' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
+									"<a id='_3' title='Pretty Good' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
+									"<a id='_4' title='Out Standing' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
+									"<a id='_5' title='Awesome!' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
+									"</span>"+
+									"<span id='rateResultStatus'>Vote Result:</span>"+
+									"<span id='rateResult' title='Vote Result'>"+
+									"<a id='res_1' title='Ehh...'></a>"+
+									"<a id='res_2' title='Not Bad'></a>"+
+									"<a id='res_3' title='Pretty Good'></a>"+
+									"<a id='res_4' title='Out Standing'></a>"+
+									"<a id='res_5' title='Awesome!'></a>"+
+									"</span>"+
+									"<span id='votes'></span>"+
+									"</div>" +
 									"<div class='image'><img src='" + state.getUriImage() + "' alt='" + state.getName()+ "&nbsp;" + state.getVersion() + "'/></div>" +
 									"<div class='description'>" + gettext ('Description') + ":<div class='text'>" + state.getDescription() + "</div></div>" +
 									"<div class='connect'>" + gettext ('Gadget connectivity') + ":<div class='text'>" +
@@ -113,6 +138,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 								"<button id='add_gadget_button' class='add_gadget_button' onclick='CatalogueFactory.getInstance().addResourceToShowCase(UIUtils.getSelectedResource());' style='align:center;'>" + gettext ('Add Instance') + "</button>"+
 								"<div id='content_bottom_margin'></div>"+
 								"<div class='bottom'></div>";
+		_rateResource();
 	}
 	
 
@@ -352,6 +378,39 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 		if (visible && state.getTags().length!=0) { tagcloudBalloon.show(); }
 	}
 
+	var _rateResource = function()
+	{
+		var vote = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).getUserVote();
+		var popularity = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).getPopularity();
+		if (vote!=0)
+		{
+			document.getElementById("rateStatus").innerHTML = document.getElementById("ratingSaved").innerHTML;
+			for (var i = 1; i<=vote; i++)
+			{
+				$("_"+i).className = "on";
+			}
+		}
+		if (popularity!=null)
+		{
+			var i = 1
+			for (i; i<=popularity; i++)
+			{
+				$("res_"+i).className = "on";
+			}
+			if ((popularity%1)!=0)
+			{
+				$("res_"+i).className = "md";
+				i++;
+			}
+			for (i; i<=5; i++)
+			{
+				$("res_"+i).className = "";
+			}
+		}
+		$("votes").innerHTML = state.getVotes()+ " votes";
+	}
+
+
 	var _createResource = function(urlTemplate_) {
 		
 		// ******************
@@ -419,6 +478,9 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 	var tags = [];
 	var slots = [];
 	var events = [];
+	var votes = null;
+	var popularity = null;
+	var userVote = null;
 	
 	// ******************
 	//  PUBLIC FUNCTIONS
@@ -458,10 +520,20 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 			events.push(eventsJSON_[i].friendcode);
 		}
 	}
+
+	this.setVotes = function(voteDataJSON_) {
+		votes = voteDataJSON_.voteData[0].votes_number;
+		userVote = voteDataJSON_.voteData[0].user_vote;
+		popularity = voteDataJSON_.voteData[0].popularity;
+	}
+
 	
 	this.getTags = function() { return tags; }
 	this.getSlots = function() { return slots; }
 	this.getEvents = function() { return events; }
+	this.getVotes = function() {return votes; }
+	this.getUserVote = function() {return userVote; }
+	this.getPopularity = function() {return popularity; }
 	
 	// Parsing JSON Resource
 	// Constructing the structure
@@ -477,7 +549,8 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 	this.setEvents(resourceJSON_.events);
 	this.setSlots(resourceJSON_.slots);
 	this.setTags(resourceJSON_.tags);
-	
-	
+	votes = resourceJSON_.votes[0].votes_number;
+	userVote = resourceJSON_.votes[0].user_vote;
+	popularity = resourceJSON_.votes[0].popularity;	
 
 }

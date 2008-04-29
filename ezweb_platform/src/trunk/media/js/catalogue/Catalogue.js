@@ -58,6 +58,10 @@ var CatalogueFactory  = function () {
 		// ********************
 		
 		this.reloadCompleteCatalogue = function() {
+			if (UIUtils.isInfoResourcesOpen) {
+				UIUtils.isInfoResourcesOpen = false;
+				UIUtils.SlideInfoResourceOutOfView('info_resource');
+			}
 			this.emptyResourceList();
 			UIUtils.search = 'false';
 			opManager.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
@@ -431,7 +435,7 @@ var CatalogueFactory  = function () {
 				}
 			}
 			
-			header+="<a id='reload_catalogue_link' href='#' onClick='javascript:$(\"header_always_error\").style.display=\"none\";CatalogueFactory.getInstance().reloadCompleteCatalogue();'>" + gettext("Reload Catalogue") + "</a>";
+			header+="<a id='reload_catalogue_link' href='#' onClick='javascript:CatalogueFactory.getInstance().reloadCompleteCatalogue();$(\"header_always_error\").style.display=\"none\";'>" + gettext("Reload Catalogue") + "</a>";
 			$('header_always_status').innerHTML=header;
 			
 			// Get Resources from PersistenceEngine. Asyncrhonous call!
