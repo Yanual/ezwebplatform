@@ -62,7 +62,7 @@ function WorkSpace (workSpaceState) {
 		var response = transport.responseText;
 		this.workSpaceGlobalInfo = eval ('(' + response + ')');
 
-		this.varManager = new VarManager(this.workSpaceGlobalInfo);
+		this.varManager = new VarManager(this);
 		this.contextManager = new ContextManager(this, this.workSpaceGlobalInfo, this.contextInfo);
 		
 		var tabs = this.workSpaceGlobalInfo['workspace']['tabList'];
@@ -115,6 +115,10 @@ function WorkSpace (workSpaceState) {
 
     WorkSpace.prototype.getName = function () {
     	return this.workSpaceState.name;
+	}
+    
+    WorkSpace.prototype.getId = function () {
+    	return this.workSpaceState.id;
 	}
     
     WorkSpace.prototype.getWiring = function () {

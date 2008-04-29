@@ -76,6 +76,8 @@ Variable.prototype.setHandler = function () { }
 
 Variable.prototype.set = function (value) { } 
 
+Variable.prototype.assignConnectable = function (connectable) { }
+
 //////////////////////////////////////////////
 // PUBLIC CONSTANTS
 //////////////////////////////////////////////
@@ -118,18 +120,10 @@ RVariable.prototype.setHandler = function (handler_) {
 	this.handler = handler_;
 } 
 
-RVariable.prototype.assignSlot = function (connectable) {
-  this.slotConnectable = connectable;
-}
-
-RVariable.prototype.getAssignedSlot = function () {
-  return this.slotConnectable;
-}
-
 RVariable.prototype.set = function (newValue) { 
 	switch (this.aspect){
 		case Variable.prototype.USER_PREF:
-			var varInfo = [{iGadget: this.iGadget, name: this.name, value: newValue}];
+			var varInfo = [{id: this.id, value: newValue}];
 			this.varManager.markVariablesAsModified(varInfo);
 		case Variable.prototype.GADGET_CONTEXT:
 		case Variable.prototype.EXTERNAL_CONTEXT:
@@ -155,7 +149,6 @@ RVariable.prototype.set = function (newValue) {
 
 function RWVariable(id, iGadget_, name_, aspect_, varManager_, value_) {
 	Variable.prototype.Variable.call(this, id, iGadget_, name_, aspect_, varManager_, value_);
-	this.eventConnectable = null;
 }
 
 //////////////////////////////////////////////
@@ -169,12 +162,8 @@ RWVariable.prototype = new Variable;
 //////////////////////////////////////////////
 
 
-RWVariable.prototype.assignEvent = function (connectable) {
-  this.eventConnectable = connectable;
-}
-
-RWVariable.prototype.getAssignedEvent = function () {
-  return this.eventConnectable;
+RWVariable.prototype.assignConnectable = function (connectable) {
+	this.connectable = connectable;
 }
 
 RWVariable.prototype.set = function (value_) {
@@ -183,22 +172,22 @@ RWVariable.prototype.set = function (value_) {
     if (this.value != value_) {
     	// This variable was modified
     	this.value = value_;
-
-    	var varInfo = new Object();
-        
-        varInfo.iGadget = this.iGadget;
-        varInfo.name = this.name;
-        varInfo.value = value_;
-        
-        var variables = [];
-        variables[0] = varInfo;
 	
-        this.varManager.markVariablesAsModified(variables);
+        this.varManager.markVariablesAsModified(this);
     }
 
     // Propagate changes to wiring module
-    if (this.eventConnectable != null)
-      this.eventConnectable.propagate(this.value);
+    // Only when variable is an Event, the connectable must start propagating
+    // When variable is INOUT, is the connectable who propagates
+    switch (this.aspect){
+		case Variable.prototype.EVENT:   
+			if (this.connectable != null) {
+				this.connectable.propagate(this.value);
+				break;
+			}
+		default:
+			break;
+    }
 
     // This will save all modified vars if we are the root event
     this.varManager.decNestingLevel();

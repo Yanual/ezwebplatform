@@ -143,13 +143,17 @@ wInOut.prototype.fullDisconnect = function() {
 // TODO implement this function
 //wInOut.prototype.searchCycle = function(name)
 
+// wChannel and wEvent (connectables that propagates values) register in their
+// associated variable, a pointer to them
+// Double-linked structure.
+
 //////////////////////////////////////////////////////////////////////////
-// This class represents a iGadget variable which may produce some data //
+// This class represents a iGadget variable which may produce some data 
 //////////////////////////////////////////////////////////////////////////
 function wEvent(variable, type, friendCode) {
   this.variable = variable;
   wIn.call(this, this.variable.name, type, friendCode);
-  this.variable.assignEvent(this);
+  this.variable.assignConnectable(this);
 }
 
 wEvent.prototype = new wIn();
@@ -164,6 +168,7 @@ wEvent.prototype.getQualifiedName = function () {
 function wChannel (variable, name) {
   this.variable = variable;
   wInOut.call(this, name, null, null);
+  this.variable.assignConnectable(this);
 }
 
 wChannel.prototype = new wInOut();
@@ -187,7 +192,6 @@ wChannel.prototype.getQualifiedName = function () {
 function wSlot(variable, type, friendCode) {
   this.variable = variable;
   wOut.call(this, this.variable.name, type, friendCode);
-  this.variable.assignSlot(this);
 }
 
 wSlot.prototype = new wOut();

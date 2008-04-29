@@ -46,11 +46,15 @@ urlpatterns = patterns('workspace.views',
 
     # WorkSpace
     (r'^[/]?$', WorkSpaceCollection(permitted_methods=('GET','POST', ))),
-    (r'^/((?P<workspace_id>[-ÑñáéíóúÁÉÍÓÚ\w]+)[/]?)?$',
+    (r'^/((?P<workspace_id>\d+)[/]?)?$',
 	    WorkSpaceEntry(permitted_methods=('GET', 'POST', 'PUT', 'DELETE',))),
     # Tab
     (r'^/((?P<workspace_id>\d+)/tab(s)?[/]?)?$',
         TabCollection(permitted_methods=('GET', 'POST',))),
     (r'^/((?P<workspace_id>\d+)/tab(s)?/(?P<tab_id>[-ÑñáéíóúÁÉÍÓÚ\w]+)[/]?)?$',
         TabEntry(permitted_methods=('GET', 'PUT', 'POST', 'DELETE',))),
+        
+    # Variables of the whole workspace
+    (r'^/((?P<workspace_id>\d+)/variable(s)?[/]?)?$',
+        WorkSpaceVariableCollection(permitted_methods=('PUT',))),
 )

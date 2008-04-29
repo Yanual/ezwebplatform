@@ -57,6 +57,7 @@ from commons.logs import log
 from commons.utils import get_xml_error, json_encode
 
 from workspace.models import *
+from igadget.models import Variable
 
 class WorkSpaceCollection(Resource):
     def read(self, request):
@@ -285,3 +286,38 @@ class TabEntry(Resource):
         return HttpResponse('ok')
 
 
+class WorkSpaceVariableCollection(Resource):
+    @transaction.commit_on_success
+    def update(self, request, workspace_id):  
+        user = get_user_authentication(request)
+
+        if not request.PUT.has_key('variables'):
+            return HttpResponseBadRequest(get_xml_error(_("variables JSON expected")), mimetype='application/xml; charset=UTF-8')
+
+        #TODO we can make this with deserializers (simplejson)
+        received_json = request.PUT['variables']
+
+        try:
+            variables = eval(received_json)
+                    
+            igadgetVariables = variables['igadgetVars']
+            workSpaceVariables = variables['workspaceVars']
+            
+            for wsVar in workSpaceVariables:
+               wsVarDAO = WorkSpaceVariable.objects.get(pk=wsVar['id'])
+               
+               wsVarDAO.value=wsVar['value'];
+               wsVarDAO.save();   
+               
+            for igVar in igadgetVariables:
+               igVarDAO = Variable.objects.get(pk=igVar['id'])
+               
+               igVarDAO.value=igVar['value'];
+               igVarDAO.save(); 
+            
+            return HttpResponse(str('OK'))
+        except Exception, e:
+            transaction.rollback()
+            msg = _("tab cannot be created: ") + unicode(e)
+            log(msg, request)
+            return HttpResponseServerError(get_xml_error(msg), mimetype='application/xml; charset=UTF-8')

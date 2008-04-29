@@ -36,7 +36,7 @@
  */
 
 
-function VarManager (workSpaceInfo) {
+function VarManager (_workSpace) {
 	
 	// ****************
 	// PUBLIC METHODS 
@@ -201,11 +201,19 @@ function VarManager (workSpaceInfo) {
 			OpManagerFactory.getInstance().log(msg);
 		}
 
-		if (modifiedVars.length > 0) {
+		if (igadgetModifiedVars.length > 0 || workspaceModifiedVars.length > 0) {
 			var persistenceEngine = PersistenceEngineFactory.getInstance();
-			var param = {variables: Object.toJSON(modifiedVars)};
+			
+			var variables = {};
+			
+			variables['igadgetVars'] = igadgetModifiedVars;
+			variables['workspaceVars'] = workspaceModifiedVars;
+			
+			var param = {variables: Object.toJSON(variables)};
+			
+			var uri = URIs.PUT_VARIABLES.evaluate({workspaceId: this.workSpace.getId()});
 
-			persistenceEngine.send_update(URIs.PUT_VARIABLES, param, this, onSuccess, onError);
+			persistenceEngine.send_update(uri, param, this, onSuccess, onError);
 			this.resetModifiedVariables();
 		}
 	}
@@ -255,38 +263,31 @@ function VarManager (workSpaceInfo) {
 	}
 
 
-	VarManager.prototype.getModifiedVariables = function () {
-	    return modifiedVars;
-	}
-
-
-	VarManager.prototype.markVariablesAsModified = function (vars) {
-	    var varInfo;
-	    var found = false;
-	    var modVar;
-
-	    for (i=0; i<vars.length; i++) {
-		varInfo = vars[i];
-		for (j=0; j<modifiedVars.length; j++) {
-		    modVar = modifiedVars[j];
-
-		    if (modVar.iGadget == varInfo.iGadget && modVar.name == varInfo.name) {
-			modVar.value = varInfo.value;
-			found = true;
-			break;
-		    }			  			    
-		}
-
-		if (found) {
-		    found = false;
-		    continue;
-		}
-		else {
-		    modifiedVars.push(varInfo);
-		}
-		    
+	VarManager.prototype.markVariablesAsModified = function (variable) {
+		var varCollection;
 		
-	    }
+		// Is it a igadgetVar or a workspaceVar?
+		if (variable.aspect == "INOUT") {
+			varCollection = workspaceModifiedVars;
+		} else {
+			varCollection = igadgetModifiedVars;
+		}
+	 
+		for (i=0; i<varCollection.length; i++) {
+		    var modVar = varCollection[i];
+	
+		    if (modVar.id == variable.id) {
+				modVar.value = variable.value;
+				return;
+		    }	
+		}
+		
+		var varInfo = {};
+		
+		varInfo['id'] = variable.id;
+		varInfo['value'] = variable.value;
+
+		varCollection.push(varInfo);	    
 	}
 
 	VarManager.prototype.incNestingLevel = function() {
@@ -301,7 +302,8 @@ function VarManager (workSpaceInfo) {
 
 	VarManager.prototype.resetModifiedVariables = function () {
 	    nestingLevel = 0;
-	    modifiedVars = [];
+	    igadgetModifiedVars = [];
+	    workspaceModifiedVars = [];
 	}
 	
 	VarManager.prototype.getVariableById = function (varId) {
@@ -325,16 +327,21 @@ function VarManager (workSpaceInfo) {
 
 	var persistenceEngine = PersistenceEngineFactory.getInstance();
 	var opManager = OpManagerFactory.getInstance();
+	
+	this.workSpace = _workSpace;
 	var wiring = null;
 	var iGadgets = new Hash();
 	var variables = new Hash();
-	// TODO
+	
 	// For now workspace variables must be in a separated hash table, because they have a
 	// different identifier space and can collide with the idenfiers of normal variables
 	var workspaceVariables = new Hash();
-	var modifiedVars = [];
+	
+	var igadgetModifiedVars = []
+	var workspaceModifiedVars = []
+	
 	var nestingLevel = 0;
 	
 	// Creation of ALL EzWeb variables regarding one workspace
-	this.parseVariables(workSpaceInfo);
+	this.parseVariables(this.workSpace.workSpaceGlobalInfo);
 }
