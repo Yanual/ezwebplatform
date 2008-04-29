@@ -101,7 +101,14 @@ class WorkSpaceCollection(Resource):
             workspace_name = ts.get('name')
             workspace = WorkSpace (name=workspace_name, active=False, user=user)
             workspace.save()
-            return HttpResponse(str(workspace.pk))
+            #Tab creation
+            tab = Tab (name=_("MyTab"), visible=True, workspace=workspace)
+            tab.save()
+            workspaces = get_list_or_404(WorkSpace, user=user, pk=workspace.pk)
+            data = serializers.serialize('python', workspaces, ensure_ascii=False)
+            workspace_data = get_global_workspace_data(data[0], workspaces[0])
+            return HttpResponse(json_encode(workspace_data), mimetype='application/json; charset=UTF-8')
+            
         except Exception, e:
             transaction.rollback()
             msg = _("workspace cannot be created: ") + unicode(e)
@@ -213,7 +220,11 @@ class TabCollection(Resource):
             workspace = WorkSpace.objects.get(user=user, pk=workspace_id)
             tab = Tab (name=tab_name, visible=False, workspace=workspace)
             tab.save()
-            return HttpResponse(str(tab.pk))
+            tab = get_list_or_404(Tab, pk=tab.pk)
+            data = serializers.serialize('python', tab, ensure_ascii=False)
+            tab_data = get_tab_data(data[0])
+            return HttpResponse(json_encode(tab_data), mimetype='application/json; charset=UTF-8')
+
         except Exception, e:
             transaction.rollback()
             msg = _("tab cannot be created: ") + unicode(e)

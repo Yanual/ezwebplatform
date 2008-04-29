@@ -15,6 +15,10 @@
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/wiring.css">
 <link rel="shortcut icon" type="image/x-icon" href="{{ MEDIA_URL }}css/favicon.ico" />
 
+<!--[if IE]>
+	<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/ie.css" />
+<![endif]-->
+
 <script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/lib/prototype/prototype.js"></script>
 <script type="text/javascript" language="javascript">
 _URIConstants = function(){}
@@ -37,8 +41,10 @@ _URIConstants.prototype.GET_IGADGET_VARIABLES = new Template ('/user/{{ user.use
 _URIConstants.prototype.GET_POST_GADGET_VARIABLE = new Template ('/user/{{ user.username }}/igadgets/#{iGadgetId}/variables/#{varName}');
 _URIConstants.prototype.GET_POST_CHANNEL = new Template ('/user/{{ user.username }}/channel/#{channelName}');
 _URIConstants.prototype.PUT_VARIABLES = new Template ('/workspace/#{workspaceId}/variables');
-_URIConstants.prototype.GET_WORKSPACES = '/workspaces';
+_URIConstants.prototype.GET_POST_WORKSPACES = '/workspaces';
 _URIConstants.prototype.GET_POST_WIRING = new Template ('/workspaces/#{id}');
+_URIConstants.prototype.GET_POST_TABS = new Template('/workspace/#{workspace_id}/tabs');
+_URIConstants.prototype.TAB = new Template('/workspace/#{workspace_id}/tab/#{tab_id}');
 
 var URIs = new _URIConstants();
 </script>
@@ -59,8 +65,6 @@ var URIs = new _URIConstants();
 <script language="JavaScript" src="{{ MEDIA_URL }}js/opManager/Tab.js"></script>
 
 <script language="JavaScript" src="{{ MEDIA_URL }}js/opManager/OpManager.js"></script>
-<script language="JavaScript" src="{{ MEDIA_URL }}js/layoutManager/LayoutManager.js"></script>
-<script language="JavaScript" src="{{ MEDIA_URL }}js/layoutManager/BrowserUtils.js"></script>
 <script language="JavaScript" src="{{ MEDIA_URL }}js/varManager/VariableGadget.js"></script>
 <script language="JavaScript" src="{{ MEDIA_URL }}js/varManager/VariablePlatform.js"></script>
 <script language="JavaScript" src="{{ MEDIA_URL }}js/varManager/varManager.js"></script>
@@ -95,6 +99,11 @@ var URIs = new _URIConstants();
 			window.onresize = UIUtils.setResourcesWidth;
 		</script>
 
+<script language="javascript" src="{{ MEDIA_URL }}js/interfaceLayout/DropDownMenu.js"></script>
+<script language="javascript" src="{{ MEDIA_URL }}js/interfaceLayout/WindowMenu.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/interfaceLayout/LayoutManager.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/interfaceLayout/BrowserUtils.js"></script>
+
 <!-- Initialization code -->
 <script language="JavaScript">
 	
@@ -119,20 +128,77 @@ var URIs = new _URIConstants();
 
 <body onload="OpManagerFactory.getInstance().loadEnviroment()" onresize="LayoutManagerFactory.getInstance().resizeWrapper();">
 
+<!-- HIDDEN MENUS -->
+<div id="submenu_layer" style="display:none">
+</div>
+<div id="workSpace_submenu" class="drop_down_menu" style="display:none;">
+	<div class="underlined" onclick="LayoutManagerFactory.getInstance().showWindowMenu('renameWorkSpace')"><img src="/ezweb/images/rename.gif"/><span>{% trans "Rename"%}</span></div>
+	<div class="underlined"><img src="/ezweb/images/package.jpg"/><span>{% trans "Package"%}</span></div>
+	<div class="underlined"><img src="/ezweb/images/move.gif"/><span>{% trans "Mezclar con Workspace"%}</span></div>
+	<div class="underlined"><img src="/ezweb/images/pencil.png"/><span>{% trans "Preferences"%}</span></div>
+	<div onclick="OpManagerFactory.getInstance().activeWorkSpace.deleteWorkSpace();"><img src="/ezweb/images/cross.png"/><span>{% trans "Remove"%}</span></div>
+</div>
+<div id="tab_submenu" class="drop_down_menu" style="display:none;">
+	<div class="underlined" onclick="LayoutManagerFactory.getInstance().showWindowMenu('renameTab')"><img src="/ezweb/images/rename.gif"/><span>{%trans "Rename"%}</span></div>
+	<div class="underlined"><img src="/ezweb/images/package.jpg"/><span>{% trans "Package"%}</span></div>
+	<div class="underlined"><img src="/ezweb/images/move.gif"/><span>{% trans "Copy to Workspace"%}</span></div>
+	<div class="underlined"><img src="/ezweb/images/move.gif"/><span>{% trans "Move to Workspace"%}</span></div>
+	<div onclick="OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().deleteTab();"><img src="/ezweb/images/cross.png" /><span>{% trans "Remove"%}</span></div>
+</div>
+<div id="rename_menu" class="window_menu" style="display:none">
+	<div class="window_top">
+		<label id="rename_window_title" class="window_title"></label>
+		<input type="button" class="closebutton button" onclick="LayoutManagerFactory.getInstance().hideCover();" />
+	</div>
+	<div class="window_content">
+		<label>{% trans "New name"%}: </label><input id="rename_new_name" type="text" value = ""/>
+		<div id="rename_window_msg" class="window_msg"></div>
+	</div>
+	<div class="window_bottom">
+		<button id="rename_btn">{% trans "Rename"%}</button>
+		<button onclick="LayoutManagerFactory.getInstance().hideCover();">{% trans "Cancel"%}</button>
+	</div>
+</div>
+<div id="create_menu" class="window_menu" style="display:none">
+	<div class="window_top">
+		<label id="create_window_title" class="window_title"></label>
+		<input type="button" class="closebutton button" onclick="LayoutManagerFactory.getInstance().hideCover();" />
+	</div>
+	<div class="window_content">
+		<label>{% trans "Name"%}: </label><input id="create_name" type="text" value = ""/>
+		<div id="create_window_msg" class="window_msg"></div>
+	</div>
+	<div class="window_bottom">
+		<button id ="create_btn">{% trans "Create"%}</button>
+		<button onclick="LayoutManagerFactory.getInstance().hideCover();">{% trans "Cancel"%}</button>
+	</div>
+</div>
+<div id="changeWorkspace_submenu" class="drop_down_menu" style="display:none;">
+</div>
+
+
 <!-- HEADER -->
 <div id="header">
+<div id="banner">
   <div id="greeting">{% trans "Welcome" %}, {{ user.username }}{% for lang in LANGUAGES %} | <a href="/" onclick="return setLanguage('{{ lang.0 }}')" >{{ lang.1 }}</a>{% endfor %} | <a href="/logout">{% trans "Exit" %}</a>
   </div>
   <img id="logo" src="{{ MEDIA_URL }}images/logo.gif" alt="EzWeb Logo">
-  <div id="tab_section" class="tab_section">
-    <div id="toolbar_section" class="toolbar_section">
-    <span id="catalogue_link"  class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().showCatalogue()">{% trans "Catalogue" %}</span>
-    <span id="wiring_link" class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().showWiring();">{% trans "Wires" %}</span>
-    <span id="logs_link" class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().showLogs();">Logs</span>
-  </div>
-  </div>
 </div>
+<div id="bar">
+<div id="tab_section" class="tab_section">
+	<input type="button" id="add_tab_link" title="Add more tabs" class="toolbar_unmarked" onclick="LayoutManagerFactory.getInstance().showWindowMenu('createTab');"/>
 
+</div>
+<div id="toolbar_section" class="toolbar_section">
+   		<input type="button" id="catalogue_link" title="Catalogue" class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().showCatalogue()"/> 
+   		<input type="button" id="wiring_link" title="Wires" class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().showWiring()"/>
+		<span id="workspace_name"></span>
+		<input type="button" id="change_ws_link" title="Change workspace" class="toolbar_unmarked" onclick="LayoutManagerFactory.getInstance().showDropDownMenu('changeWorkSpace')"/>	
+   		<input type="button" id="ws_operations_link" title="Workspace operations" class="toolbar_unmarked" onclick="LayoutManagerFactory.getInstance().showDropDownMenu('workSpaceOps')"/>		
+		<span id="logs_link" style="display:none" title="Errors" class="toolbar_unmarked"onclick="OpManagerFactory.getInstance().showLogs()";></span>
+	</div>
+</div>
+</div>
 <div id="wrapper">
   <!-- DRAGBOARD LAYER -->
   <div id="dragboard_template">

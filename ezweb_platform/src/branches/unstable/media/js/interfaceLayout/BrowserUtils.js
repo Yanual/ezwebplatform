@@ -63,6 +63,21 @@ var BrowserUtilsFactory = function () {
 			return newHeight;
 		}
 		
+		//gets total width
+		BrowserUtils.prototype.getWidth = function(){	
+			var newWidth=window.innerWidth; //Non-IE (Firefox and Opera)
+		  
+			if( document.documentElement && ( document.documentElement.clientWidth || document.documentElement.clientHeight ) ) {
+			    //IE 6+ in 'standards compliant mode'
+		  		newWidth = document.documentElement.clientWidth;
+			} else if( document.body && ( document.body.clientWidth || document.body.clientHeight ) ) {
+		  		//IE 4 compatible and IE 5-7 'quirk mode'
+			  newWidth = document.body.clientWidth;
+			}
+			return newWidth;
+		}
+			
+		
 		BrowserUtils.prototype.isLeftButton = function(button){
 			
 			if (button == 0 || (this.isIE() && button == 1))

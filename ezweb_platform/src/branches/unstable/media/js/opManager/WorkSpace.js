@@ -67,16 +67,16 @@ function WorkSpace (workSpaceState) {
 		
 		var tabs = this.workSpaceGlobalInfo['workspace']['tabList'];
 
-		var visibleTabName = null;
+		var visibleTabId = null;
 
 		if (tabs.length>0) {
-			visibleTabName = tabs[0].name;
+			visibleTabId = tabs[0].id;
 			for (var i=0; i<tabs.length; i++) {
 				var tab = tabs[i];
-				this.tabInstances[tab.name] = new Tab(tab, this);
+				this.tabInstances[tab.id] = new Tab(tab, this);
 				
 				if (tab.visible == 'true') {
-					visibleTabName = tab.name;
+					visibleTabId = tab.id;
 				}
 			}
 		}
@@ -86,11 +86,13 @@ function WorkSpace (workSpaceState) {
 
 		if (tabs.length > 0) {
 			for (i = 0; i < tabs.length; i++)
-				this.tabInstances[tabs[i].name].getDragboard().paint();
+				this.tabInstances[tabs[i].id].getDragboard().paint();
 		}
 
 		this.loaded = true;
-		this.setTab(visibleTabName);
+		//this.setTab(visibleTabName);
+		//set the visible tab. It will be displayed as current tab afterwards
+		this.visibleTab = this.tabInstances[visibleTabId];
 
 		OpManagerFactory.getInstance().continueLoadingGlobalModules(Modules.prototype.ACTIVE_WORKSPACE);
 	}
@@ -108,14 +110,95 @@ function WorkSpace (workSpaceState) {
 		                          {errorMsg: msg}, true);
 		OpManagerFactory.getInstance().log(msg);
 	}
+	
+	var renameSuccess = function(transport) {
+		LayoutManagerFactory.getInstance().hideCover();
+	}
+	var renameError = function(transport, e) {
+		var msg;
+		if (transport.responseXML) {
+				msg = transport.responseXML.documentElement.textContent;
+			} else {
+				msg = "HTTP Error " + transport.status + " - " + transport.statusText;
+			}
 
+			msg = interpolate(gettext("Error renaming workspace, changes will not be saved: %(errorMsg)s."), {errorMsg: msg}, true);
+			OpManagerFactory.getInstance().log(msg);
+	}
+	var deleteSuccess = function(transport) {
+		var tabList = this.tabInstances.keys();
+		
+		for (var i=0; i<tabList.length; i++) {
+			var tab = this.tabInstances[tabList[i]];
+			tab.deleteHTMLElement();
+		}
+		LayoutManagerFactory.getInstance().hideCover();
+	}
+	var deleteError = function(transport, e) {
+			var msg;
+			if (transport.responseXML) {
+				msg = transport.responseXML.documentElement.textContent;
+			} else {
+				msg = "HTTP Error " + transport.status + " - " + transport.statusText;
+			}
+
+			msg = interpolate(gettext("Error removing workspace, changes will not be saved: %(errorMsg)s."), {errorMsg: msg}, true);
+			OpManagerFactory.getInstance().log(msg);
+	}
+	//**** TAB CALLBACK*****
+	var createTabSuccess = function(transport) {
+		var response = transport.responseText;
+		var tabInfo = eval ('(' + response + ')');
+		tabInfo.igadgetList=[];
+		this.tabInstances[tabInfo.id] = new Tab(tabInfo, this);
+		this.setTab(this.tabInstances[tabInfo.id]);
+		LayoutManagerFactory.getInstance().hideCover();
+	}
+	var createTabError = function(transport, e) {
+		var msg;
+		if (transport.responseXML) {
+			msg = transport.responseXML.documentElement.textContent;
+		} else {
+			msg = "HTTP Error " + transport.status + " - " + transport.statusText;
+		}
+
+		msg = interpolate(gettext("Error creating a tab: %(errorMsg)s."), {errorMsg: msg}, true);
+		OpManagerFactory.getInstance().log(msg);
+	}
+	
 	// ****************
 	// PUBLIC METHODS
 	// ****************
+	
+    WorkSpace.prototype.updateInfo = function (workSpaceName, active) {
+		//If the server isn't working the changes will not be saved	
+		this.workSpaceState.name = workSpaceName;
+		this.workSpaceHTMLElement.update(workSpaceName);
+
+		var workSpaceUrl = URIs.GET_POST_WIRING.evaluate({'id': this.workSpaceState.id});
+		var o = new Object;
+		o.name = workSpaceName;
+		if (active !=null)
+			o.active = active
+		workSpaceData = Object.toJSON(o);
+		params = 'workspace=' + workSpaceData;
+		PersistenceEngineFactory.getInstance().send_update(workSpaceUrl, params, this, renameSuccess, renameError);
+    }
+    
+    WorkSpace.prototype.deleteWorkSpace = function() {
+		if(OpManagerFactory.getInstance().removeWorkSpace(this.workSpaceState.id)==true){
+			var workSpaceUrl = URIs.GET_POST_WIRING.evaluate({'id': this.workSpaceState.id});
+			PersistenceEngineFactory.getInstance().send_delete(workSpaceUrl, this, deleteSuccess, deleteError);		
+		}
+	}
 
     WorkSpace.prototype.getName = function () {
     	return this.workSpaceState.name;
 	}
+	
+    WorkSpace.prototype.getId = function () {
+    	return this.workSpaceState.id;
+	}	
     
     WorkSpace.prototype.getId = function () {
     	return this.workSpaceState.id;
@@ -159,7 +242,16 @@ function WorkSpace (workSpaceState) {
 			tab.hideAndUnmark();
 		}
 	}
+	
+	//hide only the information in the wrapper. The tabs remain inalterable
+	WorkSpace.prototype.hideContent = function() {
+		this.visibleTab.markAsCurrent();
+		this.wiringInterface.hide();
+		this.visibleTab.hideDragboard();
 		
+	}
+
+	//hide all information about a workspace (wiring, tabs)
 	WorkSpace.prototype.hide = function() {
 		if (!this.loaded)
 			return;
@@ -180,11 +272,13 @@ function WorkSpace (workSpaceState) {
 		if (!this.loaded)
 			return;
 		
+		this.workSpaceHTMLElement.update(this.workSpaceState.name);
+		
 		var tabList = this.tabInstances.keys();
 		
 		for (var i=0; i<tabList.length; i++) {
 			var tab = this.tabInstances[tabList[i]];
-			
+	
 			if (tab == this.visibleTab)
 				tab.show();
 			else
@@ -192,16 +286,17 @@ function WorkSpace (workSpaceState) {
 		}
 	}
 	
-	WorkSpace.prototype.getTab = function(tabName) {
-		return this.tabInstances[tabName];
+	WorkSpace.prototype.getTab = function(tabId) {
+		return this.tabInstances[tabId];
 	}
 	
-	WorkSpace.prototype.setTab = function(tabName) {
+	WorkSpace.prototype.setTab = function(tab) {
 		if (!this.loaded)
 			return;
 		
-		this.visibleTab = this.tabInstances[tabName];
+		this.visibleTab = tab;
 		this.showVisibleTab();
+		
 	}
 	
 	WorkSpace.prototype.getVisibleTab = function() {
@@ -216,15 +311,53 @@ function WorkSpace (workSpaceState) {
 		this.visibleTab.show();
 	}
 	
-	WorkSpace.prototype.goTab = function(tabName) {
+	WorkSpace.prototype.tabExists = function(tabName){
+		var tabKeys = this.tabInstances.keys();
+		for(var i=0;i<tabKeys.length;i++){
+			if(this.tabInstances[tabKeys[i]].tabInfo.name == tabName)
+				return true;
+		}
+		return false;
+	}
+	
+	WorkSpace.prototype.addTab = function(newName) {
+
+		var tabsUrl = URIs.GET_POST_TABS.evaluate({'workspace_id': this.workSpaceState.id});
+		var o = new Object;
+		o.name = newName;
+		tabData = Object.toJSON(o);
+		params = 'tab=' + tabData;
+		PersistenceEngineFactory.getInstance().send_post(tabsUrl, params, this, createTabSuccess, createTabError);
+	
+	}
+	
+	WorkSpace.prototype.removeTab = function(tabId){
+		if(this.tabInstances.keys().length <= 1){
+			var msg;
+			msg = "there must be one tab at least";
+
+			msg = interpolate(gettext("Error removing tab: %(errorMsg)s."), {errorMsg: msg}, true);
+			OpManagerFactory.getInstance().log(msg);
+			LayoutManagerFactory.getInstance().hideCover();
+			return false;
+		}
+		this.tabInstances.remove(tabId);
+		//set the first tab as current
+		this.setTab(this.tabInstances.values()[0]);
+		return true;
+	}
+	
+
+	WorkSpace.prototype.goTab = function(tab) {
 		if (!this.loaded)
 			return;
 		
 		this.visibleTab.hideAndUnmark();
-		this.visibleTab = this.tabInstances[tabName];
+		this.visibleTab = tab;
 		this.visibleTab.go();
 	}
 	
+
 	WorkSpace.prototype.addIGadget = function(tab, igadget, igadgetJSON) {
 		this.varManager.addInstance(igadget, igadgetJSON);
 		this.contextManager.addInstance(igadget, igadget.getGadget().getTemplate());
@@ -249,6 +382,10 @@ function WorkSpace (workSpaceState) {
 
 		return iGadgets;
 	}
+	
+	WorkSpace.prototype.getActiveDragboard = function() {
+		return this.visibleTab.getDragboard();
+	}
 
     // *****************
     //  CONSTRUCTOR
@@ -266,5 +403,6 @@ function WorkSpace (workSpaceState) {
 	this.loaded = false;
 	this.wiringLayer = null;
 	this.visibleTab = null;
+	this.workSpaceHTMLElement = $('workspace_name');
 	
 }

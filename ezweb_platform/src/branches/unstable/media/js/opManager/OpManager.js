@@ -59,10 +59,10 @@ var OpManagerFactory = function () {
 			for (var i = 0; i<workSpaces.length; i++) {
 			    var workSpace = workSpaces[i];
 			    
-			    this.workSpaceInstances[workSpace.name] = new WorkSpace(workSpace);
+			    this.workSpaceInstances[workSpace.id] = new WorkSpace(workSpace);
 
 			    if (workSpace.active == "true") {
-			    	this.activeWorkSpace=this.workSpaceInstances[workSpace.name];
+			    	this.activeWorkSpace=this.workSpaceInstances[workSpace.id];
 			    }
 			    
 			}
@@ -73,6 +73,27 @@ var OpManagerFactory = function () {
 		
 		var onError = function (transport) {
 		    alert("error en loadEnvironment");
+		}
+		
+		/*****WORKSPACE CALLBACK***/
+		var createWSSuccess = function(transport){
+			var response = transport.responseText;
+			var wsInfo = eval ('(' + response + ')');
+			this.workSpaceInstances[wsInfo.workspace.id] = new WorkSpace(wsInfo.workspace);
+			this.changeActiveWorkSpace(this.workSpaceInstances[wsInfo.workspace.id]);
+			LayoutManagerFactory.getInstance().hideCover();
+		}
+		
+		var createWSError = function(transport, e){
+			if (transport.responseXML) {
+				msg = transport.responseXML.documentElement.textContent;
+			} else {
+				msg = "HTTP Error " + transport.status + " - " + transport.statusText;
+			}
+
+			msg = interpolate(gettext("Error creating a workspace: %(errorMsg)s."), {errorMsg: msg}, true);
+			OpManagerFactory.getInstance().log(msg);
+		
 		}
 
 		
@@ -115,7 +136,7 @@ var OpManagerFactory = function () {
 		OpManager.prototype.showCatalogue = function () {
 			
 			LayoutManagerFactory.getInstance().unMarkGlobalTabs();
-			this.activeWorkSpace.hide();
+			this.activeWorkSpace.hideContent();
 		
 			LayoutManagerFactory.getInstance().showShowCase();
 
@@ -135,26 +156,37 @@ var OpManagerFactory = function () {
 
 		OpManager.prototype.showLogs = function () {
 			LayoutManagerFactory.getInstance().unMarkGlobalTabs();
-			this.activeWorkSpace.hide();
+			this.activeWorkSpace.hideAndUnmark();
 			LayoutManagerFactory.getInstance().showLogs();
 		}
 		
 		OpManager.prototype.changeActiveWorkSpace = function (workSpace) {
-		    this.activeWorkSpace = this.workSpaceInstances[workSpace];
-		    this.activeDragboard = this.activeWorkSpace.getVisibleTab().getDragboard();
-		    this.activeWiring = this.activeWorkSpace.getWiring();
-		    this.activeVarManager = this.activeWorkSpace.getVarManager();
-			this.activeContextManager = this.activeWorkSpace.getContextManager();
+		    this.activeWorkSpace = workSpace;
+		    if(!this.activeWorkSpace.loaded){
+				// Total information of the active workspace must be downloaded!
+				this.activeWorkSpace.downloadWorkSpaceInfo();	
+			//this.activeDragboard = this.activeWorkSpace.getVisibleTab().getDragboard();
+				this.activeWiring = this.activeWorkSpace.getWiring();
+		    	this.activeVarManager = this.activeWorkSpace.getVarManager();
+				this.activeContextManager = this.activeWorkSpace.getContextManager();
+		    					    
+		    }else{
+				//this.activeDragboard = this.activeWorkSpace.getVisibleTab().getDragboard();
+			    this.activeWiring = this.activeWorkSpace.getWiring();
+			    this.activeVarManager = this.activeWorkSpace.getVarManager();
+				this.activeContextManager = this.activeWorkSpace.getContextManager();
 		    
-		    this.showActiveWorkSpace();
+			    this.showActiveWorkSpace();
+		    }
 		}			
 
-		OpManager.prototype.changeVisibleTab = function (tabName) {
+/*		OpManager.prototype.changeVisibleTab = function (tabName) {
 			LayoutManagerFactory.getInstance().unMarkGlobalTabs();
 		    this.activeWorkSpace.setTab(tabName);
 		    this.activeDragboard = this.activeWorkSpace.getVisibleTab().getDragboard();
 		    
 		}
+*/
 
 		OpManager.prototype.addInstance = function (gadgetId) {
 		    if (!this.loadCompleted)
@@ -162,7 +194,7 @@ var OpManagerFactory = function () {
 
 			var gadget = this.showcaseModule.getGadget(gadgetId);
 				
-			this.activeDragboard.addInstance(gadget);
+			this.activeWorkSpace.getVisibleTab().getDragboard().addInstance(gadget);
 		}
 		
 		OpManager.prototype.getActiveVarManager = function () {
@@ -183,7 +215,7 @@ var OpManagerFactory = function () {
 			if (!this.loadCompleted)
 				return;
 
-			this.activeDragboard.removeInstance(iGadgetId); // TODO split into hideInstance and removeInstance
+			this.activeWorkSpace.getVisibleTab().getDragboard().removeInstance(iGadgetId); // TODO split into hideInstance and removeInstance
 			this.activeVarManager.removeInstance(iGadgetId);
 			this.activeWiring.removeInstance(iGadgetId);
 			this.activeContextManager.removeInstance(iGadgetId);
@@ -208,21 +240,25 @@ var OpManagerFactory = function () {
 		}
 
 		OpManager.prototype.igadgetLoaded = function () {
-	 	    this.activeDragboard.igadgetLoaded();
+	 	    this.activeWorkSpace.getVisibleTab().getDragboard().igadgetLoaded();
 		}
 				
 		OpManager.prototype.showActiveWorkSpace = function () {
-			var workSpaceNames = this.workSpaceInstances.keys();
-			
-			for (var i=0; i<workSpaceNames.length; i++) {
-				var workSpace = this.workSpaceInstances[workSpaceNames[i]];
+			var workSpaceIds = this.workSpaceInstances.keys();
+			var disabledWorkSpaces= [];
+			var j=0;
+			for (var i=0; i<workSpaceIds.length; i++) {
+				var workSpace = this.workSpaceInstances[workSpaceIds[i]];
 				
 				if (workSpace == this.activeWorkSpace) {
 					workSpace.show();
 				} else {
-					workSpace.hideAndUnmark();
+					workSpace.hide();
+					disabledWorkSpaces[j] = workSpace;					
+					j++;
 				}
 			}
+			LayoutManagerFactory.getInstance().refreshChangeWorkSpaceMenu(disabledWorkSpaces);
 		}
 		
 		OpManager.prototype.continueLoadingGlobalModules = function (module) {
@@ -243,7 +279,7 @@ var OpManagerFactory = function () {
 		    
 		    if (module == Modules.prototype.ACTIVE_WORKSPACE) {
 		    	this.loadCompleted = true;
-		    	this.changeActiveWorkSpace(this.activeWorkSpace.getName());
+		    	this.changeActiveWorkSpace(this.activeWorkSpace);
 		    	LayoutManagerFactory.getInstance().resizeWrapper();
 		    	return;
 		    }
@@ -253,7 +289,7 @@ var OpManagerFactory = function () {
 		    // Asynchronous load of modules
 		    // Each singleton module notifies OpManager it has finished loading!
 
-		    this.persistenceEngine.send_get(URIs.GET_WORKSPACES, this, loadEnvironment, onError)   
+		    this.persistenceEngine.send_get(URIs.GET_POST_WORKSPACES, this, loadEnvironment, onError)   
 		}
 	
 		OpManager.prototype.logIGadgetError = function(iGadgetId, msg, level) {
@@ -261,7 +297,7 @@ var OpManagerFactory = function () {
 			msg = msg + "\n" + gadgetInfo;
 
 			this.log(msg, level);
-			this.activeDragboard.notifyErrorOnIGadget(iGadgetId);
+			this.activeWorkspace.getVisibleTab().getDragboard().notifyErrorOnIGadget(iGadgetId);
 		}
 
 		OpManager.prototype.log = function(msg, level) {
@@ -269,9 +305,9 @@ var OpManagerFactory = function () {
 //				$("logs_tab").className="tab";
 //			}
 
-			label = ngettext("%(errorCount)s error", "%(errorCount)s errors", ++this.errorCount);
-			label = interpolate(label, {errorCount: this.errorCount}, true);
-			LayoutManagerFactory.getInstance().logsLink.innerHTML = label;
+			labelContent = ngettext("%(errorCount)s error", "%(errorCount)s errors", ++this.errorCount);
+			labelContent = interpolate(labelContent, {errorCount: this.errorCount}, true);
+			LayoutManagerFactory.getInstance().notifyError(labelContent);
 
 			var logentry = document.createElement("p");
 
@@ -319,6 +355,43 @@ var OpManagerFactory = function () {
 			LayoutManagerFactory.getInstance().logsConsole.appendChild(logentry);
 
 		}
+
+		//Operations on workspaces
+
+		OpManager.prototype.workSpaceExists = function (newName){
+			var workSpaceKeys = this.workSpaceInstances.keys();
+			for(var i=0;i<workSpaceKeys.length;i++){
+			if(this.workSpaceInstances[workSpaceKeys[i]].workSpaceState.name == newName)
+				return true;
+			}
+			return false;
+		}
+
+		OpManager.prototype.addWorkSpace = function (newName) {
+			var o = new Object;
+			o.name = newName;
+			wsData = Object.toJSON(o);
+			params = 'workspace=' + wsData;
+			PersistenceEngineFactory.getInstance().send_post(URIs.GET_POST_WORKSPACES, params, this, createWSSuccess, createWSError);
+
+		}
+		
+		OpManager.prototype.removeWorkSpace = function(workSpaceId){
+		if(this.workSpaceInstances.keys().length <= 1){
+			var msg;			
+			msg = "there must be one workspace at least";
+			msg = interpolate(gettext("Error removing workspace: %(errorMsg)s."), {errorMsg: msg}, true);
+			OpManagerFactory.getInstance().log(msg);
+			LayoutManagerFactory.getInstance().hideCover();
+			return false;
+		}
+		this.workSpaceInstances.remove(workSpaceId);
+		//set the first workspace as current
+		this.changeActiveWorkSpace(this.workSpaceInstances.values()[0]);
+		return true;
+	}
+
+
 	}
 	
 	// *********************************

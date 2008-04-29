@@ -48,7 +48,7 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 
 	Wiring.prototype.processTab = function (tabData) {
 		var igadgets = tabData['igadgetList'];
-		var dragboard = this.workspace.getTab(tabData['name']).getDragboard();
+		var dragboard = this.workspace.getTab(tabData['id']).getDragboard();
 
 		for (var i = 0; i < igadgets.length; i++) {
 			this.addInstance(dragboard.getIGadget(igadgets[i].id));

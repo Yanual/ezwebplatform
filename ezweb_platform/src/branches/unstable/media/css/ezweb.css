@@ -17,16 +17,22 @@ a:hover{
 
 /* header ------------------------------------------------------------------------------------------ */
 /* testing from codesyntax */
-
 #header {
-	position: relative;
-	width:100%;
+        position: relative;
+        width:100%;
 	background: url("/ezweb/images/header.gif") repeat-x top left;
 	color:white;
-	text-align:right;
-	height:55px;
+        text-align:right;
+	height: 70px;
+	z-index: 2;
 }
+#banner {
+  position:relative;
+  overflow:hidden;
+}
+
 #greeting{
+	position:relative;
 	float:right;
 	width:400px;
 	margin-right:15px;
@@ -36,51 +42,116 @@ a:hover{
 	color:white;
 }
 #logo {
+	position:relative;
 	float:left;
 	margin-top:0;
 	margin-left:10px;
 }
 
-#toolbar {}
+#bar {
+  position: relative;
+  float: left;
+  clear:both;
+  width: 100%;
 
-#toolbar a{}
+}
 
-#description {}
+#tab_section {
+ position: absolute;
+ top: 6px;
+ display: block;
+ right:4px;
+ z-index: 3;
 
-#description p {}
+}
 
-#header .tab_section {
-  position: absolute;
+#toolbar_section {
+  position: relative;
   padding-left: 20px;
-  bottom: -2px;
+  float: left;
+  margin-top: 8px;
   z-index: 3;
-  right: 4px;
-  left: 4px;
+/*  right: 4px;
+  left: 4px;*/
+
 }
 
-#header .tab_section .toolbar_section {
-  position: absolute;
-  padding-right: 10px;
-  bottom: 0px;
-  z-index: 3;
-  left: 4px;
-}
-
-.toolbar_unmarked {
-  color: blue;
-  padding-right: 3px;
-  padding-left: 3px;
+.toolbar_section input, #add_tab_link {
+  position: relative;
+  margin-right: 3px;
+  margin-left: 3px;
+  height: 21px;
+  width: 21px;
+  border: 0px none;
   cursor: pointer;
-  text-decoration: underline;
 }
+
+#workspace_name {
+  position: relative;
+  margin-right: 3px;
+  margin-left: 3px;
+  font-size: 14px;
+  font-weight: bold;
+  color:#2D6F9C;
+}
+
+#add_tab_link {
+ margin-top:2px;
+}
+
+
+#catalogue_link {
+  background: transparent url(/ezweb/images/catalogue21px.png) no-repeat;
+}
+/*#catalogue_link:hover {
+  background: transparent url(catalogue.png) no-repeat;
+}*/
+
+#wiring_link {
+  background: transparent url(/ezweb/images/wiring21px.png) no-repeat;
+}
+/*#wiring_link:hover {
+  background: transparent url(wiring.png) no-repeat;
+}*/
+
+#change_ws_link {
+  background: transparent url(/ezweb/images/settings.png) no-repeat;
+}
+
+#ws_operations_link {
+  background: transparent url(/ezweb/images/ops21px.png) no-repeat;
+}
+
+/*#ws_operations_link:hover {
+  background: transparent url(ops.png) no-repeat;
+}*/
+
+#logs_link {
+  margin-right: 3px;
+  margin-left: 3px;
+  color:red;
+  cursor:pointer;
+}
+
+#add_tab_link {
+  background: transparent url(/ezweb/images/addTab21px.png) no-repeat;
+  
+}
+
+/*#add_tab_link:hover {
+  background: transparent url(addTab.png) no-repeat;
+  
+}*/
 
 .toolbar_marked {
-  color: red;
-  padding-right: 3px;
-  padding-left: 3px;
+
+}
+.toolbar_unmarked {
+
 }
 
-#header .tab_section .tab {
+#tab_section .tab {
+  position: relative;
   float: right;
   border: 2px solid #4c5054;
   color: #FFF;
@@ -89,18 +160,154 @@ a:hover{
   padding: 2px 9px;
   margin: 0px 0.5em;
   cursor: pointer;
+  z-index: 3;
+  height: 18px;
+  padding: 2px 9px 1px;
 }
 
 .disabled {
   display: none !important;
 }
 
-#header .tab_section .current {
+#tab_section .current {
   color: #4c5054;
   background: #E0E0E0;
   border-bottom: 0px none;
-  padding-bottom: 4px;
+  padding-bottom: 3px;
 }
+
+.tab span {
+}
+
+.current span {
+ margin-right: 5px;
+}
+
+#description {}
+
+#description p {}
+
+#submenu_layer{
+  position:absolute;
+  top: 0;
+  left: 0;
+  width:100%;
+  height: 100%;
+  z-index: 3;
+  opacity: .2;
+  moz-opacity: .5;
+  filter: alpha(opacity=50);
+}
+
+.disabled_background {
+  background-color: #6699cc;
+}
+
+.drop_down_menu, .window_menu{
+  background: #FFFFFF;
+  font-size: 9pt;
+  position:absolute;
+  text-align: left;
+   z-index: 4;
+}
+
+.drop_down_menu {
+  border: solid 1px #AAAAAA;
+  padding:0.5em;
+}
+
+.drop_down_menu div {
+  padding : 5px;
+  display: block;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.drop_down_menu div img {
+  border: none;
+  display: inline;
+  margin-right:5px;
+}
+
+.drop_down_menu div span {
+  display: inline;
+}
+.underlined {
+  border-bottom: solid 1px #AAAAAA;
+}
+
+.window_menu{
+  border: 2px solid #0b8fff;
+}
+
+.window_menu .window_top {
+  position:relative;
+  margin:2px 2px 20px 2px;
+}
+
+.window_menu .window_title {
+  font-size: 16px;
+  color: #2D6F9C;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+.window_menu .closebutton {
+  position: absolute;
+  right: 2px;
+}
+.window_menu .window_content {
+  clear: both;
+  margin:20px;
+}
+.window_msg {
+  margin-top: 2px;
+  font-size: 90%;
+  color: red;
+  text-align: center;
+}
+
+.window_menu .window_bottom {
+  margin:20px 18px 10px 18px;
+  text-align: center;
+}
+
+#tabOps_launcher, .closebutton{
+  border:0px none;
+  cursor: pointer;
+  padding: 0px;
+  width: 16px;
+  height: 16px;
+}
+
+
+.tabOps_launcher_show{
+  background: transparent url(/ezweb/images/settings.png) no-repeat;
+}
+
+.tabOps_launcher_show:hover{
+  background: transparent url(/ezweb/images/settings-highlighted.png) no-repeat;
+}
+
+.tabOps_launcher_hide{
+  background: transparent url(/ezweb/images/settings2.png) no-repeat;
+}
+
+.tabOps_launcher_hide:hover{
+  background: transparent url(/ezweb/images/settings2-highlighted.png) no-repeat;
+}
+
+.closebutton {
+  background: transparent url(/ezweb/images/close.png) no-repeat;
+}
+
+button {
+  background: transparent url(/ezweb/images/button.gif) no-repeat;
+  border: medium none;
+  color: white;
+  margin: 3px;
+}
+
 
 /* gadgets ------------------------------------------------------------------------------------------ */
 
@@ -233,10 +440,6 @@ a:hover{
 
 #header .tab_section #logs_tab {
   color: #FFCC00;
-}
-
-#header .tab_section #logs_tab.current {
-  color: #FF0000;
 }
 
 #logs_console {

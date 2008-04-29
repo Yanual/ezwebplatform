@@ -76,7 +76,9 @@ Variable.prototype.setHandler = function () { }
 
 Variable.prototype.set = function (value) { } 
 
-Variable.prototype.assignConnectable = function (connectable) { }
+Variable.prototype.assignConnectable = function (connectable) {
+	this.connectable = connectable;
+}
 
 //////////////////////////////////////////////
 // PUBLIC CONSTANTS
@@ -139,7 +141,7 @@ RVariable.prototype.set = function (newValue) {
 			}
 			break;
 		case Variable.prototype.TAB:
-			OpManagerFactory.getInstance().activeWorkSpace.goTab(this.name);
+			OpManagerFactory.getInstance().activeWorkSpace.goTab(this.connectable.tab);
 			break;
 		default:
 			break;
@@ -165,10 +167,6 @@ RWVariable.prototype = new Variable;
 // PUBLIC METHODS TO BE INHERITANCED
 //////////////////////////////////////////////
 
-
-RWVariable.prototype.assignConnectable = function (connectable) {
-	this.connectable = connectable;
-}
 
 RWVariable.prototype.set = function (value_) {
     this.varManager.incNestingLevel();
