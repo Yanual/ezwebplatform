@@ -58,6 +58,14 @@ function Tab (tabInfo, workSpace) {
 	    this.dragboard.recomputeSize();
 	    LayoutManagerFactory.getInstance().markTab(this.tabHTMLElement);
 	}
+	
+	Tab.prototype.go = function () {
+
+		LayoutManagerFactory.getInstance().showDragboard(this.dragboardElement);
+
+	    this.dragboard.recomputeSize();
+	    LayoutManagerFactory.getInstance().goTab(this.tabHTMLElement);
+	}
 
 	Tab.prototype.getDragboard = function () {
 		return this.dragboard;
@@ -99,4 +107,11 @@ function Tab (tabInfo, workSpace) {
     this.dragboardElement.setStyle({'display': 'block'});    
                 	
 	this.dragboard = new Dragboard(this, this.workSpace, this.dragboardElement);
+	
+	this.variable = new RVariable("tab_"+this.tabInfo.name, null, this.tabInfo.name, Variable.prototype.TAB, this, null);
+	
+	this.connectable = new wTab(this.variable, "tab_"+this.tabInfo.name);
+	
+	workSpace.getVarManager().addWorkspaceVariable("tab_"+this.tabInfo.name, this.variable);
+					
 }

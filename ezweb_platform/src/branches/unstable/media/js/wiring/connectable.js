@@ -186,6 +186,24 @@ wChannel.prototype.getQualifiedName = function () {
   return "channel_" + this._name;
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// This class represents a wConnectable whose only purpose is to redistribute the data produced by an wIn object //
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function wTab (variable, name) {
+  this.variable = variable;
+  wOut.call(this, name, null, null);
+}
+
+wTab.prototype = new wOut();
+
+wTab.prototype.propagate = function(newValue) {
+  this.variable.set(newValue);
+}
+
+wTab.prototype.getQualifiedName = function () {
+  return "tab_" + this._name;
+}
+
 /////////////////////////////////////////////////////////////////////////////
 // This class representents a iGadget variable which may receive some data //
 /////////////////////////////////////////////////////////////////////////////

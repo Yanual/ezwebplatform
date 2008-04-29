@@ -216,6 +216,15 @@ function WorkSpace (workSpaceState) {
 		this.visibleTab.show();
 	}
 	
+	WorkSpace.prototype.goTab = function(tabName) {
+		if (!this.loaded)
+			return;
+		
+		this.visibleTab.hideAndUnmark();
+		this.visibleTab = this.tabInstances[tabName];
+		this.visibleTab.go();
+	}
+	
 	WorkSpace.prototype.addIGadget = function(tab, igadget, igadgetJSON) {
 		this.varManager.addInstance(igadget, igadgetJSON);
 		this.contextManager.addInstance(igadget, igadget.getGadget().getTemplate());

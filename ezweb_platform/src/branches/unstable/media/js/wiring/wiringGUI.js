@@ -257,6 +257,58 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
       this.slot_list.appendChild(igadgetDiv);
     }
   }
+  
+  WiringInterface.prototype._addTabs = function (workspace) {
+    // TODO mirar esto
+    var ulSlots = document.createElement("div");
+    ulSlots.addClassName("tabContent");
+
+    var tabs = workspace.tabInstances.keys();
+
+    // Tabs
+    for (var i = 0; i < tabs.length; i++) {
+      var tab = workspace.tabInstances[tabs[i]];
+      var connectableElement = document.createElement("div");
+      connectableElement.appendChild(document.createTextNode(tabs[i]));
+
+      var chkItem = document.createElement("div");
+      chkItem.addClassName("unchkItem");
+      connectableElement.appendChild(chkItem);
+      
+      var connectable = tab.connectable;
+      var anchor = new ConnectionAnchor(tab.connectable, chkItem);
+
+      var context = {anchor: anchor, wiringGUI:this};
+      Event.observe(chkItem, "click",
+                             function () {
+                               this.wiringGUI._changeConnectionStatus(this.anchor);
+                             }.bind(context));
+
+      // Cancel bubbling of _toggle
+      function cancelbubbling(e) {
+        Event.stop(e);
+      }
+
+      connectableElement.addEventListener("click", cancelbubbling, false);
+
+      ulSlots.appendChild(connectableElement);
+      this.outputs[connectable.getQualifiedName()] = anchor;
+    }
+
+    // Slot column
+    if (ulSlots.childNodes.length > 0) {
+      var igadgetDiv = document.createElement("div");
+      igadgetDiv.addClassName("tab");
+      igadgetDiv.appendChild(document.createTextNode(gettext ('Tabs')));
+
+      var context = {element: igadgetDiv, wiringGUI:this};
+      Event.observe(igadgetDiv,
+                    "click",
+                    function () {this.wiringGUI._toggle(this.element);}.bind(context));
+      igadgetDiv.appendChild(ulSlots);
+      this.slot_list.appendChild(igadgetDiv);
+    }
+  }
 
   WiringInterface.prototype.clearMessages = function () {
     this.msgsDiv.setStyle({display: null});
@@ -285,6 +337,8 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
     for (var i = 0; i < iGadgets.length; i++) {
       this._addIGadget(iGadgets[i]);
     }
+    
+    this._addTabs(this.workspace);
 
     for (var j = 0; j < channels.length; j++) {
       this._addChannelInterface(new ChannelInterface(channels[j]));

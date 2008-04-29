@@ -75,6 +75,10 @@ function VarManager (_workSpace) {
 					objVars[name] = new RWVariable(id, null, name, aspect, this, value);
 					workspaceVariables[id] = objVars[name]; // TODO mix with normal variables
 					break;
+				case Variable.prototype.TAB:
+					objVars[id] = new RVariable(id, null, name, aspect, this, value);
+					workspaceVariables[id] = objVars[id]; // TODO mix with normal variables
+					break;
 			}
 		}		
 	}
@@ -223,9 +227,13 @@ function VarManager (_workSpace) {
 		var newVar = new RWVariable(null, null, name, Variable.prototype.INOUT, this, null);
 		return newVar;
 	}
+	
+	VarManager.prototype.addWorkspaceVariable = function(id, variable) {
+		workspaceVariables[id] = variable;
+	}
 
 	VarManager.prototype.getWorkspaceVariableById = function(varId) {
-		return workspaceVariables[varId]; // TODO
+		return workspaceVariables[varId];
 	}
 
 /*	VarManager.prototype.planInterfaceInitialization = function () {

@@ -89,6 +89,7 @@ Variable.prototype.PROPERTY = "PROP"
 Variable.prototype.EXTERNAL_CONTEXT = "ECTX"
 Variable.prototype.GADGET_CONTEXT = "GCTX"
 Variable.prototype.INOUT = "INOUT"
+Variable.prototype.TAB = "TAB"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // RVARIABLE (Derivated class) <<PLATFORM>>
@@ -136,6 +137,9 @@ RVariable.prototype.set = function (newValue) {
 				var msg = interpolate(gettext("Error in the handler of the \"%(varName)s\" RVariable in iGadget %(iGadgetId)s: %(exceptionMsg)s."), transObj, true);
 				OpManagerFactory.getInstance().logIGadgetError(this.iGadget, msg, Constants.Logging.ERROR_MSG);
 			}
+			break;
+		case Variable.prototype.TAB:
+			OpManagerFactory.getInstance().activeWorkSpace.goTab(this.name);
 			break;
 		default:
 			break;
