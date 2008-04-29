@@ -61,7 +61,8 @@ var LayoutManagerFactory = function () {
 		// Container managed by LayOutManager: {showcase_tab}
 		// Remaining containers managed by WorkSpaces!!
 			this.showCase = $('showcase_container');
-			this.logsConsole = $('logs_container');
+			this.logsConsole = $('logs_console');
+			this.logsContainer = $('logs_container');
 			this.logsLink = $('logs_link');
 			
 		// Menu Layer	
@@ -181,11 +182,11 @@ var LayoutManagerFactory = function () {
 		
 		// Logs operations
 		LayoutManager.prototype.showLogs = function(){
-			this.logsConsole.setStyle({'zIndex': this.showLevel, 'display': 'block', 'visibility': 'visible'});
+			this.logsContainer.setStyle({'zIndex': this.showLevel, 'display': 'block', 'visibility': 'visible'});
 		}
 		
 		LayoutManager.prototype.hideLogs = function(){
-			this.logsConsole.setStyle({'zIndex': this.hideLevel, 'visibility': 'hidden'});
+			this.logsContainer.setStyle({'zIndex': this.hideLevel, 'visibility': 'hidden'});
 		}
 		
 		//Wiring operations
