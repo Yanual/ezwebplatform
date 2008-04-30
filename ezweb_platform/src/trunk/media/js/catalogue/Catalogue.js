@@ -181,6 +181,36 @@ var CatalogueFactory  = function () {
 					document.getElementById("global_tagcloud").innerHTML = _globalTagsToTagcloud();
 					return;
 				}
+				if(selectedResources.length==1){
+					if (UIUtils.globalTags == "all") {
+						globalTags = globalTags=CatalogueFactory.getInstance().getResource(selectedResources[0]).getTags();
+					} 
+					else if (UIUtils.globalTags == "mytags") {
+						var auxGlobalTags = [];
+						var counter=0;
+						globalTags = globalTags=CatalogueFactory.getInstance().getResource(selectedResources[0]).getTags();
+						for(var k=0;k<globalTags.length; k++){
+							if(globalTags[k].getAdded_by()=='Yes'){
+								auxGlobalTags[counter]=globalTags[k];
+								counter++;
+							}
+						}
+						globalTags=auxGlobalTags;
+					} else {
+						var auxGlobalTags = [];
+						var counter=0;
+						globalTags = globalTags=CatalogueFactory.getInstance().getResource(selectedResources[0]).getTags();
+						for(var k=0;k<globalTags.length; k++){
+							if(globalTags[k].getAdded_by()=='No'){
+								auxGlobalTags[counter]=globalTags[k];
+								counter++;
+							}
+						}
+						globalTags=auxGlobalTags;
+					}
+					document.getElementById("global_tagcloud").innerHTML = _globalTagsToTagcloud();
+					return;
+				}
 				if (UIUtils.globalTags == "all") {
 					globalTags=CatalogueFactory.getInstance().getResource(selectedResources[0]).getTags();
 					var auxTags = [];
