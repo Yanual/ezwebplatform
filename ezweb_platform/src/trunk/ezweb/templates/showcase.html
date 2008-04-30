@@ -44,15 +44,15 @@
 				<table>
 					<tr>
 						<td><label for="advanced_search_text_and">{% trans  "All of these words:" %}</label></td>
-						<td><input type="text" id="advanced_search_text_and" name="advanced_search_text_and" class="text" autocomplete="on"></input></td>
+						<td><input type="text" id="advanced_search_text_and" name="advanced_search_text_and" class="text" autocomplete="on" onkeypress="UIUtils.onReturn(event,UIUtils.searchGeneric,URIs.GET_RESOURCES_SEARCH_GENERIC, $('advanced_search_text_and').value, $('advanced_search_text_or').value, $('advanced_search_text_not').value);"></input></td>
 					</tr>
 					<tr>
 						<td><label for="advanced_search_text_or">{% trans  "Any of these words:" %}</label></td>
-						<td><input type="text" id="advanced_search_text_or" name="advanced_search_text_or" class="text" autocomplete="on"></input></td>
+						<td><input type="text" id="advanced_search_text_or" name="advanced_search_text_or" class="text" autocomplete="on" onkeypress="UIUtils.onReturn(event,UIUtils.searchGeneric,URIs.GET_RESOURCES_SEARCH_GENERIC, $('advanced_search_text_and').value, $('advanced_search_text_or').value, $('advanced_search_text_not').value);"></input></td>
 					</tr>
 					<tr>
 						<td><label for="advanced_search_text_not">{% trans  "None of these words:" %}</label></td>
-						<td><input type="text" id="advanced_search_text_not" name="advanced_search_text_not" class="text" autocomplete="on"></input></td>
+						<td><input type="text" id="advanced_search_text_not" name="advanced_search_text_not" class="text" autocomplete="on" onkeypress="UIUtils.onReturn(event,UIUtils.searchGeneric,URIs.GET_RESOURCES_SEARCH_GENERIC, $('advanced_search_text_and').value, $('advanced_search_text_or').value, $('advanced_search_text_not').value);"></input></td>
 						<td><a href="#" class="submit_link" onclick="UIUtils.searchGeneric(URIs.GET_RESOURCES_SEARCH_GENERIC, $('advanced_search_text_and').value, $('advanced_search_text_or').value, $('advanced_search_text_not').value);">{% trans  "Search" %}</a></td>
 					</tr>
 				</table>
