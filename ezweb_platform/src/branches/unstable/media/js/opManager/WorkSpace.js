@@ -145,15 +145,20 @@ function WorkSpace (workSpaceState) {
 			msg = interpolate(gettext("Error removing workspace, changes will not be saved: %(errorMsg)s."), {errorMsg: msg}, true);
 			OpManagerFactory.getInstance().log(msg);
 	}
+	
 	//**** TAB CALLBACK*****
 	var createTabSuccess = function(transport) {
 		var response = transport.responseText;
 		var tabInfo = eval ('(' + response + ')');
+		
 		tabInfo.igadgetList=[];
+		
 		this.tabInstances[tabInfo.id] = new Tab(tabInfo, this);
 		this.setTab(this.tabInstances[tabInfo.id]);
+		
 		LayoutManagerFactory.getInstance().hideCover();
 	}
+	
 	var createTabError = function(transport, e) {
 		var msg;
 		if (transport.responseXML) {

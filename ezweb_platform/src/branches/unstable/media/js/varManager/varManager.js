@@ -65,7 +65,7 @@ function VarManager (_workSpace) {
 	VarManager.prototype.parseWorkspaceVariables = function (ws_vars) {
 		var objVars = []
 		for (var i = 0; i<ws_vars.length; i++) {
-			var id = iws_vars[i].variableId;
+			var id = ws_vars[i].variableId;
 			var name = ws_vars[i].name;
 			var aspect = ws_vars[i].aspect;
 			var value = ws_vars[i].value;

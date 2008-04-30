@@ -59,6 +59,54 @@ from commons.utils import get_xml_error, json_encode
 from workspace.models import *
 from igadget.models import Variable
 
+def deleteTab (tab):
+    tab.ws_variable.delete()
+    tab.delete()
+
+def createTab (tab_name, workspace):
+    # Creating implicit workspace variable
+    wsVariable = WorkSpaceVariable (name=tab_name, workspace=workspace, aspect='TAB')
+    wsVariable.save()
+    
+    # Creating tab
+    tab = Tab (name=tab_name, visible=False, workspace=workspace, ws_variable=wsVariable)
+    tab.save()
+    
+    # Returning created Ids
+    ids = {}
+    
+    ids['id'] = tab.id
+    ids['name'] = tab.name
+    
+    wsVarId = {}
+    wsVarId['name'] = wsVariable.name
+    wsVarId['id'] = wsVariable.id
+    
+    ids['workspaceVariable'] = wsVarId
+    
+    return ids
+    
+def createWorkSpace (workSpaceName, user):
+    #Workspace creation
+    workspace = WorkSpace (name=workSpaceName, active=True, user=user)
+    workspace.save()
+    
+    #Tab creation
+    tab_ids = createTab ('MyTab', workspace)
+    
+     # Returning created Ids
+    ids = {}
+    
+    ids['workspace'] = {}
+    
+    ids['workspace']['id'] = workspace.id
+    ids['workspace']['name'] = workspace.name
+    
+    ids['workspace']['tab'] = tab_ids
+
+    return ids
+    
+
 class WorkSpaceCollection(Resource):
     def read(self, request):
         user = get_user_authentication(request)
@@ -67,13 +115,7 @@ class WorkSpaceCollection(Resource):
         try:
             workspaces = WorkSpace.objects.filter(user=user)
             if workspaces.count()==0:
-                #Workspace creation
-                workspace = WorkSpace (name=_("MyWorkspace"), active=True, user=user)
-                workspace.save()
-                
-                #Tab creation
-                tab = Tab (name=_("MyTab"), visible=True, workspace=workspace)
-                tab.save()
+                createWorkSpace('MyWorkSpace', user)
                 
                 workspaces = WorkSpace.objects.filter(user=user)
         except Exception, e:
@@ -96,20 +138,19 @@ class WorkSpaceCollection(Resource):
 
         try:
             ts = eval(received_json)
+            
             if not ts.has_key('name'):
                 raise Exception(_('Malformed workspace JSON: expecting workspace uri.'))
+            
             workspace_name = ts.get('name')
-            workspace = WorkSpace (name=workspace_name, active=False, user=user)
-            workspace.save()
+
+            ids = createWorkSpace (workspace_name, user)          
             
-            #Tab creation
-            tab = Tab (name=_("MyTab"), visible=True, workspace=workspace)
-            tab.save()
-            
-            workspaces = get_list_or_404(WorkSpace, user=user, pk=workspace.pk)
+            workspaces = get_list_or_404(WorkSpace, user=user, pk=ids['workspace']['id'])
             data = serializers.serialize('python', workspaces, ensure_ascii=False)
             
             workspace_data = get_global_workspace_data(data[0], workspaces[0])
+            
             return HttpResponse(json_encode(workspace_data), mimetype='application/json; charset=UTF-8')
             
         except Exception, e:
@@ -195,8 +236,9 @@ class TabCollection(Resource):
             tabs = Tab.objects.filter(workspace__user=user, workspace__pk=workspace_id)
             if tabs.count()==0:
                 workspace = get_object_or_404(WorkSpace, pk=workspace_id)
-                tab = Tab (name=_("MyTab"), visible=True, workspace=workspace)
-                tab.save()
+                
+                createTab('MyTab', workspace)
+                
                 tabs = Tab.objects.filter(pk=tab.id)
         except Exception, e:
             return HttpResponseBadRequest(get_xml_error(unicode(e)), mimetype='application/xml; charset=UTF-8')
@@ -222,35 +264,12 @@ class TabCollection(Resource):
             if not t.has_key('name'):
                 raise Exception(_('Malformed tab JSON: expecting tab name.'))
             
-            # Creating tab
-            
             tab_name = t.get('name')
-            workspace = WorkSpace.objects.get(user=user, pk=workspace_id)
+            workspace = WorkSpace.objects.get(user=user, pk=workspace_id)   
             
-            tab = Tab (name=tab_name, visible=False, workspace=workspace)
-            tab.save()
-            
-            # Creating workspace variable regarding tab
-            
-            wsVariable = WorkSpaceVariable ()
-            wsVariable.save()
-            
-            # Returning created Ids
-            ids = {}
-            
-            ids['tab']['id'] = tab.pk
-            
-            wsVarId = {}
-            wsVarId['name'] = wsVariable.name
-            wsVarId['id'] = wsVariable.pk
-            
-            ids['workspaceVariable'] = wsVarId
+            ids = createTab(tab_name, workspace)
             
             return HttpResponse(json_encode(ids), mimetype='application/json; charset=UTF-8')
-            tab = get_list_or_404(Tab, pk=tab.pk)
-            data = serializers.serialize('python', tab, ensure_ascii=False)
-            tab_data = get_tab_data(data[0])
-            return HttpResponse(json_encode(tab_data), mimetype='application/json; charset=UTF-8')
 
         except Exception, e:
             transaction.rollback()
@@ -267,6 +286,7 @@ class TabEntry(Resource):
         tab = get_list_or_404(Tab, workspace__user=user, workspace__pk=workspace_id, pk=tab_id)
         data = serializers.serialize('python', tab, ensure_ascii=False)
         tab_data = get_tab_data(data[0])
+        
         return HttpResponse(json_encode(tab_data), mimetype='application/json; charset=UTF-8')
 
     def update(self, request, workspace_id, tab_id):
@@ -306,7 +326,6 @@ class TabEntry(Resource):
             log(msg, request)
             return HttpResponseServerError(get_xml_error(msg), mimetype='application/xml; charset=UTF-8')
 
-
     def delete(self, request, workspace_id, tab_id):
         user = get_user_authentication(request)
         
@@ -320,7 +339,9 @@ class TabEntry(Resource):
         # Gets Igadget, if it does not exist, a http 404 error is returned
         tab = get_object_or_404(Tab, workspace__pk=workspace_id, pk=tab_id)
         
-        tab.delete()
+        #Delete WorkSpace variables too!
+        deleteTab(tab)
+
         return HttpResponse('ok')
 
 

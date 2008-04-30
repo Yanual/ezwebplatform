@@ -67,6 +67,20 @@ class WorkSpaceVariable(models.Model):
     name = models.CharField(_('Name'), max_length=30)
     workspace = models.ForeignKey(WorkSpace, verbose_name=_('WorkSpace'))
     value = models.TextField(_('Value'))
+    
+    TYPES = (
+        ('N', _('Number')),
+        ('S', _('String')),
+        ('D', _('Date')),
+        ('B', _('Boolean')),
+    )
+    type = models.CharField(_('Type'), max_length=1, choices=TYPES)
+    
+    ASPECTS = (
+        ('CHANNEL', _('Channel')),
+        ('TAB', _('Tab')),
+    )
+    aspect = models.CharField(_('Aspect'), max_length=10, choices=ASPECTS)
 
     class Meta:
         unique_together = ('workspace', 'name')
@@ -83,6 +97,8 @@ class Tab(models.Model):
     name = models.CharField(_('Name'), max_length=30)
     visible = models.BooleanField(_('Visible'))
     workspace = models.ForeignKey(WorkSpace, verbose_name=_('WorkSpace'))
+    
+    ws_variable = models.ForeignKey(WorkSpaceVariable, verbose_name=_('WS_Variable'))
 
     class Meta:
         unique_together = ('workspace', 'name')
