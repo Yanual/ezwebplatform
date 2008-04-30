@@ -101,11 +101,14 @@ class WorkSpaceCollection(Resource):
             workspace_name = ts.get('name')
             workspace = WorkSpace (name=workspace_name, active=False, user=user)
             workspace.save()
+            
             #Tab creation
             tab = Tab (name=_("MyTab"), visible=True, workspace=workspace)
             tab.save()
+            
             workspaces = get_list_or_404(WorkSpace, user=user, pk=workspace.pk)
             data = serializers.serialize('python', workspaces, ensure_ascii=False)
+            
             workspace_data = get_global_workspace_data(data[0], workspaces[0])
             return HttpResponse(json_encode(workspace_data), mimetype='application/json; charset=UTF-8')
             
@@ -123,6 +126,7 @@ class WorkSpaceEntry(Resource):
         workspaces = get_list_or_404(WorkSpace, user=user, pk=workspace_id)
         data = serializers.serialize('python', workspaces, ensure_ascii=False)
         workspace_data = get_global_workspace_data(data[0], workspaces[0])
+        
         return HttpResponse(json_encode(workspace_data), mimetype='application/json; charset=UTF-8')
 
     @transaction.commit_on_success
@@ -214,12 +218,35 @@ class TabCollection(Resource):
 
         try:
             t = eval(received_json)
+            
             if not t.has_key('name'):
                 raise Exception(_('Malformed tab JSON: expecting tab name.'))
+            
+            # Creating tab
+            
             tab_name = t.get('name')
             workspace = WorkSpace.objects.get(user=user, pk=workspace_id)
+            
             tab = Tab (name=tab_name, visible=False, workspace=workspace)
             tab.save()
+            
+            # Creating workspace variable regarding tab
+            
+            wsVariable = WorkSpaceVariable ()
+            wsVariable.save()
+            
+            # Returning created Ids
+            ids = {}
+            
+            ids['tab']['id'] = tab.pk
+            
+            wsVarId = {}
+            wsVarId['name'] = wsVariable.name
+            wsVarId['id'] = wsVariable.pk
+            
+            ids['workspaceVariable'] = wsVarId
+            
+            return HttpResponse(json_encode(ids), mimetype='application/json; charset=UTF-8')
             tab = get_list_or_404(Tab, pk=tab.pk)
             data = serializers.serialize('python', tab, ensure_ascii=False)
             tab_data = get_tab_data(data[0])

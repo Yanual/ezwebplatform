@@ -57,7 +57,7 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 
 	Wiring.prototype.loadWiring = function (workSpaceData) {
 		var workSpace = workSpaceData['workspace'];
-		var inOuts = workSpace['inoutList'];
+		var inOuts = workSpace['wiringInfo'];
 		var tabs = workSpace['tabList'];
 
 		for (var i = 0; i < tabs.length; i++) {
@@ -147,6 +147,8 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 		}
 
 		this.iGadgets[iGadgetId] = gadgetEntry;
+		
+		this.modified = true;
 	}
 
 	// TODO
@@ -166,6 +168,8 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 			entry.slots[i].fullDisconnect();
 
 		this.iGadgets.remove(iGadgetId)
+		
+		this.modified = true;
 	}
 
 	Wiring.prototype.getIGadgetConnectables = function(iGadget) {
@@ -194,6 +198,9 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 
 		var channel = new wChannel(channelVar, channelName);
 		this.channels[channelName] = channel;
+		
+		this.modified = true;
+		
 		return channel;
 	}
 
@@ -214,10 +221,14 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 		}
 
 		channel.fullDisconnect();
+		
 		this.channels.remove(channelName);
+		
+		this.modified = true;
 	}
 
 	Wiring.prototype.serializationSuccess = function (response){
+		this.modified = false;
 	}
 
 	Wiring.prototype.serializationError = function (response) {
@@ -227,6 +238,11 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 	}
 
 	Wiring.prototype.serialize = function () {
+		// It's only needed to persist wiring structure when
+		if (!this.modified)
+			return;
+		
+		
 		var gadgets = [], inouts = [];
 		var gadgetKeys = this.iGadgets.keys();
 		var inOutKeys = this.copyList.keys();
@@ -273,6 +289,8 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 	this.persistenceEngine = PersistenceEngineFactory.getInstance();
 	this.iGadgets = new Hash();
 	this.channels = new Hash();
+	
+	this.modified = false;
 
 	// copy is the list that is used for making new connections or disconnections with the interface.
 	this.copyList = new Hash();
