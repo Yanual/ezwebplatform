@@ -331,14 +331,16 @@ def get_variable_data(data):
     
     #Connectable management
     #Only SLOTs and EVENTs
+    connectable = False
     if var_def.aspect == 'SLOT':
         connectable = Out.objects.get(variable__id = data_ret['id'])          
     if var_def.aspect == 'EVEN':
         connectable = In.objects.get(variable__id = data_ret['id'])
-          
-    connectable_data = get_connectable_data(connectable);
     
-    data_ret['connectable'] = connectable_data
+    if connectable:
+        connectable_data = get_connectable_data(connectable);
+        
+        data_ret['connectable'] = connectable_data
     
     return data_ret
 
