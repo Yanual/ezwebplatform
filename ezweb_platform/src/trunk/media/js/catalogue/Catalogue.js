@@ -81,12 +81,13 @@ var CatalogueFactory  = function () {
 		this.getResource = function(id_) {
 			return resources.getValue(id_);
 		}
-		
+
 		this.addSelectedResource = function(id_) {
 			if(!CatalogueFactory.getInstance().isSelectedResource(id_)) {
 				selectedResources.push(id_);
 			}
 		}
+
 		this.isSelectedResource = function(id_) {
 			for (var i=0; i<selectedResources.length; i++){
 					if (selectedResources[i] == id_) {
@@ -95,7 +96,7 @@ var CatalogueFactory  = function () {
 				}
 			return false;
 		}
-		
+
 		this.removeSelectedResource = function(id_) {
 			for (var i=0; i<selectedResources.length; i++){
 				if (selectedResources[i] == id_) {
@@ -103,7 +104,7 @@ var CatalogueFactory  = function () {
 				}
 			}
 		}
-		
+
 		this.clearSelectedResources = function() {
 			selectedResources = [];
 		}
@@ -115,15 +116,15 @@ var CatalogueFactory  = function () {
 				addSelectedResource(id_);
 			}
 		}
-		
+
 		this.getSelectedResources = function() {
 			return selectedResources;
 		}
-		
+
 		this.addResource = function(resourceJSON_, urlTemplate_) { 
 			resources.addElement("resource_" + resources.size(), new Resource("resource_" + resources.size(), resourceJSON_, urlTemplate_)); 
 		}
-		
+
 		this.addResourceToShowCase = function(resourceId_) {
 			UIUtils.showResourceInfo(resourceId_);
 			ShowcaseFactory.getInstance().addGadget(resources.getValue(resourceId_).getUriTemplate());
@@ -582,6 +583,12 @@ var CatalogueFactory  = function () {
 				orderbyHTML+=(" SELECTED");
 			}
 			orderbyHTML+=(   ">" + gettext("Author") + "</option>" +
+						"<option value=\"-popularity\"");
+			if (UIUtils.orderby == "popularity" )
+			{
+				orderbyHTML+=(" SELECTED");
+			}
+			orderbyHTML+=(   ">" + gettext("Popularity") + "</option>" +
 			            "</select>");
 		}
 		return orderbyHTML;
