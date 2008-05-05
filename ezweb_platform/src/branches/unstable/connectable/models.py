@@ -41,7 +41,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 
 from igadget.models import Variable
-from workspace.models import WorkSpace, WorkSpaceVariable
+from workspace.models import WorkSpace, WorkSpaceVariable, AbstractVariable
 
 class InOut(models.Model):
     
@@ -72,8 +72,7 @@ class In(models.Model):
 class Out(models.Model):
     
     name = models.CharField(_('Name'), max_length=30)
-    variable = models.ForeignKey(Variable, verbose_name=_('Variable'), null=True)
-    workspace_variable = models.ForeignKey(WorkSpaceVariable, verbose_name=_('WS_Variable'), null=True)
+    variable = models.ForeignKey(AbstractVariable, verbose_name=_('Variable'), null=True)
     inout = models.ManyToManyField(InOut, verbose_name=_('InOut'))
     
     class Admin:

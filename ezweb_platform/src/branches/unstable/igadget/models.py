@@ -45,7 +45,7 @@ from django.contrib.contenttypes import generic
 from django.utils.translation import ugettext as  _
 
 from gadget.models import Gadget, VariableDef
-from workspace.models import Tab
+from workspace.models import Tab, AbstractVariable
 
 class Position(models.Model):
 
@@ -82,11 +82,11 @@ class Variable(models.Model):
     
     vardef = models.ForeignKey(VariableDef, verbose_name=_('Variable definition'))
     igadget = models.ForeignKey(IGadget, verbose_name=_('IGadget'))
-    value = models.TextField(_('Value'))
+    abstract_variable = models.ForeignKey(AbstractVariable, verbose_name=_('AbstractVariable'))
 
     class Admin:
         pass
 
     def __unicode__(self):
-        return str(self.pk) + " " + self.value
+        return str(self.pk) + " " + self.vardef.name
 

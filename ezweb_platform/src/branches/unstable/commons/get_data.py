@@ -44,7 +44,10 @@ from gadget.models import Template, Gadget, XHTML, GadgetContext, ExternalContex
 from igadget.models import Variable, VariableDef, Position, IGadget
 from connectable.models import In, Out, InOut
 from context.models import Concept, ConceptName
-from workspace.models import Tab, WorkSpace, WorkSpaceVariable
+from workspace.models import Tab, WorkSpace, WorkSpaceVariable, AbstractVariable
+
+def get_abstract_variable(id):    
+    return AbstractVariable.objects.get(id=id)
 
 def get_wiring_variable_data(var, ig):
     res_data = {}
@@ -213,16 +216,21 @@ def get_workspace_variables_data(workSpaceDAO):
 def get_workspace_variable_data(data):
     data_ret = {}
     data_fields = data['fields']
+    
+    abstract_var_id = data['fields']['abstract_variable']
+       
+    abstract_var = get_abstract_variable(abstract_var_id)
 
-    data_ret['name'] = data_fields['name']
     data_ret['id'] = data['pk']
+    
     data_ret['aspect'] = data_fields['aspect']
-    data_ret['value'] = data_fields['value']
+    data_ret['value'] = abstract_var.value
+    data_ret['type'] = data_fields['type']
     
     if (data_ret['aspect'] == 'TAB'):
-        connectable = Out.objects.get(workspace_variable__id = data_ret['id'])
+        connectable = Out.objects.get(variable__id = abstract_var_id)
     else:
-        connectable = InOut.objects.get(workspace_variable__id = data_ret['id'])
+        connectable = InOut.objects.get(workspace_variable__id = abstract_var_id)
         
     connectable_data = get_connectable_data(connectable)    
 
@@ -314,13 +322,18 @@ def get_variable_data(data):
     
     var_def = VariableDef.objects.get(id=data_fields['vardef'])
     
+    #Variable info is splited into 2 entities: AbstractVariable y Variable   
+    abstract_var = get_abstract_variable_(data['pk'], data_fields, Variable) 
+
     data_ret['id'] = data['pk']
+    
+    data_ret['aspect'] = var_def.aspect
+    data_ret['value'] = abstract_var.value
+    data_ret['type'] = var_def.type
     data_ret['igadgetId'] = data_fields['igadget']
     data_ret['vardefId'] = var_def.pk
     data_ret['name'] = var_def.name
-    data_ret['aspect'] = var_def.aspect
-    data_ret['value'] = data_fields['value']
-
+    
     #Context management    
     if var_def.aspect == 'GCTX':
           context = GadgetContext.objects.get(varDef=data_fields['vardef'])
@@ -336,7 +349,7 @@ def get_variable_data(data):
         connectable = Out.objects.get(variable__id = data_ret['id'])          
     if var_def.aspect == 'EVEN':
         connectable = In.objects.get(variable__id = data_ret['id'])
-    
+          
     if connectable:
         connectable_data = get_connectable_data(connectable);
         

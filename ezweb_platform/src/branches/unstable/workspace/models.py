@@ -62,11 +62,26 @@ class WorkSpace(models.Model):
     def __unicode__(self):
         return str(self.pk) + " " + self.name
     
+class AbstractVariable(models.Model):
+    
+    VAR_TYPES = (
+        ('IGADGET', _('IGadget')),
+        ('WORKSPACE', _('WorkSpace')),
+    )
+    type = models.CharField(_('Type'), max_length=10, choices=VAR_TYPES)
+    name = models.CharField(_('Name'), max_length=30)
+    value = models.TextField(_('Value'))
+
+    class Admin:
+        pass
+
+    def __unicode__(self):
+        return str(self.pk) + " " + self.value
+    
 class WorkSpaceVariable(models.Model):
     
-    name = models.CharField(_('Name'), max_length=30)
     workspace = models.ForeignKey(WorkSpace, verbose_name=_('WorkSpace'))
-    value = models.TextField(_('Value'))
+    abstract_variable = models.ForeignKey(AbstractVariable, verbose_name=_('AbstractVariable'))
     
     TYPES = (
         ('N', _('Number')),
@@ -82,14 +97,11 @@ class WorkSpaceVariable(models.Model):
     )
     aspect = models.CharField(_('Aspect'), max_length=10, choices=ASPECTS)
 
-    class Meta:
-        unique_together = ('workspace', 'name')
-
     class Admin:
         pass
 
     def __unicode__(self):
-        return str(self.pk) + " " + self.name
+        return str(self.pk) + " " + self.aspect
 
 class Tab(models.Model):
     

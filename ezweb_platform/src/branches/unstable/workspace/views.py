@@ -64,14 +64,18 @@ def deleteTab (tab):
     tab.ws_variable.delete()
     tab.delete()
 
-def createTab (tab_name, user, workspace):
-    # Creating implicit workspace variable
-    wsVariable = WorkSpaceVariable (name=tab_name, workspace=workspace, aspect='TAB')
+def createTab (tab_name, user,  workspace):
+    # Creating Entry in AbstractVariable table for polimorphic access from Connectable hierarchy
+    abstractVariable =  AbstractVariable (name=tab_name, type='WORKSPACE')
+    abstractVariable.save()
+    
+    # Creating implicit workspace variable    
+    wsVariable = WorkSpaceVariable (workspace=workspace, aspect='TAB', abstract_variable=abstractVariable)
     wsVariable.save()
     
     #Creating implicit OUT Connectable element
     connectableName = 'tab_' + tab_name;
-    connectable = Out(name=connectableName, workspace_variable=wsVariable)
+    connectable = Out(name=connectableName, variable=abstractVariable)
     connectable.save()
     
     # Creating tab
@@ -87,7 +91,6 @@ def createTab (tab_name, user, workspace):
     ids['name'] = tab.name
     
     wsVarId = {}
-    wsVarId['name'] = wsVariable.name
     wsVarId['id'] = wsVariable.id
     
     connectableId = {}

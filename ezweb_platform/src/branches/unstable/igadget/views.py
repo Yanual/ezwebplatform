@@ -110,6 +110,7 @@ def SaveIGadget(igadget, user, tab):
 
         # Creates all IGadgte's variables
         ids['variableList'] = []
+        
         variableDefs = VariableDef.objects.filter(template=gadget.template)
         for varDef in variableDefs:
             # Sets the default value of variable
@@ -118,7 +119,10 @@ def SaveIGadget(igadget, user, tab):
             else:
                 var_value = ''
                 
-            var = Variable (vardef=varDef, igadget=new_igadget, value=var_value)
+            abstractVar = AbstractVariable(type="IGADGET", value=var_value, name=varDef.name)  
+            abstractVar.save()  
+                
+            var = Variable (vardef=varDef, igadget=new_igadget, abstract_variable=abstractVar)
             var.save()
             
             #Wiring related vars (SLOT&EVENTS) have implicit connectables!
