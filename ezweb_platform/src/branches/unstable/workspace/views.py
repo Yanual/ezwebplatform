@@ -64,7 +64,7 @@ def deleteTab (tab):
     tab.ws_variable.delete()
     tab.delete()
 
-def createTab (tab_name, workspace):
+def createTab (tab_name, user, workspace):
     # Creating implicit workspace variable
     wsVariable = WorkSpaceVariable (name=tab_name, workspace=workspace, aspect='TAB')
     wsVariable.save()
@@ -77,6 +77,8 @@ def createTab (tab_name, workspace):
     # Creating tab
     tab = Tab (name=tab_name, visible=False, workspace=workspace)
     tab.save()
+    
+    setVisibleTab(user, workspace.pk, tab)
     
     # Returning created Ids
     ids = {}
@@ -96,14 +98,25 @@ def createTab (tab_name, workspace):
     ids['connectable'] = connectableId
     
     return ids
+
+def setVisibleTab(user, workspace_id, tab):
+    visibleTabs = Tab.objects.filter(workspace__user=user, workspace__pk=workspace_id, visible=True).exclude(pk=tab.pk)
+    for visibleTab in visibleTabs:
+        visibleTab.visible = False
+        visibleTab.save()
+        
+    tab.visible = True
+    tab.save()
    
 def createWorkSpace (workSpaceName, user):
     #Workspace creation
-    workspace = WorkSpace (name=workSpaceName, active=True, user=user)
+    workspace = WorkSpace (name=workSpaceName, active=False, user=user)
     workspace.save()
     
+    setActiveWorkspace(user, workspace)
+    
     #Tab creation
-    tab_ids = createTab ('MyTab', workspace)
+    tab_ids = createTab ('MyTab', user, workspace)
     
      # Returning created Ids
     ids = {}
@@ -116,7 +129,17 @@ def createWorkSpace (workSpaceName, user):
     ids['workspace']['tab'] = tab_ids
 
     return ids
+
+
+def setActiveWorkspace(user, workspace):
+    activeWorkSpaces = WorkSpace.objects.filter(user=user, active=True).exclude(pk=workspace.pk)
+    for activeWorkSpace in activeWorkSpaces:
+        activeWorkSpace.active = False
+        activeWorkSpace.save()
+        
+    workspace.active = True
     
+    workspace.save()
 
 class WorkSpaceCollection(Resource):
     def read(self, request):
@@ -199,11 +222,7 @@ class WorkSpaceEntry(Resource):
                 active = ts.get('active')
                 if (active == 'true'):
                     #Only one active workspace
-                    activeWorkSpaces = WorkSpace.objects.filter(user=user, active=True).exclude(pk=workspace_id)
-                    for activeWorkSpace in activeWorkSpaces:
-                        activeWorkSpace.active = False
-                        activeWorkSpace.save()
-                    workspace.active = True
+                    setActiveWorkspace(user, workspace)
                 else:
                     workspace.active = False
                     
@@ -248,7 +267,7 @@ class TabCollection(Resource):
             if tabs.count()==0:
                 workspace = get_object_or_404(WorkSpace, pk=workspace_id)
                 
-                createTab('MyTab', workspace)
+                createTab('MyTab', user, workspace)
                 
                 tabs = Tab.objects.filter(pk=tab.id)
         except Exception, e:
@@ -278,7 +297,7 @@ class TabCollection(Resource):
             tab_name = t.get('name')
             workspace = WorkSpace.objects.get(user=user, pk=workspace_id)   
             
-            ids = createTab(tab_name, workspace)
+            ids = createTab(tab_name, user, workspace)
             
             return HttpResponse(json_encode(ids), mimetype='application/json; charset=UTF-8')
 
@@ -317,11 +336,7 @@ class TabEntry(Resource):
                 visible = t.get('visible')
                 if (visible == 'true'):
                     #Only one visible tab
-                    visibleTabs = Tab.objects.filter(workspace__user=user, workspace__pk=workspace_id, visible=True).exclude(pk=tab_id)
-                    for visibleTab in visibleTabs:
-                        visibleTab.visible = False
-                        visibleTab.save()
-                    tab.visible = True
+                    setVisibleTab(user, workspace_id, tab)
                 else:
                     tab.visible = False
             
