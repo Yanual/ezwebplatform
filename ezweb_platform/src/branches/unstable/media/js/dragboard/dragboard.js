@@ -477,7 +477,9 @@ function Dragboard(tab, workSpace, dragboardElement) {
 			iGadgetInfo['top'] = position.y;
 			iGadgetInfo['left'] = position.x;
 			iGadgetInfo['minimized'] = iGadget.isMinimized() ? "true" : "false";
-			data['iGadgets'].push(iGadgetInfo);	
+			iGadgetInfo['width'] = iGadget.contentWidth;
+			iGadgetInfo['height'] = iGadget.contentHeight;
+			data['iGadgets'].push(iGadgetInfo);
 		}
 
 		data = {igadgets: data.toJSON()};
