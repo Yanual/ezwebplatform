@@ -62,9 +62,6 @@ class In(models.Model):
     variable = models.ForeignKey(Variable, verbose_name=_('Variable'))  
     inout = models.ManyToManyField(InOut, verbose_name=_('InOut'))
     
-    class Meta:
-        unique_together = ('name', 'variable')
-
     class Admin:
         pass
 
@@ -75,12 +72,10 @@ class In(models.Model):
 class Out(models.Model):
     
     name = models.CharField(_('Name'), max_length=30)
-    variable = models.ForeignKey(Variable, verbose_name=_('Variable'))
+    variable = models.ForeignKey(Variable, verbose_name=_('Variable'), null=True)
+    workspace_variable = models.ForeignKey(WorkSpaceVariable, verbose_name=_('WS_Variable'), null=True)
     inout = models.ManyToManyField(InOut, verbose_name=_('InOut'))
     
-    class Meta:
-        unique_together = ('name', 'variable')
-
     class Admin:
         pass
 

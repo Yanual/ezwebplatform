@@ -45,7 +45,7 @@ from django.contrib.contenttypes import generic
 from django.utils.translation import ugettext as  _
 
 from gadget.models import Gadget, VariableDef
-
+    
 class WorkSpace(models.Model):
     
     name = models.CharField(_('Name'), max_length=30)
@@ -91,14 +91,11 @@ class WorkSpaceVariable(models.Model):
     def __unicode__(self):
         return str(self.pk) + " " + self.name
 
-    
 class Tab(models.Model):
     
     name = models.CharField(_('Name'), max_length=30)
     visible = models.BooleanField(_('Visible'))
     workspace = models.ForeignKey(WorkSpace, verbose_name=_('WorkSpace'))
-    
-    ws_variable = models.ForeignKey(WorkSpaceVariable, verbose_name=_('WS_Variable'))
 
     class Meta:
         unique_together = ('workspace', 'name')

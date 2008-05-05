@@ -46,12 +46,6 @@ from connectable.models import In, Out, InOut
 from context.models import Concept, ConceptName
 from workspace.models import Tab, WorkSpace, WorkSpaceVariable
 
-def get_workspace_variable_data(data):
-    data_ret = {}
-    data_fields = data['fields']
-        
-    return data_ret
-
 def get_wiring_variable_data(var, ig):
     res_data = {}
 
@@ -216,6 +210,36 @@ def get_workspace_variables_data(workSpaceDAO):
     
     return ws_variables_data
 
+def get_workspace_variable_data(data):
+    data_ret = {}
+    data_fields = data['fields']
+
+    data_ret['name'] = data_fields['name']
+    data_ret['id'] = data['pk']
+    data_ret['aspect'] = data_fields['aspect']
+    data_ret['value'] = data_fields['value']
+    
+    if (data_ret['aspect'] == 'TAB'):
+        connectable = Out.objects.get(workspace_variable__id = data_ret['id'])
+    else:
+        connectable = InOut.objects.get(workspace_variable__id = data_ret['id'])
+        
+    connectable_data = get_connectable_data(connectable)    
+
+    data_ret['connectable'] = connectable_data
+        
+    return data_ret
+
+
+def get_connectable_data(connectable):
+    res_data = {}
+
+    res_data['id'] = connectable.id
+    res_data['name'] = connectable.name
+        
+    return res_data
+
+
 def get_global_workspace_data(data, workSpaceDAO):
     data_ret = {}
     data_ret['workspace'] = get_workspace_data(data)  
@@ -277,6 +301,7 @@ def get_igadget_data(data):
           data_ret['minimized'] = "true"
     else:
           data_ret['minimized'] = "false"
+    
     variables = Variable.objects.filter (igadget__pk=data['pk'])
     data = serializers.serialize('python', variables, ensure_ascii=False)
     data_ret['variables'] = [get_variable_data(d) for d in data]
@@ -294,36 +319,26 @@ def get_variable_data(data):
     data_ret['vardefId'] = var_def.pk
     data_ret['name'] = var_def.name
     data_ret['aspect'] = var_def.aspect
-    
-    if var_def.aspect == 'GCTX':
-          context = GadgetContext.objects.get(varDef=data_fields['vardef'])
-          data_ret['concept'] = context.concept
-    if var_def.aspect == 'ECTX':
-          context = ExternalContext.objects.get(varDef=data_fields['vardef'])
-          data_ret['concept'] = context.concept
     data_ret['value'] = data_fields['value']
-    
-    return data_ret
 
-def get_variable_data(data):
-    data_ret = {}
-    data_fields = data['fields']
-    
-    var_def = VariableDef.objects.get(id=data_fields['vardef'])
-    
-    data_ret['id'] = data['pk']
-    data_ret['igadgetId'] = data_fields['igadget']
-    data_ret['vardefId'] = var_def.pk
-    data_ret['name'] = var_def.name
-    data_ret['aspect'] = var_def.aspect
-    
+    #Context management    
     if var_def.aspect == 'GCTX':
           context = GadgetContext.objects.get(varDef=data_fields['vardef'])
           data_ret['concept'] = context.concept
     if var_def.aspect == 'ECTX':
           context = ExternalContext.objects.get(varDef=data_fields['vardef'])
           data_ret['concept'] = context.concept
-    data_ret['value'] = data_fields['value']
+    
+    #Connectable management
+    #Only SLOTs and EVENTs
+    if var_def.aspect == 'SLOT':
+        connectable = Out.objects.get(variable__id = data_ret['id'])          
+    if var_def.aspect == 'EVEN':
+        connectable = In.objects.get(variable__id = data_ret['id'])
+          
+    connectable_data = get_connectable_data(connectable);
+    
+    data_ret['connectable'] = connectable_data
     
     return data_ret
 

@@ -57,7 +57,32 @@ from commons.utils import get_xml_error, json_encode
 
 from gadget.models import Gadget, VariableDef
 from workspace.models import Tab, WorkSpace
+from connectable.models import In, Out
 from igadget.models import *
+
+def createConnectable(var):
+    #If var is and SLOT or and EVENT, a proper connectable objet must be created!
+    aspect = var.vardef.aspect
+    name = var.vardef.name
+    
+    connectable = None
+    
+    if (aspect == 'SLOT'):
+        connectable = Out(name=name, variable=var)
+    if (aspect == 'EVEN'):
+        connectable = In(name=name, variable=var)
+        
+    if (connectable == None):
+        return {}
+    
+    connectable.save()
+    
+    connectableId = {}
+    
+    connectableId['id'] = connectable.id    
+    connectableId['name'] = name
+        
+    return connectableId   
 
 def SaveIGadget(igadget, user, tab):
     
@@ -96,10 +121,16 @@ def SaveIGadget(igadget, user, tab):
             var = Variable (vardef=varDef, igadget=new_igadget, value=var_value)
             var.save()
             
+            #Wiring related vars (SLOT&EVENTS) have implicit connectables!
+            connectableId = createConnectable(var)
+            
             # Add variable id to the variableList
             varId = {}
+            
             varId['name'] = varDef.name
             varId['id'] = var.id
+            varId['connectable'] = connectableId
+            
             ids['variableList'].append(varId)
             
         return ids;

@@ -56,6 +56,7 @@ from commons.get_data import get_workspace_data, get_tab_data, get_global_worksp
 from commons.logs import log
 from commons.utils import get_xml_error, json_encode
 
+from connectable.models import Out
 from workspace.models import *
 from igadget.models import Variable
 
@@ -68,8 +69,13 @@ def createTab (tab_name, workspace):
     wsVariable = WorkSpaceVariable (name=tab_name, workspace=workspace, aspect='TAB')
     wsVariable.save()
     
+    #Creating implicit OUT Connectable element
+    connectableName = 'tab_' + tab_name;
+    connectable = Out(name=connectableName, workspace_variable=wsVariable)
+    connectable.save()
+    
     # Creating tab
-    tab = Tab (name=tab_name, visible=False, workspace=workspace, ws_variable=wsVariable)
+    tab = Tab (name=tab_name, visible=False, workspace=workspace)
     tab.save()
     
     # Returning created Ids
@@ -82,10 +88,15 @@ def createTab (tab_name, workspace):
     wsVarId['name'] = wsVariable.name
     wsVarId['id'] = wsVariable.id
     
+    connectableId = {}
+    connectableId['name'] = connectable.name
+    connectableId['id'] = connectable.id
+    
     ids['workspaceVariable'] = wsVarId
+    ids['connectable'] = connectableId
     
     return ids
-    
+   
 def createWorkSpace (workSpaceName, user):
     #Workspace creation
     workspace = WorkSpace (name=workSpaceName, active=True, user=user)
