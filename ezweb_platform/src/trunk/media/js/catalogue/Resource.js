@@ -89,19 +89,19 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 									"<span id='rateStatus'>Vote Me... </span>"+
 									"<span id='ratingSaved'>Vote Saved </span>"+
 									"<span id='rateMe' title='Vote Me...'>"+
-									"<a id='_1' title='Ehh...' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
-									"<a id='_2' title='Not Bad' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
-									"<a id='_3' title='Pretty Good' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
-									"<a id='_4' title='Out Standing' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
-									"<a id='_5' title='Awesome!' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
+									"<a id='_1' title='" + gettext ('Ehh...') + "' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
+									"<a id='_2' title='" + gettext ('Not Bad') + "' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
+									"<a id='_3' title='" + gettext ('Pretty Good') + "' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
+									"<a id='_4' title='" + gettext ('Out Standing') + "' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
+									"<a id='_5' title='" + gettext ('Awesome!') + "' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
 									"</span>"+
 									"<span id='rateResultStatus'>Vote Result:</span>"+
 									"<span id='rateResult' title='Vote Result'>"+
-									"<a id='res_1' title='Ehh...'></a>"+
-									"<a id='res_2' title='Not Bad'></a>"+
-									"<a id='res_3' title='Pretty Good'></a>"+
-									"<a id='res_4' title='Out Standing'></a>"+
-									"<a id='res_5' title='Awesome!'></a>"+
+									"<a id='res_1' title='" + gettext ('Ehh...') + "'></a>"+
+									"<a id='res_2' title='" + gettext ('Not Bad') + "'></a>"+
+									"<a id='res_3' title='" + gettext ('Pretty Good') + "'></a>"+
+									"<a id='res_4' title='" + gettext ('Out Standing') + "'></a>"+
+									"<a id='res_5' title='" + gettext ('Awesome!') + "'></a>"+
 									"</span>"+
 									"<span id='votes'></span>"+
 									"</div>" +

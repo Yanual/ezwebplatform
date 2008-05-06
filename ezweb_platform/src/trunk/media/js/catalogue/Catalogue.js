@@ -584,7 +584,7 @@ var CatalogueFactory  = function () {
 			}
 			orderbyHTML+=(   ">" + gettext("Author") + "</option>" +
 						"<option value=\"-popularity\"");
-			if (UIUtils.orderby == "popularity" )
+			if (UIUtils.orderby == "-popularity" )
 			{
 				orderbyHTML+=(" SELECTED");
 			}
