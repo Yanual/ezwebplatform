@@ -323,7 +323,9 @@ def get_variable_data(data):
     var_def = VariableDef.objects.get(id=data_fields['vardef'])
     
     #Variable info is splited into 2 entities: AbstractVariable y Variable   
-    abstract_var = get_abstract_variable_(data['pk'], data_fields, Variable) 
+    abstract_var_id = data['fields']['abstract_variable']
+    
+    abstract_var = get_abstract_variable(abstract_var_id) 
 
     data_ret['id'] = data['pk']
     
