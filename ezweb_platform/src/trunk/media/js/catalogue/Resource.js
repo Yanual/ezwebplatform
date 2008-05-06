@@ -86,17 +86,17 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 									"<span class='version'>" + state.getVersion() + "</span></div>" +
 									"<div class='vendor'>" + state.getVendor() + "</div>" +
 									"<div class='rating'>"+
-									"<span id='rateStatus'>Vote Me... </span>"+
-									"<span id='ratingSaved'>Vote Saved </span>"+
-									"<span id='rateMe' title='Vote Me...'>"+
+									"<span id='rateStatus'>" + gettext ('Vote Me...') + " </span>"+
+									"<span id='ratingSaved'>" + gettext ('Vote Saved') + " </span>"+
+									"<span id='rateMe'>"+
 									"<a id='_1' title='" + gettext ('Ehh...') + "' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
 									"<a id='_2' title='" + gettext ('Not Bad') + "' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
 									"<a id='_3' title='" + gettext ('Pretty Good') + "' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
 									"<a id='_4' title='" + gettext ('Out Standing') + "' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
 									"<a id='_5' title='" + gettext ('Awesome!') + "' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
 									"</span>"+
-									"<span id='rateResultStatus'>Vote Result:</span>"+
-									"<span id='rateResult' title='Vote Result'>"+
+									"<span id='rateResultStatus'>" + gettext ('Vote Result:') + " </span>"+
+									"<span id='rateResult'>"+
 									"<a id='res_1' title='" + gettext ('Ehh...') + "'></a>"+
 									"<a id='res_2' title='" + gettext ('Not Bad') + "'></a>"+
 									"<a id='res_3' title='" + gettext ('Pretty Good') + "'></a>"+
@@ -407,7 +407,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 				$("res_"+i).className = "";
 			}
 		}
-		$("votes").innerHTML = state.getVotes()+ " votes";
+		$("votes").innerHTML = state.getVotes()+ " " + gettext ('votes');
 	}
 
 
