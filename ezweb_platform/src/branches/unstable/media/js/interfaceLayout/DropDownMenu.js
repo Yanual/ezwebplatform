@@ -37,14 +37,15 @@
 
 //Class for managing a drop down menu whose HTML code is in templates/index.html.
 //The options may be created either by default in the HTML code or dinamically with the addOption function
-function DropDownMenu(idLauncher, idSubmenu){
+function DropDownMenu(idLauncher, idMenu){
 
 	//Constructor
 	this.idLauncher = idLauncher;	//Launcher: clicked point from which the menu is launched
 	this.launcher = $(idLauncher);
-	this.idSubmenu = idSubmenu;	//Submenu: menu element in the HTLM code (<div>)
-	this.submenu = $(idSubmenu);
+	this.idMenu = idMenu;	//menu: menu element in the HTLM code (<div>)
+	this.menu = $(idMenu);
 	this.position;				//position related to the launcher
+	this.submenu = $$('#'+this.idMenu+' .submenu')[0];
 	
 	//Calculates the absolute position of the menu according to the point from which it is launched
 	//The menu can be displayed either at the bottom or top (on the right/left) of the launcher
@@ -52,7 +53,7 @@ function DropDownMenu(idLauncher, idSubmenu){
 
 				
 		var coordenates = Position.cumulativeOffset(this.launcher);
-		var smWidth = this.submenu.getWidth();
+		var smWidth = this.menu.getWidth();
 			
 		if(this.position == 'bottom-left'){
 			coordenates[1] = coordenates[1] + this.launcher.getHeight();
@@ -69,8 +70,8 @@ function DropDownMenu(idLauncher, idSubmenu){
 			coordenates[1] = coordenates[1] + this.launcher.getHeight();
 		}
 		//set position
-		this.submenu.style.top = coordenates[1]+"px";
-		this.submenu.style.left = coordenates[0]+"px";
+		this.menu.style.top = coordenates[1]+"px";
+		this.menu.style.left = coordenates[0]+"px";
 		
 	}
 
@@ -78,29 +79,47 @@ function DropDownMenu(idLauncher, idSubmenu){
 	//imgPath to be shown beside the option (may be null)-- option text -- event:function called on clicking
 	DropDownMenu.prototype.addOption = function(imgPath, option, event){
 		
-		var lastOption = $$('#'+this.idSubmenu+' div:last-child')[0];
+		var lastOption = $$('#'+this.idMenu+' .option:last-child')[0];
 
 		if( lastOption){//last option doesn't have a underline
 			lastOption.toggleClassName('underlined');
 		}
 		//create the HTML code for the option and insert it in the menu
-		var opHtml = '<div>';
+		var opHtml = '<div class = "option">';
+		if (imgPath){
+			opHtml += '<img src="'+imgPath+'"/>';
+		}
+		opHtml += '<span>'+option+'</span></div>';
+		new Insertion.Bottom(this.menu, opHtml);
+		lastOption = $$('#'+this.idMenu+' .option:last-child')[0];
+		Event.observe(lastOption, 'click', event);
+			
+	}
+	
+	DropDownMenu.prototype.addOptionToSubmenu = function(imgPath, option, event){
+		
+		var lastOption = $$('#'+this.idMenu+ ' .submenu div:last-child')[0];
+
+		if( lastOption){//last option doesn't have a underline
+			lastOption.toggleClassName('underlined');
+		}
+		//create the HTML code for the option and insert it in the menu
+		var opHtml = '<div class = "option">';
 		if (imgPath){
 			opHtml += '<img src="'+imgPath+'"/>';
 		}
 		opHtml += '<span>'+option+'</span></div>';
 		new Insertion.Bottom(this.submenu, opHtml);
-		lastOption = $$('#'+this.idSubmenu+' div:last-child')[0];
+		lastOption = $$('#'+this.idMenu+' .submenu div:last-child')[0];
 		Event.observe(lastOption, 'click', event);
 			
 	}
 
 	//displays the menu in the correct position
-	DropDownMenu.prototype.showSubmenu = function(){
+	DropDownMenu.prototype.showMenu = function(){
 
-		this.submenu.style.display="none";
 		this.calculatePosition();	
-		new Effect.BlindDown(this.idSubmenu, {duration:0.8});
+		
 	}
 
 	//hides the menu and changes the image of the launcher (in case it has to)
@@ -109,24 +128,27 @@ function DropDownMenu(idLauncher, idSubmenu){
 		this.launcher.addClassName(this.idLauncher+'_show');
 		this.launcher.removeClassName(this.idLauncher+'_hide');
 
-		new Effect.BlindUp(this.idSubmenu, {duration:0.5});	
+		this.menu.style.display="none";	
 	}
 
-	//shows the menu (calling showSubmenu function) and changes the image of the launcher (in case it has to)	
+	//shows the menu (calling showMenu function) and changes the image of the launcher (in case it has to)	
 	DropDownMenu.prototype.show = function (position){
 		//the menu may have change its position on the layout, so it's necessary to recover the element.
 		this.launcher=$(this.idLauncher);
 		this.launcher.addClassName(this.idLauncher+'_hide');
 		this.launcher.removeClassName(this.idLauncher+'_show');
 		this.position = position;
-
-		this.showSubmenu(position);
+		this.calculatePosition();
+		this.menu.style.display="block";
 	}
 
 	//Clears the menu options
-        DropDownMenu.prototype.clearOptions = function(){
+    DropDownMenu.prototype.clearOptions = function(){
+		this.menu.update();
+	}
+	//Clears the submenu options
+    DropDownMenu.prototype.clearSubmenuOptions = function(){
 		this.submenu.update();
 	}
-
 }	
 

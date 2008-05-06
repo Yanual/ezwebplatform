@@ -136,9 +136,8 @@ var OpManagerFactory = function () {
 		OpManager.prototype.showCatalogue = function () {
 			
 			LayoutManagerFactory.getInstance().unMarkGlobalTabs();
-			this.activeWorkSpace.hideContent();
-		
 			LayoutManagerFactory.getInstance().showShowCase();
+			this.activeWorkSpace.hideContent();
 
 			if (UIUtils.isInfoResourcesOpen) {
 				UIUtils.isInfoResourcesOpen = false;

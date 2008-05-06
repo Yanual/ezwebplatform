@@ -295,6 +295,15 @@ function WorkSpace (workSpaceState) {
 		return this.tabInstances[tabId];
 	}
 	
+/*	WorkSpace.prototype.selectTab = function(tab) {
+		LayoutManagerFactory.getInstance().unMarkGlobalTabs();
+		if(this.visibleTab == tab){ //allow renaming
+			this.visibleTab.fillWithInput();
+		}else{ //first click on this tab -> mark as current
+			this.setTab(tab);
+		}			
+	}*/
+	
 	WorkSpace.prototype.setTab = function(tab) {
 		if (!this.loaded)
 			return;
@@ -316,14 +325,14 @@ function WorkSpace (workSpaceState) {
 		this.visibleTab.show();
 	}
 	
-	WorkSpace.prototype.tabExists = function(tabName){
+/*	WorkSpace.prototype.tabExists = function(tabName){
 		var tabKeys = this.tabInstances.keys();
 		for(var i=0;i<tabKeys.length;i++){
 			if(this.tabInstances[tabKeys[i]].tabInfo.name == tabName)
 				return true;
 		}
 		return false;
-	}
+	}*/
 	
 	WorkSpace.prototype.addTab = function(newName) {
 

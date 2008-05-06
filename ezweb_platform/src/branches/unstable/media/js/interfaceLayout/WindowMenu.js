@@ -168,32 +168,15 @@ function CreateWindowMenu (element) {
 	CreateWindowMenu.prototype.executeOperation = function(){
 
 		var newName = $('create_name').value;
-		//is the new name correct? (no empty name)
-		if(newName.match(/^(\S|\S[\w\s\-_·¡È…ÌÕÛ”˙⁄Ò—]*\S)$/)){
-			switch (this.element){
-			case 'tab':
-				//is the name in use yet?
-				if(!OpManagerFactory.getInstance().activeWorkSpace.tabExists(newName)){
-					OpManagerFactory.getInstance().activeWorkSpace.addTab(newName);
-				}
-				else{
-					this.msgElement.update('name already in use');
-				}
-				break;
-			case 'workSpace':
-				if(!OpManagerFactory.getInstance().workSpaceExists(newName)){
-					OpManagerFactory.getInstance().addWorkSpace(newName);
-				}
-				else{
-					this.msgElement.update('name already in use');
-				}
-				break;
-			default:
-				break;
-			}
-		}
-		else{
-			this.msgElement.update('invalid name');
+		switch (this.element){
+		case 'tab':
+			OpManagerFactory.getInstance().activeWorkSpace.addTab(newName);
+			break;
+		case 'workSpace':
+			OpManagerFactory.getInstance().addWorkSpace(newName);
+			break;
+		default:
+			break;
 		}
 
 	}

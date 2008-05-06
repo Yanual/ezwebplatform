@@ -176,18 +176,24 @@ a:hover{
   padding-bottom: 3px;
 }
 
-.tab span {
+.tab span{
+  margin-right:5px;
+}
+.tab .tab_name {
+  background: #97A0A8;
+  border: 0px;
 }
 
-.current span {
- margin-right: 5px;
+.current .tab_name {
+  background: #E0E0E0;
+  margin-right: 5px;
 }
 
 #description {}
 
 #description p {}
 
-#submenu_layer{
+#menu_layer{
   position:absolute;
   top: 0;
   left: 0;
@@ -205,7 +211,6 @@ a:hover{
 
 .drop_down_menu, .window_menu{
   background: #FFFFFF;
-  font-size: 9pt;
   position:absolute;
   text-align: left;
    z-index: 4;
@@ -216,11 +221,23 @@ a:hover{
   padding:0.5em;
 }
 
-.drop_down_menu div {
+.drop_down_menu .option {
   padding : 5px;
   display: block;
   cursor: pointer;
   white-space: nowrap;
+}
+
+.drop_down_menu .submenu{
+  padding: 2px;
+}
+
+.drop_down_menu .border_top{
+	border-top: 4px double #2D6F9C;
+}
+
+.drop_down_menu .submenu .submenu_title{
+ font-size: 90%;
 }
 
 .drop_down_menu div img {

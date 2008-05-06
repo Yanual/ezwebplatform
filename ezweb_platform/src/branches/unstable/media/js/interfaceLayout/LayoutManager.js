@@ -53,6 +53,9 @@ var LayoutManagerFactory = function () {
 			this.hideLevel = 1;
 			this.showLevel = 2;
 			
+		// current view: showcase, dragboard, wiring, logs
+			this.currentView = null;
+			
 		// Global links managed by LayoutManager: {showcase, wiring}
 		// Tabs are managed by WorkSpaces!! 
 			this.showCaseLink = $('catalogue_link');
@@ -67,7 +70,7 @@ var LayoutManagerFactory = function () {
 			
 		// Menu Layer	
 			this.currentMenu = null;							//current menu (either dropdown or window)
-			this.coverLayerElement = $('submenu_layer');					//disabling background layer
+			this.coverLayerElement = $('menu_layer');					//disabling background layer
 			this.coverLayerEvent = function () {this.hideCover()}.bind(this);	//disabling layer onclick event (by default)
 	
 			this.menus = new Array();
@@ -130,11 +133,12 @@ var LayoutManagerFactory = function () {
 		}
 		
 		LayoutManager.prototype.showDragboard = function(dragboard){
+		    this.currentView = 'dragboard';
 			dragboard.setStyle({'zIndex': this.showLevel, 'visibility': 'visible'})
 		}
 		
 		// Tab operations
-		LayoutManager.prototype.unmarkTab = function(tab){
+		LayoutManager.prototype.unmarkTab = function(tab, changeEvent, renameEvent){
 			tab.className = "tab";
 			try{ //remove the launcher image for the drop down menu from the former current tab
 				var tabOpsLauncher = $$('#'+tab.getAttribute('id')+' #tabOps_launcher');
@@ -144,16 +148,31 @@ var LayoutManagerFactory = function () {
 			}catch (e){
 				return;
 			}
+			Event.stopObserving(tab, 'click', renameEvent);
+		   	Event.observe(tab, 'click', changeEvent);
 		    tab.setStyle({'zIndex': this.showLevel, 'display':'block', 'visibility':'visible'});
 			
 		}
 		
-		LayoutManager.prototype.markTab = function(tab){
+		LayoutManager.prototype.markTab = function(tab, renameHandler, changeHandler){
 			if(tab.className != "tab current"){
 				tab.className = "tab current";
-			    var tabOpsLauncherHTML = '<input id="tabOps_launcher" type="button" title="options" class="tabOps_launcher_show" onclick=\'LayoutManagerFactory.getInstance().showDropDownMenu("tabOps")\'/>';
+			    var tabOpsLauncherHTML = '<input id="tabOps_launcher" type="button" title="options" class="tabOps_launcher_show"/>';
 			    new Insertion.Bottom(tab, tabOpsLauncherHTML);
+			    var tabOpsLauncher = $$('#'+tab.getAttribute('id')+' #tabOps_launcher')[0];
+			    Event.observe(tabOpsLauncher, "click", function(e){Event.stop(e); LayoutManagerFactory.getInstance().showDropDownMenu('tabOps');}, true);
 		    	tab.setStyle({'zIndex': this.showLevel, 'display':'block', 'visibility':'visible'});
+			}
+			if(this.currentView == 'dragboard'){
+				//TODO:change this hidding only the former view
+				this.hideShowCase();
+				this.hideLogs();
+				//*******
+				Event.stopObserving(tab, 'click', changeHandler);
+   			   	Event.observe(tab, 'click', renameHandler);
+			}else{
+				Event.stopObserving(tab, 'click', renameHandler);
+   			   	Event.observe(tab, 'click', changeHandler);
 			}
 		}
 		
@@ -172,6 +191,7 @@ var LayoutManagerFactory = function () {
 		
 		// ShowCase operations
 		LayoutManager.prototype.showShowCase = function(){
+			this.currentView = 'showCase';
 			this.showCaseLink.className = 'toolbar_marked';
 			this.showCase.setStyle({'zIndex': this.showLevel, 'display': 'block', 'visibility': 'visible'});
 		}
@@ -182,6 +202,7 @@ var LayoutManagerFactory = function () {
 		
 		// Logs operations
 		LayoutManager.prototype.showLogs = function(){
+			this.currentView = 'logs';
 			this.logsContainer.setStyle({'zIndex': this.showLevel, 'display': 'block', 'visibility': 'visible'});
 		}
 		
@@ -191,6 +212,7 @@ var LayoutManagerFactory = function () {
 		
 		//Wiring operations
 		LayoutManager.prototype.showWiring = function(wiring){
+			this.currentView = 'wiring';
 			wiring.setStyle({'zIndex' : this.showLevel, 'display': 'block', 'visibility': 'visible'});
 			this.wiringLink.className = "toolbar_marked";
 		}
@@ -214,44 +236,48 @@ var LayoutManagerFactory = function () {
 		//WorkSpaceMenu is dinamic so the different options must be added.
 		LayoutManager.prototype.refreshChangeWorkSpaceMenu = function(workspaces){
 
-			if(!this.menus['changeWorkSpaceMenu']){
-					this.menus['changeWorkSpaceMenu'] = new DropDownMenu('change_ws_link', 'changeWorkspace_submenu');
+			if(!this.menus['workSpaceOpMenu']){
+					this.menus['workSpaceOpMenu'] = new DropDownMenu('ws_operations_link', 'workspace_menu');
 			}
-			this.menus['changeWorkSpaceMenu'].clearOptions();
+			this.menus['workSpaceOpMenu'].clearSubmenuOptions();
+			
+			if(workspaces.length >= 1){
+				this.menus['workSpaceOpMenu'].submenu.className = "submenu border_top";
+			}else{
+				this.menus['workSpaceOpMenu'].submenu.className = "submenu";
+			}
 
 			for (var i=0; i<workspaces.length; i++){
-				this.menus['changeWorkSpaceMenu'].addOption(null, workspaces[i].workSpaceState.name, function (){LayoutManagerFactory.getInstance().hideCover();OpManagerFactory.getInstance().changeActiveWorkSpace(this)}.bind(workspaces[i]));
+				this.menus['workSpaceOpMenu'].addOptionToSubmenu(null, workspaces[i].workSpaceState.name, function (){LayoutManagerFactory.getInstance().hideCover();OpManagerFactory.getInstance().changeActiveWorkSpace(this)}.bind(workspaces[i]));
 
 			}
-
-			this.menus['changeWorkSpaceMenu'].addOption(null, 'new workspace...', function (){LayoutManagerFactory.getInstance().showWindowMenu('createWorkSpace');});
 		}
 
 		//Shows the asked drop down menu 
-		LayoutManager.prototype.showDropDownMenu = function(submenu){
+		LayoutManager.prototype.showDropDownMenu = function(menu){
 			this.showClickableCover();
-			switch (submenu){
+			switch (menu){
 			case 'workSpaceOps':
 				if(!this.menus['workSpaceOpMenu']){
-					this.menus['workSpaceOpMenu'] = new DropDownMenu('ws_operations_link', 'workSpace_submenu');
+					this.menus['workSpaceOpMenu'] = new DropDownMenu('ws_operations_link', 'workSpace_menu');
 				}
 				this.currentMenu = this.menus['workSpaceOpMenu'];
 				this.currentMenu.show('bottom-right');
 				break;
 			case 'tabOps':
 				if(!this.menus['tabOpMenu']){
-					this.menus['tabOpMenu'] = new DropDownMenu('tabOps_launcher', 'tab_submenu');
+					this.menus['tabOpMenu'] = new DropDownMenu('tabOps_launcher', 'tab_menu');
 				}
 				this.currentMenu = this.menus['tabOpMenu'];
 				this.currentMenu.show('bottom-left');
 				break;
-			case 'changeWorkSpace':
+			/*case 'changeWorkSpace':
 				if(!this.menus['changeWorkSpaceMenu']){
-					this.menus['changeWorkSpaceMenu'] = new DropDownMenu('change_ws_link', 'changeWorkspace_submenu');
+					this.menus['changeWorkSpaceMenu'] = new DropDownMenu('change_ws_link', 'changeWorkspace_menu');
 				}
 				this.currentMenu = this.menus['changeWorkSpaceMenu'];
 				this.currentMenu.show('bottom-right');
-				break;
+				break;*/
 			default:
 				break;
 			}
@@ -320,8 +346,8 @@ var LayoutManagerFactory = function () {
 		var FADE_SPEED = 200;
 		var FADE_STEP = 5;
 		var self = this;
-		LayoutManager.prototype.goTab = function(tab){
-			this.markTab(tab);
+		LayoutManager.prototype.goTab = function(tab, renameHandler, changeHandler){
+			this.markTab(tab, renameHandler, changeHandler);
 			var currentColour = [FADE_RED_INI, FADE_GREEN_INI, FADE_BLUE_INI];
 			tab.style.background = "rgb(" + currentColour[0] + "," + currentColour[1] + "," + currentColour[2] + ")";
 			setTimeout(function(){

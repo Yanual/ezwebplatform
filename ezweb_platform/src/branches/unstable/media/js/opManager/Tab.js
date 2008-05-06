@@ -40,10 +40,10 @@ function Tab (tabInfo, workSpace) {
 				
 	//CALLBACK METHODS
 	var renameSuccess = function(transport){
-		LayoutManagerFactory.getInstance().hideCover();
+
 	}
 	var renameError = function(transport, e){
-				var msg;
+		var msg;
 		if (transport.responseXML) {
 			msg = transport.responseXML.documentElement.textContent;
 		} else {
@@ -97,9 +97,34 @@ function Tab (tabInfo, workSpace) {
 		}
 	}
 
+	Tab.prototype.fillWithLabel = function() {
+		if(this.tabNameHTMLElement != null){
+			this.tabNameHTMLElement.remove();
+		}
+		var spanHTML = "<span>"+this.tabInfo.name+"</span>";
+    	new Insertion.Top(this.tabHTMLElement, spanHTML);
+		this.tabNameHTMLElement = this.tabHTMLElement.firstDescendant();
+    }
+
+
+	Tab.prototype.fillWithInput = function () {
+		this.tabNameHTMLElement.remove();
+		var inputHTML = "<input class='tab_name' value='"+this.tabInfo.name+"' size='"+this.tabInfo.name.length+"' />";
+		new Insertion.Top(this.tabHTMLElement, inputHTML);
+		this.tabNameHTMLElement =  this.tabHTMLElement.firstDescendant();
+		this.tabNameHTMLElement.focus();	
+		Event.observe(this.tabNameHTMLElement, 'blur', function(e){Event.stop(e);
+					this.fillWithLabel()}.bind(this));
+		Event.observe(this.tabNameHTMLElement, 'change', function(e){Event.stop(e);
+					this.updateInfo(e.target.value, null);}.bind(this));
+		Event.observe(this.tabNameHTMLElement, 'keyup', function(e){Event.stop(e);
+					e.target.size = e.target.value.length;}.bind(this));
+	}
+	
 	Tab.prototype.hideAndUnmark = function () {
 		this.hideDragboard();
-		LayoutManagerFactory.getInstance().unmarkTab(this.tabHTMLElement);
+		this.visible=false;
+		LayoutManagerFactory.getInstance().unmarkTab(this.tabHTMLElement, this.changeTabHandler, this.renameTabHandler);
 
 	}
 	
@@ -116,7 +141,8 @@ function Tab (tabInfo, workSpace) {
 	}
 	
 	Tab.prototype.markAsCurrent = function (){
-		LayoutManagerFactory.getInstance().markTab(this.tabHTMLElement);
+	    this.visible=true;
+		LayoutManagerFactory.getInstance().markTab(this.tabHTMLElement, this.renameTabHandler, this.changeTabHandler);
 	}
 	
 	Tab.prototype.hide = function () {
@@ -133,7 +159,7 @@ function Tab (tabInfo, workSpace) {
 		LayoutManagerFactory.getInstance().showDragboard(this.dragboardElement);
 
 	    this.dragboard.recomputeSize();
-	    LayoutManagerFactory.getInstance().goTab(this.tabHTMLElement);
+	    LayoutManagerFactory.getInstance().goTab(this.tabHTMLElement, this.renameTabHandler, this.changeTabHandler);
 	}
 
 	Tab.prototype.getDragboard = function () {
@@ -149,22 +175,22 @@ function Tab (tabInfo, workSpace) {
 	this.tabInfo = tabInfo;
 	this.dragboardLayerName = "dragboard_" + this.workSpace.workSpaceState.name + "_" + this.tabInfo.name;
 	this.tabName = "tab_" + this.workSpace.workSpaceState.id + "_" + this.tabInfo.id;
+	this.tabHTMLElement;
+	this.tabNameHTMLElement = null;
+	
+	//tab event handlers
+	this.renameTabHandler = function(e){this.fillWithInput();}.bind(this);
+	this.changeTabHandler = function(e){this.workSpace.setTab(this);}.bind(this);
 	
 	// Tab creation
-	
-    var tabSection = $("tab_section");
-    	var tabHTML = "<div><span>" + this.tabInfo.name + "</span></div>";
+
+    var tabSection = $("tab_section");    
+    new Insertion.Top(tabSection, "<div></div>");
+    this.tabHTMLElement =  tabSection.firstDescendant();
+    this.tabHTMLElement.setAttribute('id', this.tabName);
+    //fill the tab label with a span tag
+    this.fillWithLabel();
     
-    new Insertion.Top(tabSection, tabHTML);
-
-	this.tabHTMLElement =  tabSection.firstDescendant();
-	
-	this.tabHTMLElement.setAttribute('id', this.tabName);
-
-	this.tabNameHTMLElement = this.tabHTMLElement.firstDescendant();
-	//TODO change OpManager invocation when LayoutManager is written
-	Event.observe(this.tabNameHTMLElement, 'click', function(){LayoutManagerFactory.getInstance().unMarkGlobalTabs(); this.workSpace.setTab(this);}.bind(this));
-
     // Dragboard layer creation
     var dragboardHTML = $("dragboard_template").innerHTML;
     var wrapper = $("wrapper");
