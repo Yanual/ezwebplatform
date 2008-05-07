@@ -82,6 +82,9 @@ a:hover{
   margin-left: 3px;
   height: 21px;
   width: 21px;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center center;
   border: 0px none;
   cursor: pointer;
 }
@@ -115,7 +118,7 @@ a:hover{
 }*/
 
 #change_ws_link {
-  background: transparent url(/ezweb/images/settings.png) no-repeat;
+  background-image: url(/ezweb/images/settings.png);
 }
 
 #ws_operations_link {
