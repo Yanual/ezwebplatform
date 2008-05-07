@@ -45,13 +45,23 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 	// ****************
 	// PUBLIC METHODS
 	// ****************
+	
+	Wiring.prototype.getConnectableId = function (variables, name, igadgetId) {
+		for (i=0; i<variables.length; i++) {
+			var variable = variables[i];
+			
+			if (variable.name = name && variable.igadgetId == igadgetId) {
+				return variable.connectable.id;
+			}
+		}
+	}
 
 	Wiring.prototype.processTab = function (tabData) {
 		var igadgets = tabData['igadgetList'];
 		var dragboard = this.workspace.getTab(tabData['id']).getDragboard();
 
 		for (var i = 0; i < igadgets.length; i++) {
-			this.addInstance(dragboard.getIGadget(igadgets[i].id));
+			this.addInstance(dragboard.getIGadget(igadgets[i].id), igadgets[i].variables);
 		}
 	}
 
@@ -111,7 +121,7 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 		this.loaded = true;
 	}
 
-	Wiring.prototype.addInstance = function (igadget) {
+	Wiring.prototype.addInstance = function (igadget, variables) {
 		var varManager = this.workspace.getVarManager();
 		var gadgetEntry = new Object();
 		var iGadgetId = igadget.getId();
@@ -121,32 +131,36 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 			OpManagerFactory.getInstance().log(msg);
 		}
 
-		var template = igadget.getGadget().getTemplate();
-
 		gadgetEntry.events = new Hash();
 		gadgetEntry.slots = new Hash();
 		gadgetEntry.connectables = new Hash();
 
-		var events = template.getEvents();
-		var slots = template.getSlots();
 		var varManager = this.workspace.getVarManager();
 		var i;
 
-		for (i = 0; i < events.length; i++) {
-		        var variable = varManager.getVariableByName(igadget.id, events[i].name);
-			var connectable = new wEvent(variable, events[i].type, events[i].friend_code);
-			gadgetEntry.events[events[i].name] = connectable;
-			gadgetEntry.connectables["event_" + events[i].name] = connectable;
+		for (i = 0; i < variables.length; i++) {
+			var variableData = variables[i];
+			var variable = varManager.getVariableByName(variableData.igadgetId, variableData.name);
+			
+			if (variable.aspect == "EVEN" && variableData.connectable) {
+				var connectableId = variableData.connectable.id;
+			    var connectable = new wEvent(variable, variable.type, variable.friend_code, connectableId);
+			    
+			    gadgetEntry.events[variable.name] = connectable;
+			    gadgetEntry.connectables["event_" + variable.name] = connectable;
+			}
+			
+			if (variable.aspect == "SLOT" && variableData.connectable) {
+			    var connectableId = variableData.connectable.id;
+			    var connectable = new wSlot(variable, variable.type, variable.friend_code, connectableId);
+
+			    gadgetEntry.slots[variable.name] = connectable;
+			    gadgetEntry.connectables["slot_" + variable.name] = connectable;
+			}
+			
+			this.iGadgets[iGadgetId] = gadgetEntry;
 		}
 
-		for (i = 0; i < slots.length; i++) {
-		        var variable = varManager.getVariableByName(igadget.id, slots[i].name);
-			var connectable = new wSlot(variable, slots[i].type, slots[i].friend_code);
-			gadgetEntry.slots[slots[i].name] = connectable;
-			gadgetEntry.connectables["slot_" + slots[i].name] = connectable;
-		}
-
-		this.iGadgets[iGadgetId] = gadgetEntry;
 	}
 
 	// TODO
@@ -263,8 +277,11 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 		}
 
 		var json = {'inOutList' : inouts};
-		var param = {json: json.toJSON()};
-		PersistenceEngineFactory.getInstance().send_post(URIs.GET_POST_WIRING, param, this, this.serializationSuccess, this.serializationError); 
+		var param = {'json': Object.toJSON(json)};
+		
+		var url = URIs.GET_POST_WIRING.evaluate({'id': this.workspace.workSpaceState.id});
+		
+		PersistenceEngineFactory.getInstance().send_post(url, param, this, this.serializationSuccess, this.serializationError); 
 	}
 
 	// ***************

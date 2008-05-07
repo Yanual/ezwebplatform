@@ -40,7 +40,8 @@
 // This is the class has the common properties of every connectable object of the wiring module //
 // The other connectable classes from the wiring module will inherit from this class            //
 //////////////////////////////////////////////////////////////////////////////////////////////////
-function wConnectable (name, type, friendCode) {
+function wConnectable (name, type, friendCode, id) {
+  this.id = id;
   this._name = name;
   this._type = type;
   this._friendCode = friendCode;
@@ -65,8 +66,8 @@ wConnectable.prototype.getFriendCode = function() {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // This class represents every object which may be placed in the middle of a connection between a In object and wOut object //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function wOut(name, type, friendCode) {
-   wConnectable.call(this, name, type, friendCode);
+function wOut(name, type, friendCode, id) {
+   wConnectable.call(this, name, type, friendCode, id);
 }
 
 wOut.prototype = new wConnectable();
@@ -74,8 +75,8 @@ wOut.prototype = new wConnectable();
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 // This class represents every object which may initialize one transmission through the wiring module //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-function wIn(name, type, friendCode) {
-  wConnectable.call(this, name, type, friendCode);
+function wIn(name, type, friendCode, id) {
+  wConnectable.call(this, name, type, friendCode, id);
   this.outputs = new Hash();
 }
 
@@ -111,8 +112,8 @@ wIn.prototype.propagate = function(value) {
 /////////////////////////////////////////////////////////////////////
 // This class represents every object which may transmit some data //
 /////////////////////////////////////////////////////////////////////
-function wInOut(name, type, friendCode) {
-  wIn.call(this, name, type, friendCode);
+function wInOut(name, type, friendCode, id) {
+  wIn.call(this, name, type, friendCode, id);
 
   this.inputs = new Hash();
 }
@@ -150,9 +151,9 @@ wInOut.prototype.fullDisconnect = function() {
 //////////////////////////////////////////////////////////////////////////
 // This class represents a iGadget variable which may produce some data 
 //////////////////////////////////////////////////////////////////////////
-function wEvent(variable, type, friendCode) {
+function wEvent(variable, type, friendCode, id) {
   this.variable = variable;
-  wIn.call(this, this.variable.name, type, friendCode);
+  wIn.call(this, this.variable.name, type, friendCode, id);
   this.variable.assignConnectable(this);
 }
 
@@ -165,9 +166,9 @@ wEvent.prototype.getQualifiedName = function () {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // This class represents a wConnectable whose only purpose is to redistribute the data produced by an wIn object //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function wChannel (variable, name) {
+function wChannel (variable, name, id) {
   this.variable = variable;
-  wInOut.call(this, name, null, null);
+  wInOut.call(this, name, null, null, id);
   this.variable.assignConnectable(this);
 }
 
@@ -189,11 +190,11 @@ wChannel.prototype.getQualifiedName = function () {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // This class represents a wConnectable whose only purpose is to redistribute the data produced by an wIn object //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function wTab (variable, name, tab) {
+function wTab (variable, name, tab, id) {
   this.variable = variable;
   this.tab = tab;
   this.variable.assignConnectable(this);
-  wOut.call(this, name, null, null);
+  wOut.call(this, name, null, null, id);
 }
 
 wTab.prototype = new wOut();
@@ -209,9 +210,9 @@ wTab.prototype.getQualifiedName = function () {
 /////////////////////////////////////////////////////////////////////////////
 // This class representents a iGadget variable which may receive some data //
 /////////////////////////////////////////////////////////////////////////////
-function wSlot(variable, type, friendCode) {
+function wSlot(variable, type, friendCode, id) {
   this.variable = variable;
-  wOut.call(this, this.variable.name, type, friendCode);
+  wOut.call(this, this.variable.name, type, friendCode, id);
 }
 
 wSlot.prototype = new wOut();

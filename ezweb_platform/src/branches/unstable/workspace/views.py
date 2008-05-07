@@ -52,7 +52,7 @@ from django_restapi.responder import *
 from django.db import transaction
 
 from commons.authentication import get_user_authentication
-from commons.get_data import get_workspace_data, get_tab_data, get_global_workspace_data
+from commons.get_data import *
 from commons.logs import log
 from commons.utils import get_xml_error, json_encode
 
@@ -92,6 +92,8 @@ def createTab (tab_name, user,  workspace):
     
     wsVarId = {}
     wsVarId['id'] = wsVariable.id
+    
+    get_
     
     connectableId = {}
     connectableId['name'] = connectable.name
@@ -261,26 +263,6 @@ class WorkSpaceEntry(Resource):
     
     
 class TabCollection(Resource):
-    def read(self, request, workspace_id):
-        user = get_user_authentication(request)
-        
-        data_list = {}
-        try:
-            tabs = Tab.objects.filter(workspace__user=user, workspace__pk=workspace_id)
-            if tabs.count()==0:
-                workspace = get_object_or_404(WorkSpace, pk=workspace_id)
-                
-                createTab('MyTab', user, workspace)
-                
-                tabs = Tab.objects.filter(pk=tab.id)
-        except Exception, e:
-            return HttpResponseBadRequest(get_xml_error(unicode(e)), mimetype='application/xml; charset=UTF-8')
-
-        data = serializers.serialize('python', tabs, ensure_ascii=False)
-        data_list['tabs'] = [get_tab_data(d) for d in  data]
-
-        return HttpResponse(json_encode(data_list), mimetype='application/json; charset=UTF-8')
-    
     @transaction.commit_on_success
     def create(self, request, workspace_id):
         user = get_user_authentication(request)
@@ -406,6 +388,6 @@ class WorkSpaceVariableCollection(Resource):
             return HttpResponse(str('OK'))
         except Exception, e:
             transaction.rollback()
-            msg = _("tab cannot be created: ") + unicode(e)
+            msg = _("cannot update variables: ") + unicode(e)
             log(msg, request)
             return HttpResponseServerError(get_xml_error(msg), mimetype='application/xml; charset=UTF-8')

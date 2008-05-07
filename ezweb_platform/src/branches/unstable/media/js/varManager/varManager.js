@@ -224,7 +224,7 @@ function VarManager (_workSpace) {
 
 	VarManager.prototype.createWorkspaceVariable = function(name) {
 		// TODO
-		var newVar = new RWVariable(null, null, name, Variable.prototype.INOUT, this, null);
+		var newVar = new RWVariable("", null, name, Variable.prototype.INOUT, this, "");
 		return newVar;
 	}
 	

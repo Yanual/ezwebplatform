@@ -103,14 +103,7 @@ def SaveIGadget(igadget, user, tab):
 
         new_igadget = IGadget(code=igadget_code, gadget=gadget, tab=tab, position=position)
         new_igadget.save()
-        
-        ids = {}
-        ids['igadget'] = {}
-        ids['igadget']['id'] = unicode(new_igadget.pk)
-
-        # Creates all IGadgte's variables
-        ids['variableList'] = []
-        
+                
         variableDefs = VariableDef.objects.filter(template=gadget.template)
         for varDef in variableDefs:
             # Sets the default value of variable
@@ -127,17 +120,14 @@ def SaveIGadget(igadget, user, tab):
             
             #Wiring related vars (SLOT&EVENTS) have implicit connectables!
             connectableId = createConnectable(var)
-            
-            # Add variable id to the variableList
-            varId = {}
-            
-            varId['name'] = varDef.name
-            varId['id'] = var.id
-            varId['connectable'] = connectableId
-            
-            ids['variableList'].append(varId)
-            
-        return ids;
+        
+        transaction.commit()
+        
+        igadget_data =  serializers.serialize('python', [new_igadget], ensure_ascii=False)
+        
+        ids = get_igadget_data(igadget_data[0])
+        
+        return ids
 
     except Gadget.DoesNotExist:
         raise Gadget.DoesNotExist(_('referred gadget %(gadget_uri)s does not exist.') % {'gadget_uri': gadget_uri})

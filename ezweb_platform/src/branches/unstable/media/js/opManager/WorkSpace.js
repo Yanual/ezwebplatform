@@ -50,7 +50,7 @@ function WorkSpace (workSpaceState) {
 		this.contextInfo = conceptsJson.concepts;
 		
 		// Now, we can load workspace data
-		var workSpaceUrl = URIs.GET_POST_WIRING.evaluate({'id': this.workSpaceState.id});
+		var workSpaceUrl = URIs.GET_POST_WORKSPACE.evaluate({'id': this.workSpaceState.id});
 		PersistenceEngineFactory.getInstance().send_get(workSpaceUrl, this, loadWorkSpace, onError); 
 	}
 
@@ -180,7 +180,7 @@ function WorkSpace (workSpaceState) {
 		this.workSpaceState.name = workSpaceName;
 		this.workSpaceHTMLElement.update(workSpaceName);
 
-		var workSpaceUrl = URIs.GET_POST_WIRING.evaluate({'id': this.workSpaceState.id});
+		var workSpaceUrl = URIs.GET_POST_WORKSPACE.evaluate({'id': this.workSpaceState.id});
 		var o = new Object;
 		o.name = workSpaceName;
 		if (active !=null)
@@ -192,7 +192,7 @@ function WorkSpace (workSpaceState) {
     
     WorkSpace.prototype.deleteWorkSpace = function() {
 		if(OpManagerFactory.getInstance().removeWorkSpace(this.workSpaceState.id)==true){
-			var workSpaceUrl = URIs.GET_POST_WIRING.evaluate({'id': this.workSpaceState.id});
+			var workSpaceUrl = URIs.GET_POST_WORKSPACE.evaluate({'id': this.workSpaceState.id});
 			PersistenceEngineFactory.getInstance().send_delete(workSpaceUrl, this, deleteSuccess, deleteError);		
 		}
 	}
@@ -375,7 +375,7 @@ function WorkSpace (workSpaceState) {
 	WorkSpace.prototype.addIGadget = function(tab, igadget, igadgetJSON) {
 		this.varManager.addInstance(igadget, igadgetJSON);
 		this.contextManager.addInstance(igadget, igadget.getGadget().getTemplate());
-		this.wiring.addInstance(igadget);
+		this.wiring.addInstance(igadget, igadgetJSON.variables);
 		
 		tab.getDragboard().showInstance(igadget);
 

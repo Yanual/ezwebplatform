@@ -41,6 +41,7 @@ from django_restapi.model_resource import Collection
 from django_restapi.responder import *
 
 from workspace.views import *
+from connectable.views import *
 
 urlpatterns = patterns('workspace.views',
 
@@ -51,10 +52,14 @@ urlpatterns = patterns('workspace.views',
     # Tab
     (r'^/((?P<workspace_id>\d+)/tab(s)?[/]?)?$',
         TabCollection(permitted_methods=('GET', 'POST',))),
-    (r'^/((?P<workspace_id>\d+)/tab(s)?/(?P<tab_id>[-ÑñáéíóúÁÉÍÓÚ\w]+)[/]?)?$',
+    (r'^/((?P<workspace_id>\d+)/tab(s)?/(?P<tab_id>\w+)[/]?)?$',
         TabEntry(permitted_methods=('GET', 'PUT', 'POST', 'DELETE',))),
         
     # Variables of the whole workspace
     (r'^/((?P<workspace_id>\d+)/variable(s)?[/]?)?$',
-        WorkSpaceVariableCollection(permitted_methods=('PUT',))),
+        WorkSpaceVariableCollection(permitted_methods=('PUT','POST', ))),
+        
+    # Wiring info for the whole workspace
+    (r'^/((?P<workspace_id>\d+)/wiring?[/]?)?$',
+        ConnectableEntry(permitted_methods=('PUT', 'POST', ))),
 )

@@ -81,6 +81,7 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
     this.visible = true;
 
     this.renewInterface();
+    
     LayoutManagerFactory.getInstance().showWiring(this.wiringContainer);
     Event.observe(this.newChannel, 'click', this._eventCreateChannel);
   }
@@ -107,6 +108,9 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
     for (var i = 0; i < keys.length; i++) {
       this.channels[keys[i]].commitChanges(this.wiring);
     }
+    
+    // The wiring engine is notified in order to persist state!
+    this.wiring.serialize();
   }
 
   WiringInterface.prototype._addChannelInterface = function (channel) {
@@ -727,9 +731,14 @@ ChannelInterface.prototype.commitChanges = function(wiring) {
   var changes = [];
   var keys, i;
 
+  this.name = this.interface.getElementsByClassName('channelNameInput')[0].value;
+  
   if (this.channel == null) {
     // The channel don't exists
     this.channel = wiring.createChannel(this.name);
+  } else {
+	  // Update channel name
+	  this.channel.name = this.name;
   }
 
   // Inputs for removing
