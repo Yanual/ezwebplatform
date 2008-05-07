@@ -716,12 +716,6 @@ function Dragboard(tab, workSpace, dragboardElement) {
 		return this.iGadgets[iGadgetId];
 	}
 
-	// TODO rename this method to something like getGadgetFromIGadget
-	Dragboard.prototype.getGadget = function (iGadgetId) {
-		var igadget = this.iGadgets[iGadgetId];
-		return igadget.getGadget();
-	}
-	
 	Dragboard.prototype.getWorkspace = function () {
 		return this.workSpace;
 	}
