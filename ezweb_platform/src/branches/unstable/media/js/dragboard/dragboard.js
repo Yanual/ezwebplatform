@@ -482,8 +482,8 @@ function Dragboard(tab, workSpace, dragboardElement) {
 			iGadgetInfo['top'] = position.y;
 			iGadgetInfo['left'] = position.x;
 			iGadgetInfo['minimized'] = iGadget.isMinimized() ? "true" : "false";
-			iGadgetInfo['width'] = iGadget.contentWidth;
-			iGadgetInfo['height'] = iGadget.contentHeight;
+			iGadgetInfo['width'] = iGadget.getContentWidth();
+			iGadgetInfo['height'] = iGadget.getContentHeight();
 			data['iGadgets'].push(iGadgetInfo);
 		}
 
@@ -868,12 +868,13 @@ IGadget.prototype.getHeight = function() {
 				this.contentWrapper.setStyle({height: wrapperHeight + "px"});
 			} else {
 				this.contentWrapper.setStyle({height: 0 + "px"});
-				if (BrowserUtilsFactory.getInstance().getBrowser() == "IE6"){
+				if (BrowserUtilsFactory.getInstance().getBrowser() == "IE6") {
 					this.content.height = 0;
 				}
 			}
 
-			this.height = this.screen.fromPixelsToVCells(this.element.offsetHeight + this.screen.topMargin + this.screen.bottomMargin);
+			var fullsize = this.element.offsetHeight + this.screen.topMargin + this.screen.bottomMargin;
+			this.height = Math.ceil(this.screen.fromPixelsToVCells(fullsize));
 		} else {
 			this.height = 0;
 		}
@@ -1204,7 +1205,9 @@ IGadget.prototype._setSize = function(newWidth, newHeight, persist) {
 	contentHeight -= 3; // TODO offsetHeight don't take into account borders
 	this.content.style.height = contentHeight + "px";
 	this.height = null;
+
 	this.getHeight();
+	this.contentHeight = Math.floor(this.screen.fromPixelsToVCells(this.content.offsetHeight));
 
 	// Notify resize event
 	this.dragboard._notifyResizeEvent(this, oldWidth, oldHeight, this.contentWidth, this.height, persist);
@@ -1455,7 +1458,7 @@ DragboardStyle.prototype.getCellHeight = function() {
 }
 
 DragboardStyle.prototype.fromPixelsToVCells = function(pixels) {
-	return Math.ceil(pixels / this.cellHeight);
+	return (pixels / this.cellHeight);
 }
 
 DragboardStyle.prototype.fromVCellsToPixels = function(cells) {
