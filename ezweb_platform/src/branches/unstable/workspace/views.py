@@ -92,9 +92,7 @@ def createTab (tab_name, user,  workspace):
     
     wsVarId = {}
     wsVarId['id'] = wsVariable.id
-    
-    get_
-    
+        
     connectableId = {}
     connectableId['name'] = connectable.name
     connectableId['id'] = connectable.id

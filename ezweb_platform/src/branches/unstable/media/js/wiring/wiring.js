@@ -144,18 +144,18 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 			
 			if (variable.aspect == "EVEN" && variableData.connectable) {
 				var connectableId = variableData.connectable.id;
-			    var connectable = new wEvent(variable, variable.type, variable.friend_code, connectableId);
+			    var connectable = new wEvent(variable, variableData.type, variableData.friend_code, connectableId);
 			    
-			    gadgetEntry.events[variable.name] = connectable;
-			    gadgetEntry.connectables["event_" + variable.name] = connectable;
+			    gadgetEntry.events[variableData.name] = connectable;
+			    gadgetEntry.connectables["event_" + variableData.name] = connectable;
 			}
 			
 			if (variable.aspect == "SLOT" && variableData.connectable) {
 			    var connectableId = variableData.connectable.id;
-			    var connectable = new wSlot(variable, variable.type, variable.friend_code, connectableId);
+			    var connectable = new wSlot(variable, variableData.type, variableData.friend_code, connectableId);
 
-			    gadgetEntry.slots[variable.name] = connectable;
-			    gadgetEntry.connectables["slot_" + variable.name] = connectable;
+			    gadgetEntry.slots[variableData.name] = connectable;
+			    gadgetEntry.connectables["slot_" + variableData.name] = connectable;
 			}
 			
 			this.iGadgets[iGadgetId] = gadgetEntry;
