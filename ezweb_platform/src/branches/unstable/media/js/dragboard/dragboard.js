@@ -1203,6 +1203,12 @@ IGadget.prototype._setSize = function(newWidth, newHeight, persist) {
 	this.getHeight();
 	this.contentHeight = Math.floor(this.screen.fromPixelsToVCells(this.content.offsetHeight));
 
+	if (persist) {
+		// Notify Context Manager of igadget's size
+		this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.HEIGHT, this.contentHeight);
+		this.dragboard.getWorkspace().getContextManager().notifyModifiedGadgetConcept(this.id, Concept.prototype.WIDTH, this.contentWidth);
+	}
+
 	// Notify resize event
 	this.dragboard._notifyResizeEvent(this, oldWidth, oldHeight, this.contentWidth, this.height, persist);
 }
