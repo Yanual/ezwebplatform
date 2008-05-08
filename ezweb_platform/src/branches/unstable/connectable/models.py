@@ -72,7 +72,7 @@ class In(models.Model):
 class Out(models.Model):
     
     name = models.CharField(_('Name'), max_length=30)
-    variable = models.ForeignKey(AbstractVariable, verbose_name=_('Variable'), null=True)
+    abstract_variable = models.ForeignKey(AbstractVariable, verbose_name=_('AbstractVariable'))
     inout = models.ManyToManyField(InOut, verbose_name=_('InOut'))
     
     class Admin:

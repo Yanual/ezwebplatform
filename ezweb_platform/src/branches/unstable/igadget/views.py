@@ -61,14 +61,14 @@ from connectable.models import In, Out
 from igadget.models import *
 
 def createConnectable(var):
-    #If var is and SLOT or and EVENT, a proper connectable objet must be created!
+    #If var is and SLOT or and EVENT, a proper connectable object must be created!
     aspect = var.vardef.aspect
     name = var.vardef.name
     
     connectable = None
     
     if (aspect == 'SLOT'):
-        connectable = Out(name=name, variable=var)
+        connectable = Out(name=name, abstract_variable=var.abstract_variable)
     if (aspect == 'EVEN'):
         connectable = In(name=name, variable=var)
         
@@ -134,14 +134,13 @@ def SaveIGadget(igadget, user, tab):
     except VariableDef.DoesNotExist:
         #iGadget has no variables. It's normal
         pass
-
+    
 def UpdateIGadget(igadget, user, tab):
     
     igadget_pk = igadget.get('id')
     
     # Checks
     ig = get_object_or_404(IGadget, tab=tab, pk=igadget_pk)  
-    
     
     # get IGadget's position
     position = ig.position

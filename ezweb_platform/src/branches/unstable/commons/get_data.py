@@ -207,7 +207,7 @@ def get_workspace_data(data):
     return data_ret
 
 def get_workspace_variables_data(workSpaceDAO):
-    ws_variables = WorkSpaceVariable.objects.filter(workspace=workSpaceDAO).order_by('id')  
+    ws_variables = WorkSpaceVariable.objects.filter(workspace=workSpaceDAO)  
     data = serializers.serialize('python', ws_variables, ensure_ascii=False)
     ws_variables_data = [get_workspace_variable_data(d) for d in data]
     
@@ -228,7 +228,7 @@ def get_workspace_variable_data(data):
     data_ret['type'] = data_fields['type']
     
     if (data_ret['aspect'] == 'TAB'):
-        connectable = Out.objects.get(variable__id = abstract_var_id)
+        connectable = Out.objects.get(abstract_variable__id = abstract_var_id)
     else:
         connectable = InOut.objects.get(workspace_variable__id = abstract_var_id)
         
@@ -253,7 +253,7 @@ def get_global_workspace_data(data, workSpaceDAO):
     data_ret['workspace'] = get_workspace_data(data)  
     
     # Tabs processing              
-    tabs = Tab.objects.filter(workspace=workSpaceDAO).order_by('id') 
+    tabs = Tab.objects.filter(workspace=workSpaceDAO)  
     data = serializers.serialize('python', tabs, ensure_ascii=False)
     tabs_data = [get_tab_data(d) for d in data]
     
@@ -261,7 +261,7 @@ def get_global_workspace_data(data, workSpaceDAO):
            
     for tab in tabs_data:
         tab_pk = tab['id']
-        igadgets = IGadget.objects.filter(tab__id = tab_pk).order_by('id')
+        igadgets = IGadget.objects.filter(tab__id = tab_pk)
         igadget_data = serializers.serialize('python', igadgets, ensure_ascii=False)
         igadget_data = [get_igadget_data(d) for d in igadget_data]
         tab['igadgetList'] = igadget_data
@@ -271,7 +271,7 @@ def get_global_workspace_data(data, workSpaceDAO):
     data_ret['workspace']['workSpaceVariableList'] = workspace_variables_data
     
     #Wiring information
-    inouts = InOut.objects.filter(workspace_variable__workspace=workSpaceDAO).order_by('id')  
+    inouts = InOut.objects.filter(workspace_variable__workspace=workSpaceDAO)  
     data = serializers.serialize('python', inouts, ensure_ascii=False)
     inouts_data = [get_inout_data(d) for d in data]
                    
@@ -306,9 +306,9 @@ def get_igadget_data(data):
     data_ret['width'] = position.width
     data_ret['height'] = position.height
     if position.minimized:
-        data_ret['minimized'] = "true"
+          data_ret['minimized'] = "true"
     else:
-        data_ret['minimized'] = "false"
+          data_ret['minimized'] = "false"
     
     variables = Variable.objects.filter (igadget__pk=data['pk'])
     data = serializers.serialize('python', variables, ensure_ascii=False)
@@ -339,17 +339,17 @@ def get_variable_data(data):
     
     #Context management    
     if var_def.aspect == 'GCTX':
-        context = GadgetContext.objects.get(varDef=data_fields['vardef'])
-        data_ret['concept'] = context.concept
+          context = GadgetContext.objects.get(varDef=data_fields['vardef'])
+          data_ret['concept'] = context.concept
     if var_def.aspect == 'ECTX':
-        context = ExternalContext.objects.get(varDef=data_fields['vardef'])
-        data_ret['concept'] = context.concept
+          context = ExternalContext.objects.get(varDef=data_fields['vardef'])
+          data_ret['concept'] = context.concept
     
     #Connectable management
     #Only SLOTs and EVENTs
     connectable = False
     if var_def.aspect == 'SLOT':
-        connectable = Out.objects.get(variable__id = data_ret['id'])          
+        connectable = Out.objects.get(abstract_variable = abstract_var)          
     if var_def.aspect == 'EVEN':
         connectable = In.objects.get(variable__id = data_ret['id'])
           
