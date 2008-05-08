@@ -121,7 +121,7 @@ def createWorkSpace (workSpaceName, user):
     #Tab creation
     tab_ids = createTab ('MyTab', user, workspace)
     
-     # Returning created Ids
+    # Returning created Ids
     ids = {}
     
     ids['workspace'] = {}
@@ -154,7 +154,7 @@ class WorkSpaceCollection(Resource):
             if workspaces.count()==0:
                 createWorkSpace('MyWorkSpace', user)
                 
-                workspaces = WorkSpace.objects.filter(user=user)
+                workspaces = WorkSpace.objects.filter(user=user).order_by('id')
         except Exception, e:
             return HttpResponseBadRequest(get_xml_error(unicode(e)), mimetype='application/xml; charset=UTF-8')
             
@@ -372,16 +372,16 @@ class WorkSpaceVariableCollection(Resource):
             workSpaceVariables = variables['workspaceVars']
             
             for wsVar in workSpaceVariables:
-               wsVarDAO = WorkSpaceVariable.objects.get(pk=wsVar['id'])
+                wsVarDAO = WorkSpaceVariable.objects.get(pk=wsVar['id'])
                
-               wsVarDAO.value=wsVar['value'];
-               wsVarDAO.save();   
+                wsVarDAO.value=wsVar['value'];
+                wsVarDAO.save();   
                
             for igVar in igadgetVariables:
-               igVarDAO = Variable.objects.get(pk=igVar['id'])
+                igVarDAO = Variable.objects.get(pk=igVar['id'])
                
-               igVarDAO.value=igVar['value'];
-               igVarDAO.save(); 
+                igVarDAO.value=igVar['value'];
+                igVarDAO.save(); 
             
             return HttpResponse(str('OK'))
         except Exception, e:
