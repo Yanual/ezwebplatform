@@ -81,7 +81,7 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 			var currentInout = inOuts[i];
 			// TODO Check inout type, for now we can assumme that it is "channel" always.
 			var channelVar = varManager.getWorkspaceVariableById(currentInout.variableId);
-			var channel = this._insertChannel(currentInout.name, channelVar);
+			var channel = this._insertChannel(currentInout.name, channelVar, currentInout.id);
 
 			for (var j = 0; j < currentInout.inputs.length; j++) {
 				var input = currentInout.inputs[j];
@@ -198,7 +198,7 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 		return this.channels.values();
 	}
 
-	Wiring.prototype._insertChannel = function (channelName, channelVar) {
+	Wiring.prototype._insertChannel = function (channelName, channelVar, id) {
 		if (this.channels[channelName] != undefined) {
 			var msg = gettext("Error creating channel %(channelName)s: Channel already exists");
 			msg = interpolate(msg, {channelName: channelName});
@@ -206,16 +206,18 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 			return;
 		}		
 
-		var channel = new wChannel(channelVar, channelName);
+		var channel = new wChannel(channelVar, channelName, id);
 		this.channels[channelName] = channel;
 			
 		return channel;
 	}
 
-	Wiring.prototype.createChannel = function (channelName) {
+	Wiring.prototype.createChannel = function (channelName, channelId) {
 		var channelVar = this.workspace.getVarManager().createWorkspaceVariable(channelName);
+		
+		this.channelsForAdding.push(channelId);
 
-		return this._insertChannel(channelName, channelVar);
+		return this._insertChannel(channelName, channelVar, channelId);
 	}
 
 	Wiring.prototype.removeChannel = function (channelName) {
@@ -230,11 +232,17 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 
 		channel.fullDisconnect();
 		
+		this.channelsForRemoving.push(channel.id);
+		
 		this.channels.remove(channelName);
 	}
 
 	Wiring.prototype.serializationSuccess = function (response){
-
+		delete this.channelsForRemoving;
+		delete this.channelsForAdding;
+		
+		this.channelForRemoving = [];
+		this.channelForAdding = [];
 	}
 
 	Wiring.prototype.serializationError = function (response) {
@@ -244,39 +252,45 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 	}
 
 	Wiring.prototype.serialize = function () {
-		var gadgets = [], inouts = [];
 		var gadgetKeys = this.iGadgets.keys();
-		var inOutKeys = this.copyList.keys();
-
-
+		var serialized_channels = new Object();
+		
 		// Channels
-		for (var i = 0; i < this.channels.length; t++) {
-			var channel = this.channels[inOutKeys[i]];
-			inouts[i] = new Object();
-			inouts[i].value = channel.getValue();
-			inouts[i].name = this.channels[inOutKeys[i]].getName();
-
-			inouts[i].inputs = [];
-
-			for (var j = 0; v < this.copyList[inOutKeys[t]].ref.inputList.length; v++) {
-				var nextIn = this.copyList[inOutKeys[t]].ref.inputList[v];
-				inouts[t].ins[v] = new Object();
-				inouts[t].ins[v].name = nextIn.getName();
-				inouts[t].ins[v].uri = nextIn.getURI();
-				inouts[t].ins[v].igadget = nextIn.getId();
-			}
-
-			inouts[t].outs = [];
-			for (var v = 0; v < this.copyList[inOutKeys[t]].ref.outputList.length; v++){
-				var nextOut = this.copyList[inOutKeys[t]].ref.outputList[v];
-				inouts[t].outs[v] = new Object();
-				inouts[t].outs[v].name = nextOut.getName();
-				inouts[t].outs[v].uri = nextOut.getURI();
-				inouts[t].outs[v].igadget = nextOut.getId();
-			}
+		var channel_keys = this.channels.keys();
+		for (var i = 0; i < channel_keys.length; i++) {
+			var key = channel_keys[i];
+			var channel = this.channels[key];
+			
+//			serialized_channels[i] = new Object;
+//			// Filling channel info!!!
+//			
+//			
+//			serialized_channels[i].ins = []
+//
+//			var input_keys = channel.inputs.keys()
+//			for (var j = 0; j < input_keys.length; j++) {
+//				var key = input_keys[j];
+//				var input = channel.inputs[key];
+//				
+//				
+//			}
+//
+//			serialized_channels[i].outs = [];
+//			
+//			var output_keys = channel.outputs.keys()
+//			for (var j = 0; j < output_keys.length; j++) {
+//				var key = input_keys[j];
+//				var output = channel.inputs[key];
+//				
+//				
+//			}
 		}
+		
+		//Channels for adding
+		
+		//Channels for removing
 
-		var json = {'inOutList' : inouts};
+		var json = {'inOutList' : serialized_channels};
 		var param = {'json': Object.toJSON(json)};
 		
 		var url = URIs.GET_POST_WIRING.evaluate({'id': this.workspace.workSpaceState.id});
@@ -293,10 +307,10 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 	this.persistenceEngine = PersistenceEngineFactory.getInstance();
 	this.iGadgets = new Hash();
 	this.channels = new Hash();
+	this.channelsForRemoving = [];
+	this.channelsForAdding = [];
 	
-	// copy is the list that is used for making new connections or disconnections with the interface.
-	this.copyList = new Hash();
-
+	
 	this.loadWiring(workSpaceGlobalInfo);
 }
 

@@ -424,6 +424,7 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
       this._changeChannel(channel);
 
     this.channels_list.removeChild(channel.getInterface());
+    
     delete this.channels[channelName];
   }
 
@@ -693,7 +694,8 @@ function ChannelInterface(channel) {
     this.channel = null;
     this.name = channel;
     this.inputs = new Hash();
-    this.outputs = new Hash();    
+    this.outputs = new Hash();
+    this.provisional_id = new Date().getTime();
   }
 
   this.inputsForAdding = new Hash();
@@ -736,7 +738,7 @@ ChannelInterface.prototype.commitChanges = function(wiring) {
   
   if (this.channel == null) {
     // The channel don't exists
-    this.channel = wiring.createChannel(this.name);
+    this.channel = wiring.createChannel(this.name, this.provisional_id);
   } else {
 	  // Update channel name
 	  this.channel.name = this.name;
