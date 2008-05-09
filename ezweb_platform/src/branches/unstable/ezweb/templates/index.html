@@ -34,6 +34,7 @@ _URIConstants.prototype.GET_RESOURCES_BY_TAG = '/user/{{ user.username }}/catalo
 _URIConstants.prototype.GET_RESOURCES_BY_WIRING = '/user/{{ user.username }}/catalogue/search';
 _URIConstants.prototype.DELETE_TAG = '/user/{{ user.username }}/catalogue/tag';
 _URIConstants.prototype.POST_RESOURCE_TAGS = '/user/{{ user.username }}/catalogue/tag';
+_URIConstants.prototype.POST_RESOURCE_VOTES = '/user/{{ user.username }}/catalogue/voting';
 _URIConstants.prototype.GET_RESOURCES_SEARCH_GENERIC = '/user/{{ user.username }}/catalogue/search/generic';
 _URIConstants.prototype.POST_IGADGET = new Template ('/workspace/#{workspaceId}/tab/#{tabId}/igadgets');
 _URIConstants.prototype.PROXY = '/proxy';
@@ -107,7 +108,6 @@ var URIs = new _URIConstants();
 
 <!-- Initialization code -->
 <script language="JavaScript">
-	
 	function setLanguage(language) {
 		var onSuccess = function() {
 			window.location.reload();

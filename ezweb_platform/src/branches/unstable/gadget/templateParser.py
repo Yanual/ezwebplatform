@@ -102,6 +102,8 @@ class TemplateHandler(handler.ContentHandler):
                 return 'B'
         elif typeText == 'list':
                 return 'L'
+        elif typeText == 'password':
+                return 'P'
         else:
             raise TemplateParseException(_(u"ERROR: unkown TEXT TYPE ") + typeText)
 

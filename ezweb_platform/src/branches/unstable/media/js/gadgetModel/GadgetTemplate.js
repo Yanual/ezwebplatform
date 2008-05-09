@@ -117,6 +117,9 @@ function GadgetTemplate(template_) {
 						case UserPref.prototype.DATE:
 							this.prefs.push(new DateUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.default_value));
 							break;
+						case UserPref.prototype.PASSWORD:
+							this.prefs.push(new PasswordUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.default_value));
+							break;
 						case UserPref.prototype.LIST:
 							this.prefs.push(new ListUserPref(rawVar.name, rawVar.label, rawVar.description, rawVar.default_value, rawVar.value_options));
 							break;

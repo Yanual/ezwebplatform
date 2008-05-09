@@ -54,18 +54,19 @@ UIUtils.imageConnectableContent = '';
 UIUtils.infoResourcesWidth = 400;
 UIUtils.isInfoResourcesOpen = false;
 UIUtils.page = 1;
-UIUtils.off = 4;
+UIUtils.off = 8;
 UIUtils.orderby = '-creation_date';
 UIUtils.num_items = 0;
 UIUtils.search = 'false';
 UIUtils.searchValue = '';
 UIUtils.searchCriteria = '';
 UIUtils.counter=0;
+UIUtils.globalTags='all';
 
 UIUtils.addResource = function(url, paramName, paramValue) {
 	var newResourceOnSuccess = function (response) {
 		UIUtils.orderby = '-creation_date';
-		UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, UIUtils.getOffset(), Math.ceil(UIUtils.getNum_items()/UIUtils.getOffset()), UIUtils.getNum_items());
+		UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, UIUtils.getOffset(), 1, UIUtils.getNum_items());
 	}
 	
 	var newResourceOnError = function (transport, e) {
@@ -98,16 +99,28 @@ UIUtils.getSelectedResource = function() {
 
 UIUtils.selectResource = function(resourceId_) {
 	var bottom = document.getElementById(resourceId_ + '_bottom');
-	bottom.style.backgroundImage = 'url(/ezweb/images/resource-left-bottom-select.png)';
 	var content = document.getElementById(resourceId_ + '_content');
+	if (!UIUtils.tagmode)
+	{
+	    UIUtils.imageBottom = bottom.style.backgroundImage;
+	    UIUtils.imageContent = content.style.backgroundImage;
+	}
+	bottom.style.backgroundImage = 'url(/ezweb/images/resource-left-bottom-select.png)';
 	content.style.backgroundImage = 'url(/ezweb/images/resource-left-fill-select.png)';
+    
 }
 
 UIUtils.deselectResource = function(resourceId_) {
 	var bottom = document.getElementById(resourceId_ + '_bottom');
-	bottom.style.backgroundImage = 'url(/ezweb/images/resource-left-bottom.gif)';
 	var content = document.getElementById(resourceId_ + '_content');
-	content.style.backgroundImage = 'url(/ezweb/images/resource-left-fill.gif)';
+	if (!UIUtils.tagmode)
+	{
+	    bottom.style.backgroundImage = UIUtils.imageBottom;
+	    content.style.backgroundImage = UIUtils.imageContent;
+	} else {
+	    bottom.style.backgroundImage = 'url(/ezweb/images/resource-left-bottom.gif)';
+	    content.style.backgroundImage = 'url(/ezweb/images/resource-left-fill.gif)';
+	}
 }
 
 UIUtils.selectConnectableResources = function(resourceId_) {
@@ -232,34 +245,43 @@ UIUtils.changeImage = function(elementId_, newImage_) {
 }
 
 UIUtils.searchByTag = function(url, tag) {
-	this.closeInfoResource();
+	UIUtils.closeInfoResource();
 	var opManager = OpManagerFactory.getInstance();
-	var option = arguments[2] || {from:'none'};
 
-	if (option.from != 'none')
+	if (UIUtils.balloonResource)
 	{
 		CatalogueFactory.getInstance().getResource(UIUtils.balloonResource).closeTagcloudBalloon();
 	}
-
-  if (tag == ""){
-  	alert(gettext ("Indicate a criteria in search formulary"));
-  }
-  else{
+	tag=UIUtils.filterString(tag);
+	if (tag == ""){
+  		$('header_always_error').style.display="block";
+		UIUtils.getError($('header_always_error'),gettext("Indicate a criteria in search formulary"));
+	}
+	else{
+	  $('header_always_error').style.display = 'none';
 	  UIUtils.setPage(1);
       UIUtils.search = 'tag';
       UIUtils.searchValue = tag;
       UIUtils.searchCriteria = 'tag' ;
 	  opManager.repaintCatalogue(url + "/" + tag  + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
-}
+	}
 }
 
 UIUtils.searchByWiring = function(url, value, wiring) {
-	this.closeInfoResource();
+	UIUtils.closeInfoResource();
 	var opManager = OpManagerFactory.getInstance();
-	
+
+	value=UIUtils.filterString(value);
+
 	if (value == ""){
-		alert(gettext ("Indicate a criteria in search formulary"));
+		$('header_always_error').style.display="block";
+		UIUtils.getError($('header_always_error'),gettext("Indicate a criteria in search formulary"));
 	}else{
+		if (UIUtils.balloonResource)
+		{
+			CatalogueFactory.getInstance().getResource(UIUtils.balloonResource).closeTagcloudBalloon();
+		}
+		$('header_always_error').style.display = 'none';
 		UIUtils.setPage(1);
 		UIUtils.search = 'wiring';
 		UIUtils.searchValue = value;
@@ -269,7 +291,7 @@ UIUtils.searchByWiring = function(url, value, wiring) {
 }
 
 UIUtils.cataloguePaginate = function(url, offset, pag, items) {
-	this.closeInfoResource();
+	UIUtils.closeInfoResource();
 	UIUtils.off=offset;
 	UIUtils.num_items=items;
 	var opManager = OpManagerFactory.getInstance();
@@ -279,7 +301,7 @@ UIUtils.cataloguePaginate = function(url, offset, pag, items) {
 		url = URIs.GET_POST_RESOURCES;
 	}
 	if (UIUtils.search == 'generic'){
-		url = URIs.GET_RESOURCES_SEARCH_GENERIC + "/" + UIUtils.searchValue + "/" + UIUtils.searchCriteria;
+		url = URIs.GET_RESOURCES_SEARCH_GENERIC + "/" + UIUtils.searchValue;
 	}
 	if (UIUtils.search == 'wiring'){
 		url = URIs.GET_RESOURCES_BY_WIRING + "/" + UIUtils.searchCriteria + "/" + UIUtils.searchValue;
@@ -338,19 +360,32 @@ UIUtils.getNum_items = function() {
     return UIUtils.num_items;
 }
 
-UIUtils.searchGeneric = function(url, param, criteria) {
-	this.closeInfoResource();
+UIUtils.searchGeneric = function(url, param1, param2, param3) {
+	UIUtils.closeInfoResource();
 	var opManager = OpManagerFactory.getInstance();
-	
-	if (param == ""){
-		alert(gettext ("Indicate a criteria in search formulary"));
+	var param1=UIUtils.filterString(param1);
+	var param2=UIUtils.filterString(param2);
+	var param3=UIUtils.filterString(param3);
+	if (param1=="") param1="_";
+	if (param2=="") param2="_";
+	if (param3=="") param3="_";
+
+	if (param1 == "_" && param2 == "_" && param3 == "_"){
+		$('header_always_error').style.display="block";
+		UIUtils.getError($('header_always_error'),gettext("Indicate a criteria in search formulary"));
 	}
-	else{ 
+	else{
+		$('header_always_error').style.display = 'none';
+		if (UIUtils.balloonResource)
+		{
+			CatalogueFactory.getInstance().getResource(UIUtils.balloonResource).closeTagcloudBalloon();
+		}
+
 		UIUtils.setPage(1);
-		UIUtils.searchValue = param;
-		UIUtils.searchCriteria = criteria ;
+		UIUtils.searchValue = param1+"/"+param2+"/"+param3;
+		UIUtils.searchCriteria = 'generic';
 		UIUtils.search = 'generic';
-		opManager.repaintCatalogue(url + "/" + param + "/" + criteria + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
+		opManager.repaintCatalogue(url + "/" + param1 + "/" + param2 + "/" + param3 + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
 	}
 }
 
@@ -359,10 +394,25 @@ UIUtils.removeTag = function(id_) {
 	tagger.removeTag(id_);
 }
 
+UIUtils.removeGlobalTag = function(id_) {
+	var tagger;
+	selectedResources = CatalogueFactory.getInstance().getSelectedResources();
+	for(var i=0; i<selectedResources.length;i++){
+		tagger = CatalogueFactory.getInstance().getResource(selectedResources[i]).getTagger();
+		tagger.removeTag(id_);
+	}
+	var parentHTML = document.getElementById("my_global_tags");
+	var tagHTML = document.getElementById(id_);
+	parentHTML.removeChild(tagHTML);
+}
+
 UIUtils.removeAllTags = function() {
 	var tagger = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).getTagger();
 	tagger.removeAll();
 	document.getElementById("tag_alert").style.display='none';
+	document.getElementById("new_tag_text_input").value="";
+	document.getElementById("new_tag_text_input").size=5;
+	document.getElementById("new_tag_text_input").focus();
 }
 
 UIUtils.removeAllGlobalTags = function() {
@@ -378,7 +428,10 @@ UIUtils.removeAllGlobalTags = function() {
 	{
 		parentHTML.removeChild(parentHTML.childNodes[0]);
 	}
-	document.getElementById("global_tag_alert").style.display='none';
+	$("global_tag_alert").style.display='none';
+	$("new_global_tag_text_input").value="";
+	$("new_global_tag_text_input").size=5;
+	$("new_global_tag_text_input").focus();
 	
 }
 
@@ -389,17 +442,32 @@ UIUtils.removeTagUser = function(tag,id) {
     var tagger = resource.getTagger();
     var resourceURI = "/" + resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion() + "/" + tag;
 	tagger.removeTagUser(URIs.DELETE_TAG, resourceURI,id);		
+}
+
+UIUtils.removeGlobalTagUser = function(tag) {	
+	
+	var resources = CatalogueFactory.getInstance().getSelectedResources();
+	for (var i=0; i<resources.length; i++) {
+		var resource = CatalogueFactory.getInstance().getResource(resources[i]);
+		var tags = resource.getTags();
+		for (var j=0;j<tags.length ; j++)
+		{
+			if (tag == tags[j].getValue())
+			{
+				var tagger = resource.getTagger();
+				var resourceURI = "/" + resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion() + "/" + tag;
+				tagger.removeTagUser(URIs.DELETE_TAG, resourceURI,resources[i]);
+				//break;
+			}
+		}
 	}
+}
 
 UIUtils.sendTags = function() {
 	var resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
 	var tagger = resource.getTagger();
 	var resourceURI = "/" + resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion();
-	if (document.getElementById('new_tag_text_input').value.length >2 || (tagger.getTags().size() != 0 && document.getElementById('new_tag_text_input').value.length== 0))
-	{
-		UIUtils.toggle_elements(["add_tags_panel","add_tags_link","access_wiki_link","access_template_link","update_code_link","delete_gadget_link"]);
-		UIUtils.show("add_gadget_button");
-	}
+
 	if (tagger.getTags().size() == 0 || document.getElementById('new_tag_text_input').value.length!= 0)
 	{
 		UIUtils.addTag(document.getElementById('new_tag_text_input'));
@@ -410,12 +478,12 @@ UIUtils.sendTags = function() {
 
 UIUtils.sendGlobalTags = function() {
 	//TBD
-	/*
+	var resources = CatalogueFactory.getInstance().getSelectedResources();
 	var resource;
 	var tagger;
 	var resourceURI;
-	for(var i=0; i<CatalogueFactory.getInstance().selectedResources.length;i++){
-		resource = CatalogueFactory.getInstance().getResource(CatalogueFactory.getInstance().selectedResource[i]);
+	for(var i=0; i<resources.length; i++){
+		resource = CatalogueFactory.getInstance().getResource(resources[i]);
 		tagger = resource.getTagger();
 		resourceURI = "/" + resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion();
 		
@@ -426,9 +494,13 @@ UIUtils.sendGlobalTags = function() {
 		}
 		//TODO Aviso de si todo ha ido bien o no
 		
-		tagger.sendGlobalTags(URIs.POST_RESOURCE_TAGS, resourceURI, resource);
+		tagger.sendTags(URIs.POST_RESOURCE_TAGS, resourceURI, resource);
 	}
- 	*/
+	var parentHTML = $("my_global_tags");
+	while(parentHTML.childNodes.length > 1)
+	{
+		parentHTML.removeChild(parentHTML.childNodes[0]);
+	}
 }
 
 UIUtils.deleteGadget = function(id) {
@@ -457,7 +529,8 @@ UIUtils.addTag = function(inputText_) {
 
 UIUtils.addGlobalTag = function(inputText_) {
 	if(inputText_.value.length<3)	{
-		document.getElementById("global_tag_alert").style.display='inline';
+		$("global_tag_alert").style.display='inline';
+		UIUtils.getError($("global_tag_alert"),gettext("Tags must have at least three characters."));
 	}else{
 		var id = 'new_global_tag_' + UIUtils.counter;
 		UIUtils.counter++;
@@ -468,7 +541,7 @@ UIUtils.addGlobalTag = function(inputText_) {
 			tagger.addGlobalTag(inputText_.value);
 		}
 		UIUtils.paintGlobalTag(id,inputText_.value);
-		document.getElementById("global_tag_alert").style.display='none';
+		$("global_tag_alert").style.display='none';
 		
 		inputText_.value = '';
 		inputText_.focus();
@@ -487,8 +560,8 @@ UIUtils.paintGlobalTag = function(id_, tag_) {
 								"</a>" +
 							"</div>" +
 							"<div id='button_enable_" + id_ + "' style='display:none;'>" +
-								"<a href='javascript:UIUtils.removeTag(\"" + id_ + "\");'>" +
-									"<img src='/ezweb/images/cancel.png' alt=''></img>" +
+								"<a href='javascript:UIUtils.removeGlobalTag(\"" + id_ + "\");'>" +
+									"<img src='/ezweb/images/delete.png' alt=''></img>" +
 								"</a>" +
 							"</div>," + 
 						"</div> ";
@@ -501,7 +574,6 @@ UIUtils.setResourcesWidth = function() {
 	var head = document.getElementById('head');
 	var resources = document.getElementById('resources');
 	var center = document.getElementById('center');
-	//UIUtils.search = false;
 	center.style.width = head.offsetWidth + 'px';
 	resources.style.width = (center.offsetWidth - (tab.offsetWidth + (UIUtils.isInfoResourcesOpen?UIUtils.infoResourcesWidth:0))) + 'px';
 }
@@ -614,7 +686,7 @@ UIUtils.SlideAdvanced = function(element,container) {
 			            		break;
 			            }
                         $(nodeList.item(i).id+"_toggle").innerHTML = tab;
-                        $(nodeList.item(i).id+"_toggle").style.background="lightBlue";
+                        $(nodeList.item(i).id+"_toggle").style.background="transparent";
                         if(nodeList.item(i).id=="advanced_tag"){UIUtils.deactivateTagMode();}
                     }
                 }
@@ -632,7 +704,7 @@ UIUtils.SlideAdvanced = function(element,container) {
             		break;
             }
             $(element+"_toggle").innerHTML = tab;
-			$(element+"_toggle").style.background="darkBlue";
+			$(element+"_toggle").style.background="lightBlue";
 			if(element=="advanced_tag"){UIUtils.activateTagMode();}
        }
        else {
@@ -640,16 +712,16 @@ UIUtils.SlideAdvanced = function(element,container) {
             aux = element.split("_");
             switch (aux[1].toLowerCase()) {
             	case "tag":
-            		tab = gettext("Advanced Tagging");
+            		tab = gettext('Advanced Tagging');
             		break;
             	case "search":
-            		tab = gettext("Advanced Search");
+            		tab = gettext('Advanced Search');
             		break;
             	default:
             		break;
             }
             $(element+"_toggle").innerHTML = tab;
-            $(element+"_toggle").style.background="lightBlue"; 
+            $(element+"_toggle").style.background="transparent"; 
             if(element=="advanced_tag"){UIUtils.deactivateTagMode();}      
        }
    }
@@ -782,10 +854,10 @@ UIUtils.SlideAdvancedSearchOutOfView = function(element) {
 UIUtils.activateTagMode = function() {
 	UIUtils.tagmode = true;
 	UIUtils.removeAllGlobalTags();
-	document.getElementById("global_tagcloud").innerHTML = '';
 	UIUtils.closeInfoResource();
+	$("global_tagcloud").innerHTML = '';
+	$("my_global_tags").childNodes[0].style.display="none";
 	//document.getElementById("tab_info_resource").style.display='none';
-	
 }
 
 UIUtils.deactivateTagMode = function() {
@@ -809,14 +881,27 @@ UIUtils.clickOnResource = function(id_) {
 }
 
 UIUtils.toggleSelectedResource = function(id_) {
+	UIUtils.removeAllGlobalTags();
 	if(CatalogueFactory.getInstance().isSelectedResource(id_)){
-		UIUtils.deselectResource(id_);
+		var bottom = document.getElementById(id_ + '_bottom');
+	    var content = document.getElementById(id_ + '_content');
+	    bottom.style.backgroundImage = 'url(/ezweb/images/resource-left-bottom.gif)';
+	    content.style.backgroundImage = 'url(/ezweb/images/resource-left-fill.gif)';
 		CatalogueFactory.getInstance().removeSelectedResource(id_);
-	}else{
-		UIUtils.selectResource(id_);
+	} else{
+		var bottom = document.getElementById(id_ + '_bottom');
+	    var content = document.getElementById(id_ + '_content');
+	    bottom.style.backgroundImage = 'url(/ezweb/images/resource-left-bottom-tagmode.png)';
+	    content.style.backgroundImage = 'url(/ezweb/images/resource-left-fill-tagmode.png)';
 		CatalogueFactory.getInstance().addSelectedResource(id_);
 	}
 	CatalogueFactory.getInstance().updateGlobalTags();
+	
+	if (CatalogueFactory.getInstance().getSelectedResources().length == 0){
+		$("my_global_tags").childNodes[0].style.display="none";
+	}else{
+		$("my_global_tags").childNodes[0].style.display="inline";
+	}
 }
 
 UIUtils.mouseOverResource = function(id_) {
@@ -838,11 +923,84 @@ UIUtils.enlargeInput = function(inputText_) {
 	if (inputText_.value.length>5) inputText_.size = inputText_.value.length+1;
 }
 
+UIUtils.getError = function(element, error) {
+	var jsCall = 'javascript:$(\"' + element.id + '\").style.display=\"none\"';
+	element.innerHTML = "<img class='warning' src='/ezweb/images/ico_error_mini.gif'></img>" + error
+		+ "<img class=\"close\" src='/ezweb/images/cancel_gray.png' onMouseOver=\"this.src='/ezweb/images/delete.png';\" onMouseOut=\"this.src='/ezweb/images/cancel_gray.png';\" onClick='" + jsCall + "'></img>";
+	new Effect.Highlight(element,{duration:0.5, startcolor:'#FF0000', endcolor:'#FFFF00', restorecolor:'#FFFF00'});
+}
+
+UIUtils.splitString = function(element){
+	var ret = [''];
+	element = element.replace(/^\s+|\s+$/g, '');
+	ret = element.split(/\s+/);
+	return ret;
+}
+
+UIUtils.filterString = function(element){
+	element = element.replace(/^\s+|\s+$/g, '');
+	element = element.replace(/\s+/g, ' ');
+	return element;	
+} 
+
 // Enables you to react to return being pressed in an input
 UIUtils.onReturn = function(event_, handler_, inputText_) {
   if (!event_) event_ = window.event;
   if (event_ && event_.keyCode && event_.keyCode == 13) {
-	  handler_(inputText_);
+	  //handler_(inputText_);
+	  handler_(inputText_,arguments[3],arguments[4], arguments[5]);
   }
 };
 
+UIUtils.rating = function(num)
+{
+	var star = num.id.replace("_", ''); // Get the selected star
+
+	for(var i=1; i<=5; i++){		
+		if(i<=star){
+			$("_"+i).className = "on";
+			//$("rateStatus").innerHTML = num.title;	
+		}else{
+			$("_"+i).className = "";
+		}
+	}
+}
+
+UIUtils.off_rating = function(num)
+{
+	var vote = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).getUserVote();
+
+	for(var i=1; i<=5; i++){		
+		if(i<=vote){
+			$("_"+i).className = "on";
+			//$("rateStatus").innerHTML = num.title;	
+		}else{
+			$("_"+i).className = "";
+		}
+	}
+}
+
+UIUtils.sendVotes = function(num) {
+	
+	var onError = function(transport) {
+		alert(gettext ("Error POST"));
+				// Process
+	}
+			
+	var loadVotes = function(transport) {
+		var responseJSON = transport.responseText;
+		var jsonVoteData = eval ('(' + responseJSON + ')');
+		resource.setVotes(jsonVoteData);
+	}
+
+	var resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
+	var resourceURI = "/" + resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion();
+	var star = num.id.replace("_", '');
+	var param = {vote: star};
+	if (resource.getUserVote() == 0) {
+		PersistenceEngineFactory.getInstance().send_post(URIs.POST_RESOURCE_VOTES + resourceURI, param, this, loadVotes, onError);
+	} else {
+		PersistenceEngineFactory.getInstance().send_update(URIs.POST_RESOURCE_VOTES + resourceURI, param, this, loadVotes, onError);
+	}
+
+}

@@ -44,8 +44,8 @@ function Tagger(){
 	
 	this.addTag = function(tag_) {
 		if (tag_.length < 3) {
-			document.getElementById("tag_alert").style.display='inline';
-			document.getElementById("tag_alert").innerHTML = gettext ("Tags must have at least three characters.");
+			$("tag_alert").style.display="block";
+			UIUtils.getError($("tag_alert"),gettext ("Tags must have at least three characters."));
 		}
 		else {
 			if (!tags.contains(tag_)) {
@@ -53,7 +53,7 @@ function Tagger(){
 				counter++;
 				tags.addElement(id, tag_);
 				paintTag(id, tag_);
-				document.getElementById("tag_alert").style.display='none';
+				$("tag_alert").style.display='none';
 			}
 		}
 	}
@@ -97,6 +97,7 @@ function Tagger(){
 				var jsonResourceList = eval ('(' + responseJSON + ')');
 				resource.setTags(jsonResourceList.tagList);
 				resource.updateTags();
+				if (UIUtils.tagmode) CatalogueFactory.getInstance().updateGlobalTags();
 			}
 			
 			var elements = tags.getValues();
@@ -131,6 +132,7 @@ this.removeTagUser = function(url, resourceURI,id)
 				var jsonResourceList = eval ('(' + responseJSON + ')');
 				resource.setTags(jsonResourceList.tagList);
 				resource.updateTags();
+				if (UIUtils.tagmode) CatalogueFactory.getInstance().updateGlobalTags();
 			}
 			
 			PersistenceEngineFactory.getInstance().send_delete(url + resourceURI, this, loadTags, onError);
@@ -150,7 +152,7 @@ this.removeTagUser = function(url, resourceURI,id)
 								"</div>" +
 								"<div id='button_enable_" + id_ + "' style='display:none;'>" +
 									"<a href='javascript:UIUtils.removeTag(\"" + id_ + "\");'>" +
-										"<img src='/ezweb/images/cancel.png' alt=''></img>" +
+										"<img src='/ezweb/images/delete.png' alt=''></img>" +
 									"</a>" +
 								"</div>," + 
 							"</div> ";
@@ -159,9 +161,11 @@ this.removeTagUser = function(url, resourceURI,id)
 	}
 	
 	var eraserTag = function(id_) {
-		var parentHTML = document.getElementById("my_tags");
-		var tagHTML = document.getElementById(id_);
-		parentHTML.removeChild(tagHTML);
+		if(!UIUtils.tagmode){
+			var parentHTML = document.getElementById("my_tags");
+			var tagHTML = document.getElementById(id_);
+			parentHTML.removeChild(tagHTML);
+		}
 	}
 	
 	var eraserAll = function() {

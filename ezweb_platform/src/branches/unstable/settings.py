@@ -139,6 +139,7 @@ INSTALLED_APPS = (
     'tag',
     'searching',
     'context',
+    'voting',
 )
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True

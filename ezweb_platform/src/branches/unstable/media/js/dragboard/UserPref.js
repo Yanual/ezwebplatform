@@ -107,6 +107,7 @@ UserPref.prototype.INTEGER = "N"; // "N"umber
 UserPref.prototype.DATE    = "D"; // "D"ate
 UserPref.prototype.LIST    = "L"; // "L"ist
 UserPref.prototype.BOOLEAN = "B"; // "B"oolean
+UserPref.prototype.PASSWORD = "P"; // "P"assword
 
 /**
  * extends UserPref
@@ -253,5 +254,29 @@ BoolUserPref.prototype.makeInterface = function (varManager, IGadgetId) {
 
 BoolUserPref.prototype.getValueFromInterface = function(element) {
 	return element.checked ? "true" : "false";
+}
+
+/**
+ * extends UserPref
+ * @autor fabio
+ */
+function PasswordUserPref(name_, label_, desc_, defaultValue_) {
+	UserPref.prototype.UserPref.call(this, name_, label_, desc_, defaultValue_);
+}
+
+PasswordUserPref.prototype = new UserPref();
+
+PasswordUserPref.prototype.makeInterface = function (IGadgetId) {
+	var element;
+
+	element = document.createElement("input");
+	element.setAttribute("name", this.varName);
+	element.setAttribute("type", "password");
+
+	var currentValue = this.getCurrentValue(IGadgetId);
+	if (currentValue != null)
+		element.setAttribute("value", currentValue);
+
+	return element;
 }
 

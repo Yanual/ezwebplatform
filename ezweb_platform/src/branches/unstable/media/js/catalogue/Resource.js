@@ -23,12 +23,17 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 	this.getEvents = function() { return state.getEvents(); }
 	this.setEvents = function(events_) { state.setEvents(events_); }
 	this.getTagger = function() { return tagger; }
+	this.setVotes = function(voteData_) { 
+		state.setVotes(voteData_);
+		_rateResource();
+	}
+	this.getVotes = function() {return state.getVotes();}
+	this.getUserVote = function() {return state.getUserVote();}
+	this.getPopularity = function() {return state.getPopularity();}
 	
 	this.paint = function(){
 		var newResource = document.createElement("div");
 		newResource.setAttribute('id', id);
-		
-		//content =				"<div class='resource' onMouseOver='UIUtils.selectResource(\"" + id + "\");UIUtils.show(\"" + id + "_toolbar\");' onMouseOut='UIUtils.deselectResource(\"" + id + "\");UIUtils.hidde(\"" + id + "_toolbar\");'>" +
 		content =				"<div class='resource' onMouseOver='UIUtils.mouseOverResource(\""+id+"\");' onMouseOut='UIUtils.mouseOutResource(\""+id+"\");'>" +
 									"<div class='top'></div>" +
 									"<div class='toolbar'>" +
@@ -80,40 +85,60 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 									"<div class='title'><span class='name'>" + state.getName() + "</span>" +
 									"<span class='version'>" + state.getVersion() + "</span></div>" +
 									"<div class='vendor'>" + state.getVendor() + "</div>" +
+									"<div class='rating'>"+
+									"<span id='rateStatus'>" + gettext ('Vote Me...') + " </span>"+
+									"<span id='ratingSaved'>" + gettext ('Vote Saved') + " </span>"+
+									"<span id='rateMe'>"+
+									"<a id='_1' title='" + gettext ('Ehh...') + "' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
+									"<a id='_2' title='" + gettext ('Not Bad') + "' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
+									"<a id='_3' title='" + gettext ('Pretty Good') + "' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
+									"<a id='_4' title='" + gettext ('Out Standing') + "' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
+									"<a id='_5' title='" + gettext ('Awesome!') + "' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
+									"</span>"+
+									"<span id='rateResultStatus'>" + gettext ('Vote Result:') + " </span>"+
+									"<span id='rateResult'>"+
+									"<a id='res_1' title='" + gettext ('Ehh...') + "'></a>"+
+									"<a id='res_2' title='" + gettext ('Not Bad') + "'></a>"+
+									"<a id='res_3' title='" + gettext ('Pretty Good') + "'></a>"+
+									"<a id='res_4' title='" + gettext ('Out Standing') + "'></a>"+
+									"<a id='res_5' title='" + gettext ('Awesome!') + "'></a>"+
+									"</span>"+
+									"<span id='votes'></span>"+
+									"</div>" +
 									"<div class='image'><img src='" + state.getUriImage() + "' alt='" + state.getName()+ "&nbsp;" + state.getVersion() + "'/></div>" +
-									"<div class='description'>" + gettext ('Description') + ":<br/><div class='text'>" + state.getDescription() + "</div></div><br/>" +
-									"<div class='connect'>" + gettext ('Gadget connectivity') + ":</div><br/>" +
-									"<div class='Events'>" + gettext ('Events: ') + _events()+ "</div>" +
-									"<div class='Slots'>" + gettext ('Slots: ') +_slots()+ "</div>" +
-									"<div class='tagcloud'>" + gettext ('Tagcloud') + ":<br/>" +
+									"<div class='description'>" + gettext ('Description') + ":<div class='text'>" + state.getDescription() + "</div></div>" +
+									"<div class='connect'>" + gettext ('Gadget connectivity') + ":<div class='text'>" +
+									"<div class='events'>" + gettext ('Events') + ": " + _events()+ "</div>" +
+									"<div class='slots'>" + gettext ('Slots') + ": " + _slots()+ "</div></div></div>" +
+									"<div class='tagcloud'>" + gettext ('Tagcloud') + ":" +
 									"<div id='view_tags_links' class='link'>"+
-									"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('View my tags') + "</a>" +
-									"&nbsp&nbsp&nbsp <a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('View others tags') + "</a>" +
+									"<span>" + gettext ('All tags') + "</span>" +
+									"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('My tags') + "</a>" +
+									"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('Others tags') + "</a>" +
 									"</div>" +
 									"<div id='" + id + "_tagcloud' class='tags'>" + _tagsToTagcloud('description') + "</div></div>" +
 									"<div id='add_tags_panel' class='new_tags' style='display:none;'>" +
 										"<div class='title'>" + gettext ('New tags') + ":</div>" +
 										"<div id='my_tags' class='my_tags'>" +
-											"<div id='new_tag_text' class='new_tag_text'><input id='new_tag_text_input' type='text' size=5 maxlength=20 onkeyup=\"UIUtils.enlargeInput(this);\" onkeypress=\"UIUtils.onReturn(event,UIUtils.addTag,this);\"/></div>" +
+											"<div id='new_tag_text' class='new_tag_text'><input id='new_tag_text_input' type='text' maxlength=20 onkeyup=\"UIUtils.enlargeInput(this);\" onkeypress=\"UIUtils.onReturn(event,UIUtils.addTag,this);\"/></div>" +
 										"</div>" +
-										"<div id=\"tag_alert\" class=\"tag_alert\"></div>" +
+										"<div id=\"tag_alert\" class=\"message_error\"></div>" +
 										"<div class='buttons'>" +
-											"<button onClick='javascript:UIUtils.sendTags();'>" + gettext ('Tag') + "</button>" +
-											"<button onClick='javascript:UIUtils.addTag(document.getElementById(\"new_tag_text_input\"));'>" + gettext ('Save & New') + "</button>" +
-											"<button onClick='javascript:UIUtils.toggle_elements([\"add_tags_panel\",\"add_tags_link\",\"access_wiki_link\",\"access_template_link\",\"update_code_link\",\"delete_gadget_link\"]);UIUtils.show(\"add_gadget_button\");UIUtils.removeAllTags();'>" + gettext ('Cancel') + "</button>" +
+											"<a class='submit_link' href=\"#\" onClick='javascript:UIUtils.sendTags();'>" + gettext ('Tag') + "</a>" +
+											"<a class='submit_link' href=\"#\" onClick='javascript:UIUtils.addTag(document.getElementById(\"new_tag_text_input\"));'>" + gettext ('Save & New') + "</a>" +
+											"<a class='submit_link' href=\"#\" onClick='javascript:UIUtils.removeAllTags();'>" + gettext ('Delete all') + "</a>" +
 										"</div>" +
-									"</div>" +
-									
-"<div id='add_tags_link' class='link'><a href='javascript:UIUtils.toggle_elements([\"add_tags_link\",\"add_tags_panel\",\"access_wiki_link\",\"access_template_link\",\"update_code_link\",\"delete_gadget_link\",\"add_gadget_button\"]);document.getElementById(\"new_tag_text_input\").focus();'>" + gettext ('Tag the resource') + "</a></div>" +
-"<div id='access_wiki_link' class='link'><a href='" + state.getUriWiki() + "' target='_blank'>" + gettext ('Access to the Wiki') + "</a></div>" +
-
-"<div id='access_template_link' class='link'><a href='" + state.getUriTemplate() + "' target='_blank'>" + gettext ('Access to the Template') + "</a></div>" + 
-
-"<div id='update_code_link' class='link'><a href='javascript:UIUtils.updateGadgetXHTML();'>" + gettext ('Update gadget code') + "</a></div>" + 
-
-"<div id='delete_gadget_link' class='link'>" + _deleteGadget() + "</div>" +
-
-"</div><button id='add_gadget_button' onclick='CatalogueFactory.getInstance().addResourceToShowCase(UIUtils.getSelectedResource());' style='align:center;'>" + gettext ('Add Instance') + "</button>";
+									"</div>" +									
+									"<div id='add_tags_link' class='link' align='right'><a class='submit_link' href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('Tag the resource') + "</a></div>" +
+									"<div id='access_wiki_link' class='link'><a class='submit_link' href='" + state.getUriWiki() + "' target='_blank'>" + gettext ('Access to the Wiki') + "</a></div>" +
+									"<div id='access_template_link' class='link'><a class='submit_link' href='" + state.getUriTemplate() + "' target='_blank'>" + gettext ('Access to the Template') + "</a></div>" + 
+									"<div id='update_code_link' class='link'><a class='submit_link' href='javascript:UIUtils.updateGadgetXHTML();'>" + gettext ('Update gadget code') + "</a></div>" + 
+									"<div id='delete_gadget_link' class='link'>" + _deleteGadget() + "</div>" +
+								"</div>" +
+								"<button id='add_gadget_button' class='add_gadget_button' onclick='CatalogueFactory.getInstance().addResourceToShowCase(UIUtils.getSelectedResource());' style='align:center;'>" + gettext ('Add Instance') + "</button>"+
+								"<div id='content_bottom_margin'></div>"+
+								"<div class='bottom'></div>";
+		_rateResource();
 	}
 	
 
@@ -127,7 +152,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 		if (id == UIUtils.selectedResource || id == UIUtils.balloonResource) {
 			if (document.getElementById(id + "_tagcloud") != null)
 			{
-				document.getElementById(id + "_tagcloud").innerHTML = _tagsToTagcloud('description');
+				document.getElementById(id + "_tagcloud").innerHTML = _tagsToTagcloud('description',{tags:'mytags'});
 			}
 		}
 	}
@@ -148,33 +173,39 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 	}
 
 	this.changeTagcloud = function(type){
-		var option = {}
+		var option = {};
 		var viewTagsHTML = "";
-		if (type=='mytags')
-		{
-			option = {tags: type}
-			viewTagsHTML = "<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"all\");'>" + gettext ('View all tags') + "</a>" +
-						"&nbsp&nbsp&nbsp <a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('View others tags') + "</a>";
-			document.getElementById('view_tags_links').innerHTML = viewTagsHTML;
+		option = {tags: type};
+		switch(type){
+			case "mytags":
+				viewTagsHTML =	"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"all\");'>" + gettext ('All tags') + "</a>" +
+								"<span>" + gettext ('My tags') + "</span>" +
+								"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('Others tags') + "</a>";
+				UIUtils.hidde("add_tags_link");
+				UIUtils.show("add_tags_panel");
+				document.getElementById("new_tag_text_input").value="";
+				document.getElementById("new_tag_text_input").size=5;
+				document.getElementById("new_tag_text_input").focus();
+				break;
+			case "others":
+				viewTagsHTML =	"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"all\");'>" + gettext ('All tags') + "</a>" +
+								"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('My tags') + "</a>" +
+								"<span>" + gettext ('Others tags') + "</span>";		
+				UIUtils.show("add_tags_link");
+				UIUtils.hidde("add_tags_panel");
+				break;
+			case "all":
+			default:
+				viewTagsHTML =	"<span>" + gettext ('All tags') + "</span>" +
+								"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('My tags') + "</a>" +
+								"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('Others tags') + "</a>";
+				UIUtils.show("add_tags_link");
+				UIUtils.hidde("add_tags_panel");
 		}
-		else {
-			if (type=='others') {
-				option = {tags: type}
-				viewTagsHTML = "<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"all\");'>" + gettext ('View all tags') + "</a>" +
-						"&nbsp&nbsp&nbsp <a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('View my tags') + "</a>";
-				document.getElementById('view_tags_links').innerHTML = viewTagsHTML;
-			}
-			else {
-				option = {tags: type}
-				viewTagsHTML = "<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('View my tags') + "</a>" +
-						"&nbsp&nbsp&nbsp <a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('View others tags') + "</a>";
-				document.getElementById('view_tags_links').innerHTML = viewTagsHTML;
-			}
-		}
-		
-		if (document.getElementById(id + '_tagcloud'))
+		$("view_tags_links").innerHTML = viewTagsHTML;
+		if ($(id + '_tagcloud'))
 		{
-			document.getElementById(id + '_tagcloud').innerHTML= _tagsToTagcloud('description',option);
+			$(id + '_tagcloud').innerHTML= _tagsToTagcloud('description',option);
 		}
 	}
 
@@ -186,7 +217,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 		for (var i=0; i<list1_.length; i++) {
 			if (!_containsTag(list1_[i], list2_)) return list1_[i];
 		}
-		return list_[0];
+		return;
 	}
 	
 	var _containsTag = function(element_, list_)
@@ -203,15 +234,20 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 		var tagsHTML = '';
 		var tagsAux = state.getTags();
 		var moreImportantTags = [];
+		var firstTag;
 		
 		for (var i=0; i<((tagsNumber_<tagsAux.length)?tagsNumber_:tagsAux.length); i++)
 		{
-			moreImportantTags[i] = _getFirstTagNonRepeat(tagsAux, moreImportantTags);
-			for (var j=0; j<tagsAux.length; j++)
-			{
-				if ((!_containsTag(tagsAux[j], moreImportantTags)) && (moreImportantTags[i].compareTo(tagsAux[j]) < 0)) {
-					moreImportantTags[i] = tagsAux[j];
-				}
+			if (firstTag =_getFirstTagNonRepeat(tagsAux, moreImportantTags)){
+				moreImportantTags[i] = firstTag;
+				for (var j=0; j<tagsAux.length; j++)
+			    {
+				    if ((!_containsTag(tagsAux[j], moreImportantTags)) && (moreImportantTags[i].compareTo(tagsAux[j]) < 0)) {
+					    moreImportantTags[i] = tagsAux[j];
+				    }
+			    }
+			} else {
+				break;
 			}
 		}
 		
@@ -241,9 +277,9 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 		var addedBy = state.getAddedBy();
 		
 		if (addedBy == 'Yes'){
-		
-	     deleteHTML += ("<a href='javascript:UIUtils.deleteGadget(\"" + id + "\")'>" + gettext ('Delete gadget') + "</a>");
-    }
+	    	deleteHTML += ("<a class='submit_link' href='javascript:UIUtils.deleteGadget(\"" + id + "\")'>" + gettext ('Delete gadget') + "</a>");
+    	}
+    	
 		return deleteHTML;
 	}
 	
@@ -263,27 +299,46 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 
 	var _tagsToTagcloud = function(loc){
 		var tagsHTML = '';
-		var URL = '';
 		var tagsAux = state.getTags();
 		var option = arguments[1] || {tags:'all'};
-
-		for (var i=0; i<tagsAux.length; i++)
-		{
-			var version = state.getVersion();
-			var added = tagsAux[i].getAdded_by();
 			
-			if(tagsAux[i].getAdded_by() == 'Yes' && (option.tags=='all' || option.tags=='mytags')){  
-
-				var jsCall = 'javascript:UIUtils.removeTagUser("' + tagsAux[i].getValue() + '","'+id+'");';
-				tagsHTML += ("<a title='" + gettext ('Delete tag') + "' href='" + jsCall + "' ><img id='"+id+"_deleteIcon_"+i+"_"+loc+"' onMouseOver=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/delete.png';\" onMouseOut=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/cancel_gray.png';\" src='/ezweb/images/cancel_gray.png' border=0 name=op1></a><span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML(id) + ((i<(tagsAux.length-1))?",":"") + "</span>");
-			}
-			else{
-				if (tagsAux[i].getAdded_by() == 'No' && (option.tags=='all' || option.tags=='others'))
-				{
-					tagsHTML += ("<span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML(id) + ((i<(tagsAux.length-1))?",":"") + "</span>");		  
+		switch(option.tags) {
+			case 'all':
+				for (var i=0; i<tagsAux.length; i++) {
+					tagsHTML += ("<span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML() + ((i<(tagsAux.length-1))?",":"") + "</span>");
 				}
-			}
+				break;
+			case 'mytags':
+				var tags = [];
+				var j = 0;
+				for (var i=0; i<tagsAux.length; i++) {
+					if (tagsAux[i].getAdded_by() == 'Yes')
+					{
+						tags[j] = tagsAux[i];
+						j++;
+					}
+				}
+				for (var i=0; i<tags.length; i++) {
+					var jsCall = 'javascript:UIUtils.removeTagUser("' + tags[i].getValue() + '","'+id+'");';
+					tagsHTML += ("<span class='multiple_size_tag'>" + tags[i].tagToTypedHTML(option) + "</span><a title='" + gettext ('Delete tag') + "' href='" + jsCall + "'><img id='"+id+"_deleteIcon_"+i+"_"+loc+"' onMouseOver=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/delete.png';\" onMouseOut=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/cancel_gray.png';\" src='/ezweb/images/cancel_gray.png' border=0 name=op1></a>"+((i<(tags.length-1))?", ":""));
+				}
+				break;
+			case 'others':
+			default:
+				var tags = [];
+				var j = 0;
+				for (var i=0; i<tagsAux.length; i++) {
+					if (tagsAux[i].getAdded_by() == 'No' || tagsAux[i].getAppearances()>1)
+					{
+						tags[j] = tagsAux[i];
+						j++;
+					}
+				}
+				for (var i=0; i<tags.length; i++) {
+				    tagsHTML += ("<span class='multiple_size_tag'>" + tags[i].tagToTypedHTML() + ((i<(tags.length-1))?",":"") + "</span>");
+				}
 		}
+			
 		return tagsHTML;
 	}
 
@@ -322,6 +377,39 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 		_createTagcloudBalloon();
 		if (visible && state.getTags().length!=0) { tagcloudBalloon.show(); }
 	}
+
+	var _rateResource = function()
+	{
+		var vote = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).getUserVote();
+		var popularity = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).getPopularity();
+		if (vote!=0)
+		{
+			document.getElementById("rateStatus").innerHTML = document.getElementById("ratingSaved").innerHTML;
+			for (var i = 1; i<=vote; i++)
+			{
+				$("_"+i).className = "on";
+			}
+		}
+		if (popularity!=null)
+		{
+			var i = 1
+			for (i; i<=popularity; i++)
+			{
+				$("res_"+i).className = "on";
+			}
+			if ((popularity%1)!=0)
+			{
+				$("res_"+i).className = "md";
+				i++;
+			}
+			for (i; i<=5; i++)
+			{
+				$("res_"+i).className = "";
+			}
+		}
+		$("votes").innerHTML = state.getVotes()+ " " + gettext ('votes');
+	}
+
 
 	var _createResource = function(urlTemplate_) {
 		
@@ -391,6 +479,9 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 	var tags = [];
 	var slots = [];
 	var events = [];
+	var votes = null;
+	var popularity = null;
+	var userVote = null;
 	
 	// ******************
 	//  PUBLIC FUNCTIONS
@@ -430,10 +521,20 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 			events.push(eventsJSON_[i].friendcode);
 		}
 	}
+
+	this.setVotes = function(voteDataJSON_) {
+		votes = voteDataJSON_.voteData[0].votes_number;
+		userVote = voteDataJSON_.voteData[0].user_vote;
+		popularity = voteDataJSON_.voteData[0].popularity;
+	}
+
 	
 	this.getTags = function() { return tags; }
 	this.getSlots = function() { return slots; }
 	this.getEvents = function() { return events; }
+	this.getVotes = function() {return votes; }
+	this.getUserVote = function() {return userVote; }
+	this.getPopularity = function() {return popularity; }
 	
 	// Parsing JSON Resource
 	// Constructing the structure
@@ -449,7 +550,8 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 	this.setEvents(resourceJSON_.events);
 	this.setSlots(resourceJSON_.slots);
 	this.setTags(resourceJSON_.tags);
-	
-	
+	votes = resourceJSON_.votes[0].votes_number;
+	userVote = resourceJSON_.votes[0].user_vote;
+	popularity = resourceJSON_.votes[0].popularity;	
 
 }

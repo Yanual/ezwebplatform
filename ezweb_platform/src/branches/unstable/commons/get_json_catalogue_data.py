@@ -35,22 +35,50 @@
 # 
 #   http://morfeo-project.org/
 #
+from django.shortcuts import get_object_or_404
 
-from resource.models import GadgetWiring
+from resource.models import GadgetWiring, GadgetResource
 from tag.models import UserTag
+from voting.models import UserVote
+
+def get_vote_data(gadget, user):
+    vote_data = {}
+    try:
+        vote_value = get_object_or_404(UserVote,idResource=gadget.id,idUser=user.id).vote
+    except:
+        vote_value = 0
+    votes_number =  UserVote.objects.filter(idResource=gadget).count()
+    popularity_value = gadget.popularity
+    vote_data['user_vote']= vote_value
+    vote_data['votes_number']= votes_number
+    vote_data['popularity']= popularity_value
+    vote = []
+    vote.append(vote_data)
+
+    return vote
 
 def get_tag_data (gadget_id, user_id):
     all_tags = []
-    tags = UserTag.objects.filter(idResource=gadget_id)    
+    tags = UserTag.objects.filter(idResource=gadget_id).order_by('tag')
     for t in tags:
         tag_data = {}
+	flag= 'Yes'
         tag_data['value'] = t.tag
+	tag_data['appearances'] = tags.filter(tag=t.tag).count()
 	if t.idUser_id == user_id:
 	    tag_data['added_by'] = 'Yes'
+	    for e in all_tags:
+	        if t.tag==e['value']:
+	            all_tags.remove(e)
+    	    all_tags.append(tag_data)
 	else:
 	    tag_data['added_by'] = 'No'
-        all_tags.append(tag_data)
-    
+	    for e in all_tags:
+	        if t.tag==e['value']:
+	            flag= 'No'
+            if flag=='Yes':
+	        all_tags.append(tag_data)
+
     return all_tags
 
 def get_event_data (gadget_id):
@@ -97,5 +125,8 @@ def get_gadgetresource_data(data, user):
     
     data_slots = get_slot_data(gadget_id=data['pk'])
     data_ret['slots'] = [d for d in data_slots]
+    
+    resource = get_object_or_404(GadgetResource, id=data['pk'])
+    data_ret['votes'] = get_vote_data(gadget=resource,user=user)
         
     return data_ret

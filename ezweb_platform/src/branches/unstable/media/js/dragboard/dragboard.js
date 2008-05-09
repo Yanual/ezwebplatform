@@ -1345,7 +1345,7 @@ IGadget.prototype.saveConfig = function() {
 IGadget.prototype.save = function() {
 	function onSuccess(transport) {
 		var igadgetInfo = eval ('(' + transport.responseText + ')');
-		this.id = igadgetInfo['igadget']['id'];
+		this.id = igadgetInfo['id'];
 		this.dragboard.addIGadget(this, igadgetInfo);
 	}
 

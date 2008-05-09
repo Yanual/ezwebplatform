@@ -60,7 +60,7 @@ from commons.utils import get_xml_error
 
 class GadgetsCollection(Resource):
 
-    @transaction.commit_manually
+    #@transaction.commit_manually
     def create(self,request, user_name):
 	
         user = user_authentication(request, user_name)
@@ -72,7 +72,7 @@ class GadgetsCollection(Resource):
     	    templateParser = TemplateParser(template_uri, user)
 
             templateParser.parse()
-    	    transaction.commit()
+    	    #transaction.commit()
         except IntegrityError, e:
             # Gadget already exists. Rollback transaction
             transaction.rollback()

@@ -37,20 +37,13 @@
 #
 
 from django.conf.urls.defaults import *
-from searching.views import *
+from voting.views import *
 
 from django_restapi.model_resource import Collection
 from django_restapi.responder import *
 
-urlpatterns = patterns('searching.views',
-    
-    # Search Gadgets
-    (r'^generic/(?P<value1>[\@_\%_\._\!_\s_\-_\|_\&_\/_\:_\(_\)_\w]+)/(?P<value2>[\@_\%_\._\!_\s_\-_\|_\&_\/_\:_\(_\)_\w]+)/(?P<value3>[\@_\%_\._\!_\s_\-_\|_\&_\/_\:_\(_\)_\w]+)/(?P<pag>\d+)/(?P<offset>\d+)$', 
-        GadgetsCollectionByGenericSearch(permitted_methods=('GET', ))),
-    (r'^generic/(?P<value1>[\@_\%_\._\!_\s_\-_\|_\&_\/_\:_\(_\)_\w]+)/(?P<value2>[\@_\%_\._\!_\s_\-_\|_\&_\/_\:_\(_\)_\w]+)/(?P<value3>[\@_\%_\._\!_\s_\-_\|_\&_\/_\:_\(_\)_\w]+)$', 
-        GadgetsCollectionByGenericSearch(permitted_methods=('GET', ))),
-    (r'^(?P<criteria>\w+)/(?P<value>[\@_\%_\._\-_\!_\s_\|_\&_\(_\)_\w]+)$', 
-        GadgetsCollectionByCriteria(permitted_methods=('GET', ))),
-    (r'^(?P<criteria>\w+)/(?P<value>[\@_\%_\._\-_\!_\s_\|_\&_\(_\)_\w]+)/(?P<pag>\d+)/(?P<offset>\d+)$', 
-        GadgetsCollectionByCriteria(permitted_methods=('GET', ))),    
+urlpatterns = patterns('voting.views',
+    (r'^(?P<vendor>[^/\t\n\r\f\v]+)/(?P<name>[^/\t\n\r\f\v]+)/(?P<version>[\._-ÑñáéíóúÁÉÍÓÚ\w]+)$',
+        GadgetVotesCollection(permitted_methods=('GET','POST','PUT',))),    
+
  )

@@ -1,12 +1,12 @@
-ï»¿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 # MORFEO Project 
 # http://morfeo-project.org 
 # 
 # Component: EzWeb
 # 
-# (C) Copyright 2004 TelefÃ³nica InvestigaciÃ³n y Desarrollo 
-#     S.A.Unipersonal (TelefÃ³nica I+D) 
+# (C) Copyright 2004 Telefónica Investigación y Desarrollo 
+#     S.A.Unipersonal (Telefónica I+D) 
 # 
 # Info about members and contributors of the MORFEO project 
 # is available at: 
@@ -36,21 +36,35 @@
 #   http://morfeo-project.org/
 #
 
-from django.conf.urls.defaults import *
-from searching.views import *
+from django.contrib.auth.models import User
+from django.db import models
 
-from django_restapi.model_resource import Collection
-from django_restapi.responder import *
+from resource.models import GadgetResource
 
-urlpatterns = patterns('searching.views',
-    
-    # Search Gadgets
-    (r'^generic/(?P<value1>[\@_\%_\._\!_\s_\-_\|_\&_\/_\:_\(_\)_\w]+)/(?P<value2>[\@_\%_\._\!_\s_\-_\|_\&_\/_\:_\(_\)_\w]+)/(?P<value3>[\@_\%_\._\!_\s_\-_\|_\&_\/_\:_\(_\)_\w]+)/(?P<pag>\d+)/(?P<offset>\d+)$', 
-        GadgetsCollectionByGenericSearch(permitted_methods=('GET', ))),
-    (r'^generic/(?P<value1>[\@_\%_\._\!_\s_\-_\|_\&_\/_\:_\(_\)_\w]+)/(?P<value2>[\@_\%_\._\!_\s_\-_\|_\&_\/_\:_\(_\)_\w]+)/(?P<value3>[\@_\%_\._\!_\s_\-_\|_\&_\/_\:_\(_\)_\w]+)$', 
-        GadgetsCollectionByGenericSearch(permitted_methods=('GET', ))),
-    (r'^(?P<criteria>\w+)/(?P<value>[\@_\%_\._\-_\!_\s_\|_\&_\(_\)_\w]+)$', 
-        GadgetsCollectionByCriteria(permitted_methods=('GET', ))),
-    (r'^(?P<criteria>\w+)/(?P<value>[\@_\%_\._\-_\!_\s_\|_\&_\(_\)_\w]+)/(?P<pag>\d+)/(?P<offset>\d+)$', 
-        GadgetsCollectionByCriteria(permitted_methods=('GET', ))),    
- )
+VOTES = (
+    (u'0', 0),
+    (u'1', 1),
+    (u'1', 2),
+    (u'1', 3),
+    (u'1', 4),
+    (u'1', 5),
+)
+
+class UserVote(models.Model):
+    """
+    A vote on an GadgetResource by a User.
+    """
+    idUser = models.ForeignKey(User)
+    idResource = models.ForeignKey(GadgetResource)
+    vote = models.SmallIntegerField(choices=VOTES)
+
+    class Meta:
+        # One vote per user per object
+        unique_together = (('idUser', 'idResource'),)
+
+    class Admin:
+        pass
+
+    def __unicode__(self):
+        return u'%s: %s on %s' % (self.idUser, self.vote, self.idResource)
+

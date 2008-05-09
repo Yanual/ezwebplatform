@@ -36,13 +36,12 @@
 #   http://morfeo-project.org/
 #
 
-
 from urllib2 import *
 import httplib
 import urlparse
 from django_restapi.resource import Resource
 from django_restapi.responder import *
-from proxy.utils import is_valid_header
+from proxy.utils import *
 
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import string_concat
@@ -51,6 +50,12 @@ from django.http import Http404, HttpResponse, HttpResponseServerError
 from django.conf import settings
 
 import string
+
+def getConnection(protocol, proxy, host):
+    if (proxy != ""):
+        return httplib.HTTPConnection(proxy)
+    else:
+        return httplib.HTTPConnection(host)
 
 class Proxy(Resource):
     def create(self,request):
@@ -68,15 +73,16 @@ class Proxy(Resource):
 
         # Params
         if request.POST.has_key('params'):
-            params = request.POST['params']
+            params = encode_query(request.POST['params'])
 	else:
 	    params = ''
 
         # HTTP call
         try:
             # Request creation
-            url = unquote(url)
             proto, host, cgi, param, query = urlparse.urlparse(url)[:5]
+            
+	    query = encode_query(query)
             
             # Proxy support
             proxy = ""
@@ -84,17 +90,29 @@ class Proxy(Resource):
                 proxy = settings.PROXY_SERVER
             except Exception:
                 proxy = ""
-
-            if (proxy != ""):
-                conn = httplib.HTTPConnection(proxy)
-            else:
-                conn = httplib.HTTPConnection(host)
                 
-            # Add original request Headers to the request
+            conn = getConnection(proto, proxy, host)
+                
+            # Adds original request Headers to the request (and modifies Content-Type for Servlets)
             headers = {}
+            has_content_type = False
+            http_content_type_value = ''
             for header in request.META.items():
+                if (header[0].lower() == 'content-type'):
+                    if (header[1] != None and header[1].lower() != 'none'):
+                        has_content_type = True
+                if (header[0].lower() == 'http_content_type'):
+                    http_content_type_value = header[1]
                 headers[header[0]] = header[1]
+                    
                 
+            # Add Content-Type (Servlets bug)
+            if ((method == 'POST' or method == 'PUT') and not has_content_type):
+                if (http_content_type_value != ''):
+                    headers['Content-Type'] = http_content_type_value
+                else:
+                    headers['Content-Type'] = 'application/x-www-form-urlencoded'
+            
             # The same with cookies
             cookies = ''
             for cookie in request.COOKIES.items():
@@ -113,10 +131,20 @@ class Proxy(Resource):
             res = conn.getresponse()
 
 	    # Redirect resolution
+	    MAX_REDIRECTS = 50
+	    index_redirects = 0
+
             while (res.status >= 300) and (res.status < 400):
-                url = unquote(res.getheader('Location'))
+		
+		if (index_redirects >= MAX_REDIRECTS):
+		    return HttpResponse('<error>Redirect limit has been exceeded</error>')
+		index_redirects = index_redirects + 1
+
+                url = res.getheader('Location')
                 proto, host, cgi, param, auxquery = urlparse.urlparse(url)[:5]
-                conn = httplib.HTTPConnection(host)
+                conn = getConnection(proto, proxy, host)
+
+                auxquery = encode_query(auxquery)
 
                 if query != '':
                     query = query + "&" + auxquery
@@ -139,7 +167,7 @@ class Proxy(Resource):
             else:
                 response = HttpResponse (res.read())
 
-	    # Set status code to the response
+            # Set status code to the response
             response.status_code = res.status
 
             # Add all the headers recieved to the response
