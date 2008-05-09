@@ -50,7 +50,7 @@ function ContextManager (workspace_, workSpaceInfo_, contextInfo_) {
 			cVar.setVarManager(this._workspace.getVarManager());
 			if (this._name2Concept[cVar.getConceptName()] == null){
 				var msg = interpolate(gettext("Context variable") + " [" + cVar.getName() + "] " + gettext("without related concept. Its value cannot be established: %(errorMsg)s."), {errorMsg: transport.status}, true);
-				OpManagerFactory.getInstance().log(msg);
+				LogManagerFactory.getInstance().log(msg);
 				return;
 			}
 			var relatedConcept = this._concepts[this._name2Concept[cVar.getConceptName()]];
@@ -79,7 +79,7 @@ function ContextManager (workspace_, workSpaceInfo_, contextInfo_) {
 				
 				if (this._name2Concept[cname] != null){
 					var msg = interpolate(gettext("WARNING: concept name") + " '" + cname + "' " + gettext("is already related to") + " '" + this._name2Concept[cname] + "'. " + gettext("New related concept is") + " '" + curConcept.concept + "' %(errorMsg)s.", {errorMsg: transport.status}, true);
-					OpManagerFactory.getInstance().log(msg);
+					LogManagerFactory.getInstance().log(msg);
 				}
 				this._name2Concept[cname] = curConcept.concept;	
 			}	

@@ -52,7 +52,8 @@ var CatalogueFactory  = function () {
 		var resources = new HashTable();
 		var selectedResources = [];
 		var globalTags = [];
-		var catalogueElement = $('catalogue');
+		
+		this.catalogueElement = $('showcase_container');
 		    
 		
 		// ********************
@@ -299,6 +300,18 @@ var CatalogueFactory  = function () {
 			return globalTags;
 		}
 		
+		this.repaintCatalogue = function (url) {
+	 	    this.emptyResourceList();
+		    this.loadCatalogue(url);
+		}
+		
+		this.show = function(){
+			LayoutManagerFactory.getInstance().showCatalogue();
+		}
+		
+		this.hide = function(){
+			LayoutManagerFactory.getInstance().hideView(this.catalogueElement);
+		}
 		
 		this.loadCatalogue = function(urlCatalogue_) {
 		
@@ -321,7 +334,7 @@ var CatalogueFactory  = function () {
 				}
 
 				msg = interpolate(gettext("Error retrieving catalogue data: %(errorMsg)s."), {errorMsg: msg}, true);
-				OpManagerFactory.getInstance().log(msg);
+				LogManagerFactory.getInstance().log();(msg);
 
 			}
 			

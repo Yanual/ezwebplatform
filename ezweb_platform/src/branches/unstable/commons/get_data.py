@@ -225,6 +225,7 @@ def get_workspace_variable_data(data):
     
     data_ret['aspect'] = data_fields['aspect']
     data_ret['value'] = abstract_var.value
+    data_ret['name'] = abstract_var.name
     data_ret['type'] = data_fields['type']
     
     if (data_ret['aspect'] == 'TAB'):

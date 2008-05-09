@@ -60,7 +60,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 	this.workSpaceId = workSpace.workSpaceState.id;
 
 	// ***********************
-	// PRIVATED FUNCTIONS 
+	// PRIVATE FUNCTIONS 
 	// ***********************
 	Dragboard.prototype.paint = function () {
 		var iGadget, key, position, iGadgetsToReinsert = new Array(); // oldWidth, oldHeight
@@ -465,7 +465,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 			}
 
 			msg = interpolate(gettext("Error committing dragboard changes to persistence: %(errorMsg)s."), {errorMsg: msg}, true);
-			OpManagerFactory.getInstance().log(msg);
+			LogManagerFactory.getInstance().log(msg);
 		}
 
 		// TODO only send changes
@@ -499,6 +499,10 @@ function Dragboard(tab, workSpace, dragboardElement) {
 	
 	Dragboard.prototype.recomputeSize = function() {
 	    this.dragboardStyle.recomputeSize();
+	}
+	
+	Dragboard.prototype.hide = function () {
+		LayoutManagerFactory.getInstance().hideView(this.dragboardElement);
 	}
 
 	Dragboard.prototype.parseTab = function(tabInfo) {
@@ -624,7 +628,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 
 	Dragboard.prototype.initializeMove = function (iGadgetId) {
 		if (this.gadgetToMove != null) {
-			OpManagerFactory.getInstance().log(gettext("There was a pending move that was cancelled because initializedMove function was called before it was finished."), Constants.WARN_MSG);
+			LogManagerFactory.getInstance().log(gettext("There was a pending move that was cancelled because initializedMove function was called before it was finished."), Constants.WARN_MSG);
 			this.cancelMove();
 		}
 
@@ -658,7 +662,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 
 	Dragboard.prototype.moveTemporally = function (x, y) {
 		if (this.dragboardCursor == null) {
-			OpManagerFactory.getInstance().log(gettext("Dragboard: You must call initializeMove function before calling to this function (moveTemporally)."), Constants.WARN_MSG);
+			LogManagerFactory.getInstance().log(gettext("Dragboard: You must call initializeMove function before calling to this function (moveTemporally)."), Constants.WARN_MSG);
 			return;
 		}
 
@@ -679,7 +683,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 
 	Dragboard.prototype.cancelMove = function() {
 		if (this.gadgetToMove == null) {
-			OpManagerFactory.getInstance().log(gettext("Dragboard: Trying to cancel an inexistant temporal move."), Constants.WARN_MSG);
+			LogManagerFactory.getInstance().log(gettext("Dragboard: Trying to cancel an inexistant temporal move."), Constants.WARN_MSG);
 			return;
 		}
 
@@ -952,7 +956,7 @@ IGadget.prototype.paint = function(where) {
 	button.setAttribute("type", "button");
 	button.setAttribute("class", "button errorbutton disabled");
 	button.setAttribute("className", "button errorbutton disabled"); //IE hack
-	Event.observe (button, "click", function() {showInterface("logs");}, true);
+	Event.observe (button, "click", function() {OpManagerFactory.getInstance().showLogs();}, true);
 	this.gadgetMenu.appendChild(button);
 	this.errorButtonElement = button;
 
@@ -1048,7 +1052,7 @@ IGadget.prototype.destroy = function() {
 			}
 
 			msg = interpolate(gettext("Error removing igadget from persistence: %(errorMsg)s."), {errorMsg: msg}, true);
-			OpManagerFactory.getInstance().log(msg);
+			LogManagerFactory.getInstance().log(msg);
 		}
 		this.element.parentNode.removeChild(this.element);
 		this.element = null;
@@ -1358,7 +1362,7 @@ IGadget.prototype.save = function() {
 		}
 
 		msg = interpolate(gettext("Error adding igadget to persistence: %(errorMsg)s."), {errorMsg: msg}, true);
-		OpManagerFactory.getInstance().log(msg);
+		LogManagerFactory.getInstance().log(msg);
 	}
 
 	var persistenceEngine = PersistenceEngineFactory.getInstance();

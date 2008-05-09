@@ -92,7 +92,7 @@ var OpManagerFactory = function () {
 			}
 
 			msg = interpolate(gettext("Error creating a workspace: %(errorMsg)s."), {errorMsg: msg}, true);
-			OpManagerFactory.getInstance().log(msg);
+			LogManagerFactory.getInstance().log(msg);
 		
 		}
 
@@ -100,52 +100,52 @@ var OpManagerFactory = function () {
 		// *********************************
 		// PRIVATE VARIABLES AND FUNCTIONS
 		// *********************************
-		this.errorCount = 0;
-
+		
 		// Singleton modules
 		this.showcaseModule = null;
 		this.contextManagerModule = null;
 		this.catalogue = null;
+		this.logs = null;
 		this.persistenceEngine = PersistenceEngineFactory.getInstance();
 
-		// Active instance for non-singleton modules
+/*		// Active instance for non-singleton modules
 		this.activeDragboard;
 		this.activeWiring;
 		this.activeVarManager = null;
 		this.activeContextManager = null;
+*/
 		
-		//Current interface selected by user {dragboard, catalogue, wiring}
+/*		//Current interface selected by user {dragboard, catalogue, wiring}
 		this.currentInterface = "dragboard"
+*/
 		
 		this.loadCompleted = false;
 		
 		// Variables for controlling the collection of wiring and dragboard instances of a user
 		this.workSpaceInstances = new Hash();
-		this.activeWorkSpace;
+		this.activeWorkSpace = null;
 
 		
 		// ****************
 		// PUBLIC METHODS 
 		// ****************
 		
-		OpManager.prototype.showWiring = function () {
+/*		OpManager.prototype.showWiring = function () {
 			LayoutManagerFactory.getInstance().unMarkGlobalTabs();
 		    this.activeWorkSpace.showWiring();
 		}
+*/
 		
 		OpManager.prototype.showCatalogue = function () {
-			
-			LayoutManagerFactory.getInstance().unMarkGlobalTabs();
-			LayoutManagerFactory.getInstance().showShowCase();
-			this.activeWorkSpace.hideContent();
-
+			this.catalogue.show();
+			this.activeWorkSpace.getVisibleTab().markAsCurrent();
 			if (UIUtils.isInfoResourcesOpen) {
 				UIUtils.isInfoResourcesOpen = false;
 				UIUtils.SlideInfoResourceOutOfView('info_resource');
 			}
 			
 			// Load catalogue data!
-			this.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
+			this.catalogue.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
 					
 			UIUtils.setResourcesWidth();
 			
@@ -154,26 +154,30 @@ var OpManagerFactory = function () {
 		
 
 		OpManager.prototype.showLogs = function () {
-			LayoutManagerFactory.getInstance().unMarkGlobalTabs();
-			this.activeWorkSpace.hideAndUnmark();
-			LayoutManagerFactory.getInstance().showLogs();
+			this.activeWorkSpace.getVisibleTab().unmark();
+			LogManagerFactory.getInstance().show();
 		}
 		
 		OpManager.prototype.changeActiveWorkSpace = function (workSpace) {
+			if(this.activeWorkSpace != null){
+				this.activeWorkSpace.hide();
+			}
 		    this.activeWorkSpace = workSpace;
 		    if(!this.activeWorkSpace.loaded){
 				// Total information of the active workspace must be downloaded!
 				this.activeWorkSpace.downloadWorkSpaceInfo();	
-			//this.activeDragboard = this.activeWorkSpace.getVisibleTab().getDragboard();
+/*				this.activeDragboard = this.activeWorkSpace.getVisibleTab().getDragboard();
 				this.activeWiring = this.activeWorkSpace.getWiring();
 		    	this.activeVarManager = this.activeWorkSpace.getVarManager();
 				this.activeContextManager = this.activeWorkSpace.getContextManager();
+*/
 		    					    
 		    }else{
-				//this.activeDragboard = this.activeWorkSpace.getVisibleTab().getDragboard();
+/*				this.activeDragboard = this.activeWorkSpace.getVisibleTab().getDragboard();
 			    this.activeWiring = this.activeWorkSpace.getWiring();
 			    this.activeVarManager = this.activeWorkSpace.getVarManager();
 				this.activeContextManager = this.activeWorkSpace.getContextManager();
+*/
 		    
 			    this.showActiveWorkSpace();
 		    }
@@ -196,7 +200,7 @@ var OpManagerFactory = function () {
 			this.activeWorkSpace.getVisibleTab().getDragboard().addInstance(gadget);
 		}
 		
-		OpManager.prototype.getActiveVarManager = function () {
+/*		OpManager.prototype.getActiveVarManager = function () {
 			if (!this.loadCompleted)
 				return;
 
@@ -210,19 +214,16 @@ var OpManagerFactory = function () {
 		    return this.activeContextManager;
 		}
 
+*/
 		OpManager.prototype.removeInstance = function (iGadgetId) {
 			if (!this.loadCompleted)
 				return;
-
-			this.activeWorkSpace.getVisibleTab().getDragboard().removeInstance(iGadgetId); // TODO split into hideInstance and removeInstance
-			this.activeVarManager.removeInstance(iGadgetId);
-			this.activeWiring.removeInstance(iGadgetId);
-			this.activeContextManager.removeInstance(iGadgetId);
+			this.activeWorkSpace.removeIGadget(iGadgetId);
 		}
 		
 		
 		OpManager.prototype.sendEvent = function (gadget, event, value) {
-		    this.activeWiring.sendEvent(gadget, event, value);
+		    this.activeWorkSpace.getWiring().sendEvent(gadget, event, value);
 		}
 
 		OpManager.prototype.loadEnviroment = function () {
@@ -232,11 +233,7 @@ var OpManagerFactory = function () {
 			// When it finish, it will invoke continueLoadingGlobalModules method!
 			this.showcaseModule = ShowcaseFactory.getInstance();
 			this.showcaseModule.init();
-		}
-
-		OpManager.prototype.repaintCatalogue = function (url) {
-	 	    this.catalogue.emptyResourceList();
-		    this.catalogue.loadCatalogue(url);
+			this.logs = LogManagerFactory.getInstance();
 		}
 
 		OpManager.prototype.igadgetLoaded = function () {
@@ -249,15 +246,20 @@ var OpManagerFactory = function () {
 			var j=0;
 			for (var i=0; i<workSpaceIds.length; i++) {
 				var workSpace = this.workSpaceInstances[workSpaceIds[i]];
+				if (workSpace != this.activeWorkSpace) {
+					disabledWorkSpaces[j] = workSpace;					
+					j++;
+				}
 				
-				if (workSpace == this.activeWorkSpace) {
+				/*if (workSpace == this.activeWorkSpace) {
 					workSpace.show();
 				} else {
 					workSpace.hide();
 					disabledWorkSpaces[j] = workSpace;					
 					j++;
-				}
+				}*/
 			}
+			this.activeWorkSpace.show();
 			LayoutManagerFactory.getInstance().refreshChangeWorkSpaceMenu(disabledWorkSpaces);
 		}
 		
@@ -279,7 +281,8 @@ var OpManagerFactory = function () {
 		    
 		    if (module == Modules.prototype.ACTIVE_WORKSPACE) {
 		    	this.loadCompleted = true;
-		    	this.changeActiveWorkSpace(this.activeWorkSpace);
+		    	this.showActiveWorkSpace(this.activeWorkSpace);
+//		    	this.changeActiveWorkSpace(this.activeWorkSpace);
 		    	LayoutManagerFactory.getInstance().resizeWrapper();
 		    	return;
 		    }
@@ -293,72 +296,16 @@ var OpManagerFactory = function () {
 		}
 	
 		OpManager.prototype.logIGadgetError = function(iGadgetId, msg, level) {
-			var gadgetInfo = this.activeDragboard.getGadget(iGadgetId).getInfoString();
+			var gadgetInfo = this.activeWorkSpace.getVisibleTab().getDragboard().getGadget(iGadgetId).getInfoString();
 			msg = msg + "\n" + gadgetInfo;
 
-			this.log(msg, level);
-			this.activeWorkspace.getVisibleTab().getDragboard().notifyErrorOnIGadget(iGadgetId);
-		}
-
-		OpManager.prototype.log = function(msg, level) {
-//			if (this.errorCount++ == 0) {
-//				$("logs_tab").className="tab";
-//			}
-
-			labelContent = ngettext("%(errorCount)s error", "%(errorCount)s errors", ++this.errorCount);
-			labelContent = interpolate(labelContent, {errorCount: this.errorCount}, true);
-			LayoutManagerFactory.getInstance().notifyError(labelContent);
-
-			var logentry = document.createElement("p");
-
-			switch (level) {
-			default:
-			case Constants.Logging.ERROR_MSG:
-				icon = document.createElement("img");
-				icon.setAttribute("src", "/ezweb/images/error.png");
-				icon.setAttribute("class", "icon");
-				icon.setAttribute("alt", "[Error] ");
-				LayoutManagerFactory.getInstance().logsConsole.appendChild(icon);
-				try {
-					console.error(msg);
-				} catch (e) {}
-				break;
-			case Constants.Logging.WARN_MSG:
-				icon = document.createElement("img");
-				icon.setAttribute("src", "/ezweb/images/warning.png");
-				icon.setAttribute("class", "icon"); 
-				icon.setAttribute("alt", "[Warning] ");
-				LayoutManagerFactory.getInstance().logsConsole.appendChild(icon);
-				try {
-					if (console) console.warn(msg);
-				} catch (e) {}
-				break;
-			case Constants.Logging.INFO_MSG:
-				icon = document.createElement("img");
-				icon.setAttribute("src", "/ezweb/images/info.png");
-				icon.setAttribute("class", "icon");
-				icon.setAttribute("alt", "[Info] ");
-				LayoutManagerFactory.getInstance().logsConsole.appendChild(icon);
-				try {
-					if (console) console.info(msg);
-				} catch (e) {}
-				break;
-			}
-
-			var index;
-			while ((index = msg.indexOf("\n")) != -1) {
-			  logentry.appendChild(document.createTextNode(msg.substring(0, index)));
-			  logentry.appendChild(document.createElement("br"));
-			  msg = msg.substring(index + 1);
-			}
-			logentry.appendChild(document.createTextNode(msg));
-			LayoutManagerFactory.getInstance().logsConsole.appendChild(logentry);
-
+			this.logs.log(msg, level);
+			this.activeWorkSpace.getVisibleTab().getDragboard().notifyErrorOnIGadget(iGadgetId);
 		}
 
 		//Operations on workspaces
 
-		OpManager.prototype.workSpaceExists = function (newName){
+/*		OpManager.prototype.workSpaceExists = function (newName){
 			var workSpaceKeys = this.workSpaceInstances.keys();
 			for(var i=0;i<workSpaceKeys.length;i++){
 			if(this.workSpaceInstances[workSpaceKeys[i]].workSpaceState.name == newName)
@@ -366,6 +313,7 @@ var OpManagerFactory = function () {
 			}
 			return false;
 		}
+*/
 
 		OpManager.prototype.addWorkSpace = function (newName) {
 			var o = new Object;
@@ -381,7 +329,7 @@ var OpManagerFactory = function () {
 			var msg;			
 			msg = "there must be one workspace at least";
 			msg = interpolate(gettext("Error removing workspace: %(errorMsg)s."), {errorMsg: msg}, true);
-			OpManagerFactory.getInstance().log(msg);
+			LogManagerFactory.getInstance().log(msg);
 			LayoutManagerFactory.getInstance().hideCover();
 			return false;
 		}

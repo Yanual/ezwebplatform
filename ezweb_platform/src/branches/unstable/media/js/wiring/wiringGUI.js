@@ -81,8 +81,9 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
     this.visible = true;
 
     this.renewInterface();
-    
-    LayoutManagerFactory.getInstance().showWiring(this.wiringContainer);
+
+    LayoutManagerFactory.getInstance().showWiring(this);
+
     Event.observe(this.newChannel, 'click', this._eventCreateChannel);
   }
 
@@ -94,7 +95,7 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
 
     this.saveWiring();
     Event.stopObserving(this.newChannel, 'click', this._eventCreateChannel);
-    LayoutManagerFactory.getInstance().hideWiring(this.wiringContainer);
+    LayoutManagerFactory.getInstance().hideView(this.wiringContainer);
   }
 
   WiringInterface.prototype.saveWiring = function () {

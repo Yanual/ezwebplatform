@@ -108,7 +108,7 @@ function WorkSpace (workSpaceState) {
 		}
 		msg = interpolate(gettext("Error retreiving workspace data: %(errorMsg)s."),
 		                          {errorMsg: msg}, true);
-		OpManagerFactory.getInstance().log(msg);
+		LogManagerFactory.getInstance().log(msg);
 	}
 	
 	var renameSuccess = function(transport) {
@@ -123,7 +123,7 @@ function WorkSpace (workSpaceState) {
 			}
 
 			msg = interpolate(gettext("Error renaming workspace, changes will not be saved: %(errorMsg)s."), {errorMsg: msg}, true);
-			OpManagerFactory.getInstance().log(msg);
+			LogManagerFactory.getInstance().log(msg);
 	}
 	var deleteSuccess = function(transport) {
 		var tabList = this.tabInstances.keys();
@@ -143,7 +143,7 @@ function WorkSpace (workSpaceState) {
 			}
 
 			msg = interpolate(gettext("Error removing workspace, changes will not be saved: %(errorMsg)s."), {errorMsg: msg}, true);
-			OpManagerFactory.getInstance().log(msg);
+			LogManagerFactory.getInstance().log(msg);
 	}
 	
 	//**** TAB CALLBACK*****
@@ -168,7 +168,7 @@ function WorkSpace (workSpaceState) {
 		}
 
 		msg = interpolate(gettext("Error creating a tab: %(errorMsg)s."), {errorMsg: msg}, true);
-		OpManagerFactory.getInstance().log(msg);
+		LogManagerFactory.getInstance().log(msg);
 	}
 	
 	// ****************
@@ -203,10 +203,6 @@ function WorkSpace (workSpaceState) {
 	
     WorkSpace.prototype.getId = function () {
     	return this.workSpaceState.id;
-	}	
-    
-    WorkSpace.prototype.getId = function () {
-    	return this.workSpaceState.id;
 	}
     
     WorkSpace.prototype.getWiring = function () {
@@ -229,11 +225,11 @@ function WorkSpace (workSpaceState) {
 		if (!this.loaded)
 			return;
 		
-		this.hideAndUnmark();
+		this.visibleTab.unmark();
 		this.wiringInterface.show();
 	}
 	
-	WorkSpace.prototype.hideAndUnmark = function() {
+/*	WorkSpace.prototype.hideAndUnmark = function() {
 		if (!this.loaded)
 			return;
 		
@@ -247,21 +243,23 @@ function WorkSpace (workSpaceState) {
 			tab.hideAndUnmark();
 		}
 	}
+*/
 	
-	//hide only the information in the wrapper. The tabs remain inalterable
+/*	//hide only the information in the wrapper. The tabs remain inalterable
 	WorkSpace.prototype.hideContent = function() {
 		this.visibleTab.markAsCurrent();
 		this.wiringInterface.hide();
 		this.visibleTab.hideDragboard();
 		
 	}
+*/
 
 	//hide all information about a workspace (wiring, tabs)
 	WorkSpace.prototype.hide = function() {
 		if (!this.loaded)
 			return;
 		
-		this.wiringInterface.hide();
+		//this.wiringInterface.hide();
 
 		
 		var tabList = this.tabInstances.keys();
@@ -276,7 +274,8 @@ function WorkSpace (workSpaceState) {
 	WorkSpace.prototype.show = function() {	
 		if (!this.loaded)
 			return;
-		
+			
+		//global tab section
 		this.workSpaceHTMLElement.update(this.workSpaceState.name);
 		
 		var tabList = this.tabInstances.keys();
@@ -287,8 +286,9 @@ function WorkSpace (workSpaceState) {
 			if (tab == this.visibleTab)
 				tab.show();
 			else
-				tab.hideAndUnmark();
+				tab.unmark();
 		}
+
 	}
 	
 	WorkSpace.prototype.getTab = function(tabId) {
@@ -307,9 +307,9 @@ function WorkSpace (workSpaceState) {
 	WorkSpace.prototype.setTab = function(tab) {
 		if (!this.loaded)
 			return;
-		
+		this.visibleTab.unmark();		
 		this.visibleTab = tab;
-		this.showVisibleTab();
+		this.visibleTab.show();
 		
 	}
 	
@@ -320,10 +320,11 @@ function WorkSpace (workSpaceState) {
 		return this.visibleTab;
 	}
 	
-	WorkSpace.prototype.showVisibleTab = function() {
+/*	WorkSpace.prototype.showVisibleTab = function() {
 		this.hideAndUnmark();
 		this.visibleTab.show();
 	}
+*/
 	
 /*	WorkSpace.prototype.tabExists = function(tabName){
 		var tabKeys = this.tabInstances.keys();
@@ -351,7 +352,7 @@ function WorkSpace (workSpaceState) {
 			msg = "there must be one tab at least";
 
 			msg = interpolate(gettext("Error removing tab: %(errorMsg)s."), {errorMsg: msg}, true);
-			OpManagerFactory.getInstance().log(msg);
+			LogManagerFactory.getInstance().log(msg);
 			LayoutManagerFactory.getInstance().hideCover();
 			return false;
 		}
@@ -366,7 +367,7 @@ function WorkSpace (workSpaceState) {
 		if (!this.loaded)
 			return;
 		
-		this.visibleTab.hideAndUnmark();
+		this.visibleTab.unmark();
 		this.visibleTab = tab;
 		this.visibleTab.go();
 	}
@@ -380,8 +381,15 @@ function WorkSpace (workSpaceState) {
 		tab.getDragboard().showInstance(igadget);
 
 		// The dragboard must be shown after an igadget insertion
-		LayoutManagerFactory.getInstance().unMarkGlobalTabs();
-		this.showVisibleTab();
+		//LayoutManagerFactory.getInstance().unMarkGlobalTabs();
+		this.visibleTab.show();
+	}
+	
+	WorkSpace.prototype.removeIGadget = function(iGadgetId) {
+			this.visibleTab.getDragboard().removeInstance(iGadgetId); // TODO split into hideInstance and removeInstance
+			this.varManager.removeInstance(iGadgetId);
+			this.wiring.removeInstance(iGadgetId);
+			this.contextManager.removeInstance(iGadgetId);
 	}
 
 	WorkSpace.prototype.getIGadgets = function() {

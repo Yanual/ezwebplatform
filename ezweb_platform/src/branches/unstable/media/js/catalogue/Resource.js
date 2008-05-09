@@ -421,7 +421,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 		
 		onError = function(transport) {
 			msg = interpolate(gettext("Error creating the resource: %(errorMsg)s."), {errorMsg: transport.status}, true);
-			OpManagerFactory.getInstance().log(msg);
+			LogManagerFactory.getInstance().log(msg);
 			// Process
 		}
 		

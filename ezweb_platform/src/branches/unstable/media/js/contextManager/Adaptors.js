@@ -48,7 +48,7 @@ function UserAdaptor() {
 	function _onSuccess(receivedData) {
 		var usernameJson = eval ('(' + receivedData.responseText + ')');
 		var value = usernameJson.username;
-		OpManagerFactory.getInstance().getActiveContextManager().notifyModifiedConcept(UserAdaptor.prototype.CONCEPT, value);
+		OpManagerFactory.getInstance().activeWorkSpace.getContextManager().notifyModifiedConcept(UserAdaptor.prototype.CONCEPT, value);
 	}
 
 	function _onError(transport, e) {
@@ -62,7 +62,7 @@ function UserAdaptor() {
 		}
 		msg = interpolate(gettext("Error getting concept %(concept)s: %(errorMsg)s."),
 		                          {concept: UserAdaptor.prototype.CONCEPT, errorMsg: msg}, true);
-		OpManagerFactory.getInstance().log(msg);
+		LogManagerFactory.getInstance().log(msg);
 	}
 	
 	var uri = URIs.GET_CONTEXT_VALUE.evaluate({concept: UserAdaptor.prototype.CONCEPT});
@@ -81,7 +81,7 @@ function LanguageAdaptor() {
 	function _onSuccess(receivedData) {
 		var json = eval ('(' + receivedData.responseText + ')');
 		var value = json.language;
-		OpManagerFactory.getInstance().getActiveContextManager().notifyModifiedConcept(LanguageAdaptor.prototype.CONCEPT, value);
+		OpManagerFactory.getInstance().activeWorkSpace.getContextManager().notifyModifiedConcept(LanguageAdaptor.prototype.CONCEPT, value);
 	}
 
 	function _onError(transport, e) {
@@ -95,7 +95,7 @@ function LanguageAdaptor() {
 		}
 		msg = interpolate(gettext("Error getting concept %(concept)s: %(errorMsg)s."),
 		                          {concept: UserAdaptor.prototype.CONCEPT, errorMsg: msg}, true);
-		OpManagerFactory.getInstance().log(msg);
+		LogManagerFactory.getInstance().log(msg);
 	}
 	
 	var uri = URIs.GET_CONTEXT_VALUE.evaluate({concept: LanguageAdaptor.prototype.CONCEPT});

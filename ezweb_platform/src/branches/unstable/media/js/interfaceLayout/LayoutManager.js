@@ -53,19 +53,19 @@ var LayoutManagerFactory = function () {
 			this.hideLevel = 1;
 			this.showLevel = 2;
 			
-		// current view: showcase, dragboard, wiring, logs
+		// current view: catalogue, dragboard, wiring, logs
+			this.currentViewType = null;
 			this.currentView = null;
 			
 		// Global links managed by LayoutManager: {showcase, wiring}
 		// Tabs are managed by WorkSpaces!! 
-			this.showCaseLink = $('catalogue_link');
+			this.catalogueLink = $('catalogue_link');
 			this.wiringLink = $('wiring_link');
 			
 		// Container managed by LayOutManager: {showcase_tab}
 		// Remaining containers managed by WorkSpaces!!
-			this.showCase = $('showcase_container');
-			this.logsConsole = $('logs_console');
-			this.logsContainer = $('logs_container');
+			this.catalogue = CatalogueFactory.getInstance();
+			this.logs = LogManagerFactory.getInstance();
 			this.logsLink = $('logs_link');
 			
 		// Menu Layer	
@@ -103,71 +103,52 @@ var LayoutManagerFactory = function () {
 		}
 		
 		LayoutManager.prototype.unMarkGlobalTabs = function () {
-			if (!this.showCaseLink) {
-				this.showCaseLink = $('catalogue_link');
-				this.showCase = $('showcase_container');
-				
-				this.logsConsole = $('logs_container');
+			if (!this.catalogue) {
+				this.catalogueLink = $('catalogue_link');
 				this.logsLink = $('logs_link');
-				
 				this.wiringLink = $('wiring_link');
 			}
 			
-			this.showCaseLink.className = 'toolbar_unmarked';
+			this.catalogueLink.className = 'toolbar_unmarked';
 			this.wiringLink.className = 'toolbar_unmarked';
 			this.logsLink.className = 'toolbar_unmarked';
 			
-			this.hideShowCase();
+/*			this.hideShowCase();
 			this.hideLogs();		
+*/
+		}
 
+		/****VIEW OPERATIONS****/
+		//hide an HTML Element
+		LayoutManager.prototype.hideView = function (viewHTML){
+			viewHTML.setStyle({'zIndex': this.hideLevel, 'visibility': 'hidden'});
 		}
 		
 		LayoutManager.prototype.notifyError = function (labelContent){
-			LayoutManagerFactory.getInstance().logsLink.innerHTML = labelContent;
-			LayoutManagerFactory.getInstance().logsLink.setStyle({'display' : 'inline'});
-		}
-		
-		// Dragboard operations (usually called together with Tab operations)
-		LayoutManager.prototype.hideDragboard = function(dragboard){
-			dragboard.setStyle({'zIndex': this.hideLevel, 'visibility': 'hidden'})
-		}
-		
-		LayoutManager.prototype.showDragboard = function(dragboard){
-		    this.currentView = 'dragboard';
-			dragboard.setStyle({'zIndex': this.showLevel, 'visibility': 'visible'})
+			this.logsLink.innerHTML = labelContent;
+			this.logsLink.setStyle({'display' : 'inline'});
 		}
 		
 		// Tab operations
-		LayoutManager.prototype.unmarkTab = function(tab, changeEvent, renameEvent){
+		LayoutManager.prototype.unmarkTab = function(tab, launcher, changeEvent, renameEvent){
 			tab.className = "tab";
-			try{ //remove the launcher image for the drop down menu from the former current tab
-				var tabOpsLauncher = $$('#'+tab.getAttribute('id')+' #tabOps_launcher');
-				if(tabOpsLauncher.length>0){	
-					tabOpsLauncher[0].remove();
-				}
-			}catch (e){
-				return;
-			}
+			//hide the launcher image for the drop down menu from the former current tab
+			var tabOpsLauncher = $(launcher);
+			tabOpsLauncher.setStyle({'display':'none'});
 			Event.stopObserving(tab, 'click', renameEvent);
 		   	Event.observe(tab, 'click', changeEvent);
 		    tab.setStyle({'zIndex': this.showLevel, 'display':'block', 'visibility':'visible'});
 			
 		}
 		
-		LayoutManager.prototype.markTab = function(tab, renameHandler, changeHandler){
+		LayoutManager.prototype.markTab = function(tab, launcher, renameHandler, changeHandler){
 			if(tab.className != "tab current"){
 				tab.className = "tab current";
-			    var tabOpsLauncherHTML = '<input id="tabOps_launcher" type="button" title="options" class="tabOps_launcher_show"/>';
-			    new Insertion.Bottom(tab, tabOpsLauncherHTML);
-			    var tabOpsLauncher = $$('#'+tab.getAttribute('id')+' #tabOps_launcher')[0];
-			    Event.observe(tabOpsLauncher, "click", function(e){Event.stop(e); LayoutManagerFactory.getInstance().showDropDownMenu('tabOps');}, true);
+			    var tabOpsLauncher = $(launcher);
+			    tabOpsLauncher.setStyle({'display':'inline'});
 		    	tab.setStyle({'zIndex': this.showLevel, 'display':'block', 'visibility':'visible'});
 			}
-			if(this.currentView == 'dragboard'){
-				//TODO:change this hidding only the former view
-				this.hideShowCase();
-				this.hideLogs();
-				//*******
+			if(this.currentViewType == 'dragboard'){
 				Event.stopObserving(tab, 'click', changeHandler);
    			   	Event.observe(tab, 'click', renameHandler);
 			}else{
@@ -180,7 +161,7 @@ var LayoutManagerFactory = function () {
 			try{ //remove the launcher image for the drop down menu from the former current tab
 				var tabOpsLauncher = $$('#'+tab.getAttribute('id')+' #tabOps_launcher');
 				if(tabOpsLauncher.length>0){	
-					tabOpsLauncher[0].remove();
+					tabOpsLauncher[0].setStyle({'display':'none'});
 				}
 			}catch (e){
 				return;
@@ -189,36 +170,51 @@ var LayoutManagerFactory = function () {
 			tab.setStyle({'zIndex': this.hideLevel, 'display':'none', 'visibility':'hidden'});
 		}
 		
-		// ShowCase operations
-		LayoutManager.prototype.showShowCase = function(){
-			this.currentView = 'showCase';
-			this.showCaseLink.className = 'toolbar_marked';
-			this.showCase.setStyle({'zIndex': this.showLevel, 'display': 'block', 'visibility': 'visible'});
+		// Dragboard operations (usually called together with Tab operations)
+		LayoutManager.prototype.showDragboard = function(dragboard){
+			this.unMarkGlobalTabs();
+			if(this.currentView != null){
+				this.currentView.hide();
+			}
+		    this.currentView = dragboard;
+		    this.currentViewType = 'dragboard';
+			dragboard.dragboardElement.setStyle({'zIndex': this.showLevel, 'visibility': 'visible'})
 		}
 		
-		LayoutManager.prototype.hideShowCase = function(){
-			this.showCase.setStyle({'zIndex': this.hideLevel, 'visibility': 'hidden'});
+		// Catalogue operations
+		LayoutManager.prototype.showCatalogue = function(){
+			this.unMarkGlobalTabs();
+			if(this.currentView != null){
+				this.currentView.hide();
+			}			
+		    this.currentView = this.catalogue;
+			this.currentViewType = 'catalogue';
+			this.catalogueLink.className = 'toolbar_marked';
+			this.catalogue.catalogueElement.setStyle({'zIndex': this.showLevel, 'display': 'block', 'visibility': 'visible'});
 		}
-		
+				
 		// Logs operations
 		LayoutManager.prototype.showLogs = function(){
-			this.currentView = 'logs';
-			this.logsContainer.setStyle({'zIndex': this.showLevel, 'display': 'block', 'visibility': 'visible'});
+			this.unMarkGlobalTabs();
+			if(this.currentView != null){
+				this.currentView.hide();
+			}				
+		    this.currentView = this.logs;
+			this.currentViewType = 'logs';
+			this.logsLink.className = "toolbar_marked";			
+			this.logs.logContainer.setStyle({'zIndex': this.showLevel, 'display': 'block', 'visibility': 'visible'});
 		}
-		
-		LayoutManager.prototype.hideLogs = function(){
-			this.logsContainer.setStyle({'zIndex': this.hideLevel, 'visibility': 'hidden'});
-		}
-		
+	
 		//Wiring operations
 		LayoutManager.prototype.showWiring = function(wiring){
-			this.currentView = 'wiring';
-			wiring.setStyle({'zIndex' : this.showLevel, 'display': 'block', 'visibility': 'visible'});
+			this.unMarkGlobalTabs();
+			if(this.currentView != null){
+				this.currentView.hide();
+			}				
+		    this.currentView = wiring;			
+			this.currentViewType = 'wiring';
 			this.wiringLink.className = "toolbar_marked";
-		}
-		
-		LayoutManager.prototype.hideWiring = function(wiring){
-			wiring.setStyle({'zIndex' : this.hideLevel, 'visibility': 'hidden'});
+			wiring.wiringContainer.setStyle({'zIndex' : this.showLevel, 'display': 'block', 'visibility': 'visible'});
 		}
 		
 		//the disabling layer can be clicable (in order to hide a menu) or not
@@ -237,7 +233,7 @@ var LayoutManagerFactory = function () {
 		LayoutManager.prototype.refreshChangeWorkSpaceMenu = function(workspaces){
 
 			if(!this.menus['workSpaceOpMenu']){
-					this.menus['workSpaceOpMenu'] = new DropDownMenu('ws_operations_link', 'workspace_menu');
+					this.menus['workSpaceOpMenu'] = new DropDownMenu('workspace_menu');
 			}
 			this.menus['workSpaceOpMenu'].clearSubmenuOptions();
 			
@@ -254,30 +250,23 @@ var LayoutManagerFactory = function () {
 		}
 
 		//Shows the asked drop down menu 
-		LayoutManager.prototype.showDropDownMenu = function(menu){
+		LayoutManager.prototype.showDropDownMenu = function(menu, launcher){
 			this.showClickableCover();
 			switch (menu){
 			case 'workSpaceOps':
 				if(!this.menus['workSpaceOpMenu']){
-					this.menus['workSpaceOpMenu'] = new DropDownMenu('ws_operations_link', 'workSpace_menu');
+					this.menus['workSpaceOpMenu'] = new DropDownMenu('workSpace_menu');
 				}
 				this.currentMenu = this.menus['workSpaceOpMenu'];
-				this.currentMenu.show('bottom-right');
+				this.currentMenu.show(launcher,'bottom-right');
 				break;
 			case 'tabOps':
 				if(!this.menus['tabOpMenu']){
-					this.menus['tabOpMenu'] = new DropDownMenu('tabOps_launcher', 'tab_menu');
+					this.menus['tabOpMenu'] = new DropDownMenu('tab_menu');
 				}
 				this.currentMenu = this.menus['tabOpMenu'];
-				this.currentMenu.show('bottom-left');
+				this.currentMenu.show(launcher,'bottom-left');
 				break;
-			/*case 'changeWorkSpace':
-				if(!this.menus['changeWorkSpaceMenu']){
-					this.menus['changeWorkSpaceMenu'] = new DropDownMenu('change_ws_link', 'changeWorkspace_menu');
-				}
-				this.currentMenu = this.menus['changeWorkSpaceMenu'];
-				this.currentMenu.show('bottom-right');
-				break;*/
 			default:
 				break;
 			}
@@ -346,8 +335,8 @@ var LayoutManagerFactory = function () {
 		var FADE_SPEED = 200;
 		var FADE_STEP = 5;
 		var self = this;
-		LayoutManager.prototype.goTab = function(tab, renameHandler, changeHandler){
-			this.markTab(tab, renameHandler, changeHandler);
+		LayoutManager.prototype.goTab = function(tab, tabLauncher, renameHandler, changeHandler){
+			this.markTab(tab, tabLauncher, renameHandler, changeHandler);
 			var currentColour = [FADE_RED_INI, FADE_GREEN_INI, FADE_BLUE_INI];
 			tab.style.background = "rgb(" + currentColour[0] + "," + currentColour[1] + "," + currentColour[2] + ")";
 			setTimeout(function(){

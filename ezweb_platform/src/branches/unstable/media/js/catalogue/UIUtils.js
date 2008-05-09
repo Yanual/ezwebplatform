@@ -82,7 +82,7 @@ UIUtils.addResource = function(url, paramName, paramValue) {
 		}
 
 		msg = interpolate(gettext("The resource could not be added to the catalogue: %(errorMsg)s."), {errorMsg: msg}, true);
-		OpManagerFactory.getInstance().log(msg);
+		LogManagerFactory.getInstance().log(msg);
 	}
 	
 	var persistenceEngine = PersistenceEngineFactory.getInstance();	
@@ -198,7 +198,7 @@ UIUtils.updateGadgetXHTML = function() {
 
     var onError = function(transport) {
 		var	msg = interpolate(gettext("Error updating the XHTML: %(errorMsg)s."), {errorMsg: transport.status}, true);
-		OpManagerFactory.getInstance().log(msg);
+		LogManagerFactory.getInstance().log(msg);
 	// Process
     }
 			
@@ -263,7 +263,7 @@ UIUtils.searchByTag = function(url, tag) {
       UIUtils.search = 'tag';
       UIUtils.searchValue = tag;
       UIUtils.searchCriteria = 'tag' ;
-	  opManager.repaintCatalogue(url + "/" + tag  + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
+	  CatalogueFactory.getInstance().repaintCatalogue(url + "/" + tag  + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
 	}
 }
 
@@ -286,7 +286,7 @@ UIUtils.searchByWiring = function(url, value, wiring) {
 		UIUtils.search = 'wiring';
 		UIUtils.searchValue = value;
 		UIUtils.searchCriteria = wiring ;
-		opManager.repaintCatalogue(url + "/" + wiring + "/" + value  + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
+		CatalogueFactory.getInstance().repaintCatalogue(url + "/" + wiring + "/" + value  + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
 	}
 }
 
@@ -333,7 +333,7 @@ UIUtils.cataloguePaginate = function(url, offset, pag, items) {
     }
 	UIUtils.page = pag; 
   
-	opManager.repaintCatalogue(url + "/" + pag + "/" + UIUtils.getOffset());
+	CatalogueFactory.getInstance().repaintCatalogue(url + "/" + pag + "/" + UIUtils.getOffset());
 }
 
 UIUtils.setOrderby = function(orderby) {
@@ -385,7 +385,9 @@ UIUtils.searchGeneric = function(url, param1, param2, param3) {
 		UIUtils.searchValue = param1+"/"+param2+"/"+param3;
 		UIUtils.searchCriteria = 'generic';
 		UIUtils.search = 'generic';
-		opManager.repaintCatalogue(url + "/" + param1 + "/" + param2 + "/" + param3 + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
+
+		CatalogueFactory.getInstance().repaintCatalogue(url + "/" + param1 + "/" + param2 + "/" + param3 + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
+
 	}
 }
 
@@ -509,12 +511,12 @@ UIUtils.deleteGadget = function(id) {
 	
 	var onError = function(transport) {
 				var msg = interpolate(gettext("Error deleting the Gadget: %(errorMsg)s."), {errorMsg: transport.status}, true);
-				OpManagerFactory.getInstance().log(msg);
+				LogManagerFactory.getInstance().log(msg);
 				// Process
 			}
 			
 	var loadTags = function(transport) {
-				opManager.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
+				CatalogueFactory.getInstance().repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
 			}
 	PersistenceEngineFactory.getInstance().send_delete(resourceURI, this, loadTags, onError);
 }

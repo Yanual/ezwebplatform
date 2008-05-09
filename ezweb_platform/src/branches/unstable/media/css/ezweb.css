@@ -292,7 +292,7 @@ a:hover{
   text-align: center;
 }
 
-#tabOps_launcher, .closebutton{
+.tabOps_launcher, .closebutton{
   border:0px none;
   cursor: pointer;
   padding: 0px;
@@ -300,21 +300,12 @@ a:hover{
   height: 16px;
 }
 
-
-.tabOps_launcher_show{
+.tabOps_launcher{
   background: transparent url(/ezweb/images/settings.png) no-repeat;
 }
 
-.tabOps_launcher_show:hover{
+.tabOps_launcher:hover{
   background: transparent url(/ezweb/images/settings-highlighted.png) no-repeat;
-}
-
-.tabOps_launcher_hide{
-  background: transparent url(/ezweb/images/settings2.png) no-repeat;
-}
-
-.tabOps_launcher_hide:hover{
-  background: transparent url(/ezweb/images/settings2-highlighted.png) no-repeat;
 }
 
 .closebutton {

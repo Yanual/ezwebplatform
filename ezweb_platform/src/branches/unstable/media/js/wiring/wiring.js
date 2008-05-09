@@ -128,7 +128,7 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 
 		if (this.iGadgets[iGadgetId]) {
 			var msg = gettext("Error adding iGadget into the wiring module of the workspace: Gadget instance already exists.");
-			OpManagerFactory.getInstance().log(msg);
+			LogManagerFactory.getInstance().log(msg);
 		}
 
 		gadgetEntry.events = new Hash();
@@ -169,7 +169,7 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 
 		if (!entry) {
 			var msg = gettext("Wiring error: Trying to remove an inexistant igadget.");
-			OpManagerFactory.getInstance().log(msg);
+			LogManagerFactory.getInstance().log(msg);
 			return;
 		}
 		
@@ -187,7 +187,7 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 
 		if (iGadgetEntry == null) {
 			var msg = gettext("Wiring error: Trying to retreive the connectables of an inexistant igadget.");
-			OpManagerFactory.getInstance().log(msg);
+			LogManagerFactory.getInstance().log(msg);
 			return;
 		}
 
@@ -202,7 +202,7 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 		if (this.channels[channelName] != undefined) {
 			var msg = gettext("Error creating channel %(channelName)s: Channel already exists");
 			msg = interpolate(msg, {channelName: channelName});
-			OpManagerFactory.getInstance().log(msg);
+			LogManagerFactory.getInstance().log(msg);
 			return;
 		}		
 
@@ -224,7 +224,7 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 		if (channel == undefined) {
 			var msg = gettext("Error removing channel %(channelName)s: Channel does not exists");
 			msg = interpolate(msg, {channelName: channelName});
-			OpManagerFactory.getInstance().log(msg);
+			LogManagerFactory.getInstance().log(msg);
 			return;
 		}
 
@@ -240,7 +240,7 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 	Wiring.prototype.serializationError = function (response) {
 		var p = response.responseText;
 		msg = interpolate(gettext("Error : %(errorMsg)s."), {errorMsg: p}, true);
-		OpManagerFactory.getInstance().log(msg);
+		LogManagerFactory.getInstance().log(msg);
 	}
 
 	Wiring.prototype.serialize = function () {

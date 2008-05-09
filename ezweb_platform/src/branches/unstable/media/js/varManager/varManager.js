@@ -65,7 +65,7 @@ function VarManager (_workSpace) {
 	VarManager.prototype.parseWorkspaceVariables = function (ws_vars) {
 		var objVars = []
 		for (var i = 0; i<ws_vars.length; i++) {
-			var id = ws_vars[i].variableId;
+			var id = ws_vars[i].id;
 			var name = ws_vars[i].name;
 			var aspect = ws_vars[i].aspect;
 			var value = ws_vars[i].value;
@@ -202,7 +202,7 @@ function VarManager (_workSpace) {
 			}
 			msg = interpolate(gettext("Error saving variables to persistence: %(errorMsg)s."),
 			                          {errorMsg: msg}, true);
-			OpManagerFactory.getInstance().log(msg);
+			LogManagerFactory.getInstance().log(msg);
 		}
 
 		if (igadgetModifiedVars.length > 0 || workspaceModifiedVars.length > 0) {

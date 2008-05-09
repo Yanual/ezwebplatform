@@ -88,7 +88,7 @@ function Tagger(){
 		{
 			var onError = function(transport) {
 				var msg = interpolate(gettext("Error sending tags: %(errorMsg)s."), {errorMsg: transport.status}, true);
-				OpManagerFactory.getInstance().log(msg);
+				LogManagerFactory.getInstance().log(msg);
 				// Process
 			}
 			
@@ -122,7 +122,7 @@ this.removeTagUser = function(url, resourceURI,id)
 
 			var onError = function(transport) {
 				var msg = interpolate(gettext("Error removing tag: %(errorMsg)s."), {errorMsg: transport.status}, true);
-				OpManagerFactory.getInstance().log(msg);
+				LogManagerFactory.getInstance().log(msg);
 				// Process
 			}
 			

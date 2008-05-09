@@ -50,6 +50,7 @@ from django.db import transaction
 
 from commons.authentication import get_user_authentication
 from commons.get_data import get_inout_data, get_igadget_data, get_wiring_data, get_tab_data
+from commons.logs import log
 from commons.utils import json_encode
 
 from gadget.models import VariableDef

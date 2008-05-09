@@ -63,6 +63,8 @@ var URIs = new _URIConstants();
 <script language="JavaScript" src="{{ MEDIA_URL }}js/gadgetModel/GadgetTemplate.js"></script>
 <script language="JavaScript" src="{{ MEDIA_URL }}js/gadgetModel/Gadget.js"></script>
 
+<script language="JavaScript" src="{{ MEDIA_URL }}js/log/LogManager.js"></script>
+
 <script language="JavaScript" src="{{ MEDIA_URL }}js/opManager/WorkSpace.js"></script>
 <script language="JavaScript" src="{{ MEDIA_URL }}js/opManager/Tab.js"></script>
 
@@ -194,10 +196,10 @@ var URIs = new _URIConstants();
 </div>
 <div id="toolbar_section" class="toolbar_section">
    		<input type="button" id="catalogue_link" title="Catalogue" class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().showCatalogue()"/> 
-   		<input type="button" id="wiring_link" title="Wires" class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().showWiring()"/>
+   		<input type="button" id="wiring_link" title="Wires" class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().activeWorkSpace.showWiring()"/>
 		<span id="workspace_name"></span>
 	<!--	<input type="button" id="change_ws_link" title="Change workspace" class="toolbar_unmarked" onclick="LayoutManagerFactory.getInstance().showDropDownMenu('changeWorkSpace')"/>	-->
-   		<input type="button" id="ws_operations_link" title="Workspace operations" class="toolbar_unmarked" onclick="LayoutManagerFactory.getInstance().showDropDownMenu('workSpaceOps')"/>		
+   		<input type="button" id="ws_operations_link" title="Workspace operations" class="toolbar_unmarked" onclick="LayoutManagerFactory.getInstance().showDropDownMenu('workSpaceOps', 'ws_operations_link')"/>		
 		<span id="logs_link" style="display:none" title="Errors" class="toolbar_unmarked"onclick="OpManagerFactory.getInstance().showLogs()";></span>
 	</div>
 </div>

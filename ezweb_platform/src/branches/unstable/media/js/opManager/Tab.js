@@ -51,7 +51,7 @@ function Tab (tabInfo, workSpace) {
 		}
 
 		msg = interpolate(gettext("Error renaming a tab, changes will not be saved: %(errorMsg)s."), {errorMsg: msg}, true);
-		OpManagerFactory.getInstance().log(msg);
+		LogManagerFactory.getInstance().log(msg);
 	}
 
 	var deleteSuccess = function(transport){
@@ -67,7 +67,7 @@ function Tab (tabInfo, workSpace) {
 		}
 
 		msg = interpolate(gettext("Error removing a tab: %(errorMsg)s."), {errorMsg: msg}, true);
-		OpManagerFactory.getInstance().log(msg);
+		LogManagerFactory.getInstance().log(msg);
 	}
 
     // ****************
@@ -121,19 +121,19 @@ function Tab (tabInfo, workSpace) {
 					e.target.size = e.target.value.length;}.bind(this));
 	}
 	
-	Tab.prototype.hideAndUnmark = function () {
-		this.hideDragboard();
+	Tab.prototype.unmark = function () {
+		//this.hideDragboard();
 		this.visible=false;
-		LayoutManagerFactory.getInstance().unmarkTab(this.tabHTMLElement, this.changeTabHandler, this.renameTabHandler);
+		LayoutManagerFactory.getInstance().unmarkTab(this.tabHTMLElement, this.tabOpsLauncher, this.changeTabHandler, this.renameTabHandler);
 
 	}
-	
+/*	
 	Tab.prototype.hideDragboard = function () {
 		LayoutManagerFactory.getInstance().hideDragboard(this.dragboardElement);
 	}
-
+*/
 	Tab.prototype.show = function () {
-		LayoutManagerFactory.getInstance().showDragboard(this.dragboardElement);
+		LayoutManagerFactory.getInstance().showDragboard(this.dragboard);
 
 	    this.dragboard.recomputeSize();
 	    this.markAsCurrent();
@@ -142,12 +142,12 @@ function Tab (tabInfo, workSpace) {
 	
 	Tab.prototype.markAsCurrent = function (){
 	    this.visible=true;
-		LayoutManagerFactory.getInstance().markTab(this.tabHTMLElement, this.renameTabHandler, this.changeTabHandler);
+		LayoutManagerFactory.getInstance().markTab(this.tabHTMLElement, this.tabOpsLauncher, this.renameTabHandler, this.changeTabHandler);
 	}
 	
 	Tab.prototype.hide = function () {
 		LayoutManagerFactory.getInstance().hideTab(this.tabHTMLElement);
-		this.hideDragboard();
+		//this.hideDragboard();
 	}
 	
 	Tab.prototype.deleteHTMLElement = function () {
@@ -156,10 +156,10 @@ function Tab (tabInfo, workSpace) {
 	
 	Tab.prototype.go = function () {
 
-		LayoutManagerFactory.getInstance().showDragboard(this.dragboardElement);
+		LayoutManagerFactory.getInstance().showDragboard(this.dragboard);
 
 	    this.dragboard.recomputeSize();
-	    LayoutManagerFactory.getInstance().goTab(this.tabHTMLElement, this.renameTabHandler, this.changeTabHandler);
+	    LayoutManagerFactory.getInstance().goTab(this.tabHTMLElement, this.tabOpsLauncher, this.renameTabHandler, this.changeTabHandler);
 	}
 
 	Tab.prototype.getDragboard = function () {
@@ -173,7 +173,7 @@ function Tab (tabInfo, workSpace) {
 	// The name of the dragboard HTML elements correspond to the Tab name
 	this.workSpace = workSpace;
 	this.tabInfo = tabInfo;
-	this.dragboardLayerName = "dragboard_" + this.workSpace.workSpaceState.name + "_" + this.tabInfo.name;
+	this.dragboardLayerName = "dragboard_" + this.workSpace.workSpaceState.id + "_" + this.tabInfo.id;
 	this.tabName = "tab_" + this.workSpace.workSpaceState.id + "_" + this.tabInfo.id;
 	this.tabHTMLElement;
 	this.tabNameHTMLElement = null;
@@ -190,6 +190,13 @@ function Tab (tabInfo, workSpace) {
     this.tabHTMLElement.setAttribute('id', this.tabName);
     //fill the tab label with a span tag
     this.fillWithLabel();
+    
+    this.tabOpsLauncher = this.tabName+"_launcher";
+    var tabOpsLauncherHTML = '<input id="'+this.tabOpsLauncher+'" type="button" title="options" class="tabOps_launcher tabOps_launcher_show"/>';
+    new Insertion.Bottom(this.tabHTMLElement, tabOpsLauncherHTML);
+    var tabOpsLauncherElement = $(this.tabOpsLauncher);
+    Event.observe(tabOpsLauncherElement, "click", function(e){Event.stop(e); LayoutManagerFactory.getInstance().showDropDownMenu('tabOps', this.tabOpsLauncher);}.bind(this), true);
+    tabOpsLauncherElement.setStyle({'display':'none'});
     
     // Dragboard layer creation
     var dragboardHTML = $("dragboard_template").innerHTML;

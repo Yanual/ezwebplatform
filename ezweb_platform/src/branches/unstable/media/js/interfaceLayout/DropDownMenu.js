@@ -37,11 +37,11 @@
 
 //Class for managing a drop down menu whose HTML code is in templates/index.html.
 //The options may be created either by default in the HTML code or dinamically with the addOption function
-function DropDownMenu(idLauncher, idMenu){
+function DropDownMenu(idMenu){
 
 	//Constructor
-	this.idLauncher = idLauncher;	//Launcher: clicked point from which the menu is launched
-	this.launcher = $(idLauncher);
+	this.idLauncher;	//Launcher: clicked point from which the menu is launched
+	this.launcher;
 	this.idMenu = idMenu;	//menu: menu element in the HTLM code (<div>)
 	this.menu = $(idMenu);
 	this.position;				//position related to the launcher
@@ -125,20 +125,18 @@ function DropDownMenu(idLauncher, idMenu){
 	//hides the menu and changes the image of the launcher (in case it has to)
 	DropDownMenu.prototype.hide = function (){
 
-		this.launcher.addClassName(this.idLauncher+'_show');
-		this.launcher.removeClassName(this.idLauncher+'_hide');
-
 		this.menu.style.display="none";	
 	}
 
 	//shows the menu (calling showMenu function) and changes the image of the launcher (in case it has to)	
-	DropDownMenu.prototype.show = function (position){
+	DropDownMenu.prototype.show = function (idLauncher, position){
 		//the menu may have change its position on the layout, so it's necessary to recover the element.
-		this.launcher=$(this.idLauncher);
-		this.launcher.addClassName(this.idLauncher+'_hide');
-		this.launcher.removeClassName(this.idLauncher+'_show');
-		this.position = position;
-		this.calculatePosition();
+		if (idLauncher != this.idLauncher){
+			this.idLauncher = idLauncher;
+			this.launcher = $(idLauncher);
+			this.position = position;
+			this.calculatePosition();
+		}
 		this.menu.style.display="block";
 	}
 
