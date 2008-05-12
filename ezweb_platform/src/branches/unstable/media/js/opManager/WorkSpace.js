@@ -130,7 +130,8 @@ function WorkSpace (workSpaceState) {
 		
 		for (var i=0; i<tabList.length; i++) {
 			var tab = this.tabInstances[tabList[i]];
-			tab.deleteHTMLElement();
+			tab.destroy;
+			//TODO:treatment of wiring, varManager, etc.
 		}
 		LayoutManagerFactory.getInstance().hideCover();
 	}
@@ -144,6 +145,7 @@ function WorkSpace (workSpaceState) {
 
 			msg = interpolate(gettext("Error removing workspace, changes will not be saved: %(errorMsg)s."), {errorMsg: msg}, true);
 			LogManagerFactory.getInstance().log(msg);
+			LayoutManagerFactory.getInstance().hideCover();
 	}
 	
 	//**** TAB CALLBACK*****

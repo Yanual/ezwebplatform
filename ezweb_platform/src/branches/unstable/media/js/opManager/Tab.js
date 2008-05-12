@@ -53,9 +53,9 @@ function Tab (tabInfo, workSpace) {
 		msg = interpolate(gettext("Error renaming a tab, changes will not be saved: %(errorMsg)s."), {errorMsg: msg}, true);
 		LogManagerFactory.getInstance().log(msg);
 	}
-
+	
 	var deleteSuccess = function(transport){
-		this.deleteHTMLElement();
+		this.destroy();
 		LayoutManagerFactory.getInstance().hideCover();
 	}
 	var deleteError = function(transport, e){
@@ -68,12 +68,21 @@ function Tab (tabInfo, workSpace) {
 
 		msg = interpolate(gettext("Error removing a tab: %(errorMsg)s."), {errorMsg: msg}, true);
 		LogManagerFactory.getInstance().log(msg);
+		
+		LayoutManagerFactory.getInstance().hideCover();
 	}
 
     // ****************
     // PUBLIC METHODS
     // ****************
 
+	Tab.prototype.destroy = function(){
+		Element.remove(this.tabHTMLElement);
+		this.dragboard.destroy();
+		this.dragboard = null;
+		//TODO: delete the object
+	}
+	
 	Tab.prototype.updateInfo = function (tabName, visible){
 
 		//If the server isn't working the changes will not be saved	
@@ -148,10 +157,6 @@ function Tab (tabInfo, workSpace) {
 	Tab.prototype.hide = function () {
 		LayoutManagerFactory.getInstance().hideTab(this.tabHTMLElement);
 		//this.hideDragboard();
-	}
-	
-	Tab.prototype.deleteHTMLElement = function () {
-		Element.remove(this.tabHTMLElement);
 	}
 	
 	Tab.prototype.go = function () {

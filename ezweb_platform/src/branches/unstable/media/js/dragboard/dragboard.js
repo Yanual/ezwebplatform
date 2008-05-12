@@ -504,7 +504,12 @@ function Dragboard(tab, workSpace, dragboardElement) {
 	Dragboard.prototype.hide = function () {
 		LayoutManagerFactory.getInstance().hideView(this.dragboardElement);
 	}
-
+	
+	Dragboard.prototype.destroy = function () {
+		Element.remove(this.dragboardElement);
+		//TODO: remove all references and delete the object
+	}
+	
 	Dragboard.prototype.parseTab = function(tabInfo) {
 		var curIGadget, position, width, height, igadget, gadget, gadgetid, minimized;
 

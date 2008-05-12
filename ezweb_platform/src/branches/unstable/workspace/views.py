@@ -57,7 +57,6 @@ from workspace.models import AbstractVariable, WorkSpaceVariable, Tab, WorkSpace
 from commons.get_data import get_workspace_data, get_global_workspace_data, get_tab_data
 
 def deleteTab (tab):
-    tab.ws_variable.delete()
     tab.delete()
 
 def createTab (tab_name, user,  workspace):
