@@ -5,8 +5,8 @@
 # 
 # Component: EzWeb
 # 
-# (C) Copyright 2004 Telefónica Investigación y Desarrollo 
-#     S.A.Unipersonal (Telefónica I+D) 
+# (C) Copyright 2004 Telefï¿½nica Investigaciï¿½n y Desarrollo 
+#     S.A.Unipersonal (Telefï¿½nica I+D) 
 # 
 # Info about members and contributors of the MORFEO project 
 # is available at: 
@@ -36,21 +36,18 @@
 #   http://morfeo-project.org/
 #
 
-from django.db import IntegrityError
-
-from django.http import HttpResponse, HttpResponseServerError, HttpResponseForbidden
+from django.http import HttpResponseServerError
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User 
 from django_restapi.resource import Resource
-from django.utils.translation import ugettext as _
 
 from voting.models import UserVote
 from resource.models import GadgetResource
 
-from commons.authentication import *
 from commons.catalogue_utils import get_vote_response
 from commons.logs import log
 from commons.utils import get_xml_error
+from commons.authentication import user_authentication
 
 
 def update_popularity(gadget):
@@ -88,17 +85,17 @@ class GadgetVotesCollection(Resource):
 
     def create(self,request, user_name, vendor, name, version):
 
-    	try:
-	    format = request.__getitem__('format')
-	except:
-	    format = 'default'
+        try:
+            format = request.__getitem__('format')
+        except:
+            format = 'default'
 
         user = user_authentication(request, user_name)
 
-	# Get the vote from the request
-	vote = request.__getitem__('vote')
-
-	# Get the gadget's id for those vendor, name and version
+        # Get the vote from the request
+        vote = request.__getitem__('vote')
+    
+        # Get the gadget's id for those vendor, name and version
         gadget = get_object_or_404(GadgetResource, short_name=name,vendor=vendor,version=version)
 
         # Insert the vote for these resource and user in the database
@@ -108,9 +105,9 @@ class GadgetVotesCollection(Resource):
             log (ex, request)
             return HttpResponseServerError(get_xml_error(unicode(ex)), mimetype='application/xml; charset=UTF-8')
 
-	try:
-	    update_popularity(gadget)
-	except Exception, ex:
+        try:
+            update_popularity(gadget)
+        except Exception, ex:
             log (ex, request)
             return HttpResponseServerError(get_xml_error(unicode(ex)), mimetype='application/xml; charset=UTF-8')
 
@@ -120,46 +117,46 @@ class GadgetVotesCollection(Resource):
     def read(self,request,user_name,vendor,name,version):
 
         try:
-	    format = request.__getitem__('format')
-	except:
-	    format = 'default'
+            format = request.__getitem__('format')
+        except:
+            format = 'default'
 
-	# Get the gadget's id for those vendor, name and version
+        # Get the gadget's id for those vendor, name and version
         gadget = get_object_or_404(GadgetResource, short_name=name,vendor=vendor,version=version)
 
-	# Get the user's id for that user_name
-	user = user_authentication(request, user_name)
+        # Get the user's id for that user_name
+        user = user_authentication(request, user_name)
 
-	return get_vote_response(gadget,user, format)
+        return get_vote_response(gadget,user, format)
 
 
     def update(self,request,user_name,vendor,name,version):
 
-    	try:
-	    format = request.__getitem__('format')
-	except:
-	    format = 'default'
+        try:
+            format = request.__getitem__('format')
+        except:
+            format = 'default'
 
         user = user_authentication(request, user_name)
 
-	# Get the vote from the request
-	vote = request.PUT['vote']
+        # Get the vote from the request
+        vote = request.PUT['vote']
 
-	# Get the gadget's id for those vendor, name and version
+        # Get the gadget's id for those vendor, name and version
         gadget = get_object_or_404(GadgetResource, short_name=name,vendor=vendor,version=version)
 
         # Insert the vote for these resource and user in the database
         try:
             userVote = get_object_or_404(UserVote, idUser=user, idResource=gadget)
-	    userVote.vote = vote
-	    userVote.save()
+            userVote.vote = vote
+            userVote.save()
         except Exception, ex:
             log (ex, request)
             return HttpResponseServerError(get_xml_error(unicode(ex)), mimetype='application/xml; charset=UTF-8')
 
-	try:
-	    update_popularity(gadget)
-	except Exception, ex:
+        try:
+            update_popularity(gadget)
+        except Exception, ex:
             log (ex, request)
             return HttpResponseServerError(get_xml_error(unicode(ex)), mimetype='application/xml; charset=UTF-8')
 

@@ -36,11 +36,8 @@
 #   http://morfeo-project.org/
 #
 
-from django.conf.urls.defaults import *
-from voting.views import *
-
-from django_restapi.model_resource import Collection
-from django_restapi.responder import *
+from django.conf.urls.defaults import patterns
+from voting.views import GadgetVotesCollection
 
 urlpatterns = patterns('voting.views',
     (r'^(?P<vendor>[^/\t\n\r\f\v]+)/(?P<name>[^/\t\n\r\f\v]+)/(?P<version>[\._-ÑñáéíóúÁÉÍÓÚ\w]+)$',
