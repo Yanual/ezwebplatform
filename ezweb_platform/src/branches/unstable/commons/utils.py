@@ -37,7 +37,7 @@
 #
 
 import types
-from decimal import *
+from decimal import Decimal
 from django.db import models
 from django.utils import simplejson
 from django.core.serializers.json import DateTimeAwareJSONEncoder

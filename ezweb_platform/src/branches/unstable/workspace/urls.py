@@ -36,12 +36,10 @@
 #   http://morfeo-project.org/
 #
 
-from django.conf.urls.defaults import *
-from django_restapi.model_resource import Collection
-from django_restapi.responder import *
+from django.conf.urls.defaults import patterns
 
-from workspace.views import *
-from connectable.views import *
+from connectable.views import ConnectableEntry
+from workspace.views import WorkSpaceVariableCollection, TabEntry, TabCollection, WorkSpaceEntry, WorkSpaceCollection
 
 urlpatterns = patterns('workspace.views',
 

@@ -35,23 +35,16 @@
 # 
 #   http://morfeo-project.org/
 #
-import sys
 
-from django.core import serializers
 from django.contrib.auth.models import User
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseServerError
-from django.shortcuts import get_object_or_404, get_list_or_404
 
 from django_restapi.resource import Resource
 
 from resource.models import GadgetResource
-from resource.models import GadgetWiring
-from tag.models import UserTag
 
 from commons.authentication import user_authentication
 from commons.catalogue_utils import get_uniquelist, get_sortedlist, get_resource_response
-from commons.utils import get_xml_error
 
 def get_and_list(value):
 
@@ -67,14 +60,14 @@ def get_and_list(value):
         taglist = GadgetResource.objects.filter(usertag__tag__icontains = e)
         if taglist:
             gadgetlist = gadgetlist | taglist
-	gadgetlist = get_uniquelist(gadgetlist)
-	result.append(gadgetlist)
+        gadgetlist = get_uniquelist(gadgetlist)
+        result.append(gadgetlist)
     for j in result:
         if counter == 0:
             gadgetlist = j
-	    counter = counter + 1
-	else:
-	    gadgetlist = get_uniquelist(gadgetlist+j, 2)
+            counter = counter + 1
+        else:
+            gadgetlist = get_uniquelist(gadgetlist+j, 2)
     return gadgetlist
 
 def get_or_list(value):
@@ -128,26 +121,26 @@ class GadgetsCollectionByGenericSearch(Resource):
             format = request.__getitem__('format')
         except:
             format = 'default'
-	
-	andlist = []
-	orlist = []
-	notlist = []
-	fields = 0
 
-	if (value1 != "_"):
+        andlist = []
+        orlist = []
+        notlist = []
+        fields = 0
+        
+        if (value1 != "_"):
             andlist = get_and_list(value1)
-	    fields = fields+1
-	if (value2 != "_"):
+            fields = fields+1
+        if (value2 != "_"):
             orlist = get_or_list(value2)
-	    fields = fields+1
-	if (value3 != "_"):
+            fields = fields+1
+        if (value3 != "_"):
             notlist = get_not_list(value3)
-	    fields = fields+1
+            fields = fields+1
 
         gadgetlist = andlist+orlist+notlist
-	gadgetlist = get_uniquelist(gadgetlist,fields)
+        gadgetlist = get_uniquelist(gadgetlist,fields)
         gadgetlist = get_sortedlist(gadgetlist, orderby)	
-	items = len(gadgetlist)
+        items = len(gadgetlist)
         #paginate
         a= int(pag)
         b= int(offset)
@@ -204,7 +197,7 @@ class GadgetsCollectionByCriteria(Resource):
             gadgetlist = GadgetResource.objects.filter(Q(gadgetwiring__friendcode = value), Q(gadgetwiring__wiring = 'in'))
 
         gadgetlist = get_uniquelist(gadgetlist)
-	gadgetlist = get_sortedlist(gadgetlist, orderby)
+        gadgetlist = get_sortedlist(gadgetlist, orderby)
         items = len(gadgetlist)
         #paginate
         a= int(pag)

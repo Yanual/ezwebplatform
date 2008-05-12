@@ -50,24 +50,23 @@ def get_xml_description(gadgetlist, user):
     for e in gadgetlist:
 
         xml_tag = get_tags_by_resource(e.id,user.id)
-	xml_event = get_events_by_resource(e.id)
-	xml_slot = get_slots_by_resource(e.id)
-	  				
-	xml_resource += "".join(['<resource>\n',
-            '<vendor>'+str(e.vendor)+'</vendor>\n',
-            '<name>'+str(e.short_name)+'</name>\n',
-	    '<version>'+str(e.version)+'</version>\n',
-	    '<Author>'+str(e.author)+'</Author>\n',
-	    '<Mail>'+str(e.mail)+'</Mail>\n',
-    	    '<description>'+str(e.description)+'</description>\n',
-    	    '<uriImage>'+str(e.image_uri)+'</uriImage>\n',
-    	    '<uriWiki>'+str(e.wiki_page_uri)+'</uriWiki>\n',
-	    '<uriTemplate>'+str(e.template_uri)+'</uriTemplate>\n',
-	       xml_tag+'\n',
-	          xml_event+'\n',
-	             xml_slot+'\n',
-   	    '</resource>'])
-		
+        xml_event = get_events_by_resource(e.id)
+        xml_slot = get_slots_by_resource(e.id)
+        xml_resource += "".join(['<resource>\n',
+                                 '<vendor>'+str(e.vendor)+'</vendor>\n',
+                                 '<name>'+str(e.short_name)+'</name>\n',
+                                 '<version>'+str(e.version)+'</version>\n',
+                                 '<Author>'+str(e.author)+'</Author>\n',
+                                 '<Mail>'+str(e.mail)+'</Mail>\n',
+                                 '<description>'+str(e.description)+'</description>\n',
+                                 '<uriImage>'+str(e.image_uri)+'</uriImage>\n',
+                                 '<uriWiki>'+str(e.wiki_page_uri)+'</uriWiki>\n',
+                                 '<uriTemplate>'+str(e.template_uri)+'</uriTemplate>\n',
+                                 xml_tag+'\n',
+                                 xml_event+'\n',
+                                 xml_slot+'\n',
+                                 '</resource>'])
+
     response = "".join(['<?xml version="1.0" encoding="UTF-8" ?>\n',
         '<resources>'+xml_resource+'</resources>'])
     return response
@@ -76,7 +75,7 @@ def get_xml_description(gadgetlist, user):
 def get_events_by_resource(gadget_id):
 
     xml_event=''
-		
+
     for e in GadgetWiring.objects.filter(idResource=gadget_id, wiring='out'):
         xml_event +='<Event>'+e.friendcode+'</Event>'
 
@@ -87,7 +86,7 @@ def get_events_by_resource(gadget_id):
 def get_slots_by_resource(gadget_id):
 
     xml_slot=''
-		
+
     for e in GadgetWiring.objects.filter(idResource=gadget_id, wiring='in'):
         xml_slot +='<Slot>'+e.friendcode+'</Slot>'
    
@@ -96,9 +95,9 @@ def get_slots_by_resource(gadget_id):
 
 
 def get_tags_by_resource(gadget_id, user_id):
-		
+
     xml_tag=''
-		
+
     for e in UserTag.objects.filter(idResource=gadget_id, idUser=user_id):
         xml_tag += "".join(['<Tag>\n'
                             '<Value>'+e.tag+'</Value>\n',
@@ -110,14 +109,14 @@ def get_tags_by_resource(gadget_id, user_id):
                             '<Value>'+e.tag+'</Value>\n',
 	                           '<Added_by>No</Added_by>\n',
                             '</Tag>'])
-	
+
     response='<Tags>'+xml_tag+'</Tags>'
     return response
 
 
 def get_vote_by_resource(gadget_id, user_id):
-		
+
     xml_vote=''
-	
+
     response='<Vote>'+xml_vote+'</Vote>'
     return response

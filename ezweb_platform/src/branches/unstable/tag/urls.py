@@ -36,11 +36,8 @@
 #   http://morfeo-project.org/
 #
 
-from django.conf.urls.defaults import *
-from tag.views import *
-
-from django_restapi.model_resource import Collection
-from django_restapi.responder import *
+from django.conf.urls.defaults import patterns
+from tag.views import GadgetTagsCollection
 
 urlpatterns = patterns('tag.views',
 

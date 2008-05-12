@@ -35,12 +35,9 @@
 # 
 #   http://morfeo-project.org/
 #
+from django.conf.urls.defaults import patterns
 
-from django.conf.urls.defaults import *
-from django_restapi.model_resource import Collection
-from django_restapi.responder import *
-
-from context.views import *
+from context.views import ContextCollection, ContextEntry, ContextValueEntry
 
 urlpatterns = patterns('context.views',
 

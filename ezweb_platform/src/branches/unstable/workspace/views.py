@@ -35,19 +35,13 @@
 # 
 #   http://morfeo-project.org/
 #
-import re
-
 from django.shortcuts import get_object_or_404, get_list_or_404
-from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpResponseServerError
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError
 from django.core import serializers
-from django.utils import simplejson
 
 from django.utils.translation import ugettext as _
-from django.utils.translation import string_concat
 
 from django_restapi.resource import Resource
-from django_restapi.model_resource import Collection, Entry
-from django_restapi.responder import *
 
 from django.db import transaction
 
@@ -57,8 +51,10 @@ from commons.logs import log
 from commons.utils import get_xml_error, json_encode
 
 from connectable.models import Out
-from workspace.models import *
 from igadget.models import Variable
+
+from workspace.models import AbstractVariable, WorkSpaceVariable, Tab, WorkSpace
+from commons.get_data import get_workspace_data, get_global_workspace_data, get_tab_data
 
 def deleteTab (tab):
     tab.ws_variable.delete()
@@ -113,7 +109,7 @@ def setVisibleTab(user, workspace_id, tab):
    
 def createWorkSpace (workSpaceName, user):
     #Workspace creation
-    workspace = WorkSpace (name=workSpaceName, active=False, user=user)
+    workspace = WorkSpace(name=workSpaceName, active=False, user=user)
     workspace.save()
     
     setActiveWorkspace(user, workspace)
@@ -121,7 +117,7 @@ def createWorkSpace (workSpaceName, user):
     #Tab creation
     tab_ids = createTab ('MyTab', user, workspace)
     
-     # Returning created Ids
+    # Returning created Ids
     ids = {}
     
     ids['workspace'] = {}
@@ -372,16 +368,16 @@ class WorkSpaceVariableCollection(Resource):
             workSpaceVariables = variables['workspaceVars']
             
             for wsVar in workSpaceVariables:
-               wsVarDAO = WorkSpaceVariable.objects.get(pk=wsVar['id'])
-               
-               wsVarDAO.value=wsVar['value'];
-               wsVarDAO.save();   
+                wsVarDAO = WorkSpaceVariable.objects.get(pk=wsVar['id'])
+                   
+                wsVarDAO.value=wsVar['value'];
+                wsVarDAO.save();   
                
             for igVar in igadgetVariables:
-               igVarDAO = Variable.objects.get(pk=igVar['id'])
-               
-               igVarDAO.value=igVar['value'];
-               igVarDAO.save(); 
+                igVarDAO = Variable.objects.get(pk=igVar['id'])
+   
+                igVarDAO.value=igVar['value'];
+                igVarDAO.save(); 
             
             return HttpResponse(str('OK'))
         except Exception, e:

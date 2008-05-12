@@ -43,10 +43,7 @@ from commons.exceptions import TemplateParseException
 
 from django.utils.translation import ugettext as _
 
-from models import *
-
-from django.conf import settings
-from urlparse import urlparse
+from gadget.models import XHTML
 
 class GadgetCodeParser:
     xHTML = None
@@ -61,7 +58,7 @@ class GadgetCodeParser:
 
         try:
             xhtml = download_http_content(codeURI)
-        except Exception, e :
+        except Exception:
             raise TemplateParseException(_("XHTML code is not accessible"))
 
         self.xHTML = XHTML (uri=gadgetURI + "/xhtml", code=xhtml, url=codeURI)

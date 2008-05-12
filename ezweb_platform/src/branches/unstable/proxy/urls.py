@@ -35,11 +35,8 @@
 # 
 #   http://morfeo-project.org/
 #
-from django.conf.urls.defaults import *
-from proxy.views import *
-
-from django_restapi.resource import Resource
-from django_restapi.responder import *
+from django.conf.urls.defaults import patterns
+from proxy.views import Proxy
 
 urlpatterns = patterns('proxy.views',
 

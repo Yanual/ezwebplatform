@@ -36,12 +36,10 @@
 #   http://morfeo-project.org/
 #
 
-from urllib2 import *
 import httplib
 import urlparse
 from django_restapi.resource import Resource
-from django_restapi.responder import *
-from proxy.utils import *
+from proxy.utils import encode_query, is_valid_header
 
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import string_concat
@@ -74,15 +72,15 @@ class Proxy(Resource):
         # Params
         if request.POST.has_key('params'):
             params = encode_query(request.POST['params'])
-	else:
-	    params = ''
+        else:
+            params = ''
 
         # HTTP call
         try:
             # Request creation
             proto, host, cgi, param, query = urlparse.urlparse(url)[:5]
             
-	    query = encode_query(query)
+            query = encode_query(query)
             
             # Proxy support
             proxy = ""
@@ -127,18 +125,18 @@ class Proxy(Resource):
                 conn.request(method, url, params, headers)
             else:
                 conn.request(method, cgi, params, headers)
-	    	
+
             res = conn.getresponse()
 
-	    # Redirect resolution
-	    MAX_REDIRECTS = 50
-	    index_redirects = 0
-
+            # Redirect resolution
+            MAX_REDIRECTS = 50
+            index_redirects = 0
+    
             while (res.status >= 300) and (res.status < 400):
-		
-		if (index_redirects >= MAX_REDIRECTS):
-		    return HttpResponse('<error>Redirect limit has been exceeded</error>')
-		index_redirects = index_redirects + 1
+
+                if (index_redirects >= MAX_REDIRECTS):
+                    return HttpResponse('<error>Redirect limit has been exceeded</error>')
+                index_redirects = index_redirects + 1
 
                 url = res.getheader('Location')
                 proto, host, cgi, param, auxquery = urlparse.urlparse(url)[:5]

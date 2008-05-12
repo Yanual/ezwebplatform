@@ -83,8 +83,8 @@ def get_resource_response(gadgetlist, format, items, user):
         return response
     elif format == 'xml':
         response = get_xml_description(gadgetlist, user)
-	response = HttpResponse(response,mimetype='text/xml; charset=UTF-8')
-	response.__setitem__('items', items)
+        response = HttpResponse(response,mimetype='text/xml; charset=UTF-8')
+        response.__setitem__('items', items)
         return response
     else:
         return HttpResponseServerError(get_xml_error(_("Invalid format. Format must be either xml or json")), mimetype='application/xml; charset=UTF-8')

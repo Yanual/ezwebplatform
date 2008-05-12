@@ -36,9 +36,6 @@
 #   http://morfeo-project.org/
 #
 
-from django.http import Http404
-from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 
 class Http403(Exception):
@@ -47,7 +44,7 @@ class Http403(Exception):
 def user_authentication(request, user_name):
     user = request.user
     if not user.is_authenticated():
-	raise Http403 (_("You must be logged"))
+        raise Http403 (_("You must be logged"))
 
     if user.username != user_name:
         raise Http403 (_("You do not have permission"))

@@ -37,16 +37,12 @@
 #
 
 from django.shortcuts import get_object_or_404, get_list_or_404
-from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpResponseServerError
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError
 from django.core import serializers
-from django.utils import simplejson
 
 from django.utils.translation import ugettext as _
-from django.utils.translation import string_concat
 
 from django_restapi.resource import Resource
-from django_restapi.model_resource import Collection, Entry
-from django_restapi.responder import *
 
 from django.db import transaction
 
@@ -58,7 +54,7 @@ from commons.utils import get_xml_error, json_encode
 from gadget.models import Gadget, VariableDef
 from workspace.models import Tab, WorkSpace
 from connectable.models import In, Out
-from igadget.models import *
+from igadget.models import Position, IGadget, AbstractVariable, Variable
 
 def createConnectable(var):
     #If var is and SLOT or and EVENT, a proper connectable object must be created!
@@ -94,7 +90,7 @@ def SaveIGadget(igadget, user, tab):
     left = igadget.get('left')
         
     # Creates IGadget position
-    position = Position (posX=left, posY=top, height=height, width=width, minimized=False)
+    position = Position(posX=left, posY=top, height=height, width=width, minimized=False)
     position.save()
 
     try:
@@ -115,7 +111,7 @@ def SaveIGadget(igadget, user, tab):
             abstractVar = AbstractVariable(type="IGADGET", value=var_value, name=varDef.name)  
             abstractVar.save()  
                 
-            var = Variable (vardef=varDef, igadget=new_igadget, abstract_variable=abstractVar)
+            var = Variable(vardef=varDef, igadget=new_igadget, abstract_variable=abstractVar)
             var.save()
             
             #Wiring related vars (SLOT&EVENTS) have implicit connectables!

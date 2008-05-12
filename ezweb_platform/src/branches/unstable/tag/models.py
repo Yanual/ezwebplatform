@@ -44,20 +44,20 @@ from resource.models import GadgetResource
 
 class UserTag(models.Model): 
       
-     tag = models.CharField(max_length=20) 
-     weight = models.CharField(max_length=20, null = True)
-     criteria = models.CharField(max_length=20, null = True)
-     value = models.CharField(max_length=20, null = True)
-     idUser = models.ForeignKey(User)
-     idResource = models.ForeignKey(GadgetResource)
+    tag = models.CharField(max_length=20) 
+    weight = models.CharField(max_length=20, null = True)
+    criteria = models.CharField(max_length=20, null = True)
+    value = models.CharField(max_length=20, null = True)
+    idUser = models.ForeignKey(User)
+    idResource = models.ForeignKey(GadgetResource)
  
-     class Meta:
-	 unique_together = ("tag", "idUser","idResource")
+    class Meta:
+        unique_together = ("tag", "idUser","idResource")
 
-     class Admin: 
-         pass 
+    class Admin: 
+        pass 
   
-     def __unicode__(self): 
-         return self.tag 
+    def __unicode__(self): 
+        return self.tag 
 
 

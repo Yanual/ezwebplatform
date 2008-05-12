@@ -36,26 +36,20 @@
 #   http://morfeo-project.org/
 #
 
-from django.db import IntegrityError
-
 from django.shortcuts import get_object_or_404, get_list_or_404
-from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpResponseServerError
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.core import serializers
-from django.utils import simplejson
 from django.db import transaction
 from django.utils.translation import gettext_lazy as _
-from django.utils.translation import string_concat, get_language
+from django.utils.translation import get_language
 
 from django_restapi.resource import Resource
-from django_restapi.model_resource import Collection, Entry
-from django_restapi.responder import *
 
 from commons.authentication import user_authentication
-from commons.utils import *
+from commons.utils import get_xml_error, json_encode
 
 from commons.get_data import get_concept_data
-from context.models import *
+from context.models import Concept, ConceptName
 
 
 
@@ -85,13 +79,13 @@ class ContextCollection(Resource):
         for received_concept in received_data['concepts']:
             concept = None
             try:
-                 concept = Concept.objects.get(concept=received_concept['concept'])
-                 if not concept.adaptor == received_concept['adaptor']:
-                     return HttpResponseBadRequest(get_xml_error(_(u'Attempted update. You must use PUT HTTP method in this case')))
+                concept = Concept.objects.get(concept=received_concept['concept'])
+                if not concept.adaptor == received_concept['adaptor']:
+                    return HttpResponseBadRequest(get_xml_error(_(u'Attempted update. You must use PUT HTTP method in this case')))
             
             except Concept.DoesNotExist:
-                 concept = Concept (concept=received_concept['concept'], adaptor=received_concept['adaptor'])
-                 concept.save()
+                concept = Concept (concept=received_concept['concept'], adaptor=received_concept['adaptor'])
+                concept.save()
             
             try:
                 #Checks if concept name exits in database
@@ -159,12 +153,12 @@ class ContextEntry(Resource):
         for received_concept in received_data:
             concept = None
             try:
-                 concept = Concept.objects.get(concept=concept_name)
-                 concept.adaptor = received_concept['adaptor']
-                 concept.save()
+                concept = Concept.objects.get(concept=concept_name)
+                concept.adaptor = received_concept['adaptor']
+                concept.save()
                  
             except Concept.DoesNotExist:
-                 return HttpResponseBadRequest(get_xml_error(_("Concept doesn't exist. You must use POST HTTP method in this case")))
+                return HttpResponseBadRequest(get_xml_error(_("Concept doesn't exist. You must use POST HTTP method in this case")))
 
             cname = ConceptName (name=received_concept['name'], concept=concept)
             cname.save()
@@ -188,7 +182,6 @@ class ContextValueEntry(Resource):
         data_res = {}
 
         if concept_name == 'username':
-            user = user_authentication(request, user_name)
             data_res ['username'] = user_name  
         elif concept_name == 'language':
             data_res ['language'] = get_language() 

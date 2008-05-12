@@ -37,10 +37,8 @@
 #
 
 from os import path
-from django.conf.urls.defaults import *
+from django.conf.urls.defaults import patterns, include
 from django.conf import settings
-
-from django_restapi.resource import Resource
 
 #from resource.views import addToPlatform
 

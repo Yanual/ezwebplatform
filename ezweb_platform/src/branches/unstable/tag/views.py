@@ -36,13 +36,8 @@
 #   http://morfeo-project.org/
 #
 
-import sys
-
-from django.db import IntegrityError
-
-from django.http import HttpResponse, HttpResponseServerError, HttpResponseForbidden
-from django.shortcuts import get_object_or_404
-from django.contrib.auth.models import User 
+from django.http import HttpResponseServerError, HttpResponseForbidden 
+from django.shortcuts import get_object_or_404 
 from django_restapi.resource import Resource
 from django.utils.translation import ugettext as _
 
@@ -53,7 +48,7 @@ from tag.models import UserTag
 from tag.parser import TagsXMLHandler
 from resource.models import GadgetResource
 
-from commons.authentication import *
+from commons.authentication import user_authentication, Http403
 from commons.catalogue_utils import get_tag_response
 from commons.logs import log
 from commons.utils import get_xml_error
@@ -63,78 +58,79 @@ class GadgetTagsCollection(Resource):
 
     def create(self,request, user_name, vendor, name, version):
 
-	try:
-	    format = request.__getitem__('format')
-	except:
-	    format = 'default'
-
+        try:
+            format = request.__getitem__('format')
+        except:
+            format = 'default'
+        
         user = user_authentication(request, user_name)
-
+        
         # Get the xml containing the tags from the request
         tags_xml = request.__getitem__('tags_xml')
         tags_xml = tags_xml.encode("utf-8")
         # Parse the xml containing the tags
-	parser = make_parser()
-	handler = TagsXMLHandler()
+        parser = make_parser()
+        handler = TagsXMLHandler()
+        
+        # Tell the parser to use our handler
+        parser.setContentHandler(handler)
 
-	# Tell the parser to use our handler
-	parser.setContentHandler(handler)
-		
-	# Parse the input
-	try:
+        # Parse the input
+        try:
             from StringIO import StringIO
         except ImportError:
-	    from cStringIO import StringIO
-	inpsrc = InputSource()
+            from cStringIO import StringIO
+            
+        inpsrc = InputSource()
         inpsrc.setByteStream(StringIO(tags_xml))
         parser.parse(inpsrc)
-	
+        
         # Get the gadget's id for those vendor, name and version
         gadget = get_object_or_404(GadgetResource, short_name=name,vendor=vendor,version=version)
-	
-	# Insert the tags for these resource and user in the database
-	for e in handler._tags:
-	    try:
-	        UserTag.objects.get_or_create(tag=e, idUser=user, idResource=gadget)
-	    except Exception, ex:
-	        log (ex, request)
-	        return HttpResponseServerError(get_xml_error(unicode(ex)), mimetype='application/xml; charset=UTF-8')
-
+        
+        # Insert the tags for these resource and user in the database
+        for e in handler._tags:
+            try:
+                UserTag.objects.get_or_create(tag=e, idUser=user, idResource=gadget)
+            except Exception, ex:
+                log (ex, request)
+                return HttpResponseServerError(get_xml_error(unicode(ex)), mimetype='application/xml; charset=UTF-8')
+        
         return get_tag_response(gadget,user, format)
 
-	
+
     def read(self,request,user_name,vendor,name,version):
 
         try:
-	    format = request.__getitem__('format')
-	except:
-	    format = 'default'
+            format = request.__getitem__('format')
+        except:
+            format = 'default'
 
-	# Get the gadget's id for those vendor, name and version
+        # Get the gadget's id for those vendor, name and version
         gadget = get_object_or_404(GadgetResource, short_name=name,vendor=vendor,version=version).id
 
-	# Get the user's id for that user_name
-	user = user_authentication(request, user_name)
-
-	return get_tag_response(gadget,user, format)
+        # Get the user's id for that user_name
+        user = user_authentication(request, user_name)
+        
+        return get_tag_response(gadget,user, format)
 
 
     def delete(self,request,user_name,vendor,name,version, tag):
 
         try:
             user = user_authentication(request, user_name)
-	except Http403, e:
+        except Http403, e:
             msg = _("This tag cannot be deleted: ") + unicode(e)
             log (msg, request)
             return HttpResponseForbidden(get_xml_error(msg), mimetype='application/xml; charset=UTF-8')
 
         try:
-	    format = request.__getitem__('format')
-	except:
-	    format = 'default'
+            format = request.__getitem__('format')
+        except:
+            format = 'default'
   
         
-	#value_tag = request.__getitem__('value_tag')
+        #value_tag = request.__getitem__('value_tag')
         value_tag = tag
         gadget = get_object_or_404(GadgetResource, short_name=name,vendor=vendor,version=version).id
         tag = get_object_or_404(UserTag, idUser=user, idResource=gadget, tag=value_tag)

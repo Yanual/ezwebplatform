@@ -36,12 +36,9 @@
 #   http://morfeo-project.org/
 #
 
-from django.conf.urls.defaults import *
-from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
-from django_restapi.resource import Resource
+from django.conf.urls.defaults import patterns
 
-from connectable.views import *
+from connectable.views import ConnectableEntry
 
 urlpatterns = patterns('connectable.views',
 

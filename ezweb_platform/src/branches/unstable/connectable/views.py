@@ -36,24 +36,20 @@
 #   http://morfeo-project.org/
 #
 
-from django.shortcuts import get_object_or_404, get_list_or_404
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.core import serializers
 from django.utils import simplejson
 from django.utils.translation import ugettext as _ 
  
 from django_restapi.resource import Resource
-from django_restapi.model_resource import Collection, Entry
-from django_restapi.responder import *
 
 from django.db import transaction
 
 from commons.authentication import get_user_authentication
-from commons.get_data import get_inout_data, get_igadget_data, get_wiring_data, get_tab_data
+from commons.get_data import get_inout_data, get_wiring_data, get_tab_data
 from commons.logs import log
-from commons.utils import json_encode
+from commons.utils import json_encode, get_xml_error
 
-from gadget.models import VariableDef
 from igadget.models import IGadget, Variable
 from workspace.models import WorkSpace, Tab
 from connectable.models import In, Out, InOut

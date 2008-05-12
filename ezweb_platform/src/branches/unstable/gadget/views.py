@@ -35,21 +35,13 @@
 # 
 #   http://morfeo-project.org/
 #
-
-from xml.dom.ext.reader import Sax2
-from xml.dom.ext import Print
-from xml.sax._exceptions import SAXParseException
-from StringIO import StringIO
-
 from django.db import IntegrityError
 
 from django.shortcuts import get_object_or_404, get_list_or_404
-from django.http import Http404, HttpResponse, HttpResponseServerError
+from django.http import HttpResponse, HttpResponseServerError
 from django.core import serializers
-from django.utils import simplejson
 
 from django_restapi.resource import Resource
-from django_restapi.model_resource import Collection, Entry
 from django_restapi.responder import *
 
 from commons.authentication import user_authentication
@@ -58,18 +50,16 @@ from commons.utils import json_encode
 
 from gadget.templateParser import TemplateParser
 
-from django.contrib.auth.models import User
 from django.db import transaction
 
 from django.utils.translation import ugettext as _
-from django.utils.translation import string_concat
 
 from commons.logs import log
-from commons.utils import *
+from commons.utils import get_xml_error
 from commons.exceptions import TemplateParseException
 from commons.http_utils import download_http_content
 
-from gadget.models import Gadget, Template
+from gadget.models import Gadget
 
 class GadgetCollection(Resource):
     def read(self, request, user_name):
@@ -165,7 +155,7 @@ class GadgetCodeEntry(Resource):
         try:
             xhtml.code = download_http_content(xhtml.url)
             xhtml.save()
-        except Exception, e:
+        except Exception:
             msg = _("XHTML code is not accessible")
             log(msg, request)
             return HttpResponseServerError(get_xml_error(msg))

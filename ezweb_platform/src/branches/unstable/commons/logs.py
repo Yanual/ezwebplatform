@@ -45,16 +45,16 @@ def log(exception, request, file_name='logs'):
     """Prints msg to file_name log file"""
     log_file = os.path.join(settings.MEDIA_ROOT, 'logs', file_name + '.log')
     try: 
-    	f = codecs.open(log_file, "a", "utf-8")
-    	if request.user.username == "":
-    	    user = "[" + _("Anonymous") + "]"
-    	else:
-    	    user = request.user.username
+        f = codecs.open(log_file, "a", "utf-8")
+        if request.user.username == "":
+            user = "[" + _("Anonymous") + "]"
+        else:
+            user = request.user.username
 
-    	line = unicode('ERROR: %s %s %s\n' % (request.method, request.path, user))
-    	f.write(line)
-    	line = '[%s] %s\n' % (datetime.today().strftime('%d/%m/%Y %H:%M:%S'), exception)
-    	f.write(line)
-    	f.close()
+        line = unicode('ERROR: %s %s %s\n' % (request.method, request.path, user))
+        f.write(line)
+        line = '[%s] %s\n' % (datetime.today().strftime('%d/%m/%Y %H:%M:%S'), exception)
+        f.write(line)
+        f.close()
     except IOError:
-    	pass
+        pass

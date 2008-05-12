@@ -5,8 +5,8 @@
 # 
 # Component: EzWeb
 # 
-# (C) Copyright 2004 Telefónica Investigación y Desarrollo 
-#     S.A.Unipersonal (Telefónica I+D) 
+# (C) Copyright 2004 Telefï¿½nica Investigaciï¿½n y Desarrollo 
+#     S.A.Unipersonal (Telefï¿½nica I+D) 
 # 
 # Info about members and contributors of the MORFEO project 
 # is available at: 
@@ -37,20 +37,18 @@
 #
 
 from xml.sax import saxutils
-from xml.sax import make_parser
-
 
 class TagsXMLHandler(saxutils.handler.ContentHandler): 
-	
+
     _tags = []
 
     def resetTags(self):
         self._tags = []
 
     def characters(self, text):
-	self._tags.append(text)
+        self._tags.append(text)
 
     def startElement(self, name, attrs):
-	if (name == 'Tags'):
-	    self.resetTags()
-	    return
+        if (name == 'Tags'):
+            self.resetTags()
+            return

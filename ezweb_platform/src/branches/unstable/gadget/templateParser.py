@@ -43,9 +43,8 @@ from commons.http_utils import download_http_content
 
 from django.utils.translation import ugettext as _
 
-from models import *
-
 from gadgetCodeParser import GadgetCodeParser
+from gadget.models import VariableDef, GadgetContext, ExternalContext, UserPrefOption, Template, Gadget
 
 class TemplateParser:
     def __init__(self, uri, user):
@@ -498,7 +497,7 @@ class TemplateHandler(handler.ContentHandler):
         
         if len(emptyRequiredFields) > 0:
             print emptyRequiredFields
-	    raise TemplateParseException(_("Missing required field(s): %(fields)s") % {fields: unicode(emptyRequiredFields)})
+            raise TemplateParseException(_("Missing required field(s): %(fields)s") % {fields: unicode(emptyRequiredFields)})
 
         self._gadget = Gadget (uri=self._gadgetURI, vendor=self._gadgetVendor, 
                           name=self._gadgetName, version=self._gadgetVersion, 

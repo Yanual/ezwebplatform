@@ -62,22 +62,22 @@ class GadgetsCollection(Resource):
 
     #@transaction.commit_manually
     def create(self,request, user_name):
-	
+
         user = user_authentication(request, user_name)
 
         template_uri = request.__getitem__('template_uri')
         templateParser = None
 
-	try:
-    	    templateParser = TemplateParser(template_uri, user)
+        try:
+            templateParser = TemplateParser(template_uri, user)
 
             templateParser.parse()
-    	    #transaction.commit()
+            #transaction.commit()
         except IntegrityError, e:
             # Gadget already exists. Rollback transaction
             transaction.rollback()
             log(e, request)
-	    return HttpResponseServerError(get_xml_error(unicode(sys.exc_info()[1])), mimetype='application/xml; charset=UTF-8')
+            return HttpResponseServerError(get_xml_error(unicode(sys.exc_info()[1])), mimetype='application/xml; charset=UTF-8')
         except TemplateParseException, e:
             transaction.rollback()
             log(e, request)
@@ -86,44 +86,44 @@ class GadgetsCollection(Resource):
             # Internal error
             transaction.rollback()
             log(e, request)
-	    return HttpResponseServerError(get_xml_error(unicode(sys.exc_info()[1])), mimetype='application/xml; charset=UTF-8')
+            return HttpResponseServerError(get_xml_error(unicode(sys.exc_info()[1])), mimetype='application/xml; charset=UTF-8')
 
 
-	xml_ok = '<ResponseOK>OK</ResponseOK>'
+        xml_ok = '<ResponseOK>OK</ResponseOK>'
         return HttpResponse(xml_ok,mimetype='application/xml; charset=UTF-8')
 
 
     def read(self, request, user_name, pag=0, offset=0):
         user = user_authentication(request, user_name)
 
-	try:
-	    format = request.__getitem__('format')
-	except:
-	    format = 'default'
+        try:
+            format = request.__getitem__('format')
+        except:
+            format = 'default'
 
         try:
-	    orderby = request.__getitem__('orderby')
-	except:
-	    orderby = '-creation_date'
+            orderby = request.__getitem__('orderby')
+        except:
+            orderby = '-creation_date'
 
-	#paginate
-	a= int(pag)
-	b= int(offset)
+        #paginate
+        a= int(pag)
+        b= int(offset)
 
-	items = GadgetResource.objects.count()
+        items = GadgetResource.objects.count()
 
         # Get all the gadgets in the catalogue
-	if a == 0 or b == 0:
-	    gadgetlist = GadgetResource.objects.order_by(orderby)
-	# Get the requested gadgets
-	else:
-	    c=((a-1)*b)
-	    d= (b*a)
-	
-	    if a==1:
-	        c=0
-            gadgetlist = GadgetResource.objects.order_by(orderby)[c:d]
-	
+        if a == 0 or b == 0:
+            gadgetlist = GadgetResource.objects.order_by(orderby)
+        # Get the requested gadgets
+        else:
+            c=((a-1)*b)
+            d= (b*a)
+
+            if a==1:
+                c=0
+                gadgetlist = GadgetResource.objects.order_by(orderby)[c:d]
+
         return get_resource_response(gadgetlist, format, items, user)
 
     
@@ -132,47 +132,16 @@ class GadgetsCollection(Resource):
         user = user_authentication(request, user_name)
 
         #vendor = request.__getitem__('vendor')
-	#name = request.__getitem__('name')
-	#version = request.__getitem__('version')
+        #name = request.__getitem__('name')
+        #version = request.__getitem__('version')
         resource=get_object_or_404(GadgetResource, short_name=name,vendor=vendor,version=version)
-	
-	# Delete the related wiring information for that gadget
-	GadgetWiring.objects.filter(idResource=resource.id).delete()
-	# Delete the related tags for that gadget
-	UserTag.objects.filter(idResource=resource.id).delete()
-	# Delete the object
-	resource.delete()
+
+        # Delete the related wiring information for that gadget
+        GadgetWiring.objects.filter(idResource=resource.id).delete()
+        # Delete the related tags for that gadget
+        UserTag.objects.filter(idResource=resource.id).delete()
+        # Delete the object
+        resource.delete()
 
         xml_ok = '<ResponseOK>OK</ResponseOK>'
-	return HttpResponse(xml_ok,mimetype='text/xml; charset=UTF-8')
-
-
-
-# def addToPlatform(request, user_name):
-
-#     CONFIG='config.conf'
-    
-#     cfg = ConfigParser.ConfigParser()
-#     try:
-#         cfg.readfp(file(CONFIG))
-#     except Exception, e:
-#         print _("Error, could not read config"), e.strerror
-#         return
-     
-#     URL = cfg.get ('URL', 'URLeuropa'.lower())
-    
-    
-#     template_uri = request.__getitem__('template_uri')
-
-#     parameters = {
-#         'url': template_uri,
-#     }
-
-#     coreURL=URL
-#     uri='/user/'+user_name+'/gadgets'
-#     url=coreURL+uri
-#     urlcleanup()
-#     response = urlopen(url, urlencode(parameters)).read()
-	
-#     return HttpResponse(response,mimetype='text/xml; charset=UTF-8')
-
+        return HttpResponse(xml_ok,mimetype='text/xml; charset=UTF-8')
