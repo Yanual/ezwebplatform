@@ -75,7 +75,7 @@ def createTab (tab_name, user,  workspace):
     connectable.save()
     
     # Creating tab
-    tab = Tab (name=tab_name, visible=False, workspace=workspace)
+    tab = Tab (name=tab_name, visible=False, workspace=workspace, abstract_variable=abstractVariable)
     tab.save()
     
     setVisibleTab(user, workspace.pk, tab)

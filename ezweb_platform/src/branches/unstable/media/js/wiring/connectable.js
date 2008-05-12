@@ -45,6 +45,7 @@ function wConnectable (name, type, friendCode, id) {
   this._name = name;
   this._type = type;
   this._friendCode = friendCode;
+  this.connectableType = null;
 }
 
 wConnectable.prototype.getType = function() {
@@ -68,6 +69,7 @@ wConnectable.prototype.getFriendCode = function() {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 function wOut(name, type, friendCode, id) {
    wConnectable.call(this, name, type, friendCode, id);
+   this.connectableType = "out";
 }
 
 wOut.prototype = new wConnectable();
@@ -78,6 +80,7 @@ wOut.prototype = new wConnectable();
 function wIn(name, type, friendCode, id) {
   wConnectable.call(this, name, type, friendCode, id);
   this.outputs = new Hash();
+  this.connectableType = "in";
 }
 
 wIn.prototype = new wConnectable();
@@ -116,6 +119,7 @@ function wInOut(name, type, friendCode, id) {
   wIn.call(this, name, type, friendCode, id);
 
   this.inputs = new Hash();
+  this.connectableType = "inout";
 }
 
 wInOut.prototype = new wIn();

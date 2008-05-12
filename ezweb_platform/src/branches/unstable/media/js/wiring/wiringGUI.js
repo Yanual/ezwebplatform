@@ -606,41 +606,6 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
     this.color_scheme.push("#913dff");
     this.color_scheme.push("#5357cf");
 
-    this.color_scheme.push("#b3ab00");
-    this.color_scheme.push("#b3ffeb");
-    this.color_scheme.push("#ffb08f");
-    this.color_scheme.push("#ffbff5");
-    this.color_scheme.push("#40ffed");
-    this.color_scheme.push("#e6dfcf");
-
-    this.color_scheme.push("#f0f2ff");
-    this.color_scheme.push("#d1ffeb");
-    this.color_scheme.push("#91ffe6");
-    this.color_scheme.push("#2800b0");
-    this.color_scheme.push("#c4ffde");
-    this.color_scheme.push("#a82fe0");
-
-    this.color_scheme.push("#ff5200");
-    this.color_scheme.push("#ed9eff");
-    this.color_scheme.push("#5c97e6");
-    this.color_scheme.push("#ff0dba");
-    this.color_scheme.push("#1c778c");
-    this.color_scheme.push("#0058a1");
-
-    this.color_scheme.push("#f7cbb2");
-    this.color_scheme.push("#8f2e00");
-    this.color_scheme.push("#631cff");
-    this.color_scheme.push("#a5cf00");
-    this.color_scheme.push("#997354");
-    this.color_scheme.push("#ff73eb");
-
-    this.color_scheme.push("#c41200");
-    this.color_scheme.push("#3b00ed");
-    this.color_scheme.push("#13f2ce");
-    this.color_scheme.push("#ff8ac7");
-    this.color_scheme.push("#ffbae0");
-    this.color_scheme.push("#91ffba");
-
 }
 
 /**********

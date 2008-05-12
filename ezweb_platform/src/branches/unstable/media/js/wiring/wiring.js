@@ -67,55 +67,62 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 
 	Wiring.prototype.loadWiring = function (workSpaceData) {
 		var workSpace = workSpaceData['workspace'];
-		var inOuts = workSpace['wiringInfo'];
+		var ws_vars_info = workSpace['workSpaceVariableList'];
 		var tabs = workSpace['tabList'];
 
 		for (var i = 0; i < tabs.length; i++) {
 			this.processTab(tabs[i]);
 		}
 
-		// Load InOuts
+		// Load WorkSpace variables
 		var varManager = this.workspace.getVarManager();
 
-		for (var i = 0; i < inOuts.length; i++) {
-			var currentInout = inOuts[i];
-			// TODO Check inout type, for now we can assumme that it is "channel" always.
-			var channelVar = varManager.getWorkspaceVariableById(currentInout.variableId);
-			var channel = this._insertChannel(currentInout.name, channelVar, currentInout.id);
-
-			for (var j = 0; j < currentInout.inputs.length; j++) {
-				var input = currentInout.inputs[j];
-
-				switch (input.type) {
-				case "EVEN":
-					input = varManager.getVariableById(input.varId).getAssignedEvent();
-					break;
-				case "CHANNEL":
-					input = this.channels[input.name];
-					break;
-				default:
-					// TODO log
-					continue;
-				}
-
-				// Connect the input to the channel
-				input.connect(channel);
+		for (var i = 0; i < ws_vars_info.length; i++) {
+			var current_var_info = ws_vars_info[i];
+			
+			var variable = varManager.getWorkspaceVariableById(current_var_info.id);
+			
+			if (current_var_info.aspect == "TAB" && current_var_info.connectable) {
+				var connectableId = current_var_info.connectable.id;
+				var tab_id = current_var_info.tab_id;
+				
+				var tab = this.workspace.getTab(tab_id);
+				
+			    var connectable = new wTab(variable, current_var_info.name, tab, connectableId);
+			    
+			    tab.connectable = connectable;
 			}
+			
+			if (current_var_info.aspect == "CHANNEL" && current_var_info.connectable) {
+				var connectableId = current_var_info.connectable.id;
+			    var channel = new wChannel(variable, current_var_info.name, connectableId);
+			    
+			    // Connecting channel input
+				
+			    for (var j = 0; j < current_var_info.ins.length; j++) {
+			    	// Input can be: {wEvent, wChannel}
+			    	var current_input = current_var_info.ins[j];
+			    	
+			    	var in_connectable = varManager.getVariableById(current_input.id).getConnectable();
 
-			for (var j = 0; j < inOuts[i].outputs.length; j++) {
-				// outputs are always of slot type, because when an inout is used as
-				// input, they are automatically connected to the output of that inout.
-				// So here, we only see slots as outputs
-				var output = currentInout.outputs[j];
+			    	channel.connect(in_connectable);
+			    }
+			    
+			    // Connecting channel output
+				
+			    for (var j = 0; j < current_var_info.outs.length; j++) {
+			    	// Outputs can be: {wSlot, wTab}
+			    	var current_output = current_var_info.outs[j];
+			    	
+			    	var out_connectable = varManager.getVariableById(current_output.id).getConnectable();
 
-				output = varManager.getVariableById(output.varId).getAssignedSlot();
+			    	channel.connect(out_connectable);
+			    }
 
-				// Connect the output to the channel
-				channel.connect(output);
+				// Save it on the channel list
+			    this.channels[current_var_info.name] = channel;
 			}
-
-			// Save it on the channel list
-			this.channels[currentInout.name] = channel;
+			
 		}
 
 		this.loaded = true;
@@ -135,10 +142,8 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 		gadgetEntry.slots = new Hash();
 		gadgetEntry.connectables = new Hash();
 
-		var varManager = this.workspace.getVarManager();
-		var i;
-
-		for (i = 0; i < variables.length; i++) {
+		// IGadget variables
+		for (var i = 0; i < variables.length; i++) {
 			var variableData = variables[i];
 			var variable = varManager.getVariableByName(variableData.igadgetId, variableData.name);
 			
@@ -160,9 +165,8 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 			
 			this.iGadgets[iGadgetId] = gadgetEntry;
 		}
-
 	}
-
+	
 	// TODO
 	Wiring.prototype.removeInstance = function (iGadgetId) {
 		var entry = this.iGadgets[iGadgetId];
@@ -261,29 +265,43 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 			var key = channel_keys[i];
 			var channel = this.channels[key];
 			
-//			serialized_channels[i] = new Object;
-//			// Filling channel info!!!
-//			
-//			
-//			serialized_channels[i].ins = []
-//
-//			var input_keys = channel.inputs.keys()
-//			for (var j = 0; j < input_keys.length; j++) {
-//				var key = input_keys[j];
-//				var input = channel.inputs[key];
-//				
-//				
-//			}
-//
-//			serialized_channels[i].outs = [];
-//			
-//			var output_keys = channel.outputs.keys()
-//			for (var j = 0; j < output_keys.length; j++) {
-//				var key = input_keys[j];
-//				var output = channel.inputs[key];
-//				
-//				
-//			}
+			serialized_channels[i] = new Object;
+			
+			// Filling channel info!!!
+			serialized_channels[i]['id'] = channel.id; 
+			serialized_channels[i]['name'] = channel._name;
+			serialized_channels[i]['type'] = channel._type;
+			serialized_channels[i]['friend_code'] = channel._friendCode;
+			
+			serialized_channels[i].ins = [];
+			                              
+			var serialized_inputs = serialized_channels[i].ins;
+
+			var input_keys = channel.inputs.keys()
+			for (var j = 0; j < input_keys.length; j++) {
+				var key = input_keys[j];
+				var input = channel.inputs[key];
+				
+				serialized_inputs[j] = new Object();
+				
+				serialized_inputs[j]['id'] = input.id;
+				serialized_inputs[j]['connectable_type'] = input.connectableType;
+			}
+
+			serialized_channels[i].outs = [];
+			
+			var serialized_outputs = serialized_channels[i].outs;
+			
+			var output_keys = channel.outputs.keys()
+			for (var j = 0; j < output_keys.length; j++) {
+				var key = output_keys[j];
+				var output = channel.outputs[key];
+				
+				serialized_outputs[j] = new Object();
+				
+				serialized_outputs[j]['id'] = output.id;
+				serialized_outputs[j]['connectable_type'] = output.connectableType;
+			}
 		}
 		
 		//Channels for adding

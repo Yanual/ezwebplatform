@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+﻿#-*- coding: utf-8 -*-
 
 # MORFEO Project 
 # http://morfeo-project.org 
@@ -230,7 +230,8 @@ def get_workspace_variable_data(data):
     
     if (data_ret['aspect'] == 'TAB'):
         connectable = Out.objects.get(abstract_variable__id = abstract_var_id)
-    else:
+        data_ret['tab_id'] = Tab.objects.filter(abstract_variable = abstract_var)[0].id
+    if (data_ret['aspect'] == 'CHANNEL'):
         connectable = InOut.objects.get(workspace_variable__id = abstract_var_id)
         
     connectable_data = get_connectable_data(connectable)    

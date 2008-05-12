@@ -210,11 +210,4 @@ function Tab (tabInfo, workSpace) {
     this.dragboardElement.setStyle({'display': 'block'});    
                 	
 	this.dragboard = new Dragboard(this, this.workSpace, this.dragboardElement);
-	
-	this.variable = new RVariable("tab_"+this.tabInfo.name, null, this.tabInfo.name, Variable.prototype.TAB, this, null);
-	
-	this.connectable = new wTab(this.variable, "tab_"+this.tabInfo.name, this);
-	
-	workSpace.getVarManager().addWorkspaceVariable("tab_"+this.tabInfo.name, this.variable);
-					
 }

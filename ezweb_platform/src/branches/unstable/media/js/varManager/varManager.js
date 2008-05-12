@@ -63,7 +63,6 @@ function VarManager (_workSpace) {
 	
 
 	VarManager.prototype.parseWorkspaceVariables = function (ws_vars) {
-		var objVars = []
 		for (var i = 0; i<ws_vars.length; i++) {
 			var id = ws_vars[i].id;
 			var name = ws_vars[i].name;
@@ -72,12 +71,10 @@ function VarManager (_workSpace) {
 				
 			switch (aspect) {
 				case Variable.prototype.INOUT:
-					objVars[name] = new RWVariable(id, null, name, aspect, this, value);
-					this.workspaceVariables[id] = objVars[name]; 
+					this.workspaceVariables[id] = new RWVariable(id, null, name, aspect, this, value);
 					break;
 				case Variable.prototype.TAB:
-					objVars[id] = new RVariable(id, null, name, aspect, this, value);
-					this.workspaceVariables[id] = objVars[id]; 
+					this.workspaceVariables[id] = new RVariable(id, null, name, aspect, this, value);
 					break;
 			}
 		}		
