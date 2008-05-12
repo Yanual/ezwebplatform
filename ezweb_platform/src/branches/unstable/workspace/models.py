@@ -102,9 +102,7 @@ class Tab(models.Model):
     name = models.CharField(_('Name'), max_length=30)
     visible = models.BooleanField(_('Visible'))
     workspace = models.ForeignKey(WorkSpace, verbose_name=_('WorkSpace'))
-
-    class Meta:
-        unique_together = ('workspace', 'name')
+    abstract_variable = models.ForeignKey(AbstractVariable, verbose_name=_('AbstractVariable'))
 
     class Admin:
         pass
