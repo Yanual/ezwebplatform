@@ -57,6 +57,7 @@ from workspace.models import AbstractVariable, WorkSpaceVariable, Tab, WorkSpace
 from commons.get_data import get_workspace_data, get_global_workspace_data, get_tab_data
 
 def deleteTab (tab):
+    tab.abstract_variable.delete()
     tab.delete()
 
 def createTab (tab_name, user,  workspace):
@@ -247,11 +248,14 @@ class WorkSpaceEntry(Resource):
             msg = _("workspace cannot be deleted")
             log(msg, request)
             return HttpResponseServerError(get_xml_error(msg), mimetype='application/xml; charset=UTF-8')
-
+            
         # Gets Igadget, if it does not exist, a http 404 error is returned
         workspace = get_object_or_404(WorkSpace, user=user, pk=workspace_id)
         
         workspace.delete()
+        #set a new active workspace (first workspace by default)
+        activeWorkspace=workspaces[0]
+        setActiveWorkspace(user, activeWorkspace)
         return HttpResponse('ok')
     
     
@@ -345,6 +349,10 @@ class TabEntry(Resource):
         
         #Delete WorkSpace variables too!
         deleteTab(tab)
+        
+        #set a new visible tab (first tab by default)
+        activeTab=tabs[0]
+        setVisibleTab(user, workspace_id, activeTab)
 
         return HttpResponse('ok')
 

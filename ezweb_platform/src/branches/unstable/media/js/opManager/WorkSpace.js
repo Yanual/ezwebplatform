@@ -57,7 +57,6 @@ function WorkSpace (workSpaceState) {
 
 	// Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
 	var loadWorkSpace = function (transport) {
-		
 		// JSON-coded iGadget-variable mapping
 		var response = transport.responseText;
 		this.workSpaceGlobalInfo = eval ('(' + response + ')');

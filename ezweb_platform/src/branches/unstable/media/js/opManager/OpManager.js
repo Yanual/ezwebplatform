@@ -71,7 +71,7 @@ var OpManagerFactory = function () {
 			this.activeWorkSpace.downloadWorkSpaceInfo();
 		}
 		
-		var onError = function (transport) {
+		var onError = function (transport, e) {
 		    alert("error en loadEnvironment");
 		}
 		
