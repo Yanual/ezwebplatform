@@ -156,8 +156,6 @@ function WorkSpace (workSpaceState) {
 		
 		this.tabInstances[tabInfo.id] = new Tab(tabInfo, this);
 		this.setTab(this.tabInstances[tabInfo.id]);
-		
-		LayoutManagerFactory.getInstance().hideCover();
 	}
 	
 	var createTabError = function(transport, e) {
@@ -308,7 +306,9 @@ function WorkSpace (workSpaceState) {
 	WorkSpace.prototype.setTab = function(tab) {
 		if (!this.loaded)
 			return;
-		this.visibleTab.unmark();		
+		if(this.visibleTab != null){
+			this.visibleTab.unmark();		
+		}
 		this.visibleTab = tab;
 		this.visibleTab.show();
 		
@@ -336,11 +336,11 @@ function WorkSpace (workSpaceState) {
 		return false;
 	}*/
 	
-	WorkSpace.prototype.addTab = function(newName) {
+	WorkSpace.prototype.addTab = function() {
 
 		var tabsUrl = URIs.GET_POST_TABS.evaluate({'workspace_id': this.workSpaceState.id});
 		var o = new Object;
-		o.name = newName;
+		o.name = "MyTab "+this.tabInstances.keys().length.toString();
 		tabData = Object.toJSON(o);
 		params = 'tab=' + tabData;
 		PersistenceEngineFactory.getInstance().send_post(tabsUrl, params, this, createTabSuccess, createTabError);
@@ -359,6 +359,8 @@ function WorkSpace (workSpaceState) {
 		}
 		this.tabInstances.remove(tabId);
 		//set the first tab as current
+		this.visibleTab.destroy();
+		this.visibleTab = null;
 		this.setTab(this.tabInstances.values()[0]);
 		return true;
 	}

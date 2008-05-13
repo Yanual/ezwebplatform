@@ -145,8 +145,8 @@ var URIs = new _URIConstants();
 	<div id="changeWorkspace_menu" class="submenu"></div>
 </div>
 <div id="tab_menu" class="drop_down_menu" style="display:none;">
-	<!--<div class="option underlined" onclick="LayoutManagerFactory.getInstance().showWindowMenu('renameTab')"><img src="/ezweb/images/rename.gif"/><span>{%trans "Rename"%}</span></div>
-	<div class="option underlined"><img src="/ezweb/images/package.jpg"/><span>{% trans "Package"%}</span></div>
+	<div class="option underlined" onclick="OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().fillWithInput(); LayoutManagerFactory.getInstance().hideCover();"><img src="/ezweb/images/rename.gif"/><span>{%trans "Rename"%}</span></div>
+<!--	<div class="option underlined"><img src="/ezweb/images/package.jpg"/><span>{% trans "Package"%}</span></div>
 	<div class="option underlined"><img src="/ezweb/images/move.gif"/><span>{% trans "Copy to Workspace"%}</span></div>
 	<div class="option underlined"><img src="/ezweb/images/move.gif"/><span>{% trans "Move to Workspace"%}</span></div> -->
 	<div class="option" onclick="OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().deleteTab();"><img src="/ezweb/images/cross.png" /><span>{% trans "Remove"%}</span></div>
@@ -192,7 +192,7 @@ var URIs = new _URIConstants();
 </div>
 <div id="bar">
 <div id="tab_section" class="tab_section">
-	<input type="button" id="add_tab_link" title="Add more tabs" class="toolbar_unmarked" onclick="LayoutManagerFactory.getInstance().showWindowMenu('createTab');"/>
+	<input type="button" id="add_tab_link" title="Add more tabs" class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().activeWorkSpace.addTab();"/>
 
 </div>
 <div id="toolbar_section" class="toolbar_section">

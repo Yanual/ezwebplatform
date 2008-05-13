@@ -91,10 +91,8 @@ a:hover{
 
 #workspace_name {
   position: relative;
-  margin-right: 3px;
+  margin-right: 0px;
   margin-left: 3px;
-  font-size: 14px;
-  font-weight: bold;
   color:#2D6F9C;
 }
 
@@ -123,6 +121,7 @@ a:hover{
 
 #ws_operations_link {
   background: transparent url(/ezweb/images/ops21px.png) no-repeat;
+  margin-left: 0px;
 }
 
 /*#ws_operations_link:hover {
@@ -165,7 +164,7 @@ a:hover{
   cursor: pointer;
   z-index: 3;
   height: 18px;
-  padding: 2px 9px 1px;
+  padding: 2px 5px 1px;
 }
 
 .disabled {
@@ -177,6 +176,7 @@ a:hover{
   background: #E0E0E0;
   border-bottom: 0px none;
   padding-bottom: 3px;
+  padding-right: 3px;
 }
 
 .tab span{
@@ -301,12 +301,12 @@ a:hover{
 }
 
 .tabOps_launcher{
-  background: transparent url(/ezweb/images/settings.png) no-repeat;
+  background: transparent url(/ezweb/images/tabops16px.png) no-repeat;
 }
 
-.tabOps_launcher:hover{
+/*.tabOps_launcher:hover{
   background: transparent url(/ezweb/images/settings-highlighted.png) no-repeat;
-}
+}*/
 
 .closebutton {
   background: transparent url(/ezweb/images/close.png) no-repeat;

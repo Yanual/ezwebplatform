@@ -55,7 +55,6 @@ function Tab (tabInfo, workSpace) {
 	}
 	
 	var deleteSuccess = function(transport){
-		this.destroy();
 		LayoutManagerFactory.getInstance().hideCover();
 	}
 	var deleteError = function(transport, e){
@@ -186,23 +185,7 @@ function Tab (tabInfo, workSpace) {
 	//tab event handlers
 	this.renameTabHandler = function(e){this.fillWithInput();}.bind(this);
 	this.changeTabHandler = function(e){this.workSpace.setTab(this);}.bind(this);
-	
-	// Tab creation
-
-    var tabSection = $("tab_section");    
-    new Insertion.Top(tabSection, "<div></div>");
-    this.tabHTMLElement =  tabSection.firstDescendant();
-    this.tabHTMLElement.setAttribute('id', this.tabName);
-    //fill the tab label with a span tag
-    this.fillWithLabel();
-    
-    this.tabOpsLauncher = this.tabName+"_launcher";
-    var tabOpsLauncherHTML = '<input id="'+this.tabOpsLauncher+'" type="button" title="options" class="tabOps_launcher tabOps_launcher_show"/>';
-    new Insertion.Bottom(this.tabHTMLElement, tabOpsLauncherHTML);
-    var tabOpsLauncherElement = $(this.tabOpsLauncher);
-    Event.observe(tabOpsLauncherElement, "click", function(e){Event.stop(e); LayoutManagerFactory.getInstance().showDropDownMenu('tabOps', this.tabOpsLauncher);}.bind(this), true);
-    tabOpsLauncherElement.setStyle({'display':'none'});
-    
+	 
     // Dragboard layer creation
     var dragboardHTML = $("dragboard_template").innerHTML;
     var wrapper = $("wrapper");
@@ -215,4 +198,21 @@ function Tab (tabInfo, workSpace) {
     this.dragboardElement.setStyle({'display': 'block'});    
                 	
 	this.dragboard = new Dragboard(this, this.workSpace, this.dragboardElement);
+	
+	// Tab creation
+	var tabSection = $("tab_section");    
+    new Insertion.Top(tabSection, "<div></div>");
+    this.tabHTMLElement = tabSection.firstDescendant();
+    this.tabHTMLElement.setStyle({'display':'none'});
+    this.tabHTMLElement.setAttribute('id', this.tabName);
+
+    this.tabOpsLauncher = this.tabName+"_launcher";
+    var tabOpsLauncherHTML = '<input id="'+this.tabOpsLauncher+'" type="button" title="options" class="tabOps_launcher tabOps_launcher_show"/>';
+    new Insertion.Bottom(this.tabHTMLElement, tabOpsLauncherHTML);
+    var tabOpsLauncherElement = $(this.tabOpsLauncher);
+    Event.observe(tabOpsLauncherElement, "click", function(e){Event.stop(e); LayoutManagerFactory.getInstance().showDropDownMenu('tabOps', this.tabOpsLauncher);}.bind(this), true);
+    tabOpsLauncherElement.setStyle({'display':'none'});
+
+    //fill the tab label with a span tag
+    this.fillWithLabel();
 }
