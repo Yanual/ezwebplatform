@@ -39,12 +39,23 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 
-class Template(models.Model):
+#class Template(models.Model):
+#    uri = models.CharField(_('URI'), max_length=500, unique=True)
+#    description = models.CharField(_('Description'), max_length=250)
+#    image = models.CharField(max_length=500)
+#    width = models.IntegerField(_('Width'), default=1)
+#    height = models.IntegerField(_('Height'), default=1)    
+#
+#    class Admin:
+#        pass
+#
+#    def __unicode__(self):
+#        return self.uri
+
+class XHTML(models.Model):
     uri = models.CharField(_('URI'), max_length=500, unique=True)
-    description = models.CharField(_('Description'), max_length=250)
-    image = models.CharField(max_length=500)
-    width = models.IntegerField(_('Width'), default=1)
-    height = models.IntegerField(_('Height'), default=1)    
+    code = models.TextField(_('Code'))
+    url = models.URLField(_('URL'), max_length=500)
 
     class Admin:
         pass
@@ -52,6 +63,38 @@ class Template(models.Model):
     def __unicode__(self):
         return self.uri
 
+
+class Gadget(models.Model):
+    uri = models.CharField(_('URI'), max_length=500)
+    
+    vendor = models.CharField(_('Vendor'), max_length=250)
+    name = models.CharField(_('Name'), max_length=250)
+    version = models.CharField(_('Version'), max_length=150)
+    
+    xhtml = models.ForeignKey(XHTML)
+    
+    author = models.CharField(_('Author'), max_length=250)
+    mail = models.CharField(_('Mail'), max_length=30)
+   
+    wikiURI = models.URLField(_('wikiURI'))
+    imageURI = models.URLField(_('imageURI'))
+
+    width = models.IntegerField(_('Width'), default=1)
+    height = models.IntegerField(_('Height'), default=1)
+    description = models.CharField(_('Description'), max_length=250)
+    
+    shared = models.BooleanField(_('Shared'), default=False, null=True)
+    user = models.ForeignKey(User, verbose_name=_('User'))
+    last_update = models.DateTimeField(_('Last update'), null=True)
+
+    class Meta:
+        unique_together = ('vendor', 'name', 'version', 'user')
+
+    class Admin:
+        pass
+
+    def __unicode__(self):
+        return self.uri
 
 class VariableDef(models.Model):
     name = models.CharField(_('Name'), max_length=30)
@@ -76,13 +119,13 @@ class VariableDef(models.Model):
     description = models.CharField(_('Description'), max_length=250, null=True)
     friend_code = models.CharField(_('Friend code'), max_length=30, null=True)
     default_value = models.TextField(_('Default value'), blank=True, null=True)
-    template = models.ForeignKey(Template)
+    gadget = models.ForeignKey(Gadget)
 
     class Admin:
         pass
 
     def __unicode__(self):
-        return self.template.uri + " " + self.aspect
+        return self.gadget.uri + " " + self.aspect
 
 
 class UserPrefOption(models.Model):
@@ -94,7 +137,7 @@ class UserPrefOption(models.Model):
         pass
     
     def __unicode__(self):
-        return self.variableDef.template.uri + " " + self.name
+        return self.variableDef.gadget.uri + " " + self.name
 
 
 class VariableDefAttr(models.Model):
@@ -108,7 +151,7 @@ class VariableDefAttr(models.Model):
     def __unicode__(self):
         return self.variableDef + self.name
 
-class GadgetContext(models.Model):
+class ContextOption(models.Model):
     concept = models.CharField(_('Concept'), max_length=256)
     varDef = models.ForeignKey(VariableDef, verbose_name=_('Variable'))
         
@@ -117,57 +160,3 @@ class GadgetContext(models.Model):
 
     def __unicode__(self):
         return self.concept
-    
-class ExternalContext(models.Model):
-    concept = models.CharField(_('Concept'), max_length=256)
-    varDef = models.ForeignKey(VariableDef, verbose_name=_('Variable'))
-        
-    class Admin:
-        pass
-
-    def __unicode__(self):
-        return self.concept
-      
-class XHTML(models.Model):
-    uri = models.CharField(_('URI'), max_length=500, unique=True)
-    code = models.TextField(_('Code'))
-    url = models.URLField(_('URL'), max_length=500)
-
-    class Admin:
-        pass
-
-    def __unicode__(self):
-        return self.uri
-
-
-class Gadget(models.Model):
-    uri = models.CharField(_('URI'), max_length=500)
-    
-    vendor = models.CharField(_('Vendor'), max_length=250)
-    name = models.CharField(_('Name'), max_length=250)
-    version = models.CharField(_('Version'), max_length=150)
-    
-    template = models.ForeignKey(Template)
-    xhtml = models.ForeignKey(XHTML)
-    
-    author = models.CharField(_('Author'), max_length=250)
-    mail = models.CharField(_('Mail'), max_length=30)
-   
-    wikiURI = models.URLField(_('wikiURI'))
-    imageURI = models.URLField(_('imageURI'))
-
-    description = models.CharField(_('Description'), max_length=250)
-    
-    shared = models.BooleanField(_('Shared'), default=False, null=True)
-    user = models.ForeignKey(User, verbose_name=_('User'))
-    last_update = models.DateTimeField(_('Last update'), null=True)
-
-    class Meta:
-        unique_together = ('vendor', 'name', 'version', 'user')
-
-    class Admin:
-        pass
-
-    def __unicode__(self):
-        return self.uri
-

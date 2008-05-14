@@ -100,7 +100,7 @@ def SaveIGadget(igadget, user, tab):
         new_igadget = IGadget(code=igadget_code, gadget=gadget, tab=tab, position=position)
         new_igadget.save()
                 
-        variableDefs = VariableDef.objects.filter(template=gadget.template)
+        variableDefs = VariableDef.objects.filter(gadget=gadget)
         for varDef in variableDefs:
             # Sets the default value of variable
             if varDef.default_value:

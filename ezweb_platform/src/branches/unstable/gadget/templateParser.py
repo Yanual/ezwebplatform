@@ -44,7 +44,7 @@ from commons.http_utils import download_http_content
 from django.utils.translation import ugettext as _
 
 from gadgetCodeParser import GadgetCodeParser
-from gadget.models import VariableDef, GadgetContext, ExternalContext, UserPrefOption, Template, Gadget
+from gadget.models import VariableDef, ContextOption, UserPrefOption, Gadget
 
 class TemplateParser:
     def __init__(self, uri, user):
@@ -83,12 +83,13 @@ class TemplateHandler(handler.ContentHandler):
         self._gadgetAuthor = ""
         self._gadgetMail = ""
         self._gadgetDesc = ""
-        self._template = ""
+        self._gadgetWidth= ""
+        self._gadgetHeight= ""
         self._user = user
         self._gadgetURI = ""
         self._xhtml = ""
         self._lastPreference = ""
-        self._gadget = None
+        self._gadget = Gadget ()
         
     def typeText2typeCode (self, typeText):
         if typeText == 'text':
@@ -125,7 +126,7 @@ class TemplateHandler(handler.ContentHandler):
             vDef = VariableDef ( name = _name, description =_description,
                                  type=self.typeText2typeCode(_type), 
                                  aspect = 'PROP', friend_code = None, 
-                                 template = self._template )
+                                 gadget = self._gadget )
 
             vDef.save()
         else:
@@ -159,7 +160,7 @@ class TemplateHandler(handler.ContentHandler):
                                 aspect='PREF', friend_code=None,
                                 label = _label,
                                 default_value = _default_value,
-                                template=self._template )
+                                gadget=self._gadget )
     
             vDef.save()
 
@@ -199,7 +200,7 @@ class TemplateHandler(handler.ContentHandler):
                                 aspect = self._EVENT, 
                                 friend_code = _friendCode, 
                                 label = _label,
-                                template = self._template)
+                                gadget = self._gadget )
 
             vDef.save()
         else:
@@ -236,7 +237,7 @@ class TemplateHandler(handler.ContentHandler):
                                 aspect = self._SLOT, 
                                 friend_code = _friendCode, 
                                 label = _label,
-                                template = self._template)
+                                gadget = self._gadget )
 
             vDef.save()
         else:
@@ -265,9 +266,9 @@ class TemplateHandler(handler.ContentHandler):
             vDef = VariableDef ( name = _name, description =_description,
                                  type=self.typeText2typeCode(_type), 
                                  aspect = 'GCTX', friend_code = None, 
-                                 template = self._template )
+                                 gadget = self._gadget )
             vDef.save()
-            context = GadgetContext ( concept = _concept,
+            context = ContextOption ( concept = _concept,
                                         varDef = vDef) 
             context.save()
             
@@ -296,9 +297,9 @@ class TemplateHandler(handler.ContentHandler):
             vDef = VariableDef ( name = _name, description =_description,
                                  type=self.typeText2typeCode(_type), 
                                  aspect = 'ECTX' , friend_code = None, 
-                                 template = self._template )
+                                 gadget = self._gadget )
             vDef.save()
-            context = ExternalContext ( concept = _concept,
+            context = ContextOption ( concept = _concept,
                                         varDef = vDef) 
             context.save()
             
@@ -353,9 +354,8 @@ class TemplateHandler(handler.ContentHandler):
             _height = attrs.get('height')
 
         if (_width != "" and _height != ""):
-            self._template.width=_width
-            self._template.height=_height
-            self._template.save()
+            self._gadgetWidth=_width
+            self._gadgetHeight=_height
         else:
             raise TemplateParseException(_("ERROR: missing attribute at Rendering element"))                       
 
@@ -413,11 +413,11 @@ class TemplateHandler(handler.ContentHandler):
             self._gadgetURI = "/user/" + self._user.username + "/gadgets/" + self._gadgetVendor \
                 + "/" + self._gadgetName + "/" + self._gadgetVersion
 
-            self._template = Template ( uri=self._gadgetURI + "/template", 
-                                       description=self._gadgetDesc, 
-                                       image=self._gadgetImage )
-            
-            self._template.save()
+#            self._template = Template ( uri=self._gadgetURI + "/template", 
+#                                       description=self._gadgetDesc, 
+#                                       image=self._gadgetImage )
+#            
+#            self._template.save()
             
             return
 
@@ -499,12 +499,19 @@ class TemplateHandler(handler.ContentHandler):
             print emptyRequiredFields
             raise TemplateParseException(_("Missing required field(s): %(fields)s") % {fields: unicode(emptyRequiredFields)})
 
-        self._gadget = Gadget (uri=self._gadgetURI, vendor=self._gadgetVendor, 
-                          name=self._gadgetName, version=self._gadgetVersion, 
-                          template=self._template, xhtml=self._xhtml, 
-                          author=self._gadgetAuthor, mail=self._gadgetMail,
-                          wikiURI=self._gadgetWiki, imageURI=self._gadgetImage, 
-                          description=self._gadgetDesc, user=self._user )
+        self._gadget.uri=self._gadgetURI
+        self._gadget.vendor=self._gadgetVendor
+        self._gadget.name=self._gadgetName
+        self._gadget.version=self._gadgetVersion
+        self._gadget.xhtml=self._xhtml
+        self._gadget.author=self._gadgetAuthor
+        self._gadget.mail=self._gadgetMail
+        self._gadget.wikiURI=self._gadgetWiki
+        self._gadget.imageURI=self._gadgetImage
+        self._gadget.width=self._gadgetWidth
+        self._gadget.height=self._gadgetHeight
+        self._gadget.description=self._gadgetDesc
+        self._gadget.user=self._user
 
         self._gadget.save()
             
