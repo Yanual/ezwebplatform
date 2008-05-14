@@ -44,29 +44,34 @@ function Tag(tagJSON_)
 	this.getAdded_by = function() { return state.getAdded_by(); }
 	this.getAppearances = function() { return state.getAppearances(); }
 	
-	this.tagToHTML = function() {
-		var jsCall = 'javascript:UIUtils.searchByTag(URIs.GET_RESOURCES_BY_TAG, "' + state.getValue() + '");';
-
-		return "<a title='" + gettext ('Search by ') + state.getValue() +"' href='" + jsCall + "'>" + state.getValue() + "</a>";
-	}
+    this.tagToHTML = function(){
+        var link = UIUtils.createHTMLElement("a", $H({
+            title: gettext('Search by ') + state.getValue(),
+            innerHTML: state.getValue()
+        }));
+        link.observe("click", function(event){
+            UIUtils.searchByTag(URIs.GET_RESOURCES_BY_TAG, state.getValue());
+        });
+        return link;
+    }
 	
 	this.tagToTypedHTML = function() {
-		var classAux = '';
 		var option = arguments[0] || {tags:'undefined'};
-		if (state.getAppearances()<5)		classAux = 'tag_type_1';
-		else if (state.getAppearances()<15) classAux = 'tag_type_2';
-		else if (state.getAppearances()<25) classAux = 'tag_type_3';
-		else classAux = 'tag_type_4';
 		
-		var jsCall = 'javascript:UIUtils.searchByTag(URIs.GET_RESOURCES_BY_TAG, "' + state.getValue() + '");';
-        if (option.tags == 'undefined')
-        {
-		    var result = "<a class='" + classAux + "' title='" + gettext ('Search by ') + state.getValue() +"' href='" + jsCall + "'>" + state.getValue() + " (" + state.getAppearances() + ")</a>";
-        } else {
-		    var result = "<a class='" + classAux + "' title='" + gettext ('Search by ') + state.getValue() +"' href='" + jsCall + "'>" + state.getValue() + "</a>";
-		}
-
-		return result;
+		var className_;
+		if (state.getAppearances()<5) className_ = 'tag_type_1';
+		else if (state.getAppearances()<15) className_ = 'tag_type_2';
+		else if (state.getAppearances()<25) className_ = 'tag_type_3';
+		else className_ = 'tag_type_4';
+		
+		var title_ = gettext('Search by ') + state.getValue();
+		var value_ =  state.getValue() + ((option.tags == 'undefined')?" (" + state.getAppearances() + ")":"");
+		
+		var link = UIUtils.createHTMLElement("a", $H({ class_name: className_, title: title_, innerHTML: value_ }));
+		link.observe("click", function(event) {
+			UIUtils.searchByTag(URIs.GET_RESOURCES_BY_TAG, state.getValue());
+		});
+		return link;
 	}
 	
 	this.equals = function(tag_) {
@@ -74,7 +79,7 @@ function Tag(tagJSON_)
 	}
 	
 	this.compareTo = function(tag_) {
-		if 		(state.getAppearances() < (tag_.getAppearances())) return -1;
+		if (state.getAppearances() < (tag_.getAppearances())) return -1;
 		else if	(state.getAppearances() > (tag_.getAppearances())) return 1;
 		else return 0;
 	}
@@ -85,8 +90,6 @@ function StateTag(tagJSON_)
     var value = tagJSON_.value;
 	var appearances = tagJSON_.appearances;
 	var added_by = tagJSON_.added_by;
-	//var value = tagXML_.getElementsByTagName("value")[0].firstChild.nodeValue;
-	//var appearances = parseInt(tagXML_.getElementsByTagName("appearances")[0].firstChild.nodeValue);
 	
 	this.getValue = function() { return value; }
 	this.getAppearances = function() { return appearances; } 

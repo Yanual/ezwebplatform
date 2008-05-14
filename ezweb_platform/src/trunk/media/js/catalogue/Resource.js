@@ -1,4 +1,4 @@
-	//////////////////////////////////////////////
+  //////////////////////////////////////////////
   //                RESOURCE                  //
   //////////////////////////////////////////////
 
@@ -32,180 +32,557 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 	this.getPopularity = function() {return state.getPopularity();}
 	
 	this.paint = function(){
-		var newResource = document.createElement("div");
-		newResource.setAttribute('id', id);
-		content =				"<div class='resource' onMouseOver='UIUtils.mouseOverResource(\""+id+"\");' onMouseOut='UIUtils.mouseOutResource(\""+id+"\");'>" +
-									"<div class='top'></div>" +
-									"<div class='toolbar'>" +
-										"<div id='" + id + "_toolbar' style='display:none;'>" +
-											"<a id='" + id + "_description' title='" + gettext ('Show description') + "' onmouseover=\"CatalogueFactory.getInstance().getResource('" + id + "').changeIconDescriptionBalloon('/ezweb/images/description.png');\" onmouseout=\"CatalogueFactory.getInstance().getResource('" + id + "').changeIconDescriptionBalloon('/ezweb/images/description_gray.png');\">" +
-											"</a>" +
-											"<a title='" + gettext ('Access to the wiki') + "' href='" + state.getUriWiki() + "' target='_blank'  onmouseover=\"UIUtils.changeImage('" + id + "_wiki_img', '/ezweb/images/wiki.png');\" onmouseout=\"UIUtils.changeImage('" + id + "_wiki_img', '/ezweb/images/wiki_gray.png');\">" +
-												"<img id='" + id + "_wiki_img' src='/ezweb/images/wiki_gray.png'></img>" +
-											"</a>" +
-											"<a title='" + gettext ('Show template') + "' href='" + state.getUriTemplate() + "' target='_blank' onmouseover=\"UIUtils.changeImage('" + id + "_template_img', '/ezweb/images/template.png');\" onmouseout=\"UIUtils.changeImage('" + id + "_template_img', '/ezweb/images/template_gray.png');\">" +
-												"<img id='" + id + "_template_img' src='/ezweb/images/template_gray.png'></img>" +
-											"</a>";
-		if (state.getAddedBy() == 'Yes'){ 
-			content +=						"<a title='" + gettext ('Delete gadget') + "' href='javascript:UIUtils.deleteGadget(\"" + id + "\")' onmouseover=\"UIUtils.changeImage('" + id + "_delete_img', '/ezweb/images/delete.png');\" onmouseout=\"UIUtils.changeImage('" + id + "_delete_img', '/ezweb/images/cancel_gray.png');\">" +
-												"<img id='" + id + "_delete_img' src='/ezweb/images/cancel_gray.png'></img>" +
-											"</a>";
+		var newResource = UIUtils.createHTMLElement("div", $H({
+            id: id_
+        }));
+		$("resources").appendChild(newResource);
+		var resource = UIUtils.createHTMLElement("div", $H({
+            class_name: 'resource'
+        }));
+		resource.observe("mouseover", function(event){
+            UIUtils.mouseOverResource(id_);
+        });
+		resource.observe("mouseout", function(event){
+            UIUtils.mouseOutResource(id_);
+        });
+		newResource.appendChild(resource);
+		// TOP
+		resource.appendChild(UIUtils.createHTMLElement("div", $H({
+            class_name: 'top'
+        })));
+		// TOOLBAR
+		var toolbar = UIUtils.createHTMLElement("div", $H({
+            class_name: 'toolbar'
+        }));
+		resource.appendChild(toolbar);
+		var content_toolbar = UIUtils.createHTMLElement("div", $H({
+            id: id_ + '_toolbar',
+			style: 'display:none'
+        }));
+		toolbar.appendChild(content_toolbar);
+		var wiki = UIUtils.createHTMLElement("a", $H({
+            title: gettext ('Access to the wiki'),
+			target: '_blank',
+			href: state.getUriWiki()
+        }));
+		content_toolbar.appendChild(wiki);
+		var wiki_img = UIUtils.createHTMLElement("img", $H({
+            id: id_ + '_wiki_img',
+			src: '/ezweb/images/wiki_gray.png'
+        }));
+		wiki_img.observe("mouseover", function(event){
+			this.src = '/ezweb/images/wiki.png';
+		});
+		wiki_img.observe("mouseout", function(event){
+			this.src = '/ezweb/images/wiki_gray.png';
+		});
+		wiki.appendChild(wiki_img);
+		var template = UIUtils.createHTMLElement("a", $H({
+            title: gettext ('Show template'),
+			target: '_blank',
+			href: state.getUriTemplate()
+        }));
+		content_toolbar.appendChild(template);
+		var template_img = UIUtils.createHTMLElement("img", $H({
+            id: id_ + '_template_img',
+			src: '/ezweb/images/template_gray.png'
+        }));
+		template_img.observe("mouseover", function(event){
+			this.src = '/ezweb/images/template.png';
+		});
+		template_img.observe("mouseout", function(event){
+			this.src = '/ezweb/images/template_gray.png';
+		});
+		template.appendChild(template_img);
+		if (state.getAddedBy() == 'Yes') {
+			var deleteResource = UIUtils.createHTMLElement("a", $H({
+				title: gettext('Delete gadget')
+			}));
+			deleteResource.observe("click", function(event){
+				UIUtils.deleteGadget(id_);
+			});
+			content_toolbar.appendChild(deleteResource);
+			var delete_img = UIUtils.createHTMLElement("img", $H({
+				id: id_ + '_delete_img',
+				src: '/ezweb/images/cancel_gray.png'
+			}));
+			delete_img.observe("mouseover", function(event){
+				this.src = '/ezweb/images/delete.png';
+			});
+			delete_img.observe("mouseout", function(event){
+				this.src = '/ezweb/images/cancel_gray.png';
+			});
+			deleteResource.appendChild(delete_img);
 		}
-		content +=						"</div>" +
-									"</div>" +
-									"<div id='" + id + "_content' class='content'>" +
-										"<div class='title'>" + state.getName() + "</div>" +
-										"<div class='image'><a title='" + gettext ('Show resource details') + "' href='javascript:UIUtils.clickOnResource(\"" + id + "\");'><img id='" + id + "_img' src='" + state.getUriImage() + "' onError=\"UIUtils.changeImage('" + id + "_img', '/ezweb/images/not_available.jpg');\" onAbort=\"UIUtils.changeImage('" + id + "_img', '/ezweb/images/not_available.jpg');\"></img></a></div>" +
-										"<div class='tags'>" +
-											"<div id='" + id + "_important_tags' class='important_tags'>" + 
-												_tagsToMoreImportantTags(3) +
-											"</div>" +
-											"<div class='more_tags'>" +
-												"<a id='" + id + "_tagcloud_balloon' title='" + gettext ('Show resource tagcloud') + "' onmouseover=\"CatalogueFactory.getInstance().getResource('" + id + "').changeIconTagcloudBalloon('/ezweb/images/more_tags.png');\"" + 
-			                                       "onmouseout=\"CatalogueFactory.getInstance().getResource('" + id + "').changeIconTagcloudBalloon('/ezweb/images/more_tags_gray.png');\" onClick=\"javascript:UIUtils.balloonResource ='" + id + "'\";>" +
-												"</a>" + 
-											"</div>" +
-										"</div>" +
-										"<button onclick='CatalogueFactory.getInstance().addResourceToShowCase(\"" + id + "\");'>" + gettext ('Add Instance') + "</button>" +
-									"</div>" +
-									"<div id='" + id + "_bottom' class = 'bottom'></div>" +
-								"</div>";
-		newResource.innerHTML = content;
-		var parentHTML = document.getElementById("resources");
-		parentHTML.insertBefore(newResource, parentHTML.lastChild);
-		
-		_createDescriptionBalloon();
-		_createTagcloudBalloon();
+		// CONTENT
+		var content = UIUtils.createHTMLElement("div", $H({
+            class_name: 'content',
+			id: id_ + '_content'
+        }));
+		resource.appendChild(content);
+		content.appendChild(UIUtils.createHTMLElement("div", $H({
+            class_name: 'title',
+			innerHTML: state.getName()
+        }))); 
+		var image_div = UIUtils.createHTMLElement("div", $H({
+            class_name: 'image'
+        })); 
+		content.appendChild(image_div);
+		var image_link = UIUtils.createHTMLElement("a", $H({
+            title: gettext('Show resource details')
+        }));
+		image_link.observe("click", function(event){
+			UIUtils.clickOnResource(id_);
+		});
+		image_div.appendChild(image_link);
+		var image = UIUtils.createHTMLElement("img", $H({
+			id: id_ + '_img',
+            src: state.getUriImage()
+        }));
+		image.observe("error", function(event){
+			this.src = '/ezweb/images/not_available.jpg';
+		});
+		image.observe("abort", function(event){
+			this.src = '/ezweb/images/not_available.jpg';
+		});
+		image_link.appendChild(image);
+		var tags = UIUtils.createHTMLElement("div", $H({
+            class_name: 'tags'
+        })); 
+		content.appendChild(tags);
+		var important_tags = UIUtils.createHTMLElement("div", $H({
+            id: id_ + '_important_tags',
+			class_name: 'important_tags'
+        })); 
+		tags.appendChild(important_tags);
+		_tagsToMoreImportantTags(important_tags, 3);
+		var button = UIUtils.createHTMLElement("button", $H({
+            innerHTML: gettext('Add Instance')
+        })); 
+		button.observe("click", function(event){
+			CatalogueFactory.getInstance().addResourceToShowCase(id_);
+		});
+		content.appendChild(button);
+		// BOTTOM
+		var bottom = UIUtils.createHTMLElement("div", $H({
+			id: id_ + '_bottom',
+            class_name: 'bottom'
+        }));
+		resource.appendChild(bottom);
 	}
 	
 	this.showInfo = function() {
-		var tableInfo = document.getElementById("info_resource_content");
-		tableInfo.innerHTML = 	"<div class='title_fieldset'>" + gettext ('Resource details') + "</div>" +
-								"<div class='fieldset'>" +
-									"<div class='title'><span class='name'>" + state.getName() + "</span>" +
-									"<span class='version'>" + state.getVersion() + "</span></div>" +
-									"<div class='vendor'>" + state.getVendor() + "</div>" +
-									"<div class='rating'>"+
-									"<span id='rateStatus'>" + gettext ('Vote Me...') + " </span>"+
-									"<span id='ratingSaved'>" + gettext ('Vote Saved') + " </span>"+
-									"<span id='rateMe'>"+
-									"<a id='_1' title='" + gettext ('Ehh...') + "' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
-									"<a id='_2' title='" + gettext ('Not Bad') + "' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
-									"<a id='_3' title='" + gettext ('Pretty Good') + "' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
-									"<a id='_4' title='" + gettext ('Out Standing') + "' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
-									"<a id='_5' title='" + gettext ('Awesome!') + "' onclick=\"UIUtils.sendVotes(this)\" onmouseover=\"UIUtils.rating(this)\" onmouseout=\"UIUtils.off_rating(this)\"></a>"+
-									"</span>"+
-									"<span id='rateResultStatus'>" + gettext ('Vote Result:') + " </span>"+
-									"<span id='rateResult'>"+
-									"<a id='res_1' title='" + gettext ('Ehh...') + "'></a>"+
-									"<a id='res_2' title='" + gettext ('Not Bad') + "'></a>"+
-									"<a id='res_3' title='" + gettext ('Pretty Good') + "'></a>"+
-									"<a id='res_4' title='" + gettext ('Out Standing') + "'></a>"+
-									"<a id='res_5' title='" + gettext ('Awesome!') + "'></a>"+
-									"</span>"+
-									"<span id='votes'></span>"+
-									"</div>" +
-									"<div class='image'><img src='" + state.getUriImage() + "' alt='" + state.getName()+ "&nbsp;" + state.getVersion() + "'/></div>" +
-									"<div class='description'>" + gettext ('Description') + ":<div class='text'>" + state.getDescription() + "</div></div>" +
-									"<div class='connect'>" + gettext ('Gadget connectivity') + ":<div class='text'>" +
-									"<div class='events'>" + gettext ('Events') + ": " + _events()+ "</div>" +
-									"<div class='slots'>" + gettext ('Slots') + ": " + _slots()+ "</div></div></div>" +
-									"<div class='tagcloud'>" + gettext ('Tagcloud') + ":" +
-									"<div id='view_tags_links' class='link'>"+
-									"<span>" + gettext ('All tags') + "</span>" +
-									"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('My tags') + "</a>" +
-									"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('Others tags') + "</a>" +
-									"</div>" +
-									"<div id='" + id + "_tagcloud' class='tags'>" + _tagsToTagcloud('description') + "</div></div>" +
-									"<div id='add_tags_panel' class='new_tags' style='display:none;'>" +
-										"<div class='title'>" + gettext ('New tags') + ":</div>" +
-										"<div id='my_tags' class='my_tags'>" +
-											"<div id='new_tag_text' class='new_tag_text'><input id='new_tag_text_input' type='text' maxlength=20 onkeyup=\"UIUtils.enlargeInput(this);\" onkeypress=\"UIUtils.onReturn(event,UIUtils.addTag,this);\"/></div>" +
-										"</div>" +
-										"<div id=\"tag_alert\" class=\"message_error\"></div>" +
-										"<div class='buttons'>" +
-											"<a class='submit_link' href=\"#\" onClick='javascript:UIUtils.sendTags();'>" + gettext ('Tag') + "</a>" +
-											"<a class='submit_link' href=\"#\" onClick='javascript:UIUtils.addTag(document.getElementById(\"new_tag_text_input\"));'>" + gettext ('Save & New') + "</a>" +
-											"<a class='submit_link' href=\"#\" onClick='javascript:UIUtils.removeAllTags();'>" + gettext ('Delete all') + "</a>" +
-										"</div>" +
-									"</div>" +									
-									"<div id='add_tags_link' class='link' align='right'><a class='submit_link' href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('Tag the resource') + "</a></div>" +
-									"<div id='access_wiki_link' class='link'><a class='submit_link' href='" + state.getUriWiki() + "' target='_blank'>" + gettext ('Access to the Wiki') + "</a></div>" +
-									"<div id='access_template_link' class='link'><a class='submit_link' href='" + state.getUriTemplate() + "' target='_blank'>" + gettext ('Access to the Template') + "</a></div>" + 
-									"<div id='update_code_link' class='link'><a class='submit_link' href='javascript:UIUtils.updateGadgetXHTML();'>" + gettext ('Update gadget code') + "</a></div>" + 
-									"<div id='delete_gadget_link' class='link'>" + _deleteGadget() + "</div>" +
-								"</div>" +
-								"<button id='add_gadget_button' class='add_gadget_button' onclick='CatalogueFactory.getInstance().addResourceToShowCase(UIUtils.getSelectedResource());' style='align:center;'>" + gettext ('Add Instance') + "</button>"+
-								"<div id='content_bottom_margin'></div>"+
-								"<div class='bottom'></div>";
+		$("info_resource_content").innerHTML = '';
+		$("info_resource_content").appendChild(UIUtils.createHTMLElement("div", $H({ 
+			class_name: 'title_fieldset',
+			innerHTML: gettext('Resource details')
+		})));
+		var fieldset = UIUtils.createHTMLElement("div", $H({ 
+			class_name: 'fieldset'
+		}));
+		$("info_resource_content").appendChild(fieldset);
+		var title = UIUtils.createHTMLElement("div", $H({ 
+			class_name: 'title'
+		}));
+		fieldset.appendChild(title);
+		title.appendChild(UIUtils.createHTMLElement("span", $H({ 
+			class_name: 'name',
+			innerHTML: state.getName()
+		})));
+		title.appendChild(UIUtils.createHTMLElement("span", $H({ 
+			class_name: 'version',
+			innerHTML: state.getVersion()
+		})));
+		fieldset.appendChild(UIUtils.createHTMLElement("div", $H({ 
+			class_name: 'vendor',
+			innerHTML: state.getVendor()
+		})));
+		var rating = UIUtils.createHTMLElement("div", $H({ 
+			class_name: 'rating'
+		}));
+		fieldset.appendChild(rating);
+		rating.appendChild(UIUtils.createHTMLElement("span", $H({ 
+			id: 'rateStatus',
+			innerHTML: gettext('Vote Me... ')
+		})));
+		rating.appendChild(UIUtils.createHTMLElement("span", $H({ 
+			id: 'ratingSaved',
+			innerHTML: gettext('Vote Saved ')
+		})));
+		var rate_me = UIUtils.createHTMLElement("span", $H({ 
+			id: 'rateMe'
+		}));
+		rating.appendChild(rate_me);
+		var rate_me_array = [];
+		rate_me_array[0] = UIUtils.createHTMLElement("a", $H({ 
+			id: '_1',
+			title: gettext('Ehh...')
+		}));
+		rate_me_array[1] = UIUtils.createHTMLElement("a", $H({ 
+			id: '_2',
+			title: gettext('Not Bad')
+		}));
+		rate_me_array[2] = UIUtils.createHTMLElement("a", $H({ 
+			id: '_3',
+			title: gettext('Pretty Good')
+		}));
+		rate_me_array[3] = UIUtils.createHTMLElement("a", $H({ 
+			id: '_4',
+			title: gettext('Out Standing')
+		}));
+		rate_me_array[4] = UIUtils.createHTMLElement("a", $H({ 
+			id: '_5',
+			title: gettext('Awesome!')
+		}));
+		var rate_me_iterator = $A(rate_me_array);
+		rate_me_iterator.each(function(item){
+			item.observe("click", function(event){
+				UIUtils.sendVotes(this);
+			});
+			item.observe("mouseover", function(event){
+				UIUtils.rating(this);
+			});
+			item.observe("mouseout", function(event){
+				UIUtils.off_rating(this);
+			});
+			rate_me.appendChild(item);
+		});
+		rating.appendChild(UIUtils.createHTMLElement("span", $H({ 
+			id: 'rateResultStatus',
+			innerHTML: gettext('Vote Result:')
+		})));
+		var rate_result = UIUtils.createHTMLElement("span", $H({ 
+			id: 'rateResult'
+		}));
+		rating.appendChild(rate_result);
+		rate_result.appendChild(UIUtils.createHTMLElement("a", $H({ 
+			id: 'res_1',
+			title: gettext('Ehh...')
+		})));
+		rate_result.appendChild(UIUtils.createHTMLElement("a", $H({ 
+			id: 'res_2',
+			title: gettext('Not Bad')
+		})));
+		rate_result.appendChild(UIUtils.createHTMLElement("a", $H({ 
+			id: 'res_3',
+			title: gettext('Pretty Good')
+		})));
+		rate_result.appendChild(UIUtils.createHTMLElement("a", $H({ 
+			id: 'res_4',
+			title: gettext('Out Standing')
+		})));
+		rate_result.appendChild(UIUtils.createHTMLElement("a", $H({ 
+			id: 'res_5',
+			title: gettext('Awesome!')
+		})));
+		rating.appendChild(UIUtils.createHTMLElement("span", $H({ 
+			id: 'votes'
+		})));
+		var image = UIUtils.createHTMLElement("div", $H({ 
+			class_name: 'image'
+		}));
+		fieldset.appendChild(image);
+		image.appendChild(UIUtils.createHTMLElement("img", $H({ 
+			src: state.getUriImage(),
+			alt: state.getName()+ ' ' + state.getVersion()
+		})));
+		var description = UIUtils.createHTMLElement("div", $H({ 
+			class_name: 'description'
+		}));
+		fieldset.appendChild(description);
+		description.appendChild(UIUtils.createHTMLElement("span", $H({ 
+			innerHTML: gettext('Description') + ':'
+		})));
+		description.appendChild(UIUtils.createHTMLElement("div", $H({ 
+			class_name: 'text',
+			innerHTML: state.getDescription()
+		})));
+		var connect = UIUtils.createHTMLElement("div", $H({ 
+			class_name: 'connect'
+		}));
+		fieldset.appendChild(connect);
+		connect.appendChild(UIUtils.createHTMLElement("span", $H({ 
+			innerHTML: gettext('Gadget connectivity') + ':'
+		})));
+		var connect_text = UIUtils.createHTMLElement("div", $H({ 
+			class_name: 'text'
+		}));
+		connect.appendChild(connect_text);
+		var events = UIUtils.createHTMLElement("div", $H({ 
+			class_name: 'events'
+		}));
+		connect_text.appendChild(events);
+		events.appendChild(UIUtils.createHTMLElement("span", $H({ 
+			innerHTML: gettext('Events') + ': '
+		})));
+		_events(events);
+		var slots = UIUtils.createHTMLElement("div", $H({ 
+			class_name: 'slots'
+		}));
+		connect_text.appendChild(slots);
+		slots.appendChild(UIUtils.createHTMLElement("span", $H({ 
+			innerHTML: gettext('Slots') + ': '
+		})));
+		_slots(slots);
+		var tagcloud = UIUtils.createHTMLElement("div", $H({ 
+			class_name: 'tagcloud'
+		}));
+		fieldset.appendChild(tagcloud);
+		connect.appendChild(UIUtils.createHTMLElement("span", $H({ 
+			innerHTML: gettext('Tagcloud') + ':'
+		})));
+		var tag_links = UIUtils.createHTMLElement("div", $H({ 
+			class_name: 'link',
+			id: 'view_tags_links'
+		}));
+		tagcloud.appendChild(tag_links);
+		tag_links.appendChild(UIUtils.createHTMLElement("span", $H({ 
+			innerHTML: gettext('All tags')
+		})));
+		var my_tags = UIUtils.createHTMLElement("a", $H({ 
+			innerHTML: gettext('My tags')
+		}));
+		my_tags.observe("click", function(event){
+			CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud("mytags");
+		});
+		tag_links.appendChild(my_tags);
+		var others_tags = UIUtils.createHTMLElement("a", $H({ 
+			innerHTML: gettext('Others tags')
+		}));
+		others_tags.observe("click", function(event){
+			CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud("others");
+		});
+		tag_links.appendChild(others_tags);
+		var tags = UIUtils.createHTMLElement("div", $H({ 
+			class_name: 'tags',
+			id: id_ + '_tagcloud'
+		}));
+		tagcloud.appendChild(tags);
+		_tagsToTagcloud(tags, 'description');
+		var add_tags_panel = UIUtils.createHTMLElement("div", $H({
+			id: 'add_tags_panel',
+			class_name: 'new_tags',
+			style: 'display:none;'
+		}));
+		fieldset.appendChild(add_tags_panel);
+		add_tags_panel.appendChild(UIUtils.createHTMLElement("div", $H({
+			class_name: 'title',
+			innerHTML: gettext('New tags')
+		})));
+		my_tags = UIUtils.createHTMLElement("div", $H({
+			id: 'my_tags',
+			class_name: 'my_tags'
+		}));
+		add_tags_panel.appendChild(my_tags);
+		var new_tag_text = UIUtils.createHTMLElement("div", $H({
+			id: "new_tag_text",
+			class_name: "new_tag_text"
+		}));
+		my_tags.appendChild(new_tag_text);
+		var new_tag_text_input = UIUtils.createHTMLElement("input", $H({
+			id: 'new_tag_text_input',
+			type: 'text',
+			maxlength: '20'
+		}));
+		new_tag_text_input.observe("keyup", function(event){
+			UIUtils.enlargeInput(this);
+		});
+		new_tag_text_input.observe("keypress", function(event){
+			UIUtils.onReturn(event,UIUtils.addTag,this);
+		});
+		new_tag_text.appendChild(new_tag_text_input);
+		add_tags_panel.appendChild(UIUtils.createHTMLElement("div", $H({
+			id: 'tag_alert',
+			class_name: 'message_error'
+		})));
+		var buttons = UIUtils.createHTMLElement("div", $H({
+			class_name: 'buttons'
+		}));
+		add_tags_panel.appendChild(buttons);
+		var link_tag = UIUtils.createHTMLElement("a", $H({
+			class_name: 'submit_link',
+			innerHTML: gettext('Tag')
+		}));
+		link_tag.observe("click", function(event){
+			UIUtils.sendTags();
+		});
+		buttons.appendChild(link_tag);
+		var link_save = UIUtils.createHTMLElement("a", $H({
+			class_name: 'submit_link',
+			innerHTML: gettext('Save & New')
+		}));
+		link_save.observe("click", function(event){
+			UIUtils.addTag($('new_tag_text_input'));
+		});
+		buttons.appendChild(link_save);
+		var link_delete = UIUtils.createHTMLElement("a", $H({
+			class_name: 'submit_link',
+			innerHTML: gettext('Delete all')
+		}));
+		link_delete.observe("click", function(event){
+			UIUtils.removeAllTags();
+		});
+		buttons.appendChild(link_delete);
+		var add_tags_link = UIUtils.createHTMLElement("div", $H({
+			id: 'add_tags_link',
+			class_name: 'link',
+			style: 'text-align:right;'
+		}));
+		fieldset.appendChild(add_tags_link);
+		var add_tags_submit_link = UIUtils.createHTMLElement("a", $H({
+			class_name: 'submit_link',
+			innerHTML: gettext('Tag the resource')
+		}));
+		add_tags_submit_link.observe("click", function(event){
+			CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud('mytags');
+		});
+		add_tags_link.appendChild(add_tags_submit_link);
+		var access_wiki_link = UIUtils.createHTMLElement("div", $H({
+			id: 'access_wiki_link',
+			class_name: 'link'
+		}));
+		fieldset.appendChild(access_wiki_link);
+		var access_wiki_submit_link = UIUtils.createHTMLElement("a", $H({
+			class_name: 'submit_link',
+			href: state.getUriWiki(),
+			target: '_blank',
+			innerHTML: gettext('Access to the Wiki')
+		}));
+		access_wiki_link.appendChild(access_wiki_submit_link);
+		var access_template_link = UIUtils.createHTMLElement("div", $H({
+			id: 'access_template_link',
+			class_name: 'link'
+		}));
+		fieldset.appendChild(access_template_link);
+		var access_template_submit_link = UIUtils.createHTMLElement("a", $H({
+			class_name: 'submit_link',
+			href: state.getUriTemplate(),
+			target: '_blank',
+			innerHTML: gettext('Access to the Template')
+		}));
+		access_template_link.appendChild(access_template_submit_link);
+		var update_code_link = UIUtils.createHTMLElement("div", $H({
+			id: 'update_code_link',
+			class_name: 'link'
+		}));
+		fieldset.appendChild(update_code_link);
+		var update_code_submit_link = UIUtils.createHTMLElement("a", $H({
+			class_name: 'submit_link',
+			innerHTML: gettext('Update gadget code')
+		}));
+		update_code_submit_link.observe("click", function(event){
+			UIUtils.updateGadgetXHTML();
+		});
+		update_code_link.appendChild(update_code_submit_link);
+		var delete_gadget_link = UIUtils.createHTMLElement("div", $H({
+			id: 'delete_gadget_link',
+			class_name: 'link'
+		}));
+		fieldset.appendChild(delete_gadget_link);
+		_deleteGadget(delete_gadget_link);
+		var add_gadget_button = UIUtils.createHTMLElement("button", $H({
+			id: 'add_gadget_button',
+			class_name: 'add_gadget_button',
+			style: 'text-align:center;',
+			innerHTML: gettext('Add Instance')
+		}));
+		add_gadget_button.observe("click", function(event){
+			CatalogueFactory.getInstance().addResourceToShowCase(UIUtils.getSelectedResource());
+		});
+		$("info_resource_content").appendChild(add_gadget_button);
+		$("info_resource_content").appendChild(UIUtils.createHTMLElement("div", $H({
+			id: 'content_bottom_margin'
+		})));
+		$("info_resource_content").appendChild(UIUtils.createHTMLElement("div", $H({
+			class_name: 'bottom'
+		})));
 		_rateResource();
 	}
-	
 
 	this.updateTags = function()
 	{
-		document.getElementById(id + "_important_tags").innerHTML = _tagsToMoreImportantTags(3);
-		document.getElementById(id + '_tagcloud_balloon').innerHTML = "\n";
-		var visible = tagcloudBalloon._properties.visible;
-		if (visible) tagcloudBalloon.hide();
-		_updateTagcloudBalloon(visible);
-		if (id == UIUtils.selectedResource || id == UIUtils.balloonResource) {
-			if (document.getElementById(id + "_tagcloud") != null)
-			{
-				document.getElementById(id + "_tagcloud").innerHTML = _tagsToTagcloud('description',{tags:'mytags'});
-			}
+		_tagsToMoreImportantTags($(id + "_important_tags"), 3);
+		if ((id == UIUtils.selectedResource) &&  ($(id + "_tagcloud") != null))
+		{
+				_tagsToTagcloud($(id + "_tagcloud"), 'description' , {tags:'mytags'});
 		}
-	}
-
-	this.closeTagcloudBalloon = function()
-	{
-		tagcloudBalloon.hide();
-	}
-	
-	this.changeIconDescriptionBalloon = function(src_)
-	{
-		descriptionBalloon._elements.icon.src = src_;
-	}
-	
-	this.changeIconTagcloudBalloon = function(src_)
-	{
-		tagcloudBalloon._elements.icon.src = src_;
 	}
 
 	this.changeTagcloud = function(type){
 		var option = {};
-		var viewTagsHTML = "";
+		$("view_tags_links").innerHTML = "";
 		option = {tags: type};
 		switch(type){
 			case "mytags":
-				viewTagsHTML =	"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"all\");'>" + gettext ('All tags') + "</a>" +
-								"<span>" + gettext ('My tags') + "</span>" +
-								"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('Others tags') + "</a>";
+				var all_tags = UIUtils.createHTMLElement("a", $H({
+					innerHTML: gettext('All tags')
+				}));
+				all_tags.observe("click", function(event){
+					CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud("all");
+				});
+				$("view_tags_links").appendChild(all_tags);
+				$("view_tags_links").appendChild(UIUtils.createHTMLElement("span", $H({
+					innerHTML: gettext('My tags')
+				})));
+				var others_tags = UIUtils.createHTMLElement("a", $H({
+					innerHTML: gettext('Others tags')
+				}));
+				others_tags.observe("click", function(event){
+					CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud("others");
+				});
+				$("view_tags_links").appendChild(others_tags);
 				UIUtils.hidde("add_tags_link");
 				UIUtils.show("add_tags_panel");
-				document.getElementById("new_tag_text_input").value="";
-				document.getElementById("new_tag_text_input").size=5;
-				document.getElementById("new_tag_text_input").focus();
+				$("new_tag_text_input").value="";
+				$("new_tag_text_input").size=5;
+				$("new_tag_text_input").focus();
 				break;
 			case "others":
-				viewTagsHTML =	"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"all\");'>" + gettext ('All tags') + "</a>" +
-								"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('My tags') + "</a>" +
-								"<span>" + gettext ('Others tags') + "</span>";		
+				var all_tags = UIUtils.createHTMLElement("a", $H({
+					innerHTML: gettext('All tags')
+				}));
+				all_tags.observe("click", function(event){
+					CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud("all");
+				});
+				$("view_tags_links").appendChild(all_tags);
+				var my_tags = UIUtils.createHTMLElement("a", $H({
+					innerHTML: gettext('My tags')
+				}));
+				my_tags.observe("click", function(event){
+					CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud("mytags");
+				});
+				$("view_tags_links").appendChild(my_tags);
+				$("view_tags_links").appendChild(UIUtils.createHTMLElement("span", $H({
+					innerHTML: gettext('Others tags')
+				})));
 				UIUtils.show("add_tags_link");
 				UIUtils.hidde("add_tags_panel");
 				break;
 			case "all":
 			default:
-				viewTagsHTML =	"<span>" + gettext ('All tags') + "</span>" +
-								"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"mytags\");'>" + gettext ('My tags') + "</a>" +
-								"<a href='javascript:CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud(\"others\");'>" + gettext ('Others tags') + "</a>";
+				$("view_tags_links").appendChild(UIUtils.createHTMLElement("span", $H({
+					innerHTML: gettext('All tags')
+				})));
+				var my_tags = UIUtils.createHTMLElement("a", $H({
+					innerHTML: gettext('My tags')
+				}));
+				my_tags.observe("click", function(event){
+					CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud("mytags");
+				});
+				$("view_tags_links").appendChild(my_tags);
+				var others_tags = UIUtils.createHTMLElement("a", $H({
+					innerHTML: gettext('Others tags')
+				}));
+				others_tags.observe("click", function(event){
+					CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud("others");
+				});
+				$("view_tags_links").appendChild(others_tags);
 				UIUtils.show("add_tags_link");
 				UIUtils.hidde("add_tags_panel");
 		}
-		$("view_tags_links").innerHTML = viewTagsHTML;
 		if ($(id + '_tagcloud'))
 		{
-			$(id + '_tagcloud').innerHTML= _tagsToTagcloud('description',option);
+			_tagsToTagcloud($(id + '_tagcloud'), 'description', option);
 		}
 	}
 
@@ -230,7 +607,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 		return false;
 	}
 	
-	var _tagsToMoreImportantTags = function(tagsNumber_){
+	var _tagsToMoreImportantTags = function(parent, tagsNumber_){
 		var tagsHTML = '';
 		var tagsAux = state.getTags();
 		var moreImportantTags = [];
@@ -253,59 +630,94 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 		
 		for (var i=0; i<moreImportantTags.length; i++)
 		{
-			tagsHTML += (moreImportantTags[i].tagToHTML() + ((i<(((moreImportantTags.length>tagsNumber_)?tagsNumber_:moreImportantTags.length)-1))?", ":""));
+			parent.appendChild(moreImportantTags[i].tagToHTML())
+			if (i<(((moreImportantTags.length>tagsNumber_)?tagsNumber_:moreImportantTags.length)-1)){
+				parent.appendChild(UIUtils.createHTMLElement("span", $H({
+            		innerHTML: ', '
+        		})));
+			}
 		}
-		return tagsHTML;
 	}
-	
- 	
-	var _events = function(){
-		var eventsHTML = '';
+
+	var _events = function(parent){
+		parent.innerHMTL = '';
 		var eventsAux = state.getEvents();
 		
 		for (var i=0; i<eventsAux.length; i++)
 		{
-			
-			var jsCall = 'javascript:UIUtils.searchByWiring(URIs.GET_RESOURCES_BY_WIRING, "' + eventsAux[i] + '", "' + 'connectEvent' + '");';
-			eventsHTML += ("<span class='multiple_size_tag'>"+"<a title='" + gettext ('Search by ') + eventsAux[i] +"' href='" + jsCall + "'>" + eventsAux[i] + "</a>" + ((i<(eventsAux.length-1))?",":"") + "</span> ");
+			var tag = UIUtils.createHTMLElement("span", $H({ 
+				class_name: 'multiple_size_tag'
+			}));
+			parent.appendChild(tag);
+			var tag_link = UIUtils.createHTMLElement("a", $H({ 
+				title: gettext('Search by ') + eventsAux[i],
+				innerHTML: eventsAux[i]
+			}));
+			tag_link.observe("click", function(event){
+				UIUtils.searchByWiring(URIs.GET_RESOURCES_BY_WIRING, this.innerHTML, 'connectEvent');
+			});
+			tag.appendChild(tag_link);
+			tag.appendChild(UIUtils.createHTMLElement("span", $H({ 
+				innerHTML: ((i<(eventsAux.length-1))?",":"")
+			})));
 		}
-		return eventsHTML;
 	}
 	
-	var _deleteGadget = function(){
-		var deleteHTML = '';
+	var _deleteGadget = function(parent){
 		var addedBy = state.getAddedBy();
-		
+		parent.innerHTML = '';
 		if (addedBy == 'Yes'){
-	    	deleteHTML += ("<a class='submit_link' href='javascript:UIUtils.deleteGadget(\"" + id + "\")'>" + gettext ('Delete gadget') + "</a>");
+			var submit_link = UIUtils.createHTMLElement("a", $H({
+				class_name: 'submit_link',
+				innerHTML: gettext('Delete gadget')
+			}));
+			submit_link.observe("click", function(event){
+				UIUtils.deleteGadget(id);
+			});
+			parent.appendChild(submit_link);
     	}
-    	
-		return deleteHTML;
 	}
 	
-	var _slots = function(){
-		var slotsHTML = '';
+	var _slots = function(parent){
+		parent.innerHMTL = '';
 		var slotsAux = state.getSlots();
 		
 		for (var i=0; i<slotsAux.length; i++)
 		{
-			
-			var jsCall = 'javascript:UIUtils.searchByWiring(URIs.GET_RESOURCES_BY_WIRING, "' + slotsAux[i] + '", "' + 'connectSlot' + '");';
-			slotsHTML += ("<span class='multiple_size_tag'>"+"<a title='" + gettext ('Search by ') + slotsAux[i] +"' href='" + jsCall + "'>" + slotsAux[i] + "</a>" + ((i<(slotsAux.length-1))?",":"") + "</span> ");
+			var tag = UIUtils.createHTMLElement("span", $H({ 
+				class_name: 'multiple_size_tag'
+			}));
+			parent.appendChild(tag);
+			var tag_link = UIUtils.createHTMLElement("a", $H({ 
+				title: gettext('Search by ') + slotsAux[i],
+				innerHTML: slotsAux[i]
+			}));
+			tag_link.observe("click", function(event){
+				UIUtils.searchByWiring(URIs.GET_RESOURCES_BY_WIRING, this.innerHTML, 'connectSlot');
+			});
+			tag.appendChild(tag_link);
+			tag.appendChild(UIUtils.createHTMLElement("span", $H({ 
+				innerHTML: ((i<(slotsAux.length-1))?",":"")
+			})));
 		}
-		return slotsHTML;
 	}
 
-
-	var _tagsToTagcloud = function(loc){
-		var tagsHTML = '';
+	var _tagsToTagcloud = function(parent, loc){
+		parent.innerHTML = "";
 		var tagsAux = state.getTags();
-		var option = arguments[1] || {tags:'all'};
+		var option = arguments[2] || {tags:'all'};
 			
 		switch(option.tags) {
 			case 'all':
 				for (var i=0; i<tagsAux.length; i++) {
-					tagsHTML += ("<span class='multiple_size_tag'>" + tagsAux[i].tagToTypedHTML() + ((i<(tagsAux.length-1))?",":"") + "</span>");
+					var tag = UIUtils.createHTMLElement("span", $H({ 
+						class_name: 'multiple_size_tag'
+					}));
+					tag.appendChild(tagsAux[i].tagToTypedHTML());
+					tag.appendChild(UIUtils.createHTMLElement("span", $H({ 
+						innerHTML: ((i<(tagsAux.length-1))?",":"")
+					})));
+					parent.appendChild(tag);
 				}
 				break;
 			case 'mytags':
@@ -319,8 +731,34 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 					}
 				}
 				for (var i=0; i<tags.length; i++) {
-					var jsCall = 'javascript:UIUtils.removeTagUser("' + tags[i].getValue() + '","'+id+'");';
-					tagsHTML += ("<span class='multiple_size_tag'>" + tags[i].tagToTypedHTML(option) + "</span><a title='" + gettext ('Delete tag') + "' href='" + jsCall + "'><img id='"+id+"_deleteIcon_"+i+"_"+loc+"' onMouseOver=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/delete.png';\" onMouseOut=\"getElementById('"+id+"_deleteIcon_"+i+"_"+loc+"').src='/ezweb/images/cancel_gray.png';\" src='/ezweb/images/cancel_gray.png' border=0 name=op1></a>"+((i<(tags.length-1))?", ":""));
+					var tag = UIUtils.createHTMLElement("span", $H({ 
+						class_name: 'multiple_size_tag'
+					}));
+					tag.appendChild(tags[i].tagToTypedHTML(option));
+					var tag_link = UIUtils.createHTMLElement("a", $H({ 
+						title: gettext('Delete tag')
+					}));
+					tag_link.observe("click", function(event){
+						UIUtils.removeTagUser(this.parentNode.firstChild.innerHTML, id);
+					});
+					tag.appendChild(tag_link);
+					var tag_img = UIUtils.createHTMLElement("img", $H({
+						id: id + "_deleteIcon_" + i + "_" + loc,
+						src: '/ezweb/images/cancel_gray.png',
+						style: 'border:none;',
+						name: 'op1'
+					}));
+					tag_img.observe("mouseover", function(event){
+						this.src='/ezweb/images/delete.png';
+					});
+					tag_img.observe("mouseout", function(event){
+						this.src='/ezweb/images/cancel_gray.png';
+					});
+					tag_link.appendChild(tag_img);
+					tag.appendChild(UIUtils.createHTMLElement("span", $H({ 
+						innerHTML: ((i<(tags.length-1))?",":"")
+					})));
+					parent.appendChild(tag);
 				}
 				break;
 			case 'others':
@@ -335,47 +773,16 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 					}
 				}
 				for (var i=0; i<tags.length; i++) {
-				    tagsHTML += ("<span class='multiple_size_tag'>" + tags[i].tagToTypedHTML() + ((i<(tags.length-1))?",":"") + "</span>");
+					var tag = UIUtils.createHTMLElement("span", $H({ 
+						class_name: 'multiple_size_tag'
+					}));
+					tag.appendChild(tags[i].tagToTypedHTML());
+					tag.appendChild(UIUtils.createHTMLElement("span", $H({ 
+						innerHTML: ((i<(tags.length-1))?",":"")
+					})));
+					parent.appendChild(tag);
 				}
 		}
-			
-		return tagsHTML;
-	}
-
-	var _createDescriptionBalloon = function()
-	{
-		descriptionBalloon = new HelpBalloon({
-									returnElement: true,
-									icon: 		'/ezweb/images/description_gray.png',	//url to the icon to use
-									altText: 	gettext ('Description'), 				//Alt text of the help icon
-									title: 		gettext ('Description') + ':',			//Title of the balloon topic
-									content:	"<p class='description_balloon'>" + 	//Static content of the help balloon
-													state.getDescription() + 
-												"</p>",
-									imagePath: 	'/ezweb/js/lib/helpballoon/images/'
-		});
-		$(id + '_description').appendChild(descriptionBalloon._elements.icon);
-	}
-
-	var _createTagcloudBalloon = function()
-	{
-		tagcloudBalloon = new HelpBalloon({
-									returnElement: true,
-									icon: 		'/ezweb/images/more_tags_gray.png',	//url to the icon to use
-									altText: 	gettext ('Tagcloud'),				//Alt text of the help icon
-									title: 		gettext ('Tagcloud') + ':',			//Title of the balloon topic
-									content:	"<p class='tagcloud_balloon'>" +	//Static content of the help balloon
-													_tagsToTagcloud('balloon') + 
-												"</p>",
-									imagePath: 	'/ezweb/js/lib/helpballoon/images/'
-		});
-		$(id + '_tagcloud_balloon').appendChild(tagcloudBalloon._elements.icon);
-	}
-
-	var _updateTagcloudBalloon = function(visible)
-	{
-		_createTagcloudBalloon();
-		if (visible && state.getTags().length!=0) { tagcloudBalloon.show(); }
 	}
 
 	var _rateResource = function()
@@ -384,7 +791,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 		var popularity = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).getPopularity();
 		if (vote!=0)
 		{
-			document.getElementById("rateStatus").innerHTML = document.getElementById("ratingSaved").innerHTML;
+			$("rateStatus").innerHTML = $("ratingSaved").innerHTML;
 			for (var i = 1; i<=vote; i++)
 			{
 				$("_"+i).className = "on";
@@ -435,10 +842,6 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 		persistenceEngine.send_post(url_Server, url_, this, loadResource, onError);
 	}
 	
-	
-	
-	
-	
 	// *******************
 	//  PRIVATE VARIABLES
 	// *******************
@@ -446,8 +849,6 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 	var state = null;
 	var id = id_;
 	var tagger = new Tagger();
-	var descriptionBalloon = null;
-	var tagcloudBalloon = null;
 	
 	if (urlTemplate_ != null) {
 		_createResource(urlTemplate_);
@@ -497,7 +898,6 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 
 	this.setTags = function(tagsJSON_) {
 		tags.clear();
-		//var tagsXMLList = tagsXML_.getElementsByTagName("Tag");
 		for (var i=0; i<tagsJSON_.length; i++)
 		{
 			tags.push(new Tag(tagsJSON_[i]));
