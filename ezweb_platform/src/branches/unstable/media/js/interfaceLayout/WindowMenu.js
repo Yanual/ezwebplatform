@@ -94,34 +94,34 @@ function RenameWindowMenu (element) {
 	RenameWindowMenu.prototype.executeOperation = function(){
 
 		var newName = $('rename_new_name').value;
-		//is the new name correct? (no empty name)
-		if(newName.match(/^(\S|\S[\w\s\-_·¡È…ÌÕÛ”˙⁄Ò—]*\S)$/)){
+/*		//is the new name correct? (no empty name)
+		if(newName.match(/^(\S|\S[\w\s\-_·¡È…ÌÕÛ”˙⁄Ò—]*\S)$/)){*/
 			switch (this.element){
 			case 'tab':
-				//is the name in use yet?
-				if(!OpManagerFactory.getInstance().activeWorkSpace.tabExists(newName)){
+/*				//is the name in use yet?
+				if(!OpManagerFactory.getInstance().activeWorkSpace.tabExists(newName)){*/
 					OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().updateInfo(newName, null);
-				}
+/*				}
 				else{
 					this.msgElement.update('name already in use');
-				}
+				}*/
 				break;
 			case 'workSpace':	
-				//is the name in use yet?
-				if(!OpManagerFactory.getInstance().workSpaceExists(newName)){
+/*				//is the name in use yet?
+				if(!OpManagerFactory.getInstance().workSpaceExists(newName)){*/
 					OpManagerFactory.getInstance().activeWorkSpace.updateInfo(newName, null);
-				}
+/*				}
 				else{
 					this.msgElement.update('name already in use');
-				}
+				}*/
 				break;
 			default:
 				break;
 			}
-		}
+/*		}
 		else{
 			this.msgElement.update('invalid name');
-		}
+		}*/
 
 	}
 

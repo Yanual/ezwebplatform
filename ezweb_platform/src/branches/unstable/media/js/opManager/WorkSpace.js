@@ -111,7 +111,6 @@ function WorkSpace (workSpaceState) {
 	}
 	
 	var renameSuccess = function(transport) {
-		LayoutManagerFactory.getInstance().hideCover();
 	}
 	var renameError = function(transport, e) {
 		var msg;
@@ -174,10 +173,37 @@ function WorkSpace (workSpaceState) {
 	// PUBLIC METHODS
 	// ****************
 	
+	WorkSpace.prototype.fillWithLabel = function() {
+		this.workSpaceNameHTMLElement = this.workSpaceHTMLElement.firstDescendant();
+		if(this.workSpaceNameHTMLElement != null){
+			this.workSpaceNameHTMLElement.remove();
+		}
+		var nameToShow = (this.workSpaceState.name.length>15)?this.workSpaceState.name.substring(0, 15)+"..." : this.workSpaceState.name;
+		var spanHTML = "<span>"+nameToShow+"</span>";
+    	new Insertion.Top(this.workSpaceHTMLElement, spanHTML);
+		this.workSpaceNameHTMLElement = this.workSpaceHTMLElement.firstDescendant();
+		Event.observe(this.workSpaceNameHTMLElement, 'click', function(e){this.fillWithInput();}.bind(this));
+    }
+
+
+	WorkSpace.prototype.fillWithInput = function () {
+		this.workSpaceNameHTMLElement.remove();
+		var inputHTML = "<input class='ws_name' value='"+this.workSpaceState.name+"' size='"+this.workSpaceState.name.length+" maxlength=30' />";
+		new Insertion.Top(this.workSpaceHTMLElement, inputHTML);
+		this.workSpaceNameHTMLElement =  this.workSpaceHTMLElement.firstDescendant();
+		this.workSpaceNameHTMLElement.focus();	
+		Event.observe(this.workSpaceNameHTMLElement, 'blur', function(e){Event.stop(e);
+					this.fillWithLabel()}.bind(this));
+		Event.observe(this.workSpaceNameHTMLElement, 'change', function(e){Event.stop(e);
+					this.updateInfo(e.target.value, null);}.bind(this));
+		Event.observe(this.workSpaceNameHTMLElement, 'keyup', function(e){Event.stop(e);
+					e.target.size = e.target.value.length;}.bind(this));
+	}
+	
+	
     WorkSpace.prototype.updateInfo = function (workSpaceName, active) {
 		//If the server isn't working the changes will not be saved	
-		this.workSpaceState.name = workSpaceName;
-		this.workSpaceHTMLElement.update(workSpaceName);
+		this.workSpaceState.name = workSpaceName;		
 
 		var workSpaceUrl = URIs.GET_POST_WORKSPACE.evaluate({'id': this.workSpaceState.id});
 		var o = new Object;
@@ -275,7 +301,7 @@ function WorkSpace (workSpaceState) {
 			return;
 			
 		//global tab section
-		this.workSpaceHTMLElement.update(this.workSpaceState.name);
+		this.fillWithLabel();
 		
 		var tabList = this.tabInstances.keys();
 		
@@ -340,7 +366,7 @@ function WorkSpace (workSpaceState) {
 
 		var tabsUrl = URIs.GET_POST_TABS.evaluate({'workspace_id': this.workSpaceState.id});
 		var o = new Object;
-		o.name = "MyTab "+this.tabInstances.keys().length.toString();
+		o.name = "MyTab "+(this.tabInstances.keys().length + 1).toString();
 		tabData = Object.toJSON(o);
 		params = 'tab=' + tabData;
 		PersistenceEngineFactory.getInstance().send_post(tabsUrl, params, this, createTabSuccess, createTabError);

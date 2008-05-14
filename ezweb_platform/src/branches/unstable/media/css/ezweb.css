@@ -61,6 +61,7 @@ a:hover{
  top: 6px;
  display: block;
  right:4px;
+ margin-left:25%;
  z-index: 3;
 
 }
@@ -76,7 +77,7 @@ a:hover{
 
 }
 
-.toolbar_section input, #add_tab_link {
+.toolbar_section input[type=button], #add_tab_link {
   position: relative;
   margin-right: 3px;
   margin-left: 3px;
@@ -88,9 +89,13 @@ a:hover{
   border: 0px none;
   cursor: pointer;
 }
+.ws_name{
+  border: 0px none;
+}
 
 #workspace_name {
   position: relative;
+  display: inline;
   margin-right: 0px;
   margin-left: 3px;
   color:#2D6F9C;
@@ -98,6 +103,7 @@ a:hover{
 
 #add_tab_link {
  margin-top:2px;
+ float:right;
 }
 
 

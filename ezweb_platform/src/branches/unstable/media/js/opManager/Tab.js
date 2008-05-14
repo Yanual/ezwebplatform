@@ -109,7 +109,8 @@ function Tab (tabInfo, workSpace) {
 		if(this.tabNameHTMLElement != null){
 			this.tabNameHTMLElement.remove();
 		}
-		var spanHTML = "<span>"+this.tabInfo.name+"</span>";
+		var nameToShow = (this.tabInfo.name.length>15)?this.tabInfo.name.substring(0, 15)+"..." : this.tabInfo.name;
+		var spanHTML = "<span>"+nameToShow+"</span>";
     	new Insertion.Top(this.tabHTMLElement, spanHTML);
 		this.tabNameHTMLElement = this.tabHTMLElement.firstDescendant();
     }
@@ -117,7 +118,7 @@ function Tab (tabInfo, workSpace) {
 
 	Tab.prototype.fillWithInput = function () {
 		this.tabNameHTMLElement.remove();
-		var inputHTML = "<input class='tab_name' value='"+this.tabInfo.name+"' size='"+this.tabInfo.name.length+"' />";
+		var inputHTML = "<input class='tab_name' value='"+this.tabInfo.name+"' size='"+this.tabInfo.name.length+"' maxlength=30 />";
 		new Insertion.Top(this.tabHTMLElement, inputHTML);
 		this.tabNameHTMLElement =  this.tabHTMLElement.firstDescendant();
 		this.tabNameHTMLElement.focus();	

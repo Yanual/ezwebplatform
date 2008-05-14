@@ -136,7 +136,7 @@ var URIs = new _URIConstants();
 <div id="menu_layer" style="display:none">
 </div>
 <div id="workspace_menu" class="drop_down_menu" style="display:none;">
-	<div class="option underlined" onclick="LayoutManagerFactory.getInstance().showWindowMenu('renameWorkSpace')"><img src="/ezweb/images/rename.gif"/><span>{% trans "Rename"%}</span></div>
+	<div class="option underlined" onclick="OpManagerFactory.getInstance().activeWorkSpace.fillWithInput(); LayoutManagerFactory.getInstance().hideCover();"><img src="/ezweb/images/rename.gif"/><span>{% trans "Rename"%}</span></div>
 	<!--<div class="option underlined"><img src="/ezweb/images/package.jpg"/><span>{% trans "Package"%}</span></div>
 	<div class="option underlined"><img src="/ezweb/images/move.gif"/><span>{% trans "Mezclar con Workspace"%}</span></div>
 	<div class="option underlined"><img src="/ezweb/images/pencil.png"/><span>{% trans "Preferences"%}</span></div> -->
@@ -198,7 +198,7 @@ var URIs = new _URIConstants();
 <div id="toolbar_section" class="toolbar_section">
    		<input type="button" id="catalogue_link" title="Catalogue" class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().showCatalogue()"/> 
    		<input type="button" id="wiring_link" title="Wires" class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().activeWorkSpace.showWiring()"/>
-		<span id="workspace_name"></span>
+		<div id="workspace_name"></div>
 	<!--	<input type="button" id="change_ws_link" title="Change workspace" class="toolbar_unmarked" onclick="LayoutManagerFactory.getInstance().showDropDownMenu('changeWorkSpace')"/>	-->
    		<input type="button" id="ws_operations_link" title="Workspace operations" class="toolbar_unmarked" onclick="LayoutManagerFactory.getInstance().showDropDownMenu('workSpaceOps', 'ws_operations_link')"/>		
 		<span id="logs_link" style="display:none" title="Errors" class="toolbar_unmarked"onclick="OpManagerFactory.getInstance().showLogs()";></span>
