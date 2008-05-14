@@ -74,6 +74,9 @@ var LayoutManagerFactory = function () {
 			this.coverLayerEvent = function () {this.hideCover()}.bind(this);	//disabling layer onclick event (by default)
 	
 			this.menus = new Array();
+			
+			this.tabsPosition = Position.cumulativeOffset($('tab_section'));
+			this.toolbarPosition = Position.cumulativeOffset($('toolbar_section'));
 		
 		// ****************
 		// PUBLIC METHODS 
@@ -229,43 +232,61 @@ var LayoutManagerFactory = function () {
 			Event.stopObserving( this.coverLayerElement, "click", this.coverLayerEvent);
 		}
 
-		//WorkSpaceMenu is dinamic so the different options must be added.
-		LayoutManager.prototype.refreshChangeWorkSpaceMenu = function(workspaces){
-
-			if(!this.menus['workSpaceOpMenu']){
-					this.menus['workSpaceOpMenu'] = new DropDownMenu('workspace_menu');
+		LayoutManager.prototype.createMenu = function(menuType, idMenu){
+			var menu;
+			var menuHTML = '<div id="'+idMenu+'" class="drop_down_menu">';
+			switch (menuType){
+			case 'workSpaceOps':
+				menuHTML += '<div id="changeWorkspace_menu" class="submenu"></div></div>';
+				new Insertion.After($('menu_layer'), menuHTML);
+				menu = new DropDownMenu(idMenu, this.toolbarPosition);
+				menu.addOption("/ezweb/images/rename.gif", "Rename", function(){OpManagerFactory.getInstance().activeWorkSpace.fillWithInput(); 
+								LayoutManagerFactory.getInstance().hideCover();});
+				menu.addOption("/ezweb/images/cross.png","Remove",function(){OpManagerFactory.getInstance().activeWorkSpace.deleteWorkSpace();});
+				menu.addOption("/ezweb/images/list-add.png","New workspace",function(){LayoutManagerFactory.getInstance().showWindowMenu('createWorkSpace');});
+				break;
+			case 'tabOps':
+				menuHTML += '</div>';
+				new Insertion.After($('menu_layer'), menuHTML);			
+				menu = new DropDownMenu(idMenu, this.tabsPosition);
+				menu.addOption("/ezweb/images/rename.gif", "Rename", function(){OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().fillWithInput();
+								LayoutManagerFactory.getInstance().hideCover();});
+				menu.addOption("/ezweb/images/cross.png","Remove",function(){OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().deleteTab();});
+				break;
+			default:
+				break;
 			}
-			this.menus['workSpaceOpMenu'].clearSubmenuOptions();
+			return menu;
+		}
+
+		//WorkSpaceMenu is dinamic so the different options must be added.
+		LayoutManager.prototype.refreshChangeWorkSpaceMenu = function(workSpace, workspaces){
+			
+			workSpace.menu.clearSubmenuOptions();
 			
 			if(workspaces.length >= 1){
-				this.menus['workSpaceOpMenu'].submenu.className = "submenu border_top";
+				workSpace.menu.submenu.className = "submenu border_top";
 			}else{
-				this.menus['workSpaceOpMenu'].submenu.className = "submenu";
+				workSpace.menu.submenu.className = "submenu";
 			}
 
 			for (var i=0; i<workspaces.length; i++){
-				this.menus['workSpaceOpMenu'].addOptionToSubmenu(null, workspaces[i].workSpaceState.name, function (){LayoutManagerFactory.getInstance().hideCover();OpManagerFactory.getInstance().changeActiveWorkSpace(this)}.bind(workspaces[i]));
+				workSpace.menu.addOptionToSubmenu(null, workspaces[i].workSpaceState.name, function (){LayoutManagerFactory.getInstance().hideCover();OpManagerFactory.getInstance().changeActiveWorkSpace(this)}.bind(workspaces[i]));
 
 			}
 		}
 
 		//Shows the asked drop down menu 
-		LayoutManager.prototype.showDropDownMenu = function(menu, launcher){
+		LayoutManager.prototype.showDropDownMenu = function(menuType, owner){
 			this.showClickableCover();
-			switch (menu){
+			switch (menuType){
 			case 'workSpaceOps':
-				if(!this.menus['workSpaceOpMenu']){
-					this.menus['workSpaceOpMenu'] = new DropDownMenu('workSpace_menu');
-				}
-				this.currentMenu = this.menus['workSpaceOpMenu'];
-				this.currentMenu.show(launcher,'bottom-right');
+				this.currentMenu = owner.menu;
+				this.currentMenu.show(owner.wsOpsLauncher,'bottom-right');
 				break;
 			case 'tabOps':
-				if(!this.menus['tabOpMenu']){
-					this.menus['tabOpMenu'] = new DropDownMenu('tab_menu');
-				}
-				this.currentMenu = this.menus['tabOpMenu'];
-				this.currentMenu.show(launcher,'bottom-left');
+				this.currentMenu = owner.menu;
+				this.currentMenu.show(owner.tabOpsLauncher,'bottom-left');
 				break;
 			default:
 				break;

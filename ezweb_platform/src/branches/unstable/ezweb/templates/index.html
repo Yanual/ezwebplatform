@@ -135,20 +135,20 @@ var URIs = new _URIConstants();
 <!-- HIDDEN MENUS -->
 <div id="menu_layer" style="display:none">
 </div>
-<div id="workspace_menu" class="drop_down_menu" style="display:none;">
+<!--<div id="workspace_menu" class="drop_down_menu" style="display:none;">
 	<div class="option underlined" onclick="OpManagerFactory.getInstance().activeWorkSpace.fillWithInput(); LayoutManagerFactory.getInstance().hideCover();"><img src="/ezweb/images/rename.gif"/><span>{% trans "Rename"%}</span></div>
-	<!--<div class="option underlined"><img src="/ezweb/images/package.jpg"/><span>{% trans "Package"%}</span></div>
+	<div class="option underlined"><img src="/ezweb/images/package.jpg"/><span>{% trans "Package"%}</span></div>
 	<div class="option underlined"><img src="/ezweb/images/move.gif"/><span>{% trans "Mezclar con Workspace"%}</span></div>
-	<div class="option underlined"><img src="/ezweb/images/pencil.png"/><span>{% trans "Preferences"%}</span></div> -->
+	<div class="option underlined"><img src="/ezweb/images/pencil.png"/><span>{% trans "Preferences"%}</span></div> 
 	<div class="option underlined" onclick="OpManagerFactory.getInstance().activeWorkSpace.deleteWorkSpace();"><img src="/ezweb/images/cross.png"/><span>{% trans "Remove"%}</span></div>
 	<div class="option" onclick="LayoutManagerFactory.getInstance().showWindowMenu('createWorkSpace');"><img src="/ezweb/images/list-add.png"/><span>{% trans "New workspace"%}</span></div>
-	<div id="changeWorkspace_menu" class="submenu"></div>
+	<div id="changeWorkspace_menu" class="submenu"></div> 
 </div>
 <div id="tab_menu" class="drop_down_menu" style="display:none;">
 	<div class="option underlined" onclick="OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().fillWithInput(); LayoutManagerFactory.getInstance().hideCover();"><img src="/ezweb/images/rename.gif"/><span>{%trans "Rename"%}</span></div>
-<!--	<div class="option underlined"><img src="/ezweb/images/package.jpg"/><span>{% trans "Package"%}</span></div>
+	<div class="option underlined"><img src="/ezweb/images/package.jpg"/><span>{% trans "Package"%}</span></div>
 	<div class="option underlined"><img src="/ezweb/images/move.gif"/><span>{% trans "Copy to Workspace"%}</span></div>
-	<div class="option underlined"><img src="/ezweb/images/move.gif"/><span>{% trans "Move to Workspace"%}</span></div> -->
+	<div class="option underlined"><img src="/ezweb/images/move.gif"/><span>{% trans "Move to Workspace"%}</span></div>
 	<div class="option" onclick="OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().deleteTab();"><img src="/ezweb/images/cross.png" /><span>{% trans "Remove"%}</span></div>
 </div>
 <div id="rename_menu" class="window_menu" style="display:none">
@@ -164,7 +164,7 @@ var URIs = new _URIConstants();
 		<button id="rename_btn">{% trans "Rename"%}</button>
 		<button onclick="LayoutManagerFactory.getInstance().hideCover();">{% trans "Cancel"%}</button>
 	</div>
-</div>
+</div> -->
 <div id="create_menu" class="window_menu" style="display:none">
 	<div class="window_top">
 		<label id="create_window_title" class="window_title"></label>
@@ -179,7 +179,7 @@ var URIs = new _URIConstants();
 		<button onclick="LayoutManagerFactory.getInstance().hideCover();">{% trans "Cancel"%}</button>
 	</div>
 </div>
-<!--<div id="changeWorkspace_menu" class="drop_down_menu" style="display:none;">
+<!-- <div id="changeWorkspace_menu" class="drop_down_menu" style="display:none;">
 </div> -->
 
 
@@ -199,8 +199,9 @@ var URIs = new _URIConstants();
    		<input type="button" id="catalogue_link" title="Catalogue" class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().showCatalogue()"/> 
    		<input type="button" id="wiring_link" title="Wires" class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().activeWorkSpace.showWiring()"/>
 		<div id="workspace_name"></div>
-	<!--	<input type="button" id="change_ws_link" title="Change workspace" class="toolbar_unmarked" onclick="LayoutManagerFactory.getInstance().showDropDownMenu('changeWorkSpace')"/>	-->
-   		<input type="button" id="ws_operations_link" title="Workspace operations" class="toolbar_unmarked" onclick="LayoutManagerFactory.getInstance().showDropDownMenu('workSpaceOps', 'ws_operations_link')"/>		
+<!--		<input type="button" id="change_ws_link" title="Change workspace" class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().menu.addOption(null,'hola',function(){alert('hola')});"/>	
+		<input type="button" id="change_ws_link" title="Change workspace" class="toolbar_unmarked" onclick="var id=OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().menu.addOption(null,'hola2',function(){alert('hola')}); OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().menu.removeOption(id,null,'adios',function(){alert('adios')});"/>	-->
+   		<input type="button" id="ws_operations_link" title="Workspace operations" class="toolbar_unmarked" onclick="LayoutManagerFactory.getInstance().showDropDownMenu('workSpaceOps', OpManagerFactory.getInstance().activeWorkSpace)"/>		
 		<span id="logs_link" style="display:none" title="Errors" class="toolbar_unmarked"onclick="OpManagerFactory.getInstance().showLogs()";></span>
 	</div>
 </div>

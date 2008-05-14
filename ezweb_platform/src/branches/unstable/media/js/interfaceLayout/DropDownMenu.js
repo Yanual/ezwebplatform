@@ -37,22 +37,24 @@
 
 //Class for managing a drop down menu whose HTML code is in templates/index.html.
 //The options may be created either by default in the HTML code or dinamically with the addOption function
-function DropDownMenu(idMenu){
+function DropDownMenu(idMenu, parentPos){
 
 	//Constructor
 	this.idLauncher;	//Launcher: clicked point from which the menu is launched
 	this.launcher;
 	this.idMenu = idMenu;	//menu: menu element in the HTLM code (<div>)
 	this.menu = $(idMenu);
+	this.parentPos = parentPos; //absolute parent position
 	this.position;				//position related to the launcher
 	this.submenu = $$('#'+this.idMenu+' .submenu')[0];
+	this.option_id = 0;		//identifier for options
 	
 	//Calculates the absolute position of the menu according to the point from which it is launched
 	//The menu can be displayed either at the bottom or top (on the right/left) of the launcher
 	DropDownMenu.prototype.calculatePosition = function(){
-
-				
-		var coordenates = Position.cumulativeOffset(this.launcher);
+		var coordenates =  new Array();
+		coordenates[1] = this.parentPos[1] + this.launcher.parentNode.offsetTop + this.launcher.offsetTop;
+		coordenates[0] = this.parentPos[0] + this.launcher.parentNode.offsetLeft + this.launcher.offsetLeft;		
 		var smWidth = this.menu.getWidth();
 			
 		if(this.position == 'bottom-left'){
@@ -79,23 +81,62 @@ function DropDownMenu(idMenu){
 	//imgPath to be shown beside the option (may be null)-- option text -- event:function called on clicking
 	DropDownMenu.prototype.addOption = function(imgPath, option, event){
 		
-		var lastOption = $$('#'+this.idMenu+' .option:last-child')[0];
+		var lastOptionList = $$('#'+this.idMenu+' .option');
+		var lastOption = lastOptionList[lastOptionList.length-1];
 
 		if( lastOption){//last option doesn't have a underline
 			lastOption.toggleClassName('underlined');
 		}
 		//create the HTML code for the option and insert it in the menu
-		var opHtml = '<div class = "option">';
+		var opId='op_'+this.idMenu+'_'+this.option_id;
+		var opHtml = '<div id="'+ opId +'" class = "option">';
 		if (imgPath){
 			opHtml += '<img src="'+imgPath+'"/>';
 		}
 		opHtml += '<span>'+option+'</span></div>';
-		new Insertion.Bottom(this.menu, opHtml);
-		lastOption = $$('#'+this.idMenu+' .option:last-child')[0];
+		if(lastOption){
+			new Insertion.After(lastOption, opHtml);
+		}else{
+			new Insertion.Top(this.menu, opHtml);
+		}
+		lastOption = $(opId);
 		Event.observe(lastOption, 'click', event);
-			
+		this.option_id++;
+		
+		return opId;
 	}
 	
+	//removes an option
+	DropDownMenu.prototype.removeOption = function(opId){
+		var option=$(opId).remove();
+		if(!option.hasClassName('underlined')){
+			var lastOption = $$('#'+this.idMenu+ ' .option:last-child')[0];
+			if( lastOption){//last option doesn't have a underline
+				lastOption.toggleClassName('underlined');
+			}
+		}
+		
+	}
+		
+	//updates an option
+	DropDownMenu.prototype.updateOption = function(opId, imgPath, option, handler){
+		var old=$(opId);
+		var opHtml='<div id="'+ opId +'" class = "option">';
+		if (imgPath){
+			opHtml = '<img src="'+imgPath+'"/>';
+		}
+		opHtml += '<span>'+option+'</span>';
+		new Insertion.Before(old, opHtml);
+		old=old.remove();
+		var newOp = $(opId);
+		if(old.hasClassName('underlined')){
+			newOp.toggleClassName('underlined');
+		}
+		Event.observe(newOp, 'click', handler);
+		
+	}
+
+	//submenu operations
 	DropDownMenu.prototype.addOptionToSubmenu = function(imgPath, option, event){
 		
 		var lastOption = $$('#'+this.idMenu+ ' .submenu div:last-child')[0];
@@ -104,15 +145,30 @@ function DropDownMenu(idMenu){
 			lastOption.toggleClassName('underlined');
 		}
 		//create the HTML code for the option and insert it in the menu
-		var opHtml = '<div class = "option">';
+		var opId='secondary_op_'+this.idMenu+'_'+this.option_id;
+		var opHtml = '<div id="'+ opId +'" class = "option">';
 		if (imgPath){
 			opHtml += '<img src="'+imgPath+'"/>';
 		}
 		opHtml += '<span>'+option+'</span></div>';
 		new Insertion.Bottom(this.submenu, opHtml);
-		lastOption = $$('#'+this.idMenu+' .submenu div:last-child')[0];
+		lastOption = $(opId);
 		Event.observe(lastOption, 'click', event);
-			
+		this.option_id++;
+		
+		return opId;			
+	}
+	
+		//removes an option
+	DropDownMenu.prototype.removeSecondaryOption = function(opId){
+		var option=$(opId).remove();
+		if(!option.hasClassName('underlined')){
+			var lastOption = $$('#'+this.idMenu+ ' .submenu div:last-child')[0];
+			if( lastOption){//last option doesn't have a underline
+				lastOption.toggleClassName('underlined');
+			}
+		}
+		
 	}
 
 	//displays the menu in the correct position
@@ -128,15 +184,12 @@ function DropDownMenu(idMenu){
 		this.menu.style.display="none";	
 	}
 
-	//shows the menu (calling showMenu function) and changes the image of the launcher (in case it has to)	
+	//shows the menu (calling showMenu function)	
 	DropDownMenu.prototype.show = function (idLauncher, position){
-		//the menu may have change its position on the layout, so it's necessary to recover the element.
-		if (idLauncher != this.idLauncher){
-			this.idLauncher = idLauncher;
-			this.launcher = $(idLauncher);
-			this.position = position;
-			this.calculatePosition();
-		}
+		this.idLauncher = idLauncher;
+		this.launcher = $(idLauncher);
+		this.position = position;
+		this.calculatePosition();
 		this.menu.style.display="block";
 	}
 

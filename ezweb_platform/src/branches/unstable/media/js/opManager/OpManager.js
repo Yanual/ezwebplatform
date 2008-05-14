@@ -260,7 +260,7 @@ var OpManagerFactory = function () {
 				}*/
 			}
 			this.activeWorkSpace.show();
-			LayoutManagerFactory.getInstance().refreshChangeWorkSpaceMenu(disabledWorkSpaces);
+			LayoutManagerFactory.getInstance().refreshChangeWorkSpaceMenu(this.activeWorkSpace, disabledWorkSpaces);
 		}
 		
 		OpManager.prototype.continueLoadingGlobalModules = function (module) {

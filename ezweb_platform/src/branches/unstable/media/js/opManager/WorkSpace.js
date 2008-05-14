@@ -455,5 +455,8 @@ function WorkSpace (workSpaceState) {
 	this.wiringLayer = null;
 	this.visibleTab = null;
 	this.workSpaceHTMLElement = $('workspace_name');
+	this.wsOpsLauncher = 'ws_operations_link';
+	var idMenu = 'menu_'+this.workSpaceState.id;
+	this.menu = LayoutManagerFactory.getInstance().createMenu('workSpaceOps',idMenu);
 	
 }

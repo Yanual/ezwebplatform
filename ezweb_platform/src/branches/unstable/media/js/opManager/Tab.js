@@ -211,9 +211,11 @@ function Tab (tabInfo, workSpace) {
     var tabOpsLauncherHTML = '<input id="'+this.tabOpsLauncher+'" type="button" title="options" class="tabOps_launcher tabOps_launcher_show"/>';
     new Insertion.Bottom(this.tabHTMLElement, tabOpsLauncherHTML);
     var tabOpsLauncherElement = $(this.tabOpsLauncher);
-    Event.observe(tabOpsLauncherElement, "click", function(e){Event.stop(e); LayoutManagerFactory.getInstance().showDropDownMenu('tabOps', this.tabOpsLauncher);}.bind(this), true);
+    Event.observe(tabOpsLauncherElement, "click", function(e){Event.stop(e); LayoutManagerFactory.getInstance().showDropDownMenu('tabOps',this);}.bind(this), true);
     tabOpsLauncherElement.setStyle({'display':'none'});
 
     //fill the tab label with a span tag
     this.fillWithLabel();
+    var idMenu = 'menu_'+this.tabName;
+    this.menu = LayoutManagerFactory.getInstance().createMenu('tabOps',idMenu);
 }
