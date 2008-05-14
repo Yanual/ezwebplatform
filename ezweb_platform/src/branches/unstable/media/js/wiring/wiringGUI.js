@@ -773,9 +773,9 @@ ChannelInterface.prototype.connectInput = function(wIn) {
 ChannelInterface.prototype.disconnectInput = function(wIn) {
   if (this.channel != null &&
       this.channel.inputs[wIn.getQualifiedName()] != undefined) {
-    delete this.inputsForAdding[wIn.getQualifiedName()];
-  } else {
     this.inputsForRemoving[wIn.getQualifiedName()] = wIn;
+  } else {
+    delete this.inputsForAdding[wIn.getQualifiedName()];
   }
   delete this.inputs[wIn.getQualifiedName()];
 }
@@ -792,10 +792,10 @@ ChannelInterface.prototype.connectOutput = function(connectable) {
 
 ChannelInterface.prototype.disconnectOutput = function(connectable) {
   if (this.channel != null &&
-      this.channel.inputs[connectable.getQualifiedName()] != undefined) {
-    delete this.outputsForAdding[connectable.getQualifiedName()];
-  } else {
+      this.channel.outputs[connectable.getQualifiedName()] != undefined) {
     this.outputsForRemoving[connectable.getQualifiedName()] = connectable;
+  } else {
+    delete this.outputsForAdding[connectable.getQualifiedName()];
   }
   delete this.outputs[connectable.getQualifiedName()];
 }
