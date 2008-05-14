@@ -170,8 +170,9 @@ wEvent.prototype.getQualifiedName = function () {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // This class represents a wConnectable whose only purpose is to redistribute the data produced by an wIn object //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function wChannel (variable, name, id) {
+function wChannel (variable, name, id, provisional_id) {
   this.variable = variable;
+  this.provisional_id=provisional_id;
   wInOut.call(this, name, null, null, id);
   this.variable.assignConnectable(this);
 }

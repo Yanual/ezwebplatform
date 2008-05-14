@@ -70,7 +70,7 @@ class AbstractVariable(models.Model):
         pass
 
     def __unicode__(self):
-        return str(self.pk) + " " + self.value
+        return str(self.pk) + " " + self.name
     
 class WorkSpaceVariable(models.Model):
     

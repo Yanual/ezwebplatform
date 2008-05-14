@@ -49,6 +49,7 @@ from workspace.models import Tab, WorkSpaceVariable, AbstractVariable
 def get_abstract_variable(id):    
     return AbstractVariable.objects.get(id=id)
 
+
 def get_wiring_variable_data(var, ig):
     res_data = {}
 
@@ -232,7 +233,8 @@ def get_workspace_variable_data(data):
         connectable = Out.objects.get(abstract_variable__id = abstract_var_id)
         data_ret['tab_id'] = Tab.objects.filter(abstract_variable = abstract_var)[0].id
     if (data_ret['aspect'] == 'CHANNEL'):
-        connectable = InOut.objects.get(workspace_variable__id = abstract_var_id)
+        workspace_variable = WorkSpaceVariable.objects.get(abstract_variable__id = abstract_var_id)
+        connectable = InOut.objects.get(workspace_variable = workspace_variable)
         
     connectable_data = get_connectable_data(connectable)    
 
@@ -246,7 +248,29 @@ def get_connectable_data(connectable):
 
     res_data['id'] = connectable.id
     res_data['name'] = connectable.name
+
+    if isinstance(connectable, InOut): 
+        connectable_type = "inout"
         
+        #Locating IN and INOUT connectables linked to this conectable!
+        res_data['ins'] = []
+        
+        ins = In.objects.filter(inouts__id = connectable.id)
+        for input in ins:
+            res_data['ins'].append(get_connectable_data(input))
+            
+        #Locating OUT and INOUT connectables linked to this conectable!
+        res_data['outs'] = []
+        
+        outs = Out.objects.filter(inouts__id = connectable.id)
+        for output in outs:
+            res_data['outs'].append(get_connectable_data(output))
+            
+    elif isinstance(connectable, Out):
+        connectable_type = "out"
+    elif isinstance(connectable, In):
+        connectable_type = "in"
+            
     return res_data
 
 
@@ -273,11 +297,11 @@ def get_global_workspace_data(data, workSpaceDAO):
     data_ret['workspace']['workSpaceVariableList'] = workspace_variables_data
     
     #Wiring information
-    inouts = InOut.objects.filter(workspace_variable__workspace=workSpaceDAO).order_by('id')  
-    data = serializers.serialize('python', inouts, ensure_ascii=False)
-    inouts_data = [get_inout_data(d) for d in data]
+    #inouts = InOut.objects.filter(workspace_variable__workspace=workSpaceDAO).order_by('id')  
+    #data = serializers.serialize('python', inouts, ensure_ascii=False)
+    #inouts_data = [get_inout_data(d) for d in data]
                    
-    data_ret['workspace']['wiringInfo'] = inouts_data
+    #data_ret['workspace']['wiringInfo'] = inouts_data
     
     return data_ret
 
@@ -357,7 +381,6 @@ def get_variable_data(data):
           
     if connectable:
         connectable_data = get_connectable_data(connectable);
-        
         data_ret['connectable'] = connectable_data
     
     return data_ret

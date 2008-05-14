@@ -59,7 +59,7 @@ class In(models.Model):
     
     name = models.CharField(_('Name'), max_length=30)
     variable = models.ForeignKey(Variable, verbose_name=_('Variable'))  
-    inout = models.ManyToManyField(InOut, verbose_name=_('InOut'))
+    inouts = models.ManyToManyField(InOut, verbose_name=_('InOut'))
     
     class Admin:
         pass
@@ -72,7 +72,7 @@ class Out(models.Model):
     
     name = models.CharField(_('Name'), max_length=30)
     abstract_variable = models.ForeignKey(AbstractVariable, verbose_name=_('AbstractVariable'))
-    inout = models.ManyToManyField(InOut, verbose_name=_('InOut'))
+    inouts = models.ManyToManyField(InOut, verbose_name=_('InOut'))
     
     class Admin:
         pass

@@ -51,7 +51,7 @@ from commons.logs import log
 from commons.utils import json_encode, get_xml_error
 
 from igadget.models import IGadget, Variable
-from workspace.models import WorkSpace, Tab
+from workspace.models import WorkSpace, Tab, AbstractVariable, WorkSpaceVariable
 from connectable.models import In, Out, InOut
 
 class ConnectableEntry(Resource):
@@ -89,53 +89,71 @@ class ConnectableEntry(Resource):
         else:
             return HttpResponseBadRequest (_(u'JSON parameter expected'))
 
-        try:
-            igadgets = json['iGadgetList']
-            for igadget in igadgets:
-                igadget_object = IGadget.objects.get(tab__workspace__pk=workspace_id, code=igadget['code'])
-
-                # Save all IGadget connections (in and out variables)
-                for var in igadget['list']:
-                    var_object = Variable.objects.get(vardef__name=var['name'], igadget=igadget_object)
-
-                    # Remove existed connections
-                    Out.objects.filter(variable=var_object).delete()
-                    In.objects.filter(variable=var_object).delete()
-        
-                    # Saves IN connection
-                    if var['aspect'] == 'EVEN':
-                        in_object = In(name=var['name'], variable=var_object)
-                        in_object.save()
-
-                    # Saves OUT connection
-                    if var['aspect'] == 'SLOT':
-                        out_object = Out(name=var['name'], variable=var_object)
-                        out_object.save()
+        try:                        
+            workspace = WorkSpace.objects.get(id=workspace_id)
             
-            # Delete channels
-            InOut.objects.filter(workspace__pk=workspace_id).delete()
-
-            # Saves all channels
-            for inout in json['inOutList']:
-                inout_object = None
-                inout_object = InOut(workspace__pk=workspace_id, name=inout['name'], friend_code=inout['friend_code'], value=inout['value'])
-                inout_object.save()
+            # Erasing variables associated with channels deleted explicitly by the user
+            channelsDeletedByUser = json['channelsForRemoving']
+            for deleted_channel_id in channelsDeletedByUser:
+                #Removing workspace_variable and abstract_variable of channels deleted explicitly by user
+                deleted_channel = InOut.objects.get(id=deleted_channel_id)
                 
-                # Saves all channel inputs
-                for ins in inout['ins']:            
-                    igadget_object = IGadget.objects.get(tab__workspace__pk=workspace_id, code=ins['igadget'])
-                    var_object = Variable.objects.get(vardef__name=ins['name'], igadget=igadget_object)
-                    connected_in = In.objects.get(variable=var_object)
-                    connected_in.inout.add(inout_object)
+                deleted_channel.workspace_variable.abstract_variable.delete()
+                deleted_channel.workspace_variable.delete()
+            
+            # Erasing all channels of the workspace!!
+            old_channels = InOut.objects.filter(workspace_variable__workspace=workspace)
+            if (old_channels):
+                old_channels.delete()
+                
+            # Adding channels recreating JSON structure!
+            new_channels = json['inOutList']
+            for new_channel_data in new_channels:
+                if (new_channel_data['provisional_id']):
+                    #It's necessary to create all objects!
+                    new_abstract_variable = AbstractVariable(type="WORKSPACE", name=new_channel_data['name'], value="")
+                    new_abstract_variable.save()
                     
-                # Saves all channel outputs
-                for out in inout['outs']:            
-                    igadget_object = IGadget.objects.get(tab__workspace__pk=workspace_id, code=out['igadget'])
-                    var_object = Variable.objects.get(vardef__name=out['name'], igadget=igadget_object)
-                    connected_out = Out.objects.get(variable=var_object)
-                    connected_out.inout.add(inout_object)
-                                          
+                    new_ws_variable = WorkSpaceVariable(workspace=workspace, abstract_variable=new_abstract_variable, aspect="CHANNEL")
+                    new_ws_variable.save()
+                    
+                    channel = InOut(name=new_channel_data['name'], workspace_variable=new_ws_variable, friend_code="")
+                    channel.save()   
+                else:
+                    #WorkSpaceVariable objects is still in database, it's only necessary to link it!
+                    workspace_variable = WorkSpaceVariable.objects.get(id=new_channel_data['var_id'])
+                
+                    channel = InOut(id=new_channel_data['id'], name=new_channel_data['name'], workspace_variable=workspace_variable, friend_code="")
+                    channel.save()               
+                    
+                #Setting channel connections!
+                
+                #In connections
+                ins = new_channel_data['ins']
+                for input in ins:
+                    if input['connectable_type'] == 'in':
+                        connectable = In.objects.get(id=input['id'])
+                    if input['connectable_type'] == 'inout': 
+                        connectable = InOut.objects.get(id=input['id'])
+                    
+                    connectable.inouts.add(channel);
+                    connectable.save()
+                
+                
+                #Out connections
+                outs = new_channel_data['outs']
+                for output in outs:
+                    if output['connectable_type'] == 'out':
+                        connectable = Out.objects.get(id=output['id'])
+                    if output['connectable_type'] == 'inout': 
+                        connectable = InOut.objects.get(id=output['id'])
+                    
+                    connectable.inouts.add(channel);
+                    connectable.save()
+
+            # Saves all channels            
             transaction.commit()
+            
             return HttpResponse ('ok')
         except WorkSpace.DoesNotExist:
             transaction.rollback()
@@ -143,20 +161,6 @@ class ConnectableEntry(Resource):
             msg = _('referred workspace %(workspace_name)s does not exist.') % {'workspace_name': workspace_name}
             log(msg, request)
             return HttpResponseBadRequest(get_xml_error(msg));
-
-        except IGadget.DoesNotExist:
-            transaction.rollback()
-
-            msg = _('referred igadget %(igadget)s does not exist.')
-            log(msg, request)
-            return HttpResponseBadRequest(get_xml_error(msg))
-
-        except Variable.DoesNotExist:
-            transaction.rollback()
-
-            msg = _('referred variable does not exist.')
-            log(msg, request)
-            return HttpResponseBadRequest(get_xml_error(msg))
 
         except Exception, e:
             transaction.rollback()
