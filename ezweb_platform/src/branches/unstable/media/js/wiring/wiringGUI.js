@@ -160,6 +160,7 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
     channel.assignInterface(channelElement);
 
     this.channels[channel.getName()] = channel;
+    channelNameInput.focus();
   }
 
   WiringInterface.prototype._addIGadget = function (iGadget) {
@@ -746,10 +747,12 @@ ChannelInterface.prototype.exists = function() {
 
 ChannelInterface.prototype.check = function() {
   this.interface.addClassName("selected");
+  this.interface.getElementsByClassName('channelNameInput')[0].focus();
 }
 
 ChannelInterface.prototype.uncheck = function() {
   this.interface.removeClassName("selected");
+  this.interface.getElementsByClassName('channelNameInput')[0].blur();
 }
 
 ChannelInterface.prototype.assignInterface = function(interface) {

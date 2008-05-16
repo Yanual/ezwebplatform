@@ -74,10 +74,7 @@ var LayoutManagerFactory = function () {
 			this.coverLayerEvent = function () {this.hideCover()}.bind(this);	//disabling layer onclick event (by default)
 	
 			this.menus = new Array();
-			
-			this.tabsPosition = Position.cumulativeOffset($('tab_section'));
-			this.toolbarPosition = Position.cumulativeOffset($('toolbar_section'));
-		
+					
 		// ****************
 		// PUBLIC METHODS 
 		// ****************
@@ -239,7 +236,7 @@ var LayoutManagerFactory = function () {
 			case 'workSpaceOps':
 				menuHTML += '<div id="changeWorkspace_menu" class="submenu"></div></div>';
 				new Insertion.After($('menu_layer'), menuHTML);
-				menu = new DropDownMenu(idMenu, this.toolbarPosition);
+				menu = new DropDownMenu(idMenu);
 				menu.addOption("/ezweb/images/rename.gif", "Rename", function(){OpManagerFactory.getInstance().activeWorkSpace.fillWithInput(); 
 								LayoutManagerFactory.getInstance().hideCover();});
 				menu.addOption("/ezweb/images/cross.png","Remove",function(){OpManagerFactory.getInstance().activeWorkSpace.deleteWorkSpace();});
@@ -248,7 +245,7 @@ var LayoutManagerFactory = function () {
 			case 'tabOps':
 				menuHTML += '</div>';
 				new Insertion.After($('menu_layer'), menuHTML);			
-				menu = new DropDownMenu(idMenu, this.tabsPosition);
+				menu = new DropDownMenu(idMenu);
 				menu.addOption("/ezweb/images/rename.gif", "Rename", function(){OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().fillWithInput();
 								LayoutManagerFactory.getInstance().hideCover();});
 				menu.addOption("/ezweb/images/cross.png","Remove",function(){OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().deleteTab();});

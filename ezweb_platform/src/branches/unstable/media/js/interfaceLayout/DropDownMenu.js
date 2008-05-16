@@ -37,14 +37,13 @@
 
 //Class for managing a drop down menu whose HTML code is in templates/index.html.
 //The options may be created either by default in the HTML code or dinamically with the addOption function
-function DropDownMenu(idMenu, parentPos){
+function DropDownMenu(idMenu){
 
 	//Constructor
 	this.idLauncher;	//Launcher: clicked point from which the menu is launched
 	this.launcher;
 	this.idMenu = idMenu;	//menu: menu element in the HTLM code (<div>)
 	this.menu = $(idMenu);
-	this.parentPos = parentPos; //absolute parent position
 	this.position;				//position related to the launcher
 	this.submenu = $$('#'+this.idMenu+' .submenu')[0];
 	this.option_id = 0;		//identifier for options
@@ -52,9 +51,7 @@ function DropDownMenu(idMenu, parentPos){
 	//Calculates the absolute position of the menu according to the point from which it is launched
 	//The menu can be displayed either at the bottom or top (on the right/left) of the launcher
 	DropDownMenu.prototype.calculatePosition = function(){
-		var coordenates =  new Array();
-		coordenates[1] = this.parentPos[1] + this.launcher.parentNode.offsetTop + this.launcher.offsetTop;
-		coordenates[0] = this.parentPos[0] + this.launcher.parentNode.offsetLeft + this.launcher.offsetLeft;		
+		var coordenates = Position.cumulativeOffset(this.launcher);
 		var smWidth = this.menu.getWidth();
 			
 		if(this.position == 'bottom-left'){
