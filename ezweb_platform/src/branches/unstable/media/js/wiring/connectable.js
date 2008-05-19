@@ -217,6 +217,7 @@ wTab.prototype.getQualifiedName = function () {
 /////////////////////////////////////////////////////////////////////////////
 function wSlot(variable, type, friendCode, id) {
   this.variable = variable;
+  this.variable.assignConnectable(this);
   wOut.call(this, this.variable.name, type, friendCode, id);
 }
 

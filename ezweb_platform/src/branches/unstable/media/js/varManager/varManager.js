@@ -110,23 +110,23 @@ function VarManager (_workSpace) {
 		
 	}
 	
-	VarManager.prototype.writeSlot = function (iGadgetId, slotName, value) {
-		var variable = this.findVariable(iGadgetId, slotName);
-		
-		variable.set(value);
-	} 
-
-	VarManager.prototype.updateUserPref = function (iGadgetId, slotName, value) {
-		var variable = this.findVariable(iGadgetId, slotName);
-		
-		variable.set(value);
-	} 
-	
-	VarManager.prototype.updateContextVar = function (iGadgetId, ctxVarName, value) {
-		var variable = this.findVariable(iGadgetId, ctxVarName);
-		
-		variable.set(value);
-	}  
+//	VarManager.prototype.writeSlot = function (iGadgetId, slotName, value) {
+//		var variable = this.findVariable(iGadgetId, slotName);
+//		
+//		variable.set(value);
+//	} 
+//
+//	VarManager.prototype.updateUserPref = function (iGadgetId, slotName, value) {
+//		var variable = this.findVariable(iGadgetId, slotName);
+//		
+//		variable.set(value);
+//	} 
+//	
+//	VarManager.prototype.updateContextVar = function (iGadgetId, ctxVarName, value) {
+//		var variable = this.findVariable(iGadgetId, ctxVarName);
+//		
+//		variable.set(value);
+//	}  
 	
 	VarManager.prototype.registerVariable = function (iGadgetId, variableName, handler) {
 		var variable = this.findVariable(iGadgetId, variableName);

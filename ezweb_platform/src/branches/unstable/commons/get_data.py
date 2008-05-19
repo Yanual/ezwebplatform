@@ -223,6 +223,7 @@ def get_workspace_variable_data(data):
     abstract_var = get_abstract_variable(abstract_var_id)
 
     data_ret['id'] = data['pk']
+    data_ret['abstract_var_id'] = abstract_var_id
     
     data_ret['aspect'] = data_fields['aspect']
     data_ret['value'] = abstract_var.value
@@ -251,6 +252,8 @@ def get_connectable_data(connectable):
 
     if isinstance(connectable, InOut): 
         connectable_type = "inout"
+        ws_var_id = connectable.workspace_variable.id
+        ig_var_id = None
         
         #Locating IN and INOUT connectables linked to this conectable!
         res_data['ins'] = []
@@ -268,8 +271,25 @@ def get_connectable_data(connectable):
             
     elif isinstance(connectable, Out):
         connectable_type = "out"
+        
+        #Checking asbtract_variable aspect
+        if (connectable.abstract_variable.type == "IGADGET"):
+            #It's a Gadget Variable!
+            ig_var_id = Variable.objects.get(abstract_variable = connectable.abstract_variable).id
+            ws_var_id = None
+        elif (connectable.abstract_variable.type  == "WORKSPACE"):
+            #It's a Workspace Variable!
+            ws_var_id = WorkSpaceVariable.objects.get(abstract_variable = connectable.abstract_variable).id
+            ig_var_id = None
+                                                            
     elif isinstance(connectable, In):
         connectable_type = "in"
+        ig_var_id = connectable.variable.id
+        ws_var_id = None
+        
+    res_data['connectable_type'] = connectable_type
+    res_data['ig_var_id'] = ig_var_id
+    res_data['ws_var_id'] = ws_var_id
             
     return res_data
 

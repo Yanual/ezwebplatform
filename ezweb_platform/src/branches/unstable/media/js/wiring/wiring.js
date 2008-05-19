@@ -103,9 +103,22 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 			    	// Input can be: {wEvent, wChannel}
 			    	var current_input = connectable_ins[j];
 			    	
-			    	var in_connectable = varManager.getVariableById(current_input.id).getConnectable();
+			    	var in_connectable = null;
+			    	if (current_input.connectable_type == "in") {
+			    		var var_id = current_input.ig_var_id;
+			    		in_connectable = varManager.getVariableById(var_id).getConnectable();
+			    	}
+			    	else {
+			    		if (current_input.connectable_type == "inout") {
+			    			var var_id = current_input.ws_var_id;
+			    			in_connectable = varManager.getWorkspaceVariableById(var_id).getConnectable();
+			    		}
+			    		else {
+			    			assert("Error: Input connectables can only be In or InOut!!!")
+			    		}
+			    	}
 
-			    	channel.connect(in_connectable);
+			    	in_connectable.connect(channel);
 			    }
 			    
 			    // Connecting channel output  
@@ -114,7 +127,26 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 			    	// Outputs can be: {wSlot, wTab}
 			    	var current_output = connectable_outs[j];
 			    	
-			    	var out_connectable = varManager.getVariableById(current_output.id).getConnectable();
+			    	var out_connectable = null;
+			    	if (current_output.connectable_type == "out") {
+			    		if (current_output.ig_var_id) {
+			    			var var_id = current_output.ig_var_id;
+			    			out_connectable = varManager.getVariableById(var_id).getConnectable();
+			    		}
+			    		else {
+			    			var var_id = current_output.ws_var_id;
+			    			out_connectable = varManager.getWorkspaceVariableById(var_id).getConnectable();
+			    		}
+			    	}
+			    	else {
+			    		if (current_output.connectable_type == "inout") {
+			    			var var_id = current_output.ws_var_id;
+			    			out_connectable = varManager.getWorkspaceVariableById(var_id).getConnectable();
+			    		}
+			    		else {
+			    			assert("Error: Output connectables can only be In or InOut!!!")
+			    		}
+			    	}
 
 			    	channel.connect(out_connectable);
 			    }
@@ -245,7 +277,7 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 	Wiring.prototype.serializationSuccess = function (response){
 		delete this.channelsForRemoving;
 		
-		this.channelForRemoving = [];
+		this.channelsForRemoving = [];
 	}
 
 	Wiring.prototype.serializationError = function (response) {

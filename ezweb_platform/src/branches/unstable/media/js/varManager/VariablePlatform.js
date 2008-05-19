@@ -80,6 +80,10 @@ Variable.prototype.assignConnectable = function (connectable) {
 	this.connectable = connectable;
 }
 
+Variable.prototype.getConnectable = function () {
+	return this.connectable;
+}
+
 //////////////////////////////////////////////
 // PUBLIC CONSTANTS
 //////////////////////////////////////////////
