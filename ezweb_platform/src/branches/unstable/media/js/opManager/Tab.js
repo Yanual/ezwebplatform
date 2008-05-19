@@ -223,5 +223,5 @@ function Tab (tabInfo, workSpace) {
 	this.menu = new DropDownMenu(idMenu);
 	this.menu.addOption("/ezweb/images/rename.gif", "Rename", function(){OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().fillWithInput();
 								LayoutManagerFactory.getInstance().hideCover();});
-	this.menu.addOption("/ezweb/images/cross.png","Remove",function(){OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().deleteTab();});
+	this.menu.addOption("/ezweb/images/remove.png","Remove",function(){OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().deleteTab();});
 }
