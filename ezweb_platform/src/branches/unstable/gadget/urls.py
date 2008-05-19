@@ -37,7 +37,7 @@
 #
 from django.conf.urls.defaults import patterns
 
-from gadget.views import GadgetCollection, GadgetEntry, GadgetCodeEntry
+from gadget.views import GadgetCollection, GadgetEntry, GadgetTemplateEntry, GadgetCodeEntry
 
 urlpatterns = patterns('gadget.views',
 
@@ -45,8 +45,8 @@ urlpatterns = patterns('gadget.views',
     (r'^$', GadgetCollection(permitted_methods=('GET', 'POST'))),
     (r'^/(?P<vendor>[^/\t\n\r\f\v]+)/(?P<name>[^/\t\n\r\f\v]+)/(?P<version>[\._-ÑñáéíóúÁÉÍÓÚ\w]+)$',
         GadgetEntry(permitted_methods=('GET', 'DELETE', 'PUT'))),
-#    (r'^/(?P<vendor>[^/\t\n\r\f\v]+)/(?P<name>[^/\t\n\r\f\v]+)/(?P<version>[\._-ÑñáéíóúÁÉÍÓÚ\w]+)/template$',
-#        GadgetTemplateEntry(permitted_methods=('GET', ))),
+    (r'^/(?P<vendor>[^/\t\n\r\f\v]+)/(?P<name>[^/\t\n\r\f\v]+)/(?P<version>[\._-ÑñáéíóúÁÉÍÓÚ\w]+)/template$',
+        GadgetTemplateEntry(permitted_methods=('GET', ))),
     (r'^/(?P<vendor>[^/\t\n\r\f\v]+)/(?P<name>[^/\t\n\r\f\v]+)/(?P<version>[\._-ÑñáéíóúÁÉÍÓÚ\w]+)/xhtml$',
         GadgetCodeEntry(permitted_methods=('GET', 'PUT'))),   
 )

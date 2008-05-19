@@ -131,12 +131,12 @@ class GadgetEntry(Resource):
         return HttpResponse('ok')
 
 
-#class GadgetTemplateEntry(Resource):
-#    def read(self, request, user_name, vendor, name, version):
-#        user = user_authentication(request, user_name)
-#        gadget = get_object_or_404(Gadget, user=user, vendor=vendor, name=name, version=version)
-#        template = get_object_or_404(gadget.template, id=gadget.template.id)
-#        return HttpResponse(json_encode(template), mimetype='application/json; charset=UTF-8')
+class GadgetTemplateEntry(Resource):
+    def read(self, request, user_name, vendor, name, version):
+        user = user_authentication(request, user_name)
+        gadget = get_object_or_404(Gadget, user=user, vendor=vendor, name=name, version=version)
+        template = get_object_or_404(gadget.template, id=gadget.template.id)
+        return HttpResponse(json_encode(template), mimetype='application/json; charset=UTF-8')
 
 
 class GadgetCodeEntry(Resource):
