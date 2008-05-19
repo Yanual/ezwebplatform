@@ -39,7 +39,7 @@
 from django.conf.urls.defaults import patterns
 
 from connectable.views import ConnectableEntry
-from workspace.views import WorkSpaceVariableCollection, TabEntry, TabCollection, WorkSpaceEntry, WorkSpaceCollection
+from workspace.views import WorkSpaceVariableCollection, WorkSpaceChannelCollection, TabEntry, TabCollection, WorkSpaceEntry, WorkSpaceCollection
 
 urlpatterns = patterns('workspace.views',
 
@@ -56,6 +56,10 @@ urlpatterns = patterns('workspace.views',
     # Variables of the whole workspace
     (r'^/((?P<workspace_id>\d+)/variable(s)?[/]?)?$',
         WorkSpaceVariableCollection(permitted_methods=('PUT','POST', ))),
+    
+    # channels of the whole workspace
+    (r'^/((?P<workspace_id>\d+)/channel(s)?[/]?)?$',
+        WorkSpaceChannelCollection(permitted_methods=('GET', ))),
         
     # Wiring info for the whole workspace
     (r'^/((?P<workspace_id>\d+)/wiring?[/]?)?$',

@@ -358,6 +358,7 @@ class TabEntry(Resource):
 
 
 class WorkSpaceVariableCollection(Resource):
+    
     @transaction.commit_on_success
     def update(self, request, workspace_id):  
         user = get_user_authentication(request)
@@ -392,3 +393,13 @@ class WorkSpaceVariableCollection(Resource):
             msg = _("cannot update variables: ") + unicode(e)
             log(msg, request)
             return HttpResponseServerError(get_xml_error(msg), mimetype='application/xml; charset=UTF-8')
+
+class WorkSpaceChannelCollection(Resource):
+    def read(self, request, workspace_id):
+        user = get_user_authentication(request)
+        
+        workspaces = get_list_or_404(WorkSpace, user=user, pk=workspace_id)
+        data = serializers.serialize('python', workspaces, ensure_ascii=False)
+        variable_data = get_workspace_channels_data(workspaces[0])
+        
+        return HttpResponse(json_encode(variable_data), mimetype='application/json; charset=UTF-8')
