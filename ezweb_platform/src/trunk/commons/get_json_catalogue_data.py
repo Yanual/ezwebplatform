@@ -41,6 +41,10 @@ from resource.models import GadgetWiring, GadgetResource
 from tag.models import UserTag
 from voting.models import UserVote
 
+
+# This function gets the vote for a given user and gadget. 
+# It also gets the number of votes and the popularity of the gadget (average).
+
 def get_vote_data(gadget, user):
     vote_data = {}
     try:
@@ -57,29 +61,39 @@ def get_vote_data(gadget, user):
 
     return vote
 
-def get_tag_data (gadget_id, user_id):
+
+# This function gets the non-repeated tags for a given gadget and a logged user. 
+# It also gets the number of appareances of every tag and if one of those 
+# appareances has been added by the logged user.
+
+def get_tag_data(gadget_id, user_id):
     all_tags = []
-    tags = UserTag.objects.filter(idResource=gadget_id).order_by('tag')
+    # Get the user's tags
+    tags = UserTag.objects.filter(idResource=gadget_id,idUser=user_id)
     for t in tags:
         tag_data = {}
-	flag= 'Yes'
         tag_data['value'] = t.tag
-	tag_data['appearances'] = tags.filter(tag=t.tag).count()
-	if t.idUser_id == user_id:
-	    tag_data['added_by'] = 'Yes'
-	    for e in all_tags:
-	        if t.tag==e['value']:
-	            all_tags.remove(e)
-    	    all_tags.append(tag_data)
-	else:
-	    tag_data['added_by'] = 'No'
-	    for e in all_tags:
-	        if t.tag==e['value']:
-	            flag= 'No'
-            if flag=='Yes':
-	        all_tags.append(tag_data)
+        tag_data['appearances'] = tags.filter(tag=t.tag).count()
+        tag_data['added_by'] = 'Yes'
+        all_tags.append(tag_data)
+    # Get other users' tags
+    tags = UserTag.objects.filter(idResource=gadget_id).exclude(idUser=user_id)
+    for t in tags:
+        is_in_list = False
+        for e in all_tags:
+            if t.tag==e['value']:
+                is_in_list= True
+        if not is_in_list:
+            tag_data = {}
+	    tag_data['value'] = t.tag
+            tag_data['appearances'] = tags.filter(tag=t.tag).count()
+            tag_data['added_by'] = 'No'
+            all_tags.append(tag_data)
 
     return all_tags
+
+
+# This function gets the events of the given gadget.
 
 def get_event_data (gadget_id):
     all_events = []
@@ -89,7 +103,10 @@ def get_event_data (gadget_id):
         event_data['friendcode'] = e.friendcode
         all_events.append(event_data)
     return all_events
-    
+
+
+# This function gets the slots of the given gadget.
+
 def get_slot_data (gadget_id):
     all_slots = []
     slots = GadgetWiring.objects.filter(idResource=gadget_id, wiring='in') 
@@ -98,6 +115,9 @@ def get_slot_data (gadget_id):
         slot_data['friendcode'] = s.friendcode
         all_slots.append(slot_data)
     return all_slots
+
+
+# This function gets all the information related to the given gadget.
 
 def get_gadgetresource_data(data, user):
     data_ret = {}
@@ -115,7 +135,7 @@ def get_gadgetresource_data(data, user):
     if data_fields['added_by_user'] == user.id:
         data_ret['added_by'] = 'Yes'
     else:
-	data_ret['added_by'] = 'No'
+        data_ret['added_by'] = 'No'
 
     data_tags = get_tag_data(gadget_id=data['pk'], user_id=user.id)
     data_ret['tags'] = [d for d in data_tags]

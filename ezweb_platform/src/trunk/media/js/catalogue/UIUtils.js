@@ -506,6 +506,10 @@ UIUtils.sendGlobalTags = function() {
 UIUtils.deleteGadget = function(id) {
 	var resource = CatalogueFactory.getInstance().getResource(id);
 	var resourceURI = URIs.GET_POST_RESOURCES + "/" + resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion();
+	if (UIUtils.selectedResource == id)
+	{
+		UIUtils.closeInfoResource();
+	}
 	
 	var onError = function(transport) {
 				alert(gettext ("Error DELETE"));

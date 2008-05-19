@@ -46,6 +46,9 @@ from commons.utils import get_xml_error
 
 from django.utils.translation import ugettext as _
 
+# This function returns a list with non-repeated elements.
+# The second parameter indicates the minimum number of repetions of the elements
+# in the original list to be part of the result list.
 def get_uniquelist(list, value = None):
 
     uniquelist = []
@@ -59,6 +62,7 @@ def get_uniquelist(list, value = None):
 
     return uniquelist
 
+# This function returns a list ordered by the criteria passed as parameter.
 def get_sortedlist(list, orderby):
     if orderby=='-creation_date':
         list.sort(lambda x,y: cmp(y.creation_date,x.creation_date))
@@ -70,7 +74,22 @@ def get_sortedlist(list, orderby):
         list.sort(lambda x,y: cmp(x.author.lower(),y.author.lower()))
     return list
 
+# This function returns a list paginated with the parameters pag and offset.
+def get_paginatedlist(gadgetlist, pag, offset):
+    a= int(pag)
+    b= int(offset)
+    if a != 0 and b != 0:
+        c=((a-1)*b)
+        d= (b*a)
+        if a==1:
+            c=0
+        gadgetlist = gadgetlist[c:d]
 
+    return gadgetlist
+
+
+# This function obtains the all the information related to a gadget encoded in
+# the properly format (json or xml)
 def get_resource_response(gadgetlist, format, items, user):
 
     if format == 'json' or format=='default':
@@ -83,13 +102,14 @@ def get_resource_response(gadgetlist, format, items, user):
         return response
     elif format == 'xml':
         response = get_xml_description(gadgetlist, user)
-	response = HttpResponse(response,mimetype='text/xml; charset=UTF-8')
-	response.__setitem__('items', items)
+        response = HttpResponse(response,mimetype='text/xml; charset=UTF-8')
+        response.__setitem__('items', items)
         return response
     else:
         return HttpResponseServerError(get_xml_error(_("Invalid format. Format must be either xml or json")), mimetype='application/xml; charset=UTF-8')
 
-
+# This function obtains the all the tags related to a gadget encoded in
+# the properly format (json or xml)
 def get_tag_response(gadget, user, format):
 
     if format == 'json' or format == 'default':
@@ -104,7 +124,8 @@ def get_tag_response(gadget, user, format):
     else:
         return HttpResponseServerError(get_xml_error(_("Invalid format. Format must be either xml or json")), mimetype='application/xml; charset=UTF-8')
 
-
+# This function obtains the vote related to a gadget and a user encoded in
+# the properly format (json or xml)
 def get_vote_response(gadget, user, format):
     if format == 'json' or format == 'default':
         vote = {}

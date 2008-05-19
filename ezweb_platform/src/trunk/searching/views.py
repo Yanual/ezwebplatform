@@ -35,78 +35,79 @@
 # 
 #   http://morfeo-project.org/
 #
-import sys
 
-from django.core import serializers
 from django.contrib.auth.models import User
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseServerError
-from django.shortcuts import get_object_or_404, get_list_or_404
 
 from django_restapi.resource import Resource
 
 from resource.models import GadgetResource
-from resource.models import GadgetWiring
-from tag.models import UserTag
 
 from commons.authentication import user_authentication
-from commons.catalogue_utils import get_uniquelist, get_sortedlist, get_resource_response
-from commons.utils import get_xml_error
+from commons.catalogue_utils import get_uniquelist, get_sortedlist, get_resource_response, get_paginatedlist
 
-def get_and_list(value):
-
+# This function returns a list of gadgets that match all the criteria in the list passed as parameter.
+def get_and_list(criterialist):
+    #List of the gadgets that match the criteria in the database table GadgetResource
     gadgetlist = []
+    #List of the gadgets that match the criteria in the database table UserTag
     taglist = []
     result = []
-    value = value.split()
-    counter = 0
+    is_first_element = True
 
-    for e in value:
-        # Get a list of elements that match the given value
-        gadgetlist = GadgetResource.objects.filter(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
+    criterialist = criterialist.split()
+    # This loop gets a result list of the gadgets that match any of the criteria
+    for e in criterialist:
+        # Get a list of elements that match the given criteria
+        gadgetlist = GadgetResource.objects.filter(Q(short_name__icontains = e) | Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
         taglist = GadgetResource.objects.filter(usertag__tag__icontains = e)
         if taglist:
             gadgetlist = gadgetlist | taglist
-	gadgetlist = get_uniquelist(gadgetlist)
-	result.append(gadgetlist)
+        gadgetlist = get_uniquelist(gadgetlist)
+        result.append(gadgetlist)
+    # This loop gets the gadgets that match all the criteria
     for j in result:
-        if counter == 0:
+        if is_first_element:
             gadgetlist = j
-	    counter = counter + 1
-	else:
-	    gadgetlist = get_uniquelist(gadgetlist+j, 2)
+            is_first_element = False
+        else:
+            gadgetlist = get_uniquelist(gadgetlist+j, 2)
     return gadgetlist
 
-def get_or_list(value):
+# This function returns a list of gadgets that match any of the criteria in the list passed as parameter.
+def get_or_list(criterialist):
 
     gadgetlist = []
     taglist = []
-    value = value.split()
+    criterialist = criterialist.split()
 
-    for e in value:
-        # Get a list of elements that matches the given value
+    for e in criterialist:
+        # Get a list of elements that match the given value
         gadgetlist += GadgetResource.objects.filter(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
         taglist += GadgetResource.objects.filter(usertag__tag__icontains = e)
     gadgetlist += taglist
     gadgetlist = get_uniquelist(gadgetlist)
     return gadgetlist
 
-def get_not_list(value):
+# This function returns a list of gadgets that don't match any of the criteria in the list passed as parameter.
+def get_not_list(criterialist):
 
     gadgetlist = []
     taglist = []
-    count = 0
-    value = value.split()
+    is_first_element = True
+    criterialist = criterialist.split()
 
-    for e in value:
-        # Get a list of elements that doesn't match the given value
-        if count == 0:
+    for e in criterialist:
+        # Get the list of elements that don't match the given criteria in the GadgetResource table
+        if is_first_element:
             gadgetlist = GadgetResource.objects.exclude(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
-            count = count + 1
+            is_first_element = False
         else:
             gadgetlist = gadgetlist.exclude(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
+        #Get the list of gadgets that match any of the criteria in the UserTag database table
         taglist += GadgetResource.objects.filter(usertag__tag__icontains = e)
     gadgetlist = list(gadgetlist)
+    # Remove the gadgets in taglist of gadgetlist
     for b in taglist:
         if (b in gadgetlist):
             gadgetlist.remove(b)
@@ -115,7 +116,7 @@ def get_not_list(value):
 
 class GadgetsCollectionByGenericSearch(Resource):
 
-    def read(self, request, user_name, value1, value2, value3, pag=0, offset=0):
+    def read(self, request, user_name, and_criteria, or_criteria, not_criteria, pag=0, offset=0):
 
         user = user_authentication(request, user_name)
 
@@ -128,43 +129,36 @@ class GadgetsCollectionByGenericSearch(Resource):
             format = request.__getitem__('format')
         except:
             format = 'default'
-	
-	andlist = []
-	orlist = []
-	notlist = []
-	fields = 0
 
-	if (value1 != "_"):
-            andlist = get_and_list(value1)
-	    fields = fields+1
-	if (value2 != "_"):
-            orlist = get_or_list(value2)
-	    fields = fields+1
-	if (value3 != "_"):
-            notlist = get_not_list(value3)
-	    fields = fields+1
+        andlist = []
+        orlist = []
+        notlist = []
+        # This variable counts the number of criteria for the search to be passed as a parameter to the function
+        # get_uniquelist in order to get the gadgets that match the number of criteria
+        fields = 0
+
+        if (and_criteria != "_"):
+            andlist = get_and_list(and_criteria)
+            fields = fields+1
+        if (or_criteria != "_"):
+            orlist = get_or_list(or_criteria)
+            fields = fields+1
+        if (not_criteria != "_"):
+            notlist = get_not_list(not_criteria)
+            fields = fields+1
 
         gadgetlist = andlist+orlist+notlist
-	gadgetlist = get_uniquelist(gadgetlist,fields)
-        gadgetlist = get_sortedlist(gadgetlist, orderby)	
-	items = len(gadgetlist)
-        #paginate
-        a= int(pag)
-        b= int(offset)
-        if a != 0 and b != 0:
-            c=((a-1)*b)
-            d= (b*a)
-
-            if a==1:
-                c=0
-            gadgetlist = gadgetlist[c:d]
+        gadgetlist = get_uniquelist(gadgetlist,fields)
+        gadgetlist = get_sortedlist(gadgetlist, orderby)
+        gadgetlist = get_paginatedlist(gadgetlist, pag, offset)
+        items = len(gadgetlist)
 
         return get_resource_response(gadgetlist, format, items, user)
 
 
 class GadgetsCollectionByCriteria(Resource):
 
-    def read(self, request, user_name, criteria, value, pag=0, offset=0):
+    def read(self, request, user_name, criteria, criteria_value, pag=0, offset=0):
 
         user = user_authentication(request, user_name)
 
@@ -181,40 +175,34 @@ class GadgetsCollectionByCriteria(Resource):
         gadgetlist = []
 
         if criteria == 'event':
-            value = value.split()
-            for e in value:
+            #get all the gadgets that match any of the given events
+            criteria_value = criteria_value.split()
+            for e in criteria_value:
                 gadgetlist += GadgetResource.objects.filter(Q(gadgetwiring__friendcode__icontains = e), Q(gadgetwiring__wiring = 'out'))
 
         elif criteria == 'slot':
-            value = value.split()
-            for e in value:
+            #get all the gadgets that match any of the given slots
+            criteria_value = criteria_value.split()
+            for e in criteria_value:
                 gadgetlist += GadgetResource.objects.filter(Q(gadgetwiring__friendcode__icontains = e), Q(gadgetwiring__wiring = 'in'))
 
         elif criteria == 'tag':
-            value = value.split()
-            for e in value:
+            #get all the gadgets that match any of the given tags
+            criteria_value = criteria_value.split()
+            for e in criteria_value:
                 gadgetlist += GadgetResource.objects.filter(usertag__tag__icontains = e)
 
         elif criteria == 'connectSlot':
-            #view compat out
-            gadgetlist = GadgetResource.objects.filter(Q(gadgetwiring__friendcode = value), Q(gadgetwiring__wiring = 'out'))
+            #get all the gadgets compatible with the given event
+            gadgetlist = GadgetResource.objects.filter(Q(gadgetwiring__friendcode = criteria_value), Q(gadgetwiring__wiring = 'out'))
 
         elif criteria == 'connectEvent':
-            #view compat out
-            gadgetlist = GadgetResource.objects.filter(Q(gadgetwiring__friendcode = value), Q(gadgetwiring__wiring = 'in'))
+            get all the gadgets compatible with the given slot
+            gadgetlist = GadgetResource.objects.filter(Q(gadgetwiring__friendcode = criteria_value), Q(gadgetwiring__wiring = 'in'))
 
         gadgetlist = get_uniquelist(gadgetlist)
-	gadgetlist = get_sortedlist(gadgetlist, orderby)
+        gadgetlist = get_sortedlist(gadgetlist, orderby)
+        gadgetlist = get_paginatedlist(gadgetlist, pag, offset)
         items = len(gadgetlist)
-        #paginate
-        a= int(pag)
-        b= int(offset)
-        if a != 0 and b != 0:
-            c=((a-1)*b)
-            d= (b*a)
-        
-            if a==1:
-                c=0
-            gadgetlist = gadgetlist[c:d]
 
         return get_resource_response(gadgetlist, format, items, user)

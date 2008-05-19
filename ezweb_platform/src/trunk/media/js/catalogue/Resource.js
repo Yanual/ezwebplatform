@@ -627,7 +627,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 				break;
 			}
 		}
-		
+		parent.innerHTML='';
 		for (var i=0; i<moreImportantTags.length; i++)
 		{
 			parent.appendChild(moreImportantTags[i].tagToHTML())

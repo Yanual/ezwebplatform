@@ -45,11 +45,8 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 
-from resource.models import *
-
 from xml.sax import parseString, handler
-import sys
-
+from resource.models import GadgetWiring, GadgetResource
 
 
 class TemplateParser:
@@ -74,7 +71,7 @@ class TemplateHandler(handler.ContentHandler):
         self._mail = ""
         self._imageURI = ""
         self._wikiURI = ""
-        self._flag = ""
+        self._gadget_added = False
         self._user = user
         self._uri = uri
 
@@ -87,13 +84,13 @@ class TemplateHandler(handler.ContentHandler):
 
         if (attrs.has_key('friendcode')==True):
             _friendCode = attrs.get('friendcode')
-	
-	if (attrs.has_key('type')==False or attrs.has_key('name')==False):
-	    raise TemplateParseException(_("ERROR: missing attribute at Event or Slot element"))
 
-	if (wire == 'Slot'):
+        if (attrs.has_key('type')==False or attrs.has_key('name')==False):
+            raise TemplateParseException(_("ERROR: missing attribute at Event or Slot element"))
+
+        if (wire == 'Slot'):
             _wiring = 'in'
-            
+
         if (wire == 'Event'):
             _wiring = 'out'
 
@@ -106,67 +103,67 @@ class TemplateHandler(handler.ContentHandler):
         else:
             raise TemplateParseException(_("ERROR: missing attribute at Event or Slot element"))
 
-	
-    def endElement(self, name):
-	if (name == 'Name'):
-	    self._name = self._accumulator[0]
-	    return
-	if (name == 'Vendor'):
-	    self._vendor = self._accumulator[0]
-	    return
-	if (name == 'Version'):
-	    self._version = self._accumulator[0]
-	    return
-	if (name == 'Author'):
-	    self._author = self._accumulator[0]
-	    return
-	if (name == 'Description'):
-	    self._description = self._accumulator[0]
-	    return
-	if (name == 'Mail'):
-	    self._mail = self._accumulator[0]
-	    return
-	if (name == 'ImageURI'):
-	    if (self._accumulator == []):
-	        self._imageURI = 'no_url'
-	    else:
-	        self._imageURI = self._accumulator[0]
-	    return
-	if (name == 'WikiURI'):
-	    self._wikiURI = self._accumulator[0]
-	    return
 
-        if (self._name != '' and self._vendor != '' and self._version != '' and self._author != '' and self._description != '' and self._mail != '' and self._imageURI != '' and self._wikiURI != '' and self._flag == ''):
-	    
+    def endElement(self, name):
+        if (name == 'Name'):
+            self._name = self._accumulator[0]
+            return
+        if (name == 'Vendor'):
+            self._vendor = self._accumulator[0]
+            return
+        if (name == 'Version'):
+            self._version = self._accumulator[0]
+            return
+        if (name == 'Author'):
+            self._author = self._accumulator[0]
+            return
+        if (name == 'Description'):
+            self._description = self._accumulator[0]
+            return
+        if (name == 'Mail'):
+            self._mail = self._accumulator[0]
+            return
+        if (name == 'ImageURI'):
+            if (self._accumulator == []):
+                self._imageURI = 'no_url'
+            else:
+                self._imageURI = self._accumulator[0]
+            return
+        if (name == 'WikiURI'):
+            self._wikiURI = self._accumulator[0]
+            return
+
+        if (self._name != '' and self._vendor != '' and self._version != '' and self._author != '' and self._description != '' and self._mail != '' and self._imageURI != '' and self._wikiURI != '' and not self._gadget_added):
+
             gadget=GadgetResource()
-	    gadget.short_name=self._name
-	    gadget.vendor=self._vendor
-	    gadget.added_by_user = self._user
-	    gadget.version=self._version
-	    gadget.author=self._author
-	    gadget.description=self._description
-	    gadget.mail=self._mail
-	    gadget.image_uri=self._imageURI
-	    gadget.wiki_page_uri=self._wikiURI
-	    gadget.template_uri=self._uri
-	    gadget.creation_date=datetime.today()
-	    gadget.popularity = 0.0
+            gadget.short_name=self._name
+            gadget.vendor=self._vendor
+            gadget.added_by_user = self._user
+            gadget.version=self._version
+            gadget.author=self._author
+            gadget.description=self._description
+            gadget.mail=self._mail
+            gadget.image_uri=self._imageURI
+            gadget.wiki_page_uri=self._wikiURI
+            gadget.template_uri=self._uri
+            gadget.creation_date=datetime.today()
+            gadget.popularity = 0.0
 
             gadget.save()
 
-            self._flag = 'add'
-	elif (self._flag == 'add'):
+            self._gadget_added = True
+        elif (self._gadget_added):
             return
         else:
             raise TemplateParseException(_("ERROR: missing Resource description field at Resource element! Check schema!"))
 
     def characters(self, text):
-	self._accumulator.append(text)
+        self._accumulator.append(text)
 
     def startElement(self, name, attrs):
-	if (name == 'Name') or (name=='Version') or (name=='Vendor') or (name=='Author') or (name=='Description') or (name=='Mail') or (name=='ImageURI') or (name=='WikiURI'):
-	    self.resetAccumulator()
-	    return
+        if (name == 'Name') or (name=='Version') or (name=='Vendor') or (name=='Author') or (name=='Description') or (name=='Mail') or (name=='ImageURI') or (name=='WikiURI'):
+            self.resetAccumulator()
+            return
 
         if (name == 'Slot'):
             self.processWire(attrs,'Slot')
