@@ -229,33 +229,6 @@ var LayoutManagerFactory = function () {
 			Event.stopObserving( this.coverLayerElement, "click", this.coverLayerEvent);
 		}
 
-		LayoutManager.prototype.createMenu = function(menuType, idMenu){
-			var menu;
-			var menuHTML = '<div id="'+idMenu+'" class="drop_down_menu">';
-			switch (menuType){
-			case 'workSpaceOps':
-				menuHTML += '<div id="changeWorkspace_menu" class="submenu"></div></div>';
-				new Insertion.After($('menu_layer'), menuHTML);
-				menu = new DropDownMenu(idMenu);
-				menu.addOption("/ezweb/images/rename.gif", "Rename", function(){OpManagerFactory.getInstance().activeWorkSpace.fillWithInput(); 
-								LayoutManagerFactory.getInstance().hideCover();});
-				menu.addOption("/ezweb/images/cross.png","Remove",function(){OpManagerFactory.getInstance().activeWorkSpace.deleteWorkSpace();});
-				menu.addOption("/ezweb/images/list-add.png","New workspace",function(){LayoutManagerFactory.getInstance().showWindowMenu('createWorkSpace');});
-				break;
-			case 'tabOps':
-				menuHTML += '</div>';
-				new Insertion.After($('menu_layer'), menuHTML);			
-				menu = new DropDownMenu(idMenu);
-				menu.addOption("/ezweb/images/rename.gif", "Rename", function(){OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().fillWithInput();
-								LayoutManagerFactory.getInstance().hideCover();});
-				menu.addOption("/ezweb/images/cross.png","Remove",function(){OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().deleteTab();});
-				break;
-			default:
-				break;
-			}
-			return menu;
-		}
-
 		//WorkSpaceMenu is dinamic so the different options must be added.
 		LayoutManager.prototype.refreshChangeWorkSpaceMenu = function(workSpace, workspaces){
 			

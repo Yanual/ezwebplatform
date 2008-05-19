@@ -457,6 +457,14 @@ function WorkSpace (workSpaceState) {
 	this.workSpaceHTMLElement = $('workspace_name');
 	this.wsOpsLauncher = 'ws_operations_link';
 	var idMenu = 'menu_'+this.workSpaceState.id;
-	this.menu = LayoutManagerFactory.getInstance().createMenu('workSpaceOps',idMenu);
+	
+	//create workspace menu
+	var menuHTML = '<div id="'+idMenu+'" class="drop_down_menu"><div id="submenu_'+idMenu+'" class="submenu"></div></div>';
+	new Insertion.After($('menu_layer'), menuHTML);
+	this.menu = new DropDownMenu(idMenu);
+	this.menu.addOption("/ezweb/images/rename.gif", "Rename", function(){OpManagerFactory.getInstance().activeWorkSpace.fillWithInput(); 
+						LayoutManagerFactory.getInstance().hideCover();});
+	this.menu.addOption("/ezweb/images/cross.png","Remove",function(){OpManagerFactory.getInstance().activeWorkSpace.deleteWorkSpace();});
+	this.menu.addOption("/ezweb/images/list-add.png","New workspace",function(){LayoutManagerFactory.getInstance().showWindowMenu('createWorkSpace');});
 	
 }

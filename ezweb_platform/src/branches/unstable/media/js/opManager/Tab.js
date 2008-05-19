@@ -216,6 +216,12 @@ function Tab (tabInfo, workSpace) {
 
     //fill the tab label with a span tag
     this.fillWithLabel();
+    //create tab menu
     var idMenu = 'menu_'+this.tabName;
-    this.menu = LayoutManagerFactory.getInstance().createMenu('tabOps',idMenu);
+	var menuHTML = '<div id="'+idMenu+'" class="drop_down_menu"></div>';
+  	new Insertion.After($('menu_layer'), menuHTML);			
+	this.menu = new DropDownMenu(idMenu);
+	this.menu.addOption("/ezweb/images/rename.gif", "Rename", function(){OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().fillWithInput();
+								LayoutManagerFactory.getInstance().hideCover();});
+	this.menu.addOption("/ezweb/images/cross.png","Remove",function(){OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().deleteTab();});
 }

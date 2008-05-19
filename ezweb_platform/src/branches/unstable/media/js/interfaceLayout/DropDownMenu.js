@@ -120,7 +120,7 @@ function DropDownMenu(idMenu){
 		var old=$(opId);
 		var opHtml='<div id="'+ opId +'" class = "option">';
 		if (imgPath){
-			opHtml = '<img src="'+imgPath+'"/>';
+			opHtml += '<img src="'+imgPath+'"/>';
 		}
 		opHtml += '<span>'+option+'</span>';
 		new Insertion.Before(old, opHtml);
