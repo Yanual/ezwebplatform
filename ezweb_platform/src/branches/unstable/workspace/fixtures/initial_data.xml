@@ -19,12 +19,12 @@
     </object>
     <object pk="2" model="workspace.abstractvariable">
         <field type="CharField" name="type">IGADGET</field>
-        <field type="CharField" name="name">phoneNumber</field>
+        <field type="CharField" name="name">serviceHired</field>
         <field type="TextField" name="value"></field>
     </object>
     <object pk="3" model="workspace.abstractvariable">
         <field type="CharField" name="type">IGADGET</field>
-        <field type="CharField" name="name">address</field>
+        <field type="CharField" name="name">phoneNumber</field>
         <field type="TextField" name="value"></field>
     </object>
     <object pk="4" model="workspace.abstractvariable">
@@ -35,31 +35,6 @@
     <object pk="5" model="workspace.abstractvariable">
         <field type="CharField" name="type">IGADGET</field>
         <field type="CharField" name="name">phoneNumber</field>
-        <field type="TextField" name="value"></field>
-    </object>
-    <object pk="6" model="workspace.abstractvariable">
-        <field type="CharField" name="type">IGADGET</field>
-        <field type="CharField" name="name">utmCoordEvent</field>
-        <field type="TextField" name="value"></field>
-    </object>
-    <object pk="7" model="workspace.abstractvariable">
-        <field type="CharField" name="type">IGADGET</field>
-        <field type="CharField" name="name">addressEvent</field>
-        <field type="TextField" name="value"></field>
-    </object>
-    <object pk="8" model="workspace.abstractvariable">
-        <field type="CharField" name="type">IGADGET</field>
-        <field type="CharField" name="name">utmCoordSlot</field>
-        <field type="TextField" name="value"></field>
-    </object>
-    <object pk="9" model="workspace.abstractvariable">
-        <field type="CharField" name="type">IGADGET</field>
-        <field type="CharField" name="name">addressSlot</field>
-        <field type="TextField" name="value"></field>
-    </object>
-    <object pk="10" model="workspace.abstractvariable">
-        <field type="CharField" name="type">IGADGET</field>
-        <field type="CharField" name="name">geobookmarks</field>
         <field type="TextField" name="value"></field>
     </object>
     <object pk="1" model="workspace.workspace">

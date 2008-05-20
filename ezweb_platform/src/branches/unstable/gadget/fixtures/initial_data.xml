@@ -1,36 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <django-objects version="1.0">
     <object pk="1" model="gadget.variabledef">
-        <field type="CharField" name="name">address</field>
-        <field type="CharField" name="type">S</field>
-        <field type="CharField" name="aspect">EVEN</field>
-        <field type="CharField" name="label">Address</field>
-        <field type="CharField" name="description"></field>
-        <field type="CharField" name="friend_code">address</field>
-        <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.template" name="template" rel="ManyToOneRel">1</field>
-    </object>
-    <object pk="2" model="gadget.variabledef">
         <field type="CharField" name="name">phoneNumber</field>
         <field type="CharField" name="type">S</field>
-        <field type="CharField" name="aspect">SLOT</field>
+        <field type="CharField" name="aspect">EVEN</field>
         <field type="CharField" name="label">PhoneNumber</field>
         <field type="CharField" name="description"></field>
         <field type="CharField" name="friend_code">phone</field>
         <field type="TextField" name="default_value"><None></None></field>
         <field to="gadget.template" name="template" rel="ManyToOneRel">1</field>
     </object>
-    <object pk="3" model="gadget.variabledef">
-        <field type="CharField" name="name">phoneNumber</field>
-        <field type="CharField" name="type">S</field>
-        <field type="CharField" name="aspect">EVEN</field>
-        <field type="CharField" name="label">PhoneNumber</field>
-        <field type="CharField" name="description"></field>
-        <field type="CharField" name="friend_code">phone</field>
-        <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.template" name="template" rel="ManyToOneRel">2</field>
-    </object>
-    <object pk="4" model="gadget.variabledef">
+    <object pk="2" model="gadget.variabledef">
         <field type="CharField" name="name">serviceHired</field>
         <field type="CharField" name="type">S</field>
         <field type="CharField" name="aspect">EVEN</field>
@@ -38,177 +18,33 @@
         <field type="CharField" name="description"></field>
         <field type="CharField" name="friend_code">service</field>
         <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.template" name="template" rel="ManyToOneRel">2</field>
-    </object>
-    <object pk="5" model="gadget.variabledef">
-        <field type="CharField" name="name">geobookmarks</field>
-        <field type="CharField" name="type">S</field>
-        <field type="CharField" name="aspect">PROP</field>
-        <field type="CharField" name="label"><None></None></field>
-        <field type="CharField" name="description"></field>
-        <field type="CharField" name="friend_code"><None></None></field>
-        <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.template" name="template" rel="ManyToOneRel">3</field>
-    </object>
-    <object pk="6" model="gadget.variabledef">
-        <field type="CharField" name="name">addressSlot</field>
-        <field type="CharField" name="type">S</field>
-        <field type="CharField" name="aspect">SLOT</field>
-        <field type="CharField" name="label">Address</field>
-        <field type="CharField" name="description"></field>
-        <field type="CharField" name="friend_code">address</field>
-        <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.template" name="template" rel="ManyToOneRel">3</field>
-    </object>
-    <object pk="7" model="gadget.variabledef">
-        <field type="CharField" name="name">utmCoordSlot</field>
-        <field type="CharField" name="type">S</field>
-        <field type="CharField" name="aspect">SLOT</field>
-        <field type="CharField" name="label">UTM Coord.</field>
-        <field type="CharField" name="description">UTM X Y Coordinates and precision (optional), comma separated</field>
-        <field type="CharField" name="friend_code">utmCoord</field>
-        <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.template" name="template" rel="ManyToOneRel">3</field>
-    </object>
-    <object pk="8" model="gadget.variabledef">
-        <field type="CharField" name="name">addressEvent</field>
-        <field type="CharField" name="type">S</field>
-        <field type="CharField" name="aspect">EVEN</field>
-        <field type="CharField" name="label">Address</field>
-        <field type="CharField" name="description"></field>
-        <field type="CharField" name="friend_code">address</field>
-        <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.template" name="template" rel="ManyToOneRel">3</field>
-    </object>
-    <object pk="9" model="gadget.variabledef">
-        <field type="CharField" name="name">utmCoordEvent</field>
-        <field type="CharField" name="type">S</field>
-        <field type="CharField" name="aspect">EVEN</field>
-        <field type="CharField" name="label">UTM Coord.</field>
-        <field type="CharField" name="description">UTM X Y Coordinates and precision (optional), comma separated</field>
-        <field type="CharField" name="friend_code">utmCoord</field>
-        <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.template" name="template" rel="ManyToOneRel">3</field>
+        <field to="gadget.template" name="template" rel="ManyToOneRel">1</field>
     </object>
     <object pk="1" model="gadget.gadget">
-        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Visor Datos de Usuario/1.0</field>
+        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Bandeja_de_Averias/1.0</field>
         <field type="CharField" name="vendor">Morfeo</field>
-        <field type="CharField" name="name">Visor Datos de Usuario</field>
+        <field type="CharField" name="name">Bandeja_de_Averias</field>
         <field type="CharField" name="version">1.0</field>
         <field to="gadget.template" name="template" rel="ManyToOneRel">1</field>
         <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">1</field>
         <field type="CharField" name="author">miglesia</field>
         <field type="CharField" name="mail">miglesia@pegaso.ls.fi.upm.es</field>
-        <field type="CharField" name="wikiURI">http://trac.morfeo-project.org/trac/ezwebplatform/wiki/VisorDatosUsuario</field>
-        <field type="CharField" name="imageURI">http://demo.ezweb.morfeo-project.org/gadgets/visorUsuarios/datosUsuario.png</field>
-        <field type="CharField" name="description">Este gadget presenta la informacion relativa a un usuario para el cual se ha detectado una averia</field>
-        <field type="BooleanField" name="shared">False</field>
-        <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
-        <field type="DateTimeField" name="last_update"><None></None></field>
-    </object>
-    <object pk="2" model="gadget.gadget">
-        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Bandeja de Averias/1.0</field>
-        <field type="CharField" name="vendor">Morfeo</field>
-        <field type="CharField" name="name">Bandeja de Averias</field>
-        <field type="CharField" name="version">1.0</field>
-        <field to="gadget.template" name="template" rel="ManyToOneRel">2</field>
-        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">2</field>
-        <field type="CharField" name="author">miglesia</field>
-        <field type="CharField" name="mail">miglesia@pegaso.ls.fi.upm.es</field>
-        <field type="CharField" name="wikiURI">http://trac.morfeo-project.org/trac/ezwebplatform/wiki/BandejaDeAverias</field>
-        <field type="CharField" name="imageURI">http://demo.ezweb.morfeo-project.org/gadgets/bandeja/averias.png</field>
+        <field type="CharField" name="wikiURI">http://piccolo.ls.fi.upm.es:7000/Bandeja_de_Averias</field>
+        <field type="CharField" name="imageURI">http://europa.ls.fi.upm.es/ezweb/gadgets/RedLightBulb.gif</field>
         <field type="CharField" name="description">Este gadget presenta una lista de averias registradas por usuarios y la informacion relativa a ellas</field>
-        <field type="BooleanField" name="shared">False</field>
-        <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
-        <field type="DateTimeField" name="last_update"><None></None></field>
-    </object>
-    <object pk="3" model="gadget.gadget">
-        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/GeoBookmarks/1.0</field>
-        <field type="CharField" name="vendor">Morfeo</field>
-        <field type="CharField" name="name">GeoBookmarks</field>
-        <field type="CharField" name="version">1.0</field>
-        <field to="gadget.template" name="template" rel="ManyToOneRel">3</field>
-        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">3</field>
-        <field type="CharField" name="author">jjmr</field>
-        <field type="CharField" name="mail">jjmr@tid.es</field>
-        <field type="CharField" name="wikiURI">http://trac.morfeo-project.org/trac/ezwebplatform/wiki/BandejaDeAverias</field>
-        <field type="CharField" name="imageURI">http://jjmr-desktop/gadgets/map.jpg</field>
-        <field type="CharField" name="description">Almacena una lista de contactos con asociándoles a los mismos una ubicación</field>
         <field type="BooleanField" name="shared">False</field>
         <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
         <field type="DateTimeField" name="last_update"><None></None></field>
     </object>
     <object pk="1" model="gadget.template">
-        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Visor Datos de Usuario/1.0/template</field>
-        <field type="CharField" name="description">Este gadget presenta la informacion relativa a un usuario para el cual se ha detectado una averia</field>
-        <field type="CharField" name="image">http://demo.ezweb.morfeo-project.org/gadgets/visorUsuarios/datosUsuario.png</field>
-        <field type="IntegerField" name="width">1</field>
-        <field type="IntegerField" name="height">17</field>
-    </object>
-    <object pk="2" model="gadget.template">
-        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Bandeja de Averias/1.0/template</field>
+        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Bandeja_de_Averias/1.0/template</field>
         <field type="CharField" name="description">Este gadget presenta una lista de averias registradas por usuarios y la informacion relativa a ellas</field>
-        <field type="CharField" name="image">http://demo.ezweb.morfeo-project.org/gadgets/bandeja/averias.png</field>
+        <field type="CharField" name="image">http://europa.ls.fi.upm.es/ezweb/gadgets/RedLightBulb.gif</field>
         <field type="IntegerField" name="width">3</field>
-        <field type="IntegerField" name="height">12</field>
-    </object>
-    <object pk="3" model="gadget.template">
-        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/GeoBookmarks/1.0/template</field>
-        <field type="CharField" name="description">Almacena una lista de contactos con asociándoles a los mismos una ubicación</field>
-        <field type="CharField" name="image">http://jjmr-desktop/gadgets/map.jpg</field>
-        <field type="IntegerField" name="width">6</field>
-        <field type="IntegerField" name="height">12</field>
+        <field type="IntegerField" name="height">11</field>
     </object>
     <object pk="1" model="gadget.xhtml">
-        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Visor Datos de Usuario/1.0/xhtml</field>
-        <field type="TextField" name="code">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
-
-&lt;html&gt;
-&lt;head&gt;
-&lt;meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /&gt;
-&lt;script language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
-&lt;title&gt;Visor de datos de usuario&lt;/title&gt;
-&lt;script&gt;
-var phoneNumber = EzWebAPI.createRGadgetVariable("phoneNumber",_phoneHandler);
-var address = EzWebAPI.createRWGadgetVariable("address");
-/*Temporary data for the demo*/
-var users = [];
-var user = ["Alejandro","Rodriguez Perez","07688357J","Santa Engracia, 25, 1 B, Madrid","35.50","2"];
-users["913933233"] = user;
-user = ["Marta","Lopez Romero","34788114L","Marcelo Usera, 46, 3 C, Madrid","40.74","1"];
-users["915334432"] = user;
-user = ["Rodrigo","Fernandez Bartolome","53333236P","Gran Via, 25, 2 A, Madrid","55.29","8"];
-users["916432233"] = user;
-user = ["Maria","Perez Casas","34788114L","Francisco Silvela, 105, 5 B, Madrid","66.15","3"];
-users["917294723"] = user;
-user = ["Alberto","Garcia Casas","34788114L","Camarena, 2, 4 A, Madrid","36.00","3"];
-users["917744331"] = user;
-
-function _phoneHandler(phone){
-if (phone!=null &amp;&amp; phone!=undefined){
-var content="";
-content+="&lt;p id='title' style=\"font-size: 22px; font-weight: bold; color: #000077; margin-top: 5px; margin-bottom: 5px;\"&gt;Tabla de Datos de Usuario&lt;/p&gt;&lt;table style=\"padding: 1px;\"&gt;";
-content+="&lt;tr&gt;&lt;th&gt;Datos del Usuario&lt;/th&gt;&lt;th&gt;Valor&lt;/th&gt;&lt;/tr&gt;";
-content+="&lt;tr&gt;&lt;td&gt;Nombre&lt;/td&gt;&lt;td&gt;"+users[phone][0]+"&lt;/td&gt;&lt;/tr&gt;";
-content+="&lt;tr&gt;&lt;td&gt;Apellidos&lt;/td&gt;&lt;td&gt;"+users[phone][1]+"&lt;/td&gt;&lt;/tr&gt;";
-content+="&lt;tr&gt;&lt;td&gt;DNI&lt;/td&gt;&lt;td&gt;"+users[phone][2]+"&lt;/td&gt;&lt;/tr&gt;";
-content+="&lt;tr&gt;&lt;td&gt;Direccion&lt;/td&gt;&lt;td&gt;"+users[phone][3]+"&lt;/td&gt;&lt;/tr&gt;";
-content+="&lt;tr&gt;&lt;td&gt;Factura media&lt;/td&gt;&lt;td&gt;"+users[phone][4]+"&lt;/td&gt;&lt;/tr&gt;";
-content+="&lt;tr&gt;&lt;td&gt;Antiguedad&lt;/td&gt;&lt;td&gt;"+users[phone][5]+"&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;";
-document.getElementById("info").innerHTML=content;
-address.set(users[phone][3]);
-}
-}
-&lt;/script&gt;
-&lt;/head&gt;
-&lt;body style="font-family: Arial; font-size: 14px; text-align: left; width: 95%; margin: 0px; padding: 1px;"&gt;
-&lt;div id='info'&gt;&lt;i&gt;A la espera de seleccionar una averia...&lt;/i&gt;&lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;</field>
-        <field type="CharField" name="url">http://demo.ezweb.morfeo-project.org/gadgets/visorUsuarios/visorDatosUsuario.html</field>
-    </object>
-    <object pk="2" model="gadget.xhtml">
-        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Bandeja de Averias/1.0/xhtml</field>
+        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/Bandeja_de_Averias/1.0/xhtml</field>
         <field type="TextField" name="code">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
 &lt;html&gt;&lt;head&gt;
 
@@ -279,212 +115,6 @@ serviceHired.set(rows[row*5+4].innerHTML);
 &lt;/tbody&gt;&lt;/table&gt;
 &lt;/body&gt;&lt;/html&gt;
 </field>
-        <field type="CharField" name="url">http://demo.ezweb.morfeo-project.org/gadgets/bandeja/bandejaAverias.html</field>
-    </object>
-    <object pk="3" model="gadget.xhtml">
-        <field type="CharField" name="uri">/user/admin/gadgets/Morfeo/GeoBookmarks/1.0/xhtml</field>
-        <field type="TextField" name="code">&lt;html&gt;&lt;head&gt;
-&lt;meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"&gt;
-&lt;script language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
-&lt;script src="/ezweb/js/lib/prototype/prototype.js" language="javascript" type="text/javascript"&gt;&lt;/script&gt;
-&lt;title&gt;GeoBookmarks&lt;/title&gt;
-&lt;style&gt;
-.non-visible{
-	display:none;
-}
-.visible{
-	display:block;
-}
-.bold{
-	font-weight: bold;
-}
-table{
-	margin: 10px;
-}
-
-&lt;/style&gt;
-&lt;script&gt;
-//SLOT
-var address = new EzWebAPI.createRGadgetVariable("addressSlot",addLocationAddress);
-var utmCoord = new EzWebAPI.createRGadgetVariable("utmCoordSlot",addLocationUTM);
-//EVENT
-var addressEvent = new EzWebAPI.createRWGadgetVariable("addressEvent");
-var utmCoordEvent = new EzWebAPI.createRWGadgetVariable("utmCoordEvent");
-
-//PROPERTY
-var geobookmarks = new EzWebAPI.createRWGadgetVariable("geobookmarks");
-
-//HANDLERS
-function addLocationAddress(location) {
-
-	document.getElementById("location").value=location;
-	document.new_bookmark_form.elements['address'].checked = true;	
-}
-
-function addLocationUTM(location) {
-
-	document.getElementById("location").value=location;
-	document.new_bookmark_form.elements['utm'].checked = true;
-}
-
-//OTHER FUNCTIONS
-function showNewBookmark(){
-	document.getElementById("new_bookmark").class="visible";
-	document.getElementById("new_bookmark").className="visible";
-}
-
-function setLocation(location, locationType){
-	if (locationType == "address")
-		addressEvent.set(location);
-	else //UTM
-		utmCoordEvent.set(location);
-}
-
-function createRow(bookmarkName, location, locationType){
-
-	var bookmark = document.createElement("tr");
-	//Name
-	var nametd = document.createElement("td");
-	nametd.innerHTML=bookmarkName;
-	bookmark.appendChild(nametd);
-	//Location
-	var locationtd = document.createElement("td");
-	var a = document.createElement("a");
-	locationtd.appendChild(a);
-	a.innerHTML=location;
-	a.setAttribute("href","javascript:setLocation("+location+","+locationType+")");
-	bookmark.appendChild(locationtd);
-	//location type
-	var typetd = document.createElement("td");
-	typetd.setAttribute("class", "non-visible");
-	typetd.innerHTML = locationType;
-	bookmark.appendChild(typetd);
-
-	return bookmark;
-}
-
-function addBookmark(){
-	var nameValue = document.new_bookmark_form.elements['nameb'].value;
-	var locationValue = document.new_bookmark_form.elements['location'].value;
-	var typeValue = document.new_bookmark_form.elements['address'].checked ? "address" : "utm";
-
-	//add the element to the table
-	var bookmark = createRow(nameValue, locationValue, typeValue);
-
-	var table = document.getElementById("bookmarks_table");
-	if (table == null){
-		table = document.createElement("table");
-		var tr = document.createElement("tr");
-		var td = document.createElement("td");
-		td.innerHTML = "Name";
-		td.setAttribute("class","bold");
-		tr.appendChild(td);
-		td = document.createElement("td");
-		td.innerHTML = "Location";
-		td.setAttribute("class","bold");
-		tr.appendChild(td);
-		table.appendChild(tr);
-		table.setAttribute("id","bookmarks_table");
-		table.setAttribute("border","1");
-		document.getElementById("geobookmarks").innerHTML="";
-		document.getElementById("geobookmarks").appendChild(table);
-	}
-	table.appendChild(bookmark);
-
-
-	//persist the element
-	if (geobookmarks.get()!= null &amp;&amp; geobookmarks.get()!= ""){
-		var gblist = eval('(' + geobookmarks.get() + ')');
-		var pos = gblist.length-1;		
-	}
-	else{
-		var gblist= new Array();
-		var pos = 0;
-
-	}
-	var entry = new Object();
-	entry.elementName=nameValue;
-	entry.location=locationValue;
-	gblist[pos] = entry;
-	geobookmarks.set(gblist.toJSON());
-
-	//hide the form
-	document.getElementById("new_bookmark").class="non-visible";
-	document.getElementById("new_bookmark").className="non-visible";
-	
-}
-
-function init(){
-	var container = document.getElementById("geobookmarks");
-
-	if (geobookmarks.get()!= null &amp;&amp; geobookmarks.get()!= ""){
-		var gblist = eval('(' + geobookmarks.get() + ')');
-
-		if (gblist != null){
-			var i = 0;
-			var table = document.createElement("table");
-			table.setAttribute("id","bookmarks_table");
-			table.setAttribute("border","1");
-			var tr = null;
-			var td = null;
-			var a = null;
-
-			tr = document.createElement("tr");
-			td = document.createElement("td");
-			td.innerHTML = "Name";
-			td.setAttribute("class","bold");
-			tr.appendChild(td);
-			td = document.createElement("td");
-			td.innerHTML = "Location";
-			td.setAttribute("class","bold");
-			tr.appendChild(td);
-			table.appendChild(tr);
-
-			for (i=0;i&lt;gblist.length;i++){
-				table.appendChild(createRow(gblist[i].elementName, gblist[i].location, gblist[i].type));
-			}
-			container.appendChild(table);
-		}
-		else{
-			container.innerHTML="There aren't geobookmarks";
-		}
-	}
-	else{
-		container.innerHTML="There aren't geobookmarks";
-	}
-
-}
-
-&lt;/script&gt;
-
-&lt;/head&gt;&lt;body style="margin: 0px; padding: 0px;" onload="init();"&gt;
-&lt;a href="javascript:showNewBookmark()" class="add_link"&gt;Add new boormark&lt;/a&gt;
-&lt;div id="new_bookmark" class="non-visible"&gt;
-	&lt;form onsubmit="return false;" name="new_bookmark_form"&gt;
-		&lt;table border="0"&gt;
-		&lt;tr&gt;
-			&lt;td&gt;Name&lt;/td&gt;
-			&lt;td&gt;Location&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;input type="text" name="nameb"&gt;&lt;/input&gt;&lt;/td&gt;
-			&lt;td&gt;&lt;input type="text" id="location" name="location"&gt;&lt;/input&gt;&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;input type="radio" checked name="utm" value="utm"&gt;UTM coords.&lt;/input&gt;&lt;/td&gt;
-			&lt;td&gt;&lt;input type="radio" name="address" value="address"&gt;Address&lt;/input&gt;&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;tr&gt;
-			&lt;td&gt;&lt;input type="button" name="add" value="Add" onclick="addBookmark()"&gt;&lt;/input&gt;&lt;/td&gt;
-			&lt;td&gt;&lt;/td&gt;
-		&lt;/tr&gt;
-		&lt;/table&gt;
-	&lt;/form&gt;
-&lt;/div&gt;
-&lt;div id="geobookmarks"&gt;&lt;/div&gt;
-&lt;/body&gt;&lt;/html&gt;
-
-</field>
-        <field type="CharField" name="url">http://jjmr-desktop/gadgets/GeoBookmarksGadget.html</field>
+        <field type="CharField" name="url">http://europa.ls.fi.upm.es/ezweb/gadgets/bandejaAverias.html</field>
     </object>
 </django-objects>

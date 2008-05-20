@@ -5,44 +5,24 @@
         <field to="workspace.abstractvariable" name="abstract_variable" rel="ManyToOneRel">1</field>
         <field to="connectable.inout" name="inouts" rel="ManyToManyRel"></field>
     </object>
-    <object pk="2" model="connectable.out">
-        <field type="CharField" name="name">phoneNumber</field>
-        <field to="workspace.abstractvariable" name="abstract_variable" rel="ManyToOneRel">2</field>
-        <field to="connectable.inout" name="inouts" rel="ManyToManyRel"></field>
-    </object>
-    <object pk="3" model="connectable.out">
-        <field type="CharField" name="name">utmCoordSlot</field>
-        <field to="workspace.abstractvariable" name="abstract_variable" rel="ManyToOneRel">8</field>
-        <field to="connectable.inout" name="inouts" rel="ManyToManyRel"></field>
-    </object>
-    <object pk="4" model="connectable.out">
-        <field type="CharField" name="name">addressSlot</field>
-        <field to="workspace.abstractvariable" name="abstract_variable" rel="ManyToOneRel">9</field>
-        <field to="connectable.inout" name="inouts" rel="ManyToManyRel"></field>
-    </object>
     <object pk="1" model="connectable.in">
-        <field type="CharField" name="name">address</field>
-        <field to="igadget.variable" name="variable" rel="ManyToOneRel">2</field>
+        <field type="CharField" name="name">serviceHired</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">1</field>
         <field to="connectable.inout" name="inouts" rel="ManyToManyRel"></field>
     </object>
     <object pk="2" model="connectable.in">
+        <field type="CharField" name="name">phoneNumber</field>
+        <field to="igadget.variable" name="variable" rel="ManyToOneRel">2</field>
+        <field to="connectable.inout" name="inouts" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="3" model="connectable.in">
         <field type="CharField" name="name">serviceHired</field>
         <field to="igadget.variable" name="variable" rel="ManyToOneRel">3</field>
         <field to="connectable.inout" name="inouts" rel="ManyToManyRel"></field>
     </object>
-    <object pk="3" model="connectable.in">
+    <object pk="4" model="connectable.in">
         <field type="CharField" name="name">phoneNumber</field>
         <field to="igadget.variable" name="variable" rel="ManyToOneRel">4</field>
-        <field to="connectable.inout" name="inouts" rel="ManyToManyRel"></field>
-    </object>
-    <object pk="4" model="connectable.in">
-        <field type="CharField" name="name">utmCoordEvent</field>
-        <field to="igadget.variable" name="variable" rel="ManyToOneRel">5</field>
-        <field to="connectable.inout" name="inouts" rel="ManyToManyRel"></field>
-    </object>
-    <object pk="5" model="connectable.in">
-        <field type="CharField" name="name">addressEvent</field>
-        <field to="igadget.variable" name="variable" rel="ManyToOneRel">6</field>
         <field to="connectable.inout" name="inouts" rel="ManyToManyRel"></field>
     </object>
     <object pk="1" model="auth.user">
@@ -50,12 +30,12 @@
         <field type="CharField" name="first_name"></field>
         <field type="CharField" name="last_name"></field>
         <field type="CharField" name="email">k@k.es</field>
-        <field type="CharField" name="password">sha1$69648$2b52b7cc9cd3aa4c4d0b904c87ea62cc59ae1deb</field>
+        <field type="CharField" name="password">sha1$491c1$a50b930824c541e9995c2f5e4518c24d7d37f3a2</field>
         <field type="BooleanField" name="is_staff">True</field>
         <field type="BooleanField" name="is_active">True</field>
         <field type="BooleanField" name="is_superuser">True</field>
-        <field type="DateTimeField" name="last_login">2008-05-20 10:39:27</field>
-        <field type="DateTimeField" name="date_joined">2008-02-08 00:15:38</field>
+        <field type="DateTimeField" name="last_login">2008-05-20 15:44:54</field>
+        <field type="DateTimeField" name="date_joined">2008-05-20 15:44:41</field>
         <field to="auth.group" name="groups" rel="ManyToManyRel"></field>
         <field to="auth.permission" name="user_permissions" rel="ManyToManyRel"></field>
     </object>
@@ -699,12 +679,17 @@
         <field type="CharField" name="app_label">gadget</field>
         <field type="CharField" name="model">xhtml</field>
     </object>
-    <object pk="782d9a030d3bddc1644552f51d43acdb" model="sessions.session">
+    <object pk="3f3dee8970156973bbb038eaa404f564" model="sessions.session">
+        <field type="TextField" name="session_data">gAJ9cQEuNzIxNjM3NTM0YjdlNTIzNDY1NDk3OGM5ZmFlMDlkZGE=
+</field>
+        <field type="DateTimeField" name="expire_date">2008-06-03 15:44:51</field>
+    </object>
+    <object pk="d1db5f00513c01a51d240a923c7a0fe1" model="sessions.session">
         <field type="TextField" name="session_data">gAJ9cQEoVRJfYXV0aF91c2VyX2JhY2tlbmRxAlUpZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5k
 cy5Nb2RlbEJhY2tlbmRxA1UNX2F1dGhfdXNlcl9pZHEESwF1LmVkMWRlZTk2Mzk4YzkyOWNlZjVj
 OGQ0NDE3M2Y0YzI3
 </field>
-        <field type="DateTimeField" name="expire_date">2008-06-03 10:39:27</field>
+        <field type="DateTimeField" name="expire_date">2008-06-03 15:44:54</field>
     </object>
     <object pk="1" model="sites.site">
         <field type="CharField" name="domain">example.com</field>

@@ -92,6 +92,10 @@ class ConnectableEntry(Resource):
         try:                        
             workspace = WorkSpace.objects.get(id=workspace_id)
             
+            #Mapping between provisional ids and database-generated ids!!!
+            ids_mapping = []
+            
+            
             # Erasing variables associated with channels deleted explicitly by the user
             channelsDeletedByUser = json['channelsForRemoving']
             for deleted_channel_id in channelsDeletedByUser:
@@ -118,7 +122,16 @@ class ConnectableEntry(Resource):
                     new_ws_variable.save()
                     
                     channel = InOut(name=new_channel_data['name'], workspace_variable=new_ws_variable, friend_code="")
-                    channel.save()   
+                    channel.save()  
+                    
+                    #A channel has been generated. It's necessary to correlate provisional and definitive ids!
+                    id_mapping = {}
+                    
+                    id_mapping['id'] = channel.id;
+                    id_mapping['provisional_id'] = new_channel_data['id'];
+                    id_mapping['var_id'] = new_ws_variable.id;
+                    
+                    ids_mapping.append(id_mapping);
                 else:
                     #WorkSpaceVariable objects is still in database, it's only necessary to link it!
                     workspace_variable = WorkSpaceVariable.objects.get(id=new_channel_data['var_id'])
@@ -154,7 +167,9 @@ class ConnectableEntry(Resource):
             # Saves all channels            
             transaction.commit()
             
-            return HttpResponse ('ok')
+            json_result = {'ids': ids_mapping}
+            
+            return HttpResponse (json_encode(json_result), mimetype='application/json; charset=UTF-8')
         except WorkSpace.DoesNotExist:
             transaction.rollback()
 

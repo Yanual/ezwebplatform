@@ -274,9 +274,28 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 		this.channels.remove(channelName);
 	}
 
-	Wiring.prototype.serializationSuccess = function (response){
-		delete this.channelsForRemoving;
+	Wiring.prototype.serializationSuccess = function (transport){
+		// JSON-coded ids mapping
+		var response = transport.responseText;
+		var json = eval ('(' + response + ')');
 		
+		var mappings = json['ids'];
+		var channelList = this.channels.values();
+		for (var i=0; i<mappings.length; i++) {
+			var mapping = mappings[i];
+			
+			for (var j=0; j<channelList.length; j++) {
+				if (channelList[j].id == mapping.provisional_id) {
+					channelList[j].id = mapping.id;
+					channelList[j].provisional_id = false;
+					channelList[j].variable.id = mapping.var_id;
+					break;
+				}
+			}
+		}
+		
+		// Channels has been sabed in db. Cleaning state variables!
+		delete this.channelsForRemoving;
 		this.channelsForRemoving = [];
 	}
 

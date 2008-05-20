@@ -204,9 +204,10 @@ function VarManager (_workSpace) {
 	}
 
 	VarManager.prototype.createWorkspaceVariable = function(name) {
-		// TODO
-		var newVar = new RWVariable("", null, name, Variable.prototype.INOUT, this, "");
-		return newVar;
+		var provisional_id = new Date().getTime();
+		
+		return new RWVariable(provisional_id, null, name, Variable.prototype.INOUT, this, "");
+		
 	}
 	
 	VarManager.prototype.addWorkspaceVariable = function(id, variable) {
