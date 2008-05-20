@@ -160,22 +160,7 @@ function VarManager (_workSpace) {
 	}
 
 	VarManager.prototype.addInstance = function (iGadget, igadgetInfo) {
-		var templateVariables = iGadget.getGadget().getTemplate().getVariables(iGadget);
-		var variableInfo = igadgetInfo['variableList'];
-
-		for (var templateVariableName in templateVariables) {
-		        var templateVar = templateVariables[templateVariableName];
-			for (var i in variableInfo) {
-				var currentVar = variableInfo[i];
-			
-				if (templateVariableName == currentVar.name) {
-					templateVar.id = currentVar.id;
-					break;
-				}
-			}
-		}
-		
-		this.iGadgets[iGadget.id] = templateVariables;
+		this.parseIGadgetVariables(igadgetInfo);
 	}
 	
 	VarManager.prototype.removeInstance = function (iGadgetId) {
