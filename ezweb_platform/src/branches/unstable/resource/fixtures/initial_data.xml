@@ -1,3 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
 <django-objects version="1.0">
+    <object pk="1" model="resource.gadgetwiring">
+        <field type="CharField" name="friendcode">phone</field>
+        <field type="CharField" name="wiring">out</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">1</field>
+    </object>
+    <object pk="2" model="resource.gadgetwiring">
+        <field type="CharField" name="friendcode">service</field>
+        <field type="CharField" name="wiring">out</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">1</field>
+    </object>
+    <object pk="3" model="resource.gadgetwiring">
+        <field type="CharField" name="friendcode">address</field>
+        <field type="CharField" name="wiring">in</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">2</field>
+    </object>
+    <object pk="4" model="resource.gadgetwiring">
+        <field type="CharField" name="friendcode">utmCoord</field>
+        <field type="CharField" name="wiring">in</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">2</field>
+    </object>
+    <object pk="5" model="resource.gadgetwiring">
+        <field type="CharField" name="friendcode">address</field>
+        <field type="CharField" name="wiring">out</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">3</field>
+    </object>
+    <object pk="6" model="resource.gadgetwiring">
+        <field type="CharField" name="friendcode">phone</field>
+        <field type="CharField" name="wiring">in</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">3</field>
+    </object>
+    <object pk="7" model="resource.gadgetwiring">
+        <field type="CharField" name="friendcode">address</field>
+        <field type="CharField" name="wiring">in</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">4</field>
+    </object>
+    <object pk="8" model="resource.gadgetwiring">
+        <field type="CharField" name="friendcode">utmCoord</field>
+        <field type="CharField" name="wiring">in</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">4</field>
+    </object>
+    <object pk="9" model="resource.gadgetwiring">
+        <field type="CharField" name="friendcode">address</field>
+        <field type="CharField" name="wiring">out</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">4</field>
+    </object>
+    <object pk="10" model="resource.gadgetwiring">
+        <field type="CharField" name="friendcode">utmCoord</field>
+        <field type="CharField" name="wiring">out</field>
+        <field to="resource.gadgetresource" name="idResource" rel="ManyToOneRel">4</field>
+    </object>
+    <object pk="1" model="resource.gadgetresource">
+        <field type="CharField" name="short_name">Bandeja de Averias</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="version">1.0</field>
+        <field to="auth.user" name="added_by_user" rel="ManyToOneRel">1</field>
+        <field type="CharField" name="author">miglesia</field>
+        <field type="CharField" name="mail">miglesia@pegaso.ls.fi.upm.es</field>
+        <field type="CharField" name="description">Este gadget presenta una lista de averias registradas por usuarios y la informacion relativa a ellas</field>
+        <field type="CharField" name="size"><None></None></field>
+        <field type="CharField" name="license"><None></None></field>
+        <field type="CharField" name="gadget_uri"><None></None></field>
+        <field type="DateTimeField" name="creation_date">2008-05-20 10:39:46</field>
+        <field type="CharField" name="image_uri">http://demo.ezweb.morfeo-project.org/gadgets/bandeja/averias.png</field>
+        <field type="CharField" name="wiki_page_uri">http://trac.morfeo-project.org/trac/ezwebplatform/wiki/BandejaDeAverias</field>
+        <field type="CharField" name="template_uri">http://demo.ezweb.morfeo-project.org/gadgets/bandeja/bandejaAveriasGadget.xml</field>
+        <field type="DecimalField" name="popularity">0.0</field>
+    </object>
+    <object pk="2" model="resource.gadgetresource">
+        <field type="CharField" name="short_name">Map Viewer</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="version">1.2</field>
+        <field to="auth.user" name="added_by_user" rel="ManyToOneRel">1</field>
+        <field type="CharField" name="author">fabio</field>
+        <field type="CharField" name="mail">fabio@tid.es</field>
+        <field type="CharField" name="description">Este gadget presenta la ubicacion en el plano de una determinada direccion o coordenadas UTM. Si se le pasa la precision, dibuja un circulo con el area seleccionada</field>
+        <field type="CharField" name="size"><None></None></field>
+        <field type="CharField" name="license"><None></None></field>
+        <field type="CharField" name="gadget_uri"><None></None></field>
+        <field type="DateTimeField" name="creation_date">2008-05-20 10:39:51</field>
+        <field type="CharField" name="image_uri">http://demo.ezweb.morfeo-project.org/gadgets/localizador/google_maps.jpg</field>
+        <field type="CharField" name="wiki_page_uri">http://trac.morfeo-project.org/trac/ezwebplatform/wiki/MapViewer</field>
+        <field type="CharField" name="template_uri">http://demo.ezweb.morfeo-project.org/gadgets/localizador/localizadorPequeno1.2.xml</field>
+        <field type="DecimalField" name="popularity">0.0</field>
+    </object>
+    <object pk="3" model="resource.gadgetresource">
+        <field type="CharField" name="short_name">Visor Datos de Usuario</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="version">1.0</field>
+        <field to="auth.user" name="added_by_user" rel="ManyToOneRel">1</field>
+        <field type="CharField" name="author">miglesia</field>
+        <field type="CharField" name="mail">miglesia@pegaso.ls.fi.upm.es</field>
+        <field type="CharField" name="description">Este gadget presenta la informacion relativa a un usuario para el cual se ha detectado una averia</field>
+        <field type="CharField" name="size"><None></None></field>
+        <field type="CharField" name="license"><None></None></field>
+        <field type="CharField" name="gadget_uri"><None></None></field>
+        <field type="DateTimeField" name="creation_date">2008-05-20 10:39:56</field>
+        <field type="CharField" name="image_uri">http://demo.ezweb.morfeo-project.org/gadgets/visorUsuarios/datosUsuario.png</field>
+        <field type="CharField" name="wiki_page_uri">http://trac.morfeo-project.org/trac/ezwebplatform/wiki/VisorDatosUsuario</field>
+        <field type="CharField" name="template_uri">http://demo.ezweb.morfeo-project.org/gadgets/visorUsuarios/visorDatosUsuarioGadget.xml</field>
+        <field type="DecimalField" name="popularity">0.0</field>
+    </object>
+    <object pk="4" model="resource.gadgetresource">
+        <field type="CharField" name="short_name">GeoBookmarks</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="version">1.0</field>
+        <field to="auth.user" name="added_by_user" rel="ManyToOneRel">1</field>
+        <field type="CharField" name="author">jjmr</field>
+        <field type="CharField" name="mail">jjmr@tid.es</field>
+        <field type="CharField" name="description">Almacena una lista de contactos con asociándoles a los mismos una ubicación</field>
+        <field type="CharField" name="size"><None></None></field>
+        <field type="CharField" name="license"><None></None></field>
+        <field type="CharField" name="gadget_uri"><None></None></field>
+        <field type="DateTimeField" name="creation_date">2008-05-20 10:40:06</field>
+        <field type="CharField" name="image_uri">http://jjmr-desktop/gadgets/map.jpg</field>
+        <field type="CharField" name="wiki_page_uri">http://trac.morfeo-project.org/trac/ezwebplatform/wiki/BandejaDeAverias</field>
+        <field type="CharField" name="template_uri">http://jjmr-desktop/gadgets/GeoBookmarksGadget.xml</field>
+        <field type="DecimalField" name="popularity">0.0</field>
+    </object>
 </django-objects>

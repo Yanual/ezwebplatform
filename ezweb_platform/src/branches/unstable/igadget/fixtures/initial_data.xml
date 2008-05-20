@@ -1,3 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <django-objects version="1.0">
+    <object pk="1" model="igadget.variable">
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">2</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">1</field>
+        <field to="workspace.abstractvariable" name="abstract_variable" rel="ManyToOneRel">2</field>
+    </object>
+    <object pk="2" model="igadget.variable">
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">1</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">1</field>
+        <field to="workspace.abstractvariable" name="abstract_variable" rel="ManyToOneRel">3</field>
+    </object>
+    <object pk="3" model="igadget.variable">
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">4</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">2</field>
+        <field to="workspace.abstractvariable" name="abstract_variable" rel="ManyToOneRel">4</field>
+    </object>
+    <object pk="4" model="igadget.variable">
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">3</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">2</field>
+        <field to="workspace.abstractvariable" name="abstract_variable" rel="ManyToOneRel">5</field>
+    </object>
+    <object pk="5" model="igadget.variable">
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">9</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">3</field>
+        <field to="workspace.abstractvariable" name="abstract_variable" rel="ManyToOneRel">6</field>
+    </object>
+    <object pk="6" model="igadget.variable">
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">8</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">3</field>
+        <field to="workspace.abstractvariable" name="abstract_variable" rel="ManyToOneRel">7</field>
+    </object>
+    <object pk="7" model="igadget.variable">
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">7</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">3</field>
+        <field to="workspace.abstractvariable" name="abstract_variable" rel="ManyToOneRel">8</field>
+    </object>
+    <object pk="8" model="igadget.variable">
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">6</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">3</field>
+        <field to="workspace.abstractvariable" name="abstract_variable" rel="ManyToOneRel">9</field>
+    </object>
+    <object pk="9" model="igadget.variable">
+        <field to="gadget.variabledef" name="vardef" rel="ManyToOneRel">5</field>
+        <field to="igadget.igadget" name="igadget" rel="ManyToOneRel">3</field>
+        <field to="workspace.abstractvariable" name="abstract_variable" rel="ManyToOneRel">10</field>
+    </object>
+    <object pk="1" model="igadget.position">
+        <field type="IntegerField" name="posX">0</field>
+        <field type="IntegerField" name="posY">0</field>
+        <field type="IntegerField" name="height">17</field>
+        <field type="IntegerField" name="width">1</field>
+        <field type="BooleanField" name="minimized">False</field>
+    </object>
+    <object pk="2" model="igadget.position">
+        <field type="IntegerField" name="posX">1</field>
+        <field type="IntegerField" name="posY">0</field>
+        <field type="IntegerField" name="height">12</field>
+        <field type="IntegerField" name="width">3</field>
+        <field type="BooleanField" name="minimized">False</field>
+    </object>
+    <object pk="3" model="igadget.position">
+        <field type="IntegerField" name="posX">4</field>
+        <field type="IntegerField" name="posY">0</field>
+        <field type="IntegerField" name="height">12</field>
+        <field type="IntegerField" name="width">6</field>
+        <field type="BooleanField" name="minimized">False</field>
+    </object>
+    <object pk="1" model="igadget.igadget">
+        <field type="IntegerField" name="code">1</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">1</field>
+        <field to="workspace.tab" name="tab" rel="ManyToOneRel">1</field>
+        <field to="igadget.position" name="position" rel="ManyToOneRel">1</field>
+    </object>
+    <object pk="2" model="igadget.igadget">
+        <field type="IntegerField" name="code">2</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">2</field>
+        <field to="workspace.tab" name="tab" rel="ManyToOneRel">1</field>
+        <field to="igadget.position" name="position" rel="ManyToOneRel">2</field>
+    </object>
+    <object pk="3" model="igadget.igadget">
+        <field type="IntegerField" name="code">3</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">3</field>
+        <field to="workspace.tab" name="tab" rel="ManyToOneRel">1</field>
+        <field to="igadget.position" name="position" rel="ManyToOneRel">3</field>
+    </object>
 </django-objects>

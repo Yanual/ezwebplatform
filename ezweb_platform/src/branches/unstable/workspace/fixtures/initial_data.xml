@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<django-objects version="1.0">
+    <object pk="1" model="workspace.workspacevariable">
+        <field to="workspace.workspace" name="workspace" rel="ManyToOneRel">1</field>
+        <field to="workspace.abstractvariable" name="abstract_variable" rel="ManyToOneRel">1</field>
+        <field type="CharField" name="type"></field>
+        <field type="CharField" name="aspect">TAB</field>
+    </object>
+    <object pk="1" model="workspace.tab">
+        <field type="CharField" name="name">MyTab</field>
+        <field type="BooleanField" name="visible">True</field>
+        <field to="workspace.workspace" name="workspace" rel="ManyToOneRel">1</field>
+        <field to="workspace.abstractvariable" name="abstract_variable" rel="ManyToOneRel">1</field>
+    </object>
+    <object pk="1" model="workspace.abstractvariable">
+        <field type="CharField" name="type">WORKSPACE</field>
+        <field type="CharField" name="name">MyTab</field>
+        <field type="TextField" name="value"></field>
+    </object>
+    <object pk="2" model="workspace.abstractvariable">
+        <field type="CharField" name="type">IGADGET</field>
+        <field type="CharField" name="name">phoneNumber</field>
+        <field type="TextField" name="value"></field>
+    </object>
+    <object pk="3" model="workspace.abstractvariable">
+        <field type="CharField" name="type">IGADGET</field>
+        <field type="CharField" name="name">address</field>
+        <field type="TextField" name="value"></field>
+    </object>
+    <object pk="4" model="workspace.abstractvariable">
+        <field type="CharField" name="type">IGADGET</field>
+        <field type="CharField" name="name">serviceHired</field>
+        <field type="TextField" name="value"></field>
+    </object>
+    <object pk="5" model="workspace.abstractvariable">
+        <field type="CharField" name="type">IGADGET</field>
+        <field type="CharField" name="name">phoneNumber</field>
+        <field type="TextField" name="value"></field>
+    </object>
+    <object pk="6" model="workspace.abstractvariable">
+        <field type="CharField" name="type">IGADGET</field>
+        <field type="CharField" name="name">utmCoordEvent</field>
+        <field type="TextField" name="value"></field>
+    </object>
+    <object pk="7" model="workspace.abstractvariable">
+        <field type="CharField" name="type">IGADGET</field>
+        <field type="CharField" name="name">addressEvent</field>
+        <field type="TextField" name="value"></field>
+    </object>
+    <object pk="8" model="workspace.abstractvariable">
+        <field type="CharField" name="type">IGADGET</field>
+        <field type="CharField" name="name">utmCoordSlot</field>
+        <field type="TextField" name="value"></field>
+    </object>
+    <object pk="9" model="workspace.abstractvariable">
+        <field type="CharField" name="type">IGADGET</field>
+        <field type="CharField" name="name">addressSlot</field>
+        <field type="TextField" name="value"></field>
+    </object>
+    <object pk="10" model="workspace.abstractvariable">
+        <field type="CharField" name="type">IGADGET</field>
+        <field type="CharField" name="name">geobookmarks</field>
+        <field type="TextField" name="value"></field>
+    </object>
+    <object pk="1" model="workspace.workspace">
+        <field type="CharField" name="name">MyWorkSpace</field>
+        <field type="BooleanField" name="active">True</field>
+        <field to="auth.user" name="user" rel="ManyToOneRel">1</field>
+    </object>
+</django-objects>
