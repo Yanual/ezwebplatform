@@ -19,6 +19,10 @@ div.gadget_menu {
   overflow: hidden;
 }
 
+div.dragboard.fixed div.gadget_menu {
+  display: none;
+}
+
 div.gadget_window div.gadget_menu input[type="button"] {
   float: right;
   display: inline;
@@ -96,6 +100,10 @@ div.gadget_window div.resizeHandle {
   right: -1px;
   cursor: se-resize;
   background: transparent;
+}
+
+div.dragboard.fixed div.gadget_window div.resizeHandle {
+  display: none;
 }
 
 /*****

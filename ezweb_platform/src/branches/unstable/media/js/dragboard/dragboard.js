@@ -55,6 +55,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 	this.tabId = tab.tabInfo.id;
 	this.workSpace = workSpace;
 	this.workSpaceId = workSpace.workSpaceState.id;
+	this.fixed = false;
 
 	// ***********************
 	// PRIVATE FUNCTIONS 
@@ -97,7 +98,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 		for (var i = 0; i < keys.length; i++) {
 			iGadget = this.iGadgets[keys[i]];
 			this._moveSpaceUp(this.matrix, iGadget);
-		};
+		}
 	}
 
 	Dragboard.prototype._notifyWindowResizeEvent = function () {
@@ -493,20 +494,65 @@ function Dragboard(tab, workSpace, dragboardElement) {
 	// ****************
 	// PUBLIC METHODS 
 	// ****************
-	
+
 	Dragboard.prototype.recomputeSize = function() {
 	    this.dragboardStyle.recomputeSize();
 	}
-	
+
 	Dragboard.prototype.hide = function () {
 		LayoutManagerFactory.getInstance().hideView(this.dragboardElement);
 	}
-	
+
 	Dragboard.prototype.destroy = function () {
 		Element.remove(this.dragboardElement);
 		//TODO: remove all references and delete the object
 	}
-	
+
+	/**
+	 * Returns true if the dragboard is locked.
+	 */
+	Dragboard.prototype.isLocked = function () {
+		return this.fixed;
+	}
+
+	/**
+	 * Locks and unlocks the dragboard according to the newLockStatus
+	 * parameter.
+	 *
+	 * @param newLockStatus true to make dragboard  be locked or false for
+	 *                      having an editable dragboard (where you can
+	 *                      move, resize, etc the gadget instances).
+	 */
+	Dragboard.prototype.setLock = function (newLockStatus) {
+		if (this.fixed == newLockStatus)
+			return; // No change in status => nothing to do
+		
+		this.fixed = newLockStatus;
+		if (this.fixed)
+			this.dragboardElement.addClassName("fixed");
+		else
+			this.dragboardElement.removeClassName("fixed");
+		
+		var iGadget;
+
+		// propagate the fixed status change event
+		var igadgetKeys = this.iGadgets.keys();
+		for (var i = 0; i < igadgetKeys.length; i++) {
+			iGadget = this.iGadgets[igadgetKeys[i]];
+			iGadget._notifyLockEvent(this.fixed);
+		}
+
+		// Save to persistence
+		this._commitChanges();
+	}
+
+	/**
+	 * Toggles the current lock status of the dragboard.
+	 */
+	Dragboard.prototype.toggleLock = function() {
+		this.setFixed(!this.fixed);
+	}
+
 	Dragboard.prototype.parseTab = function(tabInfo) {
 		var curIGadget, position, width, height, igadget, gadget, gadgetid, minimized;
 
@@ -1113,7 +1159,7 @@ function ResizeHandle(resizableElement, handleElement, data, onStart, onResize, 
 
 		// Restore start event listener
 		Event.observe (handleElement, "mousedown", startresize);
-	
+
 		document.onmousedown = null; // reenable context menu
 		document.oncontextmenu = null; // reenable text selection
 
@@ -1141,11 +1187,11 @@ function ResizeHandle(resizableElement, handleElement, data, onStart, onResize, 
 		// Only attend to left button (or right button for left-handed persons) events
 		if (!BrowserUtilsFactory.getInstance().isLeftButton(e.button))
 			return false;
-		
+
 		document.oncontextmenu = function() { return false; }; // disable context menu
 		document.onmousedown = function() { return false; }; // disable text selection
 		Event.stopObserving (handleElement, "mousedown", startresize);
-	
+
 		xStart = parseInt(e.screenX);
 		yStart = parseInt(e.screenY);
 		x = resizableElement.offsetLeft + resizableElement.offsetWidth;

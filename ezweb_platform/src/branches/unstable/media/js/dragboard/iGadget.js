@@ -479,6 +479,22 @@ IGadget.prototype._notifyWindowResizeEvent = function() {
 }
 
 /**
+ * This function is called when the dragboard is locked or unlocked.
+ */
+IGadget.prototype._notifyLockEvent = function(newLockStatus) {
+	if (!this.element)
+		return;
+
+	var oldWidth = this.getWidth();
+	var oldHeight = this.getHeight();
+
+	this.height = null;
+
+	// Notify resize event
+	this.dragboard._notifyResizeEvent(this, oldWidth, oldHeight, this.getWidth(), this.getHeight(), false);
+}
+
+/**
  * Sets the absolute size of the igadget. See setContentSize for resizing the area for the igadget content.
  *
  * @param newWidth the new width of this igadget in cells. This will be the

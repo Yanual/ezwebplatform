@@ -182,46 +182,66 @@ function Tab (tabInfo, workSpace) {
 	this.tabName = "tab_" + this.workSpace.workSpaceState.id + "_" + this.tabInfo.id;
 	this.tabHTMLElement;
 	this.tabNameHTMLElement = null;
-	
+
 	//tab event handlers
 	this.renameTabHandler = function(e){this.fillWithInput();}.bind(this);
 	this.changeTabHandler = function(e){this.workSpace.setTab(this);}.bind(this);
-	 
-    // Dragboard layer creation
-    var dragboardHTML = $("dragboard_template").innerHTML;
-    var wrapper = $("wrapper");
-    
-    new Insertion.Top(wrapper, dragboardHTML);
-    
-    this.dragboardElement = wrapper.firstDescendant();
-         
-    this.dragboardElement.setAttribute('id', this.dragboardLayerName);
-    this.dragboardElement.setStyle({'display': 'block'});    
-                	
+
+	// Dragboard layer creation
+	var dragboardHTML = $("dragboard_template").innerHTML;
+	var wrapper = $("wrapper");
+
+	new Insertion.Top(wrapper, dragboardHTML);
+
+	this.dragboardElement = wrapper.firstDescendant();
+
+	this.dragboardElement.setAttribute('id', this.dragboardLayerName);
+	this.dragboardElement.setStyle({'display': 'block'});
+
 	this.dragboard = new Dragboard(this, this.workSpace, this.dragboardElement);
-	
+
 	// Tab creation
-	var tabSection = $("tab_section");    
-    new Insertion.Top(tabSection, "<div></div>");
-    this.tabHTMLElement = tabSection.firstDescendant();
-    this.tabHTMLElement.setStyle({'display':'none'});
-    this.tabHTMLElement.setAttribute('id', this.tabName);
+	var tabSection = $("tab_section");
+	new Insertion.Top(tabSection, "<div></div>");
+	this.tabHTMLElement = tabSection.firstDescendant();
+	this.tabHTMLElement.setStyle({'display':'none'});
+	this.tabHTMLElement.setAttribute('id', this.tabName);
 
-    this.tabOpsLauncher = this.tabName+"_launcher";
-    var tabOpsLauncherHTML = '<input id="'+this.tabOpsLauncher+'" type="button" title="options" class="tabOps_launcher tabOps_launcher_show"/>';
-    new Insertion.Bottom(this.tabHTMLElement, tabOpsLauncherHTML);
-    var tabOpsLauncherElement = $(this.tabOpsLauncher);
-    Event.observe(tabOpsLauncherElement, "click", function(e){Event.stop(e); LayoutManagerFactory.getInstance().showDropDownMenu('tabOps',this);}.bind(this), true);
-    tabOpsLauncherElement.setStyle({'display':'none'});
+	this.tabOpsLauncher = this.tabName+"_launcher";
+	var tabOpsLauncherHTML = '<input id="'+this.tabOpsLauncher+'" type="button" title="options" class="tabOps_launcher tabOps_launcher_show"/>';
+	new Insertion.Bottom(this.tabHTMLElement, tabOpsLauncherHTML);
+	var tabOpsLauncherElement = $(this.tabOpsLauncher);
+	Event.observe(tabOpsLauncherElement, "click", function(e){Event.stop(e); LayoutManagerFactory.getInstance().showDropDownMenu('tabOps',this);}.bind(this), true);
+	tabOpsLauncherElement.setStyle({'display':'none'});
 
-    //fill the tab label with a span tag
-    this.fillWithLabel();
-    //create tab menu
-    var idMenu = 'menu_'+this.tabName;
+	//fill the tab label with a span tag
+	this.fillWithLabel();
+
+	//create tab menu
+	var idMenu = 'menu_'+this.tabName;
 	var menuHTML = '<div id="'+idMenu+'" class="drop_down_menu"></div>';
-  	new Insertion.After($('menu_layer'), menuHTML);			
+	new Insertion.After($('menu_layer'), menuHTML);
 	this.menu = new DropDownMenu(idMenu);
 	this.menu.addOption("/ezweb/images/rename.gif", "Rename", function(){OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().fillWithInput();
 								LayoutManagerFactory.getInstance().hideCover();});
+
+	this._lockFunc = function() {
+		LayoutManagerFactory.getInstance().hideCover();
+
+		if (this.dragboard.isLocked()) {
+			this.dragboard.setLock(false);
+			this.menu.updateOption(this.lockEntryId, "/ezweb/images/lock.png", "Lock", this._lockFunc);
+		} else {
+			this.dragboard.setLock(true);
+			this.menu.updateOption(this.lockEntryId, "/ezweb/images/unlock.png", "Unlock", this._lockFunc);
+		}
+	}.bind(this);
+
+	if (this.dragboard.isLocked()) {
+		this.lockEntryId = this.menu.addOption("/ezweb/images/unlock.png", "Unlock", this._lockFunc);
+	} else {
+		this.lockEntryId = this.menu.addOption("/ezweb/images/lock.png", "Lock", this._lockFunc);
+	}
+
 	this.menu.addOption("/ezweb/images/remove.png","Remove",function(){OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().deleteTab();});
 }
