@@ -282,6 +282,12 @@ class IGadgetEntry(Resource):
         # Delete all IGadget's variables
         variables = Variable.objects.filter(igadget=igadget)
         for var in variables:
+            if (var.vardef.aspect == "SLOT"):
+                Out.objects.get(abstract_variable = var.abstract_variable).delete()
+            if (var.vardef.aspect == "EVEN"):
+                In.objects.get(variable = var).delete()
+            
+            var.abstract_variable.delete()
             var.delete()
         
         # Delete IGadget and its position
