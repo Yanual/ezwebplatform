@@ -58,7 +58,16 @@ from commons.get_data import get_workspace_data, get_global_workspace_data, get_
 from commons.get_data import get_workspace_variable_data
 
 def deleteTab (tab):
+    #Deleting OUT connectable (wTab)
+    Out.objects.get(abstract_variable = tab.abstract_variable).delete();
+    
+    #Deleting workspace variable
+    WorkSpaceVariable.objects.get(abstract_variable=tab.abstract_variable).delete();
+    
+    #Deleting abstract variable
     tab.abstract_variable.delete()
+    
+    #Deleting tab
     tab.delete()
 
 def createTab (tab_name, user,  workspace):
