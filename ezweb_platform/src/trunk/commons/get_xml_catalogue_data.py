@@ -36,8 +36,11 @@
 #   http://morfeo-project.org/
 #
 
+from django.shortcuts import get_object_or_404
+
 from tag.models import UserTag
 from resource.models import GadgetWiring
+from voting.models import UserVote
 
 
 def get_xml_description(gadgetlist, user):
@@ -46,12 +49,19 @@ def get_xml_description(gadgetlist, user):
     xml_tag=''
     xml_event=''
     xml_slot=''
+    xml_vote=''
 
     for e in gadgetlist:
 
         xml_tag = get_tags_by_resource(e.id,user.id)
         xml_event = get_events_by_resource(e.id)
         xml_slot = get_slots_by_resource(e.id)
+        xml_vote = get_vote_by_resource(e, user)
+
+        if e.added_by_user_id == user.id:
+            added_by_user='Yes'
+        else:
+            added_by_user='No'
 
         xml_resource += "".join(['<resource>\n',
             '<vendor>'+str(e.vendor)+'</vendor>\n',
@@ -63,9 +73,11 @@ def get_xml_description(gadgetlist, user):
             '<uriImage>'+str(e.image_uri)+'</uriImage>\n',
             '<uriWiki>'+str(e.wiki_page_uri)+'</uriWiki>\n',
             '<uriTemplate>'+str(e.template_uri)+'</uriTemplate>\n',
+            '<Added_by_User>'+added_by_user+'</Added_by_User>\n',
             xml_tag+'\n',
             xml_event+'\n',
             xml_slot+'\n',
+            xml_vote+'\n',
             '</resource>'])
 
     response = "".join(['<?xml version="1.0" encoding="UTF-8" ?>\n',
@@ -115,9 +127,20 @@ def get_tags_by_resource(gadget_id, user_id):
     return response
 
 
-def get_vote_by_resource(gadget_id, user_id):
+def get_vote_by_resource(gadget, user):
 
     xml_vote=''
 
-    response='<Vote>'+xml_vote+'</Vote>'
+    try:
+        vote_value = get_object_or_404(UserVote,idResource=gadget.id,idUser=user.id).vote
+    except:
+        vote_value = 0
+    votes_number =  UserVote.objects.filter(idResource=gadget).count()
+    popularity = gadget.popularity
+
+    xml_vote+="".join(['<User_Vote>'+str(vote_value)+'</User_Vote>\n',
+                            '<Popularity>'+str(popularity)+'</Popularity>\n',
+                            '<Votes_Number>'+str(votes_number)+'</Votes_Number>'])
+
+    response='<Vote_Info>'+xml_vote+'</Vote_Info>'
     return response
