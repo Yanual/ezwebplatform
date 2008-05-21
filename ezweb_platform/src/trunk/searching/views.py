@@ -197,7 +197,7 @@ class GadgetsCollectionByCriteria(Resource):
             gadgetlist = GadgetResource.objects.filter(Q(gadgetwiring__friendcode = criteria_value), Q(gadgetwiring__wiring = 'out'))
 
         elif criteria == 'connectEvent':
-            get all the gadgets compatible with the given slot
+            #get all the gadgets compatible with the given slot
             gadgetlist = GadgetResource.objects.filter(Q(gadgetwiring__friendcode = criteria_value), Q(gadgetwiring__wiring = 'in'))
 
         gadgetlist = get_uniquelist(gadgetlist)
