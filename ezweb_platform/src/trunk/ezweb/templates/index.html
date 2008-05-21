@@ -98,10 +98,6 @@ var URIs = new _URIConstants();
 		if (interfaceToShow == currentInterface)
 		    return; // Do nothing
 
-		if (UIUtils.isInfoResourcesOpen) {
-			UIUtils.isInfoResourcesOpen = false;
-			UIUtils.SlideInfoResourceOutOfView('info_resource');
-		}
 		// Hidden current interface
 		$(currentInterface + "_container").setStyle({"zIndex" : 1});
 		$(currentInterface + "_tab").className = "tab";
@@ -123,10 +119,7 @@ var URIs = new _URIConstants();
 
     function show_showcase() {
 		
-		if (UIUtils.isInfoResourcesOpen) {
-			UIUtils.isInfoResourcesOpen = false;
-			UIUtils.SlideInfoResourceOutOfView('info_resource');
-		}
+		UIUtils.closeInfoResource();
 		if (currentInterface == "showcase")
 		    UIUtils.search = 'false';
 		if (UIUtils.search == 'false')

@@ -70,7 +70,7 @@ var CatalogueFactory  = function () {
 		
 	 	this.emptyResourceList = function() {
 			$("resources").innerHTML="";
-			$("info_resource_content").innerHTML="";
+			//$("info_resource_content").innerHTML="";
 			_this.clearSelectedResources();
 			resources = $H();
 		}	
