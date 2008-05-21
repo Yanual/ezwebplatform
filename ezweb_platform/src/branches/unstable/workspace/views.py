@@ -55,6 +55,7 @@ from igadget.models import Variable
 
 from workspace.models import AbstractVariable, WorkSpaceVariable, Tab, WorkSpace
 from commons.get_data import get_workspace_data, get_global_workspace_data, get_tab_data
+from commons.get_data import get_workspace_variable_data
 
 def deleteTab (tab):
     tab.abstract_variable.delete()
@@ -85,16 +86,9 @@ def createTab (tab_name, user,  workspace):
     
     ids['id'] = tab.id
     ids['name'] = tab.name
-    
-    wsVarId = {}
-    wsVarId['id'] = wsVariable.id
-        
-    connectableId = {}
-    connectableId['name'] = connectable.name
-    connectableId['id'] = connectable.id
-    
-    ids['workspaceVariable'] = wsVarId
-    ids['connectable'] = connectableId
+
+    data = serializers.serialize('python', [wsVariable], ensure_ascii=False)
+    ids['workspaceVariables'] = [get_workspace_variable_data(d) for d in data]
     
     return ids
 

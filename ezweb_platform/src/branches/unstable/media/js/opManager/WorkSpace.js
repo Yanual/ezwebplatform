@@ -155,6 +155,10 @@ function WorkSpace (workSpaceState) {
 		
 		this.tabInstances[tabInfo.id] = new Tab(tabInfo, this);
 		this.setTab(this.tabInstances[tabInfo.id]);
+		for(var i=0; i< tabInfo.workspaceVariables.length; i++){
+			this.varManager.parseWorkspaceVariable(tabInfo.workspaceVariables[i]);
+			this.wiring.processVar(tabInfo.workspaceVariables[i]);
+		}
 	}
 	
 	var createTabError = function(transport, e) {

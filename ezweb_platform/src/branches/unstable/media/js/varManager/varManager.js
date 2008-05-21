@@ -64,20 +64,24 @@ function VarManager (_workSpace) {
 
 	VarManager.prototype.parseWorkspaceVariables = function (ws_vars) {
 		for (var i = 0; i<ws_vars.length; i++) {
-			var id = ws_vars[i].id;
-			var name = ws_vars[i].name;
-			var aspect = ws_vars[i].aspect;
-			var value = ws_vars[i].value;
-				
-			switch (aspect) {
-				case Variable.prototype.INOUT:
-					this.workspaceVariables[id] = new RWVariable(id, null, name, aspect, this, value);
-					break;
-				case Variable.prototype.TAB:
-					this.workspaceVariables[id] = new RVariable(id, null, name, aspect, this, value);
-					break;
-			}
+			this.parseWorkspaceVariable(ws_vars[i]);
 		}		
+	}
+	
+	VarManager.prototype.parseWorkspaceVariable = function (ws_var) {
+		var id = ws_var.id;
+		var name = ws_var.name;
+		var aspect = ws_var.aspect;
+		var value = ws_var.value;
+			
+		switch (aspect) {
+			case Variable.prototype.INOUT:
+				this.workspaceVariables[id] = new RWVariable(id, null, name, aspect, this, value);
+				break;
+			case Variable.prototype.TAB:
+				this.workspaceVariables[id] = new RVariable(id, null, name, aspect, this, value);
+				break;
+		}	
 	}
 	
 	VarManager.prototype.parseIGadgetVariables = function (igadget) {

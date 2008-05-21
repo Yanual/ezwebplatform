@@ -64,6 +64,84 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 			this.addInstance(dragboard.getIGadget(igadgets[i].id), igadgets[i].variables);
 		}
 	}
+	
+	Wiring.prototype.processVar = function (varData) {
+		var varManager = this.workspace.getVarManager();
+		var variable = varManager.getWorkspaceVariableById(varData.id);
+		
+		if (varData.aspect == "TAB" && varData.connectable) {
+			var connectableId = varData.connectable.id;
+			var tab_id = varData.tab_id;
+			
+			var tab = this.workspace.getTab(tab_id);
+			
+		    var connectable = new wTab(variable, varData.name, tab, connectableId);
+		    
+		    tab.connectable = connectable;
+		}
+		
+		if (varData.aspect == "CHANNEL" && varData.connectable) {
+			var connectableId = varData.connectable.id;
+		    var channel = new wChannel(variable, varData.name, connectableId, false);
+		    
+		    // Connecting channel input		
+		    var connectable_ins = varData.connectable.ins;
+		    for (var j = 0; j < connectable_ins.length; j++) {
+		    	// Input can be: {wEvent, wChannel}
+		    	var current_input = connectable_ins[j];
+		    	
+		    	var in_connectable = null;
+		    	if (current_input.connectable_type == "in") {
+		    		var var_id = current_input.ig_var_id;
+		    		in_connectable = varManager.getVariableById(var_id).getConnectable();
+		    	}
+		    	else {
+		    		if (current_input.connectable_type == "inout") {
+		    			var var_id = current_input.ws_var_id;
+		    			in_connectable = varManager.getWorkspaceVariableById(var_id).getConnectable();
+		    		}
+		    		else {
+		    			assert("Error: Input connectables can only be In or InOut!!!")
+		    		}
+		    	}
+
+		    	in_connectable.connect(channel);
+		    }
+		    
+		    // Connecting channel output  
+		    var connectable_outs = varData.connectable.outs;
+		    for (var j = 0; j < connectable_outs.length; j++) {
+		    	// Outputs can be: {wSlot, wTab}
+		    	var current_output = connectable_outs[j];
+		    	
+		    	var out_connectable = null;
+		    	if (current_output.connectable_type == "out") {
+		    		if (current_output.ig_var_id) {
+		    			var var_id = current_output.ig_var_id;
+		    			out_connectable = varManager.getVariableById(var_id).getConnectable();
+		    		}
+		    		else {
+		    			var var_id = current_output.ws_var_id;
+		    			out_connectable = varManager.getWorkspaceVariableById(var_id).getConnectable();
+		    		}
+		    	}
+		    	else {
+		    		if (current_output.connectable_type == "inout") {
+		    			var var_id = current_output.ws_var_id;
+		    			out_connectable = varManager.getWorkspaceVariableById(var_id).getConnectable();
+		    		}
+		    		else {
+		    			assert("Error: Output connectables can only be In or InOut!!!")
+		    		}
+		    	}
+
+		    	channel.connect(out_connectable);
+		    }
+
+			// Save it on the channel list
+		    this.channels[varData.name] = channel;
+		}	
+	}
 
 	Wiring.prototype.loadWiring = function (workSpaceData) {
 		var workSpace = workSpaceData['workspace'];
@@ -75,86 +153,8 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 		}
 
 		// Load WorkSpace variables
-		var varManager = this.workspace.getVarManager();
-
 		for (var i = 0; i < ws_vars_info.length; i++) {
-			var current_var_info = ws_vars_info[i];
-			
-			var variable = varManager.getWorkspaceVariableById(current_var_info.id);
-			
-			if (current_var_info.aspect == "TAB" && current_var_info.connectable) {
-				var connectableId = current_var_info.connectable.id;
-				var tab_id = current_var_info.tab_id;
-				
-				var tab = this.workspace.getTab(tab_id);
-				
-			    var connectable = new wTab(variable, current_var_info.name, tab, connectableId);
-			    
-			    tab.connectable = connectable;
-			}
-			
-			if (current_var_info.aspect == "CHANNEL" && current_var_info.connectable) {
-				var connectableId = current_var_info.connectable.id;
-			    var channel = new wChannel(variable, current_var_info.name, connectableId, false);
-			    
-			    // Connecting channel input		
-			    var connectable_ins = current_var_info.connectable.ins;
-			    for (var j = 0; j < connectable_ins.length; j++) {
-			    	// Input can be: {wEvent, wChannel}
-			    	var current_input = connectable_ins[j];
-			    	
-			    	var in_connectable = null;
-			    	if (current_input.connectable_type == "in") {
-			    		var var_id = current_input.ig_var_id;
-			    		in_connectable = varManager.getVariableById(var_id).getConnectable();
-			    	}
-			    	else {
-			    		if (current_input.connectable_type == "inout") {
-			    			var var_id = current_input.ws_var_id;
-			    			in_connectable = varManager.getWorkspaceVariableById(var_id).getConnectable();
-			    		}
-			    		else {
-			    			assert("Error: Input connectables can only be In or InOut!!!")
-			    		}
-			    	}
-
-			    	in_connectable.connect(channel);
-			    }
-			    
-			    // Connecting channel output  
-			    var connectable_outs = current_var_info.connectable.outs;
-			    for (var j = 0; j < connectable_outs.length; j++) {
-			    	// Outputs can be: {wSlot, wTab}
-			    	var current_output = connectable_outs[j];
-			    	
-			    	var out_connectable = null;
-			    	if (current_output.connectable_type == "out") {
-			    		if (current_output.ig_var_id) {
-			    			var var_id = current_output.ig_var_id;
-			    			out_connectable = varManager.getVariableById(var_id).getConnectable();
-			    		}
-			    		else {
-			    			var var_id = current_output.ws_var_id;
-			    			out_connectable = varManager.getWorkspaceVariableById(var_id).getConnectable();
-			    		}
-			    	}
-			    	else {
-			    		if (current_output.connectable_type == "inout") {
-			    			var var_id = current_output.ws_var_id;
-			    			out_connectable = varManager.getWorkspaceVariableById(var_id).getConnectable();
-			    		}
-			    		else {
-			    			assert("Error: Output connectables can only be In or InOut!!!")
-			    		}
-			    	}
-
-			    	channel.connect(out_connectable);
-			    }
-
-				// Save it on the channel list
-			    this.channels[current_var_info.name] = channel;
-			}
-			
+			this.processVar(ws_vars_info[i]);
 		}
 
 		this.loaded = true;
