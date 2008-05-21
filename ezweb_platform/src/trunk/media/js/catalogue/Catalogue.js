@@ -678,7 +678,7 @@ var CatalogueFactory  = function () {
 		parent.appendChild(select);
 		
 		if (items==0) {
-			document.setAttribute("disabled", "disabled");
+			select.setAttribute("disabled", "disabled");
 		}
 		else {
 			var creation = UIUtils.createHTMLElement("option", $H({
