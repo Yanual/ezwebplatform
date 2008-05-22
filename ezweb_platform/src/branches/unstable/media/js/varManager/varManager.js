@@ -113,25 +113,7 @@ function VarManager (_workSpace) {
 		this.iGadgets[igadget['id']] = objVars;
 		
 	}
-	
-//	VarManager.prototype.writeSlot = function (iGadgetId, slotName, value) {
-//		var variable = this.findVariable(iGadgetId, slotName);
-//		
-//		variable.set(value);
-//	} 
-//
-//	VarManager.prototype.updateUserPref = function (iGadgetId, slotName, value) {
-//		var variable = this.findVariable(iGadgetId, slotName);
-//		
-//		variable.set(value);
-//	} 
-//	
-//	VarManager.prototype.updateContextVar = function (iGadgetId, ctxVarName, value) {
-//		var variable = this.findVariable(iGadgetId, ctxVarName);
-//		
-//		variable.set(value);
-//	}  
-	
+		
 	VarManager.prototype.registerVariable = function (iGadgetId, variableName, handler) {
 		var variable = this.findVariable(iGadgetId, variableName);
 
@@ -261,7 +243,8 @@ function VarManager (_workSpace) {
 		var varCollection;
 		
 		// Is it a igadgetVar or a workspaceVar?
-		if (variable.aspect == "INOUT") {
+		if (variable.aspect == Variable.prototype.INOUT
+			|| variable.aspect == Variable.prototype.TAB) {
 			varCollection = this.workspaceModifiedVars;
 		} else {
 			varCollection = this.igadgetModifiedVars;

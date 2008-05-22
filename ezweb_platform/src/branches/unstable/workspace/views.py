@@ -381,14 +381,14 @@ class WorkSpaceVariableCollection(Resource):
             for wsVar in workSpaceVariables:
                 wsVarDAO = WorkSpaceVariable.objects.get(pk=wsVar['id'])
                    
-                wsVarDAO.value=wsVar['value'];
-                wsVarDAO.save();   
+                wsVarDAO.abstract_variable.value=wsVar['value'];
+                wsVarDAO.abstract_variable.save();   
                
             for igVar in igadgetVariables:
                 igVarDAO = Variable.objects.get(pk=igVar['id'])
    
-                igVarDAO.value=igVar['value'];
-                igVarDAO.save(); 
+                igVarDAO.abstract_variable.value=igVar['value'];
+                igVarDAO.abstract_variable.save(); 
             
             return HttpResponse(str('OK'))
         except Exception, e:
