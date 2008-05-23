@@ -128,13 +128,18 @@ RVariable.prototype.setHandler = function (handler_) {
 } 
 
 RVariable.prototype.set = function (newValue) { 
+	var varInfo = [{id: this.id, value: newValue, aspect: this.aspect}];
 	switch (this.aspect){
-		case Variable.prototype.USER_PREF:
-			var varInfo = [{id: this.id, value: newValue, aspect: this.aspect}];
-			this.varManager.markVariablesAsModified(varInfo);
-		case Variable.prototype.GADGET_CONTEXT:
 		case Variable.prototype.EXTERNAL_CONTEXT:
+			break;
+		case Variable.prototype.USER_PREF:
+		case Variable.prototype.GADGET_CONTEXT:
+			this.varManager.markVariablesAsModified(varInfo);
+			
+			break;
 		case Variable.prototype.SLOT:
+			this.varManager.markVariablesAsModified(varInfo);
+			
 			this.value = newValue;
 			try {
 				if (this.handler) this.handler(newValue);
@@ -145,6 +150,8 @@ RVariable.prototype.set = function (newValue) {
 			}
 			break;
 		case Variable.prototype.TAB:
+			this.varManager.markVariablesAsModified(varInfo);
+			
 			OpManagerFactory.getInstance().activeWorkSpace.goTab(this.connectable.tab);
 			break;
 		default:
