@@ -92,7 +92,9 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
       return; // Nothing to do
 
     this.visible = false;
-
+    if(this.currentChannel){
+		this.uncheckChannel(this.currentChannel);
+    }
     this.saveWiring();
     Event.stopObserving(this.newChannel, 'click', this._eventCreateChannel);
     LayoutManagerFactory.getInstance().hideView(this.wiringContainer);
@@ -180,10 +182,9 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
       connectableElement.appendChild(document.createTextNode(connectable.getName()));
 
       var chkItem = document.createElement("div");
-      chkItem.addClassName("unchkItem");
       connectableElement.appendChild(chkItem);
-      
       var anchor = new ConnectionAnchor(connectable, chkItem);
+      anchor.setConnectionStatus(false, null, null);
 
       var context = {anchor: anchor, wiringGUI:this};
       Event.observe(chkItem, "click",
@@ -240,10 +241,12 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
       igadgetDiv.addClassName("igadget");
       igadgetDiv.appendChild(document.createTextNode(IGadgetName));
 
-      var context = {element: igadgetDiv, wiringGUI:this};
+//TODO:review toggle: commented because causes problems with highlighting friendcodes and drawing arrows
+/*      var context = {element: igadgetDiv, wiringGUI:this};
       Event.observe(igadgetDiv,
                     "click",
                     function () {this.wiringGUI._toggle(this.element);}.bind(context));
+*/
 
       igadgetDiv.appendChild(ulEvents);
       this.event_list.appendChild(igadgetDiv);
@@ -255,10 +258,12 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
       igadgetDiv.addClassName("igadget");
       igadgetDiv.appendChild(document.createTextNode(IGadgetName));
 
-      var context = {element: igadgetDiv, wiringGUI:this};
+//TODO:review toggle: commented because causes problems with highlighting friendcodes and drawing arrows
+/*      var context = {element: igadgetDiv, wiringGUI:this};
       Event.observe(igadgetDiv,
                     "click",
                     function () {this.wiringGUI._toggle(this.element);}.bind(context));
+*/
       igadgetDiv.appendChild(ulSlots);
       this.slot_list.appendChild(igadgetDiv);
     }
@@ -307,10 +312,13 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
       igadgetDiv.addClassName("tab");
       igadgetDiv.appendChild(document.createTextNode(gettext ('Tabs')));
 
-      var context = {element: igadgetDiv, wiringGUI:this};
+//TODO:review toggle: commented because causes problems with highlighting friendcodes and drawing arrows
+/*      var context = {element: igadgetDiv, wiringGUI:this};
       Event.observe(igadgetDiv,
                     "click",
                     function () {this.wiringGUI._toggle(this.element);}.bind(context));
+
+*/  
       igadgetDiv.appendChild(ulSlots);
       this.slot_list.appendChild(igadgetDiv);
     }
@@ -371,18 +379,18 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
     if (connectable instanceof wIn) {
       if (anchor.isConnected()) {
         this.currentChannel.disconnectInput(connectable);
-        anchor.setConnectionStatus(false);
+        anchor.setConnectionStatus(false, null, null);
       } else {
         this.currentChannel.connectInput(connectable);
-        anchor.setConnectionStatus(true);
+        anchor.setConnectionStatus(true, this.currentChannel.inPosition, null);
       }
     } else if (connectable instanceof wOut) {
       if (anchor.isConnected()) {
         this.currentChannel.disconnectOutput(connectable);
-        anchor.setConnectionStatus(false);
+        anchor.setConnectionStatus(false, null, null);
       } else {
         this.currentChannel.connectOutput(connectable);
-        anchor.setConnectionStatus(true);
+        anchor.setConnectionStatus(true, null, this.currentChannel.outPosition);
       }
     }
   }
@@ -421,10 +429,15 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
     if (channel.exists())
       this.channelsForRemove.push(channel);
 
-    if (this.currentChannel == channel)
+    if (this.currentChannel == channel){
       this._changeChannel(channel);
-
-    this.channels_list.removeChild(channel.getInterface());
+	  this.channels_list.removeChild(channel.getInterface());
+    }else{
+      this.channels_list.removeChild(channel.getInterface());
+	  //repaint status because the channel position may have changed
+	  this.uncheckChannel(this.currentChannel);
+      this.highlightChannel(this.currentChannel);
+	}
     
     delete this.channels[channelName];
   }
@@ -434,17 +447,16 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
     this.currentChannel = newChannel;
 
     if (oldChannel) {
-      this._uncheckChannel(oldChannel);
+      this.uncheckChannel(oldChannel);
     }
-
+    this.clearMessages();
     if (oldChannel != newChannel) {
-      this._highlightChannel(newChannel);
+      this.highlightChannel(newChannel);
       this._setEnableStatus(true);
     } else {
       this.currentChannel = null;
       this._setEnableStatus(false);
     }
-    this.clearMessages();
   }
   
   WiringInterface.prototype._toggle = function (element) {
@@ -505,32 +517,32 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
     }
   }
 
-  WiringInterface.prototype._uncheckChannel = function (channel) {
+  WiringInterface.prototype.uncheckChannel = function (channel) {
     channel.uncheck();
 
     var connectables = channel.getInputs();
     var keys = connectables.keys();
     for (var i = 0; i < keys.length; ++i)
-      this.inputs[keys[i]].setConnectionStatus(false);
+      this.inputs[keys[i]].setConnectionStatus(false, null, null);
 
     var connectables = channel.getOutputs();
     var keys = connectables.keys();
     for (var i = 0; i < keys.length; ++i)
-      this.outputs[keys[i]].setConnectionStatus(false);
+      this.outputs[keys[i]].setConnectionStatus(false, null, null);
   }
 
-  WiringInterface.prototype._highlightChannel = function (channel) {
+  WiringInterface.prototype.highlightChannel = function (channel) {
     channel.check();
 
     var connectables = channel.getInputs();
     var keys = connectables.keys();
     for (var i = 0; i < keys.length; ++i)
-      this.inputs[keys[i]].setConnectionStatus(true);
+      this.inputs[keys[i]].setConnectionStatus(true, channel.inPosition, null);
 
     var connectables = channel.getOutputs();
     var keys = connectables.keys();
     for (var i = 0; i < keys.length; ++i)
-      this.outputs[keys[i]].setConnectionStatus(true);
+      this.outputs[keys[i]].setConnectionStatus(true, null, channel.outPosition);
   }
 
   WiringInterface.prototype._setEnableStatus = function(enabled) {
@@ -616,6 +628,7 @@ function ConnectionAnchor(connectable, anchorDiv) {
   this.connectable = connectable;
   this.connected = false;
   this.htmlElement = anchorDiv;
+
 }
 
 ConnectionAnchor.prototype.getConnectable = function() {
@@ -630,13 +643,58 @@ ConnectionAnchor.prototype.getInterface = function() {
   return this.interface;
 }
 
-ConnectionAnchor.prototype.setConnectionStatus = function(newStatus) {
+ConnectionAnchor.prototype.drawPolyLine = function(x1,y1,x2,y2,left)
+{
+	this.canvas= document.createElement('div');
+	this.canvas.addClassName('canvas');
+	document.body.appendChild(this.canvas);
+	this.jg_doc = new jsGraphics(this.canvas); // draw directly into document
+	var xList= new Array(x1, (x1+x2)/2, (x1+x2)/2, x2 );
+	var yList= new Array(y1, y1, y2, y2);
+	this.jg_doc.setColor("#2D6F9C");
+	this.jg_doc.setStroke(2);  
+	this.jg_doc.drawPolyline(xList, yList);
+	var arrow = document.createElement('div');
+	arrow.addClassName('arrow');
+	arrow.style.display= 'none';
+	this.canvas.appendChild(arrow);
+	arrow.style.top = Math.round(y2 - arrow.getHeight()/2)+1 +"px";
+	arrow.style.left = ((x2 - arrow.getWidth())+2) +"px";
+	arrow.style.display = 'block';
+
+	this.jg_doc.paint();
+}
+
+ConnectionAnchor.prototype.clearPolyLine = function()
+{
+	if(this.jg_doc){
+		this.jg_doc.clear();
+		document.body.removeChild(this.canvas);
+		delete this.jg_doc;
+	}
+}
+
+ConnectionAnchor.prototype.setConnectionStatus = function(newStatus, inChannelPos, outChannelPos) {
   this.connected = newStatus;
   
-  if (newStatus)
+  if (newStatus){
 	  this.htmlElement.className="chkItem";
-  else
+	  //draw arrow
+	  if(this.jg_doc){
+	  	this.jg_doc.clear();
+	  }
+	  var coordenates = Position.cumulativeOffset(this.htmlElement);
+	  coordenates[1] = coordenates[1] + (this.htmlElement.getHeight()+2)/2;
+	  if (this.connectable instanceof wIn){
+		  coordenates[0] = coordenates[0] + this.htmlElement.getWidth()+2;
+		  this.drawPolyLine(coordenates[0],coordenates[1], inChannelPos[0], inChannelPos[1], true);
+	  }else{
+	  	  this.drawPolyLine(outChannelPos[0], outChannelPos[1],coordenates[0],coordenates[1], false);
+	  }
+  }else{
 	  this.htmlElement.className="unchkItem";
+	  this.clearPolyLine();
+  }
   
 }
 
@@ -668,6 +726,8 @@ function ChannelInterface(channel) {
   this.inputsForRemoving = new Hash();
   this.outputsForAdding = new Hash();
   this.outputsForRemoving = new Hash();
+  this.inPosition = new Array();		//coordinates of the point where the channel input arrow ends
+  this.outPosition = new Array();		//coordinates of the point where the channel output arrow starts
 
   // Draw the interface
 }
@@ -748,6 +808,11 @@ ChannelInterface.prototype.exists = function() {
 ChannelInterface.prototype.check = function() {
   this.interface.addClassName("selected");
   this.interface.getElementsByClassName('channelNameInput')[0].focus();
+  //calculate the position where de in arrows will end and the out ones will start
+  this.inPosition = Position.cumulativeOffset(this.interface);
+  this.inPosition[1] = this.inPosition[1]+this.interface.getHeight()/2;
+  this.outPosition[1] = this.inPosition[1];
+  this.outPosition[0] = this.inPosition[0]+this.interface.getWidth()+2;
 }
 
 ChannelInterface.prototype.uncheck = function() {
