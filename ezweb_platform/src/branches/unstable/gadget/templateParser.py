@@ -112,13 +112,13 @@ class TemplateHandler(handler.ContentHandler):
         _type = ''
         _description = ''
 
-        if (attrs.has_key('name')==True):
+        if (attrs.has_key('name')):
             _name = attrs.get('name')
 
-        if (attrs.has_key('type')==True):
+        if (attrs.has_key('type')):
             _type = attrs.get('type')
 
-        if (attrs.has_key('description')==True):
+        if (attrs.has_key('description')):
             _description = attrs.get('description')
 
         if (_name != '' and _type != ''):
@@ -138,19 +138,19 @@ class TemplateHandler(handler.ContentHandler):
         _label = ''
         _default_value = ''
 
-        if (attrs.has_key('name')==True):
+        if (attrs.has_key('name')):
             _name = attrs.get('name')
 
-        if (attrs.has_key('type')==True):
+        if (attrs.has_key('type')):
             _type = attrs.get('type')
 
-        if (attrs.has_key('description')==True):
+        if (attrs.has_key('description')):
             _description = attrs.get('description')
 
-        if (attrs.has_key('label')==True):
+        if (attrs.has_key('label')):
             _label = attrs.get('label')
 
-        if (attrs.has_key('default')==True):
+        if (attrs.has_key('default')):
             _default_value = attrs.get('default')
 
         if (_name != '' and _type != '' and _description != '' and _label != ''):
@@ -177,19 +177,19 @@ class TemplateHandler(handler.ContentHandler):
         _friendCode = ''
 
 
-        if (attrs.has_key('name')==True):
+        if (attrs.has_key('name')):
             _name = attrs.get('name')
 
-        if (attrs.has_key('type')==True):
+        if (attrs.has_key('type')):
             _type = attrs.get('type')
 
-        if (attrs.has_key('description')==True):
+        if (attrs.has_key('description')):
             _description = attrs.get('description')
 
-        if (attrs.has_key('label')==True):
+        if (attrs.has_key('label')):
             _label = attrs.get('label')
 
-        if (attrs.has_key('friendcode')==True):
+        if (attrs.has_key('friendcode')):
             _friendCode = attrs.get('friendcode')
 
         if (_name != '' and _type != '' and _friendCode != ''):
@@ -214,19 +214,19 @@ class TemplateHandler(handler.ContentHandler):
         _friendCode = ''
 
 
-        if (attrs.has_key('name')==True):
+        if (attrs.has_key('name')):
             _name = attrs.get('name')
 
-        if (attrs.has_key('type')==True):
+        if (attrs.has_key('type')):
             _type = attrs.get('type')
 
-        if (attrs.has_key('description')==True):
+        if (attrs.has_key('description')):
             _description = attrs.get('description')
 
-        if (attrs.has_key('label')==True):
+        if (attrs.has_key('label')):
             _label = attrs.get('label')
 
-        if (attrs.has_key('friendcode')==True):
+        if (attrs.has_key('friendcode')):
             _friendCode = attrs.get('friendcode')
 
         if (_name != '' and _type != '' and _friendCode != ''):
@@ -309,7 +309,7 @@ class TemplateHandler(handler.ContentHandler):
     def processXHTML (self, attrs):
         _href=""
 
-        if (attrs.has_key('href')==True):
+        if (attrs.has_key('href')):
             _href = attrs.get('href')
         
         if (_href != ""):
@@ -329,10 +329,10 @@ class TemplateHandler(handler.ContentHandler):
         _value=""
         _name=""
 
-        if (attrs.has_key('name')==True):
+        if (attrs.has_key('name')):
             _name = attrs.get('name')
 
-        if (attrs.has_key('value')==True):
+        if (attrs.has_key('value')):
             _value = attrs.get('value')
 
         if (_value!= "") and (_name!="") and (self._lastPreference.type ==  self.typeText2typeCode("list")):
@@ -346,10 +346,10 @@ class TemplateHandler(handler.ContentHandler):
         _width=""
         _height=""
 
-        if (attrs.has_key('width')==True):
+        if (attrs.has_key('width')):
             _width = attrs.get('width')
 
-        if (attrs.has_key('height')==True):
+        if (attrs.has_key('height')):
             _height = attrs.get('height')
 
         if (_width != "" and _height != ""):

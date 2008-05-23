@@ -209,11 +209,21 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 			return;
 		}
 		
-		for (var i = 0; i < entry.events; i++)
-			entry.events[i].fullDisconnect();
+		var keys = entry.events.keys();
+		for (var i = 0; i < keys.length; i++) {
+			var key = keys[i];
+			entry.events[key].fullDisconnect();
+			
+			delete entry.events[key];
+		}
 		
-		for (var i = 0; i < entry.slots; i++)
+		var keys = entry.slots.keys();
+		for (var i = 0; i < keys.length; i++) {
+			var key = keys[i];
 			entry.slots[i].fullDisconnect();
+			
+			delete entry.slots[key];
+		}
 
 		this.iGadgets.remove(iGadgetId)
 	}

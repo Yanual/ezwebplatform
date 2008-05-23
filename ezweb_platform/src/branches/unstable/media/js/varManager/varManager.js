@@ -239,32 +239,39 @@ function VarManager (_workSpace) {
 	}
 
 
-	VarManager.prototype.markVariablesAsModified = function (variable) {
+	VarManager.prototype.markVariablesAsModified = function (variables) {
 		var varCollection;
 		
-		// Is it a igadgetVar or a workspaceVar?
-		if (variable.aspect == Variable.prototype.INOUT
-			|| variable.aspect == Variable.prototype.TAB) {
-			varCollection = this.workspaceModifiedVars;
-		} else {
-			varCollection = this.igadgetModifiedVars;
-		}
-	 
-		for (i=0; i<varCollection.length; i++) {
-		    var modVar = varCollection[i];
-	
-		    if (modVar.id == variable.id) {
-				modVar.value = variable.value;
-				return;
-		    }	
-		}
+		for (var j=0; j < variables.length; j++) {
+			var variable = variables[j];
+			
+			// Is it a igadgetVar or a workspaceVar?
+			if (variable.aspect == Variable.prototype.INOUT
+				|| variable.aspect == Variable.prototype.TAB) {
+				varCollection = this.workspaceModifiedVars;
+			} else {
+				varCollection = this.igadgetModifiedVars;
+			}
+		 
+			for (var i=0; i<varCollection.length; i++) {
+			    var modVar = varCollection[i];
 		
-		var varInfo = {};
-		
-		varInfo['id'] = variable.id;
-		varInfo['value'] = variable.value;
+			    if (modVar.id == variable.id) {
+					modVar.value = variable.value;
+					return;
+			    }	
+			}
 
-		varCollection.push(varInfo);	    
+			//It's doesn't exist in the list
+			//It's time to create it!
+			var varInfo = {}
+			
+			varInfo['id'] = variable.id
+			varInfo['value'] = variable.value
+			
+			varCollection.push(varInfo);	    
+		}
+	
 	}
 
 	VarManager.prototype.incNestingLevel = function() {

@@ -70,9 +70,26 @@ wConnectable.prototype.getFriendCode = function() {
 function wOut(name, type, friendCode, id) {
    wConnectable.call(this, name, type, friendCode, id);
    this.connectableType = "out";
+   this.inouts = new Hash();
 }
 
 wOut.prototype = new wConnectable();
+
+wOut.prototype.addInOut = function(inout) {
+	this.inouts[inout.getQualifiedName()] = inout;
+}
+
+wOut.prototype.disconnect = function(inout) {
+	inout.fullDisconnect();
+    delete this.outputs[out.getQualifiedName()];
+}
+
+wOut.prototype.fullDisconnect = function() {
+  // Disconnecting inouts
+  var keys = this.inouts.keys();
+  for (var i = 0; i < keys.length; ++i)
+    this._removeOutput(this.inouts[keys[i]]);
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 // This class represents every object which may initialize one transmission through the wiring module //
@@ -86,24 +103,25 @@ function wIn(name, type, friendCode, id) {
 wIn.prototype = new wConnectable();
 
 wIn.prototype.connect = function(out) {
-  //if (!(out instanceof wInOut))
-  //  throw new Exception();
-
   this.outputs[out.getQualifiedName()] = out;
   if (out instanceof wInOut)
     out._addInput(this);
 }
 
 wIn.prototype.disconnect = function(out) {
-  //if (!(out instanceof wInOut)) {
-  //  throw new Exception();
-
   if (this.outputs[out.getQualifiedName()] == out) {
     if (out instanceof wInOut)
       out._removeInput(this);
 
     delete this.outputs[out.getQualifiedName()];
   }
+}
+
+wIn.prototype.fullDisconnect = function() {
+  // Outputs
+  var keys = this.outputs.keys();
+  for (var i = 0; i < keys.length; ++i)
+    this.disconnect(this.outputs[keys[i]]);
 }
 
 wIn.prototype.propagate = function(value) {
@@ -124,6 +142,12 @@ function wInOut(name, type, friendCode, id) {
 
 wInOut.prototype = new wIn();
 
+wInOut.prototype.connect = function(out) {	
+	wIn.prototype.connect.call(this, out);
+	
+	out.addInOut(this);
+}
+
 wInOut.prototype._addInput = function(wIn) {
   this.inputs[wIn.getQualifiedName()] = wIn;
 }
@@ -131,6 +155,11 @@ wInOut.prototype._addInput = function(wIn) {
 wInOut.prototype._removeInput = function(wIn) {
   if (this.inputs[wIn.getQualifiedName()] == wIn)
     delete this.inputs[wIn.getQualifiedName()];
+}
+
+wInOut.prototype._removeOutput = function(wOut) {
+  if (this.outputs[wOut.getQualifiedName()] == wOut)
+    delete this.outputs[wOut.getQualifiedName()];
 }
 
 wInOut.prototype.fullDisconnect = function() {

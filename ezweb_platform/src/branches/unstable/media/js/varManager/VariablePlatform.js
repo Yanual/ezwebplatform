@@ -130,7 +130,7 @@ RVariable.prototype.setHandler = function (handler_) {
 RVariable.prototype.set = function (newValue) { 
 	switch (this.aspect){
 		case Variable.prototype.USER_PREF:
-			var varInfo = [{id: this.id, value: newValue}];
+			var varInfo = [{id: this.id, value: newValue, aspect: this.aspect}];
 			this.varManager.markVariablesAsModified(varInfo);
 		case Variable.prototype.GADGET_CONTEXT:
 		case Variable.prototype.EXTERNAL_CONTEXT:
@@ -179,7 +179,7 @@ RWVariable.prototype.set = function (value_) {
     	// This variable was modified
     	this.value = value_;
 	
-        this.varManager.markVariablesAsModified(this);
+        this.varManager.markVariablesAsModified([this]);
     }
 
     // Propagate changes to wiring module
