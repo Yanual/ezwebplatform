@@ -767,7 +767,7 @@ ChannelInterface.prototype.commitChanges = function(wiring) {
     this.channel = wiring.createChannel(this.name, this.provisional_id);
   } else {
 	  // Update channel name
-	  this.channel.name = this.name;
+	  this.channel._name = this.name;
   }
 
   // Inputs for removing

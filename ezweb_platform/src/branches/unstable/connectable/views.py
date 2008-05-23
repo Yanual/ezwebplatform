@@ -135,6 +135,9 @@ class ConnectableEntry(Resource):
                 else:
                     #WorkSpaceVariable objects is still in database, it's only necessary to link it!
                     workspace_variable = WorkSpaceVariable.objects.get(id=new_channel_data['var_id'])
+                    
+                    workspace_variable.abstract_variable.name = new_channel_data['name']
+                    workspace_variable.abstract_variable.save()
                 
                     channel = InOut(id=new_channel_data['id'], name=new_channel_data['name'], workspace_variable=workspace_variable, friend_code="")
                     channel.save()               
