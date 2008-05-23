@@ -237,6 +237,10 @@ function WorkSpace (workSpaceState) {
     WorkSpace.prototype.getWiring = function () {
     	return this.wiring;
 	}
+	
+	WorkSpace.prototype.getWiringInterface = function () {
+    	return this.wiringInterface;
+	}
     
     WorkSpace.prototype.getVarManager = function () {
     	return this.varManager;

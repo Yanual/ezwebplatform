@@ -23,23 +23,24 @@
 }
 
 #wiring .eventColumn, #wiring .slotColumn {
-  width: 25%;
+  width: 20%;
   padding: 1ex 20px;
   vertical-align: top;
 }
 
 #wiring .connectionColumn {
-  width: 13%;
+  width: 20%;
   vertical-align: top;
 }
 
 #wiring .inoutColumn {
-  width: 24%;
+  width: 20%;
   vertical-align: top;
 }
 
 #wiring .title {
   font-weight: bold;
+  font-size: 120%;
   text-align: center;
   margin-bottom: 1ex;
 }
@@ -76,8 +77,8 @@
 }
 
 #wiring .igadget {
-  border: 1px solid black;
-  background: lightyellow;
+  border: 2px solid #2D6F9C;
+  background: transparent url(/ezweb/images/fond.gif) repeat;
   margin: 2ex 0px;
   position: relative;
   font-weight: bold;
@@ -147,10 +148,11 @@
 
 
 #wiring .tab {
-  border: 1px solid black;
-  background: lightblue;
+  border: 2px solid black;
+  background: #97A0A8;
   margin: 2ex 0px;
   position: relative;
+  color: white;
   font-weight: bold;
   padding: 3px;
 }
@@ -225,10 +227,17 @@
   border: 0px none;
 }
 
-#wiring #channels_list .channel, #wiring .newChannel {
+#wiring .newChannel {
+  margin: 2ex 1ex;
+  cursor: pointer; cursor: hand;
+  color: #2D6F9C;
+  text-decoration: underline;
+}
+
+#wiring #channels_list .channel {
   margin: 2ex 1ex; 
-  border: 1px solid #525248;
-  background: #a8a894;
+  border: 1px solid #2D6F9C;
+  background: #97A0A8;
   padding: 0px;
   cursor: pointer; cursor: hand;
 }
@@ -241,12 +250,12 @@
 #wiring #channels_list .channel .channelContent, #wiring .newChannel .channelContent {
   border-top: 1px solid #525248;
   display: none;
-  background: lightyellow;
+  background: transparent url(/ezweb/images/fond.gif) repeat;
   padding: 0.5ex 1ex;
 }
 
 #wiring #channels_list .channel.selected {
-  background: #000000;
+  background: #2D6F9C;
 }
 
 #wiring #channels_list .channel.selected .channelContent, #wiring .newChannel.selected .channelContent {
@@ -278,7 +287,23 @@
 #wiring .channelNameInput {
    border:0px;
    margin:0px 1ex;
-   background: #a8a894;
+   background: #97A0A8;
+}
+
+#wiring .selected .channelNameInput {
+	background: transparent url(/ezweb/images/fond.gif) repeat;
+}
+
+.canvas div div{
+	z-index: 4;
+}
+
+.canvas .arrow{
+	position: absolute;
+	z-index: 4;
+	width: 19px;
+	height: 20px;
+	background: transparent url(/ezweb/images/wiringArrow.png) no-repeat;
 }
 
 

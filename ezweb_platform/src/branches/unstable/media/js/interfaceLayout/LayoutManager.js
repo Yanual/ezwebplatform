@@ -95,6 +95,16 @@ var LayoutManagerFactory = function () {
 			var newWidth = BrowserUtilsFactory.getInstance().getWidth();
 			this.coverLayerElement.setStyle({"height" : newHeight + "px", "width": newWidth +"px"});
 			
+			//recalculate wiring position
+			var opManager = OpManagerFactory.getInstance();
+			if(opManager.loadCompleted){
+				var wiringInterface = opManager.activeWorkSpace.getWiringInterface()
+				if(wiringInterface.currentChannel){
+					wiringInterface.uncheckChannel(wiringInterface.currentChannel);
+					wiringInterface.highlightChannel(wiringInterface.currentChannel);				
+				}
+			}
+			
 			//recalculate menu positions
 			if(this.currentMenu){
 				this.currentMenu.calculatePosition();
