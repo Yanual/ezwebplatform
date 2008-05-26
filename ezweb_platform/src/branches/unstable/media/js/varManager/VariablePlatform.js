@@ -130,13 +130,11 @@ RVariable.prototype.setHandler = function (handler_) {
 RVariable.prototype.set = function (newValue) { 
 	var varInfo = [{id: this.id, value: newValue, aspect: this.aspect}];
 	switch (this.aspect){
-		case Variable.prototype.EXTERNAL_CONTEXT:
-			break;
 		case Variable.prototype.USER_PREF:
-		case Variable.prototype.GADGET_CONTEXT:
 			this.varManager.markVariablesAsModified(varInfo);
-			
 			break;
+		case Variable.prototype.EXTERNAL_CONTEXT:
+		case Variable.prototype.GADGET_CONTEXT:
 		case Variable.prototype.SLOT:
 			this.varManager.markVariablesAsModified(varInfo);
 			

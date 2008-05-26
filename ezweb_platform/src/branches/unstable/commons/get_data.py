@@ -36,11 +36,11 @@
 #   http://morfeo-project.org/
 #
 
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, get_list_or_404
 
 from django.core import serializers
 
-from gadget.models import Template, Gadget, XHTML, GadgetContext, ExternalContext, UserPrefOption
+from gadget.models import Gadget, XHTML, ContextOption, UserPrefOption
 from igadget.models import Variable, VariableDef, Position, IGadget
 from connectable.models import In, Out, InOut
 from context.models import ConceptName
@@ -95,9 +95,7 @@ def get_wiring_data(igadgets):
 def get_gadget_data(data):
     data_ret = {}
     data_fields = data['fields']
-
-    data_template = get_object_or_404(Template, id=data_fields['template'])
-    data_variabledef = VariableDef.objects.filter(template=data_template.id)
+    data_variabledef = VariableDef.objects.filter(gadget=data['pk'])
     data_vars = []
     for var in data_variabledef:
         data_var = {}
@@ -116,10 +114,8 @@ def get_gadget_data(data):
                 value_options.append([option.value, option.name]);
             data_var['value_options'] = value_options;
         
-        if var.aspect == 'GCTX':
-            data_var['concept'] = var.gadgetcontext_set.all().values('concept')[0]['concept']
-        if var.aspect == 'ECTX':
-            data_var['concept'] = var.externalcontext_set.all().values('concept')[0]['concept']
+        if var.aspect == 'GCTX' or var.aspect == 'ECTX': 
+            data_var['concept'] = var.contextoption_set.all().values('concept')[0]['concept']
         
         data_vars.append(data_var)
     
@@ -132,16 +128,13 @@ def get_gadget_data(data):
     data_ret['wikiURI'] = data_fields['wikiURI']
     data_ret['imageURI'] = data_fields['imageURI']
     data_ret['version'] = data_fields['version']
-    data_ret['user'] = data_fields['user']
     data_ret['mail'] = data_fields['mail']
     data_ret['shared'] = data_fields['shared']
     data_ret['last_update'] = data_fields['last_update']
-    data_ret['template'] = {}
-    data_ret['template']['size'] = {}
-    data_ret['template']['size']['width'] = data_template.width
-    data_ret['template']['size']['height'] = data_template.height
-    data_ret['template']['variables'] = data_vars
-    data_ret['image'] = data_template.image
+    data_ret['size'] = {}
+    data_ret['size']['width'] = data_fields['width']
+    data_ret['size']['height'] = data_fields['height']
+    data_ret['variables'] = data_vars
     data_ret['xhtml'] = data_code
 
     return data_ret
@@ -398,12 +391,9 @@ def get_variable_data(data):
     data_ret['friend_code'] = var_def.friend_code
     
     #Context management    
-    if var_def.aspect == 'GCTX':
-        context = GadgetContext.objects.get(varDef=data_fields['vardef'])
-        data_ret['concept'] = context.concept
-    if var_def.aspect == 'ECTX':
-        context = ExternalContext.objects.get(varDef=data_fields['vardef'])
-        data_ret['concept'] = context.concept
+    if var_def.aspect == 'GCTX' or var_def.aspect == 'ECTX': 
+        context = ContextOption.objects.get(varDef=data_fields['vardef'])
+        data_ret['concept'] = context.concept    
     
     #Connectable management
     #Only SLOTs and EVENTs

@@ -41,15 +41,15 @@
 //                 TEMPLATE                 //
 //////////////////////////////////////////////
 
-function GadgetTemplate(template_) {
+function GadgetTemplate(variables_, size_) {
 
 	// *******************
 	//  PRIVATE VARIABLES
 	// *******************
 
-   var variableList = template_.variables;
-   var width = template_.size.width;
-   var height = template_.size.height;
+   var variableList = variables_;
+   var width = size_.width;
+   var height = size_.height;
 
 	// ******************
 	//  PUBLIC FUNCTIONS

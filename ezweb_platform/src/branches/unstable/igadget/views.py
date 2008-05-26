@@ -93,14 +93,19 @@ def SaveIGadget(igadget, user, tab):
     position = Position(posX=left, posY=top, height=height, width=width, minimized=False)
     position.save()
 
+    # Creates the new IGadget
     try:
-        # Creates the new IGadget
-        gadget = Gadget.objects.get(uri=gadget_uri, user=user)
+        # Gadget uri does not contain the prefix "/user" yet
+        if gadget_uri.startswith("/user") or gadget_uri.startswith("user"):
+            gadget_uri_parts = gadget_uri.split("/")
+            gadget_uri = "/" + "/".join(gadget_uri_parts[gadget_uri_parts.index("gadgets"):])
+        
+        gadget = Gadget.objects.get(uri=gadget_uri, users=user)
 
         new_igadget = IGadget(code=igadget_code, gadget=gadget, tab=tab, position=position)
         new_igadget.save()
                 
-        variableDefs = VariableDef.objects.filter(template=gadget.template)
+        variableDefs = VariableDef.objects.filter(gadget=gadget)
         for varDef in variableDefs:
             # Sets the default value of variable
             if varDef.default_value:

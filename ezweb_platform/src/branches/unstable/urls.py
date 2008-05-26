@@ -57,6 +57,7 @@ urlpatterns = patterns('',
     
     # Gadgets
     (r'^user/(?P<user_name>[_\w]+)/gadget(s)?', include('gadget.urls')),
+    (r'^gadget(s)?', include('gadget.urls')),
 
     # WorkSpaces
     (r'^workspace(s)?', include('workspace.urls')),

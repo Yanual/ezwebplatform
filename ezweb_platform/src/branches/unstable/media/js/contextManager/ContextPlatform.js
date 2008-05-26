@@ -62,7 +62,7 @@ ContextVar.prototype.getValue = function () {
 ContextVar.prototype.setValue = function (newValue_) {
 	this._value = newValue_;
 	if (this._varManager !=null)
-		this._varManager.updateContextVar(this._igadgetId, this._varName, newValue_);
+		this._varManager.getVariableByName(this._igadgetId, this._varName).set(newValue_);
 }
 
 ContextVar.prototype.setVarManager = function (varManager_) {

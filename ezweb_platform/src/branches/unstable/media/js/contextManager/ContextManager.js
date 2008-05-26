@@ -157,7 +157,13 @@ function ContextManager (workspace_, workSpaceInfo_, contextInfo_) {
 		if (! this._concepts[concept_])
 			return;
 			
+		// Start propagation of the new values of the context variables
+		this._workspace.getVarManager().incNestingLevel();
+		
 		this._concepts[concept_].setValue(value_);
+		
+		// Commit
+		this._workspace.getVarManager().decNestingLevel();
 	}
 	
 	ContextManager.prototype.notifyModifiedGadgetConcept = function (igadgetid, concept, value) {
@@ -168,7 +174,13 @@ function ContextManager (workspace_, workSpaceInfo_, contextInfo_) {
 			return;
 			
 		try{
-			this._concepts[concept].getIGadgetVar(igadgetid).setValue(value);	
+			// Start propagation of the new values of the igadget's context variables
+			this._workspace.getVarManager().incNestingLevel();
+			
+			this._concepts[concept].getIGadgetVar(igadgetid).setValue(value);
+			
+			// Commit
+			this._workspace.getVarManager().decNestingLevel();			
 		}catch(e){
 			// Do nothing, igadget has not variables related to this concept
 		}

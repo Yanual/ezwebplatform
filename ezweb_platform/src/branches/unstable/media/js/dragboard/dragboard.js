@@ -47,7 +47,8 @@ function Dragboard(tab, workSpace, dragboardElement) {
 	this.matrix = null;          // Matrix of gadget
 	this.shadowMatrix = null;    // Temporal matrix of gadgets used for D&D
 	this.shadowPositions = null;
-	this.dragboardElement, this.dragboardStyle;
+	this.dragboardElement;
+	this.dragboardStyle;
 	this.dragboardCursor = null;
 	this.gadgetToMove = null;
 	this.iGadgets = new Hash();
@@ -572,7 +573,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 
 			// Parse gadget id
 			gadgetid = curIGadget.gadget.split("/");
-			gadgetid = gadgetid[4] + "_" + gadgetid[5] + "_" + gadgetid[6];
+			gadgetid = gadgetid[2] + "_" + gadgetid[3] + "_" + gadgetid[4];
 			// Get gadget model
 			gadget = ShowcaseFactory.getInstance().getGadget(gadgetid);
 

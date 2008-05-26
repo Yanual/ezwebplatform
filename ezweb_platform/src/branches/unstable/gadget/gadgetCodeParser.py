@@ -61,9 +61,13 @@ class GadgetCodeParser:
         except Exception:
             raise TemplateParseException(_("XHTML code is not accessible"))
 
-        self.xHTML = XHTML (uri=gadgetURI + "/xhtml", code=xhtml, url=codeURI)
-        self.xHTML.save()
-
+        uri = gadgetURI + "/xhtml"
+        try:
+            self.xHTML = XHTML.objects.get (uri=uri)
+        except XHTML.DoesNotExist:
+            self.xHTML = XHTML (uri=uri, code=xhtml, url=codeURI)
+            self.xHTML.save()
+        
         return
 
     def getXHTML (self):

@@ -140,7 +140,7 @@ function GadgetState(gadget_) {
 	vendor = gadget_.vendor;
 	name = gadget_.name;
 	version = gadget_.version;
-	template = new GadgetTemplate(gadget_.template);
+	template = new GadgetTemplate(gadget_.variables, gadget_.size);
 	xhtml = new XHtml(gadget_.xhtml);
 	image = gadget_.image;
 	
