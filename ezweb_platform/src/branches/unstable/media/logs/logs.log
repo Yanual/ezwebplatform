@@ -388,3 +388,333 @@ ERROR: POST /workspaces admin
 [30/04/2008 17:19:35] workspace cannot be created: global name 'workspace_nam' is not defined
 ERROR: POST /workspaces admin
 [30/04/2008 17:28:28] workspace cannot be created: global name 'workspace_nam' is not defined
+ERROR: POST /workspace/1/tab/1/igadgets admin
+[05/05/2008 12:19:19] No se pudo actualizar el IGadget: global name 'AbstractVar' is not defined
+ERROR: POST /workspace/1/tab/1/igadgets admin
+[05/05/2008 12:21:05] No se pudo actualizar el IGadget: global name 'AbstractVar' is not defined
+ERROR: POST /workspaces admin
+[05/05/2008 15:42:42] workspace cannot be created: Out matching query does not exist.
+ERROR: POST /workspaces admin
+[05/05/2008 15:49:07] workspace cannot be created: Out matching query does not exist.
+ERROR: POST /workspaces admin
+[05/05/2008 15:51:21] workspace cannot be created: Out matching query does not exist.
+ERROR: POST /workspaces admin
+[05/05/2008 15:52:09] workspace cannot be created: Out matching query does not exist.
+ERROR: POST /workspaces admin
+[05/05/2008 16:03:42] workspace cannot be created: Out matching query does not exist.
+ERROR: POST /workspaces admin
+[05/05/2008 16:17:03] workspace cannot be created: Out matching query does not exist.
+ERROR: POST /workspaces admin
+[05/05/2008 16:18:14] workspace cannot be created: Out matching query does not exist.
+ERROR: POST /workspaces admin
+[05/05/2008 16:25:12] workspace cannot be created: Out matching query does not exist.
+ERROR: POST /workspaces admin
+[05/05/2008 16:36:42] workspace cannot be created: Out matching query does not exist.
+ERROR: POST /workspaces admin
+[05/05/2008 17:21:03] workspace cannot be created: Out matching query does not exist.
+ERROR: PUT /workspace/2/variables admin
+[06/05/2008 10:01:28] tab cannot be created: name 'null' is not defined
+ERROR: PUT /workspace/2/variables admin
+[06/05/2008 10:02:09] tab cannot be created: name 'null' is not defined
+ERROR: PUT /workspace/2/variables admin
+[06/05/2008 10:09:19] tab cannot be created: name 'null' is not defined
+ERROR: PUT /workspace/2/variables admin
+[06/05/2008 10:09:21] tab cannot be created: name 'null' is not defined
+ERROR: PUT /workspace/2/variables admin
+[06/05/2008 10:09:23] tab cannot be created: name 'null' is not defined
+ERROR: PUT /workspace/2/variables admin
+[06/05/2008 10:13:48] tab cannot be created: name 'null' is not defined
+ERROR: PUT /workspace/2/variables admin
+[06/05/2008 11:14:16] tab cannot be created: name 'null' is not defined
+ERROR: POST /workspace/1/tab/2/igadgets admin
+[07/05/2008 11:46:59] No se pudo actualizar el IGadget: 'Variable' object is not iterable
+ERROR: POST /workspace/1/tab/2/igadgets admin
+[07/05/2008 12:17:25] No se pudo actualizar el IGadget: {<cursor object at 0x88809d0>: 'ERROR:  inserci\xc3\xb3n o actualizaci\xc3\xb3n en la tabla \xc2\xabconnectable_out\xc2\xbb viola la llave for\xc3\xa1nea \xc2\xabconnectable_out_variable_id_fkey\xc2\xbb\nDETAIL:  La llave (variable_id)=(52) no est\xc3\xa1 presente en la tabla \xc2\xabworkspace_abstractvariable\xc2\xbb.\n'}
+ERROR: PUT /workspace/1/variables admin
+[07/05/2008 13:21:17] cannot update variables: name 'null' is not defined
+ERROR: PUT /workspace/1/variables admin
+[07/05/2008 13:21:17] cannot update variables: name 'null' is not defined
+ERROR: PUT /workspace/1/variables admin
+[07/05/2008 13:21:35] cannot update variables: name 'null' is not defined
+ERROR: PUT /workspace/1/variables admin
+[07/05/2008 13:21:37] cannot update variables: name 'null' is not defined
+ERROR: PUT /workspace/1/variables admin
+[07/05/2008 13:21:37] cannot update variables: name 'null' is not defined
+ERROR: PUT /workspace/1/variables admin
+[07/05/2008 13:48:33] cannot update variables: name 'null' is not defined
+ERROR: PUT /workspace/1/variables admin
+[07/05/2008 13:48:54] cannot update variables: name 'null' is not defined
+ERROR: POST /workspace/1/tab/1/igadgets admin
+[07/05/2008 14:08:59] No se pudo actualizar el IGadget: get() returned more than one Out -- it returned 2! Lookup parameters were {'variable__id': 1}
+ERROR: POST /workspace/1/tab/1/igadgets admin
+[07/05/2008 15:59:19] No se pudo actualizar el IGadget: get() returned more than one Out -- it returned 2! Lookup parameters were {'variable__id': 1}
+ERROR: POST /workspace/1/tab/1/igadgets admin
+[07/05/2008 16:05:16] No se pudo actualizar el IGadget: get() returned more than one Out -- it returned 2! Lookup parameters were {'variable__id': 1}
+ERROR: POST /workspace/1/tab/1/igadgets admin
+[07/05/2008 16:16:37] No se pudo actualizar el IGadget: get() returned more than one Out -- it returned 2! Lookup parameters were {'variable__id': 1}
+ERROR: POST /workspace/1/tab/1/igadgets admin
+[07/05/2008 16:22:27] No se pudo actualizar el IGadget: get() returned more than one Out -- it returned 2! Lookup parameters were {'variable__id': 1}
+ERROR: POST /workspace/1/tab/1/igadgets admin
+[07/05/2008 16:35:12] No se pudo actualizar el IGadget: get() returned more than one Out -- it returned 2! Lookup parameters were {'variable__id': 1}
+ERROR: POST /workspace/1/tab/1/igadgets admin
+[07/05/2008 16:39:06] No se pudo actualizar el IGadget: get() returned more than one Out -- it returned 2! Lookup parameters were {'variable__id': 1}
+ERROR: POST /workspace/1/tab/1/igadgets admin
+[07/05/2008 16:46:28] No se pudo actualizar el IGadget: get() returned more than one Out -- it returned 2! Lookup parameters were {'variable__id': 1}
+ERROR: POST /user/admin/catalogue/resource admin
+[07/05/2008 16:49:30] <unknown>:1:49: syntax error
+ERROR: POST /workspace/1/tab/1/igadgets admin
+[07/05/2008 17:01:00] No se pudo actualizar el IGadget: get() returned more than one Out -- it returned 2! Lookup parameters were {'variable__id': 1}
+ERROR: POST /workspace/1/tab/1/igadgets admin
+[07/05/2008 17:05:23] No se pudo actualizar el IGadget: get() returned more than one Out -- it returned 2! Lookup parameters were {'variable__id': 1}
+ERROR: POST /workspace/1/tab/1/igadgets admin
+[07/05/2008 17:12:38] No se pudo actualizar el IGadget: get() returned more than one Out -- it returned 2! Lookup parameters were {'variable__id': 1}
+ERROR: POST /workspace/1/tab/1/igadgets admin
+[07/05/2008 17:52:24] No se pudo actualizar el IGadget: 'abstract_variable' is an invalid keyword argument for this function
+ERROR: POST /workspace/1/tab/1/igadgets admin
+[07/05/2008 17:56:06] No se pudo actualizar el IGadget: In matching query does not exist.
+ERROR: POST /workspace/1/tab/1/igadgets admin
+[07/05/2008 17:57:38] No se pudo actualizar el IGadget: In matching query does not exist.
+ERROR: POST /workspace/1/tab/1/igadgets admin
+[07/05/2008 18:00:11] No se pudo actualizar el IGadget: In matching query does not exist.
+ERROR: POST /workspace/1/tab/1/igadgets admin
+[07/05/2008 18:00:34] No se pudo actualizar el IGadget: Out matching query does not exist.
+ERROR: POST /workspace/1/tab/1/igadgets admin
+[07/05/2008 18:03:25] No se pudo actualizar el IGadget: Out matching query does not exist.
+ERROR: POST /workspace/1/tab/1/igadgets admin
+[07/05/2008 18:08:18] No se pudo actualizar el IGadget: Transaction managed block ended with pending COMMIT/ROLLBACK
+ERROR: POST /workspace/1/tab/1/igadgets admin
+[07/05/2008 18:13:11] No se pudo actualizar el IGadget: {<cursor object at 0x87f0f20>: 'ERROR:  inserci\xc3\xb3n o actualizaci\xc3\xb3n en la tabla \xc2\xabconnectable_in\xc2\xbb viola la llave for\xc3\xa1nea \xc2\xabconnectable_in_variable_id_fkey\xc2\xbb\nDETAIL:  La llave (variable_id)=(2) no est\xc3\xa1 presente en la tabla \xc2\xabigadget_variable\xc2\xbb.\n'}
+ERROR: POST /workspace/1/tab/1/igadgets admin
+[07/05/2008 18:13:43] No se pudo actualizar el IGadget: Out matching query does not exist.
+ERROR: POST /workspace/1/tab/1/igadgets admin
+[07/05/2008 18:14:46] No se pudo actualizar el IGadget: {<cursor object at 0x888b700>: 'ERROR:  inserci\xc3\xb3n o actualizaci\xc3\xb3n en la tabla \xc2\xabconnectable_in\xc2\xbb viola la llave for\xc3\xa1nea \xc2\xabconnectable_in_variable_id_fkey\xc2\xbb\nDETAIL:  La llave (variable_id)=(4) no est\xc3\xa1 presente en la tabla \xc2\xabigadget_variable\xc2\xbb.\n'}
+ERROR: POST /workspace/1/tab/1/igadgets admin
+[07/05/2008 18:22:51] No se pudo actualizar el IGadget: 'variable' is an invalid keyword argument for this function
+ERROR: POST /workspace/1/tab/1/igadgets admin
+[07/05/2008 18:32:57] No se pudo actualizar el IGadget: get() returned more than one Out -- it returned 2! Lookup parameters were {'abstract_variable__id': 1}
+ERROR: POST /workspace/1/tab/1/igadgets admin
+[07/05/2008 18:38:12] No se pudo actualizar el IGadget: get() returned more than one Out -- it returned 2! Lookup parameters were {'abstract_variable__id': 1}
+ERROR: POST /user/admin/catalogue/resource admin
+ERROR: POST /user/admin/catalogue/resource admin
+[07/05/2008 18:45:19] <unknown>:1:54: syntax error
+ERROR: POST /workspace/1/tab/2/igadgets admin
+[07/05/2008 18:46:12] No se pudo actualizar el IGadget: Out matching query does not exist.
+ERROR: POST /workspace/1/tab/1/igadgets admin
+[07/05/2008 18:51:27] No se pudo actualizar el IGadget: Out matching query does not exist.
+ERROR: POST /workspaces/2/wiring admin
+[09/05/2008 15:43:23] Fallo al guardar los connectables: 'iGadgetList'
+ERROR: POST /workspaces/2/wiring admin
+[12/05/2008 10:25:43] Fallo al guardar los connectables: 'iGadgetList'
+ERROR: POST /workspaces/2/wiring admin
+[12/05/2008 10:41:31] Fallo al guardar los connectables: 'iGadgetList'
+ERROR: POST /workspaces/2/wiring admin
+[12/05/2008 10:42:13] Fallo al guardar los connectables: 'iGadgetList'
+ERROR: POST /workspaces/2/wiring admin
+[12/05/2008 10:42:32] Fallo al guardar los connectables: 'iGadgetList'
+ERROR: POST /workspaces/2/wiring admin
+[12/05/2008 10:43:23] Fallo al guardar los connectables: 'iGadgetList'
+ERROR: POST /workspaces/2/wiring admin
+[12/05/2008 11:23:43] Fallo al guardar los connectables: 'iGadgetList'
+ERROR: POST /workspaces/2/wiring admin
+[12/05/2008 11:36:53] Fallo al guardar los connectables: 'iGadgetList'
+ERROR: POST /workspaces/1/wiring admin
+[12/05/2008 18:07:16] Fallo al guardar los connectables: 'iGadgetList'
+ERROR: POST /workspaces/1/wiring admin
+[12/05/2008 18:10:35] Fallo al guardar los connectables: 'iGadgetList'
+ERROR: PUT /workspace/1/variables admin
+[12/05/2008 18:10:39] cannot update variables: name 'null' is not defined
+ERROR: PUT /workspace/1/variables admin
+[12/05/2008 18:10:39] cannot update variables: name 'null' is not defined
+ERROR: PUT /workspace/1/variables admin
+[12/05/2008 18:10:40] cannot update variables: name 'null' is not defined
+ERROR: PUT /workspace/1/variables admin
+[12/05/2008 18:10:40] cannot update variables: name 'null' is not defined
+ERROR: PUT /workspace/1/variables admin
+[12/05/2008 18:10:41] cannot update variables: name 'null' is not defined
+ERROR: PUT /workspace/1/variables admin
+[12/05/2008 18:10:41] cannot update variables: name 'null' is not defined
+ERROR: POST /workspaces/1/wiring admin
+[13/05/2008 15:55:19] Fallo al guardar los connectables: 'iGadgetList'
+ERROR: POST /workspaces/1/wiring admin
+[13/05/2008 16:00:03] Fallo al guardar los connectables: 'iGadgetList'
+ERROR: POST /workspaces/1/wiring admin
+[13/05/2008 16:10:42] Fallo al guardar los connectables: 'iGadgetList'
+ERROR: POST /workspaces/1/wiring admin
+[13/05/2008 16:11:22] Fallo al guardar los connectables: 'iGadgetList'
+ERROR: POST /workspaces/1/wiring admin
+[13/05/2008 17:55:42] Fallo al guardar los connectables: 'createdChannels'
+ERROR: POST /workspaces/1/wiring admin
+[13/05/2008 17:58:47] Fallo al guardar los connectables: global name 'Abstract_Variable' is not defined
+ERROR: POST /workspaces/1/wiring admin
+[13/05/2008 18:00:40] Fallo al guardar los connectables: global name 'Abstract_Variable' is not defined
+ERROR: POST /workspaces/1/wiring admin
+[14/05/2008 09:47:36] Fallo al guardar los connectables: 'dict' object has no attribute 'name'
+ERROR: POST /workspaces/1/wiring admin
+[14/05/2008 09:49:35] Fallo al guardar los connectables: 'dict' object has no attribute 'name'
+ERROR: POST /workspaces/1/wiring admin
+[14/05/2008 09:51:33] Fallo al guardar los connectables: 'dict' object has no attribute 'name'
+ERROR: POST /workspaces/1/wiring admin
+[14/05/2008 13:28:29] Fallo al guardar los connectables: string indices must be integers
+ERROR: POST /workspaces/1/wiring admin
+[14/05/2008 13:34:37] Fallo al guardar los connectables: string indices must be integers
+ERROR: POST /workspaces/1/wiring admin
+[14/05/2008 13:46:01] Fallo al guardar los connectables: type object 'InOut' has no attribute 'objets'
+ERROR: POST /workspaces/1/wiring admin
+[14/05/2008 14:06:20] Fallo al guardar los connectables: 'provisional_id'
+ERROR: POST /workspaces/1/wiring admin
+[14/05/2008 14:07:30] Fallo al guardar los connectables: 'provisional_id'
+ERROR: POST /user/admin/gadgets admin
+[19/05/2008 09:53:06] El gadget ya existe
+ERROR: POST /user/admin/gadgets admin
+[19/05/2008 09:57:15] El gadget ya existe
+ERROR: POST /user/admin/gadgets admin
+[19/05/2008 09:57:47] El gadget ya existe
+ERROR: POST /user/admin/gadgets admin
+[19/05/2008 10:00:46] El gadget ya existe
+ERROR: PUT /workspace/1/variables admin
+[19/05/2008 11:04:38] cannot update variables: name 'null' is not defined
+ERROR: PUT /workspace/1/variables admin
+[19/05/2008 11:04:38] cannot update variables: name 'null' is not defined
+ERROR: POST /workspaces/1/wiring admin
+[19/05/2008 12:31:20] Fallo al guardar los connectables: 'channelsForRemoving'
+ERROR: PUT /workspace/1/variables admin
+[19/05/2008 16:03:03] cannot update variables: name 'null' is not defined
+ERROR: PUT /workspace/1/variables admin
+[19/05/2008 16:07:02] cannot update variables: name 'null' is not defined
+ERROR: PUT /workspace/1/variables admin
+[19/05/2008 16:07:02] cannot update variables: name 'null' is not defined
+ERROR: POST /user/admin/catalogue/resource admin
+[20/05/2008 07:51:09] <unknown>:1:54: syntax error
+ERROR: POST /workspaces/1/wiring admin
+[20/05/2008 11:38:20] Fallo al guardar los connectables: cannot fit 'long' into an index-sized integer
+ERROR: POST /workspaces/1/wiring admin
+[20/05/2008 11:39:01] Fallo al guardar los connectables: cannot fit 'long' into an index-sized integer
+ERROR: POST /workspaces/1/wiring admin
+[20/05/2008 11:39:31] Fallo al guardar los connectables: cannot fit 'long' into an index-sized integer
+ERROR: POST /workspaces/1/wiring admin
+[20/05/2008 11:42:45] Fallo al guardar los connectables: cannot fit 'long' into an index-sized integer
+ERROR: POST /workspaces/1/wiring admin
+[20/05/2008 11:47:23] Fallo al guardar los connectables: list assignment index out of range
+ERROR: POST /workspaces/1/wiring admin
+[20/05/2008 11:49:05] Fallo al guardar los connectables: list indices must be integers
+ERROR: POST /workspaces/1/wiring admin
+[20/05/2008 16:09:07] Fallo al guardar los connectables: list indices must be integers
+ERROR: PUT /workspace/1/variables admin
+[20/05/2008 16:50:32] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[20/05/2008 16:50:32] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[20/05/2008 16:50:33] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[20/05/2008 16:50:34] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[20/05/2008 16:50:34] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[20/05/2008 16:52:05] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[20/05/2008 16:52:07] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[20/05/2008 16:52:09] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[21/05/2008 15:44:31] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[21/05/2008 15:44:33] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[21/05/2008 15:44:35] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[21/05/2008 15:45:13] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[21/05/2008 15:45:15] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[21/05/2008 15:45:17] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[21/05/2008 15:45:18] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[21/05/2008 15:46:47] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[21/05/2008 15:47:08] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[21/05/2008 15:47:10] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[21/05/2008 15:47:16] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[21/05/2008 15:47:18] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[21/05/2008 15:47:19] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[21/05/2008 15:54:47] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[21/05/2008 15:54:52] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[21/05/2008 15:54:53] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[21/05/2008 15:54:53] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[21/05/2008 15:54:54] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[22/05/2008 13:25:03] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[22/05/2008 13:30:47] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[22/05/2008 13:31:39] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[22/05/2008 13:32:16] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[22/05/2008 13:32:35] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[22/05/2008 13:34:38] cannot update variables: Variable matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[22/05/2008 13:43:33] cannot update variables: Variable matching query does not exist.
+ERROR: POST /workspaces/1/wiring admin
+[22/05/2008 15:53:53] Fallo al guardar los connectables: In matching query does not exist.
+ERROR: PUT /workspace/1/variables admin
+[22/05/2008 16:22:56] cannot update variables: 'id'
+ERROR: PUT /workspace/1/variables admin
+[23/05/2008 11:05:00] cannot update variables: 'id'
+ERROR: PUT /workspace/1/variables admin
+[23/05/2008 11:05:50] cannot update variables: 'id'
+ERROR: PUT /workspace/1/variables admin
+[23/05/2008 11:06:46] cannot update variables: 'id'
+ERROR: PUT /workspace/1/variables admin
+[23/05/2008 11:08:58] cannot update variables: 'id'
+ERROR: PUT /workspace/1/variables admin
+[23/05/2008 11:09:14] cannot update variables: 'id'
+ERROR: PUT /workspace/1/variables admin
+[23/05/2008 11:12:02] cannot update variables: 'id'
+ERROR: PUT /workspace/1/variables admin
+[23/05/2008 11:28:43] cannot update variables: 'id'
+ERROR: PUT /workspace/1/variables admin
+[23/05/2008 11:29:26] cannot update variables: 'id'
+ERROR: PUT /workspace/1/variables admin
+[23/05/2008 11:34:39] cannot update variables: 'id'
+ERROR: PUT /workspace/1/variables admin
+[23/05/2008 11:40:52] cannot update variables: 'id'
+ERROR: PUT /workspace/1/variables admin
+[23/05/2008 11:44:43] cannot update variables: 'id'
+ERROR: PUT /workspace/1/variables admin
+[23/05/2008 11:46:15] cannot update variables: 'id'
+ERROR: PUT /workspace/1/variables admin
+[23/05/2008 11:47:18] cannot update variables: 'id'
+ERROR: PUT /workspace/1/variables admin
+[23/05/2008 11:48:39] cannot update variables: 'id'
+ERROR: PUT /workspace/1/variables admin
+[23/05/2008 11:49:00] cannot update variables: 'id'
+ERROR: PUT /workspace/1/variables admin
+[23/05/2008 11:50:34] cannot update variables: 'id'
+ERROR: PUT /workspace/1/variables admin
+[23/05/2008 11:56:22] cannot update variables: 'id'
+ERROR: PUT /workspace/1/variables admin
+[23/05/2008 11:56:30] cannot update variables: 'id'
+ERROR: PUT /workspace/1/variables admin
+[23/05/2008 11:57:41] cannot update variables: 'id'
+ERROR: POST /user/admin/catalogue/voting/Morfeo/Bandeja_de_Averias/1.0 admin
+ERROR: POST /user/admin/catalogue/voting/Morfeo/Bandeja_de_Averias/1.0 admin
+ERROR: POST /user/admin/catalogue/voting/Morfeo/Bandeja_de_Averias/1.0 admin
+ERROR: POST /user/admin/catalogue/voting/Morfeo/Bandeja_de_Averias/1.0 admin
+ERROR: POST /user/admin/catalogue/voting/Morfeo/Bandeja_de_Averias/1.0 admin
+ERROR: POST /user/admin/catalogue/voting/Morfeo/Bandeja_de_Averias/1.0 admin
+ERROR: POST /user/admin/catalogue/voting/Morfeo/Bandeja_de_Averias/1.0 admin
+ERROR: POST /user/admin/catalogue/voting/Morfeo/Bandeja_de_Averias/1.0 admin
+ERROR: POST /user/admin/catalogue/voting/Morfeo/Bandeja_de_Averias/1.0 admin
+ERROR: POST /user/admin/catalogue/voting/Morfeo/Bandeja_de_Averias/1.0 admin
+ERROR: POST /user/admin/catalogue/voting/Morfeo/Bandeja_de_Averias/1.0 admin
