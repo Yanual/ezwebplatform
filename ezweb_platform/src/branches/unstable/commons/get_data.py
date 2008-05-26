@@ -208,9 +208,16 @@ def get_workspace_data(data):
     return data_ret
 
 def get_workspace_variables_data(workSpaceDAO):
-    ws_variables = WorkSpaceVariable.objects.filter(workspace=workSpaceDAO).order_by('id')  
-    data = serializers.serialize('python', ws_variables, ensure_ascii=False)
-    ws_variables_data = [get_workspace_variable_data(d) for d in data]
+    tab_variables = WorkSpaceVariable.objects.filter(workspace=workSpaceDAO, aspect='TAB')  
+    tabs_data = serializers.serialize('python', tab_variables, ensure_ascii=False)
+    ws_variables_data = [get_workspace_variable_data(d) for d in tabs_data]
+    
+    inout_variables = WorkSpaceVariable.objects.filter(workspace=workSpaceDAO, aspect='CHANNEL')  
+    inouts_data = serializers.serialize('python', inout_variables, ensure_ascii=False)
+    ws_inout_variables_data = [get_workspace_variable_data(d) for d in inouts_data]
+    
+    for inout in ws_inout_variables_data:
+        ws_variables_data.append(inout)
     
     return ws_variables_data
 
