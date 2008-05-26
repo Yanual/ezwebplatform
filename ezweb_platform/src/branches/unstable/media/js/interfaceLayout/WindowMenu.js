@@ -96,9 +96,9 @@ function RenameWindowMenu (element) {
 	this.operationHandler = function(){this.executeOperation()}.bind(this);
 
 	if(this.element == 'tab'){
-		this.title = 'Rename tab';
+		this.title = gettext('Rename tab');
 	}else if(this.element == 'workSpace'){
-		this.title = 'Rename workSpace';
+		this.title = gettext('Rename workSpace');
 	}
 
 	RenameWindowMenu.prototype.setFocus = function(){
@@ -170,9 +170,9 @@ function CreateWindowMenu (element) {
 	this.operationHandler = function(){this.executeOperation()}.bind(this);
 
 	if(this.element == 'tab'){
-		this.title = 'Create tab';
+		this.title = gettext('Create tab');
 	}else if(this.element == 'workSpace'){
-		this.title = 'Create workSpace';
+		this.title = gettext('Create workSpace');
 	}
 	
 	CreateWindowMenu.prototype.setFocus = function(){
@@ -224,7 +224,7 @@ function AlertWindowMenu (element) {
 	
 	this.operationHandler = null;
 
-	this.title = 'Warning';
+	this.title = gettext('Warning');
 	
 	AlertWindowMenu.prototype.setFocus = function(){
 		this.button.focus();

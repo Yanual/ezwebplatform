@@ -315,7 +315,7 @@ var LayoutManagerFactory = function () {
 					this.menus['alertMenu'] = new AlertWindowMenu(null);
 				}
 				this.currentMenu = this.menus['alertMenu'];
-				this.currentMenu.setMsg('Do you really want to remove this tab?');
+				this.currentMenu.setMsg(gettext('Do you really want to remove this tab?'));
 				this.currentMenu.setHandler(function(){OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().deleteTab();});
 				this.currentMenu.show();
 				break;
@@ -324,7 +324,7 @@ var LayoutManagerFactory = function () {
 					this.menus['alertMenu'] = new AlertWindowMenu(null);
 				}
 				this.currentMenu = this.menus['alertMenu'];
-				this.currentMenu.setMsg('Do you really want to remove this workspace?');
+				this.currentMenu.setMsg(gettext('Do you really want to remove this workspace?'));
 				this.currentMenu.setHandler(function(){OpManagerFactory.getInstance().activeWorkSpace.deleteWorkSpace();});
 				this.currentMenu.show();
 				break;					

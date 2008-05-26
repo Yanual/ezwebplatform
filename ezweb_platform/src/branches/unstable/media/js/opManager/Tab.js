@@ -208,7 +208,7 @@ function Tab (tabInfo, workSpace) {
 	this.tabHTMLElement.setAttribute('id', this.tabName);
 
 	this.tabOpsLauncher = this.tabName+"_launcher";
-	var tabOpsLauncherHTML = '<input id="'+this.tabOpsLauncher+'" type="button" title="options" class="tabOps_launcher tabOps_launcher_show"/>';
+	var tabOpsLauncherHTML = '<input id="'+this.tabOpsLauncher+'" type="button" title="'+gettext("Options")+'" class="tabOps_launcher tabOps_launcher_show"/>';
 	new Insertion.Bottom(this.tabHTMLElement, tabOpsLauncherHTML);
 	var tabOpsLauncherElement = $(this.tabOpsLauncher);
 	Event.observe(tabOpsLauncherElement, "click", function(e){Event.stop(e); LayoutManagerFactory.getInstance().showDropDownMenu('tabOps',this);}.bind(this), true);
@@ -222,7 +222,7 @@ function Tab (tabInfo, workSpace) {
 	var menuHTML = '<div id="'+idMenu+'" class="drop_down_menu"></div>';
 	new Insertion.After($('menu_layer'), menuHTML);
 	this.menu = new DropDownMenu(idMenu);
-	this.menu.addOption("/ezweb/images/rename.gif", "Rename", function(){OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().fillWithInput();
+	this.menu.addOption("/ezweb/images/rename.gif", gettext("Rename"), function(){OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().fillWithInput();
 								LayoutManagerFactory.getInstance().hideCover();});
 
 	this._lockFunc = function() {
@@ -230,18 +230,18 @@ function Tab (tabInfo, workSpace) {
 
 		if (this.dragboard.isLocked()) {
 			this.dragboard.setLock(false);
-			this.menu.updateOption(this.lockEntryId, "/ezweb/images/lock.png", "Lock", this._lockFunc);
+			this.menu.updateOption(this.lockEntryId, "/ezweb/images/lock.png", gettext("Lock"), this._lockFunc);
 		} else {
 			this.dragboard.setLock(true);
-			this.menu.updateOption(this.lockEntryId, "/ezweb/images/unlock.png", "Unlock", this._lockFunc);
+			this.menu.updateOption(this.lockEntryId, "/ezweb/images/unlock.png", gettext("Unlock"), this._lockFunc);
 		}
 	}.bind(this);
 
 	if (this.dragboard.isLocked()) {
-		this.lockEntryId = this.menu.addOption("/ezweb/images/unlock.png", "Unlock", this._lockFunc);
+		this.lockEntryId = this.menu.addOption("/ezweb/images/unlock.png", gettext("Unlock"), this._lockFunc);
 	} else {
-		this.lockEntryId = this.menu.addOption("/ezweb/images/lock.png", "Lock", this._lockFunc);
+		this.lockEntryId = this.menu.addOption("/ezweb/images/lock.png", gettext("Lock"), this._lockFunc);
 	}
 
-	this.menu.addOption("/ezweb/images/remove.png","Remove",function(){LayoutManagerFactory.getInstance().showWindowMenu('deleteTab');});
+	this.menu.addOption("/ezweb/images/remove.png", gettext("Remove"),function(){LayoutManagerFactory.getInstance().showWindowMenu('deleteTab');});
 }
