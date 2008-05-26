@@ -647,7 +647,7 @@ ConnectionAnchor.prototype.drawPolyLine = function(x1,y1,x2,y2,left)
 {
 	this.canvas= document.createElement('div');
 	this.canvas.addClassName('canvas');
-	document.body.appendChild(this.canvas);
+	$('wiring').appendChild(this.canvas);
 	this.jg_doc = new jsGraphics(this.canvas); // draw directly into document
 	var xList= new Array(x1, (x1+x2)/2, (x1+x2)/2, x2 );
 	var yList= new Array(y1, y1, y2, y2);
@@ -669,7 +669,7 @@ ConnectionAnchor.prototype.clearPolyLine = function()
 {
 	if(this.jg_doc){
 		this.jg_doc.clear();
-		document.body.removeChild(this.canvas);
+		$('wiring').removeChild(this.canvas);
 		delete this.jg_doc;
 	}
 }
@@ -683,13 +683,19 @@ ConnectionAnchor.prototype.setConnectionStatus = function(newStatus, inChannelPo
 	  if(this.jg_doc){
 	  	this.jg_doc.clear();
 	  }
-	  var coordenates = Position.cumulativeOffset(this.htmlElement);
-	  coordenates[1] = coordenates[1] + (this.htmlElement.getHeight()+2)/2;
+	  var coordinates = Position.cumulativeOffset(this.htmlElement);
+	  var wiringPosition = Position.cumulativeOffset($('wiring'));
+	  coordinates[0] = coordinates[0] - wiringPosition[0]-1; //-1px of img border
+	  coordinates[1] = coordinates[1] - wiringPosition[1] +(this.htmlElement.getHeight())/2;  
 	  if (this.connectable instanceof wIn){
-		  coordenates[0] = coordenates[0] + this.htmlElement.getWidth()+2;
-		  this.drawPolyLine(coordenates[0],coordenates[1], inChannelPos[0], inChannelPos[1], true);
+		  inChannelPos[0] = inChannelPos[0] - wiringPosition[0];
+		  inChannelPos[1] = inChannelPos[1] - wiringPosition[1];		  	
+		  coordinates[0] = coordinates[0] + this.htmlElement.getWidth();
+		  this.drawPolyLine(coordinates[0],coordinates[1], inChannelPos[0], inChannelPos[1], true);
 	  }else{
-	  	  this.drawPolyLine(outChannelPos[0], outChannelPos[1],coordenates[0],coordenates[1], false);
+		  outChannelPos[0] = outChannelPos[0] - wiringPosition[0];
+		  outChannelPos[1] = outChannelPos[1] - wiringPosition[1];		  	
+	  	  this.drawPolyLine(outChannelPos[0], outChannelPos[1],coordinates[0],coordinates[1], false);
 	  }
   }else{
 	  this.htmlElement.className="unchkItem";
@@ -810,9 +816,10 @@ ChannelInterface.prototype.check = function() {
   this.interface.getElementsByClassName('channelNameInput')[0].focus();
   //calculate the position where de in arrows will end and the out ones will start
   this.inPosition = Position.cumulativeOffset(this.interface);
-  this.inPosition[1] = this.inPosition[1]+this.interface.getHeight()/2;
+  this.inPosition[0] -= 1; //border 
+  this.inPosition[1] = this.inPosition[1]-1+ (this.interface.getHeight())/2;
   this.outPosition[1] = this.inPosition[1];
-  this.outPosition[0] = this.inPosition[0]+this.interface.getWidth()+2;
+  this.outPosition[0] = this.inPosition[0]+this.interface.getWidth(); //2px of border
 }
 
 ChannelInterface.prototype.uncheck = function() {
