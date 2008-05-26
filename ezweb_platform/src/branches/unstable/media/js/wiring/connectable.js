@@ -80,15 +80,15 @@ wOut.prototype.addInOut = function(inout) {
 }
 
 wOut.prototype.disconnect = function(inout) {
-	inout.fullDisconnect();
-    delete this.outputs[out.getQualifiedName()];
+	inout._removeOutput(this);
+    delete this.inouts[inout.getQualifiedName()];
 }
 
 wOut.prototype.fullDisconnect = function() {
   // Disconnecting inouts
   var keys = this.inouts.keys();
   for (var i = 0; i < keys.length; ++i)
-    this._removeOutput(this.inouts[keys[i]]);
+    this.disconnect(this.inouts[keys[i]]);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////

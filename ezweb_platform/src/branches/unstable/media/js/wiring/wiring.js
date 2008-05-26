@@ -220,7 +220,7 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 		var keys = entry.slots.keys();
 		for (var i = 0; i < keys.length; i++) {
 			var key = keys[i];
-			entry.slots[i].fullDisconnect();
+			entry.slots[key].fullDisconnect();
 			
 			delete entry.slots[key];
 		}

@@ -5,8 +5,8 @@
 # 
 # Component: EzWeb
 # 
-# (C) Copyright 2004 Telefónica Investigación y Desarrollo 
-#     S.A.Unipersonal (Telefónica I+D) 
+# (C) Copyright 2004 Telefï¿½nica Investigaciï¿½n y Desarrollo 
+#     S.A.Unipersonal (Telefï¿½nica I+D) 
 # 
 # Info about members and contributors of the MORFEO project 
 # is available at: 
@@ -44,10 +44,10 @@ from resource.models import GadgetResource
 VOTES = (
     (u'0', 0),
     (u'1', 1),
-    (u'1', 2),
-    (u'1', 3),
-    (u'1', 4),
-    (u'1', 5),
+    (u'2', 2),
+    (u'3', 3),
+    (u'4', 4),
+    (u'5', 5),
 )
 
 class UserVote(models.Model):
