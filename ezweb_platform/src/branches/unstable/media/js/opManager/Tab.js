@@ -243,5 +243,5 @@ function Tab (tabInfo, workSpace) {
 		this.lockEntryId = this.menu.addOption("/ezweb/images/lock.png", "Lock", this._lockFunc);
 	}
 
-	this.menu.addOption("/ezweb/images/remove.png","Remove",function(){OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().deleteTab();});
+	this.menu.addOption("/ezweb/images/remove.png","Remove",function(){LayoutManagerFactory.getInstance().showWindowMenu('deleteTab');});
 }

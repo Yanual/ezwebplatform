@@ -37,7 +37,14 @@
 
 //Hierachy for managing a window menu whose HTML code is in templates/index.html.
 function WindowMenu(){
-
+	//constructor
+	this.htmlElement;		//window HTML element
+	this.titleElement;		//title gap
+	this.msgElement;		// message gap
+	this.element;			//workspace or tab
+	this.button; 			//window operation button
+	this.operationHandler;	//window handler
+	this.title;				//title
 
 
 	//Calculates a usable absolute position for the window
@@ -51,19 +58,27 @@ function WindowMenu(){
 		this.htmlElement.style.left = coordenates[0]+"px";
 	}
 
+	WindowMenu.prototype.setHandler = function (handler){
+		this.operationHandler = handler;
+	}
+
 	//displays the window in the correct position
 	WindowMenu.prototype.show = function (){
 		
 		this.calculatePosition();
-
-		this.titleElement.update(this.title);
 		Event.observe(this.button, "click", this.operationHandler);
+		this.titleElement.update(this.title);
 		this.htmlElement.style.display = "block";
 		this.setFocus();
 	}
 
 	//abstract method
 	WindowMenu.prototype.hide = function (){		
+	}
+	
+	//displays a message
+	WindowMenu.prototype.setMsg = function (msg){
+		this.msgElement.update(msg);
 	}
 
 }
@@ -197,9 +212,31 @@ function CreateWindowMenu (element) {
 }
 CreateWindowMenu.prototype = new WindowMenu;
 
+//Especific class for alert windows
+function AlertWindowMenu (element) {
 
+	//constructor
+	this.htmlElement = $('alert_menu');		//create-window HTML element
+	this.titleElement = $('alert_window_title');	//title gap
+	this.msgElement = $('alert_window_msg');	//error message gap
+	this.element = element;				//workspace or tab
+	this.button = $('alert_btn1');
+	
+	this.operationHandler = null;
 
+	this.title = 'Warning';
+	
+	AlertWindowMenu.prototype.setFocus = function(){
+		this.button.focus();
+	}
 
+	//hides the window and clears all the inputs
+	AlertWindowMenu.prototype.hide = function (){
+		this.msgElement.update();
+		Event.stopObserving(this.button, "click", this.operationHandler);
+		this.htmlElement.style.display = "none";		
+	}
 
-
+}
+AlertWindowMenu.prototype = new WindowMenu;
 

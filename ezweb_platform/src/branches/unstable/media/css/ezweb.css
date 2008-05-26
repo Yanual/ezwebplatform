@@ -288,11 +288,17 @@ a:hover{
   clear: both;
   margin:20px;
 }
+.window_menu .window_content img{
+  margin-right: 5px;
+  vertical-align: bottom;
+}
 .window_msg {
-  margin-top: 2px;
+  display: inline;
+  text-align: center;
+}
+.window_msg_error{
   font-size: 90%;
   color: red;
-  text-align: center;
 }
 
 .window_menu .window_bottom {

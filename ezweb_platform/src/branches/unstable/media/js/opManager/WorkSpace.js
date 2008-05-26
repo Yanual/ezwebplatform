@@ -472,7 +472,7 @@ function WorkSpace (workSpaceState) {
 	this.menu = new DropDownMenu(idMenu);
 	this.menu.addOption("/ezweb/images/rename.gif", "Rename", function(){OpManagerFactory.getInstance().activeWorkSpace.fillWithInput(); 
 						LayoutManagerFactory.getInstance().hideCover();});
-	this.menu.addOption("/ezweb/images/remove.png","Remove",function(){OpManagerFactory.getInstance().activeWorkSpace.deleteWorkSpace();});
+	this.menu.addOption("/ezweb/images/remove.png","Remove",function(){LayoutManagerFactory.getInstance().showWindowMenu('deleteWorkSpace');});
 	this.menu.addOption("/ezweb/images/list-add.png","New workspace",function(){LayoutManagerFactory.getInstance().showWindowMenu('createWorkSpace');});
 	
 }

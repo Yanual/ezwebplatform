@@ -159,7 +159,7 @@ var URIs = new _URIConstants();
 	</div>
 	<div class="window_content">
 		<label>{% trans "New name"%}: </label><input id="rename_new_name" type="text" value = ""/>
-		<div id="rename_window_msg" class="window_msg"></div>
+		<div id="rename_window_msg" class="window_msg_error"></div>
 	</div>
 	<div class="window_bottom">
 		<button id="rename_btn">{% trans "Rename"%}</button>
@@ -173,11 +173,25 @@ var URIs = new _URIConstants();
 	</div>
 	<div class="window_content">
 		<label>{% trans "Name"%}: </label><input id="create_name" type="text" value = ""/>
-		<div id="create_window_msg" class="window_msg"></div>
+		<div id="create_window_msg" class="window_msg_error"></div>
 	</div>
 	<div class="window_bottom">
 		<button id ="create_btn">{% trans "Create"%}</button>
 		<button onclick="LayoutManagerFactory.getInstance().hideCover();">{% trans "Cancel"%}</button>
+	</div>
+</div>
+<div id="alert_menu" class="window_menu" style="display:none">
+	<div class="window_top">
+		<label id="alert_window_title" class="window_title"></label>
+		<input type="button" class="closebutton button" onclick="LayoutManagerFactory.getInstance().hideCover();" />
+	</div>
+	<div class="window_content">
+		<img src="{{ MEDIA_URL }}images/warning.png" alt="alert">
+		<div id="alert_window_msg" class="window_msg"></div>
+	</div>
+	<div class="window_bottom">
+		<button id ="alert_btn1">{% trans "Accept"%}</button>
+		<button id = "alert_btn2" onclick="LayoutManagerFactory.getInstance().hideCover();">{% trans "Cancel"%}</button>
 	</div>
 </div>
 <!-- <div id="changeWorkspace_menu" class="drop_down_menu" style="display:none;">

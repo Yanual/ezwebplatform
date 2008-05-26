@@ -295,12 +295,12 @@
 }
 
 .canvas div div{
-	z-index: 4;
+	z-index: 3;
 }
 
 .canvas .arrow{
 	position: absolute;
-	z-index: 4;
+	z-index: 3;
 	width: 19px;
 	height: 20px;
 	background: transparent url(/ezweb/images/wiringArrow.png) no-repeat;
