@@ -147,5 +147,5 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 AUTH_PROFILE_MODULE = 'user.UserProfile'
 
 #Set the proxy server here if needed
-#PROXY_SERVER = 'nube.hi.inet:8080'
+PROXY_SERVER = 'nube.hi.inet:8080'
 
