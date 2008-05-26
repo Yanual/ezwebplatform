@@ -660,7 +660,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 	 */
 	Dragboard.prototype.getCellAt = function (x, y) {
 		var dragboardWidth = this.dragboardStyle.getWidth();
-		if ((x < 0) || (x > dragboardWidth) || (y < 0))
+		if ((x < 0) || (x >= dragboardWidth) || (y < 0))
 			return null;
 
 		var columnWidth = dragboardWidth / this.dragboardStyle.getColumns();
