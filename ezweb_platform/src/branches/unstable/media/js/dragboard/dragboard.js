@@ -103,9 +103,10 @@ function Dragboard(tab, workSpace, dragboardElement) {
 	}
 
 	Dragboard.prototype._notifyWindowResizeEvent = function () {
-		var iGadget;
+		this.dragboardStyle.recomputeSize();
 
-		// Insert igadgets
+		// Notify each igadget
+		var iGadget;
 		var igadgetKeys = this.iGadgets.keys();
 		for (var i = 0; i < igadgetKeys.length; i++) {
 			iGadget = this.iGadgets[igadgetKeys[i]];
@@ -405,6 +406,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 					this._moveSpaceUp(this.matrix, this.matrix[x][y]);
 		}
 
+		this._notifyWindowResizeEvent();
 		// Save new positions into persistence
 		if (persist)
 		  this._commitChanges();
@@ -497,7 +499,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 	// ****************
 
 	Dragboard.prototype.recomputeSize = function() {
-	    this.dragboardStyle.recomputeSize();
+	    this._notifyWindowResizeEvent();
 	}
 
 	Dragboard.prototype.hide = function () {
@@ -796,12 +798,13 @@ function Dragboard(tab, workSpace, dragboardElement) {
 	this.dragboardElement = dragboardElement;
 
 	/*
-	 * nº columns        = 20
-	 * cell height       = 12 pixels
-	 * vertical Margin   = 2 pixels
-	 * horizontal Margin = 4 pixels
+	 * nº columns                         = 20
+	 * cell height                        = 12 pixels
+	 * vertical Margin between IGadgets   = 2 pixels
+	 * horizontal Margin between IGadgets = 5 pixels
+	 * scroll bar reserved space          = 17 pixels
 	 */
-	this.dragboardStyle = new DragboardStyle(this.dragboardElement, 20, 12, 2, 5);
+	this.dragboardStyle = new DragboardStyle(this.dragboardElement, 20, 12, 2, 5, 17);
 	Event.observe(window, 'resize', this._notifyWindowResizeEvent);
 
 	this._clearMatrix();
@@ -831,14 +834,15 @@ DragboardPosition.prototype.clone = function() {
  * @param dragboardElement HTML element that will be used
  * @param columns number of columns of the dragboard
  * @param cellHeight the height of the dragboard's cells in pixels
- * @param verticalMargin vertical margin between igadgets
- * @param horizontalMargin horizontal margin between igadgets
+ * @param verticalMargin vertical margin between igadgets in pixels
+ * @param horizontalMargin horizontal margin between igadgets in pixels
+ * @param scrollbarSpace space reserved for the right scroll bar in pixels
  */
-function DragboardStyle(dragboardElement, columns, cellHeight, verticalMargin, horizontalMargin) {
+function DragboardStyle(dragboardElement, columns, cellHeight, verticalMargin, horizontalMargin, scrollbarSpace) {
 	this.columns = columns;
 	this.cellHeight = cellHeight;
 	this.dragboardElement = dragboardElement;
-	this.dragboardWidth = parseInt(dragboardElement.offsetWidth);
+	this.scrollbarSpace = scrollbarSpace;
 
 	if ((verticalMargin % 2) == 0) {
 		this.topMargin = verticalMargin / 2;
@@ -850,25 +854,25 @@ function DragboardStyle(dragboardElement, columns, cellHeight, verticalMargin, h
 
 	if ((horizontalMargin % 2) == 0) {
 		this.leftMargin = horizontalMargin / 2;
-		this.rigthMargin = horizontalMargin / 2;
+		this.rightMargin = horizontalMargin / 2;
 	} else {
 		this.leftMargin = Math.floor(horizontalMargin / 2);
 		this.rightMargin = Math.floor(horizontalMargin / 2) + 1;
 	}
 
-	var dragboardStyle = this;
-
-	var recomputeSize = function(e) {
-		dragboardStyle.dragboardWidth = parseInt(dragboardElement.offsetWidth);
-	}
-
-	// We can't use legacy event handlers for having multiple handlers of a given event
-	// (There are more functions listening to this event, see ezweb/templates/index.html)
-	Event.observe(window, 'resize', recomputeSize); //W3C and IE compliant
+	this.recomputeSize;
 }
 
 DragboardStyle.prototype.recomputeSize = function() {
 	this.dragboardWidth = parseInt(this.dragboardElement.offsetWidth);
+
+	var tmp  = this.dragboardWidth;
+	tmp-= parseInt(this.dragboardElement.clientWidth);
+	
+	if (tmp > this.scrollbarSpace)
+		this.dragboardWidth-= tmp;
+	else
+		this.dragboardWidth-= this.scrollbarSpace;
 }
 
 DragboardStyle.prototype.getTitlebarSize = function() {

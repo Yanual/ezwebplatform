@@ -5,6 +5,7 @@ body{
 	 font-size:80%;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	background: url("/ezweb/images/fond.gif") top left;
+	overflow: hidden;
 }
 
 a{
