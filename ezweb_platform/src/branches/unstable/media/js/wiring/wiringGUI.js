@@ -434,9 +434,11 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
 	  this.channels_list.removeChild(channel.getInterface());
     }else{
       this.channels_list.removeChild(channel.getInterface());
-	  //repaint status because the channel position may have changed
-	  this.uncheckChannel(this.currentChannel);
-      this.highlightChannel(this.currentChannel);
+      if(this.currentChannel){
+		  //repaint status because the channel position may have changed
+		  this.uncheckChannel(this.currentChannel);
+    	  this.highlightChannel(this.currentChannel);
+      }
 	}
     
     delete this.channels[channelName];
