@@ -41,16 +41,16 @@ from xml.sax import make_parser
 
 
 class TagsXMLHandler(saxutils.handler.ContentHandler): 
-	
+
     _tags = []
 
     def resetTags(self):
         self._tags = []
 
     def characters(self, text):
-	self._tags.append(text)
+        self._tags.append(text)
 
     def startElement(self, name, attrs):
-	if (name == 'Tags'):
-	    self.resetTags()
-	    return
+        if (name == 'Tags'):
+            self.resetTags()
+            return
