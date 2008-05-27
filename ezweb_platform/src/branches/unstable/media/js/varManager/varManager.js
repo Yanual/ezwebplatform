@@ -84,6 +84,10 @@ function VarManager (_workSpace) {
 		}	
 	}
 	
+	VarManager.prototype.removeWorkspaceVariable = function (ws_varId) {
+		delete this.workspaceVariables[ws_varId];
+	}
+	
 	VarManager.prototype.parseIGadgetVariables = function (igadget) {
 		var igadgetVars = igadget['variables'];
 		var objVars = []

@@ -78,8 +78,7 @@ function Tab (tabInfo, workSpace) {
 	Tab.prototype.destroy = function(){
 		Element.remove(this.tabHTMLElement);
 		this.dragboard.destroy();
-		this.dragboard = null;
-		//TODO: delete the object
+		delete this;
 	}
 	
 	Tab.prototype.updateInfo = function (tabName, visible){

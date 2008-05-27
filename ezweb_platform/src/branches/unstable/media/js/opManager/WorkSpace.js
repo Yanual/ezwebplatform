@@ -392,9 +392,11 @@ function WorkSpace (workSpaceState) {
 			return false;
 		}
 		this.tabInstances.remove(tabId);
-		//set the first tab as current
+		this.varManager.removeWorkspaceVariable(tabId);
+		this.visibleTab.connectable.destroy();
 		this.visibleTab.destroy();
 		this.visibleTab = null;
+		//set the first tab as current
 		this.setTab(this.tabInstances.values()[0]);
 		return true;
 	}

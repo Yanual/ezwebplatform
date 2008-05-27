@@ -241,6 +241,10 @@ wTab.prototype.getQualifiedName = function () {
   return "tab_" + this._name;
 }
 
+wTab.prototype.destroy = function () {
+	this.fullDisconnect();
+	delete this;
+}
 /////////////////////////////////////////////////////////////////////////////
 // This class representents a iGadget variable which may receive some data //
 /////////////////////////////////////////////////////////////////////////////
