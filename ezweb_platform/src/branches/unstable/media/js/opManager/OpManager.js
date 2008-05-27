@@ -107,17 +107,6 @@ var OpManagerFactory = function () {
 		this.catalogue = null;
 		this.logs = null;
 		this.persistenceEngine = PersistenceEngineFactory.getInstance();
-
-/*		// Active instance for non-singleton modules
-		this.activeDragboard;
-		this.activeWiring;
-		this.activeVarManager = null;
-		this.activeContextManager = null;
-*/
-		
-/*		//Current interface selected by user {dragboard, catalogue, wiring}
-		this.currentInterface = "dragboard"
-*/
 		
 		this.loadCompleted = false;
 		
@@ -129,13 +118,7 @@ var OpManagerFactory = function () {
 		// ****************
 		// PUBLIC METHODS 
 		// ****************
-		
-/*		OpManager.prototype.showWiring = function () {
-			LayoutManagerFactory.getInstance().unMarkGlobalTabs();
-		    this.activeWorkSpace.showWiring();
-		}
-*/
-		
+			
 		OpManager.prototype.showCatalogue = function () {
 			this.catalogue.show();
 			this.activeWorkSpace.getVisibleTab().markAsCurrent();
@@ -183,14 +166,6 @@ var OpManagerFactory = function () {
 		    }
 		}			
 
-/*		OpManager.prototype.changeVisibleTab = function (tabName) {
-			LayoutManagerFactory.getInstance().unMarkGlobalTabs();
-		    this.activeWorkSpace.setTab(tabName);
-		    this.activeDragboard = this.activeWorkSpace.getVisibleTab().getDragboard();
-		    
-		}
-*/
-
 		OpManager.prototype.addInstance = function (gadgetId) {
 		    if (!this.loadCompleted)
 				return;
@@ -200,21 +175,6 @@ var OpManagerFactory = function () {
 			this.activeWorkSpace.getVisibleTab().getDragboard().addInstance(gadget);
 		}
 		
-/*		OpManager.prototype.getActiveVarManager = function () {
-			if (!this.loadCompleted)
-				return;
-
-		    return this.activeVarManager;
-		}
-		
-		OpManager.prototype.getActiveContextManager = function () {
-			if (!this.loadCompleted)
-				return;
-
-		    return this.activeContextManager;
-		}
-
-*/
 		OpManager.prototype.removeInstance = function (iGadgetId) {
 			if (!this.loadCompleted)
 				return;
@@ -304,16 +264,6 @@ var OpManagerFactory = function () {
 		}
 
 		//Operations on workspaces
-
-/*		OpManager.prototype.workSpaceExists = function (newName){
-			var workSpaceKeys = this.workSpaceInstances.keys();
-			for(var i=0;i<workSpaceKeys.length;i++){
-			if(this.workSpaceInstances[workSpaceKeys[i]].workSpaceState.name == newName)
-				return true;
-			}
-			return false;
-		}
-*/
 
 		OpManager.prototype.addWorkSpace = function (newName) {
 			var o = new Object;

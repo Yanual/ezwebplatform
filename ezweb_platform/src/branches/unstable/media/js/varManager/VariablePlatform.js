@@ -131,8 +131,6 @@ RVariable.prototype.set = function (newValue) {
 	var varInfo = [{id: this.id, value: newValue, aspect: this.aspect}];
 	switch (this.aspect){
 		case Variable.prototype.USER_PREF:
-			this.varManager.markVariablesAsModified(varInfo);
-			break;
 		case Variable.prototype.EXTERNAL_CONTEXT:
 		case Variable.prototype.GADGET_CONTEXT:
 		case Variable.prototype.SLOT:
@@ -140,7 +138,13 @@ RVariable.prototype.set = function (newValue) {
 			
 			this.value = newValue;
 			try {
-				if (this.handler) this.handler(newValue);
+				if (this.handler) 
+					this.handler(newValue);
+				else {
+					// There is no handler registered! Perhaps it's the last igadget of a 
+					// Tab and it haven't have enough time to load. Trying again!
+					setTimeout(this.bind(this), 300);
+				}
 			} catch (e) {
 				var transObj = {iGadgetId: this.iGadgetId, varName: this.name, exceptionMsg: e};
 				var msg = interpolate(gettext("Error in the handler of the \"%(varName)s\" RVariable in iGadget %(iGadgetId)s: %(exceptionMsg)s."), transObj, true);

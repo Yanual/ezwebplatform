@@ -565,9 +565,10 @@ function Dragboard(tab, workSpace, dragboardElement) {
 		this.iGadgets = new Hash();
 
 		// For controlling when the igadgets are totally loaded!
-		this.igadgetsToLoad = tabInfo.igadgetList;
-		for (var i = 0; i < this.igadgetsToLoad.length; i++) {
-			curIGadget = this.igadgetsToLoad[i];
+		this.igadgets = tabInfo.igadgetList;
+		this.igadgetsToLoad = tabInfo.igadgetList.length;
+		for (var i = 0; i < this.igadgets.length; i++) {
+			curIGadget = this.igadgets[i];
 
 			position = new DragboardPosition(parseInt(curIGadget.left), parseInt(curIGadget.top));
 			width = parseInt(curIGadget.width);
@@ -634,7 +635,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 	Dragboard.prototype.igadgetLoaded = function (iGadgetId) {
 	    this.igadgetsToLoad--;
 	    if (this.igadgetsToLoad == 0)
-		VarManagerFactory.getInstance().planInterfaceInitialization();
+	    	this.workSpace.getWiring().propagateInitialValues();
 	}
 
 

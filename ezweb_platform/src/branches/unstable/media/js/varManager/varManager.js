@@ -208,16 +208,6 @@ function VarManager (_workSpace) {
 		return this.workspaceVariables[varId];
 	}
 
-/*	VarManager.prototype.planInterfaceInitialization = function () {
-	    if (this.loaded) {
-		try {
-		    setTimeout("VarManagerFactory.getInstance().initializeInterface()", 200);
-		} catch (e) {
-		    alert(e);
-		}
-	    }
-	}*/
-
 	VarManager.prototype.initializeInterface = function () {
 	    // Calling all SLOT vars handler
 	    var variable;

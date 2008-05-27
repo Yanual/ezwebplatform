@@ -135,11 +135,7 @@ function Tab (tabInfo, workSpace) {
 		LayoutManagerFactory.getInstance().unmarkTab(this.tabHTMLElement, this.tabOpsLauncher, this.changeTabHandler, this.renameTabHandler);
 
 	}
-/*	
-	Tab.prototype.hideDragboard = function () {
-		LayoutManagerFactory.getInstance().hideDragboard(this.dragboardElement);
-	}
-*/
+
 	Tab.prototype.show = function () {
 		LayoutManagerFactory.getInstance().showDragboard(this.dragboard);
 
