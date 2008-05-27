@@ -688,13 +688,9 @@ ConnectionAnchor.prototype.setConnectionStatus = function(newStatus, inChannelPo
 	  coordinates[0] = coordinates[0] - wiringPosition[0]-1; //-1px of img border
 	  coordinates[1] = coordinates[1] - wiringPosition[1] +(this.htmlElement.getHeight())/2;  
 	  if (this.connectable instanceof wIn){
-		  inChannelPos[0] = inChannelPos[0] - wiringPosition[0];
-		  inChannelPos[1] = inChannelPos[1] - wiringPosition[1];		  	
 		  coordinates[0] = coordinates[0] + this.htmlElement.getWidth();
 		  this.drawPolyLine(coordinates[0],coordinates[1], inChannelPos[0], inChannelPos[1], true);
 	  }else{
-		  outChannelPos[0] = outChannelPos[0] - wiringPosition[0];
-		  outChannelPos[1] = outChannelPos[1] - wiringPosition[1];		  	
 	  	  this.drawPolyLine(outChannelPos[0], outChannelPos[1],coordinates[0],coordinates[1], false);
 	  }
   }else{
@@ -816,10 +812,11 @@ ChannelInterface.prototype.check = function() {
   this.interface.getElementsByClassName('channelNameInput')[0].focus();
   //calculate the position where de in arrows will end and the out ones will start
   this.inPosition = Position.cumulativeOffset(this.interface);
-  this.inPosition[0] -= 1; //border 
-  this.inPosition[1] = this.inPosition[1]-1+ (this.interface.getHeight())/2;
+  var wiringPosition = Position.cumulativeOffset($('wiring'));
+  this.inPosition[0] = this.inPosition[0] - wiringPosition[0] - 1; //border 
+  this.inPosition[1] = this.inPosition[1] - wiringPosition[1] - 1 + (this.interface.getHeight())/2;
   this.outPosition[1] = this.inPosition[1];
-  this.outPosition[0] = this.inPosition[0]+this.interface.getWidth(); //2px of border
+  this.outPosition[0] = this.inPosition[0]+this.interface.getWidth();
 }
 
 ChannelInterface.prototype.uncheck = function() {
