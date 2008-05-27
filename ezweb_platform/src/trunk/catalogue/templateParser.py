@@ -46,7 +46,7 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 
 from xml.sax import parseString, handler
-from resource.models import GadgetWiring, GadgetResource
+from catalogue.models import GadgetWiring, GadgetResource
 
 
 class TemplateParser:

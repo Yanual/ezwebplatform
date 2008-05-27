@@ -41,9 +41,9 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 
 
-class GadgetResource(models.Model): 
+class GadgetResource(models.Model):
 
-     short_name = models.CharField(_('Name'), max_length=250) 
+     short_name = models.CharField(_('Name'), max_length=250)
      vendor= models.CharField(_('Vendor'), max_length=250)
      version = models.CharField(_('Version'), max_length=150)
 
@@ -52,14 +52,14 @@ class GadgetResource(models.Model):
      author = models.CharField(_('Author'), max_length=250)
      mail = models.CharField(_('Mail'), max_length=30)
            
-     description = models.CharField(_('Description'), max_length=250) 
-     size = models.CharField(_('Size'),max_length=10, null=True) 
+     description = models.CharField(_('Description'), max_length=250)
+     size = models.CharField(_('Size'),max_length=10, null=True)
      license = models.CharField(_('License'),max_length=20, null=True)
 
-     gadget_uri = models.URLField(_('gadgetURI'), null=True) 
+     gadget_uri = models.URLField(_('gadgetURI'), null=True)
      creation_date = models.DateTimeField('creation_date', null=True)
-     image_uri = models.URLField(_('imageURI'), null=True) 
-     wiki_page_uri = models.URLField(_('wikiURI')) 
+     image_uri = models.URLField(_('imageURI'), null=True)
+     wiki_page_uri = models.URLField(_('wikiURI'))
      template_uri= models.URLField(_('templateURI'))
 
      popularity = models.DecimalField(_('popularity'), null=True, max_digits=2, decimal_places=1)
@@ -67,20 +67,65 @@ class GadgetResource(models.Model):
      class Meta:
          unique_together = ("short_name", "vendor","version")
 
-     class Admin: 
-         pass 
+     class Admin:
+         pass
 
-     def __unicode__(self): 
+     def __unicode__(self):
          return self.short_name
 
-class GadgetWiring(models.Model): 
+class GadgetWiring(models.Model):
 
      friendcode = models.CharField(_('Friend code'), max_length=30, blank=True, null=True)
      wiring  = models.CharField(_('Wiring'), max_length=5)
      idResource = models.ForeignKey(GadgetResource)
 
-     class Admin: 
-         pass 
+     class Admin:
+         pass
 
-     def __unicode__(self): 
+     def __unicode__(self):
          return self.friendcode
+
+class UserTag(models.Model):
+
+    tag = models.CharField(max_length=20)
+    weight = models.CharField(max_length=20, null = True)
+    criteria = models.CharField(max_length=20, null = True)
+    value = models.CharField(max_length=20, null = True)
+    idUser = models.ForeignKey(User)
+    idResource = models.ForeignKey(GadgetResource)
+
+    class Meta:
+        unique_together = ("tag", "idUser","idResource")
+
+    class Admin:
+        pass
+
+    def __unicode__(self):
+        return self.tag
+
+VOTES = (
+    (u'0', 0),
+    (u'1', 1),
+    (u'1', 2),
+    (u'1', 3),
+    (u'1', 4),
+    (u'1', 5),
+)
+
+class UserVote(models.Model):
+    """
+    A vote on an GadgetResource by a User.
+    """
+    idUser = models.ForeignKey(User)
+    idResource = models.ForeignKey(GadgetResource)
+    vote = models.SmallIntegerField(choices=VOTES)
+
+    class Meta:
+        # One vote per user per object
+        unique_together = (('idUser', 'idResource'),)
+
+    class Admin:
+        pass
+
+    def __unicode__(self):
+        return u'%s: %s on %s' % (self.idUser, self.vote, self.idResource)

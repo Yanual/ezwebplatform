@@ -134,11 +134,8 @@ INSTALLED_APPS = (
     'gadget',
     'igadget',
     'connectable',
-    'resource',
-    'tag',
-    'searching',
+    'catalogue',
     'context',
-    'voting',
 )
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
