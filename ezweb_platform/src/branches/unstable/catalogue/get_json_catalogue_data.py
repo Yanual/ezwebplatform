@@ -5,8 +5,8 @@
 # 
 # Component: EzWeb
 # 
-# (C) Copyright 2004 Telefï¿½nica Investigaciï¿½n y Desarrollo 
-#     S.A.Unipersonal (Telefï¿½nica I+D) 
+# (C) Copyright 2004 Telefónica Investigación y Desarrollo 
+#     S.A.Unipersonal (Telefónica I+D) 
 # 
 # Info about members and contributors of the MORFEO project 
 # is available at: 
@@ -37,9 +37,7 @@
 #
 from django.shortcuts import get_object_or_404
 
-from resource.models import GadgetWiring, GadgetResource
-from tag.models import UserTag
-from voting.models import UserVote
+from catalogue.models import GadgetWiring, GadgetResource, UserTag, UserVote
 
 
 # This function gets the vote for a given user and gadget. 
@@ -85,7 +83,7 @@ def get_tag_data(gadget_id, user_id):
                 is_in_list= True
         if not is_in_list:
             tag_data = {}
-            tag_data['value'] = t.tag
+	    tag_data['value'] = t.tag
             tag_data['appearances'] = tags.filter(tag=t.tag).count()
             tag_data['added_by'] = 'No'
             all_tags.append(tag_data)

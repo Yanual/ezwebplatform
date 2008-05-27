@@ -67,25 +67,19 @@ urlpatterns = patterns('',
 
     # Connectables
     (r'^workspace(s)?/(?P<workspace_id>\d+)/connectable(s)?', include('connectable.urls')),
-    
+
     # context
     (r'^user/(?P<user_name>[_\w]+)/context(s)?', include('context.urls')),
-    
+
     # Catalogue Resource
-    (r'^user/(?P<user_name>[_\w]+)/catalogue/resource(s)?', include('resource.urls')),
-    
-    # Catalogue Tag
-    (r'^user/(?P<user_name>[_\w]+)/catalogue/tag(s)?/', include('tag.urls')),
-    
-    # Catalogue Search
-    (r'^user/(?P<user_name>[_\w]+)/catalogue/search/', include('searching.urls')),
-    
+    (r'^user/(?P<user_name>[_\w]+)/catalogue/', include('catalogue.urls')),
+
     # Voting
     (r'^user/(?P<user_name>[_\w]+)/catalogue/voting/', include('voting.urls')),
     
     # Proxy
     (r'^proxy', include('proxy.urls')),
-   
+
     # Django contrib
     #(r'^registration/login_form/$', 'registration.views.login_form'),
     (r'^accounts/login/$', 'django.contrib.auth.views.login'),

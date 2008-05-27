@@ -46,8 +46,7 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 
 from xml.sax import parseString, handler
-from resource.models import GadgetWiring, GadgetResource
-
+from catalogue.models import GadgetWiring, GadgetResource
 
 
 class TemplateParser:
@@ -72,7 +71,7 @@ class TemplateHandler(handler.ContentHandler):
         self._mail = ""
         self._imageURI = ""
         self._wikiURI = ""
-        self._flag = ""
+        self._gadget_added = False
         self._user = user
         self._uri = uri
 
@@ -91,7 +90,7 @@ class TemplateHandler(handler.ContentHandler):
 
         if (wire == 'Slot'):
             _wiring = 'in'
-            
+
         if (wire == 'Event'):
             _wiring = 'out'
 
@@ -103,6 +102,7 @@ class TemplateHandler(handler.ContentHandler):
             wiring.save()
         else:
             raise TemplateParseException(_("ERROR: missing attribute at Event or Slot element"))
+
 
     def endElement(self, name):
         if (name == 'Name'):
@@ -133,7 +133,7 @@ class TemplateHandler(handler.ContentHandler):
             self._wikiURI = self._accumulator[0]
             return
 
-        if (self._name != '' and self._vendor != '' and self._version != '' and self._author != '' and self._description != '' and self._mail != '' and self._imageURI != '' and self._wikiURI != '' and self._flag == ''):
+        if (self._name != '' and self._vendor != '' and self._version != '' and self._author != '' and self._description != '' and self._mail != '' and self._imageURI != '' and self._wikiURI != '' and not self._gadget_added):
 
             gadget=GadgetResource()
             gadget.short_name=self._name
@@ -151,8 +151,8 @@ class TemplateHandler(handler.ContentHandler):
 
             gadget.save()
 
-            self._flag = 'add'
-        elif (self._flag == 'add'):
+            self._gadget_added = True
+        elif (self._gadget_added):
             return
         else:
             raise TemplateParseException(_("ERROR: missing Resource description field at Resource element! Check schema!"))

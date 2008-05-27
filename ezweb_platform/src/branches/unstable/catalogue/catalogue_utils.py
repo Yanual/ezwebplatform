@@ -38,11 +38,13 @@
 
 from django.core import serializers
 from django.http import HttpResponse, HttpResponseServerError
+from django.db.models import Q
 
 from commons.utils import json_encode
-from commons.get_json_catalogue_data import get_gadgetresource_data, get_tag_data, get_vote_data
-from commons.get_xml_catalogue_data import get_xml_description, get_tags_by_resource, get_vote_by_resource
 from commons.utils import get_xml_error
+from catalogue.get_json_catalogue_data import get_gadgetresource_data, get_tag_data, get_vote_data
+from catalogue.get_xml_catalogue_data import get_xml_description, get_tags_by_resource, get_vote_by_resource
+from catalogue.models import GadgetResource, UserTag
 
 from django.utils.translation import ugettext as _
 
@@ -87,6 +89,73 @@ def get_paginatedlist(gadgetlist, pag, offset):
 
     return gadgetlist
 
+# This function returns a list of gadgets that match all the criteria in the list passed as parameter.
+def get_and_list(criterialist):
+    #List of the gadgets that match the criteria in the database table GadgetResource
+    gadgetlist = []
+    #List of the gadgets that match the criteria in the database table UserTag
+    taglist = []
+    result = []
+    is_first_element = True
+
+    criterialist = criterialist.split()
+    # This loop gets a result list of the gadgets that match any of the criteria
+    for e in criterialist:
+        # Get a list of elements that match the given criteria
+        gadgetlist = GadgetResource.objects.filter(Q(short_name__icontains = e) | Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
+        taglist = GadgetResource.objects.filter(usertag__tag__icontains = e)
+        if taglist:
+            gadgetlist = gadgetlist | taglist
+        gadgetlist = get_uniquelist(gadgetlist)
+        result.append(gadgetlist)
+    # This loop gets the gadgets that match all the criteria
+    for j in result:
+        if is_first_element:
+            gadgetlist = j
+            is_first_element = False
+        else:
+            gadgetlist = get_uniquelist(gadgetlist+j, 2)
+    return gadgetlist
+
+# This function returns a list of gadgets that match any of the criteria in the list passed as parameter.
+def get_or_list(criterialist):
+
+    gadgetlist = []
+    taglist = []
+    criterialist = criterialist.split()
+
+    for e in criterialist:
+        # Get a list of elements that match the given value
+        gadgetlist += GadgetResource.objects.filter(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
+        taglist += GadgetResource.objects.filter(usertag__tag__icontains = e)
+    gadgetlist += taglist
+    gadgetlist = get_uniquelist(gadgetlist)
+    return gadgetlist
+
+# This function returns a list of gadgets that don't match any of the criteria in the list passed as parameter.
+def get_not_list(criterialist):
+
+    gadgetlist = []
+    taglist = []
+    is_first_element = True
+    criterialist = criterialist.split()
+
+    for e in criterialist:
+        # Get the list of elements that don't match the given criteria in the GadgetResource table
+        if is_first_element:
+            gadgetlist = GadgetResource.objects.exclude(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
+            is_first_element = False
+        else:
+            gadgetlist = gadgetlist.exclude(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))
+        #Get the list of gadgets that match any of the criteria in the UserTag database table
+        taglist += GadgetResource.objects.filter(usertag__tag__icontains = e)
+    gadgetlist = list(gadgetlist)
+    # Remove the gadgets in taglist of gadgetlist
+    for b in taglist:
+        if (b in gadgetlist):
+            gadgetlist.remove(b)
+    gadgetlist = get_uniquelist(gadgetlist)
+    return gadgetlist
 
 # This function obtains the all the information related to a gadget encoded in
 # the properly format (json or xml)

@@ -98,8 +98,8 @@ UIUtils.getSelectedResource = function() {
 }
 
 UIUtils.selectResource = function(resourceId_) {
-	var bottom = document.getElementById(resourceId_ + '_bottom');
-	var content = document.getElementById(resourceId_ + '_content');
+	var bottom = $(resourceId_ + '_bottom');
+	var content = $(resourceId_ + '_content');
 	if (!UIUtils.tagmode)
 	{
 	    UIUtils.imageBottom = bottom.style.backgroundImage;
@@ -111,8 +111,8 @@ UIUtils.selectResource = function(resourceId_) {
 }
 
 UIUtils.deselectResource = function(resourceId_) {
-	var bottom = document.getElementById(resourceId_ + '_bottom');
-	var content = document.getElementById(resourceId_ + '_content');
+	var bottom = $(resourceId_ + '_bottom');
+	var content = $(resourceId_ + '_content');
 	if (!UIUtils.tagmode)
 	{
 	    bottom.style.backgroundImage = UIUtils.imageBottom;
@@ -135,7 +135,7 @@ UIUtils.lightUpConnectableResources = function(resourceId_) {
 	var resource = CatalogueFactory.getInstance().getResource(resourceId_);
 	var slots = resource.getSlots();
 	var events = resource.getEvents();
-	var resources = CatalogueFactory.getInstance().getResources().getValues();
+	var resources = CatalogueFactory.getInstance().getResources().values();
 	var slots2;
 	var events2;
 	for (var i=0; i<resources.length; i++){
@@ -146,10 +146,10 @@ UIUtils.lightUpConnectableResources = function(resourceId_) {
 		}
 		for (var k =0; k<events.length; k++) {
 			if (typeof lookup[events[k]] != 'undefined') {
-				var bottom = document.getElementById('resource_'+i + '_bottom');
+				var bottom = $('resource_'+i + '_bottom');
 				UIUtils.imageConnectableBottom = bottom.style.backgroundImage;
 				bottom.style.backgroundImage = 'url(/ezweb/images/resource-left-bottom-select-slot.png)';
-				var content = document.getElementById('resource_'+i + '_content');
+				var content = $('resource_'+i + '_content');
 				UIUtils.imageConnectableContent = content.style.backgroundImage;
 				content.style.backgroundImage = 'url(/ezweb/images/resource-left-fill-select-slot.png)';
 				break;
@@ -162,10 +162,10 @@ UIUtils.lightUpConnectableResources = function(resourceId_) {
 		}
 		for (var k =0; k<slots.length; k++) {
 			if (typeof lookup[slots[k]] != 'undefined') {
-				var bottom = document.getElementById('resource_'+i + '_bottom');
+				var bottom = $('resource_'+i + '_bottom');
 				UIUtils.imageConnectableBottom = bottom.style.backgroundImage;
 				bottom.style.backgroundImage = 'url(/ezweb/images/resource-left-bottom-select-event.png)';
-				var content = document.getElementById('resource_'+i + '_content');
+				var content = $('resource_'+i + '_content');
 				UIUtils.imageConnectableContent = content.style.backgroundImage;
 				content.style.backgroundImage = 'url(/ezweb/images/resource-left-fill-select-event.png)';
 				break;
@@ -175,11 +175,11 @@ UIUtils.lightUpConnectableResources = function(resourceId_) {
 }
 
 UIUtils.deselectConnectableResources = function() {
-	var resources = CatalogueFactory.getInstance().getResources().getValues();
+	var resources = CatalogueFactory.getInstance().getResources().values();
 	for (var i=0; i<resources.length; i++){
-		var bottom = document.getElementById('resource_'+i + '_bottom');
+		var bottom = $('resource_'+i + '_bottom');
 		bottom.style.backgroundImage = UIUtils.imageConnectableBottom;
-		var content = document.getElementById('resource_'+i + '_content');
+		var content = $('resource_'+i + '_content');
 		content.style.backgroundImage = UIUtils.imageConnectableContent;
 	}
 }
@@ -218,7 +218,7 @@ UIUtils.toggle_elements = function(elementIds_) {
 }
 	
 UIUtils.toggle = function(elementId_) {
-	var element = document.getElementById(elementId_);
+	var element = $(elementId_);
 	if (element.style.display != 'none')
 	{
 		element.style.display = 'none';
@@ -230,17 +230,17 @@ UIUtils.toggle = function(elementId_) {
 }
 
 UIUtils.show = function(elementId_) {
-	var element = document.getElementById(elementId_);
+	var element = $(elementId_);
 	element.style.display = 'inline';
 }
 
 UIUtils.hidde = function(elementId_) {
-	var element = document.getElementById(elementId_);
+	var element = $(elementId_);
 	element.style.display = 'none';
 }
 
 UIUtils.changeImage = function(elementId_, newImage_) {
-	var element = document.getElementById(elementId_);
+	var element = $(elementId_);
 	element.src = newImage_;
 }
 
@@ -403,18 +403,18 @@ UIUtils.removeGlobalTag = function(id_) {
 		tagger = CatalogueFactory.getInstance().getResource(selectedResources[i]).getTagger();
 		tagger.removeTag(id_);
 	}
-	var parentHTML = document.getElementById("my_global_tags");
-	var tagHTML = document.getElementById(id_);
+	var parentHTML = $("my_global_tags");
+	var tagHTML = $(id_);
 	parentHTML.removeChild(tagHTML);
 }
 
 UIUtils.removeAllTags = function() {
 	var tagger = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).getTagger();
 	tagger.removeAll();
-	document.getElementById("tag_alert").style.display='none';
-	document.getElementById("new_tag_text_input").value="";
-	document.getElementById("new_tag_text_input").size=5;
-	document.getElementById("new_tag_text_input").focus();
+	$("tag_alert").style.display='none';
+	$("new_tag_text_input").value="";
+	$("new_tag_text_input").size=5;
+	$("new_tag_text_input").focus();
 }
 
 UIUtils.removeAllGlobalTags = function() {
@@ -470,9 +470,9 @@ UIUtils.sendTags = function() {
 	var tagger = resource.getTagger();
 	var resourceURI = "/" + resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion();
 
-	if (tagger.getTags().size() == 0 || document.getElementById('new_tag_text_input').value.length!= 0)
+	if (tagger.getTags().size() == 0 || $('new_tag_text_input').value.length!= 0)
 	{
-		UIUtils.addTag(document.getElementById('new_tag_text_input'));
+		UIUtils.addTag($('new_tag_text_input'));
 	}
 	
 	tagger.sendTags(URIs.POST_RESOURCE_TAGS, resourceURI, resource);
@@ -489,10 +489,10 @@ UIUtils.sendGlobalTags = function() {
 		tagger = resource.getTagger();
 		resourceURI = "/" + resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion();
 		
-		if (tagger.getTags().size() == 0 || document.getElementById('new_global_tag_text_input').value.length!= 0)
+		if (tagger.getTags().size() == 0 || $('new_global_tag_text_input').value.length!= 0)
 		{
 			//TODO control de errores
-			UIUtils.addGlobalTag(document.getElementById('new_global_tag_text_input'));
+			UIUtils.addGlobalTag($('new_global_tag_text_input'));
 		}
 		//TODO Aviso de si todo ha ido bien o no
 		
@@ -508,6 +508,10 @@ UIUtils.sendGlobalTags = function() {
 UIUtils.deleteGadget = function(id) {
 	var resource = CatalogueFactory.getInstance().getResource(id);
 	var resourceURI = URIs.GET_POST_RESOURCES + "/" + resource.getVendor() + "/" + resource.getName() + "/" + resource.getVersion();
+	if (UIUtils.selectedResource == id)
+	{
+		UIUtils.closeInfoResource();
+	}
 	
 	var onError = function(transport) {
 				var msg = interpolate(gettext("Error deleting the Gadget: %(errorMsg)s."), {errorMsg: transport.status}, true);
@@ -552,30 +556,41 @@ UIUtils.addGlobalTag = function(inputText_) {
 }
 
 UIUtils.paintGlobalTag = function(id_, tag_) {
-	var newTag = document.createElement("div");
-	newTag.setAttribute('id', id_);
-	newTag.innerHTML = 	"<div class='new_global_tag' onmouseover=\"UIUtils.hidde('button_disable_" + id_ + "');UIUtils.show('button_enable_" + id_ + "');\" onmouseout=\"UIUtils.hidde('button_enable_" + id_ + "');UIUtils.show('button_disable_" + id_ + "');\">" + 
-							tag_ + 
-							"<div id='button_disable_" + id_ + "'>" +
-								"<a>" +
-									"<img src='/ezweb/images/cancel_gray.png' alt=''></img>" +
-								"</a>" +
-							"</div>" +
-							"<div id='button_enable_" + id_ + "' style='display:none;'>" +
-								"<a href='javascript:UIUtils.removeGlobalTag(\"" + id_ + "\");'>" +
-									"<img src='/ezweb/images/delete.png' alt=''></img>" +
-								"</a>" +
-							"</div>," + 
-						"</div> ";
-	var parentHTML = document.getElementById("my_global_tags");
-	parentHTML.insertBefore(newTag,parentHTML.lastChild);
+	$("my_global_tags").innerHTML = "";
+	var newTag = UIUtils.createHTMLElement("div", $H({
+		id: id_,
+		class_name: 'new_global_tag'
+	}));
+	$("my_global_tags").appendChild(newTag);
+	newTag.appendChild("span", $H({
+		innerHTML: tag_
+	}));
+	var image_div = UIUtils.createHTMLElement("div", $H());
+	newTag.appendChild(image_div);
+	var image_link = UIUtils.createHTMLElement("a", $H({
+		title: gettext('Delete gadget')
+	}));
+	image_link.observe('click', function(event){
+		UIUtils.removeGlobalTag(id_);
+	});
+	image_div.appendChild(image_link);
+	var image = UIUtils.createHTMLElement("img", $H({
+		src: '/ezweb/images/cancel_gray.png'
+	}));
+	image.observe('mouseover', function(event){
+		this.src = '/ezweb/images/delete.png';
+	});
+	image.observe('mouseout', function(event){
+		this.src = '/ezweb/images/cancel_gray.png';
+	});
+	image_link.appendChild(image);
 }
 
 UIUtils.setResourcesWidth = function() {
-	var tab = document.getElementById('tab_info_resource');
-	var head = document.getElementById('head');
-	var resources = document.getElementById('resources');
-	var center = document.getElementById('center');
+	var tab = $('tab_info_resource');
+	var head = $('head');
+	var resources = $('resources');
+	var center = $('center');
 	center.style.width = head.offsetWidth + 'px';
 	resources.style.width = (center.offsetWidth - (tab.offsetWidth + (UIUtils.isInfoResourcesOpen?UIUtils.infoResourcesWidth:0))) + 'px';
 }
@@ -815,7 +830,7 @@ UIUtils.SlideAdvancedSearchIntoView = function(element) {
 	afterFinish: function(effect) {
 		UIUtils.hidde('simple_search');
 	  	UIUtils.show('advanced_search_bottom');
-	  	document.getElementById('advanced_search_text_tag').focus();
+	  	$('advanced_search_text_tag').focus();
 	}
     }, arguments[1] || {})
   );
@@ -847,7 +862,7 @@ UIUtils.SlideAdvancedSearchOutOfView = function(element) {
 	afterFinish: function(effect) {
 	  	UIUtils.hidde('advanced_search_bottom');
 	  	UIUtils.show('simple_search');
-	  	document.getElementById('simple_search_text').focus();
+	  	$('simple_search_text').focus();
 	}
    }, arguments[1] || {})
   );
@@ -859,7 +874,6 @@ UIUtils.activateTagMode = function() {
 	UIUtils.closeInfoResource();
 	$("global_tagcloud").innerHTML = '';
 	$("my_global_tags").childNodes[0].style.display="none";
-	//document.getElementById("tab_info_resource").style.display='none';
 }
 
 UIUtils.deactivateTagMode = function() {
@@ -869,7 +883,6 @@ UIUtils.deactivateTagMode = function() {
 		UIUtils.deselectResource(selectedResources[i]);
 	}
 	CatalogueFactory.getInstance().clearSelectedResources();
-	//document.getElementById("tab_info_resource").style.display='true';
 }
 
 UIUtils.clickOnResource = function(id_) {
@@ -885,14 +898,14 @@ UIUtils.clickOnResource = function(id_) {
 UIUtils.toggleSelectedResource = function(id_) {
 	UIUtils.removeAllGlobalTags();
 	if(CatalogueFactory.getInstance().isSelectedResource(id_)){
-		var bottom = document.getElementById(id_ + '_bottom');
-	    var content = document.getElementById(id_ + '_content');
+		var bottom = $(id_ + '_bottom');
+	    var content = $(id_ + '_content');
 	    bottom.style.backgroundImage = 'url(/ezweb/images/resource-left-bottom.gif)';
 	    content.style.backgroundImage = 'url(/ezweb/images/resource-left-fill.gif)';
 		CatalogueFactory.getInstance().removeSelectedResource(id_);
 	} else{
-		var bottom = document.getElementById(id_ + '_bottom');
-	    var content = document.getElementById(id_ + '_content');
+		var bottom = $(id_ + '_bottom');
+	    var content = $(id_ + '_content');
 	    bottom.style.backgroundImage = 'url(/ezweb/images/resource-left-bottom-tagmode.png)';
 	    content.style.backgroundImage = 'url(/ezweb/images/resource-left-fill-tagmode.png)';
 		CatalogueFactory.getInstance().addSelectedResource(id_);
@@ -927,8 +940,27 @@ UIUtils.enlargeInput = function(inputText_) {
 
 UIUtils.getError = function(element, error) {
 	var jsCall = 'javascript:$(\"' + element.id + '\").style.display=\"none\"';
-	element.innerHTML = "<img class='warning' src='/ezweb/images/ico_error_mini.gif'></img>" + error
-		+ "<img class=\"close\" src='/ezweb/images/cancel_gray.png' onMouseOver=\"this.src='/ezweb/images/delete.png';\" onMouseOut=\"this.src='/ezweb/images/cancel_gray.png';\" onClick='" + jsCall + "'></img>";
+	element.innerHTML = "";
+	element.appendChild(UIUtils.createHTMLElement("img", $H({
+		class_name: 'warning',
+		src: '/ezweb/images/ico_error_mini.gif'
+	})));
+	element.appendChild(UIUtils.createHTMLElement("span", $H({
+		innerHTML: error
+	})));
+	var close = UIUtils.createHTMLElement("img", $H({
+		class_name: 'close',
+		src: '/ezweb/images/cancel_gray.png'
+	}));
+	close.observe('mouseover', function(event){
+		this.src='/ezweb/images/delete.png';
+	});
+	close.observe('mouseout', function(event){
+		this.src='/ezweb/images/cancel_gray.png';
+	});
+	close.observe('click', function(event){
+		$(element.id).style.display = "none";
+	});
 	new Effect.Highlight(element,{duration:0.5, startcolor:'#FF0000', endcolor:'#FFFF00', restorecolor:'#FFFF00'});
 }
 
@@ -949,7 +981,6 @@ UIUtils.filterString = function(element){
 UIUtils.onReturn = function(event_, handler_, inputText_) {
   if (!event_) event_ = window.event;
   if (event_ && event_.keyCode && event_.keyCode == 13) {
-	  //handler_(inputText_);
 	  handler_(inputText_,arguments[3],arguments[4], arguments[5]);
   }
 };
@@ -961,7 +992,6 @@ UIUtils.rating = function(num)
 	for(var i=1; i<=5; i++){		
 		if(i<=star){
 			$("_"+i).className = "on";
-			//$("rateStatus").innerHTML = num.title;	
 		}else{
 			$("_"+i).className = "";
 		}
@@ -974,8 +1004,7 @@ UIUtils.off_rating = function(num)
 
 	for(var i=1; i<=5; i++){		
 		if(i<=vote){
-			$("_"+i).className = "on";
-			//$("rateStatus").innerHTML = num.title;	
+			$("_"+i).className = "on";	
 		}else{
 			$("_"+i).className = "";
 		}
@@ -1004,5 +1033,22 @@ UIUtils.sendVotes = function(num) {
 	} else {
 		PersistenceEngineFactory.getInstance().send_update(URIs.POST_RESOURCE_VOTES + resourceURI, param, this, loadVotes, onError);
 	}
+}
 
+UIUtils.createHTMLElement = function(type_, attributes_){
+	var newElement = document.createElement(type_);
+	if (attributes_) {
+		attributes_.each(function(attribute) {
+			if (attribute.key != "innerHTML") {
+				var key = attribute.key;
+				if (key == "class_name") key = "class"; 
+				else if (key == "for_") key = "for";
+					
+				newElement.setAttribute(key, attribute.value);
+			}
+			else 
+				newElement.innerHTML = attribute.value;
+		});
+	}
+	return newElement;
 }

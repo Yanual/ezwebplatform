@@ -39,8 +39,7 @@
 function Tagger(){
 	
 	var _this = this;
-	var tags  = new HashTable();
-	var counter = 0;
+	var tags  = $H();
 	
 	this.addTag = function(tag_) {
 		if (tag_.length < 3) {
@@ -48,10 +47,9 @@ function Tagger(){
 			UIUtils.getError($("tag_alert"),gettext ("Tags must have at least three characters."));
 		}
 		else {
-			if (!tags.contains(tag_)) {
-				var id = 'new_tag_' + counter;
-				counter++;
-				tags.addElement(id, tag_);
+			if (!containsTag(tag_)) {
+				var id = 'new_tag_' + tags.keys().length;
+				tags[id] = tag_;
 				paintTag(id, tag_);
 				$("tag_alert").style.display='none';
 			}
@@ -59,10 +57,9 @@ function Tagger(){
 	}
 	
 	this.addGlobalTag = function(tag_) {
-		if (!tags.contains(tag_)) {
-			var id = 'new_tag_' + counter;
-			counter++;
-			tags.addElement(id, tag_);
+		if (!containsTag(tag_)) {
+			var id = 'new_tag_' + tags.keys().length;
+			tags[id] = tag_;
 		}
 	}
 
@@ -71,20 +68,18 @@ function Tagger(){
 	}
 
 	this.removeTag = function(id_) { 
-		tags.removeElement(id_);
+		tags.remove(id_);
 		eraserTag(id_);
 	}
 	
 	this.removeAll = function() {
-		tags.clear();
-		counter=0;
+		tags = $H();
 		if(!UIUtils.tagmode)eraserAll();
 	}
 
 	this.sendTags = function(url, resourceURI, resource)
 	{
-
-		if (tags.size()>0)
+		if (tags.keys().length>0)
 		{
 			var onError = function(transport) {
 				var msg = interpolate(gettext("Error sending tags: %(errorMsg)s."), {errorMsg: transport.status}, true);
@@ -100,76 +95,97 @@ function Tagger(){
 				if (UIUtils.tagmode) CatalogueFactory.getInstance().updateGlobalTags();
 			}
 			
-			var elements = tags.getValues();
-			var tagsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + 
-								"<Tags>";
-			for (var i=0; i<elements.size(); i++)
+			var elements = tags.values();
+			var xmlDoc;
+			if (window.ActiveXObject)
+				xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+			else if (document.implementation)
+				xmlDoc = document.implementation.createDocument("","",null);
+			var tagsXML = xmlDoc.createElement("Tags");
+			xmlDoc.appendChild(tagsXML);
+			for (var i=0; i<elements.length; i++)
 			{
-				tagsXML += ("<Tag>" + elements[i] + "</Tag>");
+				var tagXML = xmlDoc.createElement("Tag");
+				tagXML.appendChild(document.createTextNode(elements[i]));
+				tagsXML.appendChild(tagXML);
 			}
-			tagsXML += "</Tags>"
-	
-			var param = {tags_xml: tagsXML};
+			var param = {tags_xml: (new XMLSerializer()).serializeToString(xmlDoc)};
 	
 			PersistenceEngineFactory.getInstance().send_post(url + resourceURI, param, this, loadTags, onError);
 			_this.removeAll();
 		}
 	}
 	
-this.removeTagUser = function(url, resourceURI,id)
+	this.removeTagUser = function(url, resourceURI,id)
 	{
-			var resource = CatalogueFactory.getInstance().getResource(id);
+		var resource = CatalogueFactory.getInstance().getResource(id);
 
-			var onError = function(transport) {
-				var msg = interpolate(gettext("Error removing tag: %(errorMsg)s."), {errorMsg: transport.status}, true);
-				LogManagerFactory.getInstance().log(msg);
-				// Process
-			}
-			
-			var loadTags = function(transport) {
-				
-				var responseJSON = transport.responseText;
-				var jsonResourceList = eval ('(' + responseJSON + ')');
-				resource.setTags(jsonResourceList.tagList);
-				resource.updateTags();
-				if (UIUtils.tagmode) CatalogueFactory.getInstance().updateGlobalTags();
-			}
-			
-			PersistenceEngineFactory.getInstance().send_delete(url + resourceURI, this, loadTags, onError);
-			
-  }
+		var onError = function(transport) {
+			var msg = interpolate(gettext("Error removing tag: %(errorMsg)s."), {errorMsg: transport.status}, true);
+			LogManagerFactory.getInstance().log(msg);
+			// Process
+		}
+		
+		var loadTags = function(transport) {
+			var responseJSON = transport.responseText;
+			var jsonResourceList = eval ('(' + responseJSON + ')');
+			resource.setTags(jsonResourceList.tagList);
+			resource.updateTags();
+			if (UIUtils.tagmode) CatalogueFactory.getInstance().updateGlobalTags();
+		}
+		
+		PersistenceEngineFactory.getInstance().send_delete(url + resourceURI, this, loadTags, onError);
+	}
 
+	var containsTag = function(tag_) {
+		var values = tags.values();
+		for (var i=0; i<values.length; i++){
+			if (values[i] == tag_) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	var paintTag = function(id_, tag_) {
-		var newTag = document.createElement("div");
-		newTag.setAttribute('id', id_);
-		newTag.innerHTML = 	"<div class='new_tag' onmouseover=\"UIUtils.hidde('button_disable_" + id_ + "');UIUtils.show('button_enable_" + id_ + "');\" onmouseout=\"UIUtils.hidde('button_enable_" + id_ + "');UIUtils.show('button_disable_" + id_ + "');\">" + 
-								tag_ + 
-								"<div id='button_disable_" + id_ + "'>" +
-									"<a>" +
-										"<img src='/ezweb/images/cancel_gray.png' alt=''></img>" +
-									"</a>" +
-								"</div>" +
-								"<div id='button_enable_" + id_ + "' style='display:none;'>" +
-									"<a href='javascript:UIUtils.removeTag(\"" + id_ + "\");'>" +
-										"<img src='/ezweb/images/delete.png' alt=''></img>" +
-									"</a>" +
-								"</div>," + 
-							"</div> ";
-		var parentHTML = document.getElementById("my_tags");
-		parentHTML.insertBefore(newTag, parentHTML.lastChild);
+		var newTag = UIUtils.createHTMLElement("div", $H({ id: id_, class_name: "new_tag" }));
+		newTag.observe("mouseover", function(event) {
+			$("button_disable_" + id_).hide();
+			$("button_enable_" + id_).show();
+		});
+		newTag.observe("mouseout", function(event) {
+			$("button_enable_" + id_).hide();
+			$("button_disable_" + id_).show();
+		});
+		var value = UIUtils.createHTMLElement("span", $H({ innerHTML: tag_ }));
+		var disable = UIUtils.createHTMLElement("span", $H({ id: "button_disable_" + id_ }));
+		var img_disable = UIUtils.createHTMLElement("img", $H({ src: '/ezweb/images/cancel_gray.png' }));
+		disable.appendChild(img_disable);
+		var enable = UIUtils.createHTMLElement("span",  $H({ id: "button_enable_" + id_ }));
+		enable.hide();
+		enable.observe("click", function(event) {
+			UIUtils.removeTag(id_);
+		});
+		var img_enable = UIUtils.createHTMLElement("img", $H({ src: '/ezweb/images/delete.png' }));
+		enable.appendChild(img_enable);
+		var separator = UIUtils.createHTMLElement("span", $H({ innerHTML: "," }));
+		newTag.appendChild(value);
+		newTag.appendChild(disable);
+		newTag.appendChild(enable);
+		newTag.appendChild(separator);
+		$("my_tags").insertBefore(newTag, $("new_tag_text"));
 	}
 	
 	var eraserTag = function(id_) {
 		if(!UIUtils.tagmode){
-			var parentHTML = document.getElementById("my_tags");
-			var tagHTML = document.getElementById(id_);
+			var parentHTML = $("my_tags");
+			var tagHTML = $(id_);
 			parentHTML.removeChild(tagHTML);
 		}
 	}
 	
 	var eraserAll = function() {
-		var parentHTML = document.getElementById("my_tags");
+		var parentHTML = $("my_tags");
 		while(parentHTML.childNodes.length > 1)
 		{
 			parentHTML.removeChild(parentHTML.childNodes[0]);

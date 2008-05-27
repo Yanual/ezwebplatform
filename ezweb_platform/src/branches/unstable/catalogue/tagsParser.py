@@ -1,12 +1,12 @@
-ï»¿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 # MORFEO Project 
 # http://morfeo-project.org 
 # 
 # Component: EzWeb
 # 
-# (C) Copyright 2004 TelefÃ³nica InvestigaciÃ³n y Desarrollo 
-#     S.A.Unipersonal (TelefÃ³nica I+D) 
+# (C) Copyright 2004 Telefónica Investigación y Desarrollo 
+#     S.A.Unipersonal (Telefónica I+D) 
 # 
 # Info about members and contributors of the MORFEO project 
 # is available at: 
@@ -35,13 +35,22 @@
 # 
 #   http://morfeo-project.org/
 #
-from django.conf.urls.defaults import patterns
-from resource.views import GadgetsCollection
 
-urlpatterns = patterns('resource.views',
+from xml.sax import saxutils
+from xml.sax import make_parser
 
-    # Gadgets
-    (r'^/(?P<pag>\d+)/(?P<offset>\d+)$', GadgetsCollection(permitted_methods=('GET', ))),
-    (r'^$', GadgetsCollection(permitted_methods=('GET', 'POST',))),
-    (r'^/(?P<vendor>[\@_\%_\._\!_\s_\-_\|_\&_\/_\:_\(_\)_\w]+)/(?P<name>[\@_\%_\._\!_\s_\-_\|_\&_\/_\:_\(_\)_\w]+)/(?P<version>[\@_\%_\._\!_\s_\-_\|_\&_\/_\:_\(_\)_\w]+)$', GadgetsCollection(permitted_methods=('DELETE', ))),
- )
+
+class TagsXMLHandler(saxutils.handler.ContentHandler): 
+
+    _tags = []
+
+    def resetTags(self):
+        self._tags = []
+
+    def characters(self, text):
+        self._tags.append(text)
+
+    def startElement(self, name, attrs):
+        if (name == 'Tags'):
+            self.resetTags()
+            return

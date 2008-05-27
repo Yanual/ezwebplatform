@@ -38,9 +38,7 @@
 
 from django.shortcuts import get_object_or_404
 
-from tag.models import UserTag
-from resource.models import GadgetWiring
-from voting.models import UserVote
+from catalogue.models import GadgetWiring, UserTag, UserVote
 
 
 def get_xml_description(gadgetlist, user):
