@@ -77,6 +77,7 @@ function Concept(semanticConcept_, adaptor_) {
 	this._adaptor = adaptor_;
 	this._type = null;
 	this._value = null;
+	this._initialValue = null;
 
 	this._igadgetVars = new Array();
 
@@ -114,14 +115,24 @@ Concept.prototype.getAdaptor = function () {
 
 Concept.prototype.getValue = function () {
 	if (this._type == Concept.prototype.EXTERNAL){
-		return this.value_;
+		return this._value;
 	}
 	throw gettext("Concept does not have value, this is a Gadget Concept.");
 }
 
 Concept.prototype.setType = function (type_) {
 	if (this._type == null){
-		this._type = type_;			
+		this._type = type_;
+		switch (this._type) {
+			case Concept.prototype.EXTERNAL:
+				if (this._initialValue != null){
+					this._value = this._initialValue;
+				}
+				break;
+			default:
+				this._initialValue = null;						
+				break;
+			}
 	} else if (this._type != type_) {
 		throw gettext("Unexpected change of concept type.");
 	}
@@ -140,15 +151,23 @@ Concept.prototype.setValue = function (value_) {
 			throw gettext("Concept does not have value, this is a Gadget Concept.");
 			break;
 		default:
-			throw gettext("Concept does not have type yet.");
+			throw gettext("Unexpected concept value. Please, check the concept type (is EXTERNAL?)");
 			break;
 	}
+}
+
+Concept.prototype.setInitialValue = function (newValue_) {
+	this._initialValue = newValue_;
+}
+
+Concept.prototype.getInitialValue = function () {
+	return this._initialValue;
 }
 
 Concept.prototype.addIGadgetVar = function (ivar_) {
 	switch (this._type) {
 		case Concept.prototype.EXTERNAL:
-			if (this.value != null){
+			if (this._value != null){
 				ivar_.setValue(this._value);
 				this._igadgetVars.push(ivar_);		
 			}else{
@@ -163,7 +182,7 @@ Concept.prototype.addIGadgetVar = function (ivar_) {
 				this._initAdaptor(ivar_);
 			break;
 		default:
-			throw gettext("Concept does not have type yet.");
+			throw gettext("Unexpected igadget variables. Concept does not have type yet.");
 			break;
 	}
 }

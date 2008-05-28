@@ -185,7 +185,10 @@ class WorkSpaceCollection(Resource):
             workspaces = get_list_or_404(WorkSpace, user=user, pk=ids['workspace']['id'])
             data = serializers.serialize('python', workspaces, ensure_ascii=False)
             
-            workspace_data = get_global_workspace_data(data[0], workspaces[0])
+            
+            concept_data = {}
+            concept_data['user'] = user
+            workspace_data = get_global_workspace_data(data[0], workspaces[0], concept_data)
             
             return HttpResponse(json_encode(workspace_data), mimetype='application/json; charset=UTF-8')
             
@@ -202,7 +205,9 @@ class WorkSpaceEntry(Resource):
         
         workspaces = get_list_or_404(WorkSpace, user=user, pk=workspace_id)
         data = serializers.serialize('python', workspaces, ensure_ascii=False)
-        workspace_data = get_global_workspace_data(data[0], workspaces[0])
+        concept_data = {}
+        concept_data['user'] = user
+        workspace_data = get_global_workspace_data(data[0], workspaces[0], concept_data)
         
         return HttpResponse(json_encode(workspace_data), mimetype='application/json; charset=UTF-8')
 

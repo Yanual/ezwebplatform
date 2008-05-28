@@ -41,14 +41,13 @@ from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.core import serializers
 from django.db import transaction
 from django.utils.translation import gettext_lazy as _
-from django.utils.translation import get_language
 
 from django_restapi.resource import Resource
 
 from commons.authentication import user_authentication
 from commons.utils import get_xml_error, json_encode
 
-from commons.get_data import get_concept_data
+from commons.get_data import get_concept_data, get_concept_value
 from context.models import Concept, ConceptName
 
 
@@ -59,7 +58,9 @@ class ContextCollection(Resource):
         concepts = Concept.objects.all()
         data = serializers.serialize('python', concepts, ensure_ascii=False)
         data_list = {} 
-        data_list ['concepts'] = [get_concept_data(d) for d in  data]
+        concept_values = {}
+        concept_values['user'] = user
+        data_list ['concepts'] = [get_concept_data(d, concept_values) for d in data]
         return HttpResponse(json_encode(data_list), mimetype='application/json; charset=UTF-8')
 
     @transaction.commit_on_success
@@ -104,7 +105,9 @@ class ContextEntry(Resource):
         user = user_authentication(request, user_name)
         concepts = get_list_or_404(Concept, concept=concept_name)
         data = serializers.serialize('python', concepts, ensure_ascii=False)
-        data_list = get_concept_data(data[0])
+        concept_values = {}
+        concept_values['user'] = user
+        data_list = get_concept_data(data[0], concept_values)
         return HttpResponse(json_encode(data_list), mimetype='application/json; charset=UTF-8')
 
     @transaction.commit_on_success
@@ -178,15 +181,11 @@ class ContextEntry(Resource):
 class ContextValueEntry(Resource):
     def read(self, request, user_name, concept_name):
         user = user_authentication(request, user_name)
-
-        data_res = {}
-
-        if concept_name == 'username':
-            data_res ['username'] = user_name  
-        elif concept_name == 'language':
-            data_res ['language'] = get_language() 
-        else:
-            raise Http404;
-
+        
+        data_res ={}
+        concept_data = {}
+        concept_data['user'] = user
+        data_res['value'] = get_concept_value(concept_name, concept_data)
+        
         return HttpResponse(json_encode(data_res), mimetype='application/json; charset=UTF-8')
 

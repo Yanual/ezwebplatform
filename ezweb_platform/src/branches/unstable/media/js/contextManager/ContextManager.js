@@ -36,7 +36,7 @@
  */
 
 
-function ContextManager (workspace_, workSpaceInfo_, contextInfo_) {
+function ContextManager (workspace_, workSpaceInfo_) {
 	
 	
 	// ***********************
@@ -59,20 +59,30 @@ function ContextManager (workspace_, workSpaceInfo_, contextInfo_) {
 		}
 	}
 
-	// Loads all concept from platform. 
-	// This information is not in workspace data model!!
-	this._loadConcepts = function (conceptsJson) {
+	// Loads all concept from workspace data model. 
+	this._loadConceptsFromWorkspace = function (workSpaceInfo_) {
 		
 		this._concepts = new Hash();
 		this._name2Concept = new Hash();
+		
+		var conceptsJson = workSpaceInfo_['workspace']['concepts'];
 
 		// Parses concepts json
 		for (var i = 0; i < conceptsJson.length; i++) {
 			var curConcept = conceptsJson[i];
 			// Creates the concept
-			var concept = new Concept(curConcept.concept, curConcept.adaptor);
-			this._concepts[curConcept.concept] = concept; 
+			if (curConcept.adaptor){
+				var concept = new Concept(curConcept.concept, curConcept.adaptor);
+			} else {
+				var concept = new Concept(curConcept.concept, null);
+			}
+			this._concepts[curConcept.concept] = concept;
 
+			// Sets the concept value
+			if (curConcept.value){
+				concept.setInitialValue(curConcept.value)
+			}			 
+			
 			// Relates the concept name to all its concept
 			for (var j = 0; j < curConcept.names.length; j++) {
 				var cname = curConcept.names[j];
@@ -110,16 +120,18 @@ function ContextManager (workspace_, workSpaceInfo_, contextInfo_) {
 						var contextVar = new ContextVar(currentIGadget.id, currentVar.name, currentVar.concept)
 						contextVar.setVarManager(this._workspace.getVarManager());
 						var relatedConcept = this._concepts[this._name2Concept[currentVar.concept]];
-						relatedConcept.setType(currentVar.aspect);
-						relatedConcept.addIGadgetVar(contextVar);								
+						if (relatedConcept){
+							relatedConcept.setType(currentVar.aspect);
+							relatedConcept.addIGadgetVar(contextVar);								
+						}
 						break;
 					default:
 						break;
+					}
 				}
 			}
-			}
 		}
-
+		
 		// Continues loading next module								
 		this._loaded = true;
 	}
@@ -156,7 +168,7 @@ function ContextManager (workspace_, workSpaceInfo_, contextInfo_) {
 			
 		if (! this._concepts[concept_])
 			return;
-		
+			
 		this._concepts[concept_].setValue(value_);
 	}
 	
@@ -167,7 +179,7 @@ function ContextManager (workspace_, workSpaceInfo_, contextInfo_) {
 		if (! this._concepts[concept])
 			return;
 			
-		try{			
+		try{
 			this._concepts[concept].getIGadgetVar(igadgetid).setValue(value);
 		}catch(e){
 			// Do nothing, igadget has not variables related to this concept
@@ -188,8 +200,6 @@ function ContextManager (workspace_, workSpaceInfo_, contextInfo_) {
 	this._workspace = workspace_;
 		
 	// Load all igadget context variables and concepts (in this order!)
-	this._loadConcepts (contextInfo_);
+	this._loadConceptsFromWorkspace (workSpaceInfo_);
 	this._loadIGadgetContextVarsFromWorkspace (workSpaceInfo_);
-	
-	
 }

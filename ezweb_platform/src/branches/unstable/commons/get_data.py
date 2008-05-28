@@ -43,8 +43,9 @@ from django.core import serializers
 from gadget.models import Gadget, XHTML, ContextOption, UserPrefOption
 from igadget.models import Variable, VariableDef, Position, IGadget
 from connectable.models import In, Out, InOut
-from context.models import ConceptName
+from context.models import Concept, ConceptName
 from workspace.models import Tab, WorkSpaceVariable, AbstractVariable
+from django.utils.translation import get_language
 
 def get_abstract_variable(id):    
     return AbstractVariable.objects.get(id=id)
@@ -301,7 +302,7 @@ def get_connectable_data(connectable):
     return res_data
 
 
-def get_global_workspace_data(data, workSpaceDAO):
+def get_global_workspace_data(data, workSpaceDAO, concept_values):
     data_ret = {}
     data_ret['workspace'] = get_workspace_data(data)  
     
@@ -322,6 +323,11 @@ def get_global_workspace_data(data, workSpaceDAO):
     #WorkSpace variables processing
     workspace_variables_data = get_workspace_variables_data(workSpaceDAO)
     data_ret['workspace']['workSpaceVariableList'] = workspace_variables_data
+    
+    #Context information
+    concepts = Concept.objects.all()
+    concepts_data = serializers.serialize('python', concepts, ensure_ascii=False)
+    data_ret['workspace']['concepts'] = [get_concept_data(d, concept_values) for d in concepts_data]
     
     #Wiring information
     #inouts = InOut.objects.filter(workspace_variable__workspace=workSpaceDAO).order_by('id')  
@@ -409,14 +415,27 @@ def get_variable_data(data):
     
     return data_ret
 
-def get_concept_data(data):
+def get_concept_data(data, concept_values):
     data_ret = {}
     data_fields = data['fields']
     
     cnames = ConceptName.objects.filter(concept=data['pk']).values('name')
 
     data_ret['concept'] = data['pk']
-    data_ret['adaptor'] = data_fields['adaptor']
+    if data_fields['source'] == 'PLAT':
+        data_ret['value'] = get_concept_value(data['pk'], concept_values)
+    else:
+        data_ret['adaptor'] = data_fields['adaptor']
     data_ret['names'] = [cname['name'] for cname in cnames] 
     
     return data_ret
+
+def get_concept_value(concept_name, values):
+    res = ''    
+
+    if concept_name == 'username':
+        res = values['user'].username  
+    elif concept_name == 'language':
+        res = get_language() 
+
+    return res

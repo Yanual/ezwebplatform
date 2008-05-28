@@ -43,7 +43,12 @@ from django.utils.translation import gettext_lazy as _
 
 class Concept(models.Model):
     concept = models.CharField(_('Concept'), max_length=256, primary_key=True)
-    adaptor = models.CharField(_('Adaptor'), max_length=256)
+    SOURCE = (
+        ('PLAT', _('Platform')),
+        ('ADAP', _('Adaptor')),
+    )
+    source = models.CharField(_('Source'), max_length=4, choices=SOURCE)
+    adaptor = models.CharField(_('Adaptor'), max_length=256, null=True)
 
     class Admin:
         pass
