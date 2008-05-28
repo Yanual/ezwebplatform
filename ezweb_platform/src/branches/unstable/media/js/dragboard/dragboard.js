@@ -102,7 +102,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 		}
 	}
 
-	Dragboard.prototype._notifyWindowResizeEvent = function () {
+	this._notifyWindowResizeEvent = function () {
 		this.dragboardStyle.recomputeSize();
 
 		// Notify each igadget
