@@ -67,6 +67,9 @@ var OpManagerFactory = function () {
 			    
 			}
 			
+			// set handler for workspace options button
+			Event.observe($('ws_operations_link'), 'click', function(e){LayoutManagerFactory.getInstance().showDropDownMenu('workSpaceOps', this.activeWorkSpace, Event.pointerX(e), Event.pointerY(e));}.bind(this));
+			
 			// Total information of the active workspace must be downloaded!
 			this.activeWorkSpace.downloadWorkSpaceInfo();
 		}

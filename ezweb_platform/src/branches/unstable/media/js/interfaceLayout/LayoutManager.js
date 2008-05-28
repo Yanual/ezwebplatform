@@ -258,16 +258,16 @@ var LayoutManagerFactory = function () {
 		}
 
 		//Shows the asked drop down menu 
-		LayoutManager.prototype.showDropDownMenu = function(menuType, owner){
+		LayoutManager.prototype.showDropDownMenu = function(menuType, owner, x, y){
 			this.showClickableCover();
 			switch (menuType){
 			case 'workSpaceOps':
 				this.currentMenu = owner.menu;
-				this.currentMenu.show(owner.wsOpsLauncher,'bottom-right');
+				this.currentMenu.show('right', x, y);
 				break;
 			case 'tabOps':
 				this.currentMenu = owner.menu;
-				this.currentMenu.show(owner.tabOpsLauncher,'bottom-left');
+				this.currentMenu.show('left', x, y);
 				break;
 			default:
 				break;
