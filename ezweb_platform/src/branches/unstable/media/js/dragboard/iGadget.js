@@ -482,8 +482,17 @@ IGadget.prototype._notifyWindowResizeEvent = function() {
  * This function is called when the dragboard is locked or unlocked.
  */
 IGadget.prototype._notifyLockEvent = function(newLockStatus) {
-	if (!this.element)
+	if (!this.element){
 		return;
+	}
+
+	if(newLockStatus){
+		this.element.class = "gadget_window_locked";
+		this.element.className = "gadget_window_locked"; //IE hack
+	} else {
+		this.element.class = "gadget_window";
+		this.element.className = "gadget_window"; //IE hack
+	}
 
 	var oldWidth = this.getWidth();
 	var oldHeight = this.getHeight();

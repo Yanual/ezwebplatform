@@ -8,6 +8,12 @@ div.gadget_window {
   background: white;
 }
 
+div.gadget_window_locked {
+  position: absolute;
+  border: none;
+  background: white;
+}
+
 div.gadget_menu {
   cursor: move;
   padding: 1px 3px 1px 7px;
