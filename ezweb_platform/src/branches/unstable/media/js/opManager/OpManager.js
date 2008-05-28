@@ -256,7 +256,7 @@ var OpManagerFactory = function () {
 		}
 	
 		OpManager.prototype.logIGadgetError = function(iGadgetId, msg, level) {
-			var gadgetInfo = this.activeWorkSpace.getVisibleTab().getDragboard().getGadget(iGadgetId).getInfoString();
+			var gadgetInfo = this.activeWorkSpace.getVisibleTab().getDragboard().getIGadget(iGadgetId).getGadget().getInfoString();
 			msg = msg + "\n" + gadgetInfo;
 
 			this.logs.log(msg, level);
