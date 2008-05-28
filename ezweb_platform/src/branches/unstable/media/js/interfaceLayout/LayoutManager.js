@@ -336,7 +336,9 @@ var LayoutManagerFactory = function () {
 
 		//hides the disabling layer and so, the current menu
 		LayoutManager.prototype.hideCover = function(){
-			this.currentMenu.hide();
+			if(this.currentMenu){
+				this.currentMenu.hide();
+			}
 			this.currentMenu = null;
 			this.coverLayerElement.removeClassName('disabled_background');
 			this.coverLayerElement.style.display="none";

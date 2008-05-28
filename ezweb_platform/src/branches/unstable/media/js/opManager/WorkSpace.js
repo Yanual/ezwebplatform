@@ -92,6 +92,8 @@ function WorkSpace (workSpaceState) {
 		//this.setTab(visibleTabName);
 		//set the visible tab. It will be displayed as current tab afterwards
 		this.visibleTab = this.tabInstances[visibleTabId];
+		
+		this._checkLock();
 
 		OpManagerFactory.getInstance().continueLoadingGlobalModules(Modules.prototype.ACTIVE_WORKSPACE);
 	}
@@ -477,4 +479,43 @@ function WorkSpace (workSpaceState) {
 	this.menu.addOption("/ezweb/images/remove.png",gettext("Remove"),function(){LayoutManagerFactory.getInstance().showWindowMenu('deleteWorkSpace');});
 	this.menu.addOption("/ezweb/images/list-add.png",gettext("New workspace"),function(){LayoutManagerFactory.getInstance().showWindowMenu('createWorkSpace');});
 	
+	this._lockFunc = function(locked) {
+		var keys = this.tabInstances.keys();
+		for (var i = 0; i < keys.length; i++) {
+			this.tabInstances[keys[i]]._lockFunc(locked);
+		}
+	}.bind(this);
+	
+	this._checkLock = function() {
+		var keys = this.tabInstances.keys();
+		var all = true;
+		var locked = null;
+		for (var i = 0; i < keys.length; i++) {
+			if (i == 0){
+				locked = this.tabInstances[keys[i]].dragboard.isLocked();
+			} else if (locked != this.tabInstances[keys[i]].dragboard.isLocked()){
+				all = false;	
+			}
+		}
+		
+		if(all){
+			if(locked && this.lockEntryId!=null){
+				this.menu.removeOption(this.lockEntryId);
+				this.lockEntryId = null;
+			}else if(!locked && this.unlockEntryId!=null){
+				this.menu.removeOption(this.unlockEntryId);
+				this.unlockEntryId = null;	
+			}
+		}
+		
+		if((!all || locked) && this.unlockEntryId==null){
+			this.unlockEntryId = this.menu.addOption("/ezweb/images/unlock.png", gettext("Unlock"), function(){LayoutManagerFactory.getInstance().hideCover(); this._lockFunc(false);}.bind(this));
+		}
+		if((!all || !locked) && this.lockEntryId==null){
+			this.lockEntryId = this.menu.addOption("/ezweb/images/lock.png", gettext("Lock"), function(){LayoutManagerFactory.getInstance().hideCover(); this._lockFunc(true);}.bind(this));	
+		}
+	}.bind(this);
+
+	this.unlockEntryId = this.menu.addOption("/ezweb/images/unlock.png", gettext("Unlock"), function(){LayoutManagerFactory.getInstance().hideCover(); this._lockFunc(false);}.bind(this));
+	this.lockEntryId = this.menu.addOption("/ezweb/images/lock.png", gettext("Lock"), function(){LayoutManagerFactory.getInstance().hideCover(); this._lockFunc(true);}.bind(this));
 }
