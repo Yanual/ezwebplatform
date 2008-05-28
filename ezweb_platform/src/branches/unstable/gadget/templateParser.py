@@ -212,7 +212,7 @@ class TemplateHandler(handler.ContentHandler):
             relationship_eltos = {}
             relationship_eltos['vdef'] = vDef
             relationship_eltos['context'] = None
-            relationship_eltos['option'] = None
+            relationship_eltos['option'] = []
             self._relationships.append(relationship_eltos)
             
         else:
@@ -252,7 +252,7 @@ class TemplateHandler(handler.ContentHandler):
             relationship_eltos = {}
             relationship_eltos['vdef'] = vDef
             relationship_eltos['context'] = None
-            relationship_eltos['option'] = None
+            relationship_eltos['option'] = []
             self._relationships.append(relationship_eltos)
 
             self._lastPreference = relationship_eltos
@@ -297,7 +297,7 @@ class TemplateHandler(handler.ContentHandler):
             relationship_eltos = {}
             relationship_eltos['vdef'] = vDef
             relationship_eltos['context'] = None
-            relationship_eltos['option'] = None
+            relationship_eltos['option'] = []
             self._relationships.append(relationship_eltos)
         else:
             raise TemplateParseException(_("ERROR: missing attribute at Event element"))
@@ -339,7 +339,7 @@ class TemplateHandler(handler.ContentHandler):
             relationship_eltos = {}
             relationship_eltos['vdef'] = vDef
             relationship_eltos['context'] = None
-            relationship_eltos['option'] = None
+            relationship_eltos['option'] = []
             self._relationships.append(relationship_eltos)
         else:
             raise TemplateParseException(_("ERROR: missing attribute at Slot element"))            
@@ -374,7 +374,7 @@ class TemplateHandler(handler.ContentHandler):
             relationship_eltos = {}
             relationship_eltos['vdef'] = vDef
             relationship_eltos['context'] = context
-            relationship_eltos['option'] = None
+            relationship_eltos['option'] = []
             self._relationships.append(relationship_eltos)
             
         else:
@@ -410,7 +410,7 @@ class TemplateHandler(handler.ContentHandler):
             relationship_eltos = {}
             relationship_eltos['vdef'] = vDef
             relationship_eltos['context'] = context
-            relationship_eltos['option'] = None
+            relationship_eltos['option'] = []
             self._relationships.append(relationship_eltos)            
         else:
             raise TemplateParseException(_("ERROR: missing attribute at External Context element"))            
@@ -445,10 +445,9 @@ class TemplateHandler(handler.ContentHandler):
         if (attrs.has_key('value')):
             _value = attrs.get('value')
 
-        if (_value!= "") and (_name!="") and (self._relationships.vdef.type ==  self.typeText2typeCode("list")):
-            option = UserPrefOption(value=_value, name=_name, variableDef=self._lastPreference.vdef)
-            #option.save()
-            self._lastPreference['option'] = option
+        if (_value!= "") and (_name!="") and (self._lastPreference['vdef'].type ==  self.typeText2typeCode("list")):
+            option = UserPrefOption(value=_value, name=_name, variableDef=self._lastPreference['vdef'])
+            self._lastPreference['option'].append(option)
         else:
             raise TemplateParseException(_("ERROR: missing attribute at Option element"))            
 
@@ -624,9 +623,9 @@ class TemplateHandler(handler.ContentHandler):
                 rel['context'].varDef = rel['vdef']
                 rel['context'].save()
             
-            if rel['option']:
-                rel['option'].variableDef = rel['vdef']
-                rel['option'].save()
+            for opt in rel['option']:
+                opt.variableDef = rel['vdef']
+                opt.save()
                  
     def reset_Accumulator(self):
         self._accumulator = ""
