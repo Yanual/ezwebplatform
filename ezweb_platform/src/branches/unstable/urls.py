@@ -75,7 +75,7 @@ urlpatterns = patterns('',
     (r'^user/(?P<user_name>[_\w]+)/catalogue/', include('catalogue.urls')),
 
     # Voting
-    (r'^user/(?P<user_name>[_\w]+)/catalogue/voting/', include('voting.urls')),
+    (r'^user/(?P<user_name>[_\w]+)/catalogue/voting/', include('catalogue.urls')),
     
     # Proxy
     (r'^proxy', include('proxy.urls')),
