@@ -1,0 +1,24 @@
+Template: ezweb/hostname
+Type: string
+Default: localhost
+Description: Select a hostname for your EzWeb site.
+	.
+	EzWeb Platform is a web application and needs a hostname in order
+	to their contents been served by Apache 2. This host should have a 
+	valid DNS entry pointing this machine.
+
+Template: ezweb/apache2/start
+Type: boolean
+Default: true
+Description: Start Apache 2 Web Server?
+	.
+	Your Apache 2 Web Server is stopped. You need it to run for using
+	EzWeb.
+
+Template: ezweb/apache2/reload
+Type: boolean
+Default: true
+Description: Reload Apache 2 Web Server?
+	.
+	Your Apache 2 Web Server is running, but it's configuration has been updated.
+	The new configuration should be reloaded for using EzWeb.

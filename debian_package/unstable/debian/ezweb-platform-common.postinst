@@ -1,0 +1,19 @@
+#!/bin/bash
+
+###
+# Include debconf module
+#
+. /usr/share/debconf/confmodule
+
+
+###
+# Read ezweb hostname from user
+#
+db_input high ezweb/hostname
+db_go
+
+db_get ezweb/hostname
+hostname=$RET
+
+db_stop
+

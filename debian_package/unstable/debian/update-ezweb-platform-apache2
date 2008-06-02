@@ -1,0 +1,83 @@
+#!/bin/bash
+
+if [ $(id -u) != 0 ]; then
+  echo $0: You must run this as root.
+  exit 1
+fi
+
+DRY_RUN=false
+OPTIONS=$(getopt -ao "" --longoptions dry-run -n "$0" -- "$@")
+eval set -- $OPTIONS
+
+usage="$0 [options] conf_name"
+
+###
+# Parse options
+#
+while true; do
+  case "$1" in
+  --dry-run)
+    DRY_RUN=true
+    shift
+    ;;
+  --)
+    shift
+    break
+    ;;
+  *)
+    echo $usage;
+    exit 1;
+    ;;
+  esac
+done
+
+###
+# Get CONF_NAME
+#
+if [ ! $# -eq 1 ]; then
+  echo $usage
+  exit -1;
+fi
+
+CONF_NAME=$1
+
+if [ $DRY_RUN == false ]; then
+  if [ ! -f /etc/ezweb-platform/sites/$CONF_NAME/config ]; then
+    echo "Server config \"$CONF_NAME\" not found"
+    exit -1
+  fi
+
+  . /etc/ezweb-platform/sites/$CONF_NAME/config
+fi
+
+if [ ! -f /etc/ezweb-platform/apache2-templates/$CONNECTION_TYPE.vhost ]; then
+  echo "Unknow connection method \"$CONNECTION_TYPE\"."
+  exit -1
+fi
+
+if [ $DRY_RUN == true ]; then
+  exit 0
+fi
+
+DOCUMENT_ROOT=/var/www/ezweb-platform-$CONF_NAME
+
+ESCAPED_DOCUMENT_ROOT=`echo -n $DOCUMENT_ROOT | sed -e 's/\\//\\\\\\//g'`
+sed -e "s/@SERVER_NAME@/$SERVER_NAME/g" \
+    -e "s/@DOCUMENT_ROOT@/$ESCAPED_DOCUMENT_ROOT/g" \
+    -e "s/@CONF_NAME@/$CONF_NAME/g" \
+    < /etc/ezweb-platform/apache2-templates/$CONNECTION_TYPE.vhost \
+    > /etc/ezweb-platform/sites/$CONF_NAME/ezweb-platform-$CONF_NAME.vhost
+
+if [ -L /etc/apache2/sites-available/ezweb-platform-$CONF_NAME ]; then
+  LINK_VAL=`readlink /etc/apache2/sites-available/ezweb-platform-$CONF_NAME`;
+  if [ "$LINK_VAL" != "/etc/ezweb-platform/sites/$CONF_NAME/ezweb-platform-$CONF_NAME.vhost" ]; then
+    exit -1;
+  fi
+else
+  ln -s /etc/ezweb-platform/sites/$CONF_NAME/ezweb-platform-$CONF_NAME.vhost \
+        /etc/apache2/sites-available/ezweb-platform-$CONF_NAME
+fi
+
+# make sure that logs dir exists
+mkdir -p  /var/log/apache2/ezweb-platform-$CONF_NAME
+a2ensite ezweb-platform-$CONF_NAME > /dev/null

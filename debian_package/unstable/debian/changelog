@@ -1,0 +1,11 @@
+ezweb-platform (0.2~svn1220) unstable; urgency=low
+
+  * New upstream snapshot.
+
+ -- Alvaro Arranz <aarranz@pegaso.ls.fi.upm.es>  Fri, 30 May 2008 12:29:56 +0200
+
+ezweb-platform (0.2~svn1173) unstable; urgency=low
+
+  * Initial release.
+
+ -- Alvaro Arranz <aarranz@pegaso.ls.fi.upm.es>  Wed, 21 May 2008 13:31:56 +0200

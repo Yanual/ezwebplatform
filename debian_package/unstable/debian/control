@@ -1,0 +1,106 @@
+Source: ezweb-platform
+Section: web
+Priority: optional
+Maintainer: Alvaro Polo Valdenebro <apv@tid.es>
+Uploaders: Álvaro Arranz García <aarranz@pegaso.ls.fi.upm.es>
+Build-Depends-Indep: debhelper (>= 5.0.37.2)
+Homepage: http://ezweb.morfeo-project.org/
+XS-Vcs-Svn: https://svn.forge.morfeo-project.org/svn/ezwebplatform/debian_package
+XS-Vcs-Browser: http://trac.morfeo-project.org/trac/ezwebplatform/browser/debian_package
+Standards-Version: 3.7.3
+
+Package: ezweb-platform
+Section: web
+Priority: optional
+Architecture: all
+Depends: ezweb-platform-mysql (= ${Source-Version}) | ezweb-platform-postgres (= ${Source-Version}) | ezweb-platform-sqlite3 (= ${Source-Version}), ezweb-platform-apache2-mod-python | ezweb-platform-apache2-fastcgi
+Description: EzWeb Platform
+ This package provides common files for EzWeb Platform, the Telefonica I+D Mashup Engine
+
+Package: ezweb-platform-common
+Section: web
+Priority: optional
+Architecture: all
+Depends: debconf, python (>= 2.4), python-xml, python-django (>=0.97~svn6996-1)
+Description: EzWeb Platform
+ This package provides common files for EzWeb Platform, the Telefonica I+D Mashup Engine
+
+Package: ezweb-platform-fastcgi-common
+Section: web
+Priority: optional
+Architecture: all
+Depends: debconf, ezweb-platform-common (= ${Source-Version})
+Suggests: ezweb-platform-apache2-fastcgi, ezweb-platform-lighttpd-fastcgi
+Description: EzWeb Platform
+ This package provides common files for EzWeb Platform, the Telefonica I+D Mashup Engine
+
+Package: ezweb-platform-apache2-common
+Section: web
+Priority: optional
+Architecture: all
+Depends: debconf, apache2 (>= 2.0), ezweb-platform-common (= ${Source-Version})
+Description: EzWeb Platform
+ This package provides common files for EzWeb Platform, the Telefonica I+D Mashup Engine
+
+Package: ezweb-platform-apache2-mod-python
+Section: web
+Priority: optional
+Architecture: all
+Depends: debconf, python (>= 2.4), libapache2-mod-python, ezweb-platform-apache2-common (= ${Source-Version})
+Description: EzWeb Platform
+ This package provides common files for EzWeb Platform, the Telefonica I+D Mashup Engine
+
+Package: ezweb-platform-apache2-fastcgi
+Section: web
+Priority: optional
+Architecture: all
+Depends: debconf, python (>= 2.4), python-flup, libapache2-mod-fastcgi | libapache2-mod-fcgid, ezweb-platform-apache2-common (= ${Source-Version}), ezweb-platform-fastcgi-common (= ${Source-Version})
+Description: EzWeb Platform
+ This package provides common files for EzWeb Platform, the Telefonica I+D Mashup Engine
+
+Package: ezweb-platform-lighttpd-common
+Section: web
+Priority: optional
+Architecture: all
+Depends: debconf, lighttpd, ezweb-platform-common (= ${Source-Version})
+Description: EzWeb Platform
+ This package provides common files for EzWeb Platform, the Telefonica I+D Mashup Engine
+
+Package: ezweb-platform-lighttpd-fastcgi
+Section: web
+Priority: optional
+Architecture: all
+Depends: debconf, ezweb-platform-lighttpd-common (= ${Source-Version}), ezweb-platform-fastcgi-common (= ${Source-Version})
+Description: EzWeb Platform
+ This package provides common files for EzWeb Platform, the Telefonica I+D Mashup Engine
+
+Package: ezweb-platform-postgres
+Section: web
+Priority: optional
+Architecture: all
+Depends: debconf, postgresql-8.1 | postgresql-8.2, python-psycopg2, ezweb-platform-common (= ${Source-Version})
+Conflicts: ezweb-platform-sqlite3, ezweb-platform-mysql
+Replaces: ezweb-platform-sqlite3, ezweb-platform-mysql
+Description: PostgreSQL suport for EzWeb Platform
+ This package provides support for PostgreSQL to EzWeb Platform, the MORFEO Open Source Community Mashup Platform
+
+Package: ezweb-platform-mysql
+Section: web
+Priority: optional
+Architecture: all
+Depends: debconf, python-mysqldb, ezweb-platform-common (= ${Source-Version})
+Suggests: mysql-server-5.0 | mysql-server-5.1 | mysql-server
+Conflicts: ezweb-platform-sqlite3, ezweb-platform-postgres
+Replaces: ezweb-platform-sqlite3, ezweb-platform-postgres
+Description: PostgreSQL suport for EzWeb Platform
+ This package provides support for PostgreSQL to EzWeb Platform, the MORFEO Open Source Community Mashup Platform
+
+Package: ezweb-platform-sqlite3
+Section: web
+Priority: optional
+Architecture: all
+Depends: debconf, python-pysqlite2, ezweb-platform-common (= ${Source-Version})
+Conflicts: ezweb-platform-mysql, ezweb-platform-postgres
+Replaces: ezweb-platform-mysql, ezweb-platform-postgres
+Description: PostgreSQL suport for EzWeb Platform
+ This package provides support for PostgreSQL to EzWeb Platform, the MORFEO Open Source Community Mashup Platform

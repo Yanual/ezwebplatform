@@ -1,0 +1,123 @@
+#!/usr/bin/make -f
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+export VER=0.2~svn1220
+
+build: build-stamp
+build-stamp:
+	touch build-stamp
+
+clean:
+	dh_testdir
+	dh_testroot
+	
+	rm -f debian/*.py[co]
+	
+	dh_clean
+
+install: build install-stamp
+install-stamp: build-stamp
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	
+	touch install-stamp
+
+# Build architecture-independent files here.
+binary-indep: build install
+	dh_testdir -i
+	dh_testroot -i
+	dh_installdirs
+	
+	: ###
+	: # ezweb-platform-common
+	: #
+	mkdir -p debian/ezweb-platform-common/usr/share/ezweb-platform
+	for f in *; do \
+	  if [ $$f != debian ]; then \
+	    cp -a $$f debian/ezweb-platform-common/usr/share/ezweb-platform; \
+	  fi; \
+	done
+	
+	mkdir -p debian/ezweb-platform-common/usr/sbin
+	cp -p debian/update-ezweb-platform debian/ezweb-platform-common/usr/sbin
+	
+	: # Remove unwanted files
+	rm -f `find debian/ezweb-platform-common -name "*.pyc"`
+	rm -rf `find debian/ezweb-platform-common -name ".svn"`
+	rm -f debian/ezweb-platform-common/usr/share/ezweb-platform/*-stamp
+	rm -f debian/ezweb-platform-common/usr/share/ezweb-platform/settings.py
+	
+	mkdir -p debian/ezweb-platform-common/etc/ezweb-platform/sites
+	cp -p debian/settings.py-template debian/ezweb-platform-common/etc/ezweb-platform
+	
+	: ###
+	: # ezweb-platform-fastcgi-common
+	: #
+	mkdir -p debian/ezweb-platform-fastcgi-common/etc/init.d
+	cp -p debian/ezweb-platform-fastcgi debian/ezweb-platform-fastcgi-common/etc/init.d
+	mkdir -p debian/ezweb-platform-apache2-fastcgi/var/run/ezweb-platform
+	
+	: ###
+	: # ezweb-platform-apache2-common
+	: #
+	mkdir -p debian/ezweb-platform-apache2-common/usr/sbin
+	mkdir -p debian/ezweb-platform-apache2-common/etc/ezweb-platform/apache2-templates
+	cp -p debian/update-ezweb-platform-apache2 debian/ezweb-platform-apache2-common/usr/sbin
+	
+	: ###
+	: # ezweb-platform-apache2-mod-python
+	: #
+	mkdir -p debian/ezweb-platform-apache2-mod-python/etc/ezweb-platform/apache2-templates
+	cp -p debian/apache2-templates/mod-python.vhost \
+	   debian/ezweb-platform-apache2-mod-python/etc/ezweb-platform/apache2-templates
+	
+	: ###
+	: # ezweb-platform-apache2-mod-fastcgi
+	: #
+	mkdir -p debian/ezweb-platform-apache2-fastcgi/etc/ezweb-platform/apache2-templates
+	cp -p debian/apache2-templates/fastcgi.vhost \
+	   debian/ezweb-platform-apache2-fastcgi/etc/ezweb-platform/apache2-templates
+	
+	: ###
+	: # ezweb-platform-lighttpd-common
+	: #
+	mkdir -p debian/ezweb-platform-lighttpd-common/usr/sbin
+	mkdir -p debian/ezweb-platform-lighttpd-common/etc/ezweb-platform/lighttpd-templates
+	cp -p debian/update-ezweb-platform-lighttpd debian/ezweb-platform-apache2-common/usr/sbin
+	
+	: ###
+	: # ezweb-platform-lighttpd-fastcgi
+	: #
+	mkdir -p debian/ezweb-platform-lighttpd-fastcgi/etc/ezweb-platform/lighttpd-templates
+	cp -p debian/lighttpd-templates/fastcgi.vhost \
+	   debian/ezweb-platform-lighttpd-fastcgi/etc/ezweb-platform/lighttpd-templates
+	
+	: ###
+	: # ezweb-platform-mysql
+	: #
+	mkdir -p debian/ezweb-platform-mysql/usr/sbin
+	cp -p debian/update-ezweb-platform-mysql \
+	   debian/ezweb-platform-mysql/usr/sbin
+	
+	dh_installchangelogs -i
+	dh_compress -i
+	dh_fixperms -i
+	dh_installdeb -i
+	dh_gencontrol -i
+	dh_md5sums -i
+	dh_builddeb -i
+
+# Build architecture-dependent files here.
+binary-arch: build install
+# nothing to do
+
+binary: binary-indep binary-arch
+
+.PHONY: configure build clean binary-indep binary-arch binary install
+
+# Local Variables:
+# mode: makefile
+# end:

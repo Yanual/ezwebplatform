@@ -1,0 +1,24 @@
+$HTTP["host"] == '@SERVER_NAME@' {
+    server.modules += ( "mod_fastcgi" )
+    server.modules += ( "mod_rewrite" )
+    server.document-root = "@DOCUMENT_ROOT@"
+
+    fastcgi.server = (
+        "/mysite.fcgi" => (
+            "main" => (
+                "bin-path" => "/",
+                "socket" => "/var/run/ezweb-platform/@CONF_NAME@.socket",
+                "check-local" => "disable",
+            )
+        ),
+    )
+
+    alias.url = (
+        "/media/" => "/usr/share/python-support/python-django/django/contrib/admin/media",
+    )
+
+    url.rewrite-once = (
+        "^/favicon\.ico$" => "/media/favicon.ico",
+        "^(/.*)$" => "/mysite.fcgi$1",
+    )
+}

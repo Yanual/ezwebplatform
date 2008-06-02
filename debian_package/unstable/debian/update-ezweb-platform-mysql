@@ -1,0 +1,119 @@
+#!/usr/bin/python
+
+import sys
+import os
+
+import string
+from random import Random
+
+import gettext
+from gettext import gettext as _
+
+import MySQLdb
+import warnings
+from optparse import OptionParser
+
+
+def get_ezweb_connection():
+  conn = MySQLdb.connect (host = 'localhost',
+                          user = 'root',
+                          passwd = 'password',
+                          db = 'mysql')
+  return conn
+
+def connect(settings):
+  conn = MySQLdb.connect (host = settings['database_host'],
+                          user = settings['database_user'],
+                          passwd = settings['database_pass'],
+                          db = settings['database_name'])
+  return conn
+
+def get_settings(conf_name, action, options):
+  if not options:
+    options = {}
+
+  settings = {}
+  settings['database_host'] = "localhost"
+
+  if options.database_user != None:
+    settings['database_user'] = options.database_user
+  elif os.environ.has_key('DATABASE_USER'):
+    settings['database_user'] = os.environ['DATABASE_USER']
+  else:
+    settings['database_user'] = "ezweb-" + conf_name
+
+  if options.database_name != None:
+    settings['database_name'] = options.database_name
+  if os.environ.has_key('DATABASE_NAME'):
+    settings['database_name'] = os.environ['DATABASE_NAME']
+  else:
+    settings['database_name'] = "ezweb-" + conf_name
+
+  if options.database_pass != None:
+    settings['database_pass'] = options.database_pass
+  elif os.environ.has_key('DATABASE_PASS'):
+    settings['database_pass'] = os.environ['DATABASE_PASS']
+  else:
+    settings['database_pass'] = ''.join(Random().sample(string.letters+string.digits, 12))
+
+  return settings
+
+def print_settings(settings):
+  print "DATABASE_USER=" + settings['database_user']
+  print "DATABASE_NAME=" + settings['database_name']
+  print "DATABASE_PASS=" + settings['database_pass']
+  print "DATABASE_OPTIONS=\"'init_command': 'SET storage_engine=InnoDB'\""
+  #print "DATABASE_HOST=" + settings['database_host']
+  #print "DATABASE_PORT=" + settings['database_port']
+
+if __name__ == "__main__":
+  parser = OptionParser()
+  parser.add_option ("--database-user","--database-user", action="store",
+                     dest="database_user", help=_("Try to run a dist-upgrade"))
+  parser.add_option ("--database-name","--database-name", action="store",
+                     dest="database_name", help=_("Try to run a dist-upgrade"))
+  parser.add_option ("--database-pass","--database-pass", action="store",
+                     dest="database_pass", help=_("Try to run a dist-upgrade"))
+
+  (options, args) = parser.parse_args()
+
+  action = args[0]
+  conf_name = args[1]
+
+  settings = get_settings(conf_name, action, options)
+
+  if action == "prepare":
+    conn = get_ezweb_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT 1 FROM `user` where `user` = '" + settings['database_user'] + "';")
+    if cursor.rowcount == 0:
+      sys.stderr.write("  User " + settings['database_user'] + " doesn't exists.\n")
+      cursor.execute("CREATE USER '" + settings['database_user'] + "'@'localhost' IDENTIFIED BY '" + settings['database_pass'] + "';")
+      sys.stderr.write("  User " + settings['database_user'] + " created.\n")
+
+    warnings.filterwarnings("ignore", "Can't create database .* database exists")
+    sys.stderr.write("  Ensuring database existence...\n")
+    cursor.execute("CREATE DATABASE IF NOT EXISTS `" + settings['database_name'] + "`;")
+    sys.stderr.write("  Ensuring that the user \"" + settings['database_user'] + "\" has enough privileges.\n")
+    cursor.execute("GRANT ALL PRIVILEGES ON `" + settings['database_name'] + "`.* TO '" + settings['database_user'] + "'@'localhost' IDENTIFIED BY '" + settings['database_pass'] + "';")
+
+    print_settings(settings)
+
+  elif action == "delete":
+    conn = get_ezweb_connection()
+    cursor = conn.cursor()
+    warnings.filterwarnings("ignore", "Can't drop database .* database doesn't exist")
+    cursor.execute("DROP DATABASE IF EXISTS `" + settings['database_name'] + "`;")
+
+  elif action == "clear":
+    conn = get_ezweb_connection()
+    cursor = conn.cursor()
+    warnings.filterwarnings("ignore", "Can't drop database .* database doesn't exist")
+    cursor.execute("DROP DATABASE IF EXISTS `" + settings['database_name'] + "`;")
+    cursor.execute("CREATE DATABASE `" + settings['database_name'] + "`;")
+
+  else:
+    parser.print_help()
+
+  sys.exit(0)

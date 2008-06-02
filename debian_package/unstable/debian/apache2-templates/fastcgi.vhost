@@ -1,0 +1,50 @@
+NameVirtualHost *
+
+<VirtualHost *>
+  ServerAdmin webmaster@localhost
+  ServerName @SERVER_NAME@
+
+  DocumentRoot @DOCUMENT_ROOT@
+
+  FastCGIExternalServer "/usr/lib/cgi-bin/ezweb-platform-@CONF_NAME@.fcgi" -socket "/var/run/ezweb-platform/@CONF_NAME@.socket"
+
+  <Directory @DOCUMENT_ROOT@>
+    Options FollowSymLinks MultiViews ExecCGI
+    AllowOverride None
+    Order allow,deny
+    allow from all
+
+    RewriteEngine on
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ /ezweb.fcgi/$1 [QSA,L]
+    RewriteRule ^$ /ezweb.fcgi/ [QSA,L]
+  </Directory>
+
+  <Directory "/usr/lib/cgi-bin">
+    AllowOverride None
+    Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+    Order allow,deny
+    Allow from all
+  </Directory>
+
+  <Directory @DOCUMENT_ROOT@/gadgets>
+    Options +Indexes +MultiViews
+    AllowOverride None
+    Order allow,deny
+    allow from all
+  </Directory>
+
+  Alias /ezweb.fcgi "/usr/lib/cgi-bin/ezweb-platform-@CONF_NAME@.fcgi"
+  Alias /media /usr/share/python-support/python-django/django/contrib/admin/media
+  Alias /site-media /usr/share/ezweb-platform/media
+
+  LogLevel warn
+
+  ErrorLog /var/log/apache2/ezweb-platform-@CONF_NAME@/error.log
+  CustomLog /var/log/apache2/ezweb-platform-@CONF_NAME@/access.log combined
+
+  ServerSignature Off
+
+</VirtualHost>
