@@ -6,6 +6,7 @@
 TMP_PRE="/tmp/ezweb-platform-"
 cp /usr/share/ezweb-platform/settings.py ${TMP_PRE}00
 
+DB_DIR="/var/lib/ezweb-platform"
 
 cat ${TMP_PRE}00 | sed s/DATABASE_ENGINE.*/"DATABASE_ENGINE = \"sqlite3\""/g > ${TMP_PRE}01
 cat ${TMP_PRE}01 | sed s/DATABASE_NAME.*/"DATABASE_NAME = \"\/var\/lib\/ezweb-platform\/db\""/g > ${TMP_PRE}02
@@ -19,6 +20,12 @@ rm ${TMP_PRE}*
 # Initialize the database
 #
 mkdir -p /var/lib/ezweb-platform
+
+if [ -f "$DB_DIR/db" ]; then
+   new_db="$DB_DIR/db.$(date +%s)"
+   echo "Old database found. Renaming to $new_db."
+   mv "$DB_DIR/db" $new_db
+fi
 
 cd /usr/share/ezweb-platform
 python manage.py syncdb
