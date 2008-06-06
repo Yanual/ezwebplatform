@@ -99,6 +99,9 @@ if [ $? != 0 ]; then
 fi
 echo "Done"
 
+###
+# Check database settins
+#
 echo "Checking database settings (using $DATABASE_ENGINE as DBMS)... "
 RET=`/usr/sbin/update-ezweb-platform-$DATABASE_ENGINE prepare $CONF_NAME`
 if [ $? != 0 ]; then
@@ -143,7 +146,7 @@ fi
 echo "Done"
 
 echo -n "Updating EzWeb settings... "
-sed -e "s/@DATABASE_ENGINE@/$DATABASE_ENGINE/g" \
+sed -e "s/@DATABASE_ENGINE@/$DJANGO_DATABASE_ENGINE/g" \
     -e "s/@DATABASE_NAME@/$DATABASE_NAME/g" \
     -e "s/@DATABASE_OPTIONS@/$DATABASE_OPTIONS/g" \
     -e "s/@DATABASE_USER@/$DATABASE_USER/g" \

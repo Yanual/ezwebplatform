@@ -4,3 +4,4 @@
 # TODO
 
 # Remove sparse .pyc files
+rm -f `find /usr/share/ezweb-platform -name "*.pyc"`

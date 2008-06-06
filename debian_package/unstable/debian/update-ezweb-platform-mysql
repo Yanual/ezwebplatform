@@ -12,12 +12,13 @@ from gettext import gettext as _
 import MySQLdb
 import warnings
 from optparse import OptionParser
+import ConfigParser
 
 
 def get_ezweb_connection():
-  conn = MySQLdb.connect (host = 'localhost',
-                          user = 'root',
-                          passwd = 'password',
+  conn = MySQLdb.connect (host = settings['admin_host'],
+                          user = settings['admin_user'],
+                          passwd = settings['admin_pass'],
                           db = 'mysql')
   return conn
 
@@ -28,11 +29,28 @@ def connect(settings):
                           db = settings['database_name'])
   return conn
 
-def get_settings(conf_name, action, options):
+def get_settings(conf_name, action, options, global_cfg):
   if not options:
     options = {}
 
   settings = {}
+
+  # TODO
+  if global_cfg.has_option(conf_name, "SERVER_HOST"):
+    settings['admin_host'] = global_cfg.get("default", "SERVER_HOST")
+  else:
+    settings['admin_host'] = ""
+
+  if global_cfg.has_option(conf_name, "ADMIN_USER"):
+    settings['admin_user'] = global_cfg.get("default", "ADMIN_USER")
+  else:
+    settings['admin_user'] = ""
+
+  if global_cfg.has_option(conf_name, "ADMIN_PASS"):
+    settings['admin_pass'] = global_cfg.get("default", "ADMIN_PASS")
+  else:
+    settings['admin_pass'] = ""
+
   settings['database_host'] = "localhost"
 
   if options.database_user != None:
@@ -59,6 +77,7 @@ def get_settings(conf_name, action, options):
   return settings
 
 def print_settings(settings):
+  print "DJANGO_DATABASE_ENGINE=mysql"
   print "DATABASE_USER=" + settings['database_user']
   print "DATABASE_NAME=" + settings['database_name']
   print "DATABASE_PASS=" + settings['database_pass']
@@ -67,6 +86,8 @@ def print_settings(settings):
   #print "DATABASE_PORT=" + settings['database_port']
 
 if __name__ == "__main__":
+  CFG_FILE = "/etc/ezweb-platform/mysql.conf"
+
   parser = OptionParser()
   parser.add_option ("--database-user","--database-user", action="store",
                      dest="database_user", help=_("Try to run a dist-upgrade"))
@@ -74,13 +95,27 @@ if __name__ == "__main__":
                      dest="database_name", help=_("Try to run a dist-upgrade"))
   parser.add_option ("--database-pass","--database-pass", action="store",
                      dest="database_pass", help=_("Try to run a dist-upgrade"))
+  parser.add_option ("--server-host","--server-host", action="store",
+                     dest="server_host", help=_("Try to run a dist-upgrade"))
+  parser.add_option ("--admin-user","--admin-user", action="store",
+                     dest="admin_user", help=_("Try to run a dist-upgrade"))
+  parser.add_option ("--admin-pass","--admin-pass", action="store",
+                     dest="admin_pass", help=_("Try to run a dist-upgrade"))
+  parser.add_option ("--backup","--backup", action="store_true",
+                     dest="backup", help=_("Try to run a dist-upgrade"))
 
   (options, args) = parser.parse_args()
+
+  if len(args) < 2:
+    parser.print_help()
+    sys.exit(-1)
 
   action = args[0]
   conf_name = args[1]
 
-  settings = get_settings(conf_name, action, options)
+  global_cfg = ConfigParser.SafeConfigParser()
+  global_cfg.read(CFG_FILE)
+  settings = get_settings(conf_name, action, options, global_cfg)
 
   if action == "prepare":
     conn = get_ezweb_connection()
@@ -112,6 +147,44 @@ if __name__ == "__main__":
     warnings.filterwarnings("ignore", "Can't drop database .* database doesn't exist")
     cursor.execute("DROP DATABASE IF EXISTS `" + settings['database_name'] + "`;")
     cursor.execute("CREATE DATABASE `" + settings['database_name'] + "`;")
+
+  elif action == "getdefaults":
+    # TODO
+    if global_cfg.has_option(conf_name, "SERVER_HOST"):
+      print "SERVER_HOST=" + global_cfg.get(conf_name, "SERVER_HOST")
+    else:
+      print "SERVER_HOST="
+
+    if global_cfg.has_option(conf_name, "ADMIN_USER"):
+      print "ADMIN_USER=" + global_cfg.get(conf_name, "ADMIN_USER")
+    else:
+      print "ADMIN_USER="
+
+    if global_cfg.has_option(conf_name, "ADMIN_PASS"):
+      print "ADMIN_PASS=" + global_cfg.get(conf_name, "ADMIN_PASS")
+    else:
+      print "ADMIN_PASS="
+
+  elif action == "setdefaults":
+    # TODO retreive section name with a better way
+    if not global_cfg.has_section(conf_name):
+      global_cfg.add_section(conf_name)
+
+    if options.server_host != None:
+      global_cfg.set(conf_name, "SERVER_HOST", options.server_host)
+
+    if options.admin_user != None:
+      global_cfg.set(conf_name, "ADMIN_USER", options.admin_user)
+
+    if options.admin_pass != None:
+      global_cfg.set(conf_name, "ADMIN_PASS", options.admin_pass)
+
+    if options.backup and os.path.isfile(CFG_FILE):
+      os.rename(CFG_FILE, CFG_FILE + "~")
+
+    file = open(CFG_FILE, "w")
+    global_cfg.write(file)
+    os.chmod(CFG_FILE, 0600)
 
   else:
     parser.print_help()

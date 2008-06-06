@@ -1,30 +1,10 @@
 #!/bin/bash
 
-###
-# Include debconf module
-#
-. /usr/share/debconf/confmodule
+if [ "$1" = "configure" ]; then
 
-update-ezweb-platform-apache2 default --server-type mod-python
-
-###
-# Restart apache 2 web server
-###
-if [ -e /var/run/apache2.pid ]; then
-  db_input low ezweb/apache2/reload
-  db_go
-  db_get ezweb/apache2/reload
-
-  if [ "true" = "$RET" ]; then
-    /etc/init.d/apache2 reload
-  fi
-else
-  db_input low ezweb/apache2/start
-  db_go
-  db_get ezweb/apache2/start
-
-  if [ "true" = "$RET" ]; then
-    /etc/init.d/apache2 start
+  update-ezweb-platform-apache2 default --server-type mod-python
+  if [ $? != 0 ]; then
+    invocke-rc.d apache2 restart
   fi
 
 fi

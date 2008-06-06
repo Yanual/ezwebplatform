@@ -1,0 +1,90 @@
+#!/usr/bin/python
+
+import sys
+import os
+
+import string
+from random import Random
+
+import gettext
+from gettext import gettext as _
+
+from optparse import OptionParser
+
+
+def get_settings(conf_name, action, options):
+  if not options:
+    options = {}
+
+  settings = {}
+  settings['database_host'] = "localhost"
+
+  if options.database_user != None:
+    settings['database_user'] = options.database_user
+  elif os.environ.has_key('DATABASE_USER'):
+    settings['database_user'] = os.environ['DATABASE_USER']
+  else:
+    settings['database_user'] = "ezweb-" + conf_name
+
+  if options.database_name != None:
+    settings['database_name'] = options.database_name
+  if os.environ.has_key('DATABASE_NAME'):
+    settings['database_name'] = os.environ['DATABASE_NAME']
+  else:
+    settings['database_name'] = "ezweb-" + conf_name
+
+  if options.database_pass != None:
+    settings['database_pass'] = options.database_pass
+  elif os.environ.has_key('DATABASE_PASS'):
+    settings['database_pass'] = os.environ['DATABASE_PASS']
+  else:
+    settings['database_pass'] = ''.join(Random().sample(string.letters+string.digits, 12))
+
+  return settings
+
+def print_settings(settings):
+  print "DJANGO_DATABASE_ENGINE=sqlite3"
+  print "DATABASE_USER="
+  print "DATABASE_NAME=" + settings['database_name']
+  print "DATABASE_PASS="
+  print "DATABASE_OPTIONS="
+  print "DATABASE_HOST="
+  print "DATABASE_PORT="
+
+def drop_db_if_exists(settings):
+  print settings['database_name']
+
+def create_db(cursor, settings):
+  print settings['database_name']
+
+if __name__ == "__main__":
+  parser = OptionParser()
+  parser.add_option ("--database-user","--database-user", action="store",
+                     dest="database_user", help=_("Try to run a dist-upgrade"))
+  parser.add_option ("--database-name","--database-name", action="store",
+                     dest="database_name", help=_("Try to run a dist-upgrade"))
+  parser.add_option ("--database-pass","--database-pass", action="store",
+                     dest="database_pass", help=_("Try to run a dist-upgrade"))
+
+  (options, args) = parser.parse_args()
+
+  action = args[0]
+  conf_name = args[1]
+
+  settings = get_settings(conf_name, action, options)
+
+  if action == "prepare":
+
+    print_settings(settings)
+
+  elif action == "delete":
+    drop_db_if_exists(settings)
+
+  elif action == "clear":
+    drop_db_if_exists(settings)
+    create_db(settings)
+
+  else:
+    parser.print_help()
+
+  sys.exit(0)

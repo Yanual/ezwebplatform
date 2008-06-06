@@ -1,0 +1,24 @@
+Template: ezweb-platform-mysql/serveraddress
+Type: string
+Default: localhost
+Description: Address of the default MySQL server:
+	.
+	You should enter the address for the default MySQL server to use. You
+	must use a IP or a Server Name without port (for example
+	mysql.server.com or 127.0.0.1)
+
+Template: ezweb-platform-mysql/adminuser
+Type: string
+Default: ezweb
+Description: MySQL admin user:
+	.
+	Please enter a valid user name for connecting to the MySQL server to do
+	administrative tasks. This user must be able to create databases and
+	new users.
+
+Template: ezweb-platform-mysql/adminpass
+Type: password
+Description: MySQL admin password:
+	.
+	Please enter the password of the admin user for connecting to the MySQL
+	server.

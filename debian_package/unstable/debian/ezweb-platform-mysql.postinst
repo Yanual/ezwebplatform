@@ -1,0 +1,43 @@
+#!/bin/bash
+
+###
+# Include debconf module
+#
+. /usr/share/debconf/confmodule
+
+if [ "$1" = "configure" ]; then
+
+  RET=`/usr/sbin/update-ezweb-platform-mysql getdefaults default`
+  eval $RET
+
+  db_set ezweb-platform-mysql/serveraddress "$SERVER_HOST"
+  db_set ezweb-platform-mysql/adminuser "$ADMIN_USER"
+  db_set ezweb-platform-mysql/adminpass "$ADMIN_PASS"
+
+  ###
+  # Read mysql config from user
+  #
+
+  db_input high ezweb-platform-mysql/serveraddress
+  db_go
+
+  db_get ezweb-platform-mysql/serveraddress
+  SERVER_HOST="$RET"
+
+  db_input high ezweb-platform-mysql/adminuser
+  db_go
+
+  db_get ezweb-platform-mysql/adminuser
+  ADMIN_USER="$RET"
+
+  db_input high ezweb-platform-mysql/adminpass
+  db_go
+
+  db_get ezweb-platform-mysql/adminpass
+  ADMIN_PASS="$RET"
+
+  db_stop
+
+  /usr/sbin/update-ezweb-platform-mysql setdefaults default --backup --server-host "$SERVER_HOST" --admin-user "$ADMIN_USER" --admin-pass "$ADMIN_PASS"
+
+fi

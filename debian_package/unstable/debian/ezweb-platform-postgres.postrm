@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ "$1" = "purge" ]; then
+#if [ "$1" = "purge" ]; then
 #	db_get ezweb/pg/dbname
 #	dbname=$RET
 
@@ -9,4 +9,4 @@ if [ "$1" = "purge" ]; then
 
 #	sudo -u postgres dropdb $dbname
 #	sudo -u postgres dropuser $dbuser
-fi
+#fi

@@ -5,11 +5,15 @@
 
 export VER=0.2~svn1220
 
+# Include dpatch stuff.
+include /usr/share/dpatch/dpatch.make
+
 build: build-stamp
-build-stamp:
+build-stamp: patch-stamp
 	touch build-stamp
 
-clean:
+clean: clean1 unpatch
+clean1:
 	dh_testdir
 	dh_testroot
 	
@@ -86,7 +90,7 @@ binary-indep: build install
 	: #
 	mkdir -p debian/ezweb-platform-lighttpd-common/usr/sbin
 	mkdir -p debian/ezweb-platform-lighttpd-common/etc/ezweb-platform/lighttpd-templates
-	cp -p debian/update-ezweb-platform-lighttpd debian/ezweb-platform-apache2-common/usr/sbin
+	cp -p debian/update-ezweb-platform-lighttpd debian/ezweb-platform-lighttpd-common/usr/sbin
 	
 	: ###
 	: # ezweb-platform-lighttpd-fastcgi
@@ -102,7 +106,22 @@ binary-indep: build install
 	cp -p debian/update-ezweb-platform-mysql \
 	   debian/ezweb-platform-mysql/usr/sbin
 	
+	: ###
+	: # ezweb-platform-postgres
+	: #
+	mkdir -p debian/ezweb-platform-postgres/usr/sbin
+	cp -p debian/update-ezweb-platform-postgres \
+	   debian/ezweb-platform-postgres/usr/sbin
+	
+	: ###
+	: # ezweb-platform-sqlite3
+	: #
+	mkdir -p debian/ezweb-platform-sqlite3/usr/sbin
+	cp -p debian/update-ezweb-platform-sqlite3 \
+	   debian/ezweb-platform-sqlite3/usr/sbin
+	
 	dh_installchangelogs -i
+	dh_installdebconf -i
 	dh_compress -i
 	dh_fixperms -i
 	dh_installdeb -i

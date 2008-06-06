@@ -1,0 +1,36 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 01_django_restapi_apache2_mod_python.dpatch by  <aarranz@pegaso.ls.fi.upm.es>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: This patch fixes problems with PUT requests when using mod_python with 
+## DP: apache2
+
+@DPATCH@
+
+diff -rc ezweb-platform-0.2~svn1220-origdeb/django_restapi/resource.py ezweb-platform-0.2~svn1220/django_restapi/resource.py
+*** ezweb-platform-0.2~svn1220-origdeb/django_restapi/resource.py	2008-05-29 15:35:07.000000000 +0200
+--- ezweb-platform-0.2~svn1220/django_restapi/resource.py	2008-06-03 16:41:40.616598564 +0200
+***************
+*** 14,22 ****
+      for PUT.
+      """
+      if request.method == 'PUT':
+!         request.method = 'POST'
+!         request._load_post_and_files()
+!         request.method = 'PUT'
+          request.PUT = request.POST
+          del request._post
+  
+--- 14,25 ----
+      for PUT.
+      """
+      if request.method == 'PUT':
+!         try:
+!           request.method = 'POST'
+!           request._load_post_and_files()
+!           request.method = 'PUT'
+!         except AttributeError:
+!           None
+          request.PUT = request.POST
+          del request._post
+  
