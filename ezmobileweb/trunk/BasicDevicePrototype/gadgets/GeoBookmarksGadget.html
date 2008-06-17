@@ -1,0 +1,277 @@
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<script language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"></script>
+<script src="/ezweb/js/lib/prototype/prototype.js" language="javascript" type="text/javascript"></script>
+<title>GeoBookmarks</title>
+<style>
+.non-visible{
+	display:none;
+}
+.visible{
+	display:block;
+}
+.bold{
+	font-weight: bold;
+}
+table{
+	margin: 10px;
+	border: none;
+}
+table a {
+	text-decoration: none;
+}
+img {
+	border: none;
+}
+.td_name{
+	width:40%;
+	text-align: center;
+}
+.td_location{
+	width:50%;
+	text-align: center;
+}
+#new_bookmark{
+	border: 1px dashed;
+}
+
+
+</style>
+<script>
+//SLOT
+var address = new EzWebAPI.createRGadgetVariable("addressSlot",addLocationAddress);
+var utmCoord = new EzWebAPI.createRGadgetVariable("utmCoordSlot",addLocationUTM);
+var bookmarkName = new EzWebAPI.createRGadgetVariable("bookmarkName",addBookmarkName);
+
+//EVENT
+var addressEvent = new EzWebAPI.createRWGadgetVariable("addressEvent");
+var utmCoordEvent = new EzWebAPI.createRWGadgetVariable("utmCoordEvent");
+
+//PROPERTY
+var geobookmarks = new EzWebAPI.createRWGadgetVariable("geobookmarks");
+
+//VARIABLES
+var count=0;
+
+//HANDLERS
+function addLocationAddress(location) {
+
+	document.getElementById("location").value=location;
+	document.getElementById("address_opt").checked = true;	
+}
+
+function addLocationUTM(location) {
+
+	document.getElementById("location").value=location;
+	document.new_bookmark_form.elements['utm'].checked = true;
+	document.getElementById("utm_opt").checked = true;
+}
+
+function addBookmarkName(bookmark) {
+
+	document.getElementById("nameb").value=bookmark;	
+}
+
+//OTHER FUNCTIONS
+function showNewBookmark(){
+	document.getElementById("new_bookmark").class="visible";
+	document.getElementById("new_bookmark").className="visible";
+
+	document.getElementById("add_link").setAttribute("href", "javascript:hideNewBookmark()");
+	document.getElementById("add_link").innerHTML="Hide new bookmark";
+}
+
+function hideNewBookmark(){
+	document.getElementById("new_bookmark").class="non-visible";
+	document.getElementById("new_bookmark").className="non-visible";
+
+	document.getElementById("add_link").setAttribute("href", "javascript:showNewBookmark()");
+	document.getElementById("add_link").innerHTML="Add new bookmark";
+}
+
+function setLocation(location, locationType){
+	if (locationType == "address")
+		addressEvent.set(location);
+	else //UTM
+		utmCoordEvent.set(location);
+}
+
+function createRow(bookmarkName, location, locationType){
+
+	var bookmark = document.createElement("tr");
+	bookmark.setAttribute("id", "bookmark_"+count);
+	//Name
+	var nametd = document.createElement("td");
+	nametd.setAttribute("id", "bookmark_"+count+"_name");
+	nametd.innerHTML=bookmarkName;
+	bookmark.appendChild(nametd);
+	//Location
+	var locationtd = document.createElement("td");
+	locationtd.setAttribute("id", "bookmark_"+count+"_location");
+	var a = document.createElement("a");
+	locationtd.appendChild(a);
+	a.innerHTML=location;
+	a.setAttribute("href","javascript:setLocation('"+location+"','"+locationType+"')");
+	bookmark.appendChild(locationtd);
+	//delete image
+	var deltd = document.createElement("td");
+	var adel = document.createElement("a");
+	adel.setAttribute("href","javascript:delBookmark('bookmark_"+count+"')");
+	var imgdel = document.createElement("img");
+	imgdel.setAttribute("src","http://jjmr-desktop/ezweb-platform/repository/cross.png");
+	adel.appendChild(imgdel);
+	deltd.appendChild(adel);
+	bookmark.appendChild(deltd);
+	//location type
+	var typetd = document.createElement("td");
+	typetd.setAttribute("id", "bookmark_"+count+"_type");
+	typetd.setAttribute("class", "non-visible");
+	typetd.innerHTML = locationType;
+	bookmark.appendChild(typetd);
+
+	count++;
+
+	return bookmark;
+}
+
+function delBookmark(bookmarkId){
+	var gblist = eval('(' + geobookmarks.get() + ')');
+	var newgblist = new Array();
+	var find = false;
+	var bookmarkName = document.getElementById(bookmarkId+"_name").innerHTML;
+	var bookmarkLocation = document.getElementById(bookmarkId+"_location").firstChild.innerHTML;
+	var bookmarkType = document.getElementById(bookmarkId+"_type").innerHTML;
+	for (i=0;i<gblist.length;i++){
+		if (gblist[i].elementName==bookmarkName && gblist[i].location==bookmarkLocation && gblist[i].type==bookmarkType && !find){
+			Element.remove(document.getElementById(bookmarkId));
+			find=true;
+		}
+		else{
+			newgblist[i]=gblist[i];
+		}
+	}
+	geobookmarks.set(newgblist.toJSON());
+	if (newgblist.length=0){
+		document.getElementById("geobookmarks").innerHTML="There aren't geobookmarks";
+	}
+}
+
+function addBookmark(){
+	var nameValue = document.new_bookmark_form.elements['nameb'].value;
+	var locationValue = document.new_bookmark_form.elements['location'].value;
+	var typeValue = document.getElementById("address_opt").checked? "address" : "utm";
+
+	//add the element to the table
+	var bookmark = createRow(nameValue, locationValue, typeValue);
+
+	var table = document.getElementById("bookmarks_table");
+	if (table == null){
+		table = document.createElement("table");
+		var tr = document.createElement("tr");
+		var td = document.createElement("td");
+		td.innerHTML = "Name";
+		td.setAttribute("class","td_name bold");
+		tr.appendChild(td);
+		td = document.createElement("td");
+		td.innerHTML = "Location";
+		td.setAttribute("class","td_location bold");
+		tr.appendChild(td);
+		table.appendChild(tr);
+		table.setAttribute("id","bookmarks_table");
+		document.getElementById("geobookmarks").innerHTML="";
+		document.getElementById("geobookmarks").appendChild(table);
+	}
+	table.appendChild(bookmark);
+
+
+	//persist the element
+	if (geobookmarks.get()!= null && geobookmarks.get()!= ""){
+		var gblist = eval('(' + geobookmarks.get() + ')');
+	}
+	else{
+		var gblist= new Array();
+	}
+	var pos = gblist.length;
+	var entry = new Object();
+	entry.elementName=nameValue;
+	entry.location=locationValue;
+        entry.type=typeValue;
+	gblist[pos] = entry;
+	geobookmarks.set(gblist.toJSON());
+
+	//hide the form
+	document.getElementById("new_bookmark").class="non-visible";
+	document.getElementById("new_bookmark").className="non-visible";
+	document.new_bookmark_form.reset();
+	
+}
+
+function init(){
+	var container = document.getElementById("geobookmarks");
+
+	if (geobookmarks.get()!= null && geobookmarks.get()!= ""){
+		var gblist = eval('(' + geobookmarks.get() + ')');
+
+		if (gblist != null && gblist.length>0){
+			var i = 0;
+			var table = document.createElement("table");
+			table.setAttribute("id","bookmarks_table");
+			var tr = null;
+			var td = null;
+			var a = null;
+
+			tr = document.createElement("tr");
+			td = document.createElement("td");
+			td.innerHTML = "Name";
+			td.setAttribute("class","td_name bold");
+			tr.appendChild(td);
+			td = document.createElement("td");
+			td.innerHTML = "Location";
+			td.setAttribute("class","td_location bold");
+			tr.appendChild(td);
+			table.appendChild(tr);
+
+			for (i=0;i<gblist.length;i++){
+				table.appendChild(createRow(gblist[i].elementName, gblist[i].location, gblist[i].type));
+			}
+			container.appendChild(table);
+		}
+		else{
+			container.innerHTML="There aren't geobookmarks";
+		}
+	}
+	else{
+		container.innerHTML="There aren't geobookmarks";
+	}
+
+}
+
+</script>
+
+</head><body style="margin: 0px; padding: 0px;" onload="init();">
+<a id="add_link" href="javascript:showNewBookmark()" class="add_link">Add new bookmark</a>
+<div id="new_bookmark" class="non-visible">
+	<form onsubmit="return false;" name="new_bookmark_form">
+		<table>
+		<tr>
+			<td>Name</td>
+			<td>Location</td>
+		</tr>
+		<tr>
+			<td><input type="text" id="nameb" name="nameb"></input></td>
+			<td><input type="text" id="location" name="location"></input></td>
+		</tr>
+		<tr>
+			<td><input type="radio" id="utm_opt" checked name="loc_options" value="utm">UTM coords.</input></td>
+			<td><input type="radio" id="address_opt" name="loc_options" value="address">Address</input></td>
+		</tr>
+		<tr>
+			<td><input type="button" name="add" value="Add" onclick="addBookmark()"></input></td>
+			<td></td>
+		</tr>
+		</table>
+	</form>
+</div>
+<div id="geobookmarks"></div>
+</body></html>
+
