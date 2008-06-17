@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Literals sourcelang="es_ES" targetlang="en_US">
+  <Literal name="Clave:">
+    <Translation>Clave:</Translation>
+  </Literal>
+  <Literal name="Entrar">
+    <Translation>Entrar</Translation>
+  </Literal>
+  <Literal name="Error">
+    <Translation>Error</Translation>
+  </Literal>
+  <Literal name="EzWeb">
+    <Translation>EzWeb</Translation>
+  </Literal>
+  <Literal name="Gadgets menu">
+    <Translation>Gadgets menu</Translation>
+  </Literal>
+  <Literal name="Salir">
+    <Translation>Salir</Translation>
+  </Literal>
+  <Literal name="Usuario:">
+    <Translation>Usuario:</Translation>
+  </Literal>
+  <Literal name="Validación">
+    <Translation>Validación</Translation>
+  </Literal>
+  <Literal name="Volver">
+    <Translation>Volver</Translation>
+  </Literal>
+</Literals>
+

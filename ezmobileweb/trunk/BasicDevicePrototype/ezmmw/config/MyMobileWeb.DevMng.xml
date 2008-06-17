@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration name="root">
+    <module name="devmgt">
+        <module name="cache">
+            <property name="refreshInterval" value="10"/>
+        </module>
+        <module name="directories">
+            <property name="dataBaseDirectory" value="/home/jjmr/workspace/ezmmw/DeviceBBDD"/>
+        </module>
+        <module name="wurfl">
+            <property name="xml" value="wurfl.xml"/>
+            <property name="patch" value="wurfl_patch.xml"/>
+        </module>
+        <module name="driver">
+            <property name="type" value="0"/>
+        </module>
+        <module name="rules">
+            <property name="acceptXml" value="acceptRules.xml"/>
+            <property name="acceptXsl" value="acceptRules.xsl"/>
+        </module>
+    </module>
+</configuration>

@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE VocabularyDescription SYSTEM "vocabulary-description.dtd" [    	
+    <!ENTITY DEVICE "Device">
+    <!ENTITY WEBBROWSER "WebBrowser">
+    <!ENTITY ALLASPECTS "&DEVICE;, &WEBBROWSER;">
+]>
+<!--
+	* MORFEO Project
+	* http://morfeo-project.org
+	*
+	* Component: Device Information Simple API
+	* Programming Language: Java
+	*
+	* $Id: mymw-description.xml 1305 2008-04-15 07:56:09Z crdlc $
+	*
+	* (C) Copyright 2008 Telefónica Investigación y Desarrollo
+	*     S.A.Unipersonal (Telefónica I+D)
+	*
+	* Info about members and contributors of the MORFEO project
+	* is available at:
+	*
+	*   http://morfeo-project.org/
+	*
+	* This program is free software; you can redistribute it and/or modify
+	* it under the terms of the GNU General Public License as published by
+	* the Free Software Foundation; either version 2 of the License, or
+	* (at your option) any later version.
+	*
+	* This program is distributed in the hope that it will be useful,
+	* but WITHOUT ANY WARRANTY; without even the implied warranty of
+	* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+	* GNU General Public License for more details.
+	*
+	* You should have received a copy of the GNU General Public License
+	* along with this program; if not, write to the Free Software
+	* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+	*
+	* If you want to use this software an plan to distribute a
+	* proprietary application in any way, and you are not licensing and
+	* distributing your source code under GPL, you probably need to
+	* purchase a commercial license of the product.  More info about
+	* licensing options is available at:
+	*
+	*   http://morfeo-project.org/
+	*
+-->
+
+<!-- MyMobileWeb Vocabulary Description -->
+
+<VocabularyDescription target="http://morfeo-project.org/mymobileweb">
+
+	<!-- Aspects -->
+	<Aspects>
+		<Aspect name="&DEVICE;" />
+		<Aspect name="&WEBBROWSER;" />
+	</Aspects>
+
+	<!-- Properties -->
+	<Properties>
+
+		<!-- Accesskey -->
+
+		<Property name="accesskeySupport" datatype="xs:boolean"
+			aspects="&WEBBROWSER;" defaultAspect="&WEBBROWSER;" />
+
+		<Property name="displayAccesskey" datatype="xs:boolean"
+			aspects="&WEBBROWSER;" defaultAspect="&WEBBROWSER;" />
+
+		<!-- Readable colors -->
+
+		<Property name="readableBackgroundColor1" datatype="xs:string"
+			aspects="&DEVICE;" defaultAspect="&DEVICE;" />
+
+		<Property name="readableBackgroundColor2" datatype="xs:string"
+			aspects="&DEVICE;" defaultAspect="&DEVICE;" />
+
+		<!-- Rendering, limitations and bugs -->
+
+		<Property name="rendersTables" datatype="xs:boolean"
+			aspects="&WEBBROWSER;" defaultAspect="&WEBBROWSER;" />
+
+		<Property name="rendersTablesForLayout" datatype="xs:boolean"
+			aspects="&WEBBROWSER;" defaultAspect="&WEBBROWSER;" />
+
+		<Property name="showsPageTitle" datatype="xs:boolean"
+			aspects="&WEBBROWSER;" defaultAspect="&WEBBROWSER;" />
+
+		<Property name="alignCenterInsertAutoBr" datatype="xs:boolean"
+			aspects="&WEBBROWSER;" defaultAspect="&WEBBROWSER;" />
+
+		<Property name="selectAsRadioButton" datatype="xs:boolean"
+			aspects="&WEBBROWSER;" defaultAspect="&WEBBROWSER;" />
+
+		<Property name="insertBrAfterInputWithNowrap"
+			datatype="xs:boolean" aspects="&WEBBROWSER;"
+			defaultAspect="&WEBBROWSER;" />
+
+		<Property name="insertBrAfterSelect" datatype="xs:boolean"
+			aspects="&WEBBROWSER;" defaultAspect="&WEBBROWSER;" />
+
+		<Property name="nowrapModeSupport" datatype="xs:boolean"
+			aspects="&WEBBROWSER;" defaultAspect="&WEBBROWSER;" />
+
+		<Property name="nowrapModeInTableSupport" datatype="xs:boolean"
+			aspects="&WEBBROWSER;" defaultAspect="&WEBBROWSER;" />
+
+		<Property name="canSkipAlignedLinkRow" datatype="xs:boolean"
+			aspects="&WEBBROWSER;" defaultAspect="&WEBBROWSER;" />
+
+		<Property name="emptyTextValueNotSentInRequest"
+			datatype="xs:boolean" aspects="&WEBBROWSER;"
+			defaultAspect="&WEBBROWSER;" />
+
+		<Property name="emptyOptionValueSupport" datatype="xs:boolean"
+			aspects="&WEBBROWSER;" defaultAspect="&WEBBROWSER;" />
+
+		<!-- MimeTypes, markups and characters -->
+
+		<Property name="preferredJsonMimeType" datatype="xs:string"
+			aspects="&WEBBROWSER;" defaultAspect="&WEBBROWSER;" />
+
+		<Property name="preferredXhtmlMimeType" datatype="xs:string"
+			aspects="&WEBBROWSER;" defaultAspect="&WEBBROWSER;" />
+
+		<Property name="openWaveExtensionsXhtmlSupport"
+			datatype="xs:boolean" aspects="&WEBBROWSER;"
+			defaultAspect="&WEBBROWSER;" />
+
+		<Property name="preferredPageMarkupLanguage"
+			datatype="xs:string" aspects="&WEBBROWSER;"
+			defaultAspect="&WEBBROWSER;" />
+
+		<Property name="acceptedCharacterSets" datatype="xs:enumeration"
+			aspects="&ALLASPECTS;" defaultAspect="&DEVICE;" />
+
+		<!-- URL encoded -->
+
+		<Property name="urlEncoded" datatype="xs:boolean"
+			aspects="&WEBBROWSER;" defaultAspect="&WEBBROWSER;" />
+
+		<!-- Sizes and measures -->
+
+		<Property name="typicalDisplayCharactersX"
+			datatype="xs:nonNegativeInteger" aspects="&ALLASPECTS;"
+			defaultAspect="&DEVICE;" />
+
+		<Property name="typicalDisplayCharactersY"
+			datatype="xs:nonNegativeInteger" aspects="&ALLASPECTS;"
+			defaultAspect="&DEVICE;" />
+
+		<Property name="maximumImageHeight"
+			datatype="xs:nonNegativeInteger" aspects="&ALLASPECTS;"
+			defaultAspect="&DEVICE;" />
+
+		<Property name="maximumImageWidth"
+			datatype="xs:nonNegativeInteger" aspects="&ALLASPECTS;"
+			defaultAspect="&DEVICE;" />
+
+		<Property name="maximumEmbeddedObjectSize"
+			datatype="xs:nonNegativeInteger" aspects="&ALLASPECTS;"
+			defaultAspect="&DEVICE;" />
+
+		<Property name="maximumDownloadableRingtoneSize"
+			datatype="xs:nonNegativeInteger" aspects="&ALLASPECTS;"
+			defaultAspect="&DEVICE;" />
+
+		<!-- Formats -->
+
+		<Property name="audioFormatSupport" datatype="xs:enumeration"
+			aspects="&ALLASPECTS;" defaultAspect="&DEVICE;" />
+
+		<Property name="videoFormatSupport" datatype="xs:enumeration"
+			aspects="&ALLASPECTS;" defaultAspect="&DEVICE;" />
+
+		<Property name="ringtoneFormatSupport" datatype="xs:enumeration"
+			aspects="&ALLASPECTS;" defaultAspect="&DEVICE;" />
+
+		<!-- Is wireless device -->
+
+		<Property name="isWirelessDevice" datatype="xs:boolean"
+			aspects="&DEVICE;" defaultAspect="&DEVICE;" />
+
+		<!-- Phonebook, phonecalls and sms -->
+
+		<Property name="makePhoneCallString" datatype="xs:string"
+			aspects="&WEBBROWSER;" defaultAspect="&WEBBROWSER;" />
+
+		<Property name="wtaVoiceCall" datatype="xs:boolean"
+			aspects="&WEBBROWSER;" defaultAspect="&WEBBROWSER;" />
+
+		<Property name="wtaPhonebook" datatype="xs:boolean"
+			aspects="&WEBBROWSER;" defaultAspect="&WEBBROWSER;" />
+
+		<Property name="availableSmsClient" datatype="xs:boolean"
+			aspects="&WEBBROWSER;" defaultAspect="&WEBBROWSER;" />
+
+		<!-- File upload -->
+
+		<Property name="fileUploadSupport" datatype="xs:boolean"
+			aspects="&ALLASPECTS;" defaultAspect="&DEVICE;" />
+
+		<!-- AJAX -->
+
+		<Property name="ajaxXhrType" datatype="xs:string"
+			aspects="&WEBBROWSER;" defaultAspect="&WEBBROWSER;" />
+
+		<!-- WML -->
+
+		<Property name="showsCardTitle" datatype="xs:boolean"
+			aspects="&WEBBROWSER;" defaultAspect="&WEBBROWSER;" />
+
+		<Property name="menuWithSelectElementRecommended"
+			datatype="xs:boolean" aspects="&WEBBROWSER;"
+			defaultAspect="&WEBBROWSER;" />
+
+		<Property name="breakListOfLinksWithBrElementRecommended"
+			datatype="xs:boolean" aspects="&WEBBROWSER;"
+			defaultAspect="&WEBBROWSER;" />
+
+		<Property name="imageAsLinkSupport" datatype="xs:boolean"
+			aspects="&WEBBROWSER;" defaultAspect="&WEBBROWSER;" />
+
+		<Property name="openWaveExtensionsWmlSupport "
+			datatype="xs:boolean" aspects="&WEBBROWSER;"
+			defaultAspect="&WEBBROWSER;" />
+
+		<Property name="builtInBackButtonSupport" datatype="xs:boolean"
+			aspects="&DEVICE;" defaultAspect="&DEVICE;" />
+
+		<Property name="insertBrElementAfterWidgetRecommended"
+			datatype="xs:boolean" aspects="&WEBBROWSER;"
+			defaultAspect="&WEBBROWSER;" />
+
+		<Property name="wmlMakePhoneCallString" datatype="xs:string"
+			aspects="&WEBBROWSER;" defaultAspect="&WEBBROWSER;" />
+
+		<Property name="numberOfSoftKeys"
+			datatype="xs:nonNegativeInteger" aspects="&DEVICE;"
+			defaultAspect="&DEVICE;" />
+
+		<!-- I-Mode -->
+
+		<Property name="imodeRegion" datatype="xs:string"
+			aspects="&WEBBROWSER;" defaultAspect="&WEBBROWSER;" />
+
+		<Property name="emoji" datatype="xs:string"
+			aspects="&WEBBROWSER;" defaultAspect="&WEBBROWSER;" />
+
+		<Property name="chtmlRendersTables" datatype="xs:boolean"
+			aspects="&WEBBROWSER;" defaultAspect="&WEBBROWSER;" />
+
+		<Property name="chtmlDisplayAccesskey" datatype="xs:boolean"
+			aspects="&WEBBROWSER;" defaultAspect="&WEBBROWSER;" />
+
+		<Property name="chtmlMakePhoneCallString" datatype="xs:string"
+			aspects="&WEBBROWSER;" defaultAspect="&WEBBROWSER;" />
+
+		<!-- Added on 04-15-08 -->
+
+		<Property name="ringtoneSupport" datatype="xs:boolean"
+			aspects="&ALLASPECTS;" defaultAspect="&DEVICE;" />
+
+		<Property name="videoSupport" datatype="xs:boolean"
+			aspects="&ALLASPECTS;" defaultAspect="&DEVICE;" />
+
+		<Property name="maximumVideoWidth"
+			datatype="xs:nonNegativeInteger" aspects="&ALLASPECTS;"
+			defaultAspect="&DEVICE;" />
+
+		<Property name="maximumVideoHeight"
+			datatype="xs:nonNegativeInteger" aspects="&ALLASPECTS;"
+			defaultAspect="&DEVICE;" />
+
+		<Property name="preferredVideoWidth"
+			datatype="xs:nonNegativeInteger" aspects="&ALLASPECTS;"
+			defaultAspect="&DEVICE;" />
+
+		<Property name="preferredVideoHeight"
+			datatype="xs:nonNegativeInteger" aspects="&ALLASPECTS;"
+			defaultAspect="&DEVICE;" />
+
+	</Properties>
+
+</VocabularyDescription>

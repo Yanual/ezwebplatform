@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mymw:document xmlns:mymw="http://morfeo-project.org/mymobileweb" id="list">
+  <mymw:head>
+    <mymw:title>Map Viewer</mymw:title>
+    <mymw:style href="mymem.css"></mymw:style>
+  </mymw:head>
+  <mymw:body>
+	   
+	<mymw:div id="principal" layout="vertical" align="left">	
+		<mymw:image id="localize" src="${localize}" alt="Localize" />		
+
+		    <mymw:menu id="cursors" bind="${cursor}" optionsbind="${cursors}" class="clickable" resourceid="cursors" display="${_MYMW_DEV_BELONGS.PcDevice or _MYMW_DEV_BELONGS.PdaDevice}" ></mymw:menu>
+
+	</mymw:div>
+	
+	  <mymw:div id ="cursors_mobile" align="left" >		  
+		  <mymw:menu id="cursorsmobile" align="left" layout="grid" cols="3"  bind="${cursorMobile}" class="cursorsmobile" display="${!_MYMW_DEV_BELONGS.PcDevice and !_MYMW_DEV_BELONGS.PdaDevice}" >
+				<mymw:link id="IN" accesskey="1"  resourceid="cursor_in" class="imgpadding" display="${!_MYMW_DEV_BELONGS.PcDevice and !_MYMW_DEV_BELONGS.PdaDevice}">1</mymw:link>
+				<mymw:link id="UP" accesskey="2" resourceid="cursor_up" class="imgpadding">2</mymw:link>
+				<mymw:link id="OUT" accesskey="3" resourceid="cursor_out" class="imgpadding">3</mymw:link>
+				<mymw:link id="LE" accesskey="4" resourceid="cursor_left" class="imgpadding">4</mymw:link>
+				<mymw:link id="CE" accesskey="5" resourceid="cursor_center" class="imgpadding">5</mymw:link>
+				<mymw:link id="RI" accesskey="6" resourceid="cursor_rigth" class="imgpadding">6</mymw:link>
+				<mymw:link id="IN2" accesskey="7" resourceid="cursor_in2" class="imgpadding">7</mymw:link>
+				<mymw:link id="DO"  accesskey="8" resourceid="cursor_down" class="imgpadding">8</mymw:link>
+				<mymw:link id="OUT2" accesskey="9" resourceid="cursor_out2" class="imgpadding">9</mymw:link>
+			</mymw:menu>
+	  </mymw:div>
+	  
+	  <mymw:include content="Includes/generic/foot/pBack"/>
+
+  </mymw:body>
+</mymw:document>
+

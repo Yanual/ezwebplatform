@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<mymw:document xmlns:mymw="http://morfeo-project.org/mymobileweb" xmlns:c="http://java.sun.com/jsp/jstl/core" id="includes">
+  <mymw:head>
+    <mymw:title style="include">Includes</mymw:title>    
+    <mymw:style href="mymem.css"/>
+  </mymw:head>
+  
+  <mymw:body>
+	<mymw:div id="pBack">
+	  	<mymw:link id="lback" resourceid="back" href="${platform}" class="foot">Volver</mymw:link>
+	</mymw:div>
+  </mymw:body>
+  
+
+</mymw:document>

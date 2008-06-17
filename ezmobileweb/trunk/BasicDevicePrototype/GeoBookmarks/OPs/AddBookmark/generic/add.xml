@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mymw:document xmlns:mymw="http://morfeo-project.org/mymobileweb" id="addBookmark">
+  <mymw:head>
+    <mymw:title>Add GeoBookmark</mymw:title>
+    <mymw:style href="mypresentation.css"/>
+  </mymw:head>
+  <mymw:body>
+  	<mymw:div id="pform" layout="grid" cols="2">
+  		<mymw:label>Name:</mymw:label><mymw:entryfield id="bookmarkName" bind="${bookmarkName}" title="Name" />
+  		<mymw:label>Location:</mymw:label><mymw:entryfield id="bookmarkLocation" bind="${bookmarkLocation}" title="Location" />
+  	</mymw:div>
+  	<mymw:div id="pform2" layout="vertical">
+  		<mymw:select id="bookmarkType" bind="${bookmarkType}">
+  			<mymw:option selected="true" value="address" text="address"/>
+  			<mymw:option value="utm" text="utm"/>
+  		</mymw:select>
+  		<mymw:submit id="add" value="Add" />
+  	</mymw:div>
+  	<mymw:include content="Includes/generic/foot/pBack"/>
+  </mymw:body>
+</mymw:document>
+

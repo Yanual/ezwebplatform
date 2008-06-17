@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="mymem.css" type="text/css"?>
+<mymw:document xmlns:mymw="http://morfeo-project.org/mymobileweb" id="login">
+  <mymw:head>
+    <mymw:title class="noinclude">Log in</mymw:title>
+  </mymw:head>
+  <mymw:body newcontext="true">
+    <mymw:p id="p1" layout="vertical" align="left">
+      <mymw:image id="img1" resourceid="mymem_logo" alt="Logo" display="${_MYMW_DEVICE.allCapabilities.gif}" style="logo"></mymw:image>
+      <mymw:label>User:</mymw:label>
+      <mymw:entryfield id="USER" bind="${ _MYMW_LOGIN }"></mymw:entryfield>
+      <mymw:label>Password:</mymw:label>
+      <mymw:entryfield id="PASS" bind="${ _MYMW_PASS }" class="password"></mymw:entryfield>
+    </mymw:p>
+    <mymw:p id="p2" align="left">
+      <mymw:submit id="_MYMW_LG_BT" value="Enter" principal="true"></mymw:submit>
+    </mymw:p>
+    <mymw:p id="p5">
+      <mymw:link id="register" resourceid="register">Register</mymw:link>
+    </mymw:p>
+    <mymw:br display="${_MYMW_DEV_BELONGS.PdaDevice}"></mymw:br>
+    <mymw:p id="p6" style="menu">
+      <mymw:link id="lnk_1" resourceid="spain" href="DH?_MYMW_LANG=es_ES" style="menu">Español</mymw:link>
+      <mymw:link id="lnk_2" resourceid="england" href="DH?_MYMW_LANG=en_US" style="menu">English</mymw:link>
+    </mymw:p>
+  </mymw:body>
+</mymw:document>
+

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration name="root">
+    <property name="LOG4J_Config" value="/home/jjmr/workspace/ezmmw/.config/logs/traces-deploy-tools.xml"/>
+    <module name="transformer">
+        <module name="Applications">
+            <module name="Portal">
+                <property name="Application_Root" value="C:/eclipse/MyMobileWeb/MyMobileWebExamplesPortal"/>
+                <property name="Source_Dir" value="OPs"/>
+                <property name="Target_Dir" value="jsp"/>
+                <property name="Script_Dir" value="script"/>
+            </module>
+            <module name="SalesForce">
+                <property name="Application_Root" value="C:/eclipse/MyMobileWeb/SalesForce"/>
+                <property name="Source_Dir" value="OPs"/>
+                <property name="Target_Dir" value="jsp"/>
+                <property name="Script_Dir" value="script"/>
+            </module>
+            <module name="SalesForce2">
+                <property name="Application_Root" value="C:/eclipse/MyMobileWeb/SalesForce"/>
+                <property name="Source_Dir" value="OPs"/>
+                <property name="Target_Dir" value="jsp"/>
+                <property name="Script_Dir" value="script"/>
+            </module>
+            <module name="vld">
+                <property name="Application_Root" value="C:/eclipse/MyMobileWeb/VLDMobile"/>
+                <property name="Source_Dir" value="OPs"/>
+                <property name="Target_Dir" value="jsp"/>
+                <property name="Script_Dir" value="script"/>
+            </module>
+            <module name="DemoMenu">
+                <property name="Application_Root" value="C:/eclipse/MyMobileWeb/DemoMenu/"/>
+                <property name="Source_Dir" value="OPs"/>
+                <property name="Target_Dir" value="jsp"/>
+                <property name="Script_Dir" value="script"/>
+            </module>
+            <module name="Basic">
+                <property name="Application_Root" value="C:/eclipse/MyMobileWeb/MobilityChannelBasicControls"/>
+                <property name="Source_Dir" value="OPs"/>
+                <property name="Target_Dir" value="jsp"/>
+                <property name="Script_Dir" value="script"/>
+            </module>
+            <module name="Advanced">
+                <property name="Application_Root" value="C:/eclipse/MyMobileWeb/MobilityChannelAdvancedControls"/>
+                <property name="Source_Dir" value="OPs"/>
+                <property name="Target_Dir" value="jsp"/>
+                <property name="Script_Dir" value="script"/>
+            </module>
+            <module name="Tests">
+                <property name="Application_Root" value="C:/eclipse/MyMobileWeb/MyMobileWebTests"/>
+                <property name="Source_Dir" value="OPs"/>
+                <property name="Target_Dir" value="jsp"/>
+                <property name="Script_Dir" value="script"/>
+            </module>
+            <module name="Rss">
+                <property name="Application_Root" value="C:/eclipse/MyMobileWeb/MobilityChannelRSSReader"/>
+                <property name="Source_Dir" value="OPs"/>
+                <property name="Target_Dir" value="jsp"/>
+                <property name="Script_Dir" value="script"/>
+            </module>
+            <module name="Rfi">
+                <property name="Application_Root" value="C:/eclipse/MyMobileWeb/DemoRFI"/>
+                <property name="Source_Dir" value="OPs"/>
+                <property name="Target_Dir" value="jsp"/>
+                <property name="Script_Dir" value="script"/>
+            </module>
+            <module name="Sem">
+                <property name="Application_Root" value="C:/eclipse/web-semantica/SemanticWeb-Demo"/>
+                <property name="Source_Dir" value="OPs"/>
+                <property name="Target_Dir" value="jsp"/>
+                <property name="Script_Dir" value="script"/>
+            </module>
+            <module name="ezmmw">
+                <property name="Application_Root" value="/home/jjmr/workspace/ezmmw"/>
+                <property name="Source_Dir" value="OPs"/>
+                <property name="Target_Dir" value="jsp"/>
+                <property name="Script_Dir" value="script"/>
+            </module>
+        </module>
+        <module name="ops">
+            <property name="pseudoopsdir" value="resources/PseudoOPs"/>
+            <property name="techs" value="html_web_3_2,xhtml_mp,wml_1,html_wi_imode"/>
+            <property name="commondirname" value="generic"/>
+        </module>
+        <module name="xsl">
+            <property name="dir" value="resources/transformations/xsl"/>
+        </module>
+        <module name="validation">
+            <property name="forcevalidation" value="true"/>
+            <property name="forcevalidationpseudoop" value="false"/>
+            <property name="filename" value="resources/transformations/xsd/cmt.xsd"/>
+        </module>
+        <module name="scriptgenerator">
+            <property name="JS_Common" value="resources/js/common.js"/>
+            <property name="Messages_Dir" value="i18N/messages"/>
+            <property name="Literals_Dir" value="i18N/literals"/>
+            <property name="Languages" value="es_ES,en_US"/>
+        </module>
+        <module name="customtags">
+            <property name="rsspanel" value="org.morfeo.tidmobile.reader.tag.RsspanelTag"/>
+        </module>
+    </module>
+</configuration>

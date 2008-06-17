@@ -1,0 +1,20 @@
+link.menu {
+color:#61440B;
+
+}
+
+label.choosemenu {
+ color:#946910;
+ font-style: italic;
+}
+
+image.transcode1 {
+	align: middle;
+	transcode:true;
+        weight-width:90;
+	weight-height:80;
+
+    aspect-ratio:false;
+
+
+}

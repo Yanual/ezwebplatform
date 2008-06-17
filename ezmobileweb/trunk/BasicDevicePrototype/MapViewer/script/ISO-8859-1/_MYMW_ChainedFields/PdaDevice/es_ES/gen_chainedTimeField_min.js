@@ -1,0 +1,1 @@
+function _smt_npr_onsubmit_gen_validate(){if(document.forms[0].Minute_VAL){}if(document.forms[0].Hour_VAL){}if(document.forms[0].ChaTimField_VAL){}if(document.forms[0].Second_VAL){}if(typeof _smt_npr_onsubmit_validate=="function"){var result=_smt_npr_onsubmit_validate()}if(result){return true}else{return false}};

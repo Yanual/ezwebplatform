@@ -1,0 +1,19 @@
+ /* 
+  *	Add your CSS styles 	
+  */
+  
+ menu.gadgetMenu {
+    colored: true;
+   	background-color1: #E0E0E0;
+   	
+   	cols: 3;
+}
+
+image.center{
+	align: middle;
+}
+
+label.name{
+	font-weight: bold;
+}
+  

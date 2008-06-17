@@ -1,0 +1,26 @@
+chainedmenu.clickable {
+	display-as: clickable-image;
+	autoselect: none;
+        required: true;
+}
+image.transcode2 {
+	align: middle;
+	transcode:true;
+	width:83;
+	height:19;
+    aspect-ratio:false;
+}
+image.transcode1 {
+	align: middle;
+	transcode:true;
+        weight-width:90;
+	weight-height:80;
+
+    aspect-ratio:false;
+
+
+}
+
+
+
+

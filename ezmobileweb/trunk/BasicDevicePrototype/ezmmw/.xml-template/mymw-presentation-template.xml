@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?xml-stylesheet href="mypresentation.css" type="text/css"?>
+
+
+<mymw:document xmlns:mymw="http://morfeo-project.org/mymobileweb" id="mypresentation">
+ 
+  <mymw:head>
+ 
+    <mymw:title>My Presentation</mymw:title>       
+   
+  </mymw:head>
+ 
+  <mymw:body>  
+       
+  </mymw:body>
+ 
+</mymw:document>

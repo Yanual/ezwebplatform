@@ -1,0 +1,15 @@
+ /* 
+  *	Add your CSS styles 	
+  */
+  
+table.selcol1 {
+    sel-column:1;
+}
+td.header {
+	font-weight: bold;
+	align: center;
+}
+table{
+	colored: true;
+	background-color1: #E0E0E0;
+}

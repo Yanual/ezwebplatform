@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="mypresentation.css" type="text/css"?>
+<mymw:document xmlns:mymw="http://morfeo-project.org/mymobileweb" id="gadgetsMenu">
+  <mymw:head>
+    <mymw:title>Gadgets menu</mymw:title>
+  </mymw:head>
+  <mymw:body>
+  	<mymw:div>
+  		<mymw:label id="workspace_name" class="name" >${workspaceName}</mymw:label>
+  		<mymw:label id="tab_name" class="name">${tabName}</mymw:label>
+    </mymw:div>		
+  	<mymw:div>
+  		<mymw:menu id="gadgets_menu" paginate="true" bind="${id}" optionsbind="${userIgadgetList}" keymember="id" textmember="name" imgmember="image" longtitlemember="description" hrefmember="href" class="gadgetMenu"/>
+    </mymw:div>
+    <mymw:div id="pEnd">
+	  	<mymw:link id="lindex" resourceid="logout" class="foot">Salir</mymw:link>
+	</mymw:div>
+  </mymw:body>
+</mymw:document>

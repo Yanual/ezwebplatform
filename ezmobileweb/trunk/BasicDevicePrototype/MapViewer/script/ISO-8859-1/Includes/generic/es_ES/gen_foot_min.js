@@ -1,0 +1,1 @@
+function _smt_npr_onsubmit_gen_validate(){if(typeof _smt_npr_onsubmit_validate=="function"){var result=_smt_npr_onsubmit_validate()}if(result){return true}else{return false}};

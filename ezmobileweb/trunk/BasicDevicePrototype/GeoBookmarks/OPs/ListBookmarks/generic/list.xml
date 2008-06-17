@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mymw:document xmlns:mymw="http://morfeo-project.org/mymobileweb" id="list">
+  <mymw:head>
+    <mymw:title>GeoBookmarks List</mymw:title>
+    <mymw:style href="mypresentation.css"/>
+  </mymw:head>
+  <mymw:body>
+  	<mymw:div id="padd">
+  		<mymw:link id="add_bookmark">Add geobookmark</mymw:link>
+  	</mymw:div>
+  	<mymw:div id="plist">
+	  	<mymw:table id="bookmarks_list" optionsbind="${bookmarks_list}" bind="${idRow}" bindingtype="Integer" keymember="idRow" class="selcol1" >
+	  		<mymw:th>
+	  			<mymw:td class="header">Name</mymw:td>
+	  			<mymw:td class="header">Location</mymw:td>
+	  		</mymw:th>
+	  		<mymw:tr>
+	  			<mymw:td member="bookmarkName"/>
+	  			<mymw:td member="bookmarkLocation"/>
+	  		</mymw:tr>
+	  	</mymw:table>
+	  </mymw:div>
+	  <mymw:include content="Includes/generic/foot/pMenu"/>
+  </mymw:body>
+</mymw:document>
+

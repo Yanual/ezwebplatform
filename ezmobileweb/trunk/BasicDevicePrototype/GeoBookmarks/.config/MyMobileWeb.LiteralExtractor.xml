@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<configuration name="root">
+    <property name="LOG4J_Config" value="/home/jjmr/workspace/GeoBookmarks/.config/logs/traces-deploy-tools.xml"/>
+    <module name="xsl">
+        <property name="dir" value="resources/transformations/xsl"/>
+    </module>
+    <module name="extractor">
+        <module name="Applications">
+            <module name="Basic">
+                <property name="Application_Root" value="C:/eclipse/MyMobileWeb/MobilityChannelBasicControls"/>
+                <property name="Source_Dir" value="OPs"/>
+                <property name="Target_Dir" value="i18N/literals/All"/>
+                <property name="Literal_File_Name" value="Application"/>
+                <property name="Source_Language" value="es_ES"/>
+                <property name="Translation_Languages" value="en_US"/>
+            </module>
+            <module name="GeoBookmarks">
+                <property name="Application_Root" value="/home/jjmr/workspace/GeoBookmarks"/>
+                <property name="Source_Dir" value="OPs"/>
+                <property name="Target_Dir" value="i18N/literals/All"/>
+                <property name="Literal_File_Name" value="Application"/>
+                <property name="Source_Language" value="es_ES"/>
+                <property name="Translation_Languages" value="eng_US"/>
+            </module>
+        </module>
+    </module>
+</configuration>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Literals sourcelang="es_ES" targetlang="en_US">
+  <Literal name="Add">
+    <Translation>Add</Translation>
+  </Literal>
+  <Literal name="Add GeoBookmark">
+    <Translation>Add GeoBookmark</Translation>
+  </Literal>
+  <Literal name="Clave:">
+    <Translation>Clave:</Translation>
+  </Literal>
+  <Literal name="Entrar">
+    <Translation>Entrar</Translation>
+  </Literal>
+  <Literal name="Error">
+    <Translation>Error</Translation>
+  </Literal>
+  <Literal name="GeoBookmarks List">
+    <Translation>GeoBookmarks List</Translation>
+  </Literal>
+  <Literal name="Includes">
+    <Translation>Includes</Translation>
+  </Literal>
+  <Literal name="Location">
+    <Translation>Location</Translation>
+  </Literal>
+  <Literal name="Location:">
+    <Translation>Location:</Translation>
+  </Literal>
+  <Literal name="Name">
+    <Translation>Name</Translation>
+  </Literal>
+  <Literal name="Name:">
+    <Translation>Name:</Translation>
+  </Literal>
+  <Literal name="Usuario:">
+    <Translation>Usuario:</Translation>
+  </Literal>
+  <Literal name="Validación">
+    <Translation>Validación</Translation>
+  </Literal>
+  <Literal name="Volver">
+    <Translation>Volver</Translation>
+  </Literal>
+</Literals>
+

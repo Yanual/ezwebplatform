@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+* MORFEO Project
+* http://morfeo-project.org
+*
+* Component: MyMobileWeb
+* Programming Language: Java
+*
+* File: 
+* Version: $Revision: 2959 $
+* Date: $Date: 2007-05-07 16:43:16 +0200 (lun, 07 may 2007) $
+* Last modified by: $Author: crdlc $
+*
+* (C) Copyright 2004 Telefónica Investigación y Desarrollo
+*     S.A.Unipersonal (Telefónica I+D)
+*
+* Info about members and contributors of the MORFEO project
+* is available at:
+*
+*   http://morfeo-project.org/
+*
+* This program is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*
+* If you want to use this software an plan to distribute a
+* proprietary application in any way, and you are not licensing and
+* distributing your source code under GPL, you probably need to
+* purchase a commercial license of the product.  More info about
+* licensing options is available at:
+*
+*   http://morfeo-project.org/
+-->
+<wurfl-ext>
+    <mantainer>MyMobileWeb Dev Team</mantainer>
+    <version>1.0</version>
+    <last_updated>Jul 11, 2005</last_updated>
+    
+    <abstract-families>
+    
+        <family id="WapDevice">
+            <condition><![CDATA[
+                (preferred_markup == "wml_1_1" ||  preferred_markup == "wml_1_2" ||  preferred_markup == "wml_1_3")
+            ]]></condition>
+        </family>
+        
+        <family id="IModeDevice">
+            <condition><![CDATA[
+                (preferred_markup == "html_wi_imode_html_1" || preferred_markup == "html_wi_imode_html_2" ||
+                preferred_markup == "html_wi_imode_html_3" || preferred_markup == "html_wi_imode_html_4" ||
+                preferred_markup == "html_wi_imode_html_5" || preferred_markup == "html_wi_imode_htmlx_1" ||
+                preferred_markup == "html_wi_imode_htmlx_1_1")
+            ]]></condition>
+        </family>
+        
+        <family id="XHTMLMPDevice">
+            <condition><![CDATA[
+                (preferred_markup == "html_wi_oma_xhtmlmp_1_0" || 
+                (preferred_markup == "html_wi_w3_xhtmlbasic" && html_wi_oma_xhtmlmp_1_0 == "true"))
+            ]]></condition>
+        </family>
+    
+        <family id="NokiaDeviceExcept6670">
+            <condition><![CDATA[
+                (brand_name == "Nokia" && !(model_name == "6670"))
+            ]]></condition>
+        </family>
+        
+        <family id="PdaDevice">
+            <condition><![CDATA[
+                (preferred_markup == "html_web_3_2" && rows > 8 && rows < 15 && columns < 40 && is_wireless_device == "true")
+             ]]></condition>
+        </family>
+        
+        <family id="PcDevice">
+            <condition><![CDATA[
+                (preferred_markup == "html_web_4_0" && is_wireless_device == "false")
+            ]]></condition>
+        </family>
+        
+        <family id="MoreThan15Columns">
+            <condition><![CDATA[
+                (columns >= 15)
+            ]]></condition>
+        </family>
+        
+    </abstract-families>
+</wurfl-ext>

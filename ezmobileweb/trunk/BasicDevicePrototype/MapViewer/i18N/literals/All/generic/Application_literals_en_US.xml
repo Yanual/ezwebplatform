@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Literals sourcelang="es_ES" targetlang="en_US">
+  <Literal name="1">
+    <Translation>1</Translation>
+  </Literal>
+  <Literal name="2">
+    <Translation>2</Translation>
+  </Literal>
+  <Literal name="3">
+    <Translation>3</Translation>
+  </Literal>
+  <Literal name="4">
+    <Translation>4</Translation>
+  </Literal>
+  <Literal name="5">
+    <Translation>5</Translation>
+  </Literal>
+  <Literal name="6">
+    <Translation>6</Translation>
+  </Literal>
+  <Literal name="7">
+    <Translation>7</Translation>
+  </Literal>
+  <Literal name="8">
+    <Translation>8</Translation>
+  </Literal>
+  <Literal name="9">
+    <Translation>9</Translation>
+  </Literal>
+  <Literal name="Back">
+    <Translation>Back</Translation>
+  </Literal>
+  <Literal name="English">
+    <Translation>English</Translation>
+  </Literal>
+  <Literal name="Enter">
+    <Translation>Enter</Translation>
+  </Literal>
+  <Literal name="Error">
+    <Translation>Error</Translation>
+  </Literal>
+  <Literal name="Español">
+    <Translation>Español</Translation>
+  </Literal>
+  <Literal name="Includes">
+    <Translation>Includes</Translation>
+  </Literal>
+  <Literal name="Localize">
+    <Translation>Localize</Translation>
+  </Literal>
+  <Literal name="Log in">
+    <Translation>Log in</Translation>
+  </Literal>
+  <Literal name="Logo">
+    <Translation>Logo</Translation>
+  </Literal>
+  <Literal name="Map Viewer">
+    <Translation>Map Viewer</Translation>
+  </Literal>
+  <Literal name="Password:">
+    <Translation>Password:</Translation>
+  </Literal>
+  <Literal name="Register">
+    <Translation>Register</Translation>
+  </Literal>
+  <Literal name="User:">
+    <Translation>User:</Translation>
+  </Literal>
+  <Literal name="Volver">
+    <Translation>Volver</Translation>
+  </Literal>
+</Literals>
+

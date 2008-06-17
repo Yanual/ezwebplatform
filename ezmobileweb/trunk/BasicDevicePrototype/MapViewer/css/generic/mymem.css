@@ -1,0 +1,109 @@
+link {
+	text-decoration:none;
+}
+body{
+	background-color:#FFF3CE;
+	color: #946910;
+}
+
+menu.clickable {
+	display-as: clickable-image;
+	autoselect: none;
+    required: true;
+}
+select.req {
+	required: true;
+}
+image {
+
+    display-as:  clickable-image;
+    align: middle;
+}
+image.logo{
+
+    align: middle;
+}
+link.img {
+    img-display:only;
+    border-width:0;
+}
+link.imgpadding {
+    img-display:both;
+    border-width:0;
+    padding-bottom: 3px;
+    padding-right: 3px;
+}
+link.both {
+    img-display:both;
+    border-width:0;
+}
+
+menu.cursorsmobile{
+show-menu-separator: false;
+}
+
+image.transcode1 {
+	align: middle;
+	transcode:true;
+        weight-width:90;
+	weight-height:80;
+
+    aspect-ratio:false;
+
+}
+
+image.transcode2 {
+	align: middle;
+	transcode:true;
+	width:83;
+	height:19;
+    aspect-ratio:false;
+}
+
+link#CE {
+    shape:poly;
+    coords:20,20,40,20,40,40,20,40;
+
+}
+
+link#UP {
+    shape:poly;
+    coords:20,0,20,20,40,20,40,0;
+
+}
+
+link#DO {
+    shape:poly;
+    coords:20,40,40,40,40,60,20,60;
+    wap-accesskey: D;
+}
+link#LE {
+    shape:poly;
+    coords:0,20,20,20,20,40,0,40;
+    wap-accesskey: F;
+}
+link#RI {
+    shape:poly;
+    coords:40,20,60,20,60,40,40,40;
+    wap-accesskey: W;
+}
+link#IN {
+    shape:poly;
+    coords:0,0,20,0,20,20,0,20;
+    wap-accesskey: u;
+}
+link#OUT {
+    shape:poly;
+    coords:40,0,60,0,60,20,40,20;
+    wap-accesskey: t;
+}
+link#IN2 {
+    shape:poly;
+    coords:0,40,20,40,20,60,0,60;
+    wap-accesskey: g;
+}
+link#OUT2 {
+    shape:poly;
+    coords:40,40,60,40,60,60,40,60;
+    wap-accesskey: v;
+}
