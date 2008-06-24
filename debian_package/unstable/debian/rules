@@ -3,7 +3,7 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-export VER=0.2~svn1220
+export VER=0.2~svn1277
 
 # Include dpatch stuff.
 include /usr/share/dpatch/dpatch.make
@@ -47,6 +47,15 @@ binary-indep: build install
 	
 	mkdir -p debian/ezweb-platform-common/usr/sbin
 	cp -p debian/update-ezweb-platform debian/ezweb-platform-common/usr/sbin
+	mkdir -p debian/ezweb-platform-common/var/ezweb-instances
+	
+	mkdir -p debian/ezweb-platform-common/usr/share/ezweb-platform/admintools/server-backends
+	mkdir -p debian/ezweb-platform-common/usr/share/ezweb-platform/admintools/database-backends
+	cp debian/admintools/common.py \
+	   debian/ezweb-platform-common/usr/share/ezweb-platform/admintools
+	echo -n > debian/ezweb-platform-common/usr/share/ezweb-platform/admintools/__init__.py
+	echo -n > debian/ezweb-platform-common/usr/share/ezweb-platform/admintools/server-backends/__init__.py
+	echo -n > debian/ezweb-platform-common/usr/share/ezweb-platform/admintools/database-backends/__init__.py
 	
 	: # Remove unwanted files
 	rm -f `find debian/ezweb-platform-common -name "*.pyc"`
@@ -60,23 +69,22 @@ binary-indep: build install
 	: ###
 	: # ezweb-platform-fastcgi-common
 	: #
-	mkdir -p debian/ezweb-platform-fastcgi-common/etc/init.d
-	cp -p debian/ezweb-platform-fastcgi debian/ezweb-platform-fastcgi-common/etc/init.d
-	mkdir -p debian/ezweb-platform-apache2-fastcgi/var/run/ezweb-platform
+	mkdir -p debian/ezweb-platform-fastcgi-common/var/run/ezweb-platform
 	
 	: ###
 	: # ezweb-platform-apache2-common
 	: #
-	mkdir -p debian/ezweb-platform-apache2-common/usr/sbin
+	mkdir -p debian/ezweb-platform-apache2-common/usr/share/ezweb-platform/admintools/server-backends
 	mkdir -p debian/ezweb-platform-apache2-common/etc/ezweb-platform/apache2-templates
-	cp -p debian/update-ezweb-platform-apache2 debian/ezweb-platform-apache2-common/usr/sbin
+	cp -p debian/admintools/server-backends/apache2 \
+	      debian/ezweb-platform-apache2-common/usr/share/ezweb-platform/admintools/server-backends
 	
 	: ###
 	: # ezweb-platform-apache2-mod-python
 	: #
 	mkdir -p debian/ezweb-platform-apache2-mod-python/etc/ezweb-platform/apache2-templates
 	cp -p debian/apache2-templates/mod-python.vhost \
-	   debian/ezweb-platform-apache2-mod-python/etc/ezweb-platform/apache2-templates
+	      debian/ezweb-platform-apache2-mod-python/etc/ezweb-platform/apache2-templates
 	
 	: ###
 	: # ezweb-platform-apache2-mod-fastcgi
@@ -88,40 +96,43 @@ binary-indep: build install
 	: ###
 	: # ezweb-platform-lighttpd-common
 	: #
-	mkdir -p debian/ezweb-platform-lighttpd-common/usr/sbin
+	mkdir -p debian/ezweb-platform-lighttpd-common/usr/share/ezweb-platform/admintools/server-backends
 	mkdir -p debian/ezweb-platform-lighttpd-common/etc/ezweb-platform/lighttpd-templates
-	cp -p debian/update-ezweb-platform-lighttpd debian/ezweb-platform-lighttpd-common/usr/sbin
+	cp -p debian/admintools/server-backends/lighttpd \
+	      debian/ezweb-platform-lighttpd-common/usr/share/ezweb-platform/admintools/server-backends
 	
 	: ###
 	: # ezweb-platform-lighttpd-fastcgi
 	: #
 	mkdir -p debian/ezweb-platform-lighttpd-fastcgi/etc/ezweb-platform/lighttpd-templates
 	cp -p debian/lighttpd-templates/fastcgi.vhost \
-	   debian/ezweb-platform-lighttpd-fastcgi/etc/ezweb-platform/lighttpd-templates
+	      debian/ezweb-platform-lighttpd-fastcgi/etc/ezweb-platform/lighttpd-templates
 	
 	: ###
 	: # ezweb-platform-mysql
 	: #
-	mkdir -p debian/ezweb-platform-mysql/usr/sbin
-	cp -p debian/update-ezweb-platform-mysql \
-	   debian/ezweb-platform-mysql/usr/sbin
+	mkdir -p debian/ezweb-platform-mysql/usr/share/ezweb-platform/admintools/database-backends
+	cp -p debian/admintools/database-backends/mysql \
+	      debian/ezweb-platform-mysql/usr/share/ezweb-platform/admintools/database-backends
 	
 	: ###
 	: # ezweb-platform-postgres
 	: #
-	mkdir -p debian/ezweb-platform-postgres/usr/sbin
-	cp -p debian/update-ezweb-platform-postgres \
-	   debian/ezweb-platform-postgres/usr/sbin
+	mkdir -p debian/ezweb-platform-postgres/usr/share/ezweb-platform/admintools/database-backends
+	cp -p debian/admintools/database-backends/postgres \
+	      debian/ezweb-platform-postgres/usr/share/ezweb-platform/admintools/database-backends
 	
 	: ###
 	: # ezweb-platform-sqlite3
 	: #
-	mkdir -p debian/ezweb-platform-sqlite3/usr/sbin
-	cp -p debian/update-ezweb-platform-sqlite3 \
-	   debian/ezweb-platform-sqlite3/usr/sbin
+	mkdir -p debian/ezweb-platform-sqlite3/var/lib/ezweb-platform
+	mkdir -p debian/ezweb-platform-sqlite3/usr/share/ezweb-platform/admintools/database-backends
+	cp -p debian/admintools/database-backends/sqlite3 \
+	      debian/ezweb-platform-sqlite3/usr/share/ezweb-platform/admintools/database-backends
 	
 	dh_installchangelogs -i
 	dh_installdebconf -i
+	dh_installinit -i --no-start -r --name=ezweb-platform-fastcgi -- defaults 90 10
 	dh_compress -i
 	dh_fixperms -i
 	dh_installdeb -i

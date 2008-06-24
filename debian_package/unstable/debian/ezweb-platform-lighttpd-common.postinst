@@ -1,0 +1,36 @@
+#!/bin/bash
+
+###
+# Include debconf module
+#
+. /usr/share/debconf/confmodule
+
+if [ "$1" = "configure" ]; then
+  LIGHTTPD_ADMIN_SCRIPT="/usr/share/ezweb-platform/admintools/server-backends/lighttpd"
+
+  if [ -f "/etc/ezweb-platform/lighttpd.conf" ]; then
+    # Get previous configuration
+    RET=`$LIGHTTPD_ADMIN_SCRIPT getdefaults default`
+    eval $RET
+
+    db_set ezweb-platform-lighttpd-common/defaultservername "$SERVER_NAME"
+  else
+    # Establish the defaults values
+    db_set ezweb-platform-lighttpd-common/defaultservername `hostname -f`
+  fi
+
+  ###
+  # Read lighttpd config from user
+  #
+
+  db_input low ezweb-platform-lighttpd-common/defaultservername
+  db_go
+
+  db_get ezweb-platform-lighttpd-common/defaultservername
+  SERVER_NAME="$RET"
+
+  $LIGHTTPD_ADMIN_SCRIPT setdefaults default --server-name "$SERVER_NAME"
+
+fi
+
+exit 0

@@ -1,0 +1,55 @@
+#!/bin/bash
+
+reload_lighttpd() {
+  if lighttpd -t 2>/dev/null; then
+    invoke-rc.d lighttpd force-reload || true
+  else
+    echo "Your lighttpd configuration is broken, so we're not restarting it for you."
+  fi
+}
+
+if [ "$1" = "configure" ]; then
+
+  ###
+  # Include debconf module
+  #
+  . /usr/share/debconf/confmodule
+
+  INSTANCES=`/usr/sbin/update-ezweb-platform list all --debconf`
+  CURRENT_VAL=`/usr/sbin/update-ezweb-platform list server lighttpd connection_type fastcgi --debconf`
+  UNASSIGNED=`/usr/sbin/update-ezweb-platform list server "" --debconf`
+
+  if [ "x$UNASSIGNED" != "x" ]; then
+    if [ "x$CURRENT_VAL" != "x" ]; then
+      CURRENT_VAL="$CURRENT_VAL, $UNASSIGNED"
+    else
+      CURRENT_VAL=$UNASSIGNED
+    fi
+  fi
+
+  db_subst ezweb-platform-lighttpd-fastcgi/instances choices $INSTANCES
+  db_fset ezweb-platform-lighttpd-fastcgi/instances seen false
+  db_set ezweb-platform-lighttpd-fastcgi/instances $CURRENT_VAL
+
+  db_input high ezweb-platform-lighttpd-fastcgi/instances || true
+  db_go || true
+
+  db_get ezweb-platform-lighttpd-fastcgi/instances
+
+  if [ "$RET" != "" ]; then
+    list=`echo $RET | sed -e 's/, /,/g'`
+
+    saved_IFS=$IFS
+    IFS=,
+    for conf in $list; do
+      echo
+      echo "Configuring \"$conf\" for using lighttpd with fastcgi..."
+      update-ezweb-platform update $conf --server-type lighttpd --connection-type fastcgi
+    done
+    IFS=$saved_IFS
+
+    reload_lighttpd
+  fi
+fi
+
+exit 0

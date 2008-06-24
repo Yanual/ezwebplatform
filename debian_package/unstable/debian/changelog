@@ -1,10 +1,17 @@
-ezweb-platform (0.2~svn1220) unstable; urgency=low
+ezweb-platform (0.2~svn1277) unstable; urgency=low
 
   * New upstream snapshot.
 
- -- Alvaro Arranz <aarranz@pegaso.ls.fi.upm.es>  Fri, 30 May 2008 12:29:56 +0200
+ -- Alvaro Arranz <aarranz@pegaso.ls.fi.upm.es>  Thu, 19 Jun 2008 18:46:58 +0200
 
-ezweb-platform (0.2~svn1173) unstable; urgency=low
+ezweb-platform (0.2~svn1264) UNRELEASED; urgency=low
+
+  * New upstream snapshot.
+  * This version drops django_restapi. Remove patches to it.
+
+ -- Alvaro Arranz <aarranz@pegaso.ls.fi.upm.es>  Fri, 13 Jun 2008 17:07:58 +0200
+
+ezweb-platform (0.2~svn1173) UNRELEASED; urgency=low
 
   * Initial release.
 

@@ -1,0 +1,11 @@
+Template: ezweb-platform-sqlite3/instances
+Type: multiselect
+Default: default
+Choices: ${choices}
+Description: Select the instances of EzWeb you want to configure to use SQLite3
+	The selected EzWeb instances will be configured to use Apache2 and
+	mod-python.
+	.
+	This will not enable the selected EzWeb instances, although they will
+	continue to be enabled if they are currently enabled.
+

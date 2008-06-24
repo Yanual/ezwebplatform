@@ -1,12 +1,11 @@
-$HTTP["host"] == '@SERVER_NAME@' {
-    server.modules += ( "mod_fastcgi" )
-    server.modules += ( "mod_rewrite" )
+server.modules += ( "mod_fastcgi" )
+server.modules += ( "mod_rewrite" )
+$HTTP["host"] == "@SERVER_NAME@" {
     server.document-root = "@DOCUMENT_ROOT@"
 
     fastcgi.server = (
         "/mysite.fcgi" => (
             "main" => (
-                "bin-path" => "/",
                 "socket" => "/var/run/ezweb-platform/@CONF_NAME@.socket",
                 "check-local" => "disable",
             )
@@ -21,4 +20,7 @@ $HTTP["host"] == '@SERVER_NAME@' {
         "^/favicon\.ico$" => "/media/favicon.ico",
         "^(/.*)$" => "/mysite.fcgi$1",
     )
+
+    server.errorlog            = "@LOG_BASE_PATH@/error.log"
+    accesslog.filename         = "@LOG_BASE_PATH@/access.log"
 }

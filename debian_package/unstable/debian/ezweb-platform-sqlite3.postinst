@@ -1,0 +1,50 @@
+#!/bin/bash
+
+###
+# Include debconf module
+#
+. /usr/share/debconf/confmodule
+
+if [ "$1" = "configure" ]; then
+
+  ###
+  # Configure the instances
+  #
+  INSTANCES=`/usr/sbin/update-ezweb-platform list all --debconf`
+  CURRENT_VAL=`/usr/sbin/update-ezweb-platform list database_engine sqlite3 --debconf`
+  UNASSIGNED=`/usr/sbin/update-ezweb-platform list database_engine "" --debconf`
+
+  if [ "x$UNASSIGNED" != "x" ]; then
+    if [ "x$CURRENT_VAL" != "x" ]; then
+      CURRENT_VAL="$CURRENT_VAL, $UNASSIGNED"
+    else
+      CURRENT_VAL=$UNASSIGNED
+    fi
+  fi
+
+  db_subst ezweb-platform-sqlite3/instances choices $INSTANCES
+  db_fset ezweb-platform-sqlite3/instances seen false
+  db_set ezweb-platform-sqlite3/instances $CURRENT_VAL
+
+  db_input high ezweb-platform-sqlite3/instances || true
+  db_go || true
+
+  db_get ezweb-platform-sqlite3/instances
+
+  if [ "$RET" != "" ]; then
+    list=`echo $RET | sed -e 's/, /,/g'`
+
+    saved_IFS=$IFS
+    IFS=,
+    for conf in $list; do
+      echo
+      echo "Configuring \"$conf\" for using sqlite3 as DBMS..."
+      update-ezweb-platform update $conf --database-engine sqlite3
+    done
+    IFS=$saved_IFS
+  fi
+
+fi
+
+chgrp www-data /var/lib/ezweb-platform
+chmod 775      /var/lib/ezweb-platform

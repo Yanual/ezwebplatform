@@ -1,0 +1,23 @@
+#!/bin/bash
+
+###
+# Include debconf module
+#
+. /usr/share/debconf/confmodule
+
+if [ "$1" = "configure" ]; then
+  # If we are installing (not upgrading) and there is not a default config
+  # yet, then create a default EzWeb instance config
+  if [ "$2" == "" -a ! -f "/etc/ezweb-platform/sites/default/config" ]; then
+    /usr/sbin/update-ezweb-platform create default
+  fi
+
+  db_input high ezweb-platform-common/proxy
+  db_go
+
+  db_get ezweb-platform-common/proxy
+  PROXY="$RET"
+
+fi
+
+exit 0

@@ -1,0 +1,15 @@
+Template: ezweb-platform-common/proxy
+Type: string
+Default:
+Description: Default proxy for the EzWeb instances
+	The EzWeb Platform usually acts as an HTTP proxy for the EzWeb IGadgets,
+	so it needs to be connected to the internet. If this machine don't have
+	a direct connection to the internet, you can provide the address of a
+	HTTP proxy.
+	.
+	Each EzWeb Instance can be configured individually, but normally all the
+	instances will use the same Proxy, so you can stablish one proxy as the
+	default one.
+	.
+	If this machine is connected directly to the internet, you can leave
+	this field empty.

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ "$1" == "remove" ]; then
+  # Disable all the EzWeb instances using mysql as DBMS
+  INSTANCES=`/usr/sbin/update-ezweb-platform list enabled database_engine mysql`
+
+  for conf_name in $INSTANCES; do
+    /usr/sbin/update-ezweb-platform disable $conf_name
+  done
+fi
+
+exit 0

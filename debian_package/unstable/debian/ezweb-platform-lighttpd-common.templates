@@ -1,0 +1,7 @@
+Template: ezweb-platform-lighttpd-common/defaultservername
+Type: string
+Default: localhost
+Description: Default ServerName for EzWeb instances using Lighttpd:
+	Each Lighttpd virtual host is attached to one or more servernames. Here
+	you can define the default value for this virtual host attribute that
+	will be use by the EzWeb instances.

@@ -7,18 +7,34 @@
 
 if [ "$1" = "configure" ]; then
 
-  RET=`/usr/sbin/update-ezweb-platform-mysql getdefaults default`
-  eval $RET
+  MYSQL_ADMIN_SCRIPT="/usr/share/ezweb-platform/admintools/database-backends/mysql"
 
-  db_set ezweb-platform-mysql/serveraddress "$SERVER_HOST"
-  db_set ezweb-platform-mysql/adminuser "$ADMIN_USER"
-  db_set ezweb-platform-mysql/adminpass "$ADMIN_PASS"
+  if [ -f "/etc/ezweb-platform/mysql.conf" ]; then
+    RET=`$MYSQL_ADMIN_SCRIPT getdefaults default`
+    eval $RET
+
+    db_set ezweb-platform-mysql/serveraddress "$SERVER_HOST"
+    db_set ezweb-platform-mysql/adminuser "$ADMIN_USER"
+    db_set ezweb-platform-mysql/adminpass "$ADMIN_PASS"
+  else
+    if [ -x "/usr/sbin/mysqld" ]; then
+      db_set ezweb-platform-mysql/serveraddress "localhost"
+    else
+      FORCE_SERVER_QUESTION=1
+    fi
+
+    db_set ezweb-platform-mysql/adminuser "root"
+  fi
 
   ###
   # Read mysql config from user
   #
 
-  db_input high ezweb-platform-mysql/serveraddress
+  if [ "$FORCE_SERVER_QUESTION" == 1 ]; then
+    db_input high ezweb-platform-mysql/serveraddress
+  else
+    db_input low ezweb-platform-mysql/serveraddress
+  fi
   db_go
 
   db_get ezweb-platform-mysql/serveraddress
@@ -36,8 +52,45 @@ if [ "$1" = "configure" ]; then
   db_get ezweb-platform-mysql/adminpass
   ADMIN_PASS="$RET"
 
-  db_stop
+  $MYSQL_ADMIN_SCRIPT setdefaults default --server-host "$SERVER_HOST" --admin-user "$ADMIN_USER" --admin-pass "$ADMIN_PASS"
 
-  /usr/sbin/update-ezweb-platform-mysql setdefaults default --backup --server-host "$SERVER_HOST" --admin-user "$ADMIN_USER" --admin-pass "$ADMIN_PASS"
+  ###
+  # Configure the instances
+  #
+  INSTANCES=`/usr/sbin/update-ezweb-platform list all --debconf`
+  CURRENT_VAL=`/usr/sbin/update-ezweb-platform list database_engine mysql --debconf`
+  UNASSIGNED=`/usr/sbin/update-ezweb-platform list database_engine "" --debconf`
+
+  if [ "x$UNASSIGNED" != "x" ]; then
+    if [ "x$CURRENT_VAL" != "x" ]; then
+      CURRENT_VAL="$CURRENT_VAL, $UNASSIGNED"
+    else
+      CURRENT_VAL=$UNASSIGNED
+    fi
+  fi
+
+  db_subst ezweb-platform-mysql/instances choices $INSTANCES
+  db_fset ezweb-platform-mysql/instances seen false
+  db_set ezweb-platform-mysql/instances $CURRENT_VAL
+
+  db_input high ezweb-platform-mysql/instances || true
+  db_go || true
+
+  db_get ezweb-platform-mysql/instances
+
+  if [ "$RET" != "" ]; then
+    list=`echo $RET | sed -e 's/, /,/g'`
+
+    saved_IFS=$IFS
+    IFS=,
+    for conf in $list; do
+      echo
+      echo "Configuring \"$conf\" for using mysql as DBMS..."
+      update-ezweb-platform update $conf --database-engine mysql
+    done
+    IFS=$saved_IFS
+  fi
 
 fi
+
+exit 0

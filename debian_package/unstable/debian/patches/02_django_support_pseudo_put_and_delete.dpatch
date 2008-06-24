@@ -1,0 +1,36 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 02_django_support_pseudo_put_and_delete.dpatch by  <aarranz@pegaso.ls.fi.upm.es>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: This patch add support for the pseudo PUT and DELETE request. They are 
+## DP: POST requests with a _method field indicating whether you like to 
+## DP: emulate a PUT or a DELETE method.
+
+@DPATCH@
+
+diff -ru ezweb-platform-0.2~svn1220-origdeb/django_restapi/resource.py ezweb-platform-0.2~svn1220/django_restapi/resource.py
+--- ezweb-platform-0.2~svn1220-origdeb/django_restapi/resource.py	2008-06-09 11:00:50.993173371 +0200
++++ ezweb-platform-0.2~svn1220/django_restapi/resource.py	2008-06-09 10:56:57.979894780 +0200
+@@ -13,7 +13,7 @@
+     Therefore we can use Django's POST data retrieval method 
+     for PUT.
+     """
+-    if request.method == 'PUT':
++    if (request.method == 'PUT' or (request.POST.has_key('_method') and request.POST['_method'].upper() =='PUT')):
+         try:
+           request.method = 'POST'
+           request._load_post_and_files()
+@@ -75,6 +75,13 @@
+         if request_method == 'GET':
+             return target.read(request, *args, **kwargs)
+         elif request_method == 'POST':
++            if request.POST.has_key('_method'):
++                _method = request.POST['_method'].upper()
++                if _method == 'DELETE':
++                    return target.delete(request, *args, **kwargs)
++                elif _method == 'PUT':
++                    load_put_and_files(request)
++                    return target.update(request, *args, **kwargs)
+             return target.create(request, *args, **kwargs)
+         elif request_method == 'PUT':
+             load_put_and_files(request)

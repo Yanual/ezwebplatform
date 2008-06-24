@@ -1,7 +1,15 @@
 #!/bin/bash
 
-# Disable all EzWeb servers
-# TODO
+if [ "$1" == "remove" ]; then
+  # Disable all EzWeb instances
+  INSTANCES=`/usr/sbin/update-ezweb-platform list enabled`
 
-# Remove sparse .pyc files
-rm -f `find /usr/share/ezweb-platform -name "*.pyc"`
+  for conf_name in $INSTANCES; do
+    /usr/sbin/update-ezweb-platform disable $conf_name
+  done
+fi
+
+# Remove python object files
+find /usr/share/ezweb-platform -name "*.pyc" -delete
+
+exit 0

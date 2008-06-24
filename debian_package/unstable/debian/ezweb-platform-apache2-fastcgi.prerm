@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ "$1" == "remove" ]; then
+  INSTANCES=`/usr/sbin/update-ezweb-platform list enabled server apache2 connection_type fastcgi`
+
+  # Disable all Apache2 EzWeb instances
+  for conf_name in $INSTANCES; do
+    /usr/sbin/update-ezweb-platform disable $conf_name
+  done
+fi
+
+exit 0

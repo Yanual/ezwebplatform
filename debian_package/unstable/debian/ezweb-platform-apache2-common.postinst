@@ -6,38 +6,39 @@
 . /usr/share/debconf/confmodule
 
 if [ "$1" = "configure" ]; then
+  APACHE2_ADMIN_SCRIPT="/usr/share/ezweb-platform/admintools/server-backends/apache2"
 
-  RET=`/usr/sbin/update-ezweb-platform-mysql getdefaults default`
-  eval $RET
+  if [ -f "/etc/ezweb-platform/apache2.conf" ]; then
+    # Get previous configuration
+    RET=`$APACHE2_ADMIN_SCRIPT getdefaults default`
+    eval $RET
 
-  db_set ezweb-platform-mysql/serveraddress "$SERVER_HOST"
-  db_set ezweb-platform-mysql/adminuser "$ADMIN_USER"
-  db_set ezweb-platform-mysql/adminpass "$ADMIN_PASS"
+    db_set ezweb-platform-apache2-common/defaultservername "$SERVER_NAME"
+    db_set ezweb-platform-apache2-common/defaultserverport "$SERVER_PORT"
+  else
+    # Establish the defaults values
+    db_set ezweb-platform-apache2-common/defaultservername `hostname -f`
+    db_set ezweb-platform-apache2-common/defaultserverport "80"
+  fi
 
   ###
-  # Read mysql config from user
+  # Read apache2 config from user
   #
 
-  db_input high ezweb-platform-mysql/serveraddress
+  db_input low ezweb-platform-apache2-common/defaultservername
   db_go
 
-  db_get ezweb-platform-mysql/serveraddress
-  SERVER_HOST="$RET"
+  db_get ezweb-platform-apache2-common/defaultservername
+  SERVER_NAME="$RET"
 
-  db_input high ezweb-platform-mysql/adminuser
+  db_input low ezweb-platform-apache2-common/defaultserverport
   db_go
 
-  db_get ezweb-platform-mysql/adminuser
-  ADMIN_USER="$RET"
+  db_get ezweb-platform-apache2-common/defaultserverport
+  SERVER_PORT="$RET"
 
-  db_input high ezweb-platform-mysql/adminpass
-  db_go
-
-  db_get ezweb-platform-mysql/adminpass
-  ADMIN_PASS="$RET"
-
-  db_stop
-
-  /usr/sbin/update-ezweb-platform-mysql setdefaults default --backup --server-host "$SERVER_HOST" --admin-user "$ADMIN_USER" --admin-pass "$ADMIN_PASS"
+  $APACHE2_ADMIN_SCRIPT setdefaults default --server-name "$SERVER_NAME" --server-port "$SERVER_PORT"
 
 fi
+
+exit 0

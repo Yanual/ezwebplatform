@@ -1,10 +1,81 @@
 #!/bin/bash
 
+###
+# Include debconf module
+#
+. /usr/share/debconf/confmodule
+
 if [ "$1" = "configure" ]; then
 
+  POSTGRES_ADMIN_SCRIPT="/usr/share/ezweb-platform/admintools/database-backends/postgres"
+  RET=`$POSTGRES_ADMIN_SCRIPT getdefaults default`
+  eval $RET
+
+  db_set ezweb-platform-postgres/serveraddress "$SERVER_HOST"
+  db_set ezweb-platform-postgres/adminuser "$ADMIN_USER"
+  db_set ezweb-platform-postgres/adminpass "$ADMIN_PASS"
+
   ###
-  # Include debconf module
+  # Read postgres config from user
   #
-  . /usr/share/debconf/confmodule
+
+  db_input high ezweb-platform-postgres/serveraddress
+  db_go
+
+  db_get ezweb-platform-postgres/serveraddress
+  SERVER_HOST="$RET"
+
+  db_input high ezweb-platform-postgres/adminuser
+  db_go
+
+  db_get ezweb-platform-postgres/adminuser
+  ADMIN_USER="$RET"
+
+  db_input high ezweb-platform-postgres/adminpass
+  db_go
+
+  db_get ezweb-platform-postgres/adminpass
+  ADMIN_PASS="$RET"
+
+  $POSTGRES_ADMIN_SCRIPT setdefaults default --server-host "$SERVER_HOST" --admin-user "$ADMIN_USER" --admin-pass "$ADMIN_PASS"
+
+  ###
+  # Configure the instances
+  #
+  INSTANCES=`/usr/sbin/update-ezweb-platform list all --debconf`
+  CURRENT_VAL=`/usr/sbin/update-ezweb-platform list database_engine postgres --debconf`
+  UNASSIGNED=`/usr/sbin/update-ezweb-platform list database_engine "" --debconf`
+
+  if [ "x$UNASSIGNED" != "x" ]; then
+    if [ "x$CURRENT_VAL" != "x" ]; then
+      CURRENT_VAL="$CURRENT_VAL, $UNASSIGNED"
+    else
+      CURRENT_VAL=$UNASSIGNED
+    fi
+  fi
+
+  db_subst ezweb-platform-postgres/instances choices $INSTANCES
+  db_fset ezweb-platform-postgres/instances seen false
+  db_set ezweb-platform-postgres/instances $CURRENT_VAL
+
+  db_input high ezweb-platform-postgres/instances || true
+  db_go || true
+
+  db_get ezweb-platform-postgres/instances
+
+  if [ "$RET" != "" ]; then
+    list=`echo $RET | sed -e 's/, /,/g'`
+
+    saved_IFS=$IFS
+    IFS=,
+    for conf in $list; do
+      echo
+      echo "Configuring \"$conf\" for using postgres as DBMS..."
+      update-ezweb-platform update $conf --database-engine postgres
+    done
+    IFS=$saved_IFS
+  fi
 
 fi
+
+exit 0

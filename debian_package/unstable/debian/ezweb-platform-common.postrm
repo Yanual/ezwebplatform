@@ -3,4 +3,7 @@
 # Remove all configuration files if we are purging
 if [ "$1" = "purge" ]; then
   rm -rf /etc/ezweb-platform 2> /dev/null || true
+  rm -rf /var/ezweb-instances 2> /dev/null || true
 fi
+
+exit 0

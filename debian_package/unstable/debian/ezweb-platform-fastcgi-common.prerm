@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [ "$1" == "remove" ]; then
+  # Disable all EzWeb instances
+  INSTANCES=`/usr/sbin/update-ezweb-platform list enabled connection_type fastcgi`
+
+  for conf_name in $INSTANCES; do
+    /usr/sbin/update-ezweb-platform disable $conf_name
+  done
+
+  PIDFILES=/var/run/ezweb-platform/*.pid
+  if [ ! -z "$PIDFILES" ]; then
+    invoke-rc.d ezweb-platform stop
+  fi
+fi
+
+exit 0

@@ -1,0 +1,84 @@
+#!/bin/sh -e
+### BEGIN INIT INFO
+# Provides:          ezweb-fcgi
+# Required-Start:    $local_fs $remote_fs $network $syslog
+# Required-Stop:     $local_fs $remote_fs $network $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start/stop ezweb fastcgi servers
+### END INIT INFO
+#
+# ezweb-fcgi	This init.d script is used to start all the ezweb fastcgi servers.
+
+. /lib/lsb/init-functions
+
+[ -f /etc/default/rcS ] && . /etc/default/rcS
+
+# TODO use a better way to know if we are installed
+[ -d /usr/share/doc/ezweb-platform-fastcgi-common ] || exit 0
+
+ezweb_fcgi_start() {
+  CONF_NAME=$1
+  export PYTHONPATH="/etc/ezweb-platform/sites/$CONF_NAME:/usr/share/ezweb-platform"
+  export DJANGO_SETTINGS_MODULE=settings
+  PIDFILE="/var/run/ezweb-platform/$CONF_NAME.pid"
+  SOCKETFILE="/var/run/ezweb-platform/$CONF_NAME.socket"
+  if [ ! -f $PIDFILE ]; then
+    log_progress_msg $CONF_NAME
+    su www-data -s /usr/bin/django-admin -- runfcgi protocol=fcgi socket=$SOCKETFILE pidfile=$PIDFILE
+  fi
+}
+
+ezweb_fcgi_start_all() {
+  log_daemon_msg "Starting fastcgi EzWeb servers"
+
+  INSTANCES=`/usr/sbin/update-ezweb-platform list enabled connection_type fastcgi`
+
+  for conf_name in $INSTANCES; do
+    ezweb_fcgi_start "$conf_name"
+  done
+
+  log_end_msg 0
+}
+
+ezweb_fcgi_stop() {
+  CONF_NAME=$1
+  PIDFILE="/var/run/ezweb-platform/$CONF_NAME.pid"
+  SOCKETFILE="/var/run/ezweb-platform/$CONF_NAME.socket"
+
+  if [ -f $PIDFILE ]; then
+    log_progress_msg $CONF_NAME
+    PID=`cat $PIDFILE`
+    kill $PID
+    rm -f $PIDFILE $SOCKETFILE
+  fi
+}
+
+ezweb_fcgi_stop_all() {
+  log_daemon_msg "Stopping fastcgi EzWeb servers"
+
+  for pidfile in "/var/run/ezweb-platform/*.pid"; do
+    conf_name=`basename $pidfile .pid`
+    ezweb_fcgi_stop "$conf_name"
+  done
+
+  log_end_msg 0
+}
+
+# Stupid hack to keep lintian happy. (Warrk! Stupidhack!).
+case $1 in
+  start)
+    ezweb_fcgi_start_all
+    ;;
+  stop)
+    ezweb_fcgi_stop_all
+    ;;
+  restart)
+    ezweb_fcgi_stop_all
+    ezweb_fcgi_start_all
+    ;;
+  *)
+    log_success_msg "Usage: $0 {start|stop|restart}"
+    exit 1
+  ;;
+esac
