@@ -127,17 +127,14 @@ var OpManagerFactory = function () {
 			UIUtils.sendPendingTags();
 			this.catalogue.show();
 			this.activeWorkSpace.getVisibleTab().markAsCurrent();
+			
 			if (UIUtils.isInfoResourcesOpen) {
 				UIUtils.isInfoResourcesOpen = false;
 				UIUtils.SlideInfoResourceOutOfView('info_resource');
 			}
 			
-			// Load catalogue data!
-			this.catalogue.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
+			this.catalogue.initCatalogue();
 
-			UIUtils.setResourcesWidth();
-			
-			$('simple_search_text').focus();
 		}
 		
 
