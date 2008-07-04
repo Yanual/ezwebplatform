@@ -95,6 +95,18 @@ class Gadget(models.Model):
 
     def __unicode__(self):
         return self.uri
+    
+class Capability(models.Model):
+    name = models.CharField(_('Name'), max_length=50)
+    value = models.CharField(_('Value'), max_length=50)
+    gadget = models.ForeignKey(Gadget)
+    
+    class Meta:
+        unique_together = ('name', 'value', 'gadget')
+    
+    class Admin:
+         pass
+    
 
 class VariableDef(models.Model):
     name = models.CharField(_('Name'), max_length=30)

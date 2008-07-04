@@ -42,6 +42,8 @@ var CatalogueFactory  = function () {
 	// SINGLETON INSTANCE
 	// *********************************
 	var instance = null;
+	
+	var DINAMIC_DIGITAL_HOME_URL = "http://localhost:8000/service2Gadget/serviceGadgets"
 
 	function Catalogue() {
 		
@@ -55,6 +57,7 @@ var CatalogueFactory  = function () {
 		var _this = this;
 		var max_gadgets_per_page = 40;
 		var min_offset = 10;
+		var purchasableGadgets = null;
 		
 		this.catalogueElement = $('showcase_container');
 		    
@@ -62,6 +65,33 @@ var CatalogueFactory  = function () {
 		// ********************
 		//  PRIVILEGED METHODS
 		// ********************
+		
+		this.initCatalogue = function () {	
+			var onSuccess = function (transport) {
+				// Loading purchaseble gadgets!
+				var responseJSON = transport.responseText;
+				purchasableGadgets = eval ('(' + responseJSON + ')');
+				
+				// Load catalogue data!
+				this.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
+				
+				UIUtils.setResourcesWidth();
+				
+				$('simple_search_text').focus();
+			}
+			
+			var onError = function () {
+				onSuccess();
+			}
+			
+			var persistenceEngine = PersistenceEngineFactory.getInstance();
+			
+			// Get Resources from PersistenceEngine. Asyncrhonous call!
+			
+			var params = {'method': "GET", 'url':  DINAMIC_DIGITAL_HOME_URL};
+					
+			persistenceEngine.send_post("/proxy", params, this, onSuccess, onError);
+		}
 		
 		this.reloadCompleteCatalogue = function() {
 			UIUtils.repaintCatalogue=true;
@@ -151,7 +181,7 @@ var CatalogueFactory  = function () {
 		this.orderby = function(items){
 			_orderby($("orderby"), items);
 		}
-
+		
 		this.changeGlobalTagcloud = function(type){	
 			$('view_global_tags_links').innerHTML = "";
 			
@@ -317,12 +347,27 @@ var CatalogueFactory  = function () {
 			LayoutManagerFactory.getInstance().hideView(this.catalogueElement);
 		}
 		
+		this.isContratableResource = function (resource) {
+			if (resource.contratable)
+				return resource.contratable;
+			else
+				return false
+		}
+		
+		this.isAvailableResource = function(resource) {
+			for (var i=0; i<purchasableGadgets.length; i++) {
+				if (resource.templateURI == purchasableGadgets[i].gadget)
+					return true;
+			}
+			return false;
+		}
+		
 		this.loadCatalogue = function(urlCatalogue_) {
 		
 			// ******************
 			//  CALLBACK METHODS 
 			// ******************
-		
+			
 			//Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
 			
 			var onError = function(transport, e) {
@@ -355,10 +400,16 @@ var CatalogueFactory  = function () {
 			    var jsonResourceList = eval ('(' + responseJSON + ')');
 			    jsonResourceList = jsonResourceList.resourceList;
 
-				for (var i = 0; i<jsonResourceList.length; i++)
-				{
+				for (var i = 0; i<jsonResourceList.length; i++) {
+					// It's a contratable gadget
+					if (this.isContratableResource(jsonResourceList[i]) && this.isAvailable(jsonResourceList[i])) {
+						this.addResource(jsonResourceList[i], null);
+						continue;
+					}
+					// It's a normal not purchasable gadget
 					this.addResource(jsonResourceList[i], null);
 				}
+				
 				this.paginate(items);
 				this.orderby(items);
 				$('global_tagcloud').innerHTML = '';

@@ -46,7 +46,7 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 
 from xml.sax import parseString, handler
-from catalogue.models import GadgetWiring, GadgetResource, UserRelatedToGadgetResource
+from catalogue.models import GadgetWiring, GadgetResource, UserRelatedToGadgetResource, Capability
 
 
 class TemplateParser:
@@ -74,10 +74,11 @@ class TemplateHandler(handler.ContentHandler):
         self._gadget_added = False
         self._user = user
         self._uri = uri
+        self._gadget = None
 
     def resetAccumulator(self):
         self._accumulator = []
-    
+
     def processWire(self, attrs, wire):
         _friendCode = ''
         _wiring = ''
@@ -102,7 +103,26 @@ class TemplateHandler(handler.ContentHandler):
             wiring.save()
         else:
             raise TemplateParseException(_("ERROR: missing attribute at Event or Slot element"))
+        
+    def processCapability(self, attrs):     
+        name = None
+        value = None
 
+        if (attrs.has_key('name')):
+            name = attrs.get('name')
+            
+        if (attrs.has_key('value')):
+            value = attrs.get('value')
+
+        if (not name or not value):
+            raise TemplateParseException(_("ERROR: missing attribute at Capability element"))
+        
+        if (not self._gadget):
+            raise TemplateParseException(_("ERROR: capabilities must be placed AFTER Resource definition!"))
+        
+        capability = Capability(name=name, value=value, resource=self._gadget)
+
+        capability.save()
 
     def endElement(self, name):
         if (name == 'Name'):
@@ -134,7 +154,6 @@ class TemplateHandler(handler.ContentHandler):
             return
 
         if (self._name != '' and self._vendor != '' and self._version != '' and self._author != '' and self._description != '' and self._mail != '' and self._imageURI != '' and self._wikiURI != '' and not self._gadget_added):
-
             gadget=GadgetResource()
             gadget.short_name=self._name
             gadget.vendor=self._vendor
@@ -149,6 +168,8 @@ class TemplateHandler(handler.ContentHandler):
             gadget.popularity = 0.0
 
             gadget.save()
+            
+            self._gadget = gadget
             
             userRelated = UserRelatedToGadgetResource ()
             userRelated.gadget = gadget;
@@ -177,4 +198,8 @@ class TemplateHandler(handler.ContentHandler):
 
         if (name == 'Event'):
             self.processWire(attrs,'Event')
+            return
+        
+        if (name == 'Capability'):
+            self.processCapability(attrs)
             return
