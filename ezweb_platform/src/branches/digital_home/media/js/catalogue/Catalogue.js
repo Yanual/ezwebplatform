@@ -70,7 +70,8 @@ var CatalogueFactory  = function () {
 			var onSuccess = function (transport) {
 				// Loading purchaseble gadgets!
 				var responseJSON = transport.responseText;
-				purchasableGadgets = eval ('(' + responseJSON + ')');
+				var response = eval ('(' + responseJSON + ')');
+				purchasableGadgets = response['available_resources'];
 				
 				// Load catalogue data!
 				this.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
@@ -348,15 +349,18 @@ var CatalogueFactory  = function () {
 		}
 		
 		this.isContratableResource = function (resource) {
-			if (resource.contratable)
-				return resource.contratable;
-			else
-				return false
+			for (var i=0; i<resource.capabilities.length; i++) {
+				var capability = resource.capabilities[i];
+				if (capability.name == 'Contratable')
+					return capability.value.toLowerCase() == "true";
+				else
+					return false
+			}
 		}
 		
 		this.isAvailableResource = function(resource) {
 			for (var i=0; i<purchasableGadgets.length; i++) {
-				if (resource.templateURI == purchasableGadgets[i].gadget)
+				if (resource.uriTemplate == purchasableGadgets[i].gadget)
 					return true;
 			}
 			return false;
@@ -401,14 +405,27 @@ var CatalogueFactory  = function () {
 			    jsonResourceList = jsonResourceList.resourceList;
 
 				for (var i = 0; i<jsonResourceList.length; i++) {
-					// It's a contratable gadget
-					if (this.isContratableResource(jsonResourceList[i]) && this.isAvailable(jsonResourceList[i])) {
+					if (this.isContratableResource(jsonResourceList[i])) { 
+						//It's a contratable gadget!
+						//Let's see if its available at HomeGateway!
+						if (this.isAvailableResource(jsonResourceList[i])) {
+							// It's a available contratable gadget!
+							// Adding to catalogue!
+							this.addResource(jsonResourceList[i], null);
+						}
+						else {
+							//It's not available!
+							//Not adding to catalogue!
+							continue;
+						}
+					} 
+					else {
+						// It's a normal not purchasable gadget
+						// Always adding to catalogue
 						this.addResource(jsonResourceList[i], null);
-						continue;
 					}
-					// It's a normal not purchasable gadget
-					this.addResource(jsonResourceList[i], null);
 				}
+
 				
 				this.paginate(items);
 				this.orderby(items);

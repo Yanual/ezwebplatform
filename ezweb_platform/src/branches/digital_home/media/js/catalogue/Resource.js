@@ -162,9 +162,16 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
         })); 
 		tags.appendChild(important_tags);
 		_tagsToMoreImportantTags(important_tags, 3);
+		
+		// Depending on catabilities, the add button can be different!
+		
 		var button = UIUtils.createHTMLElement("button", $H({
             innerHTML: gettext('Add Instance')
         })); 
+		
+		if (this.isContratable(state.getCapabilities()))
+			button.innerHTML = gettext('Purchase')
+		
 		button.observe("click", function(event){
 			CatalogueFactory.getInstance().addResourceToShowCase(id_);
 		});
@@ -175,6 +182,16 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
             class_name: 'bottom'
         }));
 		resource.appendChild(bottom);
+	}
+	
+	this.isContratable = function (capabilities) {
+		for (var i=0; i<capabilities.length; i++) {
+			var capability = capabilities[i];
+			if (capability.name == 'Contratable')
+				return capability.value.toLowerCase() == "true";
+			else
+				return false
+		}
 	}
 	
 	this.showInfo = function() {
@@ -996,6 +1013,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 	var votes = null;
 	var popularity = null;
 	var userVote = null;
+	var capabilities = [];
 
 	// ******************
 	//  PUBLIC FUNCTIONS
@@ -1049,6 +1067,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 	this.getVotes = function() {return votes; }
 	this.getUserVote = function() {return userVote; }
 	this.getPopularity = function() {return popularity; }
+	this.getCapabilities = function() {return capabilities; }
 	
 	// Parsing JSON Resource
 	// Constructing the structure
@@ -1068,5 +1087,6 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 	votes = resourceJSON_.votes[0].votes_number;
 	userVote = resourceJSON_.votes[0].user_vote;
 	popularity = resourceJSON_.votes[0].popularity;	
+	capabilities = resourceJSON_.capabilities;
 
 }
