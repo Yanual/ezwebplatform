@@ -113,15 +113,15 @@ function setLanguage(language) {
 /* layout change function (landscape or portrait) */
 function updateLayout()
 {
-	/*var orient = (window.orientation==0 || window.orientation==180) ? "portrait" : "landscape";
+	var orient = (window.orientation==0 || window.orientation==180) ? "portrait" : "landscape";
     if (!loaded)
-    { */
+    {
     
-    if (window.innerWidth != _currentWidth || !loaded)
+    /*if (window.innerWidth != _currentWidth || !loaded)
 	{
 		_currentWidth = window.innerWidth;
-
 		var orient = _currentWidth == 320 ? "portrait" : "landscape";
+	*/
     	// change the orientation properties
     	document.body.setAttribute("orient", orient);
     	if (OpManagerFactory.getInstance().loadCompleted){
@@ -135,11 +135,11 @@ function updateLayout()
 
         setTimeout(function() { window.scrollTo(0, 1); }, 100);            
     }
-    /*else{
+    else{
     	//the onorientationchange has hapenned
     	document.body.setAttribute("orient", orient);
     	OpManagerFactory.getInstance().activeWorkSpace.updateLayout(orient);
-    }*/
+    }
 }
 
 /* tab change function */

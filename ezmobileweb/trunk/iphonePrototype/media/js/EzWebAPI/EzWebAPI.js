@@ -47,14 +47,14 @@ function _EzWebAPI() {
     /*if (document.addEventListener) 
            document.addEventListener("DOMContentLoaded", this.addOnLoadNotifier, false);
     */
-    setTimeout(this.addOnLoadNotifier, 0);
+    setTimeout(function(){EzWebAPI.addOnLoadNotifier()}, 0);
 }
 
 _EzWebAPI.prototype.addOnLoadNotifier = function() {	
 	if (document.body) //DOMContetnLoaded
     	EzWebAPI.platform.opManager.igadgetLoaded(EzWebAPI.getId());
     else
-        setTimeout(this.addOnLoadNotifier, 0);
+        setTimeout(function(){EzWebAPI.addOnLoadNotifier()}, 0);
 }
 
 _EzWebAPI.prototype.getId = function() {
