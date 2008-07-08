@@ -46,7 +46,7 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 
 from xml.sax import parseString, handler
-from catalogue.models import GadgetWiring, GadgetResource, UserRelatedToGadgetResource, Capability
+from catalogue.models import GadgetWiring, GadgetResource, UserRelatedToGadgetResource, Capability, UserTag
 
 
 class TemplateParser:
@@ -75,6 +75,7 @@ class TemplateHandler(handler.ContentHandler):
         self._user = user
         self._uri = uri
         self._gadget = None
+        self._contratable = False
 
     def resetAccumulator(self):
         self._accumulator = []
@@ -123,6 +124,9 @@ class TemplateHandler(handler.ContentHandler):
         capability = Capability(name=name, value=value, resource=self._gadget)
 
         capability.save()
+        
+        if (capability.name.lower() == 'contratable'):
+            self._contratable=True
 
     def endElement(self, name):
         if (name == 'Name'):
@@ -177,6 +181,9 @@ class TemplateHandler(handler.ContentHandler):
             userRelated.added_by = True
             
             userRelated.save()
+            
+            tag = UserTag (tag='contratable', idUser=self._user, idResource=gadget)
+            tag.save()
             
             self._gadget_added = True
         elif (self._gadget_added):

@@ -19,6 +19,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 	this.getAddedBy = function() { return state.getAddedBy(); }
 	this.getTags = function() { return state.getTags(); }
 	this.setTags = function(tags_) { state.setTags(tags_); }
+	this.addTag = function(tag) { state.addTag(tag); }
 	this.getSlots = function() { return state.getSlots(); }
 	this.setSlots = function(slots_) { state.setSlots(slots_); }
 	this.getEvents = function() { return state.getEvents(); }
@@ -152,6 +153,8 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 			this.src = '/ezweb/images/not_available.jpg';
 		});
 		image_link.appendChild(image);
+		
+		//Tags
 		var tags = UIUtils.createHTMLElement("div", $H({
             class_name: 'tags'
         })); 
@@ -164,18 +167,25 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 		_tagsToMoreImportantTags(important_tags, 3);
 		
 		// Depending on catabilities, the add button can be different!
+		var bottom_message = gettext('Add Instance');
+		var bottom_class = ''
+		
+		if (this.isContratable(state.getCapabilities())) {
+			bottom_message = gettext('Purchase');
+			bottom_class = 'contratable'
+		}
 		
 		var button = UIUtils.createHTMLElement("button", $H({
-            innerHTML: gettext('Add Instance')
+            innerHTML: bottom_message,
+            class_name: bottom_class
         })); 
-		
-		if (this.isContratable(state.getCapabilities()))
-			button.innerHTML = gettext('Purchase')
 		
 		button.observe("click", function(event){
 			CatalogueFactory.getInstance().addResourceToShowCase(id_);
 		});
+		
 		content.appendChild(button);
+		
 		// BOTTOM
 		var bottom = UIUtils.createHTMLElement("div", $H({
 			id: id_ + '_bottom',
@@ -1037,6 +1047,9 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 		}
 	}
 	
+	this.addTag = function(tag) {
+		tags.push(new Tag(tag));
+	}
 	
 	this.setSlots = function(slotsJSON_) {
 		slots.clear();
