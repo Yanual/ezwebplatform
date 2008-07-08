@@ -149,7 +149,7 @@ body[orient="landscape"] .dragboard {
 	margin: 0px;
 	padding: 0px;
 	position: absolute;
-	top: 21px;
+	top: 19px;
 	left: 1px;
 }
 body[orient="landscape"] #mymw-nav {
@@ -190,7 +190,7 @@ body[orient="landscape"] #mymw-nav {
 .tab_name{
 	position: absolute;
 	right: 5px;
-	top: 1pt;
+	top: 0pt;
 	font-size: 10pt;
 }
 /**** iGadget Section ****/
