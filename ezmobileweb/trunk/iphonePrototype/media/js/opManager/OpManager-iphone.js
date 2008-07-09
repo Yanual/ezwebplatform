@@ -185,8 +185,8 @@ var OpManagerFactory = function () {
 
 		
 		OpManager.prototype.showDragboard = function(iGadgetId){
-			this.visibleLayer= "dragboard";
 			this.activeWorkSpace.getActiveDragboard().paint(iGadgetId);
+			this.visibleLayer= "dragboard";
 		}
 		
 		OpManager.prototype.showGadgetsMenu = function(){

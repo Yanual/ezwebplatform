@@ -44,7 +44,6 @@ function Dragboard(tab, workSpace, dragboardElement) {
 	// *********************************
 	this.loaded = false;
 	this.currentCode = 1;
-	this.visible = false;
 
 	// HTML Elements
 	this.dragboardElement = $('dragboard');
@@ -74,7 +73,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 		if (this.visibleIGadget)
 			this.visibleIGadget.paint();
 			
-		if (!this.visible){
+		if (OpManagerFactory.getInstance().visibleLayer!="dragboard"){
 			//Paints the dragboard and the visibleIGadget and hide the gadget menu
 			this.workSpace.hide();
 			this.dragboardElement.setStyle({display: "block", left : "100%"});
@@ -82,8 +81,6 @@ function Dragboard(tab, workSpace, dragboardElement) {
 			
 			//show the bar element
 			this.barElement.setStyle({display: "block"});
-			
-			this.visible = true;
 		}
 	}
 	
@@ -114,8 +111,6 @@ function Dragboard(tab, workSpace, dragboardElement) {
 		this.workSpace.tabView = new TabView("dragboard", { maxTabs : 3 });
 		tabView = this.workSpace.tabView;
 		this.barElement.setStyle({display: "none"});
-		
-		this.visible = false;
 	}
 
 	Dragboard.prototype.markRelatedIgadget = function(iGadgetId){
