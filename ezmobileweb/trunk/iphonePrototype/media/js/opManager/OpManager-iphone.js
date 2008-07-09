@@ -85,6 +85,7 @@ var OpManagerFactory = function () {
 		this.persistenceEngine = PersistenceEngineFactory.getInstance();
 		
 		this.loadCompleted = false;
+		this.visibleLayer = null;
 		
 		// Variables for controlling the collection of wiring and dragboard instances of a user
 		this.workSpaceInstances = new Hash();
@@ -142,7 +143,7 @@ var OpManagerFactory = function () {
 				}
 				
 			}
-			this.activeWorkSpace.show();
+			this.activeWorkSpace.paint();
 		}
 		
 		OpManager.prototype.continueLoadingGlobalModules = function (module) {
@@ -157,6 +158,7 @@ var OpManagerFactory = function () {
 		    if (module == Modules.prototype.ACTIVE_WORKSPACE) {
 		    	this.loadCompleted = true;
 		    	this.showActiveWorkSpace(this.activeWorkSpace);
+		    	this.visibleLayer= "tabs_container";
 		    	//TODO: remove this variable when the MYMWTab Framework is updated
     			tabview = this.activeWorkSpace.tabView;
 		    	return;
@@ -183,10 +185,12 @@ var OpManagerFactory = function () {
 
 		
 		OpManager.prototype.showDragboard = function(iGadgetId){
+			this.visibleLayer= "dragboard";
 			this.activeWorkSpace.getActiveDragboard().paint(iGadgetId);
 		}
 		
 		OpManager.prototype.showGadgetsMenu = function(){
+			this.visibleLayer= "tabs_container";
 			this.activeWorkSpace.show();
 		}
 		

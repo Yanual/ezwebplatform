@@ -175,7 +175,7 @@ function WorkSpace (workSpaceState) {
 	}
 	
 	/**** Display the IGadgets menu ***/
-	WorkSpace.prototype.show = function() {	
+	WorkSpace.prototype.paint = function() {	
 		//Create a menu for each tab of the workspace and paint it as main screen.
 		var scrolling = 0;
 		var step = 0;
@@ -188,8 +188,7 @@ function WorkSpace (workSpaceState) {
 			this.tabInstances[i].show(scrolling);
 			scrolling += step;
 		}
-		//hide the dragboard and show the menu
-		this.visibleTab.getDragboard().hide();
+		//show the menu
 		this.tabsContainerElement.setStyle({display: "block"});
 		
 		window.scrollTo(this.visibleTabIndex * step, 1);
@@ -197,6 +196,17 @@ function WorkSpace (workSpaceState) {
 	
 	WorkSpace.prototype.hide = function() {
 		this.tabsContainerElement.setStyle({display: "none"});
+	}
+	
+	WorkSpace.prototype.show = function() {
+		this.visibleTab.getDragboard().hide();
+		this.tabsContainerElement.setStyle({display: "block"});
+		var step = 0;
+		if (document.body.getAttribute("orient") == "portrait")
+			step = this.scrollPortrait;
+		else
+			step = this.scrollLandscape;
+		window.scrollTo(this.visibleTabIndex * step, 1);
 	}
 	
 	WorkSpace.prototype.getTab = function(tabId) {
@@ -219,19 +229,27 @@ function WorkSpace (workSpaceState) {
 	}
 	
 	WorkSpace.prototype.updateVisibleTab = function(index) {
-
 		this.visibleTabIndex = index;	
 		this.visibleTab = this.tabInstances[this.visibleTabIndex];
 	}
 	
 	WorkSpace.prototype.updateLayout = function(orient) {
 		//TODO: change the tab labels according to the orientation
+		var step = 0;
+		var scrolling = 0;
 		if (orient=="portrait"){
+			step = this.scrollPortrait;
 			this.tabView.set("maxTabs", 3);
 		}
 		else{ //landscape
+			step = this.scrollLandscape;
 			this.tabView.set("maxTabs", 4);
 		}
+		for(var i=0;i<this.tabInstances.length;i++){
+			this.tabInstances[i].updateLayout(scrolling);
+			scrolling += step;
+		}
+		setTimeout(function(){window.scrollTo(this.visibleTabIndex * step, 1)}.bind(this), 300);
 	}
 	
 	WorkSpace.prototype.goTab = function(tab){

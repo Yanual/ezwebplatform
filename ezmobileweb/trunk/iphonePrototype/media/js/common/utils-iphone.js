@@ -113,63 +113,64 @@ function setLanguage(language) {
 /* layout change function (landscape or portrait) */
 function updateLayout()
 {
-	var orient = (window.orientation==0 || window.orientation==180) ? "portrait" : "landscape";
+	/*var orient = (window.orientation==0 || window.orientation==180) ? "portrait" : "landscape";
     if (!loaded)
-    {
+    {*/
     
-    /*if (window.innerWidth != _currentWidth || !loaded)
+    if (window.innerWidth != _currentWidth || !loaded)
 	{
 		_currentWidth = window.innerWidth;
 		var orient = _currentWidth == 320 ? "portrait" : "landscape";
-	*/
+	
     	// change the orientation properties
     	document.body.setAttribute("orient", orient);
     	if (OpManagerFactory.getInstance().loadCompleted){
     		loaded=true;
     		/*clearInterval(updateInterval);*/
     		OpManagerFactory.getInstance().activeWorkSpace.updateLayout(orient);
+    		setTimeout(function() { window.scrollTo(0, 1); }, 100);
     	}
     	else{
     		loaded=false;
-    	}
-
-        setTimeout(function() { window.scrollTo(0, 1); }, 100);            
+    	}            
     }
-    else{
+    /*else{
     	//the onorientationchange has hapenned
     	document.body.setAttribute("orient", orient);
     	OpManagerFactory.getInstance().activeWorkSpace.updateLayout(orient);
-    }
+    	setTimeout(function() { window.scrollTo(0, 1); }, 100);
+    }*/
 }
 
 /* tab change function */
 function checkTab()
 {
-	var xoffset = window.pageXOffset;
-	var yoffset = window.pageYOffset;
-
-	var tabWidth = window.innerWidth;	
-	var halfTabWidth = tabWidth / 2;
-
-	var scroll = xoffset < halfTabWidth 
-		? - xoffset 
-		: - (xoffset - halfTabWidth) % tabWidth + halfTabWidth;
+	if (OpManagerFactory.getInstance().visibleLayer == "tabs_container"){
+		var xoffset = window.pageXOffset;
+		var yoffset = window.pageYOffset;
 	
-	if (scroll != 0)
-	{
-		var STEP_H = tabWidth / 52;
-		var steps = Math.abs(scroll / STEP_H);
-		var step = scroll < 0 ? - STEP_H : STEP_H;
+		var tabWidth = window.innerWidth;	
+		var halfTabWidth = tabWidth / 2;
+	
+		var scroll = xoffset < halfTabWidth 
+			? - xoffset 
+			: - (xoffset - halfTabWidth) % tabWidth + halfTabWidth;
 		
-		for (var i=0; i<steps; i++) {
-			window.scrollBy(step, 0);
-		}		
-		window.scrollTo(xoffset + scroll, 1);
-		
-		//update the visible Tab
-		OpManagerFactory.getInstance().activeWorkSpace.updateVisibleTab(Math.round(window.pageXOffset / tabWidth));
+		if (scroll != 0)
+		{
+			var STEP_H = tabWidth / 52;
+			var steps = Math.abs(scroll / STEP_H);
+			var step = scroll < 0 ? - STEP_H : STEP_H;
+			
+			for (var i=0; i<steps; i++) {
+				window.scrollBy(step, 0);
+			}		
+			window.scrollTo(xoffset + scroll, 1);
+			
+			//update the visible Tab
+			OpManagerFactory.getInstance().activeWorkSpace.updateVisibleTab(Math.round(window.pageXOffset / tabWidth));
+		}
 	}
-
 	/*if (yoffset > 0)
 	{
 		var STEP_V = 2;

@@ -74,6 +74,12 @@ function Tab (tabInfo, workSpace) {
 		}
 		html+= '</div></div>';
 	    new Insertion.Bottom(this.tabsContainer, html);
+	    this.tabElement = $(this.tabName);
+	}
+	
+	Tab.prototype.updateLayout = function (scrollLeft) {
+		if (this.tabElement)
+			this.tabElement.setStyle({left: scrollLeft+"px"});
 	}
 
 	Tab.prototype.getDragboard = function () {
@@ -95,4 +101,5 @@ function Tab (tabInfo, workSpace) {
 
 	this.dragboard = new Dragboard(this, this.workSpace, this.dragboardElement);
 	this.tabsContainer=$('tabs_container');
+	this.tabElement = null;
 }
