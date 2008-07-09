@@ -42,8 +42,6 @@ var CatalogueFactory  = function () {
 	// SINGLETON INSTANCE
 	// *********************************
 	var instance = null;
-	
-	var DINAMIC_DIGITAL_HOME_URL = "http://localhost:8000/service2Gadget/serviceGadgets"
 
 	function Catalogue() {
 		
@@ -82,14 +80,24 @@ var CatalogueFactory  = function () {
 			}
 			
 			var onError = function () {
-				onSuccess();
+				// Error downloading available gadgets!
+				// Maybe the EzWeb user has no associated home gateway?
+				// Continua loading non-contratable gadgets!
+				purchasableGadgets = []
+				                      
+  				// Load catalogue data!
+  				this.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
+  				
+  				UIUtils.setResourcesWidth();
+  				
+  				$('simple_search_text').focus();
 			}
 			
 			var persistenceEngine = PersistenceEngineFactory.getInstance();
 			
 			// Get Resources from PersistenceEngine. Asyncrhonous call!
 			
-			var params = {'method': "GET", 'url':  DINAMIC_DIGITAL_HOME_URL};
+			var params = {'method': "GET", 'url':  URIs.HOME_GATEWAY_DISPATCHER_URL};
 					
 			persistenceEngine.send_post("/proxy", params, this, onSuccess, onError);
 		}
