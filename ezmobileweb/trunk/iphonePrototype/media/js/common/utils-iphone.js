@@ -91,7 +91,7 @@ function slide (backwards, element)
     }
     element.style.left = (backwards ? -percent : percent) + "%"; 
     if (this.percent != 0)
-    	setTimeout(function(){slide(backwards, element)}, 50);
+    	setTimeout(function(){slide(backwards, element)}, 0);
     else
     	percent = 100;
 }
@@ -113,33 +113,31 @@ function setLanguage(language) {
 /* layout change function (landscape or portrait) */
 function updateLayout()
 {
-	/*var orient = (window.orientation==0 || window.orientation==180) ? "portrait" : "landscape";
+	var orient = (window.orientation==0 || window.orientation==180) ? "portrait" : "landscape";
     if (!loaded)
-    {*/
+    {
     
-    if (window.innerWidth != _currentWidth || !loaded)
+    /*if (window.innerWidth != _currentWidth || !loaded)
 	{
 		_currentWidth = window.innerWidth;
 		var orient = _currentWidth == 320 ? "portrait" : "landscape";
-	
+	*/
     	// change the orientation properties
     	document.body.setAttribute("orient", orient);
     	if (OpManagerFactory.getInstance().loadCompleted){
     		loaded=true;
-    		/*clearInterval(updateInterval);*/
+    		clearInterval(updateInterval);
     		OpManagerFactory.getInstance().activeWorkSpace.updateLayout(orient);
-    		setTimeout(function() { window.scrollTo(0, 1); }, 100);
     	}
     	else{
     		loaded=false;
     	}            
     }
-    /*else{
+    else{
     	//the onorientationchange has hapenned
     	document.body.setAttribute("orient", orient);
     	OpManagerFactory.getInstance().activeWorkSpace.updateLayout(orient);
-    	setTimeout(function() { window.scrollTo(0, 1); }, 100);
-    }*/
+    }
 }
 
 /* tab change function */

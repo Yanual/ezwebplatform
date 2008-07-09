@@ -249,7 +249,12 @@ function WorkSpace (workSpaceState) {
 			this.tabInstances[i].updateLayout(scrolling);
 			scrolling += step;
 		}
-		setTimeout(function(){window.scrollTo(this.visibleTabIndex * step, 1)}.bind(this), 300);
+		
+		//set current scroll
+		if (OpManagerFactory.getInstance().visibleLayer == "tabs_container")
+			window.scrollTo(this.visibleTabIndex * step, 1);
+		else
+			window.scrollTo(0, 1);
 	}
 	
 	WorkSpace.prototype.goTab = function(tab){
