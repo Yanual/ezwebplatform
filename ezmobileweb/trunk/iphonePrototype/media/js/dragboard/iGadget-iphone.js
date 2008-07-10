@@ -106,7 +106,7 @@ IGadget.prototype.paint = function() {
 	html += '</object></div>';
 	
 	//create a new Tab and add the new content
-	tab = new MyMWTab ({
+	tab = new MYMW.ui.Tab ({
 		id : this.getTabId(),
 		label : this.getVisibleName(),
 		content : html+relatedhtml				
@@ -115,12 +115,6 @@ IGadget.prototype.paint = function() {
 	this.dragboard.workSpace.tabView.set('activeTab', tab);
 }
 
-IGadget.prototype.hide = function() {
-	//clean the igadget content and the tabs
-	this.iGadgetElement.update();
-	this.iGadgetTabBar.update();
-	
-}
 IGadget.prototype.getTabId = function() {
 	return "mymwtab_"+this.name;
 }

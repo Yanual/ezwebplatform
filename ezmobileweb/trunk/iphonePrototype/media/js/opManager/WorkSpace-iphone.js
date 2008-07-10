@@ -289,7 +289,7 @@ function WorkSpace (workSpaceState) {
 	this.visibleTab = null;
 	this.visibleTabIndex = 0;
 	
-	this.tabView = new TabView("dragboard", { maxTabs : 3 });
+	this.tabView = new MYMW.ui.TabView("dragboard", { maxTabs : 3 });
 	
 	this.tabsContainerElement = $('tabs_container');
 	//scrolling

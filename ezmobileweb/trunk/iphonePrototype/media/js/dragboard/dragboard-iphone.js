@@ -100,16 +100,15 @@ function Dragboard(tab, workSpace, dragboardElement) {
 		this.dragboardElement.setStyle({display: "none"});
 		
 		//clean the igadget
-		if (this.visibleIGadget){
-			this.visibleIGadget.hide();
+		if (this.visibleIGadget)
 			this.visibleIGadget =  null;
-		}
 		
-		//clean the bar
-		//TODO: cambiar esto por clear de las tabs	y elimiar la variable a pelo "tabView"	
-		delete this.workSpace.tabView;
+		//clean the bar and the content
+		//TODO: elimiar la variable a pelo "tabView"	
+		/*delete this.workSpace.tabView;
 		this.workSpace.tabView = new TabView("dragboard", { maxTabs : 3 });
-		tabView = this.workSpace.tabView;
+		tabView = this.workSpace.tabView;*/
+		this.workSpace.tabView.clear();
 		this.barElement.setStyle({display: "none"});
 	}
 

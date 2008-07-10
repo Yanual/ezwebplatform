@@ -1,3 +1,19 @@
+if (typeof MYMW == "undefined" || !MYMW) {
+    var MYMW = {};
+	MYMW.ui = {};
+}
+
+String.prototype.supplant = function (o) 
+{
+	return this.replace(/{([^{}]*)}/g,
+		function (a, b) 
+		{
+			var r = o[b];
+			return typeof r === 'string' ? r : a;
+		}
+	);
+};
+	
 // Detect clients
 var ua =  navigator.userAgent;
 var isOpera = ua.indexOf("Opera")>0;
@@ -24,6 +40,10 @@ function after(nid, content) {
 function before(nid, content) {
 	var el = id(nid);
 	el.innerHTML = content + el.innerHTML;
+}
+
+function updateClass(nid, className) {
+	id(nid).className = className;
 }
 
 /*
