@@ -52,13 +52,25 @@ wrapper{
     position: absolute;
     padding: 10px 0;
     height: 20px;
-    font-size: 20px;
-    font-weight: bold;
-    font-family: Helvetica;
-    text-align: center;
-    text-shadow: #3F4E63 0px -1px 1px;
     background: url(/ezweb/images/iphone/iPhoneToolbar.png) #8191AA repeat-x;
     color: #fcfcfc;
+    font-family: Helvetica;
+    text-align: center;
+}
+
+.toolbar h1{
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: #3F4E63 0px -1px 1px;
+    margin: 0;
+}
+
+.toolbar .logout{
+	font-size: 11pt;
+	position: absolute;
+	right: 5px;
+	top: 0;
+	color: #fcfcfc;
 }
 
 body[orient="portrait"] .toolbar {
@@ -156,6 +168,7 @@ body[orient="landscape"] .dragboard {
 	position: absolute;
 	top: 19px;
 	left: 1px;
+	z-index: 2;
 }
 body[orient="landscape"] #mymw-nav {
 	left: 3px;
