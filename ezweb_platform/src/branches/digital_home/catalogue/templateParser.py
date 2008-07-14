@@ -182,8 +182,9 @@ class TemplateHandler(handler.ContentHandler):
             
             userRelated.save()
             
-            tag = UserTag (tag='contratable', idUser=self._user, idResource=gadget)
-            tag.save()
+            if (self._contratable):
+                tag = UserTag (tag='contratable', idUser=self._user, idResource=gadget)
+                tag.save()
             
             self._gadget_added = True
         elif (self._gadget_added):
