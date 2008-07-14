@@ -170,11 +170,11 @@ var OpManagerFactory = function () {
 		
 		OpManager.prototype.unsubscribeServices = function (gadgetId) {
 			var unsubscribeOk = function (transport) {
-				
+				alert(transport);
 			}
 			
 			var unsubscribeError = function (transport) {
-				
+				alert(transport);
 			}
 			
 			var unsubscribe_url = URIs.HOME_GATEWAY_DISPATCHER_UNSUBSCRIBE_URL;
