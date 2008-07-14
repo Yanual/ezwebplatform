@@ -98,8 +98,12 @@ function WorkSpace (workSpaceState) {
 		//TODO: propagate only the values that affect to the Gadget with iGadgetId as identifier
 		// in other case, this function always propagate the variable value to all the gadgets and there are two problems:
 		// - there are non-instantiated gadgets -> the handler doesn't exist
-		// - the instantiated gadgets will re-execute their handlers  
- 	    this.wiring.propagateInitialValues(true);
+		// - the instantiated gadgets will re-execute their handlers
+		
+		if (!this.igadgetIdsLoaded.elementExists(igadgetId)){ //to prevent from propagating unnecessary initial values
+ 	    	this.igadgetIdsLoaded.push(igadgetId);
+ 	    	this.wiring.propagateInitialValues(true);
+		}
 	}
 	
 	WorkSpace.prototype.sendBufferedVars = function () {
@@ -175,7 +179,10 @@ function WorkSpace (workSpaceState) {
 	}
 	
 	/**** Display the IGadgets menu ***/
-	WorkSpace.prototype.paint = function() {	
+	WorkSpace.prototype.paint = function() {
+		//initialize the list of igadget loaded identifiers
+		this.igadgetIdsLoaded = new Array();
+		
 		//Create a menu for each tab of the workspace and paint it as main screen.
 		var scrolling = 0;
 		var step = 0;
@@ -199,6 +206,11 @@ function WorkSpace (workSpaceState) {
 	}
 	
 	WorkSpace.prototype.show = function() {
+		//initialize the list of igadget loaded identifiers
+		delete this.igadgetIdsLoaded;
+		this.igadgetIdsLoaded = new Array();
+		
+		//show the igadget list and hide the dragboard
 		this.visibleTab.getDragboard().hide();
 		this.tabsContainerElement.setStyle({display: "block"});
 		var step = 0;
@@ -290,6 +302,7 @@ function WorkSpace (workSpaceState) {
 	this.visibleTabIndex = 0;
 	
 	this.tabView = new MYMW.ui.TabView("dragboard", { maxTabs : 3 });
+	this.igadgetIdsLoaded = null;
 	
 	this.tabsContainerElement = $('tabs_container');
 	//scrolling

@@ -51,10 +51,10 @@ function _EzWebAPI() {
 }
 
 _EzWebAPI.prototype.addOnLoadNotifier = function() {	
-	if (document.body) //DOMContetnLoaded
+	/*if (document.body) //DOMContetnLoaded
     	EzWebAPI.platform.opManager.igadgetLoaded(EzWebAPI.getId());
     else
-        setTimeout(function(){EzWebAPI.addOnLoadNotifier()}, 0);
+        setTimeout(function(){EzWebAPI.addOnLoadNotifier()}, 0);*/
 }
 
 _EzWebAPI.prototype.getId = function() {
