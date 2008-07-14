@@ -718,3 +718,205 @@ ERROR: POST /user/admin/catalogue/voting/Morfeo/Bandeja_de_Averias/1.0 admin
 ERROR: POST /user/admin/catalogue/voting/Morfeo/Bandeja_de_Averias/1.0 admin
 ERROR: POST /user/admin/catalogue/voting/Morfeo/Bandeja_de_Averias/1.0 admin
 ERROR: POST /user/admin/catalogue/voting/Morfeo/Bandeja_de_Averias/1.0 admin
+ERROR: GET /workspaces/1 admin
+[01/07/2008 12:12:36] Traceback (most recent call last):
+  File "/home/mac/eclipse/workspace/EzDigitalHome/commons/resource.py", line 65, in __call__
+    return self.dispatch(request, self, *args, **kwargs)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/commons/resource.py", line 92, in dispatch
+    return target.read(request, *args, **kwargs)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/workspace/views.py", line 224, in read
+    workspace_data = get_global_workspace_data(data[0], workspaces[0], concept_data)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/commons/get_data.py", line 311, in get_global_workspace_data
+    data = serializers.serialize('python', tabs, ensure_ascii=False)
+  File "/usr/lib/python2.5/site-packages/django/core/serializers/__init__.py", line 67, in serialize
+    s.serialize(queryset, **options)
+  File "/usr/lib/python2.5/site-packages/django/core/serializers/base.py", line 35, in serialize
+    for obj in queryset:
+  File "/usr/lib/python2.5/site-packages/django/db/models/query.py", line 114, in __iter__
+    return iter(self._get_data())
+  File "/usr/lib/python2.5/site-packages/django/db/models/query.py", line 482, in _get_data
+    self._result_cache = list(self.iterator())
+  File "/usr/lib/python2.5/site-packages/django/db/models/query.py", line 189, in iterator
+    cursor.execute("SELECT " + (self._distinct and "DISTINCT " or "") + ",".join(select) + sql, params)
+  File "/usr/lib/python2.5/site-packages/django/db/backends/util.py", line 18, in execute
+    return self.cursor.execute(sql, params)
+  File "/usr/lib/python2.5/site-packages/django/db/backends/postgresql/base.py", line 47, in execute
+    return self.cursor.execute(smart_str(sql, self.charset), self.format_params(params))
+ProgrammingError: ERROR:  no existe la columna workspace_tab.locked
+LINE 1: ...,"workspace_tab"."name","workspace_tab"."visible","workspace...
+                                                             ^
+
+SELECT "workspace_tab"."id","workspace_tab"."name","workspace_tab"."visible","workspace_tab"."locked","workspace_tab"."workspace_id","workspace_tab"."abstract_variable_id" FROM "workspace_tab" WHERE ("workspace_tab"."workspace_id" = 1) ORDER BY "workspace_tab"."id" ASC
+
+ERROR: POST /user/admin/catalogue/resource admin
+[04/07/2008 13:29:33] global name 'this' is not defined
+ERROR: POST /user/admin/catalogue/resource admin
+[04/07/2008 13:31:29] u'ERROR: missing attribute at Capability element'
+ERROR: POST /user/admin/catalogue/resource admin
+[04/07/2008 13:35:23] u'ERROR: missing attribute at Capability element'
+ERROR: POST /user/admin/catalogue/resource admin
+[04/07/2008 13:37:41] u'ERROR: missing attribute at Capability element'
+ERROR: POST /user/admin/catalogue/resource admin
+[04/07/2008 13:39:03] TemplateHandler instance has no attribute 'gadget'
+ERROR: POST /user/admin/catalogue/resource admin
+[04/07/2008 13:40:51] TemplateHandler instance has no attribute 'gadget'
+ERROR: POST /user/admin/catalogue/resource admin
+[04/07/2008 13:41:51] global name 'Capability' is not defined
+ERROR: POST /user/admin/gadgets admin
+[04/07/2008 13:51:40] u'ERROR: missing attribute at Capability element'
+ERROR: POST /user/admin/gadgets admin
+ERROR: POST /user/admin/gadgets admin
+[04/07/2008 13:59:47] Traceback (most recent call last):
+  File "/home/mac/eclipse/workspace/EzDigitalHome/commons/resource.py", line 65, in __call__
+    return self.dispatch(request, self, *args, **kwargs)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/commons/resource.py", line 106, in dispatch
+    return target.create(request, *args, **kwargs)
+  File "/usr/lib/python2.5/site-packages/django/db/transaction.py", line 218, in _commit_manually
+    return func(*args, **kw)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/gadget/views.py", line 110, in create
+    log(e, request)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/commons/logs.py", line 57, in log
+    f.write(line)
+  File "codecs.py", line 638, in write
+    return self.writer.write(data)
+  File "codecs.py", line 303, in write
+    data, consumed = self.encode(object, self.errors)
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 49: ordinal not in range(128)
+
+ERROR: POST /user/admin/gadgets admin
+ERROR: POST /user/admin/gadgets admin
+[04/07/2008 14:01:19] Traceback (most recent call last):
+  File "/home/mac/eclipse/workspace/EzDigitalHome/commons/resource.py", line 65, in __call__
+    return self.dispatch(request, self, *args, **kwargs)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/commons/resource.py", line 106, in dispatch
+    return target.create(request, *args, **kwargs)
+  File "/usr/lib/python2.5/site-packages/django/db/transaction.py", line 218, in _commit_manually
+    return func(*args, **kw)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/gadget/views.py", line 110, in create
+    log(e, request)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/commons/logs.py", line 57, in log
+    f.write(line)
+  File "codecs.py", line 638, in write
+    return self.writer.write(data)
+  File "codecs.py", line 303, in write
+    data, consumed = self.encode(object, self.errors)
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 49: ordinal not in range(128)
+
+ERROR: POST /user/admin/gadgets admin
+[04/07/2008 14:11:38] TemplateHandler instance has no attribute 'capabilities'
+ERROR: POST /user/admin/gadgets admin
+ERROR: POST /user/admin/gadgets admin
+[04/07/2008 14:13:26] Traceback (most recent call last):
+  File "/home/mac/eclipse/workspace/EzDigitalHome/commons/resource.py", line 65, in __call__
+    return self.dispatch(request, self, *args, **kwargs)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/commons/resource.py", line 106, in dispatch
+    return target.create(request, *args, **kwargs)
+  File "/usr/lib/python2.5/site-packages/django/db/transaction.py", line 218, in _commit_manually
+    return func(*args, **kw)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/gadget/views.py", line 110, in create
+    log(e, request)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/commons/logs.py", line 57, in log
+    f.write(line)
+  File "codecs.py", line 638, in write
+    return self.writer.write(data)
+  File "codecs.py", line 303, in write
+    data, consumed = self.encode(object, self.errors)
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 49: ordinal not in range(128)
+
+ERROR: POST /user/admin/gadgets admin
+ERROR: POST /user/admin/gadgets admin
+[04/07/2008 14:15:01] Traceback (most recent call last):
+  File "/home/mac/eclipse/workspace/EzDigitalHome/commons/resource.py", line 65, in __call__
+    return self.dispatch(request, self, *args, **kwargs)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/commons/resource.py", line 106, in dispatch
+    return target.create(request, *args, **kwargs)
+  File "/usr/lib/python2.5/site-packages/django/db/transaction.py", line 218, in _commit_manually
+    return func(*args, **kw)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/gadget/views.py", line 110, in create
+    log(e, request)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/commons/logs.py", line 57, in log
+    f.write(line)
+  File "codecs.py", line 638, in write
+    return self.writer.write(data)
+  File "codecs.py", line 303, in write
+    data, consumed = self.encode(object, self.errors)
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 49: ordinal not in range(128)
+
+ERROR: GET /user/admin/catalogue/resource/1/10 admin
+[07/07/2008 12:09:31] Traceback (most recent call last):
+  File "/home/mac/eclipse/workspace/EzDigitalHome/commons/resource.py", line 65, in __call__
+    return self.dispatch(request, self, *args, **kwargs)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/commons/resource.py", line 92, in dispatch
+    return target.read(request, *args, **kwargs)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/catalogue/views.py", line 129, in read
+    return get_resource_response(gadgetlist, format, items, user)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/catalogue/catalogue_utils.py", line 167, in get_resource_response
+    resource_data_list = [get_gadgetresource_data(d, user) for d in resource_data]
+  File "/home/mac/eclipse/workspace/EzDigitalHome/catalogue/get_json_catalogue_data.py", line 169, in get_gadgetresource_data
+    data_ret['capabilities'] = get_gadget_capabilities(gadget_id=data['pk'])
+TypeError: get_gadget_capabilities() takes exactly 2 non-keyword arguments (1 given)
+
+ERROR: GET /user/admin/catalogue/resource/1/10 admin
+[07/07/2008 12:10:27] Traceback (most recent call last):
+  File "/home/mac/eclipse/workspace/EzDigitalHome/commons/resource.py", line 65, in __call__
+    return self.dispatch(request, self, *args, **kwargs)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/commons/resource.py", line 92, in dispatch
+    return target.read(request, *args, **kwargs)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/catalogue/views.py", line 129, in read
+    return get_resource_response(gadgetlist, format, items, user)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/catalogue/catalogue_utils.py", line 167, in get_resource_response
+    resource_data_list = [get_gadgetresource_data(d, user) for d in resource_data]
+  File "/home/mac/eclipse/workspace/EzDigitalHome/catalogue/get_json_catalogue_data.py", line 169, in get_gadgetresource_data
+    data_ret['capabilities'] = get_gadget_capabilities(gadget_id=data['pk'])
+TypeError: get_gadget_capabilities() takes exactly 2 non-keyword arguments (1 given)
+
+ERROR: GET /user/admin/catalogue/resource/1/10 admin
+[07/07/2008 12:11:57] Traceback (most recent call last):
+  File "/home/mac/eclipse/workspace/EzDigitalHome/commons/resource.py", line 65, in __call__
+    return self.dispatch(request, self, *args, **kwargs)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/commons/resource.py", line 92, in dispatch
+    return target.read(request, *args, **kwargs)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/catalogue/views.py", line 129, in read
+    return get_resource_response(gadgetlist, format, items, user)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/catalogue/catalogue_utils.py", line 167, in get_resource_response
+    resource_data_list = [get_gadgetresource_data(d, user) for d in resource_data]
+  File "/home/mac/eclipse/workspace/EzDigitalHome/catalogue/get_json_catalogue_data.py", line 169, in get_gadgetresource_data
+    data_ret['capabilities'] = get_gadget_capabilities(gadget_id=data['pk'])
+  File "/home/mac/eclipse/workspace/EzDigitalHome/catalogue/get_json_catalogue_data.py", line 148, in get_gadget_capabilities
+    except Capability.DoesNotExist:
+NameError: global name 'Capability' is not defined
+
+ERROR: GET /user/admin/catalogue/resource/1/10 admin
+[07/07/2008 12:13:41] Traceback (most recent call last):
+  File "/home/mac/eclipse/workspace/EzDigitalHome/commons/resource.py", line 65, in __call__
+    return self.dispatch(request, self, *args, **kwargs)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/commons/resource.py", line 92, in dispatch
+    return target.read(request, *args, **kwargs)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/catalogue/views.py", line 129, in read
+    return get_resource_response(gadgetlist, format, items, user)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/catalogue/catalogue_utils.py", line 167, in get_resource_response
+    resource_data_list = [get_gadgetresource_data(d, user) for d in resource_data]
+  File "/home/mac/eclipse/workspace/EzDigitalHome/catalogue/get_json_catalogue_data.py", line 169, in get_gadgetresource_data
+    data_ret['capabilities'] = get_gadget_capabilities(gadget_id=data['pk'])
+  File "/home/mac/eclipse/workspace/EzDigitalHome/catalogue/get_json_catalogue_data.py", line 148, in get_gadget_capabilities
+    except Capability.DoesNotExist:
+NameError: global name 'Capability' is not defined
+
+ERROR: GET /user/admin/catalogue/resource/1/10 admin
+[07/07/2008 12:15:14] Traceback (most recent call last):
+  File "/home/mac/eclipse/workspace/EzDigitalHome/commons/resource.py", line 65, in __call__
+    return self.dispatch(request, self, *args, **kwargs)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/commons/resource.py", line 92, in dispatch
+    return target.read(request, *args, **kwargs)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/catalogue/views.py", line 129, in read
+    return get_resource_response(gadgetlist, format, items, user)
+  File "/home/mac/eclipse/workspace/EzDigitalHome/catalogue/catalogue_utils.py", line 167, in get_resource_response
+    resource_data_list = [get_gadgetresource_data(d, user) for d in resource_data]
+  File "/home/mac/eclipse/workspace/EzDigitalHome/catalogue/get_json_catalogue_data.py", line 169, in get_gadgetresource_data
+    data_ret['capabilities'] = get_gadget_capabilities(gadget_id=data['pk'])
+  File "/home/mac/eclipse/workspace/EzDigitalHome/catalogue/get_json_catalogue_data.py", line 148, in get_gadget_capabilities
+    except Capability.DoesNotExist:
+NameError: global name 'Capability' is not defined
+
+ERROR: POST /user/admin/catalogue/resource admin
+[08/07/2008 10:50:28] global name 'UserTag' is not defined
