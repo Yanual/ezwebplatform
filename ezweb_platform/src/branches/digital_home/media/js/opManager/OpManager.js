@@ -168,6 +168,23 @@ var OpManagerFactory = function () {
 			this.activeWorkSpace.getVisibleTab().getDragboard().addInstance(gadget);
 		}
 		
+		OpManager.prototype.unsubscribeServices = function (gadgetId) {
+			var unsubscribeOk = function (transport) {
+				
+			}
+			
+			var unsubscribeError = function (transport) {
+				
+			}
+			
+			var unsubscribe_url = URIs.HOME_GATEWAY_DISPATCHER_UNSUBSCRIBE_URL;
+			
+			unsubscribe_url += "?igadget=";
+			unsubscribe_url += gadgetId;
+			
+			this.persistenceEngine.send_get(unsubscribe_url, this, unsubscribeOk, unsubscribeError);
+		}
+		
 		OpManager.prototype.removeInstance = function (iGadgetId) {
 			if (!this.loadCompleted)
 				return;
