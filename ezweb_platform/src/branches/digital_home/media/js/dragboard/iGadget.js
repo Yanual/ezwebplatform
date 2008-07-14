@@ -217,12 +217,17 @@ IGadget.prototype.paint = function(where) {
 	button.setAttribute("class", "closebutton");
 	button.setAttribute("className", "closebutton"); //IE hack
 	
-	var remove_and_cancel = function () { OpManagerFactory.getInstance().removeInstance(this.id); OpManagerFactory.getInstance().unsubscribeServices(this.id); LayoutManagerFactory.getInstance().hideCover();}.bind(this);
-	
-	var remove = function () { OpManagerFactory.getInstance().removeInstance(this.id); LayoutManagerFactory.getInstance().hideCover();}.bind(this);
-	
-	Event.observe (button, "click", function() {LayoutManagerFactory.getInstance().showWindowMenu('cancelService', remove_and_cancel, remove);}, true);
-	
+	if (this.gadget.isContratable()) {
+		var remove_and_cancel = function () { OpManagerFactory.getInstance().removeInstance(this.id); OpManagerFactory.getInstance().unsubscribeServices(this.id); LayoutManagerFactory.getInstance().hideCover();}.bind(this);
+		
+		var remove = function () { OpManagerFactory.getInstance().removeInstance(this.id); LayoutManagerFactory.getInstance().hideCover();}.bind(this);
+		
+		Event.observe (button, "click", function() {LayoutManagerFactory.getInstance().showWindowMenu('cancelService', remove_and_cancel, remove);}, true);
+	}
+	else {
+		Event.observe (button, "click", function() {OpManagerFactory.getInstance().removeInstance(this.id);}.bind(this), true);
+	}
+		
 	button.setAttribute("title", gettext("Close"));
 	button.setAttribute("alt", gettext("Close"));
 	this.gadgetMenu.appendChild(button);
