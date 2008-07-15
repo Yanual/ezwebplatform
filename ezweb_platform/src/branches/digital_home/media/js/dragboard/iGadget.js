@@ -218,9 +218,9 @@ IGadget.prototype.paint = function(where) {
 	button.setAttribute("className", "closebutton"); //IE hack
 	
 	if (this.gadget.isContratable()) {
-		var remove_and_cancel = function () { OpManagerFactory.getInstance().removeInstance(this.id); OpManagerFactory.getInstance().unsubscribeServices(this.id); LayoutManagerFactory.getInstance().hideCover();}.bind(this);
+		var remove_and_cancel = function () { OpManagerFactory.getInstance().removeInstance(this.id);  OpManagerFactory.getInstance().cancelServices(this.id); LayoutManagerFactory.getInstance().hideCover();}.bind(this);
 		
-		var remove = function () { OpManagerFactory.getInstance().removeInstance(this.id); LayoutManagerFactory.getInstance().hideCover();}.bind(this);
+		var remove = function () { OpManagerFactory.getInstance().removeInstance(this.id); OpManagerFactory.getInstance().unsubscribeServices(this.id); LayoutManagerFactory.getInstance().hideCover();}.bind(this);
 		
 		Event.observe (button, "click", function() {LayoutManagerFactory.getInstance().showWindowMenu('cancelService', remove_and_cancel, remove);}, true);
 	}
