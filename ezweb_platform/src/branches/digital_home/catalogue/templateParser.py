@@ -127,6 +127,9 @@ class TemplateHandler(handler.ContentHandler):
         
         if (capability.name.lower() == 'contratable'):
             self._contratable=True
+        
+            tag = UserTag (tag='contratable', idUser=self._user, idResource=self._gadget)
+            tag.save()
 
     def endElement(self, name):
         if (name == 'Name'):
@@ -181,10 +184,6 @@ class TemplateHandler(handler.ContentHandler):
             userRelated.added_by = True
             
             userRelated.save()
-            
-            if (self._contratable):
-                tag = UserTag (tag='contratable', idUser=self._user, idResource=gadget)
-                tag.save()
             
             self._gadget_added = True
         elif (self._gadget_added):
