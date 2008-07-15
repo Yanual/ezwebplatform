@@ -170,19 +170,23 @@ var OpManagerFactory = function () {
 		
 		OpManager.prototype.unsubscribeServices = function (gadgetId) {
 			var unsubscribeOk = function (transport) {
-				alert(transport);
+
 			}
 			
 			var unsubscribeError = function (transport) {
-				alert(transport);
+
 			}
 			
 			var unsubscribe_url = URIs.HOME_GATEWAY_DISPATCHER_UNSUBSCRIBE_URL;
 			
 			unsubscribe_url += "?igadget=";
 			unsubscribe_url += gadgetId;
+			unsubscribe_url += "&user=";
+			unsubscribe_url += ezweb_user_name;
 			
-			this.persistenceEngine.send_get(unsubscribe_url, this, unsubscribeOk, unsubscribeError);
+			var params = {'method': "GET", 'url':  unsubscribe_url};
+			
+			this.persistenceEngine.send_post("/proxy", params, this, unsubscribeOk, unsubscribeError);
 		}
 		
 		OpManager.prototype.removeInstance = function (iGadgetId) {

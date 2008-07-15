@@ -48,9 +48,12 @@ _URIConstants.prototype.GET_POST_WORKSPACE = new Template ('/workspaces/#{id}');
 _URIConstants.prototype.GET_POST_TABS = new Template('/workspace/#{workspace_id}/tabs');
 _URIConstants.prototype.TAB = new Template('/workspace/#{workspace_id}/tab/#{tab_id}');
 _URIConstants.prototype.HOME_GATEWAY_DISPATCHER_URL = '{{ home_gateway_dispatcher_url }}serviceGadgets?user={{ user.username }}'
-_URIConstants.prototype.HOME_GATEWAY_DISPATCHER_UNSUBSCRIBE_URL = '{{ home_gateway_dispatcher_url }}unsubscribeService?user={{ user.username }}'
+_URIConstants.prototype.HOME_GATEWAY_DISPATCHER_UNSUBSCRIBE_URL = '{{ home_gateway_dispatcher_url }}unsubscribeService'
 
 var URIs = new _URIConstants();
+
+var ezweb_user_name = '{{ user.username }}';
+
 </script>
 
 <script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/common/constants.js"></script>
