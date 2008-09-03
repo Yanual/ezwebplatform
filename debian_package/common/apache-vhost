@@ -25,6 +25,7 @@ NameVirtualHost *
 
   Alias /media /usr/share/python-support/python-django/django/contrib/admin/media
   Alias /site-media /usr/share/ezweb-platform/media
+  Alias /repository /var/www/gadgets
 
   <Location /media>
     SetHandler None
@@ -34,11 +35,11 @@ NameVirtualHost *
     SetHandler None
   </Location>
 
-  <Location /gadgets>
+  <Location /repository>
     SetHandler None
   </Location>
 
-  <Directory /var/www/ezweb-platform/gadgets>
+  <Directory /var/www/gadgets>
     Options Indexes FollowSymLinks MultiViews
     AllowOverride None
     Order allow,deny
