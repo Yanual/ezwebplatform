@@ -149,14 +149,14 @@ def UpdateIGadget(igadget, user, tab):
     igadget_pk = igadget.get('id')
     
     # Checks
-    ig = get_object_or_404(IGadget, tab=tab, pk=igadget_pk)  
+    ig = get_object_or_404(IGadget, tab=tab, pk=igadget_pk)
     
     if igadget.has_key('name'):
         name = igadget.get('name')
         ig.name = name
     
     ig.save()
-        
+    
     # get IGadget's position
     position = ig.position
         
@@ -232,7 +232,7 @@ class IGadgetCollection(Resource):
     def create(self, request, workspace_id, tab_id):
         user = get_user_authentication(request)
 
-        if not request.has_key('igadget'):
+        if not request.POST.has_key('igadget'):
             return HttpResponseBadRequest(get_xml_error(_("iGadget JSON expected")), mimetype='application/xml; charset=UTF-8')
 
         try:
