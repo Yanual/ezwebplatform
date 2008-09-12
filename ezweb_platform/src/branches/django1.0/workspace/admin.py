@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 # MORFEO Project 
 # http://morfeo-project.org 
@@ -36,9 +36,13 @@
 #   http://morfeo-project.org/
 #
 
-class TemplateParseException( Exception ):
-    def __init__(self,msg):
-        self.msg=msg
+from django.conf.urls.defaults import *
 
-    def __unicode__(self):
-        return repr(self.msg)
+from models import *
+
+admin.site.register(WorkSpace)
+admin.site.register(PublishedWorkSpace)
+admin.site.register(AbstractVariable)
+admin.site.register(VariableValue)
+admin.site.register(WorkSpaceVariable)
+admin.site.register(Tab)
