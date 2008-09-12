@@ -53,7 +53,7 @@ urlpatterns = patterns('',
      (r'^ezweb/(.*)$', 'django.views.static.serve', {'document_root': path.join(settings.BASEDIR, 'media')}),
      
     #Admin interface
-    (r'^admin/', admin.site.root),
+    (r'^admin/(.*)', admin.site.root),
 
     # EzWeb
     (r'^', include('ezweb.urls')),

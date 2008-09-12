@@ -36,7 +36,7 @@
 #   http://morfeo-project.org/
 #
 
-from django.conf.urls.defaults import *
+from django.contrib import admin
 
 from models import *
 

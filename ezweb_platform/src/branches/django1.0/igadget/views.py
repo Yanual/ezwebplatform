@@ -134,7 +134,7 @@ def SaveIGadget(igadget, user, tab):
         
         igadget_data =  serializers.serialize('python', [new_igadget], ensure_ascii=False)
         
-        ids = get_igadget_data(igadget_data[0], user)
+        ids = get_igadget_data(igadget_data[0], user, tab.workspace)
         
         return ids
 
@@ -221,10 +221,12 @@ class IGadgetCollection(Resource):
     def read(self, request, workspace_id, tab_id):
         user = get_user_authentication(request)
         
+        workspace = get_object_or_404(WorkSpace, id=workspace_id)
+        
         data_list = {}
         igadget = IGadget.objects.filter(tab__workspace__users__id=user.id, tab__workspace__pk=workspace_id, tab__pk=tab_id)
         data = serializers.serialize('python', igadget, ensure_ascii=False)
-        data_list['iGadgets'] = [get_igadget_data(d, user) for d in  data]
+        data_list['iGadgets'] = [get_igadget_data(d, user, workspace) for d in  data]
 
         return HttpResponse(json_encode(data_list), mimetype='application/json; charset=UTF-8')
 
@@ -283,9 +285,11 @@ class IGadgetEntry(Resource):
     def read(self, request, workspace_id, tab_id, igadget_id):
         user = get_user_authentication(request)
         
+        workspace = get_object_or_404(WorkSpace, id=workspace_id)
+        
         igadget = get_list_or_404(IGadget, tab__workspace__users__id=user.id, tab__workspace__pk=workspace_id, tab__pk=tab_id, pk=igadget_id)
         data = serializers.serialize('python', igadget, ensure_ascii=False)
-        igadget_data = get_igadget_data(data[0], user)
+        igadget_data = get_igadget_data(data[0], user, workspace)
         return HttpResponse(json_encode(igadget_data), mimetype='application/json; charset=UTF-8')
 
     @transaction.commit_on_success
