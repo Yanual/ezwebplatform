@@ -372,8 +372,8 @@ function Dragboard(tab, workSpace, dragboardElement) {
 		this._destroyCursor(true);
 		var position = this.gadgetToMove.getPosition();
 		this.gadgetToMove.layoutStyle._insertAt(this.gadgetToMove, position.x, position.y);
-		this.gadgetToMove = null;
 		this.gadgetToMove.layoutStyle.shadowMatrix = null; // FIXME
+		this.gadgetToMove = null;
 	}
 
 	Dragboard.prototype.acceptMove = function() {
@@ -423,7 +423,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 	 * horizontal Margin between IGadgets = 4 pixels
 	 * scroll bar reserved space          = 17 pixels
 	 */
-	this.baseLayout = new SmartColumnLayout(this.dragboardElement, 20, 12, 2, 4, 17);
+	this.baseLayout = new SmartColumnLayout(this, 20, 12, 2, 4, 17);
 
 	this.parseTab(tab.tabInfo);
 }
@@ -570,7 +570,7 @@ function Draggable(draggableElement, handler, data, onStart, onDrag, onFinish) {
 		draggableElement.style.top = y + 'px';
 		draggableElement.style.left = x + 'px';
 
-		onDrag(draggable, data, x + xOffset, y + yOffset);
+		onDrag(e, draggable, data, x + xOffset, y + yOffset);
 	}
 
 	// initiate the drag
@@ -679,17 +679,39 @@ IGadgetDraggable.prototype.startFunc = function (draggable, context) {
 	draggable.setYOffset(context.dragboard.baseLayout.getCellHeight());
 }
 
-IGadgetDraggable.prototype.updateFunc = function (draggable, context, x, y) {
+IGadgetDraggable.prototype.updateFunc = function (event, draggable, context, x, y) {
 	var position = context.dragboard.baseLayout.getCellAt(x, y);
 
 	// If the mouse is inside of the dragboard and we have enought columns =>
 	// check if we have to change the cursor position
-	if (position != null)
+	if (position != null) {
+		context.selectedTab = null;
 		context.dragboard.moveTemporally(position.x, position.y);
+	} else {
+		var element = document.elementFromPoint(event.clientX, event.clientY);
+		if (element == null)
+			return;
+
+		var id = element.getAttribute("id");
+		if (id == null)
+			return;
+
+		var result = id.match(/tab_(\d+)_(\d+)/);
+		if (result != null)
+			context.selectedTab = result[2];
+	}
 }
 
 IGadgetDraggable.prototype.finishFunc = function (draggable, context) {
-	context.dragboard.acceptMove();
+	if (context.selectedTab) {
+		context.dragboard.cancelMove();
+		var iGadget = context.dragboard.getIGadget(context.iGadgetId);
+		var destLayout = context.dragboard.workSpace.getTab(context.selectedTab);
+		destLayout = destLayout.getDragboard().baseLayout;
+		iGadget.moveToLayout(destLayout);
+	} else {
+		context.dragboard.acceptMove();
+	}
 }
 
 /////////////////////////////////////

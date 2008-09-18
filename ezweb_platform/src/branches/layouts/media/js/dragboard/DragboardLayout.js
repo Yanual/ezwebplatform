@@ -48,14 +48,14 @@
  * Despite javascript not having a way to mark classes abstract, this class is
  * abstract, so please do not try to create an instance of this clase.
  *
- * @param dragboardElement HTML element that will be used
+ * @param dragboard      associated dragboard
  * @param scrollbarSpace space reserved for the right scroll bar in pixels
  */
-function DragboardLayout(dragboardElement, scrollbarSpace) {
+function DragboardLayout(dragboard, scrollbarSpace) {
 	if (arguments.length == 0)
 		return; // Allow empty constructor (allowing hierarchy)
 
-	this.dragboardElement = dragboardElement;
+	this.dragboard = dragboard;
 	this.scrollbarSpace = scrollbarSpace;
 	this.iGadgets = new Array();
 }
@@ -81,10 +81,11 @@ DragboardLayout.prototype.getExtraCells = function() {
  * This function is slow. Please, only call it when really necessary.
  */
 DragboardLayout.prototype._recomputeSize = function() {
-	this.dragboardWidth = parseInt(this.dragboardElement.offsetWidth);
+	var dragboardElement = this.dragboard.dragboardElement;
+	this.dragboardWidth = parseInt(dragboardElement.offsetWidth);
 
 	var tmp = this.dragboardWidth;
-	tmp-= parseInt(this.dragboardElement.clientWidth);
+	tmp-= parseInt(dragboardElement.clientWidth);
 
 	if (tmp > this.scrollbarSpace)
 		this.dragboardWidth-= tmp;
@@ -101,6 +102,7 @@ DragboardLayout.prototype.addIGadget = function(iGadget) {
 }
 
 DragboardLayout.prototype.removeIGadget = function(iGadget) {
+	this.dragboard.dragboardElement.removeChild(iGadget.element);
 	delete this.iGadgets[iGadget.code];
 }
 

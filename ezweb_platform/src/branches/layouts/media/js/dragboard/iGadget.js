@@ -164,7 +164,7 @@ IGadget.prototype.isVisible = function() {
  * Paints the gadget instance
  * @param where HTML Element where the igadget will be painted
  */
-IGadget.prototype.paint = function(where) {
+IGadget.prototype.paint = function() {
 	if (this.element != null) // exit if the igadgets is already visible
 		return; // TODO exception
 
@@ -318,7 +318,7 @@ IGadget.prototype.paint = function(where) {
 	}
 
 	// Insert it into the dragboard
-	where.appendChild(this.element);
+	this.layoutStyle.dragboard.dragboardElement.appendChild(this.element);
 
 	// Recompute sizes
 	//this._recomputeSize(true);
@@ -1006,4 +1006,20 @@ IGadget.prototype.save = function() {
 	                                           version: this.gadget.getVersion()});
 	data = {igadget: data.toJSON()};
 	persistenceEngine.send_post(uri , data, this, onSuccess, onError);
+}
+
+/**
+ * 
+ */
+IGadget.prototype.moveToLayout = function(layout) {
+	var oldLayout = this.layoutStyle;
+	oldLayout.removeIGadget(this);
+
+	this.layoutStyle = layout;
+
+	this.layoutStyle.addIGadget(this);
+	this.layoutStyle.dragboard.dragboardElement.appendChild(this.element);
+	this.layoutStyle._reserveSpace(this.layoutStyle.matrix, this); // FIXME
+	this.dragboard = this.layoutStyle.dragboard;
+	this.dragboard._commitChanges(); // TODO
 }
