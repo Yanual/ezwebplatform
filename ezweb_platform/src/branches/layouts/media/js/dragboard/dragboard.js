@@ -711,8 +711,12 @@ IGadgetDraggable.prototype.updateFunc = function (event, draggable, context, x, 
 			return;
 
 		var id = element.getAttribute("id");
-		if (id == null)
-			return;
+		if (id == null) {
+			element = element.parentNode;
+			id = element.getAttribute("id");
+			if (id == null)
+				return;
+		}
 
 		var result = id.match(/tab_(\d+)_(\d+)/);
 		if (result != null)
