@@ -403,7 +403,7 @@ IGadget.prototype.updateName = function (igadgetName){
 		msg = interpolate(gettext("Error renaming igadget from persistence: %(errorMsg)s."), {errorMsg: msg}, true);
 		LogManagerFactory.getInstance().log(msg);
 	}
-	
+
 	if (igadgetName != null && igadgetName.length > 0) {
 		this.name = igadgetName;
 		this.gadgetMenu.setAttribute("title", igadgetName);
@@ -418,7 +418,7 @@ IGadget.prototype.updateName = function (igadgetName){
 }
 
 /**
- * Clean references to other objects. This avoids memory leaks caused by circular references.
+ * This method must be called to avoid memory leaks caused by circular references.
  */
 IGadget.prototype.destroy = function() {
 	this.gadget = null;
@@ -443,8 +443,11 @@ IGadget.prototype.remove = function() {
 			msg = interpolate(gettext("Error removing igadget from persistence: %(errorMsg)s."), {errorMsg: msg}, true);
 			LogManagerFactory.getInstance().log(msg);
 		}
-		
-		this.element.parentNode.removeChild(this.element);
+
+		if (this.element.parentNode != null) {
+			this.layoutStyle.removeIGadget(this);
+		}
+
 		this.element = null;
 		var persistenceEngine = PersistenceEngineFactory.getInstance();
 		var uri = URIs.GET_IGADGET.evaluate({workspaceId: this.dragboard.workSpaceId, tabId: this.dragboard.tabId, iGadgetId: this.id});
@@ -1009,17 +1012,49 @@ IGadget.prototype.save = function() {
 }
 
 /**
- * 
+ * This function migrates this igadget form a layout to another
  */
 IGadget.prototype.moveToLayout = function(layout) {
+	if (this.layoutStyle == layout)
+		return;
+
 	var oldLayout = this.layoutStyle;
 	oldLayout.removeIGadget(this);
 
 	this.layoutStyle = layout;
+	this.dragboard = layout.dragboard;
+	this.position = null;
 
 	this.layoutStyle.addIGadget(this);
-	this.layoutStyle.dragboard.dragboardElement.appendChild(this.element);
-	this.layoutStyle._reserveSpace(this.layoutStyle.matrix, this); // FIXME
-	this.dragboard = this.layoutStyle.dragboard;
-	this.dragboard._commitChanges(); // TODO
+
+	// Persistence
+	var onSuccess = function(transport) { }
+
+	var onError = function(transport, e) {
+		var msg;
+		if (transport.responseXML) {
+			msg = transport.responseXML.documentElement.textContent;
+		} else {
+			msg = "HTTP Error " + transport.status + " - " + transport.statusText;
+		}
+
+		msg = interpolate(gettext("Error saving changes to persistence: %(errorMsg)s."), {errorMsg: msg}, true);
+		LogManagerFactory.getInstance().log(msg);
+	}
+
+	var data = new Hash();
+	data['iGadgets'] = new Array();
+
+	var iGadgetInfo = new Hash();
+	iGadgetInfo['id'] = this.id;
+	iGadgetInfo['top'] = this.position.y;
+	iGadgetInfo['left'] = this.position.x;
+	iGadgetInfo['tab'] = this.dragboard.tabId;
+
+	data['iGadgets'].push(iGadgetInfo);
+
+	data = {igadgets: data.toJSON()};
+	var persistenceEngine = PersistenceEngineFactory.getInstance();
+	uri = URIs.GET_IGADGETS.evaluate({workspaceId: oldLayout.dragboard.workSpaceId, tabId: oldLayout.dragboard.tabId});
+	persistenceEngine.send_update(uri, data, this, onSuccess, onError);
 }

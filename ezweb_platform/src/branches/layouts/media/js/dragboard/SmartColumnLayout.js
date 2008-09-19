@@ -148,14 +148,14 @@ ColumnLayout.prototype._getPositionOn = function(_matrix, gadget) {
 	if (_matrix == this.matrix)
 		return gadget.getPosition();
 	else
-		return this.shadowPositions[gadget.getId()];
+		return this.shadowPositions[gadget.code];
 }
 
 ColumnLayout.prototype._setPositionOn = function(_matrix, gadget, position) {
 	if (_matrix == this.matrix)
 		gadget.setPosition(position);
 	else
-		this.shadowPositions[gadget.getId()] = position;
+		this.shadowPositions[gadget.code] = position;
 }
 
 ColumnLayout.prototype._clearMatrix = function() {
@@ -456,7 +456,7 @@ ColumnLayout.prototype.initialize = function (iGadgets) {
 	var iGadget, key, position, iGadgetsToReinsert = new Array();
 
 	this._clearMatrix();
-	this.iGadgets = iGadgets;
+	this.iGadgets = iGadgets.clone();
 
 	// Insert igadgets
 	var igadgetKeys = iGadgets.keys();
@@ -473,9 +473,11 @@ ColumnLayout.prototype.initialize = function (iGadgets) {
 		if (iGadget.getWidth() + position.x > this.getColumns()) {
 			var guessedWidth = this.getColumns() - position.x;
 			if (this._hasSpaceFor(this.matrix, position.x, position.y, guessedWidth, iGadget.getHeight())) {
-				iGadget.contentWidth = guessedWidth;
+				iGadget.setContentWidth(guessedWidth);
 				this._reserveSpace(this.matrix, iGadget);
 				iGadget.paint();
+			} else {
+				iGadgetsToReinsert.push(iGadget);
 			}
 		} else if (this._hasSpaceFor(this.matrix, position.x, position.y, iGadget.getWidth(), iGadget.getHeight())) {
 			this._reserveSpace(this.matrix, iGadget);
@@ -510,14 +512,19 @@ ColumnLayout.prototype.getCellAt = function (x, y) {
 
 
 ColumnLayout.prototype.addIGadget = function(iGadget) {
+	var position = iGadget.getPosition();
+	if (position) {
+		this._insertAt(iGadget, position.x, position.y);
+	} else {
+		// Search a position for the gadget
+		position = this._searchFreeSpace(iGadget.getWidth(), iGadget.getHeight());
+		iGadget.setPosition(position);
+
+		// Pre-reserve the cells for the gadget instance
+		this._reserveSpace(this.matrix, iGadget);
+	}
+
 	DragboardLayout.prototype.addIGadget.call(this, iGadget);
-
-	// Search a position for the gadget
-	var position = this._searchFreeSpace(iGadget.getWidth(), iGadget.getHeight());
-	iGadget.setPosition(position);
-
-	// Pre-reserve the cells for the gadget instance
-	this._reserveSpace(this.matrix, iGadget);
 }
 
 ColumnLayout.prototype.removeIGadget = function(iGadget) {

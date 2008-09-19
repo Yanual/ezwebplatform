@@ -49,6 +49,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 	this.dragboardCursor = null;
 	this.gadgetToMove = null;
 	this.iGadgets = new Hash();
+	this.iGadgetsByCode = new Hash();
 	this.tab = tab;
 	this.tabId = tab.tabInfo.id;
 	this.workSpace = workSpace;
@@ -61,7 +62,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 	Dragboard.prototype.paint = function () {
 		this.dragboardElement.innerHTML = "";
 
-		this.baseLayout.initialize(this.iGadgets);
+		this.baseLayout.initialize(this.iGadgetsByCode);
 	}
 
 	Dragboard.prototype._destroyCursor = function(clearSpace) {
@@ -73,8 +74,13 @@ function Dragboard(tab, workSpace, dragboardElement) {
 		}
 	}
 
-	this._commitChanges = function() {
-		// Update igadgets positions in persistence
+
+	/**
+	 * Update igadget status in persistence
+	 */
+	this._commitChanges = function(keys) {
+		keys = keys || this.iGadgetsByCode.keys();
+
 		var onSuccess = function(transport) { }
 
 		var onError = function(transport, e) {
@@ -89,14 +95,13 @@ function Dragboard(tab, workSpace, dragboardElement) {
 			LogManagerFactory.getInstance().log(msg);
 		}
 
-		// TODO only send changes
+		// TODO only send real changes
 		var iGadgetInfo, uri, position;
 		var data = new Hash();
 		data['iGadgets'] = new Array();
 
-		var keys = this.iGadgets.keys();
 		for (var i = 0; i < keys.length; i++) {
-			iGadget = this.iGadgets[keys[i]];
+			iGadget = this.iGadgetsByCode[keys[i]];
 			iGadgetInfo = new Hash();
 			position = iGadget.getPosition();
 			iGadgetInfo['id'] = iGadget.id;
@@ -105,6 +110,8 @@ function Dragboard(tab, workSpace, dragboardElement) {
 			iGadgetInfo['minimized'] = iGadget.isMinimized() ? "true" : "false";
 			iGadgetInfo['width'] = iGadget.getContentWidth();
 			iGadgetInfo['height'] = iGadget.getContentHeight();
+			iGadgetInfo['tab'] = this.tabId;
+
 			data['iGadgets'].push(iGadgetInfo);
 		}
 
@@ -119,7 +126,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 	// ****************
 
 	Dragboard.prototype.recomputeSize = function() {
-	    this.baseLayout._notifyWindowResizeEvent(this.iGadgets);
+		this.baseLayout._notifyWindowResizeEvent();
 	}
 
 	Dragboard.prototype.hide = function () {
@@ -131,10 +138,11 @@ function Dragboard(tab, workSpace, dragboardElement) {
 
 		var keys = this.iGadgets.keys();
 		//disconect and delete the connectables and variables of all tab iGadgets
-		for (var i = 0; i < keys.length; i++) {
+		for (var i = 0; i < keys.length; i++)
 			this.workSpace.removeIGadgetData(keys[i]);
-			delete this.iGadgets[keys[i]];
-		}
+
+		this.iGadgets = null;
+		this.iGadgetsByCode = null;
 
 		Element.remove(this.dragboardElement);
 
@@ -165,7 +173,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 			this.dragboardElement.addClassName("fixed");
 		else
 			this.dragboardElement.removeClassName("fixed");
-		
+
 		var iGadget;
 
 		// propagate the fixed status change event
@@ -215,6 +223,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 
 		this.currentCode = 1;
 		this.iGadgets = new Hash();
+		this.iGadgetsByCode = new Hash();
 
 		if (tabInfo.locked == "true") {
 			this.fixed = true;
@@ -243,11 +252,10 @@ function Dragboard(tab, workSpace, dragboardElement) {
 			// Create instance model
 			igadget = new IGadget(gadget, curIGadget.id, curIGadget.code, curIGadget.name, this.baseLayout, position, width, height, minimized, this);
 			this.iGadgets[curIGadget.id] = igadget;
+			this.iGadgetsByCode[curIGadget.code] = igadget;
 
 			if (curIGadget.code >= this.currentCode)
-				this.currentCode =  curIGadget.code + 1;
-
-//				this._reserveSpace(this.matrix, igadget);
+				this.currentCode = curIGadget.code + 1;
 		}
 
 		this.loaded = true;
@@ -287,11 +295,11 @@ function Dragboard(tab, workSpace, dragboardElement) {
 
 	Dragboard.prototype.removeInstance = function (iGadgetId) {
 		var igadget = this.iGadgets[iGadgetId];
-		this.iGadgets.remove(iGadgetId);
 
-		this.baseLayout.removeIGadget(igadget);
 		igadget.remove();
 		igadget.destroy();
+
+		this._deregistreIGadget(igadget);
 	}
 
 	Dragboard.prototype.igadgetLoaded = function (iGadgetId) {
@@ -406,8 +414,18 @@ function Dragboard(tab, workSpace, dragboardElement) {
 	}
 	
 
-	Dragboard.prototype.addIGadget = function (iGadget, igadgetInfo) {
+	Dragboard.prototype._registreIGadget = function (iGadget) {
 		this.iGadgets[iGadget.id] = iGadget;
+		this.iGadgetsByCode[iGadget.code] = iGadget;
+	}
+
+	Dragboard.prototype._deregistreIGadget = function (iGadget) {
+		this.iGadgets.remove(iGadget.id);
+		this.iGadgetsByCode.remove(iGadget.code);
+	}
+
+	Dragboard.prototype.addIGadget = function (iGadget, igadgetInfo) {
+		this._registreIGadget(iGadget);
 		this.workSpace.addIGadget(this.tab, iGadget, igadgetInfo);
 	}
 
@@ -665,8 +683,7 @@ function Draggable(draggableElement, handler, data, onStart, onDrag, onFinish) {
 /////////////////////////////////////
 function IGadgetDraggable (iGadget) {
 	var context = new Object();
-	context.dragboard = iGadget.dragboard;
-	context.iGadgetId = iGadget.id;
+	context.iGadget = iGadget;
 	Draggable.call(this, iGadget.element, iGadget.gadgetMenu, context,
 	                     IGadgetDraggable.prototype.startFunc,
 	                     IGadgetDraggable.prototype.updateFunc,
@@ -674,7 +691,8 @@ function IGadgetDraggable (iGadget) {
 }
 
 IGadgetDraggable.prototype.startFunc = function (draggable, context) {
-	context.dragboard.initializeMove(context.iGadgetId);
+	context.dragboard = context.iGadget.dragboard;
+	context.dragboard.initializeMove(context.iGadget.id);
 	draggable.setXOffset(context.dragboard.baseLayout.fromHCellsToPixels(1) / 2);
 	draggable.setYOffset(context.dragboard.baseLayout.getCellHeight());
 }
@@ -705,13 +723,14 @@ IGadgetDraggable.prototype.updateFunc = function (event, draggable, context, x, 
 IGadgetDraggable.prototype.finishFunc = function (draggable, context) {
 	if (context.selectedTab) {
 		context.dragboard.cancelMove();
-		var iGadget = context.dragboard.getIGadget(context.iGadgetId);
 		var destLayout = context.dragboard.workSpace.getTab(context.selectedTab);
 		destLayout = destLayout.getDragboard().baseLayout;
-		iGadget.moveToLayout(destLayout);
+		context.iGadget.moveToLayout(destLayout);
 	} else {
 		context.dragboard.acceptMove();
 	}
+
+	context.dragboard = null;
 }
 
 /////////////////////////////////////

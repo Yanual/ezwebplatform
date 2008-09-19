@@ -57,7 +57,7 @@ function DragboardLayout(dragboard, scrollbarSpace) {
 
 	this.dragboard = dragboard;
 	this.scrollbarSpace = scrollbarSpace;
-	this.iGadgets = new Array();
+	this.iGadgets = new Hash();
 }
 
 DragboardLayout.prototype.getMenubarSize = function() {
@@ -98,19 +98,30 @@ DragboardLayout.prototype.getWidth = function() {
 }
 
 DragboardLayout.prototype.addIGadget = function(iGadget) {
+	if (iGadget.element != null) // TODO
+		this.dragboard.dragboardElement.appendChild(iGadget.element);
+
+	this.dragboard._registreIGadget(iGadget);
 	this.iGadgets[iGadget.code] = iGadget;
 }
 
 DragboardLayout.prototype.removeIGadget = function(iGadget) {
-	this.dragboard.dragboardElement.removeChild(iGadget.element);
-	delete this.iGadgets[iGadget.code];
+	if (iGadget.element != null) // TODO
+		this.dragboard.dragboardElement.removeChild(iGadget.element);
+
+	this.dragboard._deregistreIGadget(iGadget);
+	this.iGadgets.remove(iGadget.code);
 }
 
+/**
+ * This method must be called to avoid memory leaks caused by circular references.
+ */
 DragboardLayout.prototype.destroy = function() {
 	var keys = this.iGadgets.keys();
 	for (var i = 0; i < keys.length; i++) {
 		this.iGadgets[keys[i]].destroy();
 	}
+	this.iGadgets = null;
 }
 
 DragboardLayout.prototype.acceptMove = function(iGadget, newposition) {
