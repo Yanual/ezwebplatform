@@ -302,15 +302,12 @@ function Dragboard(tab, workSpace, dragboardElement) {
 		this._deregistreIGadget(igadget);
 	}
 
-	Dragboard.prototype.igadgetLoaded = function (iGadgetId) {
-		var igadget = this.iGadgets[iGadgetId];
-
-		if (!igadget) {
+	Dragboard.prototype.igadgetLoaded = function (iGadget) {
+		if (!this.iGadgets[iGadget.id]) {
 			// TODO log
 			return;
 		}
 
-		igadget._notifyLoaded();
 		this.igadgetsToLoad--;
 	}
 

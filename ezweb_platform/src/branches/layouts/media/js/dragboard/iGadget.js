@@ -627,20 +627,20 @@ IGadget.prototype._notifyLockEvent = function(newLockStatus) {
  * This function is called when the content of the igadget has been loaded completly
  */
 IGadget.prototype._notifyLoaded = function() {
-	if (this.loaded) {
-		// TODO log
-	}
+	if (!this.loaded) {
+		this.loaded = true;
 
-	this.loaded = true;
+		if (this.errorCount > 0) {
+			var msg = ngettext("%(errorCount)s error for the iGadget \"%(name)s\" was notified before it was loaded",
+			                   "%(errorCount)s errors for the iGadget \"%(name)s\" were notified before it was loaded",
+			                   this.errorCount);
+			msg = interpolate(msg, {errorCount: this.errorCount, name: this.name}, true);
+			LogManagerFactory.getInstance().log(msg);
+			this.errorButtonElement.removeClassName("disabled");
+			this._updateErrorInfo();
+		}
 
-	if (this.errorCount > 0) {
-		var msg = ngettext("%(errorCount)s error for the iGadget \"%(name)s\" was notified before it was loaded",
-		                   "%(errorCount)s errors for the iGadget \"%(name)s\" were notified before it was loaded",
-		                   this.errorCount);
-		msg = interpolate(msg, {errorCount: this.errorCount, name: this.name}, true);
-		LogManagerFactory.getInstance().log(msg);
-		this.errorButtonElement.removeClassName("disabled");
-		this._updateErrorInfo();
+		this.dragboard.igadgetLoaded(this);
 	}
 
 	this.setContentSize(this.contentWidth, this.contentHeight);
@@ -904,7 +904,7 @@ IGadget.prototype.setConfigurationVisible = function(newValue) {
 	this._recomputeHeight(true);
 
 	// Notify resize event
-	this.dragboard._notifyResizeEvent(this, this.contentWidth, oldHeight, this.contentWidth, this.getHeight(), true);
+	this.layoutStyle._notifyResizeEvent(this, this.contentWidth, oldHeight, this.contentWidth, this.getHeight(), true);
 }
 
 /**
