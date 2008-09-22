@@ -93,6 +93,14 @@ DragboardLayout.prototype._recomputeSize = function() {
 		this.dragboardWidth-= this.scrollbarSpace;
 }
 
+/**
+ * Returns true if the point is inside the dragboard
+ */
+DragboardLayout.prototype.isInside = function (x, y) {
+	return (x >= 0) && (x < this.dragboardWidth) && (y >= 0);
+}
+
+
 DragboardLayout.prototype.getWidth = function() {
 	return this.dragboardWidth;
 }
@@ -110,7 +118,7 @@ DragboardLayout.prototype.removeIGadget = function(iGadget) {
 		this.dragboard.dragboardElement.removeChild(iGadget.element);
 
 	this.dragboard._deregistreIGadget(iGadget);
-	this.iGadgets.remove(iGadget.code);
+	delete this.iGadgets[iGadget.code];
 }
 
 /**

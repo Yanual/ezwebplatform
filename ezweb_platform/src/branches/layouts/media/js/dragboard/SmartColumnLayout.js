@@ -217,7 +217,7 @@ ColumnLayout.prototype._moveSpaceDown = function(_matrix, iGadget, offsetY) {
 		for (y = 0; y < offsetY; y++) {
 			igadget = _matrix[position.x + x][edgeY + y];
 			if (igadget != null) {
-				affectedIGadgets[igadget.getId()] = offsetY - y; // calculate the offset for this igadget
+				affectedIGadgets[igadget.code] = offsetY - y; // calculate the offset for this igadget
 				break; // continue whit the next column
 			}
 		}
@@ -260,7 +260,7 @@ ColumnLayout.prototype._moveSpaceUp = function(_matrix, iGadget) {
 			for (y = edgeY; y < columnsize; y++) {
 				igadget = _matrix[position.x + x][y];
 				if (igadget != null) {
-					affectedIGadgets[igadget.getId()] = igadget;
+					affectedIGadgets[igadget.code] = igadget;
 					break; // continue whit the next column
 				}
 			}
@@ -421,9 +421,9 @@ ColumnLayout.prototype._insertAt = function(iGadget, x, y) {
 	for (x = 0; x < iGadget.getWidth(); x++)
 		for (y = 0; y < iGadget.getHeight(); y++) {
 			affectedgadget = this.matrix[newPosition.x + x][newPosition.y + y];
-			if ((affectedgadget != null) && (affectedIGadgets[affectedgadget.getId()] == undefined)) {
+			if ((affectedgadget != null) && (affectedIGadgets[affectedgadget.code] == undefined)) {
 				// only move the gadget if we didn't move it before
-				affectedIGadgets[affectedgadget.getId()] = null;
+				affectedIGadgets[affectedgadget.code] = null;
 				offset = iGadget.getHeight() - y;
 				y = newPosition.y + y;
 				affectedY = affectedgadget.getPosition().y;
@@ -501,9 +501,6 @@ ColumnLayout.prototype.initialize = function (iGadgets) {
  * Calculate what cell is at a given position
  */
 ColumnLayout.prototype.getCellAt = function (x, y) {
-	if ((x < 0) || (x >= this.dragboardWidth) || (y < 0))
-		return null;
-
 	var columnWidth = this.dragboardWidth / this.getColumns();
 
 	return new DragboardPosition(Math.floor(x / columnWidth),
@@ -823,8 +820,8 @@ SmartColumnLayout.prototype._removeFromMatrix = function(_matrix, iGadget) {
 		columnsize = _matrix[position.x + x].length;
 		for (y = edgeY; y < columnsize; y++) {
 			affectedgadget = _matrix[position.x + x][y];
-			if ((affectedgadget != null) && (affectedIGadgets[affectedgadget.getId()] == undefined)) {
-				affectedIGadgets[affectedgadget.getId()] = 1;
+			if ((affectedgadget != null) && (affectedIGadgets[affectedgadget.code] == undefined)) {
+				affectedIGadgets[affectedgadget.code] = 1;
 				this._moveSpaceUp(_matrix, affectedgadget);
 				break;
 			}

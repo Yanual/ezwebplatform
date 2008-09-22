@@ -575,8 +575,6 @@ IGadget.prototype.setContentSize = function(newWidth, newHeight, persist) {
 
 	this._recomputeSize(true);
 
-	// TODO Notify Context Manager new igadget's sizes
-
 	// Notify resize event
 	this.layoutStyle._notifyResizeEvent(this, oldWidth, oldHeight, this.getWidth(), this.getHeight(), false, persist);
 }

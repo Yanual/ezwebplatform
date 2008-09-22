@@ -417,8 +417,8 @@ function Dragboard(tab, workSpace, dragboardElement) {
 	}
 
 	Dragboard.prototype._deregistreIGadget = function (iGadget) {
-		this.iGadgets.remove(iGadget.id);
-		this.iGadgetsByCode.remove(iGadget.code);
+		delete this.iGadgets[iGadget.id];
+		delete this.iGadgetsByCode.remove[iGadget.code];
 	}
 
 	Dragboard.prototype.addIGadget = function (iGadget, igadgetInfo) {
@@ -496,7 +496,6 @@ DragboardCursor.prototype.paint = function(dragboard) {
 
 DragboardCursor.prototype.destroy = function() {
 	if (this.element != null) {
-		Droppables.remove(this.element);
 		this.element.parentNode.removeChild(this.element);
 		this.element = null;
 	}
@@ -696,43 +695,45 @@ IGadgetDraggable.prototype.startFunc = function (draggable, context) {
 }
 
 IGadgetDraggable.prototype.updateFunc = function (event, draggable, context, x, y) {
-	var position = context.dragboard.baseLayout.getCellAt(x, y);
-
-	// If the mouse is inside of the dragboard and we have enought columns =>
-	// check if we have to change the cursor position
-	if (position != null) {
-		context.selectedTab = null;
-		context.dragboard.moveTemporally(position.x, position.y);
-	} else {
+	if (!context.dragboard.baseLayout.isInside(x, y)) {
 		var element = document.elementFromPoint(event.clientX, event.clientY);
-		if (element == null)
-			return;
-
-		var id = element.getAttribute("id");
-		if (id == null) {
-			element = element.parentNode;
+		var id = null;
+		if (element != null) {
 			id = element.getAttribute("id");
-			if (id == null)
-				return;
+			if (id == null) {
+				element = element.parentNode;
+				id = element.getAttribute("id");
+			}
 		}
 
-		var result = id.match(/tab_(\d+)_(\d+)/);
-		if (result != null && result[2] != context.currentTab) {
-			if (context.selectedTab == result[2])
-				return;
+		if (id != null) {
+			var result = id.match(/tab_(\d+)_(\d+)/);
+			if (result != null && result[2] != context.currentTab) {
+				if (context.selectedTab == result[2])
+					return;
 
-			if (context.selectedTabElement != null)
-				context.selectedTabElement.removeClassName("selected");
-			context.selectedTab = result[2];
-			context.selectedTabElement = element;
-			context.selectedTabElement.addClassName("selected");
-		} else {
-			context.selectedTab = null;
-			if (context.selectedTabElement != null)
-				context.selectedTabElement.removeClassName("selected");
-			context.selectedTabElement = null;
+				if (context.selectedTabElement != null)
+					context.selectedTabElement.removeClassName("selected");
+
+				context.selectedTab = result[2];
+				context.selectedTabElement = element;
+				context.selectedTabElement.addClassName("selected");
+				return;
+			}
 		}
 	}
+
+	// The mouse is inside the dragboard or it is outside, but also is not
+	// over an igadget
+	var position = context.dragboard.baseLayout.getCellAt(x, y);
+	if (position.y < 0)
+		position.y = 0;
+	if (context.selectedTabElement != null)
+		context.selectedTabElement.removeClassName("selected");
+	context.selectedTab = null;
+	context.selectedTabElement = null;
+	context.dragboard.moveTemporally(position.x, position.y);
+	return;
 }
 
 IGadgetDraggable.prototype.finishFunc = function (draggable, context) {
@@ -892,10 +893,10 @@ IGadgetResizeHandle.prototype.startFunc = function (resizableElement, handleElem
 
 IGadgetResizeHandle.prototype.updateFunc = function (resizableElement, handleElement, data, x, y) {
 	var iGadget = data.iGadget;
-	var position = iGadget.layoutStyle.getCellAt(x, y);
 
 	// Skip if the mouse is outside the dragboard
-	if (position != null) {
+	if (iGadget.layoutStyle.isInside(x, y)) {
+		var position = iGadget.layoutStyle.getCellAt(x, y);
 		var currentPosition = iGadget.getPosition();
 		var width;
 
