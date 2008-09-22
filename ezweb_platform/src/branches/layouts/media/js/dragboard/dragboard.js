@@ -721,9 +721,19 @@ IGadgetDraggable.prototype.updateFunc = function (event, draggable, context, x, 
 
 		var result = id.match(/tab_(\d+)_(\d+)/);
 		if (result != null && result[2] != context.currentTab) {
+			if (context.selectedTab == result[2])
+				return;
+
+			if (context.selectedTabElement != null)
+				context.selectedTabElement.removeClassName("selected");
 			context.selectedTab = result[2];
+			context.selectedTabElement = element;
+			context.selectedTabElement.addClassName("selected");
 		} else {
 			context.selectedTab = null;
+			if (context.selectedTabElement != null)
+				context.selectedTabElement.removeClassName("selected");
+			context.selectedTabElement = null;
 		}
 	}
 }
