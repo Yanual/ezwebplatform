@@ -692,6 +692,7 @@ function IGadgetDraggable (iGadget) {
 
 IGadgetDraggable.prototype.startFunc = function (draggable, context) {
 	context.dragboard = context.iGadget.dragboard;
+	context.currentTab = context.dragboard.tabId;
 	context.dragboard.initializeMove(context.iGadget.id);
 	draggable.setXOffset(context.dragboard.baseLayout.fromHCellsToPixels(1) / 2);
 	draggable.setYOffset(context.dragboard.baseLayout.getCellHeight());
@@ -719,17 +720,21 @@ IGadgetDraggable.prototype.updateFunc = function (event, draggable, context, x, 
 		}
 
 		var result = id.match(/tab_(\d+)_(\d+)/);
-		if (result != null)
+		if (result != null && result[2] != context.currentTab) {
 			context.selectedTab = result[2];
+		} else {
+			context.selectedTab = null;
+		}
 	}
 }
 
 IGadgetDraggable.prototype.finishFunc = function (draggable, context) {
-	if (context.selectedTab) {
+	if (context.selectedTab != null) {
 		context.dragboard.cancelMove();
 		var destLayout = context.dragboard.workSpace.getTab(context.selectedTab);
 		destLayout = destLayout.getDragboard().baseLayout;
 		context.iGadget.moveToLayout(destLayout);
+		context.selectedTab = null;
 	} else {
 		context.dragboard.acceptMove();
 	}
