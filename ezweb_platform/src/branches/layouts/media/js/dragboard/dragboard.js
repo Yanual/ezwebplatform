@@ -744,7 +744,14 @@ IGadgetDraggable.prototype.finishFunc = function (draggable, context) {
 		var destLayout = context.dragboard.workSpace.getTab(context.selectedTab);
 		destLayout = destLayout.getDragboard().baseLayout;
 		context.iGadget.moveToLayout(destLayout);
+
+		var tabElement = context.selectedTabElement;
+		setTimeout(function() {
+			tabElement.removeClassName("selected");
+		}, 500);
+
 		context.selectedTab = null;
+		context.selectedTabElement = null;
 	} else {
 		context.dragboard.acceptMove();
 	}
