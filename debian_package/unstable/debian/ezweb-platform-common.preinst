@@ -1,0 +1,28 @@
+#!/bin/bash
+
+###
+# Include debconf module
+#
+. /usr/share/debconf/confmodule
+
+echo ">>>>>> PREINST $*"
+
+if [ "$1" = "upgrade" ]; then
+  db_fset ezweb-platform-common/upgrading seen false
+  db_set ezweb-platform-common/upgrading false
+
+  db_input high ezweb-platform-common/upgrading
+  db_go
+
+  db_get ezweb-platform-common/upgrading
+  ABORT="$RET"
+
+  if [ "$ABORT" == "true" ]; then
+    echo "Aborting EzWeb upgrading by user request"
+    exit -1;
+  fi
+fi
+
+#DEBHELPER#
+
+exit 0

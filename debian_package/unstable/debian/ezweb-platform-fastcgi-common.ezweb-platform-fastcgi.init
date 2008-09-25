@@ -73,7 +73,7 @@ case $1 in
   stop)
     ezweb_fcgi_stop_all
     ;;
-  restart)
+  restart | force-reload)
     ezweb_fcgi_stop_all
     ezweb_fcgi_start_all
     ;;

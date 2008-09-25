@@ -106,6 +106,9 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 AUTH_PROFILE_MODULE = 'user.UserProfile'
 
-#Set the proxy server here if needed
-PROXY_SERVER = '@PROXY_SERVER@'
+# Set the log path
+# When empty, defaults to MEDIA_ROOT/logs/logs.log
+LOG_FILE = '@LOG_FILE@'
 
+# Set the proxy server here if needed
+PROXY_SERVER = '@PROXY_SERVER@'

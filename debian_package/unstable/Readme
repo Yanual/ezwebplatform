@@ -1,0 +1,47 @@
+ Paquetes necesarios para crear paquetes EzWeb
+================================================
+
+  * dpkg-dev
+  * dch
+  * reprepro
+
+ Reprepro
+============
+
+Para el manejo del repositorio se recomienda el uso de reprepro, que facilitará
+el la creación de los ficheros y estructuras necesarias de forma significativa.
+Además los scripts están preparados para usar estos, siendo necesario su
+modificación en caso de querer hacer uso de otros programas.
+
+Si se necesita crear un repositorio, bastaría con copiar el directorio
+repo.skeleton donde se quiera crear el repositorio. Por ejemplo:
+
+   cp -R repo.skeleton /var/www/debian
+
+En caso de que el directorio /var/www/debian fuese visible a través de la URL:
+
+   http://servidor.com/debian
+
+La entrada en el sources.list, con la configuración que viene por defecto en
+repo.skeleton, sería la siguiente:
+
+   deb http://servidor/debian unstable main
+
+reprepro se encarga automaticamente de borrar los paquetes antiguos, así como
+de crear la estructura necesaria para las distintas arquitecturas/ramas que
+vaya a tener el repositorio y los distintos tipos de ficheros necesarios
+(Packages[.gz|.bz2], Releases, etc).
+
+En la siguiente URL se puede ver un tutorial más amplio de como usar reprepro,
+en el que se pueden ver los distintos parámetros de configuración que admite,
+como añadir/borrar paquetes, etc:
+
+   http://www.debian-administration.org/articles/286
+
+ Lintian
+==========
+
+Lintian es un programa que permite comprobar que los paquetes debian están
+construidos de forma correcta, además de que alerta de posibles fallos mediate
+"warnings". Además muestra información sobre los errores y los warnings así
+como consejos de como solucionarlos.

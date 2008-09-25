@@ -8,4 +8,6 @@ if [ "$1" == "remove" ]; then
   done
 fi
 
+#DEBHELPER#
+
 exit 0

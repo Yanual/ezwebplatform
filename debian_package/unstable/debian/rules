@@ -3,7 +3,7 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-export VER=0.2~svn1277
+export VER=0.2~svn1431
 
 # Include dpatch stuff.
 include /usr/share/dpatch/dpatch.make
@@ -66,6 +66,9 @@ binary-indep: build install
 	mkdir -p debian/ezweb-platform-common/etc/ezweb-platform/sites
 	cp -p debian/settings.py-template debian/ezweb-platform-common/etc/ezweb-platform
 	
+	mkdir -p debian/ezweb-platform-common/var/lib/ezweb-platform
+	mkdir -p debian/ezweb-platform-common/var/log/ezweb-platform
+	
 	: ###
 	: # ezweb-platform-fastcgi-common
 	: #
@@ -125,11 +128,11 @@ binary-indep: build install
 	: ###
 	: # ezweb-platform-sqlite3
 	: #
-	mkdir -p debian/ezweb-platform-sqlite3/var/lib/ezweb-platform
 	mkdir -p debian/ezweb-platform-sqlite3/usr/share/ezweb-platform/admintools/database-backends
 	cp -p debian/admintools/database-backends/sqlite3 \
 	      debian/ezweb-platform-sqlite3/usr/share/ezweb-platform/admintools/database-backends
 	
+	dh_installdocs -i
 	dh_installchangelogs -i
 	dh_installdebconf -i
 	dh_installinit -i --no-start -r --name=ezweb-platform-fastcgi -- defaults 90 10
