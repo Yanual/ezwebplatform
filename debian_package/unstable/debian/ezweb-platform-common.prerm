@@ -12,9 +12,4 @@ fi
 # Remove python object files
 find /usr/share/ezweb-platform -name "*.pyc" -delete
 
-# Remove
-rm -rf /var/lib/ezweb-platform
-
-#DEBHELPER#
-
 exit 0

@@ -283,11 +283,6 @@ class Apache2EzwebAdminTool:
 
       self.save_apache2_settings(perfil_settings)
 
-    elif action == "listtypes":
-      for subdir, dirs, files in os.walk(self.TEMPLATES_PATH):
-        for template in files:
-          print("apache2 " + template.replace(".vhost", "")); # TODO
-
     else:
       parser.print_help()
 

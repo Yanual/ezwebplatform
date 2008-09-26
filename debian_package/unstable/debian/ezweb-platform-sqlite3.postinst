@@ -5,33 +5,7 @@
 #
 . /usr/share/debconf/confmodule
 
-function float_cond()
-{
-    local cond=0
-    if [[ $# -gt 0 ]]; then
-        cond=$(echo "$*" | bc -q 2>/dev/null)
-        if [[ -z "$cond" ]]; then cond=0; fi
-        if [[ "$cond" != 0  &&  "$cond" != 1 ]]; then cond=0; fi
-    fi
-    local stat=$((cond == 0))
-    return $stat
-}
-
 if [ "$1" = "configure" ]; then
-
-  if [ "$2" != "" ]; then
-    VER=`expr match "$2" '\([0-9]*\.[0-9]*\)~svn[0-9]*'`
-    #SVNREV=`expr match "$2" '[0-9]*\.[0-9]*~svn\([0-9]*\)'`
-    if float_cond "$VER < 0.2"; then
-      # If we are upgrading from the old package style, then create a
-      # default EzWeb instance config using the old configuration
-      /usr/sbin/update-ezweb-platform update default --database-engine sqlite3
-
-      # Create a backup with the previous database
-      mv /var/lib/ezweb-platform/db /var/lib/ezweb-platform/default.sqlite3~
-      exit 0
-    fi
-  fi
 
   ###
   # Configure the instances
@@ -70,6 +44,7 @@ if [ "$1" = "configure" ]; then
     IFS=$saved_IFS
   fi
 
-#DEBHELPER#
-
 fi
+
+chgrp www-data /var/lib/ezweb-platform
+chmod 775      /var/lib/ezweb-platform

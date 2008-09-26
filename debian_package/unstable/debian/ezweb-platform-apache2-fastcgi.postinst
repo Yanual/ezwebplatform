@@ -52,6 +52,4 @@ if [ "$1" = "configure" ]; then
   fi
 fi
 
-#DEBHELPER#
-
 exit 0

@@ -6,6 +6,4 @@ if [ "$1" = "purge" ]; then
   rm -rf /var/ezweb-instances 2> /dev/null || true
 fi
 
-#DEBHELPER#
-
 exit 0

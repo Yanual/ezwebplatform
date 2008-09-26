@@ -5,43 +5,9 @@
 #
 . /usr/share/debconf/confmodule
 
-function float_cond()
-{
-    local cond=0
-    if [[ $# -gt 0 ]]; then
-        cond=$(echo "$*" | bc -q 2>/dev/null)
-        if [[ -z "$cond" ]]; then cond=0; fi
-        if [[ "$cond" != 0  &&  "$cond" != 1 ]]; then cond=0; fi
-    fi
-    local stat=$((cond == 0))
-    return $stat
-}
-
 if [ "$1" = "configure" ]; then
 
   POSTGRES_ADMIN_SCRIPT="/usr/share/ezweb-platform/admintools/database-backends/postgres"
-
-  if [ "$2" != "" ]; then
-    VER=`expr match "$2" '\([0-9]*\.[0-9]*\)~svn[0-9]*'`
-    #SVNREV=`expr match "$2" '[0-9]*\.[0-9]*~svn\([0-9]*\)'`
-    if float_cond "$VER < 0.2"; then
-      # If we are upgrading from the old package style, then configure the default instance
-      # to use old configuration
-      db_get ezweb/pg/dbuser
-      DBUSER="$RET"
-      db_unregister ezweb/pg/dbuser
-
-      db_get ezweb/pg/dbpasswd
-      DBPASSWD="$RET"
-      db_unregister ezweb/pg/dbpasswd
-
-      /usr/sbin/update-ezweb-platform update default --database-engine postgres
-      $POSTGRES_ADMIN_SCRIPT update default --database-user $DBUSER --database-passwd $DBPASS
-
-      exit 0
-    fi
-  fi
-
   RET=`$POSTGRES_ADMIN_SCRIPT getdefaults default`
   eval $RET
 
@@ -111,7 +77,5 @@ if [ "$1" = "configure" ]; then
   fi
 
 fi
-
-#DEBHELPER#
 
 exit 0

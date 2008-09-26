@@ -10,7 +10,6 @@ class EzWebAdminToolResources:
   CONFIG_BASE_PATH           = "/etc/ezweb-platform/"
   SITE_CONFIG_BASE_PATH      = CONFIG_BASE_PATH + "sites/"
   DEFAULT_DOCUMENT_BASE_PATH = "/var/ezweb-instances/"
-  DEFAULT_LOG_BASE_PATH = "/var/log/ezweb-platform/"
 
   def get_config_file(self, conf_name):
     return self.SITE_CONFIG_BASE_PATH + conf_name + "/config"
@@ -56,9 +55,6 @@ class EzWebAdminToolResources:
 
   def get_default_document_root(self, conf_name):
     return self.DEFAULT_DOCUMENT_BASE_PATH + conf_name
-
-  def get_default_log_path(self, conf_name):
-    return self.DEFAULT_LOG_BASE_PATH + conf_name
 
   def get_default_admin_email(self, cfg):
     return "webmaster@localhost"
