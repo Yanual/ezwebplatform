@@ -2,6 +2,7 @@
 
 import sys
 import os
+import grp
 import subprocess
 
 import string
@@ -101,7 +102,7 @@ class MainEzWebAdminTool:
     sys.stderr.write("  Synchronising database...\n")
     sys.path.insert(0, self.resources.SITE_CONFIG_BASE_PATH + site_cfg['name'])
     try:
-      management.execute_from_command_line(["django-admin", "syncdb", "--settings=settings"])
+      management.execute_from_command_line(["django-admin", "syncdb", "--settings=settings", "--noinput"])
     except Exception, e:
       print e
 
@@ -121,6 +122,16 @@ class MainEzWebAdminTool:
       template = template.replace("@SERVER_ADMIN_EMAIL@", site_cfg['admin_user_email'])
     else:
       template = template.replace("@SERVER_ADMIN_EMAIL@", self.resources.get_default_admin_email(site_cfg))
+
+    if site_cfg.has_key('log_path') and site_cfg['log_path']:
+      log_path = site_cfg['log_path']
+    else:
+      log_path = self.resources.get_default_log_path(site_cfg['name'])
+
+    template = template.replace("@LOG_PATH@", log_path)
+    self.resources.makedirs(log_path)
+    os.chown(log_path, -1, grp.getgrnam("www-data").gr_gid)
+    os.chmod(log_path, 0660)
 
     # TODO
     template = template.replace("@PROXY_SERVER@", "")
@@ -335,6 +346,15 @@ class MainEzWebAdminTool:
 
       conf_name = args[1]
       self.create(conf_name)
+
+    elif action == "listservers":
+      #result=
+      for subdir, dirs, files in os.walk(EzWebAdminToolResources.SERVER_ADMIN_SCRIPTS_PATH):
+        for script in files:
+          script = os.path.join(EzWebAdminToolResources.SERVER_ADMIN_SCRIPTS_PATH, script)
+          if os.access(script, os.X_OK):
+            self.call_admin_script(script, ["listtypes"]);
+
     else:
       parser.print_help()
 

@@ -1,0 +1,10 @@
+Origin: Your Name
+Label: Your own label
+Suite: unstable
+CodeName: unstable
+Architectures: i386 amd64 powerpc sparc all source
+Components: main
+DscIndices: Sources Release . .gz bzip2.sh
+DebIndices: Packages Release . .gz bzip2.sh
+UDebIndices: Packages . .gz bzip2.sh
+Description: EzWeb repository

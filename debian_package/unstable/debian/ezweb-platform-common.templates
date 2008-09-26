@@ -1,3 +1,13 @@
+Template: ezweb-platform-common/upgrading
+Type: boolean
+Default: true
+Description: Abort EzWeb upgrading?
+	EzWeb Platform is currently in heavy development, this mean that
+	database models are changed very often. To upgrade your EzWeb instances,
+	we need to drop EzWeb databases, so all your EzWeb data will be lost.
+	.
+	The configuration will be untouched.
+
 Template: ezweb-platform-common/proxy
 Type: string
 Default:

@@ -292,6 +292,11 @@ class LighttpdEzwebAdminTool:
 
       self.save_lighttpd_settings(perfil_settings)
 
+    elif action == "listtypes":
+      for subdir, dirs, files in os.walk(self.TEMPLATES_PATH):
+        for template in files:
+          print("lighttpd " + template.replace(".vhost", "")); # TODO
+
     else:
       parser.print_help()
 
