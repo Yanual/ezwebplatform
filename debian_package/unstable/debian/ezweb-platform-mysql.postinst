@@ -17,11 +17,11 @@ if [ "$1" = "configure" ]; then
     db_set ezweb-platform-mysql/adminuser "$ADMIN_USER"
     db_set ezweb-platform-mysql/adminpass "$ADMIN_PASS"
   else
-    if [ -x "/usr/sbin/mysqld" ]; then
+#    if [ -x "/usr/sbin/mysqld" ]; then
       db_set ezweb-platform-mysql/serveraddress "localhost"
-    else
-      FORCE_SERVER_QUESTION=1
-    fi
+#    else
+#      FORCE_SERVER_QUESTION=1
+#    fi
 
     db_set ezweb-platform-mysql/adminuser "root"
   fi

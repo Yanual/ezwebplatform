@@ -17,8 +17,6 @@ function float_cond()
     return $stat
 }
 
-echo ">>>>>> POSTINST $*"
-
 if [ "$1" = "configure" ]; then
   if [ "$2" = "" -a ! -f "/etc/ezweb-platform/sites/default/config" ]; then
     # If we are installing (not upgrading) and there is not a default config
@@ -31,20 +29,28 @@ if [ "$1" = "configure" ]; then
       # default EzWeb instance config that will use the oldconfig
       /usr/sbin/update-ezweb-platform create default
 
-      db_get ezweb/hostname
-      HOST="$RET"
-      db_unregister ezweb/hostname
-
-      /usr/sbin/update-ezweb-platform update default --server-type apache2 --connection-type mod-python
-      /usr/share/ezweb-platform/admintools/server-backends/apache2 update default --server-name $HOST
+      touch /usr/share/ezweb-platform/.update-server
+      touch /usr/share/ezweb-platform/.update-db
     fi
   fi
 
+  # Load previous configuration if needed
+  if [ -f "/etc/ezweb-platform/default.conf" ]; then
+    RET=`/usr/sbin/update-ezweb-platform getdefaults default`
+    eval $RET
+
+    db_set ezweb-platform-common/proxy "$PROXY"
+  fi
+
+  # Ask the user
   db_input high ezweb-platform-common/proxy
   db_go
 
   db_get ezweb-platform-common/proxy
   PROXY="$RET"
+
+  # Save the config
+  /usr/sbin/update-ezweb-platform setdefaults default --proxy "$PROXY"
 fi
 
 chgrp www-data /var/lib/ezweb-platform

@@ -5,11 +5,9 @@
 #
 . /usr/share/debconf/confmodule
 
-echo ">>>>>> PREINST $*"
-
 if [ "$1" = "upgrade" ]; then
   db_fset ezweb-platform-common/upgrading seen false
-  db_set ezweb-platform-common/upgrading false
+  db_set ezweb-platform-common/upgrading 1
 
   db_input high ezweb-platform-common/upgrading
   db_go

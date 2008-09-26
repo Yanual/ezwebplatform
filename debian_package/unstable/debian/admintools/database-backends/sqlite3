@@ -131,7 +131,8 @@ class SQLite3EzWebAdminTool:
       settings = self.get_settings(conf_name)
       cfg = settings['database']
 
-      f = open(cfg['name'], "a")
+      db_file = cfg['name']
+      f = open(db_file, "w")
       f.close()
       os.chown(cfg['name'], -1, grp.getgrnam("www-data").gr_gid)
       os.chmod(cfg['name'], 0660)

@@ -125,7 +125,7 @@ Section: web
 Priority: optional
 Architecture: all
 Depends: python-psycopg2, ezweb-platform-common (= ${binary:Version})
-Suggests: postgresql | postgresql-8.1 | postgresql-8.2 | postgresql-7.4 | postgresql-8.3
+Suggests: postgresql | postgresql-7.4 | postgresql-8.3
 Description: PostgreSQL suport for EzWeb Platform
  EzWeb Platform, the MORFEO Open Source Community Mashup Platform, provides you
  a framework for building modern enterprise and personal mashups following the

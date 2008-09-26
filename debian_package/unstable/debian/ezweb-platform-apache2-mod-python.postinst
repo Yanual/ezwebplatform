@@ -15,6 +15,20 @@ if [ "$1" = "configure" ]; then
   #
   . /usr/share/debconf/confmodule
 
+  if [ -f "/usr/share/ezweb-platform/.update-server" ]; then
+      db_get ezweb/hostname
+      HOST="$RET"
+      db_unregister ezweb/hostname
+
+      /usr/sbin/update-ezweb-platform update default --server-type apache2 --connection-type mod-python
+      /usr/share/ezweb-platform/admintools/server-backends/apache2 update default --server-name $HOST
+
+      rm "/usr/share/ezweb-platform/.update-server"
+      if [ ! -f "/usr/share/ezweb-platform/.update-db" ]; then
+        /usr/sbin/update-ezweb-platform enable default
+      fi
+  fi
+
   INSTANCES=`/usr/sbin/update-ezweb-platform list all --debconf`
   CURRENT_VAL=`/usr/sbin/update-ezweb-platform list server apache2 connection_type mod-python --debconf`
   UNASSIGNED=`/usr/sbin/update-ezweb-platform list server "" --debconf`

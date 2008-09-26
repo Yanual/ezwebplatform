@@ -127,7 +127,7 @@ class PostgreSQLEzWebAdminTool:
   def save_settings(self, cfg):
     if cfg['modified'] == True:
       self.resources.save_site_config(cfg['original_cfg'])
-      site_cfg['modified'] = False
+      cfg['modified'] = False
 
   def update_settings_py(self, site_cfg):
     filepath = self.resources.get_settings_path(site_cfg['name'])

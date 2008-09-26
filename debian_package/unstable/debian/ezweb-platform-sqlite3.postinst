@@ -5,8 +5,7 @@
 #
 . /usr/share/debconf/confmodule
 
-function float_cond()
-{
+function float_cond() {
     local cond=0
     if [[ $# -gt 0 ]]; then
         cond=$(echo "$*" | bc -q 2>/dev/null)
@@ -15,6 +14,13 @@ function float_cond()
     fi
     local stat=$((cond == 0))
     return $stat
+}
+
+function quit() {
+
+  #DEBHELPER#
+
+  exit $1
 }
 
 if [ "$1" = "configure" ]; then
@@ -29,7 +35,13 @@ if [ "$1" = "configure" ]; then
 
       # Create a backup with the previous database
       mv /var/lib/ezweb-platform/db /var/lib/ezweb-platform/default.sqlite3~
-      exit 0
+
+      rm "/usr/share/ezweb-platform/.update-db"
+      if [ ! -f "/usr/share/ezweb-platform/.update-server" ]; then
+        /usr/sbin/update-ezweb-platform enable default
+      fi
+
+      quit 0
     fi
   fi
 
@@ -70,6 +82,6 @@ if [ "$1" = "configure" ]; then
     IFS=$saved_IFS
   fi
 
-#DEBHELPER#
-
 fi
+
+quit 0

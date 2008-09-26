@@ -3,7 +3,7 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-export VER=0.2~svn1431
+export VER=0.2~svn1436
 
 # Include dpatch stuff.
 include /usr/share/dpatch/dpatch.make

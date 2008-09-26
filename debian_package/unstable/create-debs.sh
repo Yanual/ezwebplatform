@@ -63,9 +63,10 @@ installpkg() {
   sudo reprepro -Vb $REPO_DIR include $BRANCH ezweb-platform_$FULLVER_*.changes
 }
 
-REVISION=1431
-COPYDIR="ezweb-platform-$REVISION"
+#REVISION=1432
+#COPYDIR="ezweb-platform-$REVISION"
 
-#fetch
+fetch
 build $COPYDIR
+#uninstallpkg $REVISION
 installpkg $REVISION
