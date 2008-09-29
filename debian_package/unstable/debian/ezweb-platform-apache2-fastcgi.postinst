@@ -48,6 +48,7 @@ if [ "$1" = "configure" ]; then
     done
     IFS=$saved_IFS
 
+    /etc/init.d/ezweb-platform-fastcgi restart
     reload_apache
   fi
 fi

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+chgrp www-data /var/run/ezweb-platform
+chmod 775      /var/run/ezweb-platform
+
+#DEBHELPER#
+
+exit 0
