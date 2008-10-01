@@ -123,7 +123,7 @@ class MySQLEzWebAdminTool:
     return site_cfg
 
   def save_settings(self, cfg):
-    if cfg['modified'] == True:
+    if cfg.has_key('modified') and cfg['modified'] == True:
       del cfg['modified']
       self.resources.save_site_config(cfg)
 

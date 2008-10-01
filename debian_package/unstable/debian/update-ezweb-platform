@@ -136,8 +136,16 @@ class MainEzWebAdminTool:
       sys.stderr.write("\n")
       sys.stderr.write("  Synchronising database...\n")
       sys.path.insert(0, self.resources.SITE_CONFIG_BASE_PATH + site_cfg['name'])
+      os.environ["DJANGO_SETTINGS_MODULE"] = "settings"
       try:
-        management.execute_from_command_line(["django-admin", "syncdb", "--settings=settings", "--noinput"])
+        if database_engine == "mysql":
+          from django.db import connection
+          cursor = connection.cursor()
+          cursor.execute("SET FOREIGN_KEY_CHECKS = 0");
+        management.call_command("syncdb", interactive= False)
+        if database_engine == "mysql":
+          cursor = connection.cursor()
+          cursor.execute("SET FOREIGN_KEY_CHECKS = 1");
       except Exception, e:
         print e
 
