@@ -39,7 +39,7 @@ Section: web
 Priority: optional
 Architecture: all
 Depends: ezweb-platform-common (= ${binary:Version})
-Suggests: ezweb-platform-apache2-fastcgi, ezweb-platform-lighttpd-fastcgi
+Recommends: ezweb-platform-apache2-fastcgi, ezweb-platform-lighttpd-fastcgi
 Description: Fastcgi support for EzWeb Platform - shared files
  EzWeb Platform, the MORFEO Open Source Community Mashup Platform, provides you
  a framework for building modern enterprise and personal mashups following the
@@ -53,7 +53,7 @@ Section: web
 Priority: optional
 Architecture: all
 Depends: apache2 (>= 2.0), ezweb-platform-common (= ${binary:Version})
-Suggests: ezweb-platform-apache2-mod-python | ezweb-platform-apache2-fastcgi
+Recommends: ezweb-platform-apache2-mod-python | ezweb-platform-apache2-fastcgi
 Description: Apache2 support for EzWeb Platform - shared files
  EzWeb Platform, the MORFEO Open Source Community Mashup Platform, provides you
  a framework for building modern enterprise and personal mashups following the
@@ -96,6 +96,7 @@ Section: web
 Priority: optional
 Architecture: all
 Depends: lighttpd, ezweb-platform-common (= ${binary:Version})
+Recommends: ezweb-platform-lighttpd-fastcgi
 Description: Lighttpd support for EzWeb Platform - shared files
  EzWeb Platform, the MORFEO Open Source Community Mashup Platform, provides you
  a framework for building modern enterprise and personal mashups following the
@@ -125,7 +126,7 @@ Section: web
 Priority: optional
 Architecture: all
 Depends: python-psycopg2, ezweb-platform-common (= ${binary:Version})
-Suggests: postgresql | postgresql-7.4 | postgresql-8.3
+Recommends: postgresql | postgresql-7.4 | postgresql-8.3
 Description: PostgreSQL suport for EzWeb Platform
  EzWeb Platform, the MORFEO Open Source Community Mashup Platform, provides you
  a framework for building modern enterprise and personal mashups following the
@@ -139,7 +140,7 @@ Section: web
 Priority: optional
 Architecture: all
 Depends: python-mysqldb, ezweb-platform-common (= ${binary:Version})
-Suggests: mysql-server-5.0 | mysql-server-5.1 | mysql-server
+Recommends: mysql-server | mysql-server-5.0 | mysql-server-5.1
 Description: MySQL suport for EzWeb Platform
  EzWeb Platform, the MORFEO Open Source Community Mashup Platform, provides you
  a framework for building modern enterprise and personal mashups following the

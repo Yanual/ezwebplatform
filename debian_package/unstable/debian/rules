@@ -3,7 +3,7 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-export VER=0.2~svn1436
+export VER=0.3~svn1436
 
 # Include dpatch stuff.
 include /usr/share/dpatch/dpatch.make
@@ -60,6 +60,9 @@ binary-indep: build install
 	: # Remove unwanted files
 	rm -f `find debian/ezweb-platform-common -name "*.pyc"`
 	rm -rf `find debian/ezweb-platform-common -name ".svn"`
+	rm -rf debian/ezweb-platform-common/usr/share/ezweb-platform/media/logs
+	rm -f debian/ezweb-platform-common/usr/share/ezweb-platform/config.conf
+	rm -f debian/ezweb-platform-common/usr/share/ezweb-platform/rebuild_db.sh
 	rm -f debian/ezweb-platform-common/usr/share/ezweb-platform/*-stamp
 	rm -f debian/ezweb-platform-common/usr/share/ezweb-platform/settings.py
 	

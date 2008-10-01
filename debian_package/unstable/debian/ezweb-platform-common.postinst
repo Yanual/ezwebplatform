@@ -24,7 +24,7 @@ if [ "$1" = "configure" ]; then
     /usr/sbin/update-ezweb-platform create default
   elif [ "x$2" != "x" ]; then
     VER=`expr match "$2" '\([0-9]*\.[0-9]*\)~svn[0-9]*'`
-    if float_cond "$VER < 0.2" ; then
+    if float_cond "$VER < 0.3" ; then
       # If we are upgrading from the old package style, then create a
       # default EzWeb instance config that will use the oldconfig
       /usr/sbin/update-ezweb-platform create default
