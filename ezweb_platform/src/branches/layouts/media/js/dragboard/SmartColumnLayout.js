@@ -91,6 +91,8 @@ function ColumnLayout(dragboard, columns, cellHeight, verticalMargin, horizontal
 	Event.observe(window, 'resize', this._notifyWindowResizeEvent);
 
 	this.matrix = null;          // Matrix of igadgets
+	this.dragboardCursor = null;
+	this.gadgetToMove = null;
 }
 
 /*
@@ -402,7 +404,7 @@ ColumnLayout.prototype._insertAt = function(iGadget, x, y) {
 
 	// Move other instances
 	var affectedIGadgets = new Hash();
-	var affectedgadget, x, offset, affectedY;
+	var affectedgadget, offset, affectedY;
 
 	for (x = 0; x < iGadget.getWidth(); x++)
 		for (y = 0; y < iGadget.getHeight(); y++) {
@@ -515,7 +517,9 @@ ColumnLayout.prototype.removeIGadget = function(iGadget) {
 	DragboardLayout.prototype.removeIGadget.call(this, iGadget);
 }
 
-ColumnLayout.prototype.initializeMove = function(igadget, cursor) {
+ColumnLayout.prototype.initializeMove = function(igadget) {
+	this.igadgetToMove = igadget;
+
 	// Make a copy of the positions of the gadgets
 	this.shadowPositions = new Array();
 
@@ -532,29 +536,65 @@ ColumnLayout.prototype.initializeMove = function(igadget, cursor) {
 	this._removeFromMatrix(this.shadowMatrix, igadget);
 
 	// Create dragboard cursor
-	cursor.paint(this.dragboard.dragboardElement);
-	this._reserveSpace(this.matrix, cursor);
+	this.dragboardCursor = new DragboardCursor(igadget);
+	this.dragboardCursor.paint(this.dragboard.dragboardElement);
+	this._reserveSpace(this.matrix, this.dragboardCursor);
 }
 
-ColumnLayout.prototype.moveTemporally = function(cursor, x, y) {
-	var maxX = this.getColumns() - cursor.getWidth();
-	if (x > maxX) x = maxX;
-
-	// Check if we have to change the position of the cursor
-	y = this._searchInsertPoint(this.shadowMatrix, x, y, cursor.getWidth(), cursor.getHeight());
-
-	var cursorpos = cursor.getPosition();
-
-	if ((cursorpos.y != y) || (cursorpos.x != x)) {
-		// Change cursor position
-		this._removeFromMatrix(this.matrix, cursor);
-		this._insertAt(cursor, x, y);
+ColumnLayout.prototype._destroyCursor = function(clearSpace) {
+	if (this.dragboardCursor != null) {
+		if (clearSpace)
+			this._removeFromMatrix(this.matrix, this.dragboardCursor); // FIXME
+		this.dragboardCursor.destroy();
+		this.dragboardCursor = null;
 	}
 }
 
-ColumnLayout.prototype.acceptMove = function(iGadget, newposition) {
-	iGadget.setPosition(newposition);
-	this._reserveSpace(this.matrix, iGadget);
+ColumnLayout.prototype.moveTemporally = function(x, y) {
+	var maxX = this.getColumns() - this.igadgetToMove.getWidth();
+	if (x > maxX) x = maxX;
+
+	// Check if we have to change the position of the cursor
+	y = this._searchInsertPoint(this.shadowMatrix, x, y, this.igadgetToMove.getWidth(), this.igadgetToMove.getHeight());
+
+	if (this.dragboardCursor != null) {
+		var cursorpos = this.dragboardCursor.getPosition();
+
+		if ((cursorpos.y != y) || (cursorpos.x != x)) {
+			// Change cursor position
+			this._removeFromMatrix(this.matrix, this.dragboardCursor);
+			this._insertAt(this.dragboardCursor, x, y);
+		}
+	} else {
+		this.dragboardCursor = new DragboardCursor(this.igadgetToMove);
+		this.dragboardCursor.paint(this.dragboard.dragboardElement);
+		this._insertAt(this.dragboardCursor, x, y);
+	}
+}
+
+ColumnLayout.prototype.cancelMove = function() {
+	this._destroyCursor(true);
+	var position = this.igadgetToMove.getPosition();
+	this._insertAt(this.igadgetToMove, position.x, position.y);
+	this.shadowMatrix = null;
+	this.igadgetToMove = null;
+	this.dragboardCursor = null;
+}
+
+ColumnLayout.prototype._acceptMove = function() {
+	var oldposition = this.igadgetToMove.getPosition();
+	var newposition = this.dragboardCursor.getPosition();
+	this._destroyCursor(false);
+
+	// Needed to force repaint of the igadget at the correct position
+	this.igadgetToMove.setPosition(newposition);
+
+	// Update igadgets positions in persistence
+	if (oldposition.y != newposition.y || oldposition.x != newposition.x) {
+		this._reserveSpace(this.matrix, this.igadgetToMove);
+
+		this.dragboard._commitChanges();
+	}
 }
 
 /////////////////////////////////////
