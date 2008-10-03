@@ -109,7 +109,7 @@ DragboardLayout.prototype.addIGadget = function(iGadget) {
 	if (iGadget.element != null) // TODO
 		this.dragboard.dragboardElement.appendChild(iGadget.element);
 
-	this.dragboard._registreIGadget(iGadget);
+	this.dragboard._registerIGadget(iGadget);
 	this.iGadgets[iGadget.code] = iGadget;
 }
 
@@ -117,7 +117,7 @@ DragboardLayout.prototype.removeIGadget = function(iGadget) {
 	if (iGadget.element != null) // TODO
 		this.dragboard.dragboardElement.removeChild(iGadget.element);
 
-	this.dragboard._deregistreIGadget(iGadget);
+	this.dragboard._deregisterIGadget(iGadget);
 	delete this.iGadgets[iGadget.code];
 }
 

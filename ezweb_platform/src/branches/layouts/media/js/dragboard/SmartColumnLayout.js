@@ -363,13 +363,6 @@ ColumnLayout.prototype._notifyResizeEvent = function(iGadget, oldWidth, oldHeigh
 			// Clear space
 			this._clearSpace2(this.matrix, position.x, position.y, widthDiff, oldHeight);
 
-			// Move affected igadgets
-			y = position.y + oldHeight;
-			var limitX = position.x + widthDiff;
-			for (x = position.x; x < limitX; ++x)
-				if (this.matrix[x][y] != null)
-					this._moveSpaceUp(this.matrix, this.matrix[x][y]);
-
 			// Move the gadget
 			position.x += widthDiff;
 			if (persist)
@@ -379,13 +372,6 @@ ColumnLayout.prototype._notifyResizeEvent = function(iGadget, oldWidth, oldHeigh
 		} else {
 			// Clear space
 			this._clearSpace2(this.matrix, position.x + newWidth, position.y, widthDiff, oldHeight);
-
-			// Move affected igadgets
-			y = position.y + oldHeight;
-			var limitX = position.x + oldWidth;
-			for (x = position.x + newWidth; x < limitX; ++x)
-				if (this.matrix[x][y] != null)
-					this._moveSpaceUp(this.matrix, this.matrix[x][y]);
 		}
 	}
 

@@ -299,7 +299,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 		igadget.remove();
 		igadget.destroy();
 
-		this._deregistreIGadget(igadget);
+		this._deregisterIGadget(igadget);
 	}
 
 	Dragboard.prototype.igadgetLoaded = function (iGadget) {
@@ -411,18 +411,18 @@ function Dragboard(tab, workSpace, dragboardElement) {
 	}
 	
 
-	Dragboard.prototype._registreIGadget = function (iGadget) {
+	Dragboard.prototype._registerIGadget = function (iGadget) {
 		this.iGadgets[iGadget.id] = iGadget;
 		this.iGadgetsByCode[iGadget.code] = iGadget;
 	}
 
-	Dragboard.prototype._deregistreIGadget = function (iGadget) {
+	Dragboard.prototype._deregisterIGadget = function (iGadget) {
 		delete this.iGadgets[iGadget.id];
-		delete this.iGadgetsByCode.remove[iGadget.code];
+		delete this.iGadgetsByCode[iGadget.code];
 	}
 
 	Dragboard.prototype.addIGadget = function (iGadget, igadgetInfo) {
-		this._registreIGadget(iGadget);
+		this._registerIGadget(iGadget);
 		this.workSpace.addIGadget(this.tab, iGadget, igadgetInfo);
 	}
 
@@ -438,7 +438,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 	 * horizontal Margin between IGadgets = 4 pixels
 	 * scroll bar reserved space          = 17 pixels
 	 */
-	this.baseLayout = new SmartColumnLayout(this, 20, 12, 2, 4, 17);
+	this.baseLayout = new ColumnLayout(this, 20, 12, 2, 4, 17);
 
 	this.parseTab(tab.tabInfo);
 }
