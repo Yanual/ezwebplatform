@@ -695,15 +695,14 @@ IGadgetDraggable.prototype.startFunc = function (draggable, context) {
 }
 
 IGadgetDraggable.prototype.updateFunc = function (event, draggable, context, x, y) {
-	if (!context.dragboard.baseLayout.isInside(x, y)) {
-		var element = document.elementFromPoint(event.clientX, event.clientY);
-		var id = null;
-		if (element != null) {
+	// Check if the mouse is over a tab
+	var element = document.elementFromPoint(event.clientX, event.clientY);
+	var id = null;
+	if (element != null) {
+		id = element.getAttribute("id");
+		if (id == null) {
+			element = element.parentNode;
 			id = element.getAttribute("id");
-			if (id == null) {
-				element = element.parentNode;
-				id = element.getAttribute("id");
-			}
 		}
 
 		if (id != null) {
@@ -723,10 +722,9 @@ IGadgetDraggable.prototype.updateFunc = function (event, draggable, context, x, 
 		}
 	}
 
-	// The mouse is inside the dragboard or it is outside, but also is not
-	// over an igadget
+	// The mouse is not over a tab
 	var position = context.dragboard.baseLayout.getCellAt(x, y);
-	if (position.y < 0)
+	if (position.y < 0) // The curso must allways be inside the dragboard
 		position.y = 0;
 	if (context.selectedTabElement != null)
 		context.selectedTabElement.removeClassName("selected");
