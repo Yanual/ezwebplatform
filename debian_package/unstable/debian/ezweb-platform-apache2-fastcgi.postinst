@@ -3,6 +3,7 @@
 reload_apache() {
   if apache2ctl configtest 2>/dev/null; then
     invoke-rc.d apache2 force-reload || true
+    echo
   else
     echo "Your apache2 configuration is broken, so we're not restarting it for you."
   fi
@@ -14,17 +15,20 @@ if [ "$1" = "configure" ]; then
   # Include debconf module
   #
   . /usr/share/debconf/confmodule
+  EZWEB_ADMIN_SCRIPT=/usr/sbin/update-ezweb-platform
 
-  INSTANCES=`/usr/sbin/update-ezweb-platform list all --debconf`
-  CURRENT_VAL=`/usr/sbin/update-ezweb-platform list server apache2 connection_type fastcgi --debconf`
-  UNASSIGNED=`/usr/sbin/update-ezweb-platform list server "" --debconf`
+  INSTANCES=`$EZWEB_ADMIN_SCRIPT list all --debconf`
+  OLD_VAL=`$EZWEB_ADMIN_SCRIPT list server apache2 connection_type fastcgi --debconf`
+  UNASSIGNED=`$EZWEB_ADMIN_SCRIPT list server "" --debconf`
 
   if [ "x$UNASSIGNED" != "x" ]; then
-    if [ "x$CURRENT_VAL" != "x" ]; then
-      CURRENT_VAL="$CURRENT_VAL, $UNASSIGNED"
+    if [ "x$OLD_VAL" != "x" ]; then
+      CURRENT_VAL="$OLD_VAL, $UNASSIGNED"
     else
       CURRENT_VAL=$UNASSIGNED
     fi
+  else
+    CURRENT_VAL="$OLD_VAL"
   fi
 
   db_subst ezweb-platform-apache2-fastcgi/instances choices $INSTANCES
@@ -36,20 +40,29 @@ if [ "$1" = "configure" ]; then
 
   db_get ezweb-platform-apache2-fastcgi/instances
 
-  if [ "$RET" != "" ]; then
+  if [ "$RET" != "" -a "$RET" != "$OLD_VAL" ]; then
     list=`echo $RET | sed -e 's/, /,/g'`
+
+    invoke-rc.d ezweb-platform-fastcgi stop
 
     saved_IFS=$IFS
     IFS=,
     for conf in $list; do
+      RET=`$EZWEB_ADMIN_SCRIPT list name $conf server apache2 connection_type fastcgi --debconf`
+      if [ -n "$RET" ]; then
+        continue
+      fi
+      RELOAD=1
       echo
       echo "Configuring \"$conf\" for using apache2 with fastcgi..."
-      update-ezweb-platform update $conf --server-type apache2 --connection-type fastcgi
+      $EZWEB_ADMIN_SCRIPT update $conf --server-type apache2 --connection-type fastcgi
     done
     IFS=$saved_IFS
 
-    /etc/init.d/ezweb-platform-fastcgi restart
-    reload_apache
+    if [ "$RELOAD" == 1 ]; then
+      invoke-rc.d ezweb-platform-fastcgi start
+      reload_apache
+    fi
   fi
 fi
 

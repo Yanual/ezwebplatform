@@ -1,7 +1,7 @@
 Template: ezweb-platform-postgres/serveraddress
 Type: string
 Default: localhost
-Description: Address of the default PostgreSQL server:
+_Description: Address of the default PostgreSQL server:
 	You should enter the address for the default PostgreSQL server to use. You
 	must use a IP or a Server Name without port (for example
 	postgres.server.com or 127.0.0.1)
@@ -9,14 +9,14 @@ Description: Address of the default PostgreSQL server:
 Template: ezweb-platform-postgres/adminuser
 Type: string
 Default: ezweb
-Description: PostgreSQL admin user:
+_Description: PostgreSQL admin user:
 	Please enter a valid user name for connecting to the PostgreSQL server to do
 	administrative tasks. This user must be able to create databases and
 	new users.
 
 Template: ezweb-platform-postgres/adminpass
 Type: password
-Description: PostgreSQL admin password:
+_Description: PostgreSQL admin password:
 	Please enter the password of the admin user for connecting to the PostgreSQL
 	server.
 
@@ -24,8 +24,8 @@ Template: ezweb-platform-postgres/instances
 Type: multiselect
 Default: default
 Choices: ${choices}
-Description: Select the instances of EzWeb you want to configure to use PostgreSQL
-	The selected EzWeb instances will be configured to use PostgresSQL as
+_Description: Select the instances of EzWeb you want to configure to use PostgreSQL
+	The selected EzWeb instances will be configured to use PostgreSQL as
 	DBMS.
 	.
 	This will not enable the selected EzWeb instances, although they will

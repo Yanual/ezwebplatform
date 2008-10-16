@@ -1,12 +1,23 @@
 #!/bin/bash
 
-if [ "$1" == "remove" ]; then
-  INSTANCES=`/usr/sbin/update-ezweb-platform list enabled server apache2`
+reload_lighttpd() {
+  if lighttpd -t 2>/dev/null; then
+    invoke-rc.d lighttpd force-reload || true
+  else
+    echo "Your lighttpd configuration is broken, so we're not restarting it for you."
+  fi
+}
 
-  # Disable all Apache2 EzWeb instances
+if [ "$1" == "remove" ]; then
+  INSTANCES=`/usr/sbin/update-ezweb-platform list enabled server lighttpd`
+
+  # Disable all lighttpd EzWeb instances
   for conf_name in $INSTANCES; do
+    RELOAD=1
     /usr/sbin/update-ezweb-platform disable $conf_name
   done
+
+
 fi
 
 #DEBHELPER#

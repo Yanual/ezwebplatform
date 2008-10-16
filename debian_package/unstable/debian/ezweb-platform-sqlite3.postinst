@@ -25,6 +25,8 @@ function quit() {
 
 if [ "$1" = "configure" ]; then
 
+  EZWEB_ADMIN_SCRIPT="/usr/sbin/update-ezweb-platform"
+
   if [ "$2" != "" ]; then
     VER=`expr match "$2" '\([0-9]*\.[0-9]*\)~svn[0-9]*'`
     #SVNREV=`expr match "$2" '[0-9]*\.[0-9]*~svn\([0-9]*\)'`
@@ -38,7 +40,7 @@ if [ "$1" = "configure" ]; then
 
       rm "/usr/share/ezweb-platform/.update-db"
       if [ ! -f "/usr/share/ezweb-platform/.update-server" ]; then
-        /usr/sbin/update-ezweb-platform enable default
+        $EZWEB_ADMIN_SCRIPT enable default
       fi
 
       quit 0
@@ -48,16 +50,18 @@ if [ "$1" = "configure" ]; then
   ###
   # Configure the instances
   #
-  INSTANCES=`/usr/sbin/update-ezweb-platform list all --debconf`
-  CURRENT_VAL=`/usr/sbin/update-ezweb-platform list database_engine sqlite3 --debconf`
-  UNASSIGNED=`/usr/sbin/update-ezweb-platform list database_engine "" --debconf`
+  INSTANCES=`$EZWEB_ADMIN_SCRIPT list all --debconf`
+  OLD_VAL=`$EZWEB_ADMIN_SCRIPT list database_engine sqlite3 --debconf`
+  UNASSIGNED=`$EZWEB_ADMIN_SCRIPT list database_engine "" --debconf`
 
   if [ "x$UNASSIGNED" != "x" ]; then
-    if [ "x$CURRENT_VAL" != "x" ]; then
-      CURRENT_VAL="$CURRENT_VAL, $UNASSIGNED"
+    if [ "x$OLD_VAL" != "x" ]; then
+      CURRENT_VAL="$OLD_VAL, $UNASSIGNED"
     else
       CURRENT_VAL=$UNASSIGNED
     fi
+  else
+    CURRENT_VAL="$OLD_VAL"
   fi
 
   db_subst ezweb-platform-sqlite3/instances choices $INSTANCES
@@ -69,7 +73,7 @@ if [ "$1" = "configure" ]; then
 
   db_get ezweb-platform-sqlite3/instances
 
-  if [ "$RET" != "" ]; then
+  if [ "$RET" != "" -a "$RET" != "$OLD_VAL" ]; then
     list=`echo $RET | sed -e 's/, /,/g'`
 
     saved_IFS=$IFS
@@ -77,7 +81,7 @@ if [ "$1" = "configure" ]; then
     for conf in $list; do
       echo
       echo "Configuring \"$conf\" for using sqlite3 as DBMS..."
-      update-ezweb-platform update $conf --database-engine sqlite3
+      $EZWEB_ADMIN_SCRIPT update $conf --database-engine sqlite3
     done
     IFS=$saved_IFS
   fi

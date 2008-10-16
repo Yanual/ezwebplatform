@@ -6,30 +6,38 @@
 . /usr/share/debconf/confmodule
 
 if [ "$1" = "configure" ]; then
-  LIGHTTPD_ADMIN_SCRIPT="/usr/share/ezweb-platform/admintools/server-backends/lighttpd"
+  EZWEB_ADMIN_SCRIPT="/usr/sbin/update-ezweb-platform"
 
   if [ -f "/etc/ezweb-platform/lighttpd.conf" ]; then
     # Get previous configuration
-    RET=`$LIGHTTPD_ADMIN_SCRIPT getdefaults default`
+    RET=`$EZWEB_ADMIN_SCRIPT getserverdefaults lighttpd default`
     eval $RET
 
     db_set ezweb-platform-lighttpd-common/defaultservername "$SERVER_NAME"
+    db_set ezweb-platform-lighttpd-common/defaultservername "$SERVER_PORT"
   else
     # Establish the defaults values
     db_set ezweb-platform-lighttpd-common/defaultservername `hostname -f`
+    db_set ezweb-platform-lighttpd-common/defaultserverport "8001"
   fi
 
   ###
   # Read lighttpd config from user
   #
 
-  db_input low ezweb-platform-lighttpd-common/defaultservername
+  db_input medium ezweb-platform-lighttpd-common/defaultservername
   db_go
 
   db_get ezweb-platform-lighttpd-common/defaultservername
   SERVER_NAME="$RET"
 
-  $LIGHTTPD_ADMIN_SCRIPT setdefaults default --server-name "$SERVER_NAME"
+  db_input medium ezweb-platform-lighttpd-common/defaultserverport
+  db_go
+
+  db_get ezweb-platform-lighttpd-common/defaultserverport
+  SERVER_PORT="$RET"
+
+  $EZWEB_ADMIN_SCRIPT setserverdefaults lighttpd default --server-name "$SERVER_NAME" --server-port "$SERVER_PORT"
 
 fi
 

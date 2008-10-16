@@ -8,3 +8,4 @@ DscIndices: Sources Release . .gz bzip2.sh
 DebIndices: Packages Release . .gz bzip2.sh
 UDebIndices: Packages . .gz bzip2.sh
 Description: EzWeb repository
+SignWith: yes

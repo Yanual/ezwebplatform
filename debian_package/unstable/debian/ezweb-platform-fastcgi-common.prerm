@@ -10,7 +10,7 @@ if [ "$1" == "remove" ]; then
 
   PIDFILES=/var/run/ezweb-platform/*.pid
   if [ ! -z "$PIDFILES" ]; then
-    invoke-rc.d ezweb-platform stop
+    invoke-rc.d ezweb-platform-fastcgi stop
   fi
 fi
 

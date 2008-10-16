@@ -3,6 +3,7 @@
 reload_apache() {
   if apache2ctl configtest 2>/dev/null; then
     invoke-rc.d apache2 force-reload || true
+    echo
   else
     echo "Your apache2 configuration is broken, so we're not restarting it for you."
   fi
@@ -15,13 +16,15 @@ if [ "$1" = "configure" ]; then
   #
   . /usr/share/debconf/confmodule
 
+  EZWEB_ADMIN_SCRIPT="/usr/sbin/update-ezweb-platform"
+
   if [ -f "/usr/share/ezweb-platform/.update-server" ]; then
       db_get ezweb/hostname
       HOST="$RET"
       db_unregister ezweb/hostname
 
-      /usr/sbin/update-ezweb-platform update default --server-type apache2 --connection-type mod-python
-      /usr/share/ezweb-platform/admintools/server-backends/apache2 update default --server-name $HOST
+      /usr/sbin/update-ezweb-platform update default --server-type apache2 --connection-type mod-python \
+                                                     --server-name $HOST
 
       rm "/usr/share/ezweb-platform/.update-server"
       if [ ! -f "/usr/share/ezweb-platform/.update-db" ]; then
@@ -29,16 +32,18 @@ if [ "$1" = "configure" ]; then
       fi
   fi
 
-  INSTANCES=`/usr/sbin/update-ezweb-platform list all --debconf`
-  CURRENT_VAL=`/usr/sbin/update-ezweb-platform list server apache2 connection_type mod-python --debconf`
-  UNASSIGNED=`/usr/sbin/update-ezweb-platform list server "" --debconf`
+  INSTANCES=`$EZWEB_ADMIN_SCRIPT list all --debconf`
+  OLD_VAL=`$EZWEB_ADMIN_SCRIPT list server apache2 connection_type mod-python --debconf`
+  UNASSIGNED=`$EZWEB_ADMIN_SCRIPT list server "" --debconf`
 
   if [ "x$UNASSIGNED" != "x" ]; then
-    if [ "x$CURRENT_VAL" != "x" ]; then
-      CURRENT_VAL="$CURRENT_VAL, $UNASSIGNED"
+    if [ "x$OLD_VAL" != "x" ]; then
+      CURRENT_VAL="$OLD_VAL, $UNASSIGNED"
     else
       CURRENT_VAL=$UNASSIGNED
     fi
+  else
+    CURRENT_VAL="$OLD_VAL"
   fi
 
   db_subst ezweb-platform-apache2-mod-python/instances choices $INSTANCES
@@ -50,19 +55,26 @@ if [ "$1" = "configure" ]; then
 
   db_get ezweb-platform-apache2-mod-python/instances
 
-  if [ "$RET" != "" ]; then
+  if [ "$RET" != "" -a "$RET" != "$OLD_VAL" ]; then
     list=`echo $RET | sed -e 's/, /,/g'`
 
     saved_IFS=$IFS
     IFS=,
     for conf in $list; do
+      RET=`$EZWEB_ADMIN_SCRIPT list name $conf server apache2 connection_type mod-python --debconf`
+      if [ -n "$RET" ]; then
+        continue
+      fi
+      RELOAD=1
       echo
       echo "Configuring \"$conf\" for using apache2 with mod-python..."
-      update-ezweb-platform update $conf --server-type apache2 --connection-type mod-python
+      $EZWEB_ADMIN_SCRIPT update $conf --server-type apache2 --connection-type mod-python
     done
     IFS=$saved_IFS
 
-    reload_apache
+    if [ "$RELOAD" == 1 ]; then
+      reload_apache
+    fi
   fi
 fi
 

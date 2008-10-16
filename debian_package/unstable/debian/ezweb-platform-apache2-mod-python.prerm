@@ -1,12 +1,28 @@
 #!/bin/bash
 
+reload_apache() {
+  if apache2ctl configtest 2>/dev/null; then
+    invoke-rc.d apache2 force-reload || true
+    echo
+  else
+    echo "Your apache2 configuration is broken, so we're not restarting it for you."
+  fi
+}
+
 if [ "$1" == "remove" ]; then
   INSTANCES=`/usr/sbin/update-ezweb-platform list enabled server apache2 connection_type mod-python`
 
   # Disable all Apache2 EzWeb instances
   for conf_name in $INSTANCES; do
+    RELOAD=1
     /usr/sbin/update-ezweb-platform disable $conf_name
   done
+
+  if [ "$RELOAD" == 1 ]; then
+    invoke-rc.d ezweb-platform-fastcgi start
+    reload_apache
+  fi
+
 fi
 
 #DEBHELPER#

@@ -1,0 +1,9 @@
+[type: gettext/rfc822deb] ezweb-platform-apache2-common.templates
+[type: gettext/rfc822deb] ezweb-platform-apache2-mod-python.templates
+[type: gettext/rfc822deb] ezweb-platform-lighttpd-common.templates
+[type: gettext/rfc822deb] ezweb-platform-mysql.templates
+[type: gettext/rfc822deb] ezweb-platform-sqlite3.templates
+[type: gettext/rfc822deb] ezweb-platform-apache2-fastcgi.templates
+[type: gettext/rfc822deb] ezweb-platform-common.templates
+[type: gettext/rfc822deb] ezweb-platform-lighttpd-fastcgi.templates
+[type: gettext/rfc822deb] ezweb-platform-postgres.templates

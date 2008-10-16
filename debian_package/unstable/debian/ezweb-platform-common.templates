@@ -1,7 +1,7 @@
 Template: ezweb-platform-common/upgrading
 Type: boolean
 Default: true
-Description: Abort EzWeb upgrading?
+_Description: Abort EzWeb upgrading?
 	EzWeb Platform is currently in heavy development, this mean that
 	database models are changed very often. To upgrade your EzWeb instances,
 	we need to drop EzWeb databases, so all your EzWeb data will be lost.
@@ -11,7 +11,7 @@ Description: Abort EzWeb upgrading?
 Template: ezweb-platform-common/proxy
 Type: string
 Default:
-Description: Default proxy for the EzWeb instances
+_Description: Default proxy for the EzWeb instances
 	The EzWeb Platform usually acts as an HTTP proxy for the EzWeb IGadgets,
 	so it needs to be connected to the internet. If this machine don't have
 	a direct connection to the internet, you can provide the address of a

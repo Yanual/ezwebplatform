@@ -2,7 +2,7 @@ Template: ezweb-platform-apache2-mod-python/instances
 Type: multiselect
 Default: default
 Choices: ${choices}
-Description: Select the instances of EzWeb you want to configure to use Apache2 and mod-python
+_Description: Select the instances of EzWeb you want to configure to use Apache2 and mod-python
 	The selected EzWeb instances will be configured to use Apache2 and
 	mod-python.
 	.

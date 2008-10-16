@@ -32,7 +32,7 @@ function create_admin_user() {
     echo "$CONTENT" > $PSQL_CONF_FILE
   fi
 
-  /etc/init.d/postgresql-$PSQL_VER restart
+  invoke-rc.d postgresql-$PSQL_VER restart
 }
 
 function quit() {
@@ -45,7 +45,7 @@ function quit() {
 
 if [ "$1" = "configure" ]; then
 
-  POSTGRES_ADMIN_SCRIPT="/usr/share/ezweb-platform/admintools/database-backends/postgres"
+  EZWEB_ADMIN_SCRIPT="/usr/sbin/update-ezweb-platform"
 
   # Upgrade from old packages
   if [ "$2" != "" ]; then
@@ -63,13 +63,13 @@ if [ "$1" = "configure" ]; then
       db_unregister ezweb/pg/dbpasswd
 
       /usr/sbin/update-ezweb-platform update default --database-engine postgres
-      $POSTGRES_ADMIN_SCRIPT update default --database-user $DBUSER --database-passwd $DBPASS
+      $EZWEB_ADMIN_SCRIPT update default --database-user $DBUSER --database-passwd $DBPASS
       # Purge old database
-      $POSTGRES_ADMIN_SCRIPT purge default
+      $EZWEB_ADMIN_SCRIPT purge default
 
       rm "/usr/share/ezweb-platform/.update-db"
       if [ ! -f "/usr/share/ezweb-platform/.update-server" ]; then
-        /usr/sbin/update-ezweb-platform enable default
+        $EZWEB_ADMIN_SCRIPT enable default
       fi
 
       quit 0
@@ -78,7 +78,7 @@ if [ "$1" = "configure" ]; then
 
   # Load current config
   if [ -f "/etc/ezweb-platform/postgres.conf" ]; then
-    RET=`$POSTGRES_ADMIN_SCRIPT getdefaults default`
+    RET=`$EZWEB_ADMIN_SCRIPT getdbmsdefaults postgres default`
     eval $RET
 
     db_set ezweb-platform-postgres/serveraddress "$SERVER_HOST"
@@ -131,21 +131,23 @@ if [ "$1" = "configure" ]; then
   db_get ezweb-platform-postgres/adminpass
   ADMIN_PASS="$RET"
 
-  $POSTGRES_ADMIN_SCRIPT setdefaults default --server-host "$SERVER_HOST" --admin-user "$ADMIN_USER" --admin-pass "$ADMIN_PASS"
+  $EZWEB_ADMIN_SCRIPT setdbmsdefaults postgres default --database-host "$SERVER_HOST" --admin-user "$ADMIN_USER" --admin-pass "$ADMIN_PASS"
 
   ###
   # Configure the instances
   #
-  INSTANCES=`/usr/sbin/update-ezweb-platform list all --debconf`
-  CURRENT_VAL=`/usr/sbin/update-ezweb-platform list database_engine postgres --debconf`
-  UNASSIGNED=`/usr/sbin/update-ezweb-platform list database_engine "" --debconf`
+  INSTANCES=`$EZWEB_ADMIN_SCRIPT list all --debconf`
+  OLD_VAL=`$EZWEB_ADMIN_SCRIPT list database_engine postgres --debconf`
+  UNASSIGNED=`$EZWEB_ADMIN_SCRIPT list database_engine "" --debconf`
 
   if [ "x$UNASSIGNED" != "x" ]; then
-    if [ "x$CURRENT_VAL" != "x" ]; then
-      CURRENT_VAL="$CURRENT_VAL, $UNASSIGNED"
+    if [ "x$OLD_VAL" != "x" ]; then
+      CURRENT_VAL="$OLD_VAL, $UNASSIGNED"
     else
       CURRENT_VAL=$UNASSIGNED
     fi
+  else
+    CURRENT_VAL="$OLD_VAL"
   fi
 
   db_subst ezweb-platform-postgres/instances choices $INSTANCES
@@ -157,7 +159,7 @@ if [ "$1" = "configure" ]; then
 
   db_get ezweb-platform-postgres/instances
 
-  if [ "$RET" != "" ]; then
+  if [ "$RET" != "" -a "$RET" != "$OLD_VAL" ]; then
     list=`echo $RET | sed -e 's/, /,/g'`
 
     saved_IFS=$IFS

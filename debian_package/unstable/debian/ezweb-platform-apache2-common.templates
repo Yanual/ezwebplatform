@@ -1,7 +1,7 @@
 Template: ezweb-platform-apache2-common/defaultservername
 Type: string
 Default: localhost
-Description: Default ServerName for EzWeb instances using apache2:
+_Description: Default ServerName for EzWeb instances using apache2:
 	Each Apache2 virtual host is attached to one or more servernames. Here
 	you can define the default value for this virtual host attribute that
 	will be use by the EzWeb instances.
@@ -9,7 +9,7 @@ Description: Default ServerName for EzWeb instances using apache2:
 Template: ezweb-platform-apache2-common/defaultserverport
 Type: string
 Default: 80
-Description: Default port for EzWeb instances using apache2:
+_Description: Default port for EzWeb instances using apache2:
 	Each Apache2 virtual host can be attached to one port. However, a
 	virtual host does not have to be attached to a port at all.
 	.
