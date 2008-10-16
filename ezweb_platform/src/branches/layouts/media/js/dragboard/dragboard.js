@@ -611,7 +611,9 @@ function Draggable(draggableElement, handler, data, onStart, onDrag, onFinish) {
 	}
 
 	// fire each time the dragboard is scrolled while dragging
-	function scroll() {
+	function scroll(e) {
+		e = e || window.event; // needed for IE
+
 		var dragboard = dragboardCover.parentNode;
 		dragboardCover.style.height = dragboard.scrollHeight + "px";
 		var scrollTop = parseInt(dragboard.scrollTop);
@@ -622,7 +624,7 @@ function Draggable(draggableElement, handler, data, onStart, onDrag, onFinish) {
 		draggableElement.style.top = y + 'px';
 		draggableElement.style.left = x + 'px';
 
-		onDrag(draggable, data, x + xOffset, y + yOffset);
+		onDrag(e, draggable, data, x + xOffset, y + yOffset);
 	}
 
 	// cancels the call to startdrag function

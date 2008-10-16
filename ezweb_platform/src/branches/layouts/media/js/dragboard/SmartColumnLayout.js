@@ -90,7 +90,7 @@ function ColumnLayout(dragboard, columns, cellHeight, verticalMargin, horizontal
 	this._recomputeSize();
 	Event.observe(window, 'resize', this._notifyWindowResizeEvent);
 
-	this.matrix = null;          // Matrix of igadgets
+	this._clearMatrix();         // Matrix of igadgets
 	this.dragboardCursor = null;
 	this.gadgetToMove = null;
 }
