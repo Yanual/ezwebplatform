@@ -175,6 +175,11 @@ a:hover{
   background: transparent url(wiring.png) no-repeat;
 }*/
 
+#preferences_link {
+  background: transparent url(/ezweb/images/preferences21px.png) no-repeat;
+}
+
+
 #change_ws_link {
   background-image: url(/ezweb/images/settings.png);
 }
@@ -350,6 +355,7 @@ a:hover{
 .window_menu .closebutton {
   position: absolute;
   right: 2px;
+   background: transparent url(/ezweb/images/remove.png) no-repeat;
 }
 .window_menu .window_content {
   clear: both;
@@ -394,10 +400,11 @@ a:hover{
 }
 
 button {
-  background: transparent url(/ezweb/images/button.gif) no-repeat;
-  border: medium none;
+  background: transparent url(/ezweb/images/button.gif) repeat-x;
+  border: 1px #888888 solid;
   color: white;
   margin: 3px;
+  -moz-border-radius: 4px;
 }
 
 
@@ -528,7 +535,129 @@ button {
 
 #showcase_container {
   overflow-x: hidden;
-  background: #FFF;
+  /*background: #FFF;*/
+}
+
+/* preferences -------------------------------------------------------------------------------------------- */
+
+#preferences_content {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+#preferences_content td.label {
+  /*text-align: right;*/
+}
+
+#preferences_content td.label label {
+  white-space: nowrap;
+}
+
+#preferences_content div.styled_select {
+  position: relative;
+  width: 252px;
+  height: 22px;
+}
+
+#preferences_content div.styled_select div.select_div {
+  width: 246px;
+  height: 18px;
+  border: 1px solid #888888;
+  background: transparent url(/ezweb/images/button.gif) repeat-x scroll 0 0;
+  -moz-border-radius: 4px;
+  position: absolute;
+  z-index: 1;
+  top: 0px;
+  padding: 1px 2px;
+}
+
+#preferences_content div.styled_select select {
+  width: 250px;
+  height: 20px;
+  border: none;
+  z-index: 3;
+  position: relative;
+  opacity: 0;
+}
+
+#preferences_content div.styled_select div.select_text {
+  width: 218px;
+  height: 18px;
+  background: none;
+  position: absolute;
+  z-index: 2;
+  left: 2px;
+  top: 0px;
+  color: white;
+  padding: 1px 2px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+#preferences_content div.styled_select div.select_image {
+  width: 20px;
+  height: 20px;
+  background: transparent url(/ezweb/images/select_button.png) no-repeat scroll 0 0;
+  position: absolute;
+  z-index: 2;
+  left: 230px;
+  top: 0px;
+}
+
+#preferences_content div.styled_text_field {
+  position: relative;
+  width: 252px;
+  height: 22px;
+}
+
+#preferences_content div.styled_text_field input.text_field {
+  width: 246px;
+  height: 18px;
+  border: 1px solid #888888;
+  z-index: 1;
+  padding: 1px 2px;
+  position: relative;
+  -moz-border-radius: 4px;
+  color: black;
+}
+
+#preferences_content div.styled_numeric_field {
+  position: relative;
+  width: 252px;
+  height: 22px;
+}
+
+#preferences_content div.styled_numeric_field input.numeric_field {
+  width: 70px;
+  height: 18px;
+  border: 1px solid #888888;
+  z-index: 1;
+  padding: 1px 28px 1px 2px;
+  position: relative;
+  -moz-border-radius: 4px;
+  color: black;
+}
+
+#preferences_content div.styled_numeric_field button.numeric_top_button {
+  width: 25px;
+  height: 11px;
+  position: absolute;
+  z-index: 2;
+  left: 74px;
+  top: -3px;
+  background: transparent url(/ezweb/images/top_button.png) no-repeat scroll -1px -1px;
+  -moz-border-radius: 0px 4px 0px 0px;
+}
+
+#preferences_content div.styled_numeric_field button.numeric_bottom_button {
+  width: 25px;
+  height: 12px;
+  position: absolute;
+  z-index: 2;
+  left: 74px;
+  top: 7px;
+  background: transparent url(/ezweb/images/bottom_button.png) no-repeat scroll -1px -1px;
+  -moz-border-radius: 0px 0px 4px 0px;
 }
 
 /* logs -------------------------------------------------------------------------------------------- */

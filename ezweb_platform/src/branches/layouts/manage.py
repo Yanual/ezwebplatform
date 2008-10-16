@@ -2,8 +2,14 @@
 from django.core.management import execute_manager
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import string_concat
+import sys
+import os
 
 try:
+    os.environ["DJANGO_SETTINGS_MODULE"] = "settings"
+    scriptpath = os.getcwd()
+    parent = os.path.dirname(scriptpath)
+    sys.path.insert(0, parent)
     import settings # Assumed to be in the same directory.
 except ImportError:
     import sys

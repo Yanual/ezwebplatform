@@ -109,6 +109,7 @@ var OpManagerFactory = function () {
 		this.contextManagerModule = null;
 		this.catalogue = null;
 		this.logs = null;
+		this.platformPreferences = null;
 		this.persistenceEngine = PersistenceEngineFactory.getInstance();
 		
 		this.loadCompleted = false;
@@ -147,21 +148,25 @@ var OpManagerFactory = function () {
 			} else {
 				UIUtils.repaintCatalogue=false;
 			}
-			
-			
 
 			UIUtils.setResourcesWidth();
 			
 			$('simple_search_text').focus();
 		}
 		
-
 		OpManager.prototype.showLogs = function () {
 			if(this.activeWorkSpace && this.activeWorkSpace.getVisibleTab())
 				this.activeWorkSpace.getVisibleTab().unmark();
 			
 			LogManagerFactory.getInstance().show();
 		}
+
+		OpManager.prototype.showPlatformPreferences = function () {
+                        if(this.activeWorkSpace && this.activeWorkSpace.getVisibleTab())
+                                this.activeWorkSpace.getVisibleTab().unmark();
+
+                	PreferencesManagerFactory.getInstance().show();
+                }
 		
 		OpManager.prototype.sendBufferedVars = function () {
 			this.activeWorkSpace.sendBufferedVars();
@@ -192,16 +197,16 @@ var OpManagerFactory = function () {
 			this.activeWorkSpace.removeIGadget(iGadgetId);
 		}
 		
-		
 		OpManager.prototype.sendEvent = function (gadget, event, value) {
 		    this.activeWorkSpace.getWiring().sendEvent(gadget, event, value);
 		}
 
 		OpManager.prototype.loadEnviroment = function () {
 			LayoutManagerFactory.getInstance().resizeWrapper();
-			// First, global modules must be loades (Showcase, Catalogue)
-			// Showcase is the first!
+			// First, global modules must be loades (Preferences, Showcase, Catalogue)
+			// Preferences is the first!
 			// When it finish, it will invoke continueLoadingGlobalModules method!
+			this.platformPreferences = PreferencesManagerFactory.getInstance();
 			this.showcaseModule = ShowcaseFactory.getInstance();
 			this.showcaseModule.init();
 			this.logs = LogManagerFactory.getInstance();
@@ -232,6 +237,11 @@ var OpManagerFactory = function () {
 		    // Asynchronous load of modules
 		    // Each singleton module notifies OpManager it has finished loading!
 		    
+		    if (module == Modules.prototype.PLATFORM_PREFERENCES) {
+			this.platformPreferences = PreferencesManagerFactory.getInstance();
+			return;
+		    }
+
 		    if (module == Modules.prototype.SHOWCASE) {
 		    	this.catalogue = CatalogueFactory.getInstance();
 		    	return;
@@ -243,12 +253,13 @@ var OpManagerFactory = function () {
 		    	this.loadActiveWorkSpace();
 		    	return;
 		    }
-		    
+
 		    if (module == Modules.prototype.ACTIVE_WORKSPACE) {
 		    	this.loadCompleted = true;
 		    	this.showActiveWorkSpace(this.activeWorkSpace);
 //		    	this.changeActiveWorkSpace(this.activeWorkSpace);
 		    	LayoutManagerFactory.getInstance().resizeWrapper();
+			initPreferencesHandlers();
 		    	return;
 		    }
 		}
@@ -323,8 +334,6 @@ var OpManagerFactory = function () {
 			
 			return true;
 		}
-
-
 	}
 	
 	// *********************************

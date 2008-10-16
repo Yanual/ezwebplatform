@@ -506,6 +506,7 @@ function WorkSpace (workSpaceState) {
 		o.name = this.workSpaceState.name;
 		publicationData = Object.toJSON(o);
 		params = 'data=' + publicationData;
+                alert(params);
 		PersistenceEngineFactory.getInstance().send_post(workSpaceUrl, params, this, publishSuccess, publishError);
 	}
 

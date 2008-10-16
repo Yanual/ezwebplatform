@@ -35,17 +35,15 @@
  *   http://morfeo-project.org/
  */
 
-
 function Modules () {
 
 }
 
 // Singleton modules (valid for every WorkSpace)
-Modules.prototype.SHOWCASE = 0;
-Modules.prototype.CATALOGUE = 1;
+Modules.prototype.PLATFORM_PREFERENCES = 0;
+Modules.prototype.SHOWCASE = 1;
+Modules.prototype.CATALOGUE = 2;
 
 //Each workspace loads one instance of VarManager and Wiring
 // Each workspace loads loads n instaces of Drabgoard!
-Modules.prototype.ACTIVE_WORKSPACE = 2;
-
-
+Modules.prototype.ACTIVE_WORKSPACE = 3;

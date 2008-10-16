@@ -174,7 +174,7 @@ Concept.prototype.setValue = function (value_) {
 			throw gettext("Concept does not have value, this is a Gadget Concept.");
 			break;
 		default:
-			throw gettext("Unexpected concept value. Please, check the concept type (is EXTERNAL?)");
+			//throw gettext("Unexpected concept value. Please, check the concept type (is EXTERNAL?)");
 			break;
 	}
 }

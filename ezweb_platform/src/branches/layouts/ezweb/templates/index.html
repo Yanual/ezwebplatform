@@ -4,8 +4,6 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{{ LANGUAGE_CODE }}" lang="{{ LANGUAGE_CODE }}">
 <head>
-<title>EzWeb</title>
-<head>
 <title>{% trans "EzWeb Platform" %}</title>
 
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
@@ -29,6 +27,7 @@ _URIConstants.prototype.GET_GADGET = new Template ('/user/{{ user.username }}/ga
 _URIConstants.prototype.GET_GADGETS = '/user/{{ user.username }}/gadgets';
 _URIConstants.prototype.GET_CONTEXT = '/user/{{ user.username }}/context';
 _URIConstants.prototype.GET_CONTEXT_VALUE = new Template ('/user/{{ user.username }}/context/#{concept}/value');
+_URIConstants.prototype.PLATFORM_PREFERENCES = '/user/{{ user.username }}/preferences';
 _URIConstants.prototype.GET_POST_RESOURCES = '/user/{{ user.username }}/catalogue/resource';
 _URIConstants.prototype.GET_RESOURCES_SIMPLE_SEARCH = '/user/{{ user.username }}/catalogue/search';
 _URIConstants.prototype.GET_RESOURCES_GLOBAL_SEARCH = '/user/{{ user.username }}/catalogue/globalsearch';
@@ -65,6 +64,10 @@ var URIs = new _URIConstants();
 <script language="JavaScript" src="{{ MEDIA_URL }}js/gadgetModel/Gadget.js"></script>
 
 <script language="JavaScript" src="{{ MEDIA_URL }}js/log/LogManager.js"></script>
+
+<script language="JavaScript" src="{{ MEDIA_URL }}js/preferencesManager/PreferencesManager.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/preferencesManager/PlatformPref.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/common/StyledElements.js"></script>
 
 <script language="JavaScript" src="{{ MEDIA_URL }}js/opManager/WorkSpace.js"></script>
 <script language="JavaScript" src="{{ MEDIA_URL }}js/opManager/Tab.js"></script>
@@ -115,7 +118,7 @@ var URIs = new _URIConstants();
 
 <!-- Initialization code -->
 <script language="JavaScript">
-	function setLanguage(language) {
+	function setLanguage(language_) {
 		var onSuccess = function() {
 			window.location.reload();
 		}
@@ -123,9 +126,39 @@ var URIs = new _URIConstants();
 		var onError = function() {}
 		
 		var persistenceEngine = PersistenceEngineFactory.getInstance();
-		var params = {language: language};
+		var params = {language: language_};
 		persistenceEngine.send_post("/i18n/setlang/", params, this, onSuccess, onError);
 		return false;
+	}
+	
+	function setBackground(color_) {
+		var css = document.styleSheets[0];
+		var rules = css.cssRules;
+		var ruleExist = false;
+		for (var i=0; i<rules.lenght; i++){
+			if (rules[i].selectorText == ".container" || rules[i].selectorText == "#tab_section .current"){
+				ruleExist = true;
+				rules[i].style.background = color_;
+			}
+		}
+		if (!ruleExist){
+			css.insertRule(".container{background:" + color_ + ";}", css.cssRules.length);
+			css.insertRule("#tab_section .current{background:" + color_ + ";}", css.cssRules.length);
+		}
+	}
+	
+	function initPreferencesHandlers(){	
+		var preferencesManager = PreferencesManagerFactory.getInstance();
+
+		preferencesManager.addPreferenceHandler("language", function () {
+			setLanguage(preferencesManager.getPreferenceValue("language"));
+		});
+
+		preferencesManager.addPreferenceHandler("background-color", function () {
+			setBackground(preferencesManager.getPreferenceValue("background-color"));
+		});
+
+		preferencesManager.propagateAllValues();
 	}
 
 	var opManager = OpManagerFactory.getInstance();
@@ -197,6 +230,20 @@ var URIs = new _URIConstants();
 		<button id = "alert_btn2" onclick="LayoutManagerFactory.getInstance().hideCover();">{% trans "Cancel"%}</button>
 	</div>
 </div>
+
+<div id="preferences_menu" class="window_menu" style="display:none">
+        <div class="window_top">
+                <label id="preferences_window_title" class="window_title"></label>
+                <input type="button" class="closebutton button" onclick="LayoutManagerFactory.getInstance().hideCover();" />
+        </div>
+        <div id="preferences_content" class="window_content">
+        </div>
+        <div class="window_bottom">
+                <button id ="preferences_btn1">{% trans "Accept"%}</button>
+                <button id = "preferences_btn2" onclick="LayoutManagerFactory.getInstance().hideCover();">{% trans "Cancel"%}</button>
+        </div>
+</div>
+
 <div id="message_menu" class="window_menu" style="display:none">
 	<div class="window_top">
 		<label id="message_window_title" class="window_title"></label>
@@ -217,7 +264,7 @@ var URIs = new _URIConstants();
 <!-- HEADER -->
 <div id="header">
 <div id="banner">
-  <div id="greeting">{% trans "Welcome" %}, {{ user.username }}{% for lang in LANGUAGES %} | <a href="/" onclick="UIUtils.sendPendingTags();return setLanguage('{{ lang.0 }}')" >{{ lang.1 }}</a>{% endfor %} | <a href="/logout" onclick="UIUtils.sendPendingTags();OpManagerFactory.getInstance().sendBufferedVars();">{% trans "Exit" %}</a>
+  <div id="greeting">{% trans "Welcome" %}, {{ user.username }} | <a href="/logout" onclick="UIUtils.sendPendingTags();OpManagerFactory.getInstance().sendBufferedVars();">{% trans "Exit" %}</a>
   </div>
   <img id="logo" src="{{ MEDIA_URL }}images/logo.gif" alt="EzWeb Logo">
 </div>
@@ -232,9 +279,8 @@ var URIs = new _URIConstants();
 <div id="toolbar_section" class="toolbar_section">
    		<input type="button" id="catalogue_link" title="{% trans 'Catalogue' %}" class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().showCatalogue()"/> 
    		<input type="button" id="wiring_link" title="{% trans 'Wires' %}" class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().activeWorkSpace.showWiring()"/>
+		<input type="button" id="preferences_link" title="{% trans 'Preferences' %}" class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().showPlatformPreferences()"/>
 		<div id="workspace_name"></div>
-<!--		<input type="button" id="change_ws_link" title="Change workspace" class="toolbar_unmarked" onclick="OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().menu.addOption(null,'hola',function(){alert('hola')});"/>	
-		<input type="button" id="change_ws_link" title="Change workspace" class="toolbar_unmarked" onclick="var id=OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().menu.addOption(null,'hola2',function(){alert('hola')}); OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().menu.removeOption(id,null,'adios',function(){alert('adios')});"/>	-->
    		<input type="button" id="ws_operations_link" title="{% trans 'Workspace operations' %}" class="toolbar_unmarked"/>		
 		<span id="logs_link" style="display:none" title="{% trans 'Errors' %}" class="toolbar_unmarked"onclick="OpManagerFactory.getInstance().showLogs()";></span>
 	</div>
@@ -255,7 +301,7 @@ var URIs = new _URIConstants();
       {% include "wiring.html" %}
   </div>
   <!-- WIRING LAYER -->
-  
+
   <!-- SHOWCASE LAYER -->
   <div id="showcase_container" class="container">
      {% include "showcase.html" %}

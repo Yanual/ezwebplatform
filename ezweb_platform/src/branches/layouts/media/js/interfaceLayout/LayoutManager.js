@@ -67,6 +67,8 @@ var LayoutManagerFactory = function () {
 			this.catalogue = null;
 			this.logs = LogManagerFactory.getInstance();
 			this.logsLink = $('logs_link');
+			this.preferences = PreferencesManagerFactory.getInstance();
+			//this.preferencesLink = $('preferences_link');
 			
 		// Menu Layer	
 			this.currentMenu = null;							//current menu (either dropdown or window)
@@ -94,7 +96,7 @@ var LayoutManagerFactory = function () {
 	
 			this.menus = new Array();
 					
-		// ****************
+		// ***************
 		// PUBLIC METHODS 
 		// ****************
 		LayoutManager.prototype.getCurrentViewType = function () {
@@ -145,12 +147,14 @@ var LayoutManagerFactory = function () {
 			if (!this.catalogue) {
 				this.catalogueLink = $('catalogue_link');
 				this.logsLink = $('logs_link');
+				this.preferencesLink = $('preferences_link');
 				this.wiringLink = $('wiring_link');
 			}
 			
 			this.catalogueLink.className = 'toolbar_unmarked';
 			this.wiringLink.className = 'toolbar_unmarked';
 			this.logsLink.className = 'toolbar_unmarked';
+			this.preferencesLink.clasName = 'toolbar_unmarked';
 			
 /*			this.hideShowCase();
 			this.hideLogs();		
@@ -248,6 +252,11 @@ var LayoutManagerFactory = function () {
 			this.currentViewType = 'logs';
 			this.logsLink.className = "toolbar_marked";			
 			this.logs.logContainer.setStyle({'zIndex': this.showLevel, 'display': 'block', 'visibility': 'visible'});
+		}
+
+ 		// Preferences operations
+                LayoutManager.prototype.showPlatformPreferences = function(){
+			this.showPlatformPreferencesMenu();
 		}
 	
 		//Wiring operations
@@ -374,6 +383,21 @@ var LayoutManagerFactory = function () {
 			}
 			this.currentMenu = this.menus['messageMenu'];
 			this.currentMenu.setMsg(msg);
+			this.currentMenu.show();			
+		}
+
+		//Shows the platform preferences window menu
+		LayoutManager.prototype.showPlatformPreferencesMenu = function(){
+			//the disabling layer is displayed as long as a menu is shown. If there isn't a menu, there isn't a layer.
+			if(this.currentMenu != null){//only if the layer is displayed.
+				this.hideCover();
+			}
+			this.showUnclickableCover();
+			
+			if(!this.menus['platformPreferencesMenu']){
+				this.menus['platformPreferencesMenu'] = new PreferencesWindowMenu();
+			}
+			this.currentMenu = this.menus['platformPreferencesMenu'];
 			this.currentMenu.show();			
 		}
 
