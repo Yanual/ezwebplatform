@@ -673,14 +673,11 @@ SmartColumnLayout.prototype._searchInsertPoint = function(_matrix, x, y, width, 
 	}
 
 	var originalY = y;
-	var found = false;
 	while ((y >= 0) && (this._hasSpaceFor(_matrix, x, y, width, 1))) {
-		found = true;
-		lastY = y;
 		y--;
 	}
-	if (found) {
-		y = lastY;
+	if (y != originalY) {
+		y++;
 	} else {
 		// Search collisions with gadgets on other columns
 		var curGadget;
@@ -690,12 +687,24 @@ SmartColumnLayout.prototype._searchInsertPoint = function(_matrix, x, y, width, 
 			curGadget = _matrix[x + offsetX][originalY];
 			if ((curGadget != null)) {
 				y = this._getPositionOn(_matrix, curGadget).y;
-
-				if (y > lastY) lastY = y;
+			} else {
+				y = originalY - 1;
+				while ((y >= 0) && _matrix[x + offsetX][y] == null)
+					y--;
+				y++;
 			}
+			if (y > lastY) lastY = y;
 		}
 
 		y = lastY;
+
+		if (y != 0) {
+			// Search the topmost position again
+			y--;
+			while ((y >= 0) && (this._hasSpaceFor(_matrix, x, y, width, 1)))
+				y--;
+			y++;
+		}
 	}
 	return y;
 }
