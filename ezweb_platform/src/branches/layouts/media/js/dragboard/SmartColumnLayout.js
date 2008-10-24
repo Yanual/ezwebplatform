@@ -449,7 +449,7 @@ ColumnLayout.prototype.initialize = function (iGadgets) {
 		if (iGadget.getWidth() + position.x > this.getColumns()) {
 			var guessedWidth = this.getColumns() - position.x;
 			if (this._hasSpaceFor(this.matrix, position.x, position.y, guessedWidth, iGadget.getHeight())) {
-				iGadget.setContentWidth(guessedWidth);
+				iGadget.contentWidth = guessedWidth;
 				this._reserveSpace(this.matrix, iGadget);
 				iGadget.paint();
 			} else {
@@ -474,7 +474,7 @@ ColumnLayout.prototype.initialize = function (iGadgets) {
 }
 
 /**
- * Calculate what cell is at a given position
+ * Calculate what cell is at a given position in pixels
  */
 ColumnLayout.prototype.getCellAt = function (x, y) {
 	var columnWidth = this.dragboardWidth / this.getColumns();
@@ -484,7 +484,7 @@ ColumnLayout.prototype.getCellAt = function (x, y) {
 }
 
 
-ColumnLayout.prototype.addIGadget = function(iGadget) {
+ColumnLayout.prototype.addIGadget = function(iGadget, affectsDragboard) {
 	var position = iGadget.getPosition();
 	if (position) {
 		this._insertAt(iGadget, position.x, position.y);
@@ -497,15 +497,15 @@ ColumnLayout.prototype.addIGadget = function(iGadget) {
 		this._reserveSpace(this.matrix, iGadget);
 	}
 
-	DragboardLayout.prototype.addIGadget.call(this, iGadget);
+	DragboardLayout.prototype.addIGadget.call(this, iGadget, affectsDragboard);
 }
 
-ColumnLayout.prototype.removeIGadget = function(iGadget) {
+ColumnLayout.prototype.removeIGadget = function(iGadget, affectsDragboard) {
 	this._removeFromMatrix(this.matrix, iGadget);
-	DragboardLayout.prototype.removeIGadget.call(this, iGadget);
+	DragboardLayout.prototype.removeIGadget.call(this, iGadget, affectsDragboard);
 }
 
-ColumnLayout.prototype.initializeMove = function(igadget) {
+ColumnLayout.prototype.initializeMove = function(igadget, draggable) {
 	this.igadgetToMove = igadget;
 
 	// Make a copy of the positions of the gadgets
@@ -527,6 +527,11 @@ ColumnLayout.prototype.initializeMove = function(igadget) {
 	this.dragboardCursor = new DragboardCursor(igadget);
 	this.dragboardCursor.paint(this.dragboard.dragboardElement);
 	this._reserveSpace(this.matrix, this.dragboardCursor);
+
+	if (draggable) {
+		draggable.setXOffset(this.fromHCellsToPixels(1) / 2);
+		draggable.setYOffset(this.getCellHeight());
+	}
 }
 
 ColumnLayout.prototype._destroyCursor = function(clearSpace) {
@@ -536,6 +541,10 @@ ColumnLayout.prototype._destroyCursor = function(clearSpace) {
 		this.dragboardCursor.destroy();
 		this.dragboardCursor = null;
 	}
+}
+
+ColumnLayout.prototype.disableCursor = function() {
+	this._destroyCursor(true);
 }
 
 ColumnLayout.prototype.moveTemporally = function(x, y) {
