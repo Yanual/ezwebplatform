@@ -125,7 +125,13 @@ class Apache2Resources:
     log_path = self.get_log_path(cfg['name'])
     template.replace("LOG_BASE_PATH", log_path)
 
+    # write vhost file
     filepath = self.get_vhost_path(cfg['name'])
+    if backup and os.path.exists(filepath):
+      self.resources.printMsg("Backing up \"%s\"... " % filepath)
+      shutil.copyfile(filepath, filepath + "~")
+      self.resources.printlnMsgNP("Done")
+
     self.resources.printMsg("Updating apache2 vhost (" + filepath + ")... ")
     template.save(filepath)
     self.resources.printlnMsgNP("Done")

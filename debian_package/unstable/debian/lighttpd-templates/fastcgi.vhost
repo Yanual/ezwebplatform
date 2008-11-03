@@ -1,6 +1,7 @@
 server.modules += ( "mod_fastcgi" )
 server.modules += ( "mod_rewrite" )
-$HTTP["host"] == "@SERVER_NAME@" {
+$SERVER["socket"] == "0.0.0.0@PORT@" {
+  $HTTP["host"] == "@SERVER_NAME@" {
     server.document-root = "@DOCUMENT_ROOT@"
 
     fastcgi.server = (
@@ -23,4 +24,5 @@ $HTTP["host"] == "@SERVER_NAME@" {
 
     server.errorlog            = "@LOG_BASE_PATH@/error.log"
     accesslog.filename         = "@LOG_BASE_PATH@/access.log"
+  }
 }

@@ -1,0 +1,5 @@
+Name: update
+IncomingDir: incoming/unstable
+TempDir: /tmp
+Allow: unstable
+

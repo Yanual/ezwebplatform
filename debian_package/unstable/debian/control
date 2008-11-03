@@ -21,7 +21,7 @@ Description: Web mashup platform - metapackage
  a framework for building modern enterprise and personal mashups following the
  main Web 2.0 ideas.
  .
- This meta-package installs a functional EzWeb environment.
+ This metapackage installs a functional EzWeb environment.
 
 Package: ezweb-platform-common
 Section: web
@@ -133,13 +133,13 @@ Architecture: all
 Depends: debconf, python-psycopg2, ezweb-platform-common (= ${binary:Version})
 Recommends: postgresql | postgresql-7.4 | postgresql-8.3
 Provides: ezweb-platform-database-backend
-Description: PostgreSQL suport for EzWeb Platform
+Description: PostgreSQL support for EzWeb Platform
  EzWeb Platform, the MORFEO Open Source Community Mashup Platform, provides you
  a framework for building modern enterprise and personal mashups following the
  main Web 2.0 ideas.
  .
  This package provides common files for supporting EzWeb Platform instances
- using PostgresSQL as DBMS.
+ using PostgreSQL as DBMS.
 
 Package: ezweb-platform-mysql
 Section: web
@@ -148,7 +148,7 @@ Architecture: all
 Depends: debconf, python-mysqldb, ezweb-platform-common (= ${binary:Version})
 Recommends: mysql-server | mysql-server-5.0 | mysql-server-5.1
 Provides: ezweb-platform-database-backend
-Description: MySQL suport for EzWeb Platform
+Description: MySQL support for EzWeb Platform
  EzWeb Platform, the MORFEO Open Source Community Mashup Platform, provides you
  a framework for building modern enterprise and personal mashups following the
  main Web 2.0 ideas.
@@ -162,7 +162,7 @@ Priority: optional
 Architecture: all
 Depends: debconf, python-pysqlite2, ezweb-platform-common (= ${binary:Version})
 Provides: ezweb-platform-database-backend
-Description: SQLite3 suport for EzWeb Platform
+Description: SQLite3 support for EzWeb Platform
  EzWeb Platform, the MORFEO Open Source Community Mashup Platform, provides you
  a framework for building modern enterprise and personal mashups following the
  main Web 2.0 ideas.

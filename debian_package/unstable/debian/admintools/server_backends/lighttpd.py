@@ -1,7 +1,7 @@
 import sys
 import os
 import grp
-import shutils
+import shutil
 
 import string
 from random import Random
@@ -80,7 +80,7 @@ class LighttpdResources:
     os.chmod(cfg.filename, 0600)
     self.resources.printlnMsg("Done")
 
-  def update_vhost(self, cfg):
+  def update_vhost(self, cfg, backup):
     templatepath = self.get_vhost_template(cfg['server']['connection_type'])
     try:
       templatefile = open(templatepath, "r")
@@ -100,6 +100,8 @@ class LighttpdResources:
     server_cfg = cfg['server']
 
     # Fill the template
+
+    # servername
     template.replace("CONF_NAME", cfg['name'])
     template.replace("DOCUMENT_ROOT", server_cfg['document_root'])
 
@@ -112,6 +114,17 @@ class LighttpdResources:
 
     template.replace("SERVER_NAME", servername)
 
+    # port
+    if server_cfg.has_key('port') and server_cfg['port'] != "":
+      port = server_cfg['port']
+    elif schema_cfg.has_key('server_port') and schema_cfg['server_port'] != "":
+      port = schema_cfg['server_port']
+    else:
+      port = "8001"
+
+    template.replace("PORT", ":" + port) # TODO read config to know whether to use ports
+
+    # admin user email
     if server_cfg.has_key('admin_user_email') and server_cfg['admin_user_email']:
       template.replace("SERVER_ADMIN_EMAIL", server_cfg['admin_user_email'])
     else:
@@ -120,10 +133,13 @@ class LighttpdResources:
     template.replace("LOG_BASE_PATH", self.get_log_path(cfg['name']))
 
     filepath = self.get_vhost_path(cfg['name'])
+    if backup and os.path.exists(filepath):
+      self.resources.printMsg("Backing up \"%s\"... " % filepath)
+      shutil.copyfile(filepath, filepath + "~")
+      self.resources.printlnMsgNP("Done")
+
     self.resources.printMsg("Updating lighttpd vhost (" + filepath + ")... ")
-    file = open(filepath, "w")
-    file.write(template)
-    file.close()
+    template.save(filepath)
     self.resources.printlnMsg("Done")
 
 class UpdateCommand(Command):
@@ -160,14 +176,14 @@ class ProcessCommand(Command):
     self.lighttpdResources = LighttpdResources(resources)
     self.resources = resources
 
-  def execute(self, site_cfg, options):
-    self.lighttpdResources.update_vhost(site_cfg)
+  def execute(self, options, site_cfg, settings_template):
+    self.lighttpdResources.update_vhost(site_cfg, options.backup)
 
     # Creating document root
-    self.resources.makedirs(cfg['server']['document_root'])
+    self.resources.makedirs(site_cfg['server']['document_root'])
 
     # Creating log path and files
-    log_path = self.lighttpdResources.get_log_path(cfg['name'])
+    log_path = self.lighttpdResources.get_log_path(site_cfg['name'])
     self.resources.makedirs(log_path)
 
     www_group = grp.getgrnam("www-data").gr_gid
@@ -201,7 +217,7 @@ class PurgeCommand(Command):
 
   def execute(self, site_cfg, options):
     conf_name = site_cfg['name']
-    filepath = self.apache2Resources.get_vhost_path(conf_name)
+    filepath = self.lighttpdResources.get_vhost_path(conf_name)
     try:
       os.remove(filepath)
     except:

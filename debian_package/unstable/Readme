@@ -14,7 +14,8 @@ Además los scripts están preparados para usar estos, siendo necesario su
 modificación en caso de querer hacer uso de otros programas.
 
 Si se necesita crear un repositorio, bastaría con copiar el directorio
-repo.skeleton donde se quiera crear el repositorio. Por ejemplo:
+repo.skeleton donde se quiera crear el repositorio y modificar la configuración
+según sea necesario. Por ejemplo:
 
    cp -R repo.skeleton /var/www/debian
 
@@ -30,7 +31,9 @@ repo.skeleton, sería la siguiente:
 reprepro se encarga automaticamente de borrar los paquetes antiguos, así como
 de crear la estructura necesaria para las distintas arquitecturas/ramas que
 vaya a tener el repositorio y los distintos tipos de ficheros necesarios
-(Packages[.gz|.bz2], Releases, etc).
+(Packages[.gz|.bz2], Releases, etc). Esto se puede hacer tanto a mano
+(mediante la ejecucción de los comandos necesarios) o de forma automática
+(mediante el manejo de una cola de admisión de paquetes).
 
 En la siguiente URL se puede ver un tutorial más amplio de como usar reprepro,
 en el que se pueden ver los distintos parámetros de configuración que admite,
