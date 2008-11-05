@@ -3,6 +3,10 @@ div.dragboard {
 }
 
 div.gadget_window {
+  -moz-border-radius-topleft:  6px;
+  -moz-border-radius-topright: 6px;
+  -webkit-border-top-left-radius: 6px;
+  -webkit-border-top-right-radius: 6px;
   position: absolute;
   border: 1px solid #4c5054;
   background: white;
@@ -17,9 +21,13 @@ div.gadget_window_locked {
 div.gadget_menu {
   cursor: move;
   padding: 1px 3px 1px 7px;
+  -moz-border-radius-topleft:  4px;
+  -moz-border-radius-topright: 4px;
+  -webkit-border-top-left-radius: 4px;
+  -webkit-border-top-right-radius: 4px;
   height: 16px;
   font-weight: bold;
-  background: #97a0a8;
+  background: #97A0A8 url(/ezweb/images/degradado.png) no-repeat scroll left top;
   font-size: 12px;
   overflow: hidden;
 }
@@ -97,9 +105,26 @@ div.floatclearer {
   clear: both;
 }
 
-div.gadget_window div.resizeHandle {
+div.gadget_window div.leftResizeHandle {
   position: absolute;
-  width: 16px;
+  width: 32px;
+  height: 16px;
+  bottom: -1px;
+  left: -1px;
+  cursor: sw-resize;
+  background: transparent;
+}
+
+div.gadget_window div.leftResizeHandle.inUse {
+  right: 0px;
+  top: 0px;
+  width: auto;
+  height: auto;
+}
+
+div.gadget_window div.rightResizeHandle {
+  position: absolute;
+  width: 32px;
   height: 16px;
   bottom: -1px;
   right: -1px;
@@ -114,11 +139,13 @@ div.gadget_window div.resizeHandle.inUse {
   height: auto;
 }
 
-div.dragboard.fixed div.gadget_window div.resizeHandle {
+div.dragboard.fixed div.gadget_window div.leftResizeHandle,
+  div.dragboard.fixed div.gadget_window div.rightResizeHandle
+{
   display: none;
 }
 
-.gadget_menu span{
+.gadget_menu span {
   margin-right:5px;
   cursor: pointer;
   color:#FFFFFF;
@@ -134,11 +161,23 @@ div.dragboard.fixed div.gadget_window div.resizeHandle {
   display:inline;
 }
 
+div.gadget_window div.statusBar {
+  border-top: 1px solid #4c5054;
+  background: #DDD;
+  height: 16px;
+}
+
+div.gadget_window_locked div.statusBar {
+  display: none;
+  height: 0;
+}
+
 /*****
  * config_interface
  */
- 
-div.gadget_window form.config_interface {
+
+div.gadget_window form.config_interface,
+div.gadget_window_locked form.config_interface {
   background: #DDD;
   border-bottom: 1px solid #4c5054;
   display: none;
@@ -203,4 +242,8 @@ form.config_interface label.invalid input {
   border: 2px dashed #97A0A8;
   background: #F2F9FF;
   z-index: 1;
+  -moz-border-radius-topleft:  6px;
+  -moz-border-radius-topright: 6px;
+  -webkit-border-top-left-radius: 6px;
+  -webkit-border-top-right-radius: 6px;
 }

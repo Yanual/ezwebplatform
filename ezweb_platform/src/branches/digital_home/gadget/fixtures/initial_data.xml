@@ -1,46 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <django-objects version="1.0">
     <object pk="1" model="gadget.variabledef">
-        <field type="CharField" name="name">address</field>
-        <field type="CharField" name="type">S</field>
-        <field type="CharField" name="aspect">SLOT</field>
-        <field type="CharField" name="label">Address</field>
-        <field type="CharField" name="description"></field>
-        <field type="CharField" name="friend_code">address</field>
-        <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">1</field>
-    </object>
-    <object pk="2" model="gadget.variabledef">
-        <field type="CharField" name="name">utmCoord</field>
-        <field type="CharField" name="type">S</field>
-        <field type="CharField" name="aspect">SLOT</field>
-        <field type="CharField" name="label">UTM Coord.</field>
-        <field type="CharField" name="description">UTM X Y Coordinates and precision (optional), comma separated</field>
-        <field type="CharField" name="friend_code">utmCoord</field>
-        <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">1</field>
-    </object>
-    <object pk="3" model="gadget.variabledef">
-        <field type="CharField" name="name">telefono</field>
-        <field type="CharField" name="type">S</field>
-        <field type="CharField" name="aspect">EVEN</field>
-        <field type="CharField" name="label">PhoneNumber</field>
-        <field type="CharField" name="description"></field>
-        <field type="CharField" name="friend_code">phone</field>
-        <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">2</field>
-    </object>
-    <object pk="4" model="gadget.variabledef">
-        <field type="CharField" name="name">servicio</field>
-        <field type="CharField" name="type">S</field>
-        <field type="CharField" name="aspect">EVEN</field>
-        <field type="CharField" name="label">ServiceHired</field>
-        <field type="CharField" name="description"></field>
-        <field type="CharField" name="friend_code">service</field>
-        <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">2</field>
-    </object>
-    <object pk="5" model="gadget.variabledef">
         <field type="CharField" name="name">imageUrl</field>
         <field type="CharField" name="type">S</field>
         <field type="CharField" name="aspect">SLOT</field>
@@ -48,59 +8,9 @@
         <field type="CharField" name="description"></field>
         <field type="CharField" name="friend_code">imageUrl</field>
         <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">3</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">1</field>
     </object>
-    <object pk="6" model="gadget.variabledef">
-        <field type="CharField" name="name">serviceHired</field>
-        <field type="CharField" name="type">S</field>
-        <field type="CharField" name="aspect">SLOT</field>
-        <field type="CharField" name="label">ServiceHired</field>
-        <field type="CharField" name="description"></field>
-        <field type="CharField" name="friend_code">service</field>
-        <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">4</field>
-    </object>
-    <object pk="7" model="gadget.variabledef">
-        <field type="CharField" name="name">deviceId</field>
-        <field type="CharField" name="type">S</field>
-        <field type="CharField" name="aspect">EVEN</field>
-        <field type="CharField" name="label">deviceId</field>
-        <field type="CharField" name="description"></field>
-        <field type="CharField" name="friend_code">deviceId</field>
-        <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">4</field>
-    </object>
-    <object pk="8" model="gadget.variabledef">
-        <field type="CharField" name="name">deviceStatus</field>
-        <field type="CharField" name="type">S</field>
-        <field type="CharField" name="aspect">EVEN</field>
-        <field type="CharField" name="label">deviceStatus</field>
-        <field type="CharField" name="description"></field>
-        <field type="CharField" name="friend_code">deviceStatus</field>
-        <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">4</field>
-    </object>
-    <object pk="9" model="gadget.variabledef">
-        <field type="CharField" name="name">poi</field>
-        <field type="CharField" name="type">S</field>
-        <field type="CharField" name="aspect">SLOT</field>
-        <field type="CharField" name="label">poi</field>
-        <field type="CharField" name="description"></field>
-        <field type="CharField" name="friend_code">poi</field>
-        <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">5</field>
-    </object>
-    <object pk="10" model="gadget.variabledef">
-        <field type="CharField" name="name">travel</field>
-        <field type="CharField" name="type">S</field>
-        <field type="CharField" name="aspect">EVEN</field>
-        <field type="CharField" name="label">travel</field>
-        <field type="CharField" name="description"></field>
-        <field type="CharField" name="friend_code">yahoo_travel</field>
-        <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">5</field>
-    </object>
-    <object pk="11" model="gadget.variabledef">
+    <object pk="2" model="gadget.variabledef">
         <field type="CharField" name="name">keyword</field>
         <field type="CharField" name="type">S</field>
         <field type="CharField" name="aspect">SLOT</field>
@@ -108,9 +18,9 @@
         <field type="CharField" name="description"></field>
         <field type="CharField" name="friend_code">keyword</field>
         <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">6</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">2</field>
     </object>
-    <object pk="12" model="gadget.variabledef">
+    <object pk="3" model="gadget.variabledef">
         <field type="CharField" name="name">urlImage</field>
         <field type="CharField" name="type">S</field>
         <field type="CharField" name="aspect">EVEN</field>
@@ -118,39 +28,9 @@
         <field type="CharField" name="description"></field>
         <field type="CharField" name="friend_code">urlImage</field>
         <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">6</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">2</field>
     </object>
-    <object pk="13" model="gadget.variabledef">
-        <field type="CharField" name="name">address</field>
-        <field type="CharField" name="type">S</field>
-        <field type="CharField" name="aspect">EVEN</field>
-        <field type="CharField" name="label">Address</field>
-        <field type="CharField" name="description"></field>
-        <field type="CharField" name="friend_code">address</field>
-        <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">7</field>
-    </object>
-    <object pk="14" model="gadget.variabledef">
-        <field type="CharField" name="name">phoneNumber</field>
-        <field type="CharField" name="type">S</field>
-        <field type="CharField" name="aspect">SLOT</field>
-        <field type="CharField" name="label">PhoneNumber</field>
-        <field type="CharField" name="description"></field>
-        <field type="CharField" name="friend_code">phone</field>
-        <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">7</field>
-    </object>
-    <object pk="15" model="gadget.variabledef">
-        <field type="CharField" name="name">RSSYurl</field>
-        <field type="CharField" name="type">S</field>
-        <field type="CharField" name="aspect">SLOT</field>
-        <field type="CharField" name="label">url</field>
-        <field type="CharField" name="description"></field>
-        <field type="CharField" name="friend_code">youtube_url</field>
-        <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">8</field>
-    </object>
-    <object pk="16" model="gadget.variabledef">
+    <object pk="4" model="gadget.variabledef">
         <field type="CharField" name="name">rssUrl</field>
         <field type="CharField" name="type">S</field>
         <field type="CharField" name="aspect">EVEN</field>
@@ -158,9 +38,9 @@
         <field type="CharField" name="description"></field>
         <field type="CharField" name="friend_code">youtube_url</field>
         <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">9</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">3</field>
     </object>
-    <object pk="17" model="gadget.variabledef">
+    <object pk="5" model="gadget.variabledef">
         <field type="CharField" name="name">place</field>
         <field type="CharField" name="type">S</field>
         <field type="CharField" name="aspect">EVEN</field>
@@ -168,9 +48,9 @@
         <field type="CharField" name="description"></field>
         <field type="CharField" name="friend_code">address</field>
         <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">9</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">3</field>
     </object>
-    <object pk="18" model="gadget.variabledef">
+    <object pk="6" model="gadget.variabledef">
         <field type="CharField" name="name">title</field>
         <field type="CharField" name="type">S</field>
         <field type="CharField" name="aspect">EVEN</field>
@@ -178,9 +58,9 @@
         <field type="CharField" name="description"></field>
         <field type="CharField" name="friend_code">title</field>
         <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">9</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">3</field>
     </object>
-    <object pk="19" model="gadget.variabledef">
+    <object pk="7" model="gadget.variabledef">
         <field type="CharField" name="name">poi</field>
         <field type="CharField" name="type">S</field>
         <field type="CharField" name="aspect">EVEN</field>
@@ -188,9 +68,19 @@
         <field type="CharField" name="description"></field>
         <field type="CharField" name="friend_code">poi</field>
         <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">9</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">3</field>
     </object>
-    <object pk="20" model="gadget.variabledef">
+    <object pk="8" model="gadget.variabledef">
+        <field type="CharField" name="name">RSSYurl</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">SLOT</field>
+        <field type="CharField" name="label">url</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">youtube_url</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">4</field>
+    </object>
+    <object pk="9" model="gadget.variabledef">
         <field type="CharField" name="name">keyword</field>
         <field type="CharField" name="type">S</field>
         <field type="CharField" name="aspect">SLOT</field>
@@ -198,9 +88,69 @@
         <field type="CharField" name="description"></field>
         <field type="CharField" name="friend_code">keyword</field>
         <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">10</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">5</field>
     </object>
-    <object pk="21" model="gadget.variabledef">
+    <object pk="10" model="gadget.variabledef">
+        <field type="CharField" name="name">poi</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">SLOT</field>
+        <field type="CharField" name="label">poi</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">poi</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">6</field>
+    </object>
+    <object pk="11" model="gadget.variabledef">
+        <field type="CharField" name="name">travel</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">travel</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">yahoo_travel</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">6</field>
+    </object>
+    <object pk="12" model="gadget.variabledef">
+        <field type="CharField" name="name">address</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">SLOT</field>
+        <field type="CharField" name="label">Address</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">address</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">7</field>
+    </object>
+    <object pk="13" model="gadget.variabledef">
+        <field type="CharField" name="name">utmCoord</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">SLOT</field>
+        <field type="CharField" name="label">UTM Coord.</field>
+        <field type="CharField" name="description">UTM X Y Coordinates and precision (optional), comma separated</field>
+        <field type="CharField" name="friend_code">utmCoord</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">7</field>
+    </object>
+    <object pk="14" model="gadget.variabledef">
+        <field type="CharField" name="name">address</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">Address</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">address</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">8</field>
+    </object>
+    <object pk="15" model="gadget.variabledef">
+        <field type="CharField" name="name">phoneNumber</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">SLOT</field>
+        <field type="CharField" name="label">PhoneNumber</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">phone</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">8</field>
+    </object>
+    <object pk="16" model="gadget.variabledef">
         <field type="CharField" name="name">dir_equipo</field>
         <field type="CharField" name="type">S</field>
         <field type="CharField" name="aspect">EVEN</field>
@@ -208,9 +158,9 @@
         <field type="CharField" name="description"></field>
         <field type="CharField" name="friend_code">address</field>
         <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">11</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">9</field>
     </object>
-    <object pk="22" model="gadget.variabledef">
+    <object pk="17" model="gadget.variabledef">
         <field type="CharField" name="name">equipo</field>
         <field type="CharField" name="type">S</field>
         <field type="CharField" name="aspect">SLOT</field>
@@ -218,9 +168,9 @@
         <field type="CharField" name="description"></field>
         <field type="CharField" name="friend_code">deviceId</field>
         <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">11</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">9</field>
     </object>
-    <object pk="23" model="gadget.variabledef">
+    <object pk="18" model="gadget.variabledef">
         <field type="CharField" name="name">estado</field>
         <field type="CharField" name="type">S</field>
         <field type="CharField" name="aspect">SLOT</field>
@@ -228,59 +178,59 @@
         <field type="CharField" name="description"></field>
         <field type="CharField" name="friend_code">deviceStatus</field>
         <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">9</field>
+    </object>
+    <object pk="19" model="gadget.variabledef">
+        <field type="CharField" name="name">telefono</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">PhoneNumber</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">phone</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">10</field>
+    </object>
+    <object pk="20" model="gadget.variabledef">
+        <field type="CharField" name="name">servicio</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">ServiceHired</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">service</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">10</field>
+    </object>
+    <object pk="21" model="gadget.variabledef">
+        <field type="CharField" name="name">serviceHired</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">SLOT</field>
+        <field type="CharField" name="label">ServiceHired</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">service</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">11</field>
+    </object>
+    <object pk="22" model="gadget.variabledef">
+        <field type="CharField" name="name">deviceId</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">deviceId</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">deviceId</field>
+        <field type="TextField" name="default_value"><None></None></field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">11</field>
+    </object>
+    <object pk="23" model="gadget.variabledef">
+        <field type="CharField" name="name">deviceStatus</field>
+        <field type="CharField" name="type">S</field>
+        <field type="CharField" name="aspect">EVEN</field>
+        <field type="CharField" name="label">deviceStatus</field>
+        <field type="CharField" name="description"></field>
+        <field type="CharField" name="friend_code">deviceStatus</field>
+        <field type="TextField" name="default_value"><None></None></field>
         <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">11</field>
     </object>
     <object pk="24" model="gadget.variabledef">
-        <field type="CharField" name="name">bg</field>
-        <field type="CharField" name="type">S</field>
-        <field type="CharField" name="aspect">PREF</field>
-        <field type="CharField" name="label">background color</field>
-        <field type="CharField" name="description">descripcion</field>
-        <field type="CharField" name="friend_code"><None></None></field>
-        <field type="TextField" name="default_value"></field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">12</field>
-    </object>
-    <object pk="25" model="gadget.variabledef">
-        <field type="CharField" name="name">textcolor</field>
-        <field type="CharField" name="type">S</field>
-        <field type="CharField" name="aspect">PREF</field>
-        <field type="CharField" name="label">text color</field>
-        <field type="CharField" name="description">descripcion</field>
-        <field type="CharField" name="friend_code"><None></None></field>
-        <field type="TextField" name="default_value"></field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">12</field>
-    </object>
-    <object pk="26" model="gadget.variabledef">
-        <field type="CharField" name="name">nota</field>
-        <field type="CharField" name="type">S</field>
-        <field type="CharField" name="aspect">PROP</field>
-        <field type="CharField" name="label"><None></None></field>
-        <field type="CharField" name="description"></field>
-        <field type="CharField" name="friend_code"><None></None></field>
-        <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">12</field>
-    </object>
-    <object pk="27" model="gadget.variabledef">
-        <field type="CharField" name="name">rssPref</field>
-        <field type="CharField" name="type">S</field>
-        <field type="CharField" name="aspect">PREF</field>
-        <field type="CharField" name="label">Feed RSS</field>
-        <field type="CharField" name="description">Origen del feed RSS a mostrar</field>
-        <field type="CharField" name="friend_code"><None></None></field>
-        <field type="TextField" name="default_value">http://morfeo-project.org/?feed=rss2</field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">13</field>
-    </object>
-    <object pk="28" model="gadget.variabledef">
-        <field type="CharField" name="name">rssUrl</field>
-        <field type="CharField" name="type">S</field>
-        <field type="CharField" name="aspect">SLOT</field>
-        <field type="CharField" name="label">rssUrl</field>
-        <field type="CharField" name="description"></field>
-        <field type="CharField" name="friend_code">rssUrl</field>
-        <field type="TextField" name="default_value"><None></None></field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">13</field>
-    </object>
-    <object pk="29" model="gadget.variabledef">
         <field type="CharField" name="name">opensms_url</field>
         <field type="CharField" name="type">S</field>
         <field type="CharField" name="aspect">PREF</field>
@@ -288,9 +238,9 @@
         <field type="CharField" name="description">Open MovilForum SMS URI</field>
         <field type="CharField" name="friend_code"><None></None></field>
         <field type="TextField" name="default_value">http://triqui:7000/PruebaServletEzWeb/sms</field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">14</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">12</field>
     </object>
-    <object pk="30" model="gadget.variabledef">
+    <object pk="25" model="gadget.variabledef">
         <field type="CharField" name="name">tm_login</field>
         <field type="CharField" name="type">S</field>
         <field type="CharField" name="aspect">PREF</field>
@@ -298,9 +248,9 @@
         <field type="CharField" name="description">Source Telephone Number</field>
         <field type="CharField" name="friend_code"><None></None></field>
         <field type="TextField" name="default_value"></field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">14</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">12</field>
     </object>
-    <object pk="31" model="gadget.variabledef">
+    <object pk="26" model="gadget.variabledef">
         <field type="CharField" name="name">tm_password</field>
         <field type="CharField" name="type">P</field>
         <field type="CharField" name="aspect">PREF</field>
@@ -308,52 +258,19 @@
         <field type="CharField" name="description">Password</field>
         <field type="CharField" name="friend_code"><None></None></field>
         <field type="TextField" name="default_value"></field>
-        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">14</field>
+        <field to="gadget.gadget" name="gadget" rel="ManyToOneRel">12</field>
     </object>
     <object pk="1" model="gadget.gadget">
-        <field type="CharField" name="uri">/gadgets/Morfeo/Map Viewer/1.2</field>
-        <field type="CharField" name="vendor">Morfeo</field>
-        <field type="CharField" name="name">Map Viewer</field>
-        <field type="CharField" name="version">1.2</field>
-        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">1</field>
-        <field type="CharField" name="author">fabio</field>
-        <field type="CharField" name="mail">fabio@tid.es</field>
-        <field type="CharField" name="wikiURI">http://trac.morfeo-project.org/trac/ezwebplatform/wiki/MapViewer</field>
-        <field type="CharField" name="imageURI">http://demo.ezweb.morfeo-project.org/repository/localizador/google_maps.jpg</field>
-        <field type="IntegerField" name="width">9</field>
-        <field type="IntegerField" name="height">25</field>
-        <field type="CharField" name="description">Este gadget presenta la ubicacion en el plano de una determinada direccion o coordenadas UTM. Si se le pasa la precision, dibuja un circulo con el area seleccionada</field>
-        <field type="BooleanField" name="shared">False</field>
-        <field type="DateTimeField" name="last_update">2008-06-03 16:31:00</field>
-        <field to="auth.user" name="users" rel="ManyToManyRel"><object pk="1"></object><object pk="2"></object><object pk="3"></object></field>
-    </object>
-    <object pk="2" model="gadget.gadget">
-        <field type="CharField" name="uri">/gadgets/Morfeo/Bandeja de Averias/1.0</field>
-        <field type="CharField" name="vendor">Morfeo</field>
-        <field type="CharField" name="name">Bandeja de Averias</field>
-        <field type="CharField" name="version">1.0</field>
-        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">2</field>
-        <field type="CharField" name="author">miglesia</field>
-        <field type="CharField" name="mail">miglesia@pegaso.ls.fi.upm.es</field>
-        <field type="CharField" name="wikiURI">http://trac.morfeo-project.org/trac/ezwebplatform/wiki/BandejaDeAverias</field>
-        <field type="CharField" name="imageURI">http://demo.ezweb.morfeo-project.org/repository/bandeja/averias.png</field>
-        <field type="IntegerField" name="width">20</field>
-        <field type="IntegerField" name="height">13</field>
-        <field type="CharField" name="description">Este gadget presenta una lista de averias registradas por usuarios y la informacion relativa a ellas</field>
-        <field type="BooleanField" name="shared">False</field>
-        <field type="DateTimeField" name="last_update"><None></None></field>
-        <field to="auth.user" name="users" rel="ManyToManyRel"><object pk="2"></object><object pk="3"></object></field>
-    </object>
-    <object pk="3" model="gadget.gadget">
         <field type="CharField" name="uri">/gadgets/Morfeo/Visor Imágenes/1.0</field>
         <field type="CharField" name="vendor">Morfeo</field>
         <field type="CharField" name="name">Visor Imágenes</field>
         <field type="CharField" name="version">1.0</field>
-        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">3</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">1</field>
         <field type="CharField" name="author">jmostazo</field>
         <field type="CharField" name="mail">jmostazo@pegaso.ls.fi.upm.es</field>
         <field type="CharField" name="wikiURI">http://trac.morfeo-project.org/trac/ezwebplatform/wiki/VisorImagenes</field>
         <field type="CharField" name="imageURI">http://demo.ezweb.morfeo-project.org/repository/visorImagenes/visorImagenes.png</field>
+        <field type="CharField" name="iPhoneImageURI">http://demo.ezweb.morfeo-project.org/repository/visorImagenes/visorImagenesIPhone.png</field>
         <field type="IntegerField" name="width">7</field>
         <field type="IntegerField" name="height">30</field>
         <field type="CharField" name="description">Este gadget permite mostrar imágenes recibidas en un slot</field>
@@ -361,50 +278,17 @@
         <field type="DateTimeField" name="last_update"><None></None></field>
         <field to="auth.user" name="users" rel="ManyToManyRel"><object pk="2"></object></field>
     </object>
-    <object pk="4" model="gadget.gadget">
-        <field type="CharField" name="uri">/gadgets/Morfeo/Configuracion de Red/1.0</field>
-        <field type="CharField" name="vendor">Morfeo</field>
-        <field type="CharField" name="name">Configuracion de Red</field>
-        <field type="CharField" name="version">1.0</field>
-        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">4</field>
-        <field type="CharField" name="author">miglesia</field>
-        <field type="CharField" name="mail">miglesia@pegaso.ls.fi.upm.es</field>
-        <field type="CharField" name="wikiURI">http://trac.morfeo-project.org/trac/ezwebplatform/wiki/ConfiguracionDeRed</field>
-        <field type="CharField" name="imageURI">http://demo.ezweb.morfeo-project.org/repository/configuracionRed/red.png</field>
-        <field type="IntegerField" name="width">7</field>
-        <field type="IntegerField" name="height">13</field>
-        <field type="CharField" name="description">Este gadget presenta un diagrama con la localizacion de la averia en el servicio</field>
-        <field type="BooleanField" name="shared">False</field>
-        <field type="DateTimeField" name="last_update"><None></None></field>
-        <field to="auth.user" name="users" rel="ManyToManyRel"><object pk="2"></object><object pk="3"></object></field>
-    </object>
-    <object pk="5" model="gadget.gadget">
-        <field type="CharField" name="uri">/gadgets/Morfeo/Yahoo Trip Search/1.1</field>
-        <field type="CharField" name="vendor">Morfeo</field>
-        <field type="CharField" name="name">Yahoo Trip Search</field>
-        <field type="CharField" name="version">1.1</field>
-        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">5</field>
-        <field type="CharField" name="author">agarcia</field>
-        <field type="CharField" name="mail">abgp@tid.es</field>
-        <field type="CharField" name="wikiURI">http://trac.morfeo-project.org/trac/ezwebplatform/wiki/YahooTripSearch</field>
-        <field type="CharField" name="imageURI">http://demo.ezweb.morfeo-project.org/repository/yahoo_trip/trip_search.gif</field>
-        <field type="IntegerField" name="width">6</field>
-        <field type="IntegerField" name="height">26</field>
-        <field type="CharField" name="description">buscador de planes de viajes de yahoo</field>
-        <field type="BooleanField" name="shared">False</field>
-        <field type="DateTimeField" name="last_update"><None></None></field>
-        <field to="auth.user" name="users" rel="ManyToManyRel"><object pk="2"></object></field>
-    </object>
-    <object pk="6" model="gadget.gadget">
+    <object pk="2" model="gadget.gadget">
         <field type="CharField" name="uri">/gadgets/Morfeo/Flickr/2.0</field>
         <field type="CharField" name="vendor">Morfeo</field>
         <field type="CharField" name="name">Flickr</field>
         <field type="CharField" name="version">2.0</field>
-        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">6</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">2</field>
         <field type="CharField" name="author">jmostazo</field>
         <field type="CharField" name="mail">jmostazo@pegaso.ls.fi.upm.es</field>
         <field type="CharField" name="wikiURI">http://trac.morfeo-project.org/trac/ezwebplatform/wiki/Flickr</field>
         <field type="CharField" name="imageURI">http://demo.ezweb.morfeo-project.org/repository/flickr/flickr.png</field>
+        <field type="CharField" name="iPhoneImageURI">http://demo.ezweb.morfeo-project.org/repository/flickr/flickrIPhone.png</field>
         <field type="IntegerField" name="width">7</field>
         <field type="IntegerField" name="height">18</field>
         <field type="CharField" name="description">This gadget version provide an engaging visual way to explore tagged photos through a fairly comprehensive web-service API</field>
@@ -412,50 +296,17 @@
         <field type="DateTimeField" name="last_update"><None></None></field>
         <field to="auth.user" name="users" rel="ManyToManyRel"><object pk="2"></object></field>
     </object>
-    <object pk="7" model="gadget.gadget">
-        <field type="CharField" name="uri">/gadgets/Morfeo/Visor Datos de Usuario/1.0</field>
-        <field type="CharField" name="vendor">Morfeo</field>
-        <field type="CharField" name="name">Visor Datos de Usuario</field>
-        <field type="CharField" name="version">1.0</field>
-        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">7</field>
-        <field type="CharField" name="author">miglesia</field>
-        <field type="CharField" name="mail">miglesia@pegaso.ls.fi.upm.es</field>
-        <field type="CharField" name="wikiURI">http://trac.morfeo-project.org/trac/ezwebplatform/wiki/VisorDatosUsuario</field>
-        <field type="CharField" name="imageURI">http://demo.ezweb.morfeo-project.org/repository/visorUsuarios/datosUsuario.png</field>
-        <field type="IntegerField" name="width">7</field>
-        <field type="IntegerField" name="height">13</field>
-        <field type="CharField" name="description">Este gadget presenta la informacion relativa a un usuario para el cual se ha detectado una averia</field>
-        <field type="BooleanField" name="shared">False</field>
-        <field type="DateTimeField" name="last_update"><None></None></field>
-        <field to="auth.user" name="users" rel="ManyToManyRel"><object pk="2"></object><object pk="3"></object></field>
-    </object>
-    <object pk="8" model="gadget.gadget">
-        <field type="CharField" name="uri">/gadgets/Morfeo/YouTube Video Player/1.3</field>
-        <field type="CharField" name="vendor">Morfeo</field>
-        <field type="CharField" name="name">YouTube Video Player</field>
-        <field type="CharField" name="version">1.3</field>
-        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">8</field>
-        <field type="CharField" name="author">jmartin</field>
-        <field type="CharField" name="mail">jjmr@tid.es</field>
-        <field type="CharField" name="wikiURI">http://trac.morfeo-project.org/trac/ezwebplatform/wiki/TubeRep</field>
-        <field type="CharField" name="imageURI">http://demo.ezweb.morfeo-project.org/repository/youtube_player/tuberep.png</field>
-        <field type="IntegerField" name="width">7</field>
-        <field type="IntegerField" name="height">26</field>
-        <field type="CharField" name="description">Reproductor de videos de Youtube</field>
-        <field type="BooleanField" name="shared">False</field>
-        <field type="DateTimeField" name="last_update"><None></None></field>
-        <field to="auth.user" name="users" rel="ManyToManyRel"><object pk="2"></object></field>
-    </object>
-    <object pk="9" model="gadget.gadget">
+    <object pk="3" model="gadget.gadget">
         <field type="CharField" name="uri">/gadgets/Morfeo/YouTube Video Search/1.4</field>
         <field type="CharField" name="vendor">Morfeo</field>
         <field type="CharField" name="name">YouTube Video Search</field>
         <field type="CharField" name="version">1.4</field>
-        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">9</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">3</field>
         <field type="CharField" name="author">agarcia</field>
         <field type="CharField" name="mail">abgp@tid.es</field>
         <field type="CharField" name="wikiURI">http://trac.morfeo-project.org/trac/ezwebplatform/wiki/TubeSearch</field>
         <field type="CharField" name="imageURI">http://demo.ezweb.morfeo-project.org/repository/youtube_search/tubesearch.jpeg</field>
+        <field type="CharField" name="iPhoneImageURI">http://demo.ezweb.morfeo-project.org/repository/youtube_search/tubesearchIPhone.png</field>
         <field type="IntegerField" name="width">7</field>
         <field type="IntegerField" name="height">26</field>
         <field type="CharField" name="description">buscador de videos youtube y selector de peliculas</field>
@@ -463,16 +314,35 @@
         <field type="DateTimeField" name="last_update"><None></None></field>
         <field to="auth.user" name="users" rel="ManyToManyRel"><object pk="2"></object></field>
     </object>
-    <object pk="10" model="gadget.gadget">
+    <object pk="4" model="gadget.gadget">
+        <field type="CharField" name="uri">/gadgets/Morfeo/YouTube Video Player/1.3</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="name">YouTube Video Player</field>
+        <field type="CharField" name="version">1.3</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">4</field>
+        <field type="CharField" name="author">jmartin</field>
+        <field type="CharField" name="mail">jjmr@tid.es</field>
+        <field type="CharField" name="wikiURI">http://trac.morfeo-project.org/trac/ezwebplatform/wiki/TubeRep</field>
+        <field type="CharField" name="imageURI">http://demo.ezweb.morfeo-project.org/repository/youtube_player/tuberep.png</field>
+        <field type="CharField" name="iPhoneImageURI">http://demo.ezweb.morfeo-project.org/repository/youtube_player/tuberepIPhone.png</field>
+        <field type="IntegerField" name="width">7</field>
+        <field type="IntegerField" name="height">26</field>
+        <field type="CharField" name="description">Reproductor de videos de Youtube</field>
+        <field type="BooleanField" name="shared">False</field>
+        <field type="DateTimeField" name="last_update"><None></None></field>
+        <field to="auth.user" name="users" rel="ManyToManyRel"><object pk="2"></object></field>
+    </object>
+    <object pk="5" model="gadget.gadget">
         <field type="CharField" name="uri">/gadgets/Morfeo/Amazon/1.0</field>
         <field type="CharField" name="vendor">Morfeo</field>
         <field type="CharField" name="name">Amazon</field>
         <field type="CharField" name="version">1.0</field>
-        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">10</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">5</field>
         <field type="CharField" name="author">jmartin</field>
         <field type="CharField" name="mail">jjmr@tid.es</field>
         <field type="CharField" name="wikiURI">http://trac.morfeo-project.org/trac/ezwebplatform/wiki/Amazon</field>
         <field type="CharField" name="imageURI">http://demo.ezweb.morfeo-project.org/repository/amazon/amazon.jpg</field>
+        <field type="CharField" name="iPhoneImageURI">http://demo.ezweb.morfeo-project.org/repository/amazon/amazonIPhone.png</field>
         <field type="IntegerField" name="width">7</field>
         <field type="IntegerField" name="height">26</field>
         <field type="CharField" name="description">Busqueda de productos en Amazon</field>
@@ -480,307 +350,133 @@
         <field type="DateTimeField" name="last_update"><None></None></field>
         <field to="auth.user" name="users" rel="ManyToManyRel"><object pk="2"></object></field>
     </object>
-    <object pk="11" model="gadget.gadget">
+    <object pk="6" model="gadget.gadget">
+        <field type="CharField" name="uri">/gadgets/Morfeo/Yahoo Trip Search/1.1</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="name">Yahoo Trip Search</field>
+        <field type="CharField" name="version">1.1</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">6</field>
+        <field type="CharField" name="author">agarcia</field>
+        <field type="CharField" name="mail">abgp@tid.es</field>
+        <field type="CharField" name="wikiURI">http://trac.morfeo-project.org/trac/ezwebplatform/wiki/YahooTripSearch</field>
+        <field type="CharField" name="imageURI">http://demo.ezweb.morfeo-project.org/repository/yahoo_trip/trip_search.gif</field>
+        <field type="CharField" name="iPhoneImageURI">http://demo.ezweb.morfeo-project.org/repository/yahoo_trip/trip_searchIPhone.png</field>
+        <field type="IntegerField" name="width">6</field>
+        <field type="IntegerField" name="height">26</field>
+        <field type="CharField" name="description">buscador de planes de viajes de yahoo</field>
+        <field type="BooleanField" name="shared">False</field>
+        <field type="DateTimeField" name="last_update"><None></None></field>
+        <field to="auth.user" name="users" rel="ManyToManyRel"><object pk="2"></object></field>
+    </object>
+    <object pk="7" model="gadget.gadget">
+        <field type="CharField" name="uri">/gadgets/Morfeo/Map Viewer/1.2</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="name">Map Viewer</field>
+        <field type="CharField" name="version">1.2</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">7</field>
+        <field type="CharField" name="author">fabio</field>
+        <field type="CharField" name="mail">fabio@tid.es</field>
+        <field type="CharField" name="wikiURI">http://trac.morfeo-project.org/trac/ezwebplatform/wiki/MapViewer</field>
+        <field type="CharField" name="imageURI">http://demo.ezweb.morfeo-project.org/repository/localizador/google_maps.jpg</field>
+        <field type="CharField" name="iPhoneImageURI">http://demo.ezweb.morfeo-project.org/repository/localizador/google_mapsIPhone.png</field>
+        <field type="IntegerField" name="width">9</field>
+        <field type="IntegerField" name="height">25</field>
+        <field type="CharField" name="description">Este gadget presenta la ubicacion en el plano de una determinada direccion o coordenadas UTM. Si se le pasa la precision, dibuja un circulo con el area seleccionada</field>
+        <field type="BooleanField" name="shared">False</field>
+        <field type="DateTimeField" name="last_update"><None></None></field>
+        <field to="auth.user" name="users" rel="ManyToManyRel"><object pk="2"></object><object pk="3"></object></field>
+    </object>
+    <object pk="8" model="gadget.gadget">
+        <field type="CharField" name="uri">/gadgets/Morfeo/Visor Datos de Usuario/1.0</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="name">Visor Datos de Usuario</field>
+        <field type="CharField" name="version">1.0</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">8</field>
+        <field type="CharField" name="author">miglesia</field>
+        <field type="CharField" name="mail">miglesia@pegaso.ls.fi.upm.es</field>
+        <field type="CharField" name="wikiURI">http://trac.morfeo-project.org/trac/ezwebplatform/wiki/VisorDatosUsuario</field>
+        <field type="CharField" name="imageURI">http://demo.ezweb.morfeo-project.org/repository/visorUsuarios/datosUsuario.png</field>
+        <field type="CharField" name="iPhoneImageURI">http://demo.ezweb.morfeo-project.org/repository/visorUsuarios/datosUsuarioIPhone.png</field>
+        <field type="IntegerField" name="width">7</field>
+        <field type="IntegerField" name="height">13</field>
+        <field type="CharField" name="description">Este gadget presenta la informacion relativa a un usuario para el cual se ha detectado una averia</field>
+        <field type="BooleanField" name="shared">False</field>
+        <field type="DateTimeField" name="last_update"><None></None></field>
+        <field to="auth.user" name="users" rel="ManyToManyRel"><object pk="3"></object></field>
+    </object>
+    <object pk="9" model="gadget.gadget">
         <field type="CharField" name="uri">/gadgets/Morfeo/Visor Datos de Equipo/1.0</field>
         <field type="CharField" name="vendor">Morfeo</field>
         <field type="CharField" name="name">Visor Datos de Equipo</field>
         <field type="CharField" name="version">1.0</field>
-        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">11</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">9</field>
         <field type="CharField" name="author">miglesia</field>
         <field type="CharField" name="mail">miglesia@pegaso.ls.fi.upm.es</field>
         <field type="CharField" name="wikiURI">http://trac.morfeo-project.org/trac/ezwebplatform/wiki/VisorDatosEquipo</field>
         <field type="CharField" name="imageURI">http://demo.ezweb.morfeo-project.org/repository/visorEquipos/datosEquipo.png</field>
+        <field type="CharField" name="iPhoneImageURI">http://demo.ezweb.morfeo-project.org/repository/visorEquipos/datosEquipoIPhone.png</field>
         <field type="IntegerField" name="width">6</field>
         <field type="IntegerField" name="height">13</field>
         <field type="CharField" name="description">Este gadget presenta la informacion relativa a un equipo perteneciente a la red de encaminadores</field>
         <field type="BooleanField" name="shared">False</field>
         <field type="DateTimeField" name="last_update"><None></None></field>
-        <field to="auth.user" name="users" rel="ManyToManyRel"><object pk="2"></object><object pk="3"></object></field>
+        <field to="auth.user" name="users" rel="ManyToManyRel"><object pk="3"></object></field>
+    </object>
+    <object pk="10" model="gadget.gadget">
+        <field type="CharField" name="uri">/gadgets/Morfeo/Bandeja de Averias/1.0</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="name">Bandeja de Averias</field>
+        <field type="CharField" name="version">1.0</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">10</field>
+        <field type="CharField" name="author">miglesia</field>
+        <field type="CharField" name="mail">miglesia@pegaso.ls.fi.upm.es</field>
+        <field type="CharField" name="wikiURI">http://trac.morfeo-project.org/trac/ezwebplatform/wiki/BandejaDeAverias</field>
+        <field type="CharField" name="imageURI">http://demo.ezweb.morfeo-project.org/repository/bandeja/averias.png</field>
+        <field type="CharField" name="iPhoneImageURI">http://demo.ezweb.morfeo-project.org/repository/bandeja/averiasIPhone.png</field>
+        <field type="IntegerField" name="width">20</field>
+        <field type="IntegerField" name="height">13</field>
+        <field type="CharField" name="description">Este gadget presenta una lista de averias registradas por usuarios y la informacion relativa a ellas</field>
+        <field type="BooleanField" name="shared">False</field>
+        <field type="DateTimeField" name="last_update"><None></None></field>
+        <field to="auth.user" name="users" rel="ManyToManyRel"><object pk="3"></object></field>
+    </object>
+    <object pk="11" model="gadget.gadget">
+        <field type="CharField" name="uri">/gadgets/Morfeo/Configuracion de Red/1.0</field>
+        <field type="CharField" name="vendor">Morfeo</field>
+        <field type="CharField" name="name">Configuracion de Red</field>
+        <field type="CharField" name="version">1.0</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">11</field>
+        <field type="CharField" name="author">miglesia</field>
+        <field type="CharField" name="mail">miglesia@pegaso.ls.fi.upm.es</field>
+        <field type="CharField" name="wikiURI">http://trac.morfeo-project.org/trac/ezwebplatform/wiki/ConfiguracionDeRed</field>
+        <field type="CharField" name="imageURI">http://demo.ezweb.morfeo-project.org/repository/configuracionRed/red.png</field>
+        <field type="CharField" name="iPhoneImageURI">http://demo.ezweb.morfeo-project.org/repository/configuracionRed/redIPhone.png</field>
+        <field type="IntegerField" name="width">7</field>
+        <field type="IntegerField" name="height">13</field>
+        <field type="CharField" name="description">Este gadget presenta un diagrama con la localizacion de la averia en el servicio</field>
+        <field type="BooleanField" name="shared">False</field>
+        <field type="DateTimeField" name="last_update"><None></None></field>
+        <field to="auth.user" name="users" rel="ManyToManyRel"><object pk="3"></object></field>
     </object>
     <object pk="12" model="gadget.gadget">
-        <field type="CharField" name="uri">/gadgets/Morfeo/Notepad/1.0</field>
-        <field type="CharField" name="vendor">Morfeo</field>
-        <field type="CharField" name="name">Notepad</field>
-        <field type="CharField" name="version">1.0</field>
-        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">12</field>
-        <field type="CharField" name="author">jmartin</field>
-        <field type="CharField" name="mail">jjmr@tid.es</field>
-        <field type="CharField" name="wikiURI">http://trac.morfeo-project.org/trac/ezwebplatform/wiki/Notepad</field>
-        <field type="CharField" name="imageURI">http://demo.ezweb.morfeo-project.org/repository/notepad/notepad.jpg</field>
-        <field type="IntegerField" name="width">6</field>
-        <field type="IntegerField" name="height">11</field>
-        <field type="CharField" name="description">Este gadget permite anadir una nota personal</field>
-        <field type="BooleanField" name="shared">False</field>
-        <field type="DateTimeField" name="last_update"><None></None></field>
-        <field to="auth.user" name="users" rel="ManyToManyRel"><object pk="1"></object><object pk="2"></object></field>
-    </object>
-    <object pk="13" model="gadget.gadget">
-        <field type="CharField" name="uri">/gadgets/Morfeo/RSSReader/2.0</field>
-        <field type="CharField" name="vendor">Morfeo</field>
-        <field type="CharField" name="name">RSSReader</field>
-        <field type="CharField" name="version">2.0</field>
-        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">13</field>
-        <field type="CharField" name="author">jlopez</field>
-        <field type="CharField" name="mail">jlopez@pegaso.ls.fi.upm.es</field>
-        <field type="CharField" name="wikiURI">http://trac.morfeo-project.org/trac/ezwebplatform/wiki/RSSReader</field>
-        <field type="CharField" name="imageURI">http://demo.ezweb.morfeo-project.org/repository/rss/rss.jpg</field>
-        <field type="IntegerField" name="width">7</field>
-        <field type="IntegerField" name="height">18</field>
-        <field type="CharField" name="description">Este gadget muestra un feed RSS 2.0</field>
-        <field type="BooleanField" name="shared">False</field>
-        <field type="DateTimeField" name="last_update"><None></None></field>
-        <field to="auth.user" name="users" rel="ManyToManyRel"><object pk="1"></object><object pk="2"></object></field>
-    </object>
-    <object pk="14" model="gadget.gadget">
         <field type="CharField" name="uri">/gadgets/Morfeo/SMS Sender/1.3</field>
         <field type="CharField" name="vendor">Morfeo</field>
         <field type="CharField" name="name">SMS Sender</field>
         <field type="CharField" name="version">1.3</field>
-        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">14</field>
+        <field to="gadget.xhtml" name="xhtml" rel="ManyToOneRel">12</field>
         <field type="CharField" name="author">pjm</field>
         <field type="CharField" name="mail">pjm@tid.es</field>
         <field type="CharField" name="wikiURI">http://trac.morfeo-project.org/trac/ezwebplatform/wiki/SMSSender</field>
         <field type="CharField" name="imageURI">http://demo.ezweb.morfeo-project.org/repository/sendSMS/sendSMS.png</field>
+        <field type="CharField" name="iPhoneImageURI"></field>
         <field type="IntegerField" name="width">7</field>
         <field type="IntegerField" name="height">18</field>
         <field type="CharField" name="description">Envio de SMS's utilizando la API de Open MovilForum. La clave del remitente se obtiene enviando un mensaje de texto gratuito al 770 (solo clientes Movistar) cuyo texto sea la clave de acceso que desee. La clave debera tener entre 6 y 14 caracteres</field>
         <field type="BooleanField" name="shared">False</field>
         <field type="DateTimeField" name="last_update"><None></None></field>
-        <field to="auth.user" name="users" rel="ManyToManyRel"><object pk="1"></object></field>
+        <field to="auth.user" name="users" rel="ManyToManyRel"><object pk="6"></object></field>
     </object>
     <object pk="1" model="gadget.xhtml">
-        <field type="CharField" name="uri">/gadgets/Morfeo/Map Viewer/1.2/xhtml</field>
-        <field type="TextField" name="code">&lt;html&gt;&lt;head&gt;
-
-&lt;meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"&gt;
-&lt;script language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
-&lt;script language="javascript" src="/gadgets/localizador/coordinates.js"&gt;&lt;/script&gt;
-&lt;title&gt;Localizador&lt;/title&gt;
-
-&lt;!--script src="localizadorPequeno_files/maps" type="text/javascript"&gt;&lt;/script&gt;&lt;script src="localizadorPequeno_files/main.js" type="text/javascript"&gt;&lt;/script&gt;&lt;style type="text/css" media="screen"&gt;.gmnoscreen{display:none}&lt;/style&gt;&lt;style type="text/css" media="print"&gt;.gmnoprint{display:none}&lt;/style--&gt;
-
-&lt;script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAMJVkXB8jBN4248w-bynRWhSxhvi8A6os512mS0A0OawqTqajIxS1lNIlAhUXxHYMUv946XERqG8djg" type="text/javascript"&gt;&lt;/script&gt;
-
-&lt;script&gt;
-var map=null;
-var geocoder=null;
-var marker=null;
-var circleLine = null;
-var address = new EzWebAPI.createRGadgetVariable("address",_addressHandler);
-var utmCoord = new EzWebAPI.createRGadgetVariable("utmCoord",_utmHandler);
-
-function _initialize() {
-	if (GBrowserIsCompatible()) {
-		map = new GMap2(document.getElementById("map"));
-		map.addControl(new GLargeMapControl());
-		map.addControl(new GMapTypeControl());
-		map.addControl(new GScaleControl());
-		map.setCenter(new GLatLng(34, 0), 1);
-		geocoder = new GClientGeocoder();
-	}
-}
-
-function _addressHandler(add) {
-
-	if ((add == null || add == undefined)) {
-	  return;
-	}
-
-	if (geocoder) {
-		geocoder.getLatLng(add, function(point) {
-			if (!point) {
-				//_initialize();
-				return;
-			} else {
-				if(marker!=null){
-					map.removeOverlay(marker);
-				}
-				if(circleLine!=null){
-					map.removeOverlay(circleLine);
-				}
-				map.setCenter(point, 16);
-				marker = new GMarker(point);
-				map.addOverlay(marker);
-				marker.openInfoWindowHtml(add);
-				GEvent.addListener(marker, "click", function() {marker.openInfoWindowHtml(add);});
-			}
-		}
-		);
-	}
-}
-
-function _utmHandler(utm) {
-	if ((utm == null || utm == undefined)) {
-		return;
-	}
-
-	var values = utm.split(",");
-	if(values.length&gt;=2){
-		if(circleLine){
-			map.removeOverlay(circleLine);
-		}
-		if(marker){
-			map.removeOverlay(marker);
-		}
-		var info ="";
-		var x = values[0]*1;
-		var y = values[1]*1;
-		if (x!='' &amp;&amp; y!=''){
-			info += '&lt;b&gt;UTM X: &lt;/b&gt;'+ x;
-			info += '&lt;br/&gt;&lt;b&gt;UTM Y: &lt;/b&gt;'+ y;
-						
-			if(values.length&gt;=3){
-				var precision = values[2]*1;
-				if(precision!=''){
-					info += '&lt;br/&gt;&lt;b&gt;Precision: &lt;/b&gt;+/- '+ precision+'m.';
-
-					var latlon = new Array();
-					var latlonPrec = new Array();
-					var lonPrec = new Array();
-					var latPrec = new Array();
-					var circlePoints = new Array();
-					
-			        var coordinates = new Coordinates(Coordinates.DATUM_ED50);
-			        //var coordinates = new Coordinates(Coordinates.DATUM_WGS84);
-			        coordinates.utmToGeoDeg (x, y, 30, false, latlon);
-					
-					coordinates.utmToGeoDeg (x + precision, y, 30, false, latlonPrec);
-					lonPrec = Math.abs(latlon[1] - latlonPrec[1]);
-					coordinates.utmToGeoDeg (x, y + precision, 30, false, latlonPrec);
-					latPrec = Math.abs(latlon[0] - latlonPrec[0]);
-					
-					for (var a = 0 ; a &lt; 361 ; a+=10 ) {
-						var aRad = a*(Math.PI/180);
-						var lat = latlon[0] + latPrec * Math.sin(aRad);
-						var lon = latlon[1] + lonPrec * Math.cos(aRad);
-						var point = new GLatLng(lat, lon);
-						circlePoints.push(point);
-					}
-					
-					circleLine = new GPolygon(circlePoints,  '#000000',  2,  0.5,  'Red',  0.25);
-					map.addOverlay(circleLine);
-				}
-			}
-			
-			marker = createPointUTM(x, y, info, true);
-		}
-	}
-}
-
-function createMarker(point, info, center) {
-    var marker = new GMarker(point);
-	map.addOverlay(marker);
-	GEvent.addListener(marker, "click", function() {marker.openInfoWindowHtml(info);});
-	marker.openInfoWindowHtml(info);
-	if(center){
-       map.setCenter(point, 16);
-	   //window.setTimeout(function(){map.panTo(point);}, 2000);
-	}
-	return marker;
-}
-
-function createPointGeo(lat, lon, info, center){
-    if(lat!='' &amp;&amp; lon!=''){
-        //alert(lat + ", " + lon);
-        var point = new GLatLng(lat, lon);
-        return createMarker(point, info, center);
-    }
-    return null;
-}
-
-function createPointUTM(utmx, utmy, info, center){
-    if(utmx!='' &amp;&amp; utmy!=''){
-        var latlon = new Array();
-        var coordinates = new Coordinates(Coordinates.DATUM_ED50);
-        //var coordinates = new Coordinates(Coordinates.DATUM_WGS84);
-        coordinates.utmToGeoDeg (utmx, utmy, 30, false, latlon);
-        //alert(utmx + ", " + utmy);
-        return createPointGeo(latlon[0], latlon[1], info, center)
-    }
-    return null;
-}
-
-&lt;/script&gt;
-
-&lt;/head&gt;&lt;body style="margin: 0px; padding: 0px;" onload="_initialize();"&gt;
-&lt;div style="width: 100%; height: 100%;" id="map"&gt;&lt;/div&gt;
-&lt;/body&gt;&lt;/html&gt;</field>
-        <field type="CharField" name="url">http://demo.ezweb.morfeo-project.org/gadgets/localizador/localizadorPequeno1.2.html</field>
-    </object>
-    <object pk="2" model="gadget.xhtml">
-        <field type="CharField" name="uri">/gadgets/Morfeo/Bandeja de Averias/1.0/xhtml</field>
-        <field type="TextField" name="code">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
-&lt;html&gt;&lt;head&gt;
-
-&lt;meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"&gt;
-&lt;script language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;&lt;title&gt;Bandeja de Averias&lt;/title&gt;
-
-&lt;script&gt;
-var phoneNumber = EzWebAPI.createRWGadgetVariable("telefono");
-var serviceHired = EzWebAPI.createRWGadgetVariable("servicio");
-
-function sendData(row){
-var rows = document.getElementsByTagName("td");
-phoneNumber.set(rows[row*5+1].innerHTML);
-serviceHired.set(rows[row*5+4].innerHTML);
-}
-&lt;/script&gt;&lt;/head&gt;&lt;body&gt;
-&lt;!-- This table will disappear in following version --&gt;
-&lt;table style="margin: 0px; padding: 0px; font-family: Arial; font-size: 14px; text-align: center; width: 100%;" cellspacing="0"&gt;
-&lt;tbody&gt;&lt;tr&gt;
-&lt;th id="th0" style="border: 1px outset rgb(221, 221, 221); background-color: rgb(0, 0, 119); color: rgb(255, 255, 255); width: 12%;"&gt;Identificador de averia&lt;/th&gt;
-&lt;th id="th1" style="border: 1px outset rgb(221, 221, 221); background-color: rgb(0, 0, 119); color: rgb(255, 255, 255); width: 12%;"&gt;Telefono&lt;/th&gt;
-&lt;th id="th2" style="border: 1px outset rgb(221, 221, 221); background-color: rgb(0, 0, 119); color: rgb(255, 255, 255); width: 32%;"&gt;Usuario&lt;/th&gt;
-&lt;th id="th3" style="border: 1px outset rgb(221, 221, 221); background-color: rgb(0, 0, 119); color: rgb(255, 255, 255); width: 32%;"&gt;Descripcion del sintoma&lt;/th&gt;
-&lt;th id="th4" style="border: 1px outset rgb(221, 221, 221); background-color: rgb(0, 0, 119); color: rgb(255, 255, 255); width: 12%;"&gt;Servicio contratado&lt;/th&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td class="breakDown" onclick="sendData(0)" style="border: 1px outset rgb(221, 221, 221); color: rgb(0, 0, 119); text-decoration: underline; cursor: pointer;" align="center" valign="middle"&gt;averia-0&lt;/td&gt;
-&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;913933233&lt;/td&gt;
-&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;Gonzalez Perez, Alejandro&lt;/td&gt;
-&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;El usuario no es capaz de navegar por Internet&lt;/td&gt;
-&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;INTERNET&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td class="breakDown" onclick="sendData(1)" style="border: 1px outset rgb(221, 221, 221); color: rgb(0, 0, 119); text-decoration: underline; cursor: pointer;" align="center" valign="middle"&gt;averia-1&lt;/td&gt;
-&lt;td style="border: 1px outset rgb(221, 221, 221);" align="center" valign="middle"&gt;915334432&lt;/td&gt;
-&lt;td style="border: 1px outset rgb(221, 221, 221);" align="center" valign="middle"&gt;Lopez Romero, Marta&lt;/td&gt;
-&lt;td style="border: 1px outset rgb(221, 221, 221);" align="center" valign="middle"&gt;No puede comprar contenidos v PPV&lt;/td&gt;
-&lt;td style="border: 1px outset rgb(221, 221, 221);" align="center" valign="middle"&gt;TV&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td class="breakDown" onclick="sendData(2)" style="border: 1px outset rgb(221, 221, 221); color: rgb(0, 0, 119); text-decoration: underline; cursor: pointer;" align="center" valign="middle"&gt;averia-10&lt;/td&gt;
-&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;916432233&lt;/td&gt;
-&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;Fernandez Bartolome, Rodrigo&lt;/td&gt;
-&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;El usuario navega mas lento que la velocidad contratada&lt;/td&gt;
-&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;INTERNET&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td class="breakDown" onclick="sendData(3)" style="border: 1px outset rgb(221, 221, 221); color: rgb(0, 0, 119); text-decoration: underline; cursor: pointer;" align="center" valign="middle"&gt;averia-11&lt;/td&gt;
-&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;917294723&lt;/td&gt;
-&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;Perez Casas, Maria&lt;/td&gt;
-&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;El usuario no es capaz de navegar por Internet&lt;/td&gt;
-&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;INTERNET&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td class="breakDown" onclick="sendData(4)" style="border: 1px outset rgb(221, 221, 221); color: rgb(0, 0, 119); text-decoration: underline; cursor: pointer;" align="center" valign="middle"&gt;averia-2&lt;/td&gt;
-&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;917744331&lt;/td&gt;
-&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;Garcia Casas, Alberto&lt;/td&gt;
-&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;El usuario ve la television pixelada&lt;/td&gt;
-&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;TV&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td class="breakDown" onclick="sendData(5)" style="border: 1px outset rgb(221, 221, 221); color: rgb(0, 0, 119); text-decoration: underline; cursor: pointer;" align="center" valign="middle"&gt;averia-8&lt;/td&gt;
-&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;917744331&lt;/td&gt;
-&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;Garcia Casas, Alberto&lt;/td&gt;
-&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;El usuario no es capaz de navegar por Internet&lt;/td&gt;
-&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;TV&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;&lt;/table&gt;
-&lt;/body&gt;&lt;/html&gt;</field>
-        <field type="CharField" name="url">http://demo.ezweb.morfeo-project.org/repository/bandeja/bandejaAverias.html</field>
-    </object>
-    <object pk="3" model="gadget.xhtml">
         <field type="CharField" name="uri">/gadgets/Morfeo/Visor Imágenes/1.0/xhtml</field>
         <field type="TextField" name="code">&lt;?xml version="1.0"?&gt;
 &lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"&gt;
@@ -980,162 +676,9 @@ serviceHired.set(rows[row*5+4].innerHTML);
 	&lt;/body&gt;
 &lt;/html&gt;</field>
         <field type="CharField" name="url">http://demo.ezweb.morfeo-project.org/repository/visorImagenes/visorImagenes.html</field>
+        <field type="CharField" name="content_type"><None></None></field>
     </object>
-    <object pk="4" model="gadget.xhtml">
-        <field type="CharField" name="uri">/gadgets/Morfeo/Configuracion de Red/1.0/xhtml</field>
-        <field type="TextField" name="code">&lt;HTML&gt;&lt;HEAD&gt;
-
-&lt;META http-equiv="Content-Type" content="text/html; charset=iso-8859-1"&gt;
-&lt;script language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
-&lt;TITLE&gt;Configuracion de Red&lt;/TITLE&gt;
-
-&lt;SCRIPT&gt;
-var serviceHired = EzWebAPI.createRGadgetVariable("serviceHired",_serviceHandler);
-var deviceId = EzWebAPI.createRWGadgetVariable("deviceId");
-var deviceStatus = EzWebAPI.createRWGadgetVariable("deviceStatus");
-
-/*Random states for a demo*/
-function _getState(){
-if (Math.floor(Math.random()*2+1)&gt;1.8){
-deviceStatus.set("NO_OK");
-return "http://europa.ls.fi.upm.es/~semillero/html/mapaRed/equis.gif";
-} else {
-deviceStatus.set("OK");
-return "http://europa.ls.fi.upm.es/~semillero/html/mapaRed/stick.gif";
-}
-}
-
-function _serviceHandler(service){
-var oFragment = document.createDocumentFragment();
-var oDiv = document.createElement("div");
-oDiv.id = "visorConfRed";
-var content = "";
-if (service=="INTERNET"){
-content+="&lt;img src=\"http://europa.ls.fi.upm.es/~lmayllon/img/adsl.png\"/&gt;\n&lt;br&gt;";
-content+="&lt;img onClick=\"deviceId.set('device1')\" style=\"position:relative; top:-55px; left:50px;\" id=\"dslamADSLRed\" name=\"dslamADSL\"  src=\""+_getState()+"\" /&gt;\n";
-content+="&lt;img onClick=\"deviceId.set('device2')\" style=\"position:relative; top:-35px; left:105px;\" id=\"conmutador1ADSLRed\" name=\"conmutador1ADSL\"  src=\""+_getState()+"\" /&gt;\n";
-content+="&lt;img onClick=\"deviceId.set('device3')\" style=\"position:relative; top:-36px; left:175px;\" id=\"conmutador2ADSLRed\" name=\"conmutador2ADSL\"  src=\""+_getState()+"\" /&gt;\n";
-content+="&lt;img onClick=\"deviceId.set('device4')\" style=\"position:relative; top:-38px; left:210px;\" id=\"esrADSLRed\" name=\"esrADSL\"  src=\""+_getState()+"\" /&gt;\n";
-} else {
-content+="&lt;img src=\"http://europa.ls.fi.upm.es/~lmayllon/img/imag.png\"/&gt;&lt;br&gt;";
-content+="&lt;img onClick=\"deviceId.set('device5')\" style=\"position:relative; top: -72px; left: 54px;\" id=\"dslamTVRed\" name=\"dslamTV\"  src=\""+_getState()+"\" /&gt;\n";
-content+="&lt;img onClick=\"deviceId.set('device6')\" style=\"position:relative; top: -52px; left: 100px;\" id=\"conmutador1TVRed\" name=\"conmutador1TV\"  src=\""+_getState()+"\" /&gt;\n";
-content+="&lt;img onClick=\"deviceId.set('device7')\" style=\"position:relative; top: -78px; left: 155px;\" id=\"conmutador2TVRed\" name=\"conmutador2TV\"  src=\""+_getState()+"\" /&gt;\n";
-content+="&lt;img onClick=\"deviceId.set('device8')\" style=\"position:relative; top: -50px; left: 135px;\" id=\"conmutador3TVRed\" name=\"conmutador3TV\"  src=\""+_getState()+"\" /&gt;\n";
-content+="&lt;img onClick=\"deviceId.set('device9')\" style=\"position:relative; top: -90px; left: 158px;\" id=\"esrTVRed\" name=\"esrTV\"  src=\""+_getState()+"\" /&gt;\n";
-content+="&lt;img onClick=\"deviceId.set('device10')\" style=\"position:relative; top: -37px; left: 138px;\" id=\"erxTVRed\" name=\"erxTV\"  src=\""+_getState()+"\" /&gt;\n";
-}
-
-oDiv.innerHTML = content;
-oFragment.appendChild(oDiv);
-document.body.replaceChild(oFragment,document.getElementById("visorConfRed"));
-}
-
-&lt;/SCRIPT&gt;&lt;/HEAD&gt;&lt;BODY&gt;
-&lt;DIV id="visorConfRed"&gt;&lt;I&gt;A la espera de seleccionar una averia...&lt;/I&gt;&lt;/DIV&gt;
-&lt;/BODY&gt;&lt;/HTML&gt;</field>
-        <field type="CharField" name="url">http://demo.ezweb.morfeo-project.org/repository/configuracionRed/configuracionRed.html</field>
-    </object>
-    <object pk="5" model="gadget.xhtml">
-        <field type="CharField" name="uri">/gadgets/Morfeo/Yahoo Trip Search/1.1/xhtml</field>
-        <field type="TextField" name="code">&lt;html&gt;
-&lt;head&gt;
-&lt;style&gt;
-img {
-	border: 0px;
-}
-.res {
-	border: 0px solid;
-	padding: 5px;
-	margin: 4px 0 4px 0;
-	background: #D7E1E8;
-	clear:both;
-	overflow:hidden;
-}
-.res a{
-	float:left;
-	text-decoration:none;
-	padding-right:5px;
-}
-.info{
-	padding-left:5px;
-	vertical-align:top;
-}
-.info a{
-	font-size: 7pt;
-	text-align:right;
-}
-.title{
-	font-size: 11pt;
-	font-style: italic;
-        font-family: "Verdana";
-	padding-bottom: 3px;
-}
-.desc{
-	font-size: 8pt;
-	padding-bottom: 3px;
-}
-&lt;/style&gt;
-&lt;/head&gt;
-&lt;body&gt;
-&lt;script language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
-&lt;script&gt;
-var poi = EzWebAPI.createRGadgetVariable("poi", searchResults);
-var travel = EzWebAPI.createRWGadgetVariable("travel");
-
-function loadplan(idplan){
-
-	travel.set(idplan);
-}
-
-function searchResults(place){
-
-        var url=encodeURI("http://travel.yahooapis.com/TripService/V1.1/tripSearch?appid=YahooDemo&amp;query="+ place);
-	EzWebAPI.send_get(url,this,searchOk, searchFail);
- }
-
-function searchOk(res){
-//extract the search result information
-	var xml = res.responseXML.documentElement;
-	var result;
-	
-	divres = document.getElementById("resultados");
-	results = xml.getElementsByTagName('Result');
-	divres.innerHTML="";
-	for (i = 0; i &lt; results.length; i++){ 
-		result = results[i];
-		id = result.getAttribute("id");
-		thumbnail = result.getElementsByTagName("Image")[0].getElementsByTagName("Url")[0].firstChild.nodeValue;
-		title = result.getElementsByTagName("Title")[0].firstChild.nodeValue;
-		if (result.getElementsByTagName("Summary")[0].firstChild != null){
-			summary = result.getElementsByTagName("Summary")[0].firstChild.nodeValue;
-			summary = summary.substring(0,Math.min(summary.length, 150))+"...";
-			summary = "&lt;div class='desc'&gt;"+ summary + "&lt;/div&gt;";
-		}
-		else{
-			summary = "";
-		}
-
-		newdiv = document.createElement('div');
-		newdiv.className = "res";
-		newdiv.innerHTML= "&lt;a href='javascript:loadplan("+id+");'&gt;&lt;img src='"+thumbnail+"'/&gt;&lt;/a&gt;&lt;div class='info'&gt;&lt;div class='title'&gt;" + title + "&lt;/div&gt;"+summary+"&lt;a href='javascript:loadplan("+id+");'&gt;+ info&lt;/a&gt;&lt;/div&gt;";
-		divres.appendChild(newdiv);
-		 
-	}
-}
-
-function searchFail(res){
-
-}
-
-&lt;/script&gt;
-&lt;img src="http://europa.ls.fi.upm.es/ezweb/gadgets/trip_search.gif"/&gt;
-&lt;div id="resultados"&gt;A la espera...&lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;</field>
-        <field type="CharField" name="url">http://demo.ezweb.morfeo-project.org/repository/yahoo_trip/yahootripsearch.html</field>
-    </object>
-    <object pk="6" model="gadget.xhtml">
+    <object pk="2" model="gadget.xhtml">
         <field type="CharField" name="uri">/gadgets/Morfeo/Flickr/2.0/xhtml</field>
         <field type="TextField" name="code">&lt;html&gt;&lt;head&gt;
 &lt;meta http-equiv="content-type" content="text/html; charset=UTF-8"&gt;
@@ -1210,127 +753,9 @@ function displayError(res){
 &lt;/body&gt;
 &lt;/html&gt;</field>
         <field type="CharField" name="url">http://demo.ezweb.morfeo-project.org/repository/flickr/flickr.html</field>
+        <field type="CharField" name="content_type"><None></None></field>
     </object>
-    <object pk="7" model="gadget.xhtml">
-        <field type="CharField" name="uri">/gadgets/Morfeo/Visor Datos de Usuario/1.0/xhtml</field>
-        <field type="TextField" name="code">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
-
-&lt;html&gt;
-&lt;head&gt;
-&lt;meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /&gt;
-&lt;script language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
-&lt;title&gt;Visor de datos de usuario&lt;/title&gt;
-&lt;script&gt;
-var phoneNumber = EzWebAPI.createRGadgetVariable("phoneNumber",_phoneHandler);
-var address = EzWebAPI.createRWGadgetVariable("address");
-/*Temporary data for the demo*/
-var users = [];
-var user = ["Alejandro","Rodriguez Perez","07688357J","Santa Engracia, 25, 1 B, Madrid","35.50","2"];
-users["913933233"] = user;
-user = ["Marta","Lopez Romero","34788114L","Marcelo Usera, 46, 3 C, Madrid","40.74","1"];
-users["915334432"] = user;
-user = ["Rodrigo","Fernandez Bartolome","53333236P","Gran Via, 25, 2 A, Madrid","55.29","8"];
-users["916432233"] = user;
-user = ["Maria","Perez Casas","34788114L","Francisco Silvela, 105, 5 B, Madrid","66.15","3"];
-users["917294723"] = user;
-user = ["Alberto","Garcia Casas","34788114L","Camarena, 2, 4 A, Madrid","36.00","3"];
-users["917744331"] = user;
-
-function _phoneHandler(phone){
-if (phone!=null &amp;&amp; phone!=undefined){
-var content="";
-content+="&lt;p id='title' style=\"font-size: 22px; font-weight: bold; color: #000077; margin-top: 5px; margin-bottom: 5px;\"&gt;Tabla de Datos de Usuario&lt;/p&gt;&lt;table style=\"padding: 1px;\"&gt;";
-content+="&lt;tr&gt;&lt;th&gt;Datos del Usuario&lt;/th&gt;&lt;th&gt;Valor&lt;/th&gt;&lt;/tr&gt;";
-content+="&lt;tr&gt;&lt;td&gt;Nombre&lt;/td&gt;&lt;td&gt;"+users[phone][0]+"&lt;/td&gt;&lt;/tr&gt;";
-content+="&lt;tr&gt;&lt;td&gt;Apellidos&lt;/td&gt;&lt;td&gt;"+users[phone][1]+"&lt;/td&gt;&lt;/tr&gt;";
-content+="&lt;tr&gt;&lt;td&gt;DNI&lt;/td&gt;&lt;td&gt;"+users[phone][2]+"&lt;/td&gt;&lt;/tr&gt;";
-content+="&lt;tr&gt;&lt;td&gt;Direccion&lt;/td&gt;&lt;td&gt;"+users[phone][3]+"&lt;/td&gt;&lt;/tr&gt;";
-content+="&lt;tr&gt;&lt;td&gt;Factura media&lt;/td&gt;&lt;td&gt;"+users[phone][4]+"&lt;/td&gt;&lt;/tr&gt;";
-content+="&lt;tr&gt;&lt;td&gt;Antiguedad&lt;/td&gt;&lt;td&gt;"+users[phone][5]+"&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;";
-document.getElementById("info").innerHTML=content;
-address.set(users[phone][3]);
-}
-}
-&lt;/script&gt;
-&lt;/head&gt;
-&lt;body style="font-family: Arial; font-size: 14px; text-align: left; width: 100%; margin: 0px;"&gt;
-&lt;div id='info'&gt;&lt;i&gt;A la espera de seleccionar una averia...&lt;/i&gt;&lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;</field>
-        <field type="CharField" name="url">http://demo.ezweb.morfeo-project.org/repository/visorUsuarios/visorDatosUsuario.html</field>
-    </object>
-    <object pk="8" model="gadget.xhtml">
-        <field type="CharField" name="uri">/gadgets/Morfeo/YouTube Video Player/1.3/xhtml</field>
-        <field type="TextField" name="code">&lt;html&gt;
-&lt;head&gt;
-&lt;/head&gt;
-&lt;body&gt;
-&lt;script language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
-&lt;script&gt;
-
-function URLDecode( url )
-{
-   // Replace + with ' '
-   // Replace %xx with equivalent character
-   // Put [ERROR] in output if %xx is invalid.
-   var HEXCHARS = "0123456789ABCDEFabcdef"; 
-   var encoded = url;
-   var plaintext = "";
-   var i = 0;
-   while (i &lt; encoded.length) {
-       var ch = encoded.charAt(i);
-          if (ch == "+") {
-	         plaintext += " ";
-		    i++;
-		       } else if (ch == "%") {
-		       if (i &lt; (encoded.length-2) 
-		       &amp;&amp; HEXCHARS.indexOf(encoded.charAt(i+1)) != -1 
-		       &amp;&amp; HEXCHARS.indexOf(encoded.charAt(i+2)) != -1 ) {
-		       plaintext += unescape( encoded.substr(i,3) );
-		       i += 3;
-		       } else {
-		       alert( 'Bad escape combination near ...' + encoded.substr(i) );
-		       plaintext += "%[ERROR]";
-		       i++;
-		       }
-		       } else {
-		          plaintext += ch;
-			     i++;
-			     }
-			     } // while
-   
-   return plaintext;
-}
-
-var url = EzWebAPI.createRGadgetVariable("RSSYurl", loadVideo);
-
-
-function loadVideo(url_){
-
- url_ = URLDecode (url_);
-
- var embed = document.createElement('embed');
- embed.setAttribute('src',url_);
- embed.setAttribute('width',"100%");
- embed.setAttribute('height',"100%");
- embed.id="rep";
-
- var divAnt = document.getElementById("video");
- var divVideo = document.createElement("div");
- divVideo.id="video";
- divVideo.appendChild(embed);
- document.body.replaceChild(divVideo,divAnt);
- }
-
-
-&lt;/script&gt;
-
-&lt;div id="video"&gt;&lt;embed id="rep" width="100%" height="100%" src="http://www.youtube.com/v/d6C0bNDqf3Y&amp;rel=1" type="application/x-shockwave-flash" wmode="transparent"&gt;&lt;/embed&gt;&lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;</field>
-        <field type="CharField" name="url">http://demo.ezweb.morfeo-project.org/repository/youtube_player/tuberep.html</field>
-    </object>
-    <object pk="9" model="gadget.xhtml">
+    <object pk="3" model="gadget.xhtml">
         <field type="CharField" name="uri">/gadgets/Morfeo/YouTube Video Search/1.4/xhtml</field>
         <field type="TextField" name="code">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
 &lt;html&gt;
@@ -2534,8 +1959,81 @@ alert("excepcion");
 &lt;/body&gt;
 &lt;/html&gt;</field>
         <field type="CharField" name="url">http://demo.ezweb.morfeo-project.org/repository/youtube_search/tube_iptv_search.html</field>
+        <field type="CharField" name="content_type"><None></None></field>
     </object>
-    <object pk="10" model="gadget.xhtml">
+    <object pk="4" model="gadget.xhtml">
+        <field type="CharField" name="uri">/gadgets/Morfeo/YouTube Video Player/1.3/xhtml</field>
+        <field type="TextField" name="code">&lt;html&gt;
+&lt;head&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;script language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+
+function URLDecode( url )
+{
+   // Replace + with ' '
+   // Replace %xx with equivalent character
+   // Put [ERROR] in output if %xx is invalid.
+   var HEXCHARS = "0123456789ABCDEFabcdef"; 
+   var encoded = url;
+   var plaintext = "";
+   var i = 0;
+   while (i &lt; encoded.length) {
+       var ch = encoded.charAt(i);
+          if (ch == "+") {
+	         plaintext += " ";
+		    i++;
+		       } else if (ch == "%") {
+		       if (i &lt; (encoded.length-2) 
+		       &amp;&amp; HEXCHARS.indexOf(encoded.charAt(i+1)) != -1 
+		       &amp;&amp; HEXCHARS.indexOf(encoded.charAt(i+2)) != -1 ) {
+		       plaintext += unescape( encoded.substr(i,3) );
+		       i += 3;
+		       } else {
+		       alert( 'Bad escape combination near ...' + encoded.substr(i) );
+		       plaintext += "%[ERROR]";
+		       i++;
+		       }
+		       } else {
+		          plaintext += ch;
+			     i++;
+			     }
+			     } // while
+   
+   return plaintext;
+}
+
+var url = EzWebAPI.createRGadgetVariable("RSSYurl", loadVideo);
+
+
+function loadVideo(url_){
+
+ url_ = URLDecode (url_);
+
+ var embed = document.createElement('embed');
+ embed.setAttribute('src',url_);
+ embed.setAttribute('width',"100%");
+ embed.setAttribute('height',"100%");
+ embed.id="rep";
+
+ var divAnt = document.getElementById("video");
+ var divVideo = document.createElement("div");
+ divVideo.id="video";
+ divVideo.appendChild(embed);
+ document.body.replaceChild(divVideo,divAnt);
+ }
+
+
+&lt;/script&gt;
+
+&lt;div id="video"&gt;&lt;embed id="rep" width="100%" height="100%" src="http://www.youtube.com/v/d6C0bNDqf3Y&amp;rel=1" type="application/x-shockwave-flash" wmode="transparent"&gt;&lt;/embed&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</field>
+        <field type="CharField" name="url">http://demo.ezweb.morfeo-project.org/repository/youtube_player/tuberep.html</field>
+        <field type="CharField" name="content_type"><None></None></field>
+    </object>
+    <object pk="5" model="gadget.xhtml">
         <field type="CharField" name="uri">/gadgets/Morfeo/Amazon/1.0/xhtml</field>
         <field type="TextField" name="code">&lt;html&gt;
 &lt;head&gt;
@@ -2606,8 +2104,318 @@ function searchFail(res){
 &lt;/body&gt;
 &lt;/html&gt;</field>
         <field type="CharField" name="url">http://demo.ezweb.morfeo-project.org/repository/amazon/amazon.html</field>
+        <field type="CharField" name="content_type"><None></None></field>
     </object>
-    <object pk="11" model="gadget.xhtml">
+    <object pk="6" model="gadget.xhtml">
+        <field type="CharField" name="uri">/gadgets/Morfeo/Yahoo Trip Search/1.1/xhtml</field>
+        <field type="TextField" name="code">&lt;html&gt;
+&lt;head&gt;
+&lt;style&gt;
+img {
+	border: 0px;
+}
+.res {
+	border: 0px solid;
+	padding: 5px;
+	margin: 4px 0 4px 0;
+	background: #D7E1E8;
+	clear:both;
+	overflow:hidden;
+}
+.res a{
+	float:left;
+	text-decoration:none;
+	padding-right:5px;
+}
+.info{
+	padding-left:5px;
+	vertical-align:top;
+}
+.info a{
+	font-size: 7pt;
+	text-align:right;
+}
+.title{
+	font-size: 11pt;
+	font-style: italic;
+        font-family: "Verdana";
+	padding-bottom: 3px;
+}
+.desc{
+	font-size: 8pt;
+	padding-bottom: 3px;
+}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;script language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+var poi = EzWebAPI.createRGadgetVariable("poi", searchResults);
+var travel = EzWebAPI.createRWGadgetVariable("travel");
+
+function loadplan(idplan){
+
+	travel.set(idplan);
+}
+
+function searchResults(place){
+
+        var url=encodeURI("http://travel.yahooapis.com/TripService/V1.1/tripSearch?appid=YahooDemo&amp;query="+ place);
+	EzWebAPI.send_get(url,this,searchOk, searchFail);
+ }
+
+function searchOk(res){
+//extract the search result information
+	var xml = res.responseXML.documentElement;
+	var result;
+	
+	divres = document.getElementById("resultados");
+	results = xml.getElementsByTagName('Result');
+	divres.innerHTML="";
+	for (i = 0; i &lt; results.length; i++){ 
+		result = results[i];
+		id = result.getAttribute("id");
+		thumbnail = result.getElementsByTagName("Image")[0].getElementsByTagName("Url")[0].firstChild.nodeValue;
+		title = result.getElementsByTagName("Title")[0].firstChild.nodeValue;
+		if (result.getElementsByTagName("Summary")[0].firstChild != null){
+			summary = result.getElementsByTagName("Summary")[0].firstChild.nodeValue;
+			summary = summary.substring(0,Math.min(summary.length, 150))+"...";
+			summary = "&lt;div class='desc'&gt;"+ summary + "&lt;/div&gt;";
+		}
+		else{
+			summary = "";
+		}
+
+		newdiv = document.createElement('div');
+		newdiv.className = "res";
+		newdiv.innerHTML= "&lt;a href='javascript:loadplan("+id+");'&gt;&lt;img src='"+thumbnail+"'/&gt;&lt;/a&gt;&lt;div class='info'&gt;&lt;div class='title'&gt;" + title + "&lt;/div&gt;"+summary+"&lt;a href='javascript:loadplan("+id+");'&gt;+ info&lt;/a&gt;&lt;/div&gt;";
+		divres.appendChild(newdiv);
+		 
+	}
+}
+
+function searchFail(res){
+
+}
+
+&lt;/script&gt;
+&lt;img src="http://europa.ls.fi.upm.es/ezweb/gadgets/trip_search.gif"/&gt;
+&lt;div id="resultados"&gt;A la espera...&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</field>
+        <field type="CharField" name="url">http://demo.ezweb.morfeo-project.org/repository/yahoo_trip/yahootripsearch.html</field>
+        <field type="CharField" name="content_type"><None></None></field>
+    </object>
+    <object pk="7" model="gadget.xhtml">
+        <field type="CharField" name="uri">/gadgets/Morfeo/Map Viewer/1.2/xhtml</field>
+        <field type="TextField" name="code">&lt;html&gt;&lt;head&gt;
+
+&lt;meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"&gt;
+&lt;script language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
+&lt;script language="javascript" src="/repository/localizador/coordinates.js"&gt;&lt;/script&gt;
+&lt;title&gt;Localizador&lt;/title&gt;
+
+&lt;!--script src="localizadorPequeno_files/maps" type="text/javascript"&gt;&lt;/script&gt;&lt;script src="localizadorPequeno_files/main.js" type="text/javascript"&gt;&lt;/script&gt;&lt;style type="text/css" media="screen"&gt;.gmnoscreen{display:none}&lt;/style&gt;&lt;style type="text/css" media="print"&gt;.gmnoprint{display:none}&lt;/style--&gt;
+
+&lt;script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAMJVkXB8jBN4248w-bynRWhSxhvi8A6os512mS0A0OawqTqajIxS1lNIlAhUXxHYMUv946XERqG8djg" type="text/javascript"&gt;&lt;/script&gt;
+
+&lt;script&gt;
+var map=null;
+var geocoder=null;
+var marker=null;
+var circleLine = null;
+var address = new EzWebAPI.createRGadgetVariable("address",_addressHandler);
+var utmCoord = new EzWebAPI.createRGadgetVariable("utmCoord",_utmHandler);
+
+function _initialize() {
+	if (GBrowserIsCompatible()) {
+		map = new GMap2(document.getElementById("map"));
+		map.addControl(new GLargeMapControl());
+		map.addControl(new GMapTypeControl());
+		map.addControl(new GScaleControl());
+		map.setCenter(new GLatLng(34, 0), 1);
+		geocoder = new GClientGeocoder();
+	}
+}
+
+function _addressHandler(add) {
+
+	if ((add == null || add == undefined)) {
+	  return;
+	}
+
+	if (geocoder) {
+		geocoder.getLatLng(add, function(point) {
+			if (!point) {
+				//_initialize();
+				return;
+			} else {
+				if(marker!=null){
+					map.removeOverlay(marker);
+				}
+				if(circleLine!=null){
+					map.removeOverlay(circleLine);
+				}
+				map.setCenter(point, 16);
+				marker = new GMarker(point);
+				map.addOverlay(marker);
+				marker.openInfoWindowHtml(add);
+				GEvent.addListener(marker, "click", function() {marker.openInfoWindowHtml(add);});
+			}
+		}
+		);
+	}
+}
+
+function _utmHandler(utm) {
+	if ((utm == null || utm == undefined)) {
+		return;
+	}
+
+	var values = utm.split(",");
+	if(values.length&gt;=2){
+		if(circleLine){
+			map.removeOverlay(circleLine);
+		}
+		if(marker){
+			map.removeOverlay(marker);
+		}
+		var info ="";
+		var x = values[0]*1;
+		var y = values[1]*1;
+		if (x!='' &amp;&amp; y!=''){
+			info += '&lt;b&gt;UTM X: &lt;/b&gt;'+ x;
+			info += '&lt;br/&gt;&lt;b&gt;UTM Y: &lt;/b&gt;'+ y;
+						
+			if(values.length&gt;=3){
+				var precision = values[2]*1;
+				if(precision!=''){
+					info += '&lt;br/&gt;&lt;b&gt;Precision: &lt;/b&gt;+/- '+ precision+'m.';
+
+					var latlon = new Array();
+					var latlonPrec = new Array();
+					var lonPrec = new Array();
+					var latPrec = new Array();
+					var circlePoints = new Array();
+					
+			        var coordinates = new Coordinates(Coordinates.DATUM_ED50);
+			        //var coordinates = new Coordinates(Coordinates.DATUM_WGS84);
+			        coordinates.utmToGeoDeg (x, y, 30, false, latlon);
+					
+					coordinates.utmToGeoDeg (x + precision, y, 30, false, latlonPrec);
+					lonPrec = Math.abs(latlon[1] - latlonPrec[1]);
+					coordinates.utmToGeoDeg (x, y + precision, 30, false, latlonPrec);
+					latPrec = Math.abs(latlon[0] - latlonPrec[0]);
+					
+					for (var a = 0 ; a &lt; 361 ; a+=10 ) {
+						var aRad = a*(Math.PI/180);
+						var lat = latlon[0] + latPrec * Math.sin(aRad);
+						var lon = latlon[1] + lonPrec * Math.cos(aRad);
+						var point = new GLatLng(lat, lon);
+						circlePoints.push(point);
+					}
+					
+					circleLine = new GPolygon(circlePoints,  '#000000',  2,  0.5,  'Red',  0.25);
+					map.addOverlay(circleLine);
+				}
+			}
+			
+			marker = createPointUTM(x, y, info, true);
+		}
+	}
+}
+
+function createMarker(point, info, center) {
+    var marker = new GMarker(point);
+	map.addOverlay(marker);
+	GEvent.addListener(marker, "click", function() {marker.openInfoWindowHtml(info);});
+	marker.openInfoWindowHtml(info);
+	if(center){
+       map.setCenter(point, 16);
+	   //window.setTimeout(function(){map.panTo(point);}, 2000);
+	}
+	return marker;
+}
+
+function createPointGeo(lat, lon, info, center){
+    if(lat!='' &amp;&amp; lon!=''){
+        //alert(lat + ", " + lon);
+        var point = new GLatLng(lat, lon);
+        return createMarker(point, info, center);
+    }
+    return null;
+}
+
+function createPointUTM(utmx, utmy, info, center){
+    if(utmx!='' &amp;&amp; utmy!=''){
+        var latlon = new Array();
+        var coordinates = new Coordinates(Coordinates.DATUM_ED50);
+        //var coordinates = new Coordinates(Coordinates.DATUM_WGS84);
+        coordinates.utmToGeoDeg (utmx, utmy, 30, false, latlon);
+        //alert(utmx + ", " + utmy);
+        return createPointGeo(latlon[0], latlon[1], info, center)
+    }
+    return null;
+}
+
+&lt;/script&gt;
+
+&lt;/head&gt;&lt;body style="margin: 0px; padding: 0px;" onload="_initialize();"&gt;
+&lt;div style="width: 100%; height: 100%;" id="map"&gt;&lt;/div&gt;
+&lt;/body&gt;&lt;/html&gt;</field>
+        <field type="CharField" name="url">http://demo.ezweb.morfeo-project.org/repository/localizador/localizadorPequeno1.2.html</field>
+        <field type="CharField" name="content_type"><None></None></field>
+    </object>
+    <object pk="8" model="gadget.xhtml">
+        <field type="CharField" name="uri">/gadgets/Morfeo/Visor Datos de Usuario/1.0/xhtml</field>
+        <field type="TextField" name="code">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
+
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /&gt;
+&lt;script language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
+&lt;title&gt;Visor de datos de usuario&lt;/title&gt;
+&lt;script&gt;
+var phoneNumber = EzWebAPI.createRGadgetVariable("phoneNumber",_phoneHandler);
+var address = EzWebAPI.createRWGadgetVariable("address");
+/*Temporary data for the demo*/
+var users = [];
+var user = ["Alejandro","Rodriguez Perez","07688357J","Santa Engracia, 25, 1 B, Madrid","35.50","2"];
+users["913933233"] = user;
+user = ["Marta","Lopez Romero","34788114L","Marcelo Usera, 46, 3 C, Madrid","40.74","1"];
+users["915334432"] = user;
+user = ["Rodrigo","Fernandez Bartolome","53333236P","Gran Via, 25, 2 A, Madrid","55.29","8"];
+users["916432233"] = user;
+user = ["Maria","Perez Casas","34788114L","Francisco Silvela, 105, 5 B, Madrid","66.15","3"];
+users["917294723"] = user;
+user = ["Alberto","Garcia Casas","34788114L","Camarena, 2, 4 A, Madrid","36.00","3"];
+users["917744331"] = user;
+
+function _phoneHandler(phone){
+if (phone!=null &amp;&amp; phone!=undefined){
+var content="";
+content+="&lt;p id='title' style=\"font-size: 22px; font-weight: bold; color: #000077; margin-top: 5px; margin-bottom: 5px;\"&gt;Tabla de Datos de Usuario&lt;/p&gt;&lt;table style=\"padding: 1px;\"&gt;";
+content+="&lt;tr&gt;&lt;th&gt;Datos del Usuario&lt;/th&gt;&lt;th&gt;Valor&lt;/th&gt;&lt;/tr&gt;";
+content+="&lt;tr&gt;&lt;td&gt;Nombre&lt;/td&gt;&lt;td&gt;"+users[phone][0]+"&lt;/td&gt;&lt;/tr&gt;";
+content+="&lt;tr&gt;&lt;td&gt;Apellidos&lt;/td&gt;&lt;td&gt;"+users[phone][1]+"&lt;/td&gt;&lt;/tr&gt;";
+content+="&lt;tr&gt;&lt;td&gt;DNI&lt;/td&gt;&lt;td&gt;"+users[phone][2]+"&lt;/td&gt;&lt;/tr&gt;";
+content+="&lt;tr&gt;&lt;td&gt;Direccion&lt;/td&gt;&lt;td&gt;"+users[phone][3]+"&lt;/td&gt;&lt;/tr&gt;";
+content+="&lt;tr&gt;&lt;td&gt;Factura media&lt;/td&gt;&lt;td&gt;"+users[phone][4]+"&lt;/td&gt;&lt;/tr&gt;";
+content+="&lt;tr&gt;&lt;td&gt;Antiguedad&lt;/td&gt;&lt;td&gt;"+users[phone][5]+"&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;";
+document.getElementById("info").innerHTML=content;
+address.set(users[phone][3]);
+}
+}
+&lt;/script&gt;
+&lt;/head&gt;
+&lt;body style="font-family: Arial; font-size: 14px; text-align: left; width: 100%; margin: 0px;"&gt;
+&lt;div id='info'&gt;&lt;i&gt;A la espera de seleccionar una averia...&lt;/i&gt;&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;</field>
+        <field type="CharField" name="url">http://demo.ezweb.morfeo-project.org/repository/visorUsuarios/visorDatosUsuario.html</field>
+        <field type="CharField" name="content_type"><None></None></field>
+    </object>
+    <object pk="9" model="gadget.xhtml">
         <field type="CharField" name="uri">/gadgets/Morfeo/Visor Datos de Equipo/1.0/xhtml</field>
         <field type="TextField" name="code">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
 
@@ -2677,454 +2485,139 @@ address.set(devices[device][9]);
 &lt;/body&gt;
 &lt;/html&gt;</field>
         <field type="CharField" name="url">http://demo.ezweb.morfeo-project.org/repository/visorEquipos/visorDatosEquipo.html</field>
+        <field type="CharField" name="content_type"><None></None></field>
+    </object>
+    <object pk="10" model="gadget.xhtml">
+        <field type="CharField" name="uri">/gadgets/Morfeo/Bandeja de Averias/1.0/xhtml</field>
+        <field type="TextField" name="code">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
+&lt;html&gt;&lt;head&gt;
+
+&lt;meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"&gt;
+&lt;script language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;&lt;title&gt;Bandeja de Averias&lt;/title&gt;
+
+&lt;script&gt;
+var phoneNumber = EzWebAPI.createRWGadgetVariable("telefono");
+var serviceHired = EzWebAPI.createRWGadgetVariable("servicio");
+
+function sendData(row){
+var rows = document.getElementsByTagName("td");
+phoneNumber.set(rows[row*5+1].innerHTML);
+serviceHired.set(rows[row*5+4].innerHTML);
+}
+&lt;/script&gt;&lt;/head&gt;&lt;body&gt;
+&lt;!-- This table will disappear in following version --&gt;
+&lt;table style="margin: 0px; padding: 0px; font-family: Arial; font-size: 14px; text-align: center; width: 100%;" cellspacing="0"&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;th id="th0" style="border: 1px outset rgb(221, 221, 221); background-color: rgb(0, 0, 119); color: rgb(255, 255, 255); width: 12%;"&gt;Identificador de averia&lt;/th&gt;
+&lt;th id="th1" style="border: 1px outset rgb(221, 221, 221); background-color: rgb(0, 0, 119); color: rgb(255, 255, 255); width: 12%;"&gt;Telefono&lt;/th&gt;
+&lt;th id="th2" style="border: 1px outset rgb(221, 221, 221); background-color: rgb(0, 0, 119); color: rgb(255, 255, 255); width: 32%;"&gt;Usuario&lt;/th&gt;
+&lt;th id="th3" style="border: 1px outset rgb(221, 221, 221); background-color: rgb(0, 0, 119); color: rgb(255, 255, 255); width: 32%;"&gt;Descripcion del sintoma&lt;/th&gt;
+&lt;th id="th4" style="border: 1px outset rgb(221, 221, 221); background-color: rgb(0, 0, 119); color: rgb(255, 255, 255); width: 12%;"&gt;Servicio contratado&lt;/th&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="breakDown" onclick="sendData(0)" style="border: 1px outset rgb(221, 221, 221); color: rgb(0, 0, 119); text-decoration: underline; cursor: pointer;" align="center" valign="middle"&gt;averia-0&lt;/td&gt;
+&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;913933233&lt;/td&gt;
+&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;Gonzalez Perez, Alejandro&lt;/td&gt;
+&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;El usuario no es capaz de navegar por Internet&lt;/td&gt;
+&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;INTERNET&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="breakDown" onclick="sendData(1)" style="border: 1px outset rgb(221, 221, 221); color: rgb(0, 0, 119); text-decoration: underline; cursor: pointer;" align="center" valign="middle"&gt;averia-1&lt;/td&gt;
+&lt;td style="border: 1px outset rgb(221, 221, 221);" align="center" valign="middle"&gt;915334432&lt;/td&gt;
+&lt;td style="border: 1px outset rgb(221, 221, 221);" align="center" valign="middle"&gt;Lopez Romero, Marta&lt;/td&gt;
+&lt;td style="border: 1px outset rgb(221, 221, 221);" align="center" valign="middle"&gt;No puede comprar contenidos v PPV&lt;/td&gt;
+&lt;td style="border: 1px outset rgb(221, 221, 221);" align="center" valign="middle"&gt;TV&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="breakDown" onclick="sendData(2)" style="border: 1px outset rgb(221, 221, 221); color: rgb(0, 0, 119); text-decoration: underline; cursor: pointer;" align="center" valign="middle"&gt;averia-10&lt;/td&gt;
+&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;916432233&lt;/td&gt;
+&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;Fernandez Bartolome, Rodrigo&lt;/td&gt;
+&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;El usuario navega mas lento que la velocidad contratada&lt;/td&gt;
+&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;INTERNET&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="breakDown" onclick="sendData(3)" style="border: 1px outset rgb(221, 221, 221); color: rgb(0, 0, 119); text-decoration: underline; cursor: pointer;" align="center" valign="middle"&gt;averia-11&lt;/td&gt;
+&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;917294723&lt;/td&gt;
+&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;Perez Casas, Maria&lt;/td&gt;
+&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;El usuario no es capaz de navegar por Internet&lt;/td&gt;
+&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;INTERNET&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="breakDown" onclick="sendData(4)" style="border: 1px outset rgb(221, 221, 221); color: rgb(0, 0, 119); text-decoration: underline; cursor: pointer;" align="center" valign="middle"&gt;averia-2&lt;/td&gt;
+&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;917744331&lt;/td&gt;
+&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;Garcia Casas, Alberto&lt;/td&gt;
+&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;El usuario ve la television pixelada&lt;/td&gt;
+&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;TV&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td class="breakDown" onclick="sendData(5)" style="border: 1px outset rgb(221, 221, 221); color: rgb(0, 0, 119); text-decoration: underline; cursor: pointer;" align="center" valign="middle"&gt;averia-8&lt;/td&gt;
+&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;917744331&lt;/td&gt;
+&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;Garcia Casas, Alberto&lt;/td&gt;
+&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;El usuario no es capaz de navegar por Internet&lt;/td&gt;
+&lt;td style="border: 1px outset rgb(221, 221, 221);"&gt;TV&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+&lt;/body&gt;&lt;/html&gt;</field>
+        <field type="CharField" name="url">http://demo.ezweb.morfeo-project.org/repository/bandeja/bandejaAverias.html</field>
+        <field type="CharField" name="content_type"><None></None></field>
+    </object>
+    <object pk="11" model="gadget.xhtml">
+        <field type="CharField" name="uri">/gadgets/Morfeo/Configuracion de Red/1.0/xhtml</field>
+        <field type="TextField" name="code">&lt;HTML&gt;&lt;HEAD&gt;
+
+&lt;META http-equiv="Content-Type" content="text/html; charset=iso-8859-1"&gt;
+&lt;script language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
+&lt;TITLE&gt;Configuracion de Red&lt;/TITLE&gt;
+
+&lt;SCRIPT&gt;
+var serviceHired = EzWebAPI.createRGadgetVariable("serviceHired",_serviceHandler);
+var deviceId = EzWebAPI.createRWGadgetVariable("deviceId");
+var deviceStatus = EzWebAPI.createRWGadgetVariable("deviceStatus");
+
+/*Random states for a demo*/
+function _getState(){
+if (Math.floor(Math.random()*2+1)&gt;1.8){
+deviceStatus.set("NO_OK");
+return "http://europa.ls.fi.upm.es/~semillero/html/mapaRed/equis.gif";
+} else {
+deviceStatus.set("OK");
+return "http://europa.ls.fi.upm.es/~semillero/html/mapaRed/stick.gif";
+}
+}
+
+function _serviceHandler(service){
+var oFragment = document.createDocumentFragment();
+var oDiv = document.createElement("div");
+oDiv.id = "visorConfRed";
+var content = "";
+if (service=="INTERNET"){
+content+="&lt;img src=\"http://europa.ls.fi.upm.es/~lmayllon/img/adsl.png\"/&gt;\n&lt;br&gt;";
+content+="&lt;img onClick=\"deviceId.set('device1')\" style=\"position:relative; top:-55px; left:50px;\" id=\"dslamADSLRed\" name=\"dslamADSL\"  src=\""+_getState()+"\" /&gt;\n";
+content+="&lt;img onClick=\"deviceId.set('device2')\" style=\"position:relative; top:-35px; left:105px;\" id=\"conmutador1ADSLRed\" name=\"conmutador1ADSL\"  src=\""+_getState()+"\" /&gt;\n";
+content+="&lt;img onClick=\"deviceId.set('device3')\" style=\"position:relative; top:-36px; left:175px;\" id=\"conmutador2ADSLRed\" name=\"conmutador2ADSL\"  src=\""+_getState()+"\" /&gt;\n";
+content+="&lt;img onClick=\"deviceId.set('device4')\" style=\"position:relative; top:-38px; left:210px;\" id=\"esrADSLRed\" name=\"esrADSL\"  src=\""+_getState()+"\" /&gt;\n";
+} else {
+content+="&lt;img src=\"http://europa.ls.fi.upm.es/~lmayllon/img/imag.png\"/&gt;&lt;br&gt;";
+content+="&lt;img onClick=\"deviceId.set('device5')\" style=\"position:relative; top: -72px; left: 54px;\" id=\"dslamTVRed\" name=\"dslamTV\"  src=\""+_getState()+"\" /&gt;\n";
+content+="&lt;img onClick=\"deviceId.set('device6')\" style=\"position:relative; top: -52px; left: 100px;\" id=\"conmutador1TVRed\" name=\"conmutador1TV\"  src=\""+_getState()+"\" /&gt;\n";
+content+="&lt;img onClick=\"deviceId.set('device7')\" style=\"position:relative; top: -78px; left: 155px;\" id=\"conmutador2TVRed\" name=\"conmutador2TV\"  src=\""+_getState()+"\" /&gt;\n";
+content+="&lt;img onClick=\"deviceId.set('device8')\" style=\"position:relative; top: -50px; left: 135px;\" id=\"conmutador3TVRed\" name=\"conmutador3TV\"  src=\""+_getState()+"\" /&gt;\n";
+content+="&lt;img onClick=\"deviceId.set('device9')\" style=\"position:relative; top: -90px; left: 158px;\" id=\"esrTVRed\" name=\"esrTV\"  src=\""+_getState()+"\" /&gt;\n";
+content+="&lt;img onClick=\"deviceId.set('device10')\" style=\"position:relative; top: -37px; left: 138px;\" id=\"erxTVRed\" name=\"erxTV\"  src=\""+_getState()+"\" /&gt;\n";
+}
+
+oDiv.innerHTML = content;
+oFragment.appendChild(oDiv);
+document.body.replaceChild(oFragment,document.getElementById("visorConfRed"));
+}
+
+&lt;/SCRIPT&gt;&lt;/HEAD&gt;&lt;BODY&gt;
+&lt;DIV id="visorConfRed"&gt;&lt;I&gt;A la espera de seleccionar una averia...&lt;/I&gt;&lt;/DIV&gt;
+&lt;/BODY&gt;&lt;/HTML&gt;</field>
+        <field type="CharField" name="url">http://demo.ezweb.morfeo-project.org/repository/configuracionRed/configuracionRed.html</field>
+        <field type="CharField" name="content_type"><None></None></field>
     </object>
     <object pk="12" model="gadget.xhtml">
-        <field type="CharField" name="uri">/gadgets/Morfeo/Notepad/1.0/xhtml</field>
-        <field type="TextField" name="code">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
-&lt;html&gt;
-&lt;head&gt;
-&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&gt;
-&lt;html&gt;
-&lt;head&gt;
-&lt;meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /&gt;
-&lt;script language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
-&lt;style&gt;
-#nota{
-	display:block;
-	border:1px solid black;
-	color:black;
-        font-size:13pt;
-	font-family:"Comic Sans MS";
-	width:100%;
-	height:100%;
-	background: #f0e68c;
-	}
-&lt;/style&gt;
-
-&lt;script language="JavaScript"&gt;
-var nota = EzWebAPI.createRWGadgetVariable("nota");
-var bg = EzWebAPI.createRGadgetVariable("bg", setColorbg);
-var textcolor = EzWebAPI.createRGadgetVariable("textcolor", setColorTexto);
-
-function setValue ()  {
-   document.getElementById('nota').value= nota.get();
-}
-
-function save(formulario){
-	nota.set(formulario.nota.value);
-}
-
-function delnote(){
-	nota.set("");
-}
-
-function setColorbg(color){
-	var f = document.getElementById("nota");
-	
-	f.style.background= color;
-}
-function setColorTexto(color){
-	var f = document.getElementById("nota");
-	
-	f.style.color= color;
-}
-function load(){
-	document.getElementById('nota').value= nota.get();
-	document.getElementById('nota').style.height= window.innerHeight - 42 + "px";
-        document.getElementById('nota').style.background=bg.get();
-        document.getElementById('nota').style.color=textcolor.get();
-}
-&lt;/script&gt;
-
-&lt;/head&gt;
-	&lt;body onload="javascript:load();"&gt;
-		&lt;form id="formulario" onsubmit="return false;"&gt;	
-
-			&lt;textarea style="width:100%; height:90%;" id="nota"&gt;&lt;/textarea&gt;
-			&lt;center&gt;
-				&lt;button onclick="javascript:save(this.form)"&gt;Guardar&lt;/button&gt;
-				&amp;nbsp;&amp;nbsp;
-				&lt;input type="reset" value="Borrar" onclick="javascript:delnote()"/&gt;
-			&lt;/center&gt;
-		&lt;/form&gt;	
-	&lt;/body&gt;
-&lt;/html&gt;</field>
-        <field type="CharField" name="url">http://demo.ezweb.morfeo-project.org/repository/notepad/notepad.html</field>
-    </object>
-    <object pk="13" model="gadget.xhtml">
-        <field type="CharField" name="uri">/gadgets/Morfeo/RSSReader/2.0/xhtml</field>
-        <field type="TextField" name="code">&lt;?xml version="1.0"?&gt;
-&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"&gt;
-&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
-&lt;head&gt;
-  &lt;meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" /&gt;
-  &lt;title&gt;RSS Reader&lt;/title&gt;
-  &lt;script type="text/javascript" language="javascript" src="http://www.prototypejs.org/assets/2007/11/6/prototype.js"&gt;&lt;/script&gt;
-  &lt;script type="text/javascript" language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"&gt;&lt;/script&gt;
-  &lt;script type="text/javascript" language="javascript"&gt;
-	var lastShow = "item_0";
-	var rssUrl = EzWebAPI.createRGadgetVariable("rssUrl", _Handler);
-	var rssPref = EzWebAPI.createRGadgetVariable("rssPref", _Handler);
-	var URL = rssPref.get();
-    if (URL != null)
-    {
-	   EzWebAPI.send_get (URL, this, processRSS, failedRSS);
-    }
-	
-	//shows the RSS content in the browser
-	function showRSS(RSS) {
-		var item_html;
-
-		//default values for html tags used
-		var imageTag = "&lt;img class='chan_image'";
-		var startItemTag = "&lt;li class='item'&gt;";
-		var startTitle = "&lt;div class='item_title'&gt;";
-		var startLink = "&lt;div class='item_link'&gt;";
-		var startDescription = "&lt;div class='item_description'&gt;";
-		var endTag = "&lt;/div&gt;";
-
-		//populate channel data
-		var properties = new Array("title","link","description","pubDate","copyright");
-		for (var i=0; i&lt;properties.length; i++)	{
-			document.getElementById('chan_' + properties[i]).innerHTML = '';
-			curProp = RSS[properties[i]];
-			if (curProp != null)
-				document.getElementById('chan_' + properties[i]).innerHTML = curProp;
-			if (properties[i] == 'link')
-			{
-				document.getElementById("chan_link").href = curProp;
-				document.getElementById("chan_link").target = '_blank';
-			}
-		}
-
-		//show the image
-		document.getElementById("chan_image_link").innerHTML = "";
-		if (RSS.image.url != null)
-		{
-			document.getElementById("chan_image_link").href = RSS.image.link;
-			document.getElementById("chan_image_link").innerHTML = imageTag
-				+" alt='"+RSS.image.description
-				+"' width='"+RSS.image.width
-				+"' height='"+RSS.image.height
-				+"' src='"+RSS.image.url
-				+"' "+"/&gt;";
-		}
-
-		//populate the items
-		document.getElementById("chan_items").innerHTML = "&lt;ul&gt;";
-		for (var i=0; i&lt;RSS.items.length; i++)
-		{
-			item_html = startItemTag;
-			item_html += (RSS.items[i].title == null) ? "" : startTitle + "&lt;a href=\"javascript:toggle('item_" + i + "');\"&gt;" + RSS.items[i].title + "&lt;/a&gt;" + endTag;
-			item_html += "&lt;div id='item_" + i + "' class='item_content' style='display:none;'&gt;";
-			item_html += (RSS.items[i].link == null) ? "" : startLink + "&lt;a href='" + RSS.items[i].link +"' target='_black'&gt;see more...&lt;/a&gt;" + endTag;
-			item_html += (RSS.items[i].description == null) ? "" : startDescription + RSS.items[i].description + endTag;
-			item_html += endTag;
-			item_html += "&lt;/li&gt;";
-			document.getElementById("chan_items").innerHTML += item_html;
-		}
-		document.getElementById("chan_items").innerHTML += "&lt;/ul&gt;";
-		
-		var descriptions = document.getElementsByClassName("item_description");
-		for (var i=0; i&lt;descriptions.length; i++)
-		{
-		     var links = descriptions[i].getElementsByTagName("a");
-		       for (var j=0; j&lt;links.length; j++)
-		       {
-		             links[j].target="_blank";
-		        }
-		}
-
-		        
-		//we're done
-		return true;
-	}
-
-
-	//OBJECTS
-
-	//objects inside the RSS2Item object
-	function RSS2Enclosure(encElement)
-	{
-		if (encElement == null)
-		{
-			this.url = null;
-			this.length = null;
-			this.type = null;
-		}
-		else
-		{
-			this.url = encElement.getAttribute("url");
-			this.length = encElement.getAttribute("length");
-			this.type = encElement.getAttribute("type");
-		}
-	}
-
-	function RSS2Guid(guidElement)
-	{
-		if (guidElement == null)
-		{
-			this.isPermaLink = null;
-			this.value = null;
-		}
-		else
-		{
-			this.isPermaLink = guidElement.getAttribute("isPermaLink");
-			this.value = guidElement.childNodes[0].nodeValue;
-		}
-	}
-
-	function RSS2Source(souElement)
-	{
-		if (souElement == null)
-		{
-			this.url = null;
-			this.value = null;
-		}
-		else
-		{
-			this.url = souElement.getAttribute("url");
-			this.value = souElement.childNodes[0].nodeValue;
-		}
-	}
-
-	//object containing the RSS 2.0 item
-	function RSS2Item(itemxml)
-	{
-		//required
-		this.title;
-		this.link;
-		this.description;
-
-		//optional vars
-		this.author;
-		this.comments;
-		this.pubDate;
-
-		//optional objects
-		this.category;
-		this.enclosure;
-		this.guid;
-		this.source;
-
-		var properties = new Array("title", "link", "description", "author", "comments", "pubDate");
-		var tmpElement = null;
-		for (var i=0; i&lt;properties.length; i++)
-		{
-			tmpElement = itemxml.getElementsByTagName(properties[i])[0];
-			if (tmpElement != null)
-				this[properties[i]] = tmpElement.childNodes[0].nodeValue;
-		}
-
-		this.category = new RSS2Category(itemxml.getElementsByTagName("category")[0]);
-		this.enclosure = new RSS2Enclosure(itemxml.getElementsByTagName("enclosure")[0]);
-		this.guid = new RSS2Guid(itemxml.getElementsByTagName("guid")[0]);
-		this.source = new RSS2Source(itemxml.getElementsByTagName("source")[0]);
-	}
-
-	//objects inside the RSS2Channel object
-	function RSS2Category(catElement)
-	{
-		if (catElement == null)
-		{
-			this.domain = null;
-			this.value = null;
-		}
-		else
-		{
-			this.domain = catElement.getAttribute("domain");
-			this.value = catElement.childNodes[0].nodeValue;
-		}
-	}
-
-	//object containing RSS image tag info
-	function RSS2Image(imgElement) {
-		if (imgElement == null) {
-			this.url = null;
-			this.link = null;
-			this.width = null;
-			this.height = null;
-			this.description = null;
-		} else {
-			imgAttribs = new Array("url","title","link","width","height","description");
-			var tmpElement = null;
-			for (var i=0; i&lt;imgAttribs.length; i++) {
-				tmpElement = imgElement.getElementsByTagName(imgAttribs[i])[0];
-				if (tmpElement != null)
-					this[imgAttribs[i]] = tmpElement.textContent;
-			}
-		}
-	}
-
-	//object containing the parsed RSS 2.0 channel
-	function RSS2Channel(rssxml)
-	{
-		//required
-		this.title;
-		this.link;
-		this.description;
-
-		//array of RSS2Item objects
-		this.items = new Array();
-
-		//optional vars
-		this.language;
-		this.copyright;
-		this.managingEditor;
-		this.webMaster;
-		this.pubDate;
-		this.lastBuildDate;
-		this.generator;
-		this.docs;
-		this.ttl;
-		this.rating;
-
-		//optional objects
-		this.category;
-		this.image;
-
-		var chanElement = rssxml.getElementsByTagName("channel")[0];
-		var itemElements = rssxml.getElementsByTagName("item");
-
-		for (var i=0; i&lt;itemElements.length; i++)
-		{
-			Item = new RSS2Item(itemElements[i]);
-			this.items.push(Item);
-			//chanElement.removeChild(itemElements[i]);
-		}
-
-		var properties = new Array("title", "link", "description", "language", "copyright", "managingEditor", "webMaster", "pubDate", "lastBuildDate", "generator", "docs", "ttl", "rating");
-		var tmpElement = null;
-		for (var i=0; i&lt;properties.length; i++)
-		{
-			tmpElement = chanElement.getElementsByTagName(properties[i])[0];
-			if (tmpElement!= null)
-				eval("this."+properties[i]+"=tmpElement.childNodes[0].nodeValue");
-		}
-
-		this.category = new RSS2Category(chanElement.getElementsByTagName("category")[0]);
-		this.image = new RSS2Image(chanElement.getElementsByTagName("image")[0]);
-	}
-	
-	
-		function processRSS (response)
-		{
-			var rss = new RSS2Channel (response.responseXML);
-			showRSS(rss);
-		}
-		function failedRSS (response)
-		{
-			$('chan_title').innerHTML = "Error al obtener el feed";
-		}	
-		function _Handler(value)
-		{
-			$('chan_title').innerHTML = "Esperando RSS...";
-			$('chan_link').innerHTML = '';
-			$('chan_description').innerHTML = '';
-			$('chan_image_link').innerHTML = '';
-			$('chan_items').innerHTML = '';
-			$('chan_pubDate').innerHTML = '';
-			$('chan_copyright').innerHTML = '';
-			lastShow = "item_0";
-			if (value != null)
-			{
-				EzWebAPI.send_get (value, this, processRSS, failedRSS);
-			}
-		}
-
-		function show(id) 
-		{
-			document.getElementById(id).style.display = "block";
-		}
-
-		function hide(id) 
-		{
-			if (id != "") document.getElementById(id).style.display = "none";
-		}
-
-		function toggle(id)
-		{
-			if (document.getElementById(id).style.display == "none")
-			{
-				hide(lastShow);
-				show(id);
-				lastShow = id;
-			}
-			else hide(id);
-		}
-    &lt;/script&gt;
-	&lt;style type="text/css"&gt;
-		body {	
-			background-color: #ffffcc;
-			font-family:"Trebuchet MS","Bitstream Vera Sans",Verdana,Helvetica,sans-serif;
-			font-size:12px;
-		}
-		
-		a {
-			color:blue;
-			text-decoration:none;
-		}
-		
-		a:hover {
-			text-decoration:underline;
-		}
-		
-		.item_content {
-			background-color: #ffffaa
-		}
-		
-		#chan {
-			margin-top: 10px;
-		}
-		
-		#chan_title {
-			font-size:20px;
-			font-weight:bold;
-		}
-		
-		li {
-			margin-left:15px;
-		}
-		
-		.item_title a {
-			color:#006633;
-		}
-		
-		#chan_items { 
-			margin: 10px; 
-		}
-		
-		.item { 
-			margin-bottom: 2px; 
-		}
-
-		#chan_pubDate {
-			font-size:11px;
-		}
-		#chan_image_link {
-			float: right;
-		}
-		img {
-			border: 0px;
-		}
-	&lt;/style&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    &lt;div id="chan"&gt;
-	&lt;a id="chan_image_link" href="" target="_blank"&gt;&lt;/a&gt;
-        &lt;div id="chan_title"&gt;Esperando RSS...&lt;/div&gt;
-        &lt;a id="chan_link" href=""&gt;&lt;/a&gt;
-        &lt;div id="chan_description"&gt;&lt;/div&gt;
-        &lt;a id="chan_image_link" href=""&gt;&lt;/a&gt;
-        &lt;div id="chan_items"&gt;&lt;/div&gt;
-        &lt;div id="chan_pubDate"&gt;&lt;/div&gt;
-        &lt;div id="chan_copyright"&gt;&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/body&gt;
-&lt;/html&gt;</field>
-        <field type="CharField" name="url">http://demo.ezweb.morfeo-project.org/repository/rss/rssReader.html</field>
-    </object>
-    <object pk="14" model="gadget.xhtml">
         <field type="CharField" name="uri">/gadgets/Morfeo/SMS Sender/1.3/xhtml</field>
         <field type="TextField" name="code">&lt;html&gt;
 &lt;head&gt;
@@ -3212,7 +2705,9 @@ function createSMS(f){
 &lt;/form&gt;
 &lt;!--FONT size="2" &gt;&lt;I&gt;Fields with (*) are mandatory&lt;/I&gt;&lt;/FONT--&gt;
 &lt;/body&gt;
-&lt;/html&gt;</field>
+&lt;/html&gt;
+</field>
         <field type="CharField" name="url">http://demo.ezweb.morfeo-project.org/repository/sendSMS/sendSMS.html</field>
+        <field type="CharField" name="content_type"><None></None></field>
     </object>
 </django-objects>

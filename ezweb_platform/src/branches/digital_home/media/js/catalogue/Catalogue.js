@@ -1,38 +1,26 @@
 /* 
- * MORFEO Project 
- * http://morfeo-project.org 
- * 
- * Component: EzWeb
- * 
- * (C) Copyright 2004 Telefónica Investigación y Desarrollo 
- *     S.A.Unipersonal (Telefónica I+D) 
- * 
- * Info about members and contributors of the MORFEO project 
- * is available at: 
- * 
- *   http://morfeo-project.org/
- * 
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License as published by 
- * the Free Software Foundation; either version 2 of the License, or 
- * (at your option) any later version. 
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
- * GNU General Public License for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
- * 
- * If you want to use this software an plan to distribute a 
- * proprietary application in any way, and you are not licensing and 
- * distributing your source code under GPL, you probably need to 
- * purchase a commercial license of the product.  More info about 
- * licensing options is available at: 
- * 
- *   http://morfeo-project.org/
+*     (C) Copyright 2008 Telefonica Investigacion y Desarrollo
+*     S.A.Unipersonal (Telefonica I+D)
+*
+*     This file is part of Morfeo EzWeb Platform.
+*
+*     Morfeo EzWeb Platform is free software: you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation, either version 3 of the License, or
+*     (at your option) any later version.
+*
+*     Morfeo EzWeb Platform is distributed in the hope that it will be useful,
+*     but WITHOUT ANY WARRANTY; without even the implied warranty of
+*     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*     GNU Affero General Public License for more details.
+*
+*     You should have received a copy of the GNU Affero General Public License
+*     along with Morfeo EzWeb Platform.  If not, see <http://www.gnu.org/licenses/>.
+*
+*     Info about members and contributors of the MORFEO project
+*     is available at
+*
+*     http://morfeo-project.org
  */
 
 
@@ -55,52 +43,15 @@ var CatalogueFactory  = function () {
 		var _this = this;
 		var max_gadgets_per_page = 40;
 		var min_offset = 10;
-		var purchasableGadgets = null;
+		var selectedResourceName = "";
+		var selectedResourceVersion = "";
 		
 		this.catalogueElement = $('showcase_container');
-		    
+		
 		
 		// ********************
 		//  PRIVILEGED METHODS
 		// ********************
-		
-		this.initCatalogue = function () {	
-			var onSuccess = function (transport) {
-				// Loading purchaseble gadgets!
-				var responseJSON = transport.responseText;
-				var response = eval ('(' + responseJSON + ')');
-				purchasableGadgets = response['available_resources'];
-				
-				// Load catalogue data!
-				this.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
-				
-				UIUtils.setResourcesWidth();
-				
-				$('simple_search_text').focus();
-			}
-			
-			var onError = function () {
-				// Error downloading available gadgets!
-				// Maybe the EzWeb user has no associated home gateway?
-				// Continua loading non-contratable gadgets!
-				purchasableGadgets = []
-				                      
-  				// Load catalogue data!
-  				this.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
-  				
-  				UIUtils.setResourcesWidth();
-  				
-  				$('simple_search_text').focus();
-			}
-			
-			var persistenceEngine = PersistenceEngineFactory.getInstance();
-			
-			// Get Resources from PersistenceEngine. Asyncrhonous call!
-			
-			var params = {'method': "GET", 'url':  URIs.HOME_GATEWAY_DISPATCHER_URL};
-					
-			persistenceEngine.send_post("/proxy", params, this, onSuccess, onError);
-		}
 		
 		this.reloadCompleteCatalogue = function() {
 			UIUtils.repaintCatalogue=true;
@@ -109,8 +60,7 @@ var CatalogueFactory  = function () {
 				UIUtils.isInfoResourcesOpen = false;
 				UIUtils.SlideInfoResourceOutOfView('info_resource');
 			}
-			this.emptyResourceList();
-			UIUtils.search = 'false';
+			UIUtils.search = false;
 			this.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
 		}
 		
@@ -118,7 +68,7 @@ var CatalogueFactory  = function () {
 			$("resources").innerHTML="";
 			_this.clearSelectedResources();
 			resources = $H();
-		}	
+		}
 
 		this.getResources = function() {
 			return resources;
@@ -177,9 +127,43 @@ var CatalogueFactory  = function () {
 		}
 
 		this.addResourceToShowCase = function(resourceId_) {
-			UIUtils.showResourceInfo(resourceId_);
 			var currentResource = this.getResource(resourceId_);
 			ShowcaseFactory.getInstance().addGadget(currentResource.getVendor(), currentResource.getName(),  currentResource.getVersion(), currentResource.getUriTemplate());
+		}
+
+		this.addMashupResource = function(resourceId_) {
+			/***CALLBACK methods***/
+			var cloneOk = function(transport){
+				var response = transport.responseText;
+				var wsInfo = eval ('(' + response + ')');
+				//create the new workspace and go to it
+				opManager = OpManagerFactory.getInstance();
+				opManager.workSpaceInstances[wsInfo.workspace.id] = new WorkSpace(wsInfo.workspace);
+		
+				ShowcaseFactory.getInstance().reload(wsInfo.workspace.id);
+				
+			}
+			var cloneError = function(transport, e){
+				var msg;
+				if (e) {
+					msg = interpolate(gettext("JavaScript exception on file %(errorFile)s (line: %(errorLine)s): %(errorDesc)s"),
+					                  {errorFile: e.fileName, errorLine: e.lineNumber, errorDesc: e},
+					                  true);
+				} else if (transport.responseXML) {
+					msg = transport.responseXML.documentElement.textContent;
+				} else {
+					msg = "HTTP Error " + transport.status + " - " + transport.statusText;
+				}
+				msg = interpolate(gettext("Error cloning workspace: %(errorMsg)s."),
+				                          {errorMsg: msg}, true);
+				LogManagerFactory.getInstance().log(msg);				
+				
+			}
+			
+			var currentResource = this.getResource(resourceId_);
+			var workSpaceId = currentResource.getMashupId();
+			var cloneURL = URIs.GET_ADD_WORKSPACE.evaluate({'workspace_id': workSpaceId});
+			PersistenceEngineFactory.getInstance().send_get(cloneURL, this, cloneOk, cloneError);
 		}
 
 		this.paginate = function(items) {
@@ -190,7 +174,7 @@ var CatalogueFactory  = function () {
 		this.orderby = function(items){
 			_orderby($("orderby"), items);
 		}
-		
+
 		this.changeGlobalTagcloud = function(type){	
 			$('view_global_tags_links').innerHTML = "";
 			
@@ -338,50 +322,34 @@ var CatalogueFactory  = function () {
                 _globalTagsToTagcloud($("global_tagcloud"));
             }
         }
-		
+
 		this.getGlobalTags = function() {
 			return globalTags;
 		}
-		
+
 		this.repaintCatalogue = function (url) {
-	 	    this.emptyResourceList();
-		    this.loadCatalogue(url);
+			selectedResourceName = arguments[1];
+			selectedResourceVersion = arguments[2];
+			this.emptyResourceList();
+			this.loadCatalogue(url);
 		}
-		
+
 		this.show = function(){
 			LayoutManagerFactory.getInstance().showCatalogue();
 		}
-		
+
 		this.hide = function(){
 			LayoutManagerFactory.getInstance().hideView(this.catalogueElement);
 		}
-		
-		this.isContratableResource = function (resource) {
-			for (var i=0; i<resource.capabilities.length; i++) {
-				var capability = resource.capabilities[i];
-				if (capability.name == 'Contratable')
-					return capability.value.toLowerCase() == "true";
-				else
-					return false
-			}
-		}
-		
-		this.isAvailableResource = function(resource) {
-			for (var i=0; i<purchasableGadgets.length; i++) {
-				if (resource.uriTemplate == purchasableGadgets[i].gadget)
-					return true;
-			}
-			return false;
-		}
-		
+
 		this.loadCatalogue = function(urlCatalogue_) {
-		
+
 			// ******************
 			//  CALLBACK METHODS 
 			// ******************
-			
+
 			//Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
-			
+
 			var onError = function(transport, e) {
 				var msg;
 				if (e) {
@@ -398,7 +366,7 @@ var CatalogueFactory  = function () {
 				LogManagerFactory.getInstance().log(msg);
 
 			}
-			
+
 			var loadResources = function(transport) {
 				var response = Try.these(
 									function() { 	return new DOMParser().parseFromString(transport.responseText, 'text/xml'); },
@@ -406,185 +374,296 @@ var CatalogueFactory  = function () {
 													xmldom.loadXML(transport.responseText); 
 													return xmldom; }
 								);
-								
+
 				var responseJSON = transport.responseText;
 				var items = transport.getResponseHeader('items');
 			    var jsonResourceList = eval ('(' + responseJSON + ')');
 			    jsonResourceList = jsonResourceList.resourceList;
 
-				for (var i = 0; i<jsonResourceList.length; i++) {
-					if (this.isContratableResource(jsonResourceList[i])) { 
-						//It's a contratable gadget!
-						//Let's see if its available at HomeGateway!
-						if (this.isAvailableResource(jsonResourceList[i])) {
-							// It's a available contratable gadget!
-							// Adding to catalogue!
-							this.addResource(jsonResourceList[i], null);
-						}
-						else {
-							//It's not available!
-							//Not adding to catalogue!
-							continue;
-						}
-					} 
-					else {
-						// It's a normal not purchasable gadget
-						// Always adding to catalogue
-						this.addResource(jsonResourceList[i], null);
-					}
+				for (var i = 0; i<jsonResourceList.length; i++)
+				{
+					this.addResource(jsonResourceList[i], null);
 				}
-
-				
 				this.paginate(items);
 				this.orderby(items);
 				$('global_tagcloud').innerHTML = '';
 				UIUtils.repaintCatalogue=false;
-				
+
 			}
 
-			var param = {orderby: UIUtils.orderby};
-			
+			var param = {orderby: UIUtils.orderby, search_criteria: UIUtils.searchValue, search_boolean:$("global_search_boolean").value};
+
 			var persistenceEngine = PersistenceEngineFactory.getInstance();
-			
-			var auxiliar = urlCatalogue_.toString().split("/");
+
 			$('header_always_status').innerHTML = "";
 			$('header_always_status').appendChild(UIUtils.createHTMLElement("span", $H({
 				innerHTML: urlCatalogue_
 			})));
-			for (var i=0;i<auxiliar.length;i++){
-				switch(auxiliar[i]){
-					case "catalogue":
-						switch(auxiliar[i+1]){
-							case "search":
-								var text = "";
-								switch(auxiliar[i+2]){
-									case "generic":
-										text = gettext('Generic Search') + ': ';
-										break;
-									case "tag":
-										text = gettext('Search by Tag') + ': ';
-										break;
-									case "event":
-										text = gettext('Search by Event') + ': ';
-										break;	
-									case "slot":
-										text = gettext('Search by Slot') + ': ';
-										break;
-									case "connectSlot":
-										text = gettext('Search by Slot connectivity') + ': ';
-										break;
-									case "connectEvent":
-										text = gettext('Search by Event connectivity') + ': ';
-										break;
-								}
-								if (text != "") {
-									$('header_always_status').innerHTML = "";
-									$('header_always_status').appendChild(UIUtils.createHTMLElement("span", $H({
-										innerHTML: text
-									})));
-								}
-								var searching='';
-								switch(auxiliar[i+2]){
-									case "generic":
-										var auxiliar_and=[""];
-										var auxiliar_and_bool=true;
-										var auxiliar_or=[""];
-										var auxiliar_or_bool=true;
-										var auxiliar_not=[""];
-										var auxiliar_not_bool=true;
-										
-										if(auxiliar[i+3]=="_"){
-											auxiliar_and_bool=false;
-										}else{
-											auxiliar_and=UIUtils.splitString(auxiliar[i+3]);
-										}
-										if(auxiliar[i+4]=="_"){
-											auxiliar_or_bool=false;
-										}else{
-											auxiliar_or=UIUtils.splitString(auxiliar[i+4]);
-										}
-										if(auxiliar[i+5]=="_"){
-											auxiliar_not_bool=false;
-										}else{
-											auxiliar_not=UIUtils.splitString(auxiliar[i+5]);
-										}
-										if(auxiliar_and_bool){
-											for (var j=0;j<auxiliar_and.length;j++){
-												if(j==auxiliar_and.length-1){
-													searching += auxiliar_and[j] + ((auxiliar_or_bool||auxiliar_not_bool)?" AND ":".");
-												}else if(j==auxiliar_and.length-2){
-													searching += auxiliar_and[j] + ' ' + gettext('and') + ' ';
-												}else{
-													searching += auxiliar_and[j] + ' ' + gettext('and') + ' ';
-												}									
-											}
-										}
-										if(auxiliar_or_bool){
-											for (var j=0;j<auxiliar_or.length;j++){
-												if(j==auxiliar_or.length-1){
-													searching += auxiliar_or[j] + ((auxiliar_not_bool)?" AND ":".");	
-												}else if(j==auxiliar_or.length-2){
-													searching += auxiliar_or[j] + ' ' + gettext('or') + ' ';
-												}else{
-													searching += auxiliar_or[j] + ' ' + gettext('or') + ' ';
-												}
-											}
-										}
-										if(auxiliar_not_bool){
-											for (var j=0;j<auxiliar_not.length;j++){
-												if(j==0){
-													if(auxiliar_not.length==1){
-														searching += gettext('not') + ' ' + auxiliar_not[j] + ".";
-													}else{
-														searching += gettext('neither') + ' ' + auxiliar_not[j] + ' ' + gettext('nor') + ' ';
-													}
-												}else if(j==auxiliar_not.length-1){
-													searching += auxiliar_not[j] + ".";
-												}else{
-													searching += auxiliar_not[j] + ' ' + gettext('nor') + ' ';
-												}						
-											}
-										}
-										break;
-									case "tag":
-									case "event":
-									case "slot":
-									case "connectEvent":
-									case "connectSlot":
-										var auxiliar_or=UIUtils.splitString(auxiliar[i+3]);
-										for (var j=0;j<auxiliar_or.length;j++){
-											if(j==auxiliar_or.length-1){
-												searching += auxiliar_or[j];
-											}else if(j==auxiliar_or.length-2){
-												searching += auxiliar_or[j] + ' ' + gettext('or') + ' ';
-											}else{
-												searching += auxiliar_or[j] + ', ';
-											}
-										}
-										break;
-								}
-								$('header_always_status').appendChild(UIUtils.createHTMLElement("span", $H({
-									innerHTML: searching
-								})));
-								var reload_link = UIUtils.createHTMLElement("a", $H({
-									innerHTML: gettext("Reload")
-								}));
-								reload_link.observe("click", function(event){
-									CatalogueFactory.getInstance().emptyResourceList();
-									CatalogueFactory.getInstance().loadCatalogue(urlCatalogue_);
-								});
-								$('header_always_status').appendChild(reload_link);
-								break;
-							case "resource":
-								$('header_always_status').innerHTML = "";
-								$('header_always_status').appendChild(UIUtils.createHTMLElement("span", $H({
-									innerHTML: gettext('Complete Catalogue')
-								})));
-								break;
+
+			var text = "";
+			switch(UIUtils.searchCriteria){
+				case "and":
+					text = gettext('Search') + ': ';
+					break;
+				case "or":
+				case "simple_or":
+					text = gettext('Search') + ': ';
+					break;
+				case "not":
+					text = gettext('Search') + ': ';
+					break;
+				case "tag":
+					text = gettext('Search by Tag') + ': ';
+					break;
+				case "event":
+					text = gettext('Search by Event') + ': ';
+					break;
+				case "slot":
+					text = gettext('Search by Slot') + ': ';
+					break;
+				case "connectSlot":
+					text = gettext('Search by Slot connectivity for %(resourceName)s %(resourceVersion)s');
+					text = interpolate(text, {resourceName: selectedResourceName, resourceVersion: selectedResourceVersion}, true);
+					break;
+				case "connectEvent":
+					text = gettext('Search by Event connectivity for %(resourceName)s %(resourceVersion)s');
+					text = interpolate(text, {resourceName: selectedResourceName, resourceVersion: selectedResourceVersion}, true);
+					break;
+				case "connectEventSlot":
+					text = gettext('Search by Event and Slot connectivity for %(resourceName)s %(resourceVersion)s');
+					text = interpolate(text, {resourceName: selectedResourceName, resourceVersion: selectedResourceVersion}, true);
+					break;
+				case "global":
+					text = gettext('Global Search') + ': ';
+					break;
+			}
+			if (text != "") {
+				$('header_always_status').innerHTML = "";
+				$('header_always_status').appendChild(UIUtils.createHTMLElement("span", $H({
+					innerHTML: text
+				})));
+			}
+			var searching='';
+			switch(UIUtils.searchCriteria){
+				case "global":
+					var auxiliar_and=[""];
+					var auxiliar_and_bool = true;
+					var auxiliar_or=[""];
+					var auxiliar_or_bool = true;
+					var auxiliar_not=[""];
+					var auxiliar_not_bool = true;
+					var auxiliar_tag=[""];
+					var auxiliar_tag_bool = true;
+					var auxiliar_event=[""];
+					var auxiliar_event_bool = true;
+					var auxiliar_slot=[""];
+					var auxiliar_slot_bool = true;
+					if (UIUtils.searchValue[0]=="") auxiliar_and_bool = false;
+					if (UIUtils.searchValue[1]=="") auxiliar_or_bool = false;
+					if (UIUtils.searchValue[2]=="") auxiliar_not_bool = false;
+					if (UIUtils.searchValue[3]=="") auxiliar_tag_bool = false;
+					if (UIUtils.searchValue[4]=="") auxiliar_event_bool = false;
+					if (UIUtils.searchValue[5]=="") auxiliar_slot_bool = false;
+
+					if (auxiliar_and_bool) {
+						auxiliar_and=UIUtils.splitString(UIUtils.searchValue[0]);
+						for (var j=0;j<auxiliar_and.length;j++){
+							if(j==auxiliar_and.length-1){
+								searching += auxiliar_and[j] + ((auxiliar_or_bool||auxiliar_not_bool||auxiliar_tag_bool||auxiliar_event_bool||auxiliar_slot_bool)?' '+$("global_search_boolean").value+' ':".");
+							}else if(j==auxiliar_and.length-2){
+								searching += auxiliar_and[j] + ' ' + gettext('and') + ' ';
+							}else{
+								searching += auxiliar_and[j] + ' ' + gettext('and') + ' ';
+							}
 						}
-						break;
+					}
+					if (auxiliar_or_bool) {
+						auxiliar_or=UIUtils.splitString(UIUtils.searchValue[1]);
+						for (var j=0;j<auxiliar_or.length;j++){
+							if(j==auxiliar_or.length-1){
+								searching += auxiliar_or[j] + ((auxiliar_not_bool||auxiliar_tag_bool||auxiliar_event_bool||auxiliar_slot_bool)?' '+$("global_search_boolean").value+' ':".");
+							}else if(j==auxiliar_or.length-2){
+								searching += auxiliar_or[j] + ' ' + gettext('or') + ' ';
+							}else{
+								searching += auxiliar_or[j] + ' ' + gettext('or') + ' ';
+							}
+						}
+					}
+					if (auxiliar_not_bool) {
+						auxiliar_not=UIUtils.splitString(UIUtils.searchValue[2]);
+						for (var j=0;j<auxiliar_not.length;j++){
+							if(j==0){
+								if(auxiliar_not.length==1){
+									searching += gettext('not') + ' ' + auxiliar_not[j] + ((auxiliar_tag_bool||auxiliar_event_bool||auxiliar_slot_bool)?' '+$("global_search_boolean").value+' ':".");
+								}else{
+									searching += gettext('neither') + ' ' + auxiliar_not[j] + ' ' + gettext('nor') + ' ';
+								}
+							}else if(j==auxiliar_not.length-1){
+								searching += auxiliar_not[j] + ((auxiliar_tag_bool||auxiliar_event_bool||auxiliar_slot_bool)?' '+$("global_search_boolean").value+' ':".");
+							}else{
+								searching += auxiliar_not[j] + ' ' + gettext('nor') + ' ';
+							}
+						}
+					}
+					if (auxiliar_tag_bool) {
+						auxiliar_tag=UIUtils.splitString(UIUtils.searchValue[3]);
+						searching += gettext('Tags: ');
+						for (var j=0;j<auxiliar_tag.length;j++){
+							if(j==auxiliar_tag.length-1){
+								searching += auxiliar_tag[j] + ((auxiliar_event_bool||auxiliar_slot_bool)?' '+$("global_search_boolean").value+' ':".");
+							}else if(j==auxiliar_tag.length-2){
+								searching += auxiliar_tag[j] + ' ' + gettext('or') + ' ';
+							}else{
+								searching += auxiliar_tag[j] + ', ';
+							}
+						}
+					}
+					if (auxiliar_event_bool) {
+						auxiliar_event=UIUtils.splitString(UIUtils.searchValue[4]);
+						searching += gettext('Events: ');
+						for (var j=0;j<auxiliar_event.length;j++){
+							if(j==auxiliar_event.length-1){
+								searching += auxiliar_event[j] + ((auxiliar_slot_bool)?' '+$("global_search_boolean").value+' ':".");;
+							}else if(j==auxiliar_event.length-2){
+								searching += auxiliar_event[j] + ' ' + gettext('or') + ' ';
+							}else{
+								searching += auxiliar_event[j] + ', ';
+							}
+						}
+					}
+					if (auxiliar_slot_bool) {
+						auxiliar_slot=UIUtils.splitString(UIUtils.searchValue[5]);
+						searching += gettext('Slots: ');
+						for (var j=0;j<auxiliar_slot.length;j++){
+							if(j==auxiliar_slot.length-1){
+								searching += auxiliar_slot[j] + ".";
+							}else if(j==auxiliar_slot.length-2){
+								searching += auxiliar_slot[j] + ' ' + gettext('or') + ' ';
+							}else{
+								searching += auxiliar_slot[j] + ', ';
+							}
+						}
+					}
+					break;
+				case "and":
+					var auxiliar_and=[""];
+					auxiliar_and=UIUtils.splitString(UIUtils.searchValue[0]);
+					for (var j=0;j<auxiliar_and.length;j++){
+						if(j==auxiliar_and.length-1){
+							searching += auxiliar_and[j] + ".";
+						}else if(j==auxiliar_and.length-2){
+							searching += auxiliar_and[j] + ' ' + gettext('and') + ' ';
+						}else{
+							searching += auxiliar_and[j] + ' ' + gettext('and') + ' ';
+						}
+					}
+					break;
+				case "or":
+				case "simple_or":
+					var auxiliar_or=[""];
+					auxiliar_or=UIUtils.splitString(UIUtils.searchValue[0]);
+					for (var j=0;j<auxiliar_or.length;j++){
+						if(j==auxiliar_or.length-1){
+							searching += auxiliar_or[j] + ".";
+						}else if(j==auxiliar_or.length-2){
+							searching += auxiliar_or[j] + ' ' + gettext('or') + ' ';
+						}else{
+							searching += auxiliar_or[j] + ' ' + gettext('or') + ' ';
+						}
+					}
+					break;
+				case "not":
+					var auxiliar_not=[""];
+					auxiliar_not=UIUtils.splitString(UIUtils.searchValue[0]);
+					for (var j=0;j<auxiliar_not.length;j++){
+						if(j==0){
+							if(auxiliar_not.length==1){
+								searching += gettext('not') + ' ' + auxiliar_not[j] + ".";
+							}else{
+								searching += gettext('neither') + ' ' + auxiliar_not[j] + ' ' + gettext('nor') + ' ';
+							}
+						}else if(j==auxiliar_not.length-1){
+							searching += auxiliar_not[j] + ".";
+						}else{
+							searching += auxiliar_not[j] + ' ' + gettext('nor') + ' ';
+						}
+					}
+					break;
+				case "tag":
+				case "event":
+				case "slot":
+				case "connectEvent":
+				case "connectSlot":
+					var auxiliar_or=UIUtils.splitString(UIUtils.searchValue[0]);
+					for (var j=0;j<auxiliar_or.length;j++){
+						if(j==auxiliar_or.length-1){
+							searching += auxiliar_or[j];
+						}else if(j==auxiliar_or.length-2){
+							searching += auxiliar_or[j] + ' ' + gettext('or') + ' ';
+						}else{
+							searching += auxiliar_or[j] + ', ';
+						}
+					}
+					break;
+				case "connectEventSlot":
+					var auxiliar_event=[""];
+					var auxiliar_event_bool = true;
+					var auxiliar_slot=[""];
+					var auxiliar_slot_bool = true;
+					if (UIUtils.searchValue[0]=="") auxiliar_event_bool = false;
+					if (UIUtils.searchValue[1]=="") auxiliar_slot_bool = false;
+					if (auxiliar_event_bool) {
+						auxiliar_event=UIUtils.splitString(UIUtils.searchValue[0]);
+						searching += gettext('Events: ');
+						for (var j=0;j<auxiliar_event.length;j++){
+							if(j==auxiliar_event.length-1){
+								searching += auxiliar_event[j] + ((auxiliar_slot_bool)?' OR ':".");;
+							}else if(j==auxiliar_event.length-2){
+								searching += auxiliar_event[j] + ' ' + gettext('or') + ' ';
+							}else{
+								searching += auxiliar_event[j] + ', ';
+							}
+						}
+					}
+					if (auxiliar_slot_bool) {
+						auxiliar_slot=UIUtils.splitString(UIUtils.searchValue[1]);
+						searching += gettext('Slots: ');
+						for (var j=0;j<auxiliar_slot.length;j++){
+							if(j==auxiliar_slot.length-1){
+								searching += auxiliar_slot[j] + ".";
+							}else if(j==auxiliar_slot.length-2){
+								searching += auxiliar_slot[j] + ' ' + gettext('or') + ' ';
+							}else{
+								searching += auxiliar_slot[j] + ', ';
+							}
+						}
+					}
+					break;
+			}
+			var auxiliar = urlCatalogue_.toString().split("/");
+			for (var i=0;i<auxiliar.length;i++){
+				if (auxiliar[i] == 'resource') {
+					$('header_always_status').innerHTML = "";
+					$('header_always_status').appendChild(UIUtils.createHTMLElement("span", $H({
+						innerHTML: gettext('Full Catalogue')
+					})));
+					break;
+				} else if (auxiliar[i] == 'search' || auxiliar[i]=='globalsearch') {
+					$('header_always_status').appendChild(UIUtils.createHTMLElement("span", $H({
+						innerHTML: searching
+					})));
+					var reload_link = UIUtils.createHTMLElement("a", $H({
+						innerHTML: gettext("Reload")
+					}));
+					reload_link.observe("click", function(event){
+						CatalogueFactory.getInstance().emptyResourceList();
+						CatalogueFactory.getInstance().loadCatalogue(urlCatalogue_);
+					});
+					$('header_always_status').appendChild(reload_link);
+					break;
 				}
 			}
+
 
 			var reload_catalogue_link = UIUtils.createHTMLElement("a", $H({
 				id: 'reload_catalogue_link',
@@ -616,15 +695,15 @@ var CatalogueFactory  = function () {
 		parent.appendChild(select);
 		if(items<=0) {
 			select.setAttribute("disabled", "disabled");
-		} 
-		else {		
-   	    	var max;
-   	    	if(items>max_gadgets_per_page) {
-   	        	max = max_gadgets_per_page/min_offset;
-   	     	} else {
-   	         	max = Math.ceil(items/min_offset);
-   	     	}
-   	     	var some_selected = false;
+		}
+		else {
+			var max;
+			if(items>max_gadgets_per_page) {
+				max = max_gadgets_per_page/min_offset;
+			} else {
+				max = Math.ceil(items/min_offset);
+			}
+			var some_selected = false;
 			for (var i=1; i<=max; i++){
 				var option = UIUtils.createHTMLElement("option", $H({
 					value: "" + (i*min_offset),
@@ -698,7 +777,7 @@ var CatalogueFactory  = function () {
             if(UIUtils.getPage()!=i)
             {
 				var page_span = UIUtils.createHTMLElement("span", $H({
-		   			class_name: 'pagination_button'
+					class_name: 'pagination_button'
 				}));
 				parent.appendChild(page_span);
 				var page_link = UIUtils.createHTMLElement('a', $H({
@@ -719,7 +798,7 @@ var CatalogueFactory  = function () {
 		}
 
 		var next_span = UIUtils.createHTMLElement("span", $H({
-		   	class_name: 'pagination_button'
+			class_name: 'pagination_button'
 		}));
 		parent.appendChild(next_span);
 		var last_span = UIUtils.createHTMLElement("span", $H({
@@ -737,7 +816,7 @@ var CatalogueFactory  = function () {
 				src: '/ezweb/images/go-next-dim.png'
 			}));
 			next_span.appendChild(next_img);
-        } 
+        }
 		else {
 			var last_link = UIUtils.createHTMLElement("a", $H({
 				title: gettext('Go to last page')
@@ -764,7 +843,7 @@ var CatalogueFactory  = function () {
 		}
 	}
 
-    var _orderby = function(parent, items) {
+	var _orderby = function(parent, items) {
 		parent.innerHTML = '';
 		parent.appendChild(UIUtils.createHTMLElement("label", $H({
 			for_: 'combo_order_by',
@@ -815,7 +894,7 @@ var CatalogueFactory  = function () {
 			select.appendChild(popularity);
 		}
 	}
-	
+
     var _globalTagsToTagcloud = function(parent){
         parent.innerHTML = "";
         for (var i = 0; i < globalTags.length; i++) {

@@ -1,47 +1,40 @@
 # -*- coding: utf-8 -*-
 
-# MORFEO Project 
-# http://morfeo-project.org 
-# 
-# Component: EzWeb
-# 
-# (C) Copyright 2004 Telef�nica Investigaci�n y Desarrollo 
-#     S.A.Unipersonal (Telef�nica I+D) 
-# 
-# Info about members and contributors of the MORFEO project 
-# is available at: 
-# 
-#   http://morfeo-project.org/
-# 
-# This program is free software; you can redistribute it and/or modify 
-# it under the terms of the GNU General Public License as published by 
-# the Free Software Foundation; either version 2 of the License, or 
-# (at your option) any later version. 
-# 
-# This program is distributed in the hope that it will be useful, 
-# but WITHOUT ANY WARRANTY; without even the implied warranty of 
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
-# GNU General Public License for more details. 
-# 
-# You should have received a copy of the GNU General Public License 
-# along with this program; if not, write to the Free Software 
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
-# 
-# If you want to use this software an plan to distribute a 
-# proprietary application in any way, and you are not licensing and 
-# distributing your source code under GPL, you probably need to 
-# purchase a commercial license of the product.  More info about 
-# licensing options is available at: 
-# 
-#   http://morfeo-project.org/
+#...............................licence...........................................
+#
+#     (C) Copyright 2008 Telefonica Investigacion y Desarrollo
+#     S.A.Unipersonal (Telefonica I+D)
+#
+#     This file is part of Morfeo EzWeb Platform.
+#
+#     Morfeo EzWeb Platform is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     Morfeo EzWeb Platform is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public License
+#     along with Morfeo EzWeb Platform.  If not, see <http://www.gnu.org/licenses/>.
+#
+#     Info about members and contributors of the MORFEO project
+#     is available at
+#
+#     http://morfeo-project.org
+#
+#...............................licence...........................................#
+
+
 #
 
 from django.core import serializers
 from django.http import HttpResponse, HttpResponseServerError
 from django.db.models import Q
 
-from commons.utils import json_encode
-from commons.utils import get_xml_error
+from commons.utils import get_xml_error, json_encode
 from catalogue.get_json_catalogue_data import get_gadgetresource_data, get_tag_data, get_vote_data
 from catalogue.get_xml_catalogue_data import get_xml_description, get_tags_by_resource, get_vote_by_resource
 from catalogue.models import GadgetResource, UserTag, UserRelatedToGadgetResource
@@ -74,6 +67,8 @@ def get_sortedlist(list, orderby):
         list.sort(lambda x,y: cmp(x.vendor.lower(),y.vendor.lower()))
     elif orderby=='author':
         list.sort(lambda x,y: cmp(x.author.lower(),y.author.lower()))
+    elif orderby=='-popularity':
+        list.sort(lambda x,y: cmp(y.popularity,x.popularity))
     return list
 
 # This function returns a list paginated with the parameters pag and offset.
@@ -123,7 +118,7 @@ def get_or_list(criterialist, user):
     gadgetlist = []
     taglist = []
     criterialist = criterialist.split()
-    print(criterialist)
+
     for e in criterialist:
         # Get a list of elements that match the given value
         gadgetlist += get_resources_that_must_be_shown(user=user).filter(Q(short_name__icontains = e) |  Q(vendor__icontains = e) | Q(author__icontains = e) | Q(mail__icontains = e) | Q(description__icontains = e) | Q(version__icontains = e))

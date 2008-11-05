@@ -1,38 +1,26 @@
 /* 
- * MORFEO Project 
- * http://morfeo-project.org 
- * 
- * Component: EzWeb
- * 
- * (C) Copyright 2004 Telef�nica Investigaci�n y Desarrollo 
- *     S.A.Unipersonal (Telef�nica I+D) 
- * 
- * Info about members and contributors of the MORFEO project 
- * is available at: 
- * 
- *   http://morfeo-project.org/
- * 
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License as published by 
- * the Free Software Foundation; either version 2 of the License, or 
- * (at your option) any later version. 
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
- * GNU General Public License for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
- * 
- * If you want to use this software an plan to distribute a 
- * proprietary application in any way, and you are not licensing and 
- * distributing your source code under GPL, you probably need to 
- * purchase a commercial license of the product.  More info about 
- * licensing options is available at: 
- * 
- *   http://morfeo-project.org/
+*     (C) Copyright 2008 Telefonica Investigacion y Desarrollo
+*     S.A.Unipersonal (Telefonica I+D)
+*
+*     This file is part of Morfeo EzWeb Platform.
+*
+*     Morfeo EzWeb Platform is free software: you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation, either version 3 of the License, or
+*     (at your option) any later version.
+*
+*     Morfeo EzWeb Platform is distributed in the hope that it will be useful,
+*     but WITHOUT ANY WARRANTY; without even the implied warranty of
+*     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*     GNU Affero General Public License for more details.
+*
+*     You should have received a copy of the GNU Affero General Public License
+*     along with Morfeo EzWeb Platform.  If not, see <http://www.gnu.org/licenses/>.
+*
+*     Info about members and contributors of the MORFEO project
+*     is available at
+*
+*     http://morfeo-project.org
  */
 
 
@@ -59,17 +47,20 @@ UIUtils.page = 1;
 UIUtils.off = 10;
 UIUtils.orderby = '-creation_date';
 UIUtils.num_items = 0;
-UIUtils.search = 'false';
-UIUtils.searchValue = '';
+UIUtils.search = false;
+UIUtils.searchValue = [];
 UIUtils.searchCriteria = '';
 UIUtils.counter=0;
 UIUtils.globalTags='all';
 
 UIUtils.addResource = function(url, paramName, paramValue) {
 	UIUtils.repaintCatalogue=true;
+	UIUtils.search = false;
+	
 	var newResourceOnSuccess = function (response) {
 		UIUtils.orderby = '-creation_date';
 		UIUtils.cataloguePaginate(URIs.GET_POST_RESOURCES, UIUtils.getOffset(), 1, UIUtils.getNum_items());
+		LayoutManagerFactory.getInstance().hideCover();
 	}
 	
 	var newResourceOnError = function (transport, e) {
@@ -79,13 +70,19 @@ UIUtils.addResource = function(url, paramName, paramValue) {
 			                  {errorFile: e.fileName, errorLine: e.lineNumber, errorDesc: e},
 					  true);
 		} else if (transport.responseXML) {
+			if (transport.responseXML.documentElement.textContent.match("duplicate key"))
+			{
+                        msg = gettext("The gadget is already added to the catalogue");
+			} else {
                         msg = transport.responseXML.documentElement.textContent;
+			}
 		} else {
                         msg = "HTTP Error " + transport.status + " - " + transport.statusText;
 		}
 
 		msg = interpolate(gettext("The resource could not be added to the catalogue: %(errorMsg)s."), {errorMsg: msg}, true);
 		LogManagerFactory.getInstance().log(msg);
+		LayoutManagerFactory.getInstance().hideCover();
 	}
 	
 	var persistenceEngine = PersistenceEngineFactory.getInstance();
@@ -200,15 +197,15 @@ UIUtils.updateGadgetXHTML = function() {
     var resourceURI = URIs.GET_GADGET.evaluate(dict) + "/xhtml";
 
     var onError = function(transport) {
-		var	msg = interpolate(gettext("Error updating the XHTML: %(errorMsg)s."), {errorMsg: transport.status}, true);
+		var msg = interpolate(gettext("Error updating the XHTML: %(errorMsg)s."), {errorMsg: transport.status}, true);
 		LogManagerFactory.getInstance().log(msg);
 	// Process
     }
-			
+
     var onSuccess = function(transport) {
-	
+		LayoutManagerFactory.getInstance().showMessageMenu(gettext('The gadget code has been successfully updated'));
     }
-    
+
     PersistenceEngineFactory.getInstance().send_update(resourceURI, "", this, onSuccess, onError);
 
 }
@@ -247,47 +244,138 @@ UIUtils.changeImage = function(elementId_, newImage_) {
 	element.src = newImage_;
 }
 
-UIUtils.searchByTag = function(url, tag) {
+UIUtils.simpleSearch = function(url, criteria) {
 	UIUtils.repaintCatalogue=true;
 	UIUtils.sendPendingTags();
 	UIUtils.closeInfoResource();
-	var opManager = OpManagerFactory.getInstance();
+	UIUtils.searchValue = [];
+	if (criteria == 'simple_or')
+	{
+		UIUtils.searchValue[0] = $('simple_search_text').value;
+	} else if (criteria == 'and')
+	{
+		UIUtils.searchValue[0] = $('advanced_search_text_and').value;
+	}
+	else if (criteria == 'or')
+	{
+		UIUtils.searchValue[0] = $('advanced_search_text_or').value;
+	}
+	else if (criteria == 'not')
+	{
+		UIUtils.searchValue[0] = $('advanced_search_text_not').value;
+	}
+	else if (criteria == 'tag')
+	{
+		UIUtils.searchValue[0] = $('advanced_search_text_tag').value;
+	}
+	else if (criteria == 'event')
+	{
+		UIUtils.searchValue[0] = $('advanced_search_text_event').value;
+	}
+	else if (criteria == 'slot')
+	{
+		UIUtils.searchValue[0] = $('advanced_search_text_slot').value;
+	}
+	UIUtils.searchValue[0] = UIUtils.filterString(UIUtils.searchValue[0]);
 
-	tag=UIUtils.filterString(tag);
-	if (tag == ""){
-  		$('header_always_error').style.display="block";
+	if (UIUtils.searchValue[0] == ""){
+		$('header_always_error').style.display="block";
 		UIUtils.getError($('header_always_error'),gettext("Indicate a criteria in search formulary"));
 	}
 	else{
-	  $('header_always_error').style.display = 'none';
-	  UIUtils.setPage(1);
-      UIUtils.search = 'tag';
-      UIUtils.searchValue = tag;
-      UIUtils.searchCriteria = 'tag' ;
-	  CatalogueFactory.getInstance().repaintCatalogue(url + "/" + tag  + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
+		$('header_always_error').style.display = 'none';
+		UIUtils.setPage(1);
+		UIUtils.search = true;
+		UIUtils.searchCriteria = criteria;
+		CatalogueFactory.getInstance().repaintCatalogue(url + "/" + criteria + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
 	}
 }
 
-UIUtils.searchByWiring = function(url, value, wiring) {
+UIUtils.globalSearch = function(url) {
 	UIUtils.repaintCatalogue=true;
 	UIUtils.sendPendingTags();
 	UIUtils.closeInfoResource();
-	var opManager = OpManagerFactory.getInstance();
+	UIUtils.searchValue = [];
+	UIUtils.searchValue[0] = UIUtils.filterString($('advanced_search_text_and').value);
+	UIUtils.searchValue[1] = UIUtils.filterString($('advanced_search_text_or').value);
+	UIUtils.searchValue[2] = UIUtils.filterString($('advanced_search_text_not').value);
+	UIUtils.searchValue[3] = UIUtils.filterString($('advanced_search_text_tag').value);
+	UIUtils.searchValue[4] = UIUtils.filterString($('advanced_search_text_event').value);
+	UIUtils.searchValue[5] = UIUtils.filterString($('advanced_search_text_slot').value);
 
-	value=UIUtils.filterString(value);
+	if (UIUtils.searchValue[0] == "" && UIUtils.searchValue[1] == "" && UIUtils.searchValue[2] == "" && UIUtils.searchValue[3] == "" && UIUtils.searchValue[4] == "" && UIUtils.searchValue[5] == ""){
+		$('header_always_error').style.display="block";
+		UIUtils.getError($('header_always_error'),gettext("Indicate a criteria in search formulary"));
+	}
+	else{
+		$('header_always_error').style.display = 'none';
+		UIUtils.setPage(1);
+		UIUtils.search = true;
+		UIUtils.searchCriteria = 'global';
+		CatalogueFactory.getInstance().repaintCatalogue(url + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
+	}
+}
 
-	if (value == ""){
+UIUtils.clearSearchForm = function() {
+	$('advanced_search_text_and').value = "";
+	$('advanced_search_text_or').value = "";
+	$('advanced_search_text_not').value = "";
+	$('advanced_search_text_tag').value = "";
+	$('advanced_search_text_event').value = "";
+	$('advanced_search_text_slot').value = "";
+}
+
+UIUtils.searchByConnectivity = function(url, criteria, search_value) {
+	var resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
+	var name = resource.getName();
+	var version = resource.getVersion();
+	UIUtils.repaintCatalogue=true;
+	UIUtils.sendPendingTags();
+	UIUtils.closeInfoResource();
+	UIUtils.searchValue = [];
+	$('header_always_error').style.display = 'none';
+	UIUtils.setPage(1);
+	UIUtils.search = true;
+	UIUtils.searchValue[0] = search_value;
+	UIUtils.searchCriteria = criteria;
+	CatalogueFactory.getInstance().repaintCatalogue(url + "/" + criteria + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset(), name, version);
+}
+
+UIUtils.searchByGlobalConnectivity = function(url, search_events, search_slots) {
+	var resource = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource);
+	var name = resource.getName();
+	var version = resource.getVersion();
+	UIUtils.repaintCatalogue=true;
+	UIUtils.sendPendingTags();
+	UIUtils.closeInfoResource();
+	UIUtils.searchValue = [];
+	$('header_always_error').style.display = 'none';
+	UIUtils.setPage(1);
+	UIUtils.search = true;
+	UIUtils.searchValue[0] = search_events;
+	UIUtils.searchValue[1] = search_slots;
+	UIUtils.searchCriteria = 'connectEventSlot';
+	CatalogueFactory.getInstance().repaintCatalogue(url + "/connectEventSlot/" + UIUtils.getPage() + "/" + UIUtils.getOffset(), name, version);
+}
+
+UIUtils.searchByTag = function(url, search_value) {
+	UIUtils.repaintCatalogue=true;
+	UIUtils.sendPendingTags();
+	UIUtils.closeInfoResource();
+	UIUtils.searchValue = [];
+	if (search_value == ""){
 		$('header_always_error').style.display="block";
 		UIUtils.getError($('header_always_error'),gettext("Indicate a criteria in search formulary"));
 	}else{
 		$('header_always_error').style.display = 'none';
 		UIUtils.setPage(1);
-		UIUtils.search = 'wiring';
-		UIUtils.searchValue = value;
-		UIUtils.searchCriteria = wiring ;
-		CatalogueFactory.getInstance().repaintCatalogue(url + "/" + wiring + "/" + value  + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
+		UIUtils.search = true;
+		UIUtils.searchValue[0] = search_value;
+		UIUtils.searchCriteria = 'tag';
+		CatalogueFactory.getInstance().repaintCatalogue(url + "/tag/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
 	}
 }
+
 
 UIUtils.cataloguePaginate = function(url, offset, pag, items) {
 	UIUtils.repaintCatalogue=true;
@@ -298,18 +386,14 @@ UIUtils.cataloguePaginate = function(url, offset, pag, items) {
 	var opManager = OpManagerFactory.getInstance();
 	var pages = Math.ceil(UIUtils.getNum_items()/UIUtils.getOffset());
 
-	if (UIUtils.search == 'false'){
+	if (!UIUtils.search){
 		url = URIs.GET_POST_RESOURCES;
+	} else if(UIUtils.searchCriteria=="global"){
+		url = URIs.GET_RESOURCES_GLOBAL_SEARCH;
+	} else {
+		url = URIs.GET_RESOURCES_SIMPLE_SEARCH + "/" + UIUtils.searchCriteria;
 	}
-	if (UIUtils.search == 'generic'){
-		url = URIs.GET_RESOURCES_SEARCH_GENERIC + "/" + UIUtils.searchValue;
-	}
-	if (UIUtils.search == 'wiring'){
-		url = URIs.GET_RESOURCES_BY_WIRING + "/" + UIUtils.searchCriteria + "/" + UIUtils.searchValue;
-	}
-	if (UIUtils.search == 'tag'){
-		url = URIs.GET_RESOURCES_BY_TAG + "/" + UIUtils.searchValue;
-	}
+
 	if (pag == "first"){
 		pag = 1;
     }
@@ -325,15 +409,15 @@ UIUtils.cataloguePaginate = function(url, offset, pag, items) {
   		if(UIUtils.page == pages){
   			pag = pages;
   		}
-    	else{
-  	  		pag = parseInt(UIUtils.page) + 1;
-  		}
-  	}
+		else{
+			pag = parseInt(UIUtils.page) + 1;
+		}
+	}
     if (pag == "last"){
           pag = pages;
     }
 	UIUtils.page = pag; 
-  
+
 	CatalogueFactory.getInstance().repaintCatalogue(url + "/" + pag + "/" + UIUtils.getOffset());
 }
 
@@ -361,34 +445,6 @@ UIUtils.getNum_items = function() {
     return UIUtils.num_items;
 }
 
-UIUtils.searchGeneric = function(url, param1, param2, param3) {
-	UIUtils.repaintCatalogue=true;
-	UIUtils.sendPendingTags();
-	UIUtils.closeInfoResource();
-	var opManager = OpManagerFactory.getInstance();
-	var param1=UIUtils.filterString(param1);
-	var param2=UIUtils.filterString(param2);
-	var param3=UIUtils.filterString(param3);
-	if (param1=="") param1="_";
-	if (param2=="") param2="_";
-	if (param3=="") param3="_";
-
-	if (param1 == "_" && param2 == "_" && param3 == "_"){
-		$('header_always_error').style.display="block";
-		UIUtils.getError($('header_always_error'),gettext("Indicate a criteria in search formulary"));
-	}
-	else{
-		$('header_always_error').style.display = 'none';
-
-		UIUtils.setPage(1);
-		UIUtils.searchValue = param1+"/"+param2+"/"+param3;
-		UIUtils.searchCriteria = 'generic';
-		UIUtils.search = 'generic';
-
-		CatalogueFactory.getInstance().repaintCatalogue(url + "/" + param1 + "/" + param2 + "/" + param3 + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
-
-	}
-}
 
 UIUtils.removeTag = function(id_) {
 	var tagger = CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).getTagger();
@@ -536,7 +592,7 @@ UIUtils.deleteGadget = function(id) {
 	var resource = CatalogueFactory.getInstance().getResource(id);
 	if (UIUtils.selectedVersion == null){
 		// Removes all versions of the gadget
-		var resourceURI = URIs.GET_POST_RESOURCES + "/" + resource.getVendor() + "/" + resource.getName();	
+		var resourceURI = URIs.GET_POST_RESOURCES + "/" + resource.getVendor() + "/" + escape(resource.getName());
 	}else{
 		// Removes only the specified version of the gadget
 		var resourceURI = URIs.GET_POST_RESOURCES + "/" + resource.getVendor() + "/" + resource.getName() + "/" + UIUtils.selectedVersion;
@@ -626,8 +682,10 @@ UIUtils.setResourcesWidth = function() {
 	var head = $('head');
 	var resources = $('resources');
 	var center = $('center');
-	center.style.width = head.offsetWidth + 'px';
-	resources.style.width = (center.offsetWidth - (tab.offsetWidth + (UIUtils.isInfoResourcesOpen?UIUtils.infoResourcesWidth:0))) + 'px';
+	if (center){
+		center.style.width = head.offsetWidth + 'px';
+		resources.style.width = (center.offsetWidth - (tab.offsetWidth + (UIUtils.isInfoResourcesOpen?UIUtils.infoResourcesWidth:0))) + 'px';
+	}
 }
 
 UIUtils.openInfoResource = function() {
@@ -1019,7 +1077,7 @@ UIUtils.filterString = function(element){
 UIUtils.onReturn = function(event_, handler_, inputText_) {
   if (!event_) event_ = window.event;
   if (event_ && event_.keyCode && event_.keyCode == 13) {
-	  handler_(inputText_,arguments[3],arguments[4], arguments[5]);
+	  handler_(inputText_,arguments[3]);
   }
 };
 

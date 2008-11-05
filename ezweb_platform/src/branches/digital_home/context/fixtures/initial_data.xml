@@ -24,6 +24,22 @@
         <field type="CharField" name="source">PLAT</field>
         <field type="CharField" name="adaptor"><None></None></field>
     </object>
+    <object pk="lockStatus" model="context.concept">
+        <field type="CharField" name="source">PLAT</field>
+        <field type="CharField" name="adaptor"><None></None></field>
+    </object>
+    <object pk="widthInPixels" model="context.concept">
+        <field type="CharField" name="source">PLAT</field>
+        <field type="CharField" name="adaptor"><None></None></field>
+    </object>
+    <object pk="heightInPixels" model="context.concept">
+        <field type="CharField" name="source">PLAT</field>
+        <field type="CharField" name="adaptor"><None></None></field>
+    </object>
+    <object pk="orientation" model="context.concept">
+        <field type="CharField" name="source">PLAT</field>
+        <field type="CharField" name="adaptor"><None></None></field>
+    </object>
     <object pk="1" model="context.conceptname">
         <field type="CharField" name="name">user_name</field>
         <field to="context.concept" name="concept" rel="ManyToOneRel">username</field>
@@ -48,6 +64,22 @@
         <field type="CharField" name="name">language</field>
         <field to="context.concept" name="concept" rel="ManyToOneRel">language</field>
     </object>
+    <object pk="7" model="context.conceptname">
+        <field type="CharField" name="name">lockStatus</field>
+        <field to="context.concept" name="concept" rel="ManyToOneRel">lockStatus</field>
+    </object>
+    <object pk="8" model="context.conceptname">
+        <field type="CharField" name="name">widthInPixels</field>
+        <field to="context.concept" name="concept" rel="ManyToOneRel">widthInPixels</field>
+    </object>
+    <object pk="9" model="context.conceptname">
+        <field type="CharField" name="name">heightInPixels</field>
+        <field to="context.concept" name="concept" rel="ManyToOneRel">heightInPixels</field>
+    </object>
+    <object pk="10" model="context.conceptname">
+        <field type="CharField" name="name">orientation</field>
+        <field to="context.concept" name="concept" rel="ManyToOneRel">orientation</field>
+    </object>
     <object pk="1" model="auth.user">
         <field type="CharField" name="username">admin</field>
         <field type="CharField" name="first_name"></field>
@@ -57,8 +89,22 @@
         <field type="BooleanField" name="is_staff">True</field>
         <field type="BooleanField" name="is_active">True</field>
         <field type="BooleanField" name="is_superuser">True</field>
-        <field type="DateTimeField" name="last_login">2008-06-17 13:28:02</field>
+        <field type="DateTimeField" name="last_login">2008-08-28 12:40:41</field>
         <field type="DateTimeField" name="date_joined">2008-05-28 16:19:23</field>
+        <field to="auth.group" name="groups" rel="ManyToManyRel"></field>
+        <field to="auth.permission" name="user_permissions" rel="ManyToManyRel"></field>
+    </object>
+    <object pk="6" model="auth.user">
+        <field type="CharField" name="username">anonymous1225298034102</field>
+        <field type="CharField" name="first_name"></field>
+        <field type="CharField" name="last_name"></field>
+        <field type="CharField" name="email"></field>
+        <field type="CharField" name="password">sha1$88ada$9f3226fc4b40d07df9dcf6a70d609824ee7ef297</field>
+        <field type="BooleanField" name="is_staff">False</field>
+        <field type="BooleanField" name="is_active">True</field>
+        <field type="BooleanField" name="is_superuser">False</field>
+        <field type="DateTimeField" name="last_login">2008-10-29 17:33:54</field>
+        <field type="DateTimeField" name="date_joined">2008-10-29 17:33:54</field>
         <field to="auth.group" name="groups" rel="ManyToManyRel"></field>
         <field to="auth.permission" name="user_permissions" rel="ManyToManyRel"></field>
     </object>
@@ -71,7 +117,7 @@
         <field type="BooleanField" name="is_staff">True</field>
         <field type="BooleanField" name="is_active">True</field>
         <field type="BooleanField" name="is_superuser">False</field>
-        <field type="DateTimeField" name="last_login">2008-06-17 13:31:49</field>
+        <field type="DateTimeField" name="last_login">2008-08-28 12:41:19</field>
         <field type="DateTimeField" name="date_joined">2008-06-03 19:50:49</field>
         <field to="auth.group" name="groups" rel="ManyToManyRel"></field>
         <field to="auth.permission" name="user_permissions" rel="ManyToManyRel"></field>
@@ -113,7 +159,7 @@
         <field type="BooleanField" name="is_staff">True</field>
         <field type="BooleanField" name="is_active">True</field>
         <field type="BooleanField" name="is_superuser">False</field>
-        <field type="DateTimeField" name="last_login">2008-06-17 12:31:45</field>
+        <field type="DateTimeField" name="last_login">2008-08-28 12:53:14</field>
         <field type="DateTimeField" name="date_joined">2008-06-03 19:51:07</field>
         <field to="auth.group" name="groups" rel="ManyToManyRel"></field>
         <field to="auth.permission" name="user_permissions" rel="ManyToManyRel"></field>
@@ -566,6 +612,51 @@
     <object pk="90" model="auth.permission">
         <field type="CharField" name="name">Can delete concept name</field>
         <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">30</field>
+        <field type="CharField" name="codename">delete_conceptname</field>
+    </object>
+    <object pk="91" model="auth.permission">
+        <field type="CharField" name="name">Can add concept</field>
+        <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">31</field>
+        <field type="CharField" name="codename">add_concept</field>
+    </object>
+    <object pk="92" model="auth.permission">
+        <field type="CharField" name="name">Can change concept</field>
+        <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">31</field>
+        <field type="CharField" name="codename">change_concept</field>
+    </object>
+    <object pk="93" model="auth.permission">
+        <field type="CharField" name="name">Can delete concept</field>
+        <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">31</field>
+        <field type="CharField" name="codename">delete_concept</field>
+    </object>
+    <object pk="94" model="auth.permission">
+        <field type="CharField" name="name">Can add concept name</field>
+        <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">32</field>
+        <field type="CharField" name="codename">add_conceptname</field>
+    </object>
+    <object pk="95" model="auth.permission">
+        <field type="CharField" name="name">Can change concept name</field>
+        <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">32</field>
+        <field type="CharField" name="codename">change_conceptname</field>
+    </object>
+    <object pk="96" model="auth.permission">
+        <field type="CharField" name="name">Can delete concept name</field>
+        <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">32</field>
+        <field type="CharField" name="codename">delete_conceptname</field>
+    </object>
+    <object pk="97" model="auth.permission">
+        <field type="CharField" name="name">Can add concept name</field>
+        <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">33</field>
+        <field type="CharField" name="codename">add_conceptname</field>
+    </object>
+    <object pk="98" model="auth.permission">
+        <field type="CharField" name="name">Can change concept name</field>
+        <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">33</field>
+        <field type="CharField" name="codename">change_conceptname</field>
+    </object>
+    <object pk="99" model="auth.permission">
+        <field type="CharField" name="name">Can delete concept name</field>
+        <field to="contenttypes.contenttype" name="content_type" rel="ManyToOneRel">33</field>
         <field type="CharField" name="codename">delete_conceptname</field>
     </object>
     <object pk="9" model="admin.logentry">

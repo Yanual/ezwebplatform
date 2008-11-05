@@ -1,48 +1,52 @@
 # -*- coding: utf-8 -*-
 
-# MORFEO Project 
-# http://morfeo-project.org 
-# 
-# Component: EzWeb
-# 
-# (C) Copyright 2004 Telefónica Investigación y Desarrollo 
-#     S.A.Unipersonal (Telefónica I+D) 
-# 
-# Info about members and contributors of the MORFEO project 
-# is available at: 
-# 
-#   http://morfeo-project.org/
-# 
-# This program is free software; you can redistribute it and/or modify 
-# it under the terms of the GNU General Public License as published by 
-# the Free Software Foundation; either version 2 of the License, or 
-# (at your option) any later version. 
-# 
-# This program is distributed in the hope that it will be useful, 
-# but WITHOUT ANY WARRANTY; without even the implied warranty of 
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
-# GNU General Public License for more details. 
-# 
-# You should have received a copy of the GNU General Public License 
-# along with this program; if not, write to the Free Software 
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
-# 
-# If you want to use this software an plan to distribute a 
-# proprietary application in any way, and you are not licensing and 
-# distributing your source code under GPL, you probably need to 
-# purchase a commercial license of the product.  More info about 
-# licensing options is available at: 
-# 
-#   http://morfeo-project.org/
+#...............................licence...........................................
+#
+#     (C) Copyright 2008 Telefonica Investigacion y Desarrollo
+#     S.A.Unipersonal (Telefonica I+D)
+#
+#     This file is part of Morfeo EzWeb Platform.
+#
+#     Morfeo EzWeb Platform is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     Morfeo EzWeb Platform is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public License
+#     along with Morfeo EzWeb Platform.  If not, see <http://www.gnu.org/licenses/>.
+#
+#     Info about members and contributors of the MORFEO project
+#     is available at
+#
+#     http://morfeo-project.org
+#
+#...............................licence...........................................#
+
+
 #
 
+import os
 import types
 from decimal import Decimal
-from django.db import models
-from django.utils import simplejson
-from django.core.serializers.json import DateTimeAwareJSONEncoder
-
 from xml.dom.minidom import getDOMImplementation
+
+from django.db import models
+from django.conf import settings
+from django.core.serializers.json import DateTimeAwareJSONEncoder
+from django.contrib.auth.models import User
+from django.utils import simplejson
+
+from commons.http_utils import download_http_content
+from catalogue.models import GadgetResource
+from catalogue.templateParser import TemplateParser as CatalogueTemplateParser
+from gadget.models import XHTML
+from gadget.templateParser import TemplateParser as GadgetTemplateParser
+
 
 def json_encode(data, ensure_ascii=False):
     """
@@ -97,6 +101,7 @@ def json_encode(data, ensure_ascii=False):
     
     return simplejson.dumps(ret, cls=DateTimeAwareJSONEncoder, ensure_ascii=ensure_ascii)
 
+
 def get_xml_error(value):
     dom = getDOMImplementation()
 
@@ -108,3 +113,51 @@ def get_xml_error(value):
     doc.unlink()
 
     return errormsg
+
+def get_gadgets_files():
+    gadgets_files = []
+    if hasattr(settings, 'GADGETS_ROOT'):
+        for walk_files in os.walk(settings.GADGETS_ROOT):
+            files = walk_files[2]
+            for fil in files:
+                if fil.endswith('.xml') or fil.endswith('.html'):
+                    gadgets_files.append(os.path.join(walk_files[0], fil))
+    return gadgets_files
+
+
+def load_gadgets():
+    errors = 0
+    user = User.objects.all()[0]
+    gadgets_files = []
+    code_files = []
+    for fil in get_gadgets_files():
+        if fil.endswith('.xml'):
+            gadgets_files.append(fil)
+        else:
+            code_files.append(fil)
+
+    for gadget_file in gadgets_files:
+        template_uri = gadget_file
+        template_uri = "file://%s" % gadget_file
+
+        gadget_resources = GadgetResource.objects.filter(template_uri=template_uri)
+        for gadget_resource in gadget_resources:
+            gadget_resource.delete()
+        try:
+            catalogue_template_parser = CatalogueTemplateParser(template_uri, user)
+            catalogue_template_parser.parse()
+        except Exception, e:
+            print "The file '%s' is not a valid XML template: %s." % (gadget_file, e)
+            errors += 1
+
+    for code_file in code_files:
+        code_url = "file://%s" % code_file
+        xhtmls = XHTML.objects.filter(url=code_url)
+        for xhtml in xhtmls:
+            try:
+                xhtml.code = download_http_content(xhtml.url)
+                xhtml.save()
+            except Exception, e:
+                print "Unable get contents of %s (%s)." % (code_file, e)
+
+    print "%s errors found" % errors

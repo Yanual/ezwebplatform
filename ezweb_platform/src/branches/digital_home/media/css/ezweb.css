@@ -1,4 +1,4 @@
-body{
+body {
 	 margin:0;
 	 padding:0;
 	 color:#000;
@@ -27,6 +27,25 @@ a:hover{
 	height: 70px;
 	z-index: 2;
 }
+.form-row {
+	width: 300px;
+	margin: auto;
+	text-align: center;
+	padding: 10px;
+}
+
+.form-row input[type="submit"]{
+	padding: 3px;
+	background: transparent url(/ezweb/images/header.gif) repeat;
+	color: white;
+	border: 0;
+	margin-top: 5px;
+}
+
+.form-row table {
+	text-align: left;
+}
+
 #banner {
   position:relative;
   overflow:hidden;
@@ -39,8 +58,20 @@ a:hover{
 	margin-right:15px;
 	margin-top:5px;
 }
+
 #greeting a{
 	color:white;
+}
+#greeting .languages{
+	display:inline;
+	margin-left: 20px;
+}
+
+#greeting .languages a{
+	text-decoration:none;
+}
+#greeting .languages img{
+	border:0px none;
 }
 #logo {
 	position:relative;
@@ -58,13 +89,32 @@ a:hover{
 }
 
 #tab_section {
- position: absolute;
+ position: absolute; 
  top: 6px;
  display: block;
  right:4px;
- margin-left:25%;
+/* margin-left:25%;*/
+ width:100%;
  z-index: 3;
 
+}
+
+#tab_section #fixed_bar{
+ position:relative;
+ right:0pt;
+ float:right;
+ height:25px;
+ overflow:hidden;
+ display:inline;
+ max-width:70%;
+}
+
+#tab_section #scroll_bar{
+ position:absolute;
+ top:0;
+ right:0;
+ float:right;
+ white-space:nowrap;
 }
 
 #toolbar_section {
@@ -78,7 +128,7 @@ a:hover{
 
 }
 
-.toolbar_section input[type=button], #add_tab_link {
+.toolbar_section input[type=button], #add_tab_link, #left_slider, #right_slider {
   position: relative;
   margin-right: 3px;
   margin-left: 3px;
@@ -100,6 +150,21 @@ a:hover{
   margin-right: 0px;
   margin-left: 3px;
   color:#2D6F9C;
+}
+
+#left_slider{
+ margin-top:2px;
+ margin-left:3px;
+ float:right;
+ width: 10px;
+ background: transparent url(/ezweb/images/sliderL21px.png) no-repeat;
+}
+
+#right_slider{
+ margin-top:2px;
+ float:right;
+ width: 10px;
+ background: transparent url(/ezweb/images/sliderR21px.png) no-repeat;
 }
 
 #add_tab_link {
@@ -162,16 +227,25 @@ a:hover{
 #tab_section .tab {
   position: relative;
   float: right;
+  display: block;
   border: 2px solid #4c5054;
   color: #FFF;
-  background: #97a0a8;
+  background: #97A0A8 url(/ezweb/images/degradado.png) no-repeat scroll left top;
   font-weight: bold;
   padding: 2px 9px;
-  margin: 0px 0.5em;
+  margin: 0px 6px;
   cursor: pointer;
   z-index: 3;
   height: 18px;
   padding: 2px 5px 1px;
+  -moz-border-radius-topleft:10px;
+  -moz-border-radius-topright:4px;
+  -webkit-border-top-left-radius: 10px;
+  -webkit-border-top-right-radius: 4px;
+}
+
+#tab_section .tab.selected {
+  background: #F0E68C;
 }
 
 .disabled {
@@ -225,7 +299,9 @@ a:hover{
   background: #FFFFFF;
   position:fixed;
   text-align: left;
-   z-index: 4;
+  z-index: 4;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
 }
 
 .drop_down_menu {
@@ -307,6 +383,15 @@ a:hover{
 .window_menu .window_bottom {
   margin:20px 18px 10px 18px;
   text-align: center;
+}
+
+.required_mark{
+	font-size: 100%;
+	color: red;
+}
+
+.required_text{
+	font-size: 85%;
 }
 
 .tabOps_launcher, .closebutton{
@@ -427,6 +512,8 @@ button {
   border: 2px solid #4c5054;
   margin: 0 4px 4px 4px;
   z-index: 1;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
 }
 
 .container {
@@ -434,11 +521,13 @@ button {
   width:99.1%;
   height:100%;
   background: #e6f3ff;
-  background-color:#e0e0e0;
+  background-color:#E0E0E0;
 /*  overflow-x: auto;*/
   overflow-y: auto;
   z-index: 1;
   visibility: hidden;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 6px;
 }
 
 .container_content {

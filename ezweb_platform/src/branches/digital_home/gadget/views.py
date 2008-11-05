@@ -1,39 +1,33 @@
 # -*- coding: utf-8 -*-
 
-# MORFEO Project 
-# http://morfeo-project.org 
-# 
-# Component: EzWeb
-# 
-# (C) Copyright 2004 Telefónica Investigación y Desarrollo 
-#     S.A.Unipersonal (Telefónica I+D) 
-# 
-# Info about members and contributors of the MORFEO project 
-# is available at: 
-# 
-#   http://morfeo-project.org/
-# 
-# This program is free software; you can redistribute it and/or modify 
-# it under the terms of the GNU General Public License as published by 
-# the Free Software Foundation; either version 2 of the License, or 
-# (at your option) any later version. 
-# 
-# This program is distributed in the hope that it will be useful, 
-# but WITHOUT ANY WARRANTY; without even the implied warranty of 
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
-# GNU General Public License for more details. 
-# 
-# You should have received a copy of the GNU General Public License 
-# along with this program; if not, write to the Free Software 
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
-# 
-# If you want to use this software an plan to distribute a 
-# proprietary application in any way, and you are not licensing and 
-# distributing your source code under GPL, you probably need to 
-# purchase a commercial license of the product.  More info about 
-# licensing options is available at: 
-# 
-#   http://morfeo-project.org/
+#...............................licence...........................................
+#
+#     (C) Copyright 2008 Telefonica Investigacion y Desarrollo
+#     S.A.Unipersonal (Telefonica I+D)
+#
+#     This file is part of Morfeo EzWeb Platform.
+#
+#     Morfeo EzWeb Platform is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     Morfeo EzWeb Platform is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public License
+#     along with Morfeo EzWeb Platform.  If not, see <http://www.gnu.org/licenses/>.
+#
+#     Info about members and contributors of the MORFEO project
+#     is available at
+#
+#     http://morfeo-project.org
+#
+#...............................licence...........................................#
+
+
 #
 from django.db import IntegrityError
 
@@ -45,7 +39,6 @@ from commons.resource import Resource
 
 from commons.authentication import get_user_authentication
 from commons.get_data import get_gadget_data
-from commons.utils import json_encode
 
 from gadget.templateParser import TemplateParser
 
@@ -54,7 +47,7 @@ from django.db import transaction
 from django.utils.translation import ugettext as _
 
 from commons.logs import log
-from commons.utils import get_xml_error
+from commons.utils import get_xml_error, json_encode
 from commons.exceptions import TemplateParseException
 from commons.http_utils import *
 
@@ -86,6 +79,7 @@ class GadgetCollection(Resource):
             # Gadget is created only once
             templateParser = TemplateParser(templateURL)
             gadget_uri = templateParser.getGadgetUri()
+
             try:
                 gadget = Gadget.objects.get(uri=gadget_uri)
             except Gadget.DoesNotExist:
@@ -144,7 +138,12 @@ class GadgetCodeEntry(Resource):
         user = get_user_authentication(request)
         gadget = get_object_or_404(Gadget, vendor=vendor, name=name, version=version, users=user)
         code = get_object_or_404(gadget.xhtml, id=gadget.xhtml.id)
-        return HttpResponse(code.code, mimetype='text/html; charset=UTF-8')
+        
+        content_type = gadget.xhtml.content_type
+        if (content_type):
+            return HttpResponse(code.code, mimetype='%s; charset=UTF-8' % content_type)
+        else:
+            return HttpResponse(code.code, mimetype='text/html; charset=UTF-8')
 
     def update(self, request, vendor, name, version, user_name=None):
         user = get_user_authentication(request)

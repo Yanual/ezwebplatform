@@ -1,38 +1,26 @@
 /* 
- * MORFEO Project 
- * http://morfeo-project.org 
- * 
- * Component: EzWeb
- * 
- * (C) Copyright 2004 Telefónica Investigación y Desarrollo 
- *     S.A.Unipersonal (Telefónica I+D) 
- * 
- * Info about members and contributors of the MORFEO project 
- * is available at: 
- * 
- *   http://morfeo-project.org/
- * 
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License as published by 
- * the Free Software Foundation; either version 2 of the License, or 
- * (at your option) any later version. 
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
- * GNU General Public License for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
- * 
- * If you want to use this software an plan to distribute a 
- * proprietary application in any way, and you are not licensing and 
- * distributing your source code under GPL, you probably need to 
- * purchase a commercial license of the product.  More info about 
- * licensing options is available at: 
- * 
- *   http://morfeo-project.org/
+*     (C) Copyright 2008 Telefonica Investigacion y Desarrollo
+*     S.A.Unipersonal (Telefonica I+D)
+*
+*     This file is part of Morfeo EzWeb Platform.
+*
+*     Morfeo EzWeb Platform is free software: you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation, either version 3 of the License, or
+*     (at your option) any later version.
+*
+*     Morfeo EzWeb Platform is distributed in the hope that it will be useful,
+*     but WITHOUT ANY WARRANTY; without even the implied warranty of
+*     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*     GNU Affero General Public License for more details.
+*
+*     You should have received a copy of the GNU Affero General Public License
+*     along with Morfeo EzWeb Platform.  If not, see <http://www.gnu.org/licenses/>.
+*
+*     Info about members and contributors of the MORFEO project
+*     is available at
+*
+*     http://morfeo-project.org
  */
 
 
@@ -76,7 +64,7 @@ function Tab (tabInfo, workSpace) {
     // ****************
 
 	Tab.prototype.destroy = function(){
-		Element.remove(this.tabHTMLElement);
+		LayoutManagerFactory.getInstance().removeFromTabBar(this.tabHTMLElement);
 		
 		this.menu.remove();
 		
@@ -119,23 +107,40 @@ function Tab (tabInfo, workSpace) {
 		var nameToShow = (this.tabInfo.name.length>15)?this.tabInfo.name.substring(0, 15)+"..." : this.tabInfo.name;
 		var spanHTML = "<span>"+nameToShow+"</span>";
     	new Insertion.Top(this.tabHTMLElement, spanHTML);
+    	var difference = this.tabHTMLElement.getWidth() - this.tabWidth;
+    	if(difference!=0)
+	    	LayoutManagerFactory.getInstance().changeTabBarSize(difference);
 		this.tabNameHTMLElement = this.tabHTMLElement.firstDescendant();
+		this.tabWidth = this.tabHTMLElement.getWidth();
     }
 
 	Tab.prototype.fillWithInput = function () {
+		var oldTabWidth= this.tabHTMLElement.getWidth();
 		this.tabNameHTMLElement.remove();
-		var inputHTML = "<input class='tab_name' value='"+this.tabInfo.name+"' size='"+this.tabInfo.name.length+"' maxlength=30 />";
+		var inputHTML = "<input class='tab_name' value='"+this.tabInfo.name+"' size='"+(this.tabInfo.name.length)+"' maxlength=30 />";
 		new Insertion.Top(this.tabHTMLElement, inputHTML);
 		this.tabNameHTMLElement =  this.tabHTMLElement.firstDescendant();
+		var newTabWidth= this.tabHTMLElement.getWidth();
+		var difference= newTabWidth-oldTabWidth;
+		if (difference!=0)
+			LayoutManagerFactory.getInstance().changeTabBarSize(difference);
+		this.tabWidth = newTabWidth;
+		
 		this.tabNameHTMLElement.focus();	
 		Event.observe(this.tabNameHTMLElement, 'blur', function(e){Event.stop(e);
 					this.fillWithLabel()}.bind(this));
 		Event.observe(this.tabNameHTMLElement, 'keypress', function(e){if(e.keyCode == Event.KEY_RETURN){Event.stop(e);
-					e.target.blur();}}.bind(this));					
+					e.target.blur();} else{this.makeVisibleInTabBar();}}.bind(this));					
 		Event.observe(this.tabNameHTMLElement, 'change', function(e){Event.stop(e);
 					this.updateInfo(e.target.value);}.bind(this));
 		Event.observe(this.tabNameHTMLElement, 'keyup', function(e){Event.stop(e);
-					e.target.size = (e.target.value.length==0)?1:e.target.value.length;}.bind(this));
+					e.target.size = (e.target.value.length==0)?1:e.target.value.length;
+					var newTabWidth = e.target.parentNode.getWidth();
+					var difference= newTabWidth-this.tabWidth;
+					if (difference!=0)
+						LayoutManagerFactory.getInstance().changeTabBarSize(difference);
+					this.tabWidth = newTabWidth;
+				}.bind(this));
 		Event.observe(this.tabNameHTMLElement, 'click', function(e){Event.stop(e);}); //do not propagate to div.					
 	}
 	
@@ -148,9 +153,25 @@ function Tab (tabInfo, workSpace) {
 	Tab.prototype.show = function () {
 		LayoutManagerFactory.getInstance().showDragboard(this.dragboard);
 
-	    this.dragboard.recomputeSize();
-	    this.markAsCurrent();
-	    
+		this.markAsCurrent();
+	}
+	
+		/* if the tab is out of the visible area of the tab bar, slide it to show it */
+	Tab.prototype.makeVisibleInTabBar = function(){
+		var tabLeft = Position.cumulativeOffset(this.tabHTMLElement)[0];
+		var fixedBarLeft = LayoutManagerFactory.getInstance().getFixedBarLeftPosition();
+		var difference = tabLeft - fixedBarLeft;
+		if (difference < 0){
+			LayoutManagerFactory.getInstance().changeScrollBarRightPosition(difference);
+		}
+		else{
+			var fixedBarRight = fixedBarLeft + LayoutManagerFactory.getInstance().getFixedBarWidth();
+			var visibleTabArea = fixedBarRight - tabLeft;
+			difference = visibleTabArea - this.tabHTMLElement.getWidth();
+			if(difference < 0){
+				LayoutManagerFactory.getInstance().changeScrollBarRightPosition(-1*difference);
+			}
+		}
 	}
 	
 	Tab.prototype.markAsCurrent = function (){
@@ -168,6 +189,7 @@ function Tab (tabInfo, workSpace) {
 
 	    this.dragboard.recomputeSize();
 	    LayoutManagerFactory.getInstance().goTab(this.tabHTMLElement, this.tabOpsLauncher, this.renameTabHandler, this.changeTabHandler);
+	    this.makeVisibleInTabBar();
 	}
 
 	Tab.prototype.getDragboard = function () {
@@ -178,6 +200,9 @@ function Tab (tabInfo, workSpace) {
 	//  PRIVATE METHODS
     // *****************
 	
+	
+	/*constructor*/
+	
 	// The name of the dragboard HTML elements correspond to the Tab name
 	this.workSpace = workSpace;
 	this.tabInfo = tabInfo;
@@ -185,10 +210,18 @@ function Tab (tabInfo, workSpace) {
 	this.tabName = "tab_" + this.workSpace.workSpaceState.id + "_" + this.tabInfo.id;
 	this.tabHTMLElement;
 	this.tabNameHTMLElement = null;
+	this.tabWidth = 0;
 
 	//tab event handlers
-	this.renameTabHandler = function(e){this.fillWithInput();}.bind(this);
-	this.changeTabHandler = function(e){this.workSpace.setTab(this);}.bind(this);
+	this.renameTabHandler = function(e){
+		this.makeVisibleInTabBar();
+		this.fillWithInput();
+	}.bind(this);
+	
+	this.changeTabHandler = function(e){
+		this.workSpace.setTab(this);
+		this.makeVisibleInTabBar();
+	}.bind(this);
 
 	// Dragboard layer creation
 	var dragboardHTML = $("dragboard_template").innerHTML;
@@ -204,18 +237,15 @@ function Tab (tabInfo, workSpace) {
 	this.dragboard = new Dragboard(this, this.workSpace, this.dragboardElement);
 
 	// Tab creation
-	var tabSection = $("tab_section");
-	new Insertion.Top(tabSection, "<div></div>");
-	this.tabHTMLElement = tabSection.firstDescendant();
-	this.tabHTMLElement.setStyle({'display':'none'});
-	this.tabHTMLElement.setAttribute('id', this.tabName);
+	//add a new tab to the tab section
+	this.tabHTMLElement=LayoutManagerFactory.getInstance().addToTabBar(this.tabName);
 
 	this.tabOpsLauncher = this.tabName+"_launcher";
 	var tabOpsLauncherHTML = '<input id="'+this.tabOpsLauncher+'" type="button" title="'+gettext("Options")+'" class="tabOps_launcher tabOps_launcher_show"/>';
 	new Insertion.Bottom(this.tabHTMLElement, tabOpsLauncherHTML);
 	var tabOpsLauncherElement = $(this.tabOpsLauncher);
 	Event.observe(tabOpsLauncherElement, "click", function(e){e.target.blur();Event.stop(e);
-													LayoutManagerFactory.getInstance().showDropDownMenu('tabOps',this, Event.pointerX(e), Event.pointerY(e));}.bind(this), true);
+													LayoutManagerFactory.getInstance().showDropDownMenu('tabOps',this.menu, Event.pointerX(e), Event.pointerY(e));}.bind(this), true);
 	tabOpsLauncherElement.setStyle({'display':'none'});
 
 	//fill the tab label with a span tag

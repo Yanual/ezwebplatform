@@ -11,6 +11,8 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
 <link rel="stylesheet" type="text/css" media="screen,projection" href="{{ MEDIA_URL }}css/ezweb.css" />
+<!-- CSS for different header -->
+{% block css %}{% endblock %}
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/dragboard.css">
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/wiring.css">
 <link rel="shortcut icon" type="image/x-icon" href="{{ MEDIA_URL }}css/favicon.ico" />
@@ -30,12 +32,11 @@ _URIConstants.prototype.GET_GADGETS = '/user/{{ user.username }}/gadgets';
 _URIConstants.prototype.GET_CONTEXT = '/user/{{ user.username }}/context';
 _URIConstants.prototype.GET_CONTEXT_VALUE = new Template ('/user/{{ user.username }}/context/#{concept}/value');
 _URIConstants.prototype.GET_POST_RESOURCES = '/user/{{ user.username }}/catalogue/resource';
-_URIConstants.prototype.GET_RESOURCES_BY_TAG = '/user/{{ user.username }}/catalogue/search/tag';
-_URIConstants.prototype.GET_RESOURCES_BY_WIRING = '/user/{{ user.username }}/catalogue/search';
+_URIConstants.prototype.GET_RESOURCES_SIMPLE_SEARCH = '/user/{{ user.username }}/catalogue/search';
+_URIConstants.prototype.GET_RESOURCES_GLOBAL_SEARCH = '/user/{{ user.username }}/catalogue/globalsearch';
 _URIConstants.prototype.DELETE_TAG = '/user/{{ user.username }}/catalogue/tag';
 _URIConstants.prototype.POST_RESOURCE_TAGS = '/user/{{ user.username }}/catalogue/tag';
 _URIConstants.prototype.POST_RESOURCE_VOTES = '/user/{{ user.username }}/catalogue/voting';
-_URIConstants.prototype.GET_RESOURCES_SEARCH_GENERIC = '/user/{{ user.username }}/catalogue/search/generic';
 _URIConstants.prototype.POST_IGADGET = new Template ('/workspace/#{workspaceId}/tab/#{tabId}/igadgets');
 _URIConstants.prototype.PROXY = '/proxy';
 _URIConstants.prototype.GET_IGADGET_VARIABLES = new Template ('/user/{{ user.username }}/igadgets/#{iGadgetId}/variables');
@@ -47,20 +48,18 @@ _URIConstants.prototype.GET_POST_WIRING = new Template ('/workspaces/#{id}/wirin
 _URIConstants.prototype.GET_POST_WORKSPACE = new Template ('/workspaces/#{id}');
 _URIConstants.prototype.GET_POST_TABS = new Template('/workspace/#{workspace_id}/tabs');
 _URIConstants.prototype.TAB = new Template('/workspace/#{workspace_id}/tab/#{tab_id}');
-_URIConstants.prototype.HOME_GATEWAY_DISPATCHER_URL = '{{ home_gateway_dispatcher_url }}serviceGadgets?user={{ user.username }}';
-_URIConstants.prototype.HOME_GATEWAY_DISPATCHER_UNSUBSCRIBE_URL = '{{ home_gateway_dispatcher_url }}unsubscribeServices';
-_URIConstants.prototype.HOME_GATEWAY_DISPATCHER_CANCEL_URL = '{{ home_gateway_dispatcher_url }}cancelServices';
+_URIConstants.prototype.POST_PUBLISH_WORKSPACE = new Template('/workspace/#{workspace_id}/publish');
+_URIConstants.prototype.GET_ADD_WORKSPACE = new Template('/workspace/#{workspace_id}/add');
+_URIConstants.prototype.GET_MERGE_WORKSPACE = new Template('/workspace/#{from_ws_id}/merge/#{to_ws_id}');
+
 var URIs = new _URIConstants();
-
-var ezweb_user_name = '{{ user.username }}';
-
 </script>
 
 <script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/common/constants.js"></script>
 <script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/common/utils.js"></script>
 <script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/lib/scriptaculous/scriptaculous.js"></script>
 <script language="JavaScript" src="{{ MEDIA_URL }}js/lib/prototype/prototype.improvements.js"></script>
-
+<script language="JavaScript" src="{{ MEDIA_URL }}js/userProfile/UserProfile.js"></script>
 
 <script language="JavaScript" src="{{ MEDIA_URL }}js/common/modules.js"></script>
 <script language="JavaScript" src="{{ MEDIA_URL }}js/persistenceEngine/PersistenceEngine.js"></script>
@@ -86,9 +85,12 @@ var ezweb_user_name = '{{ user.username }}';
 <script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/contextManager/ContextPlatform.js"></script>
 <script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/contextManager/Adaptors.js"></script>
 
+<script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/dragboard/DragboardLayout.js"></script>
+<script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/dragboard/SmartColumnLayout.js"></script>
 <script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/dragboard/iGadget.js"></script>
 <script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/dragboard/dragboard.js"></script>
 <script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/dragboard/UserPref.js"></script>
+<script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/dragboard/ElementPositions.js"></script>
 
 <script language="JavaScript" src="{{ MEDIA_URL }}js/wiring/connectable.js"></script>
 <script language="JavaScript" src="{{ MEDIA_URL }}js/wiring/wiring.js"></script>
@@ -195,8 +197,8 @@ var ezweb_user_name = '{{ user.username }}';
 		<div id="alert_window_msg" class="window_msg"></div>
 	</div>
 	<div class="window_bottom">
-		<button id ="alert_btn1">{% trans "Yes"%}</button>
-		<button id = "alert_btn2">{% trans "No"%}</button>
+		<button id ="alert_btn1">{% trans "Accept"%}</button>
+		<button id = "alert_btn2" onclick="LayoutManagerFactory.getInstance().hideCover();">{% trans "Cancel"%}</button>
 	</div>
 </div>
 <div id="message_menu" class="window_menu" style="display:none">
@@ -212,19 +214,54 @@ var ezweb_user_name = '{{ user.username }}';
 		<button id = "message_btn1" onclick="LayoutManagerFactory.getInstance().hideCover();">{% trans "Accept"%}</button>
 	</div>
 </div>
+<div id="publish_menu" class="window_menu" style="display:none">
+	<div class="window_top">
+		<label id="publish_window_title" class="window_title"></label>
+		<input type="button" class="closebutton button" onclick="LayoutManagerFactory.getInstance().hideCover();" />
+	</div>
+	<div class="window_content">
+		<table>
+		<tr><td><label>{% trans "Mashup Name"%}</label> <span class="required_mark">*</span></td><td><input id="publish_name" type="text" value = ""/></td></tr>
+		<tr><td><label>{% trans "Vendor"%}</label> <span class="required_mark">*</span></td><td><input id="publish_vendor" type="text" value = ""/></td></tr>
+		<tr><td><label>{% trans "Version"%}</label> <span class="required_mark">*</span></td><td><input id="publish_version" type="text" value = ""/></td></tr>
+		<tr><td><label>{% trans "Author"%}</label></td><td><input id="publish_author" type="text" value = "{{ user.username }}"/></td></tr>
+		<tr><td><label>{% trans "Email"%}</label> <span class="required_mark">*</span></td><td><input id="publish_email" type="text" value = "{{ user.email }}"/></td></tr>
+		<tr><td><label>{% trans "Description"%}</label></td><td><textarea id="publish_description" rows="5" cols="50" ></textarea></td></tr>
+		<tr><td><label>{% trans "Image URL"%}</label></td><td><input id="publish_imageURI" type="text" value = ""/></td></tr>
+		<tr><td><label>{% trans "Wiki URL"%}</label></td><td><input id="publish_wikiURI" type="text" value = ""/></td></tr>
+		</table>
+		<div style="display:block;"><span class="required_mark">*</span> <span class="required_text">required</span></div>
+		<div id="publish_window_msg" class="window_msg_error"></div>
+	</div>
+	<div class="window_bottom">
+		<button id = "publish_btn1">{% trans "Accept"%}</button>
+		<button id = "publish_btn2" onclick="LayoutManagerFactory.getInstance().hideCover();">{% trans "Cancel"%}</button>
+	</div>
+</div>
 <!-- <div id="changeWorkspace_menu" class="drop_down_menu" style="display:none;">
 </div> -->
 
 
 <!-- HEADER -->
+{% block header %}
 <div id="header">
 <div id="banner">
-  <div id="greeting">{% trans "Welcome" %}, {{ user.username }}{% for lang in LANGUAGES %} | <a href="/" onclick="UIUtils.sendPendingTags();return setLanguage('{{ lang.0 }}')" >{{ lang.1 }}</a>{% endfor %} | <a href="/logout" onclick="UIUtils.sendPendingTags();OpManagerFactory.getInstance().sendBufferedVars();">{% trans "Exit" %}</a>
-  </div>
-  <img id="logo" src="{{ MEDIA_URL }}images/logo.gif" alt="EzWeb Logo">
-</div>
+  	<div id="greeting">
+		<span id="user_section">
+		  {% if is_anonymous %}{% trans "anonymous" %}</span> | <a href="/accounts/login/?next=/">{% trans "Sign in" %}</a>
+		  {% else %} {% trans "Welcome" %}, {{ user.username }} | <a href="/logout" onclick="UIUtils.sendPendingTags();OpManagerFactory.getInstance().sendBufferedVars();">{% trans "Exit" %}</a></span>
+		  {% endif %}
+		<div class="languages">
+		  {% for lang in LANGUAGES %} <a href="/" onclick="UIUtils.sendPendingTags();return setLanguage('{{ lang.0 }}')" ><img title="{{lang.1}}" alt="{{lang.1}}" src="{{ MEDIA_URL }}images/{{ lang.0 }}.png"/></a>{% endfor %}
+		</div>
+	</div>
+	<img id="logo" src="{{ MEDIA_URL }}images/logo.gif" alt="EzWeb Logo">
+</div>	
 <div id="bar">
 <div id="tab_section" class="tab_section">
+	<input type="button" id="right_slider" title="go left" style="display:none" onmousedown="LayoutManagerFactory.getInstance().goLeft()" onmouseup="clearTimeout(LayoutManagerFactory.getInstance().leftTimeOut)"/>
+	<div id="fixed_bar"><div id="scroll_bar"></div></div>
+	<input type="button" id="left_slider" title="go right" style="display:none" onmousedown="LayoutManagerFactory.getInstance().goRight();" onmouseup="clearTimeout(LayoutManagerFactory.getInstance().rightTimeOut)"/>
 	<input type="button" id="add_tab_link" title="{% trans 'Add more tabs' %}" class="toolbar_unmarked" onclick="$('add_tab_link').blur();OpManagerFactory.getInstance().activeWorkSpace.addTab();"/>
 
 </div>
@@ -239,6 +276,7 @@ var ezweb_user_name = '{{ user.username }}';
 	</div>
 </div>
 </div>
+{% endblock %}
 <div id="wrapper">
   <!-- DRAGBOARD LAYER -->
   <div id="dragboard_template">

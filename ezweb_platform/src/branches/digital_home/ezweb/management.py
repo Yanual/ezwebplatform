@@ -1,10 +1,40 @@
 # -*- coding: utf-8 -*-
-from django.dispatch import dispatcher
-from django.contrib.auth.management import create_superuser
+
+#...............................licence...........................................
+#
+#     (C) Copyright 2008 Telefonica Investigacion y Desarrollo
+#     S.A.Unipersonal (Telefonica I+D)
+#
+#     This file is part of Morfeo EzWeb Platform.
+#
+#     Morfeo EzWeb Platform is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     Morfeo EzWeb Platform is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public License
+#     along with Morfeo EzWeb Platform.  If not, see <http://www.gnu.org/licenses/>.
+#
+#     Info about members and contributors of the MORFEO project
+#     is available at
+#
+#     http://morfeo-project.org
+#
+#...............................licence...........................................#
+
+
+#
+
 from django.contrib.auth import models as auth_app
-from django.db.models import signals
+from django.contrib.auth.management import create_superuser
+from django.db.models.signals import post_syncdb
 
 # Para que no pregunte la creacion de usuario admin,
 # se crea automaticamente
-dispatcher.disconnect(create_superuser, sender=auth_app,
-                      signal=signals.post_syncdb)
+
+post_syncdb.disconnect(sender=auth_app, dispatch_uid='django.contrib.auth.management.create_superuser')

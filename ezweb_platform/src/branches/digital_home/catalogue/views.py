@@ -1,39 +1,33 @@
 ﻿# -*- coding: utf-8 -*-
 
-# MORFEO Project 
-# http://morfeo-project.org 
-# 
-# Component: EzWeb
-# 
-# (C) Copyright 2004 Telefónica Investigación y Desarrollo 
-#     S.A.Unipersonal (Telefónica I+D) 
-# 
-# Info about members and contributors of the MORFEO project 
-# is available at: 
-# 
-#   http://morfeo-project.org/
-# 
-# This program is free software; you can redistribute it and/or modify 
-# it under the terms of the GNU General Public License as published by 
-# the Free Software Foundation; either version 2 of the License, or 
-# (at your option) any later version. 
-# 
-# This program is distributed in the hope that it will be useful, 
-# but WITHOUT ANY WARRANTY; without even the implied warranty of 
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
-# GNU General Public License for more details. 
-# 
-# You should have received a copy of the GNU General Public License 
-# along with this program; if not, write to the Free Software 
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
-# 
-# If you want to use this software an plan to distribute a 
-# proprietary application in any way, and you are not licensing and 
-# distributing your source code under GPL, you probably need to 
-# purchase a commercial license of the product.  More info about 
-# licensing options is available at: 
-# 
-#   http://morfeo-project.org/
+#...............................licence...........................................
+#
+#     (C) Copyright 2008 Telefonica Investigacion y Desarrollo
+#     S.A.Unipersonal (Telefonica I+D)
+#
+#     This file is part of Morfeo EzWeb Platform.
+#
+#     Morfeo EzWeb Platform is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     Morfeo EzWeb Platform is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public License
+#     along with Morfeo EzWeb Platform.  If not, see <http://www.gnu.org/licenses/>.
+#
+#     Info about members and contributors of the MORFEO project
+#     is available at
+#
+#     http://morfeo-project.org
+#
+#...............................licence...........................................#
+
+
 #
 
 import sys
@@ -69,7 +63,7 @@ class GadgetsCollection(Resource):
 
         user = user_authentication(request, user_name)
 
-        template_uri = request.__getitem__('template_uri')
+        template_uri = request.POST.__getitem__('template_uri')
         templateParser = None
 
         try:
@@ -99,12 +93,12 @@ class GadgetsCollection(Resource):
         user = user_authentication(request, user_name)
 
         try:
-            format = request.__getitem__('format')
+            format = request.GET.__getitem__('format')
         except:
             format = 'default'
 
         try:
-            orderby = request.__getitem__('orderby')
+            orderby = request.GET.__getitem__('orderby')
         except:
             orderby = '-creation_date'
 
@@ -198,96 +192,151 @@ def deleteOneGadget(resource, user):
         pass
 
 
-class GadgetsCollectionByGenericSearch(Resource):
+class GadgetsCollectionBySimpleSearch(Resource):
 
-    def read(self, request, user_name, and_criteria, or_criteria, not_criteria, pag=0, offset=0):
-
-        user = user_authentication(request, user_name)
-
-        try:
-            orderby = request.__getitem__('orderby')
-        except:
-            orderby = '-creation_date'
-
-        try:
-            format = request.__getitem__('format')
-        except:
-            format = 'default'
-
-        andlist = []
-        orlist = []
-        notlist = []
-        # This variable counts the number of criteria for the search to be passed as a parameter to the function
-        # get_uniquelist in order to get the gadgets that match the number of criteria
-        fields = 0
-
-        if (and_criteria != "_"):
-            andlist = get_and_list(and_criteria, user)
-            fields = fields+1
-        if (or_criteria != "_"):
-            orlist = get_or_list(or_criteria, user)
-            fields = fields+1
-        if (not_criteria != "_"):
-            notlist = get_not_list(not_criteria, user)
-            fields = fields+1
-
-        gadgetlist = andlist+orlist+notlist
-        gadgetlist = get_uniquelist(gadgetlist,fields)
-        gadgetlist = get_sortedlist(gadgetlist, orderby)
-        gadgetlist = get_paginatedlist(gadgetlist, pag, offset)
-        items = len(gadgetlist)
-
-        return get_resource_response(gadgetlist, format, items, user)
-
-
-class GadgetsCollectionByCriteria(Resource):
-
-    def read(self, request, user_name, criteria, criteria_value, pag=0, offset=0):
+    def read(self, request, user_name,criteria, pag=0, offset=0):
 
         user = user_authentication(request, user_name)
 
         try:
-            format = request.__getitem__('format')
+            orderby = request.GET.__getitem__('orderby')
+        except:
+            orderby = '-creation_date'
+
+        try:
+            format = request.GET.__getitem__('format')
         except:
             format = 'default'
 
-        try:
-            orderby = request.__getitem__('orderby')
-        except:
-            orderby = '-creation_date'
+        if criteria == 'connectEventSlot':
+            search_criteria = request.GET.getlist('search_criteria')
+        else:
+            search_criteria = request.GET.__getitem__('search_criteria')
 
         gadgetlist = []
 
-        if criteria == 'event':
+        if criteria == 'and':
+            gadgetlist= get_and_list(search_criteria, user)
+        elif (criteria == 'or' or criteria=='simple_or'):
+            gadgetlist= get_or_list(search_criteria, user)
+        elif criteria == 'not':
+            gadgetlist= get_not_list(search_criteria, user)
+        elif criteria == 'event':
             #get all the gadgets that match any of the given events
-            criteria_value = criteria_value.split()
-            for e in criteria_value:
+            search_criteria = search_criteria.split()
+            for e in search_criteria:
                 gadgetlist += get_resources_that_must_be_shown(user=user).filter(Q(gadgetwiring__friendcode__icontains = e), Q(gadgetwiring__wiring = 'out'))
 
         elif criteria == 'slot':
             #get all the gadgets that match any of the given slots
-            criteria_value = criteria_value.split()
-            for e in criteria_value:
+            search_criteria = search_criteria.split()
+            for e in search_criteria:
                 gadgetlist += get_resources_that_must_be_shown(user=user).filter(Q(gadgetwiring__friendcode__icontains = e), Q(gadgetwiring__wiring = 'in'))
 
         elif criteria == 'tag':
             #get all the gadgets that match any of the given tags
-            criteria_value = criteria_value.split()
-            for e in criteria_value:
+            search_criteria = search_criteria.split()
+            for e in search_criteria:
                 gadgetlist += get_resources_that_must_be_shown(user=user).filter(usertag__tag__icontains = e)
 
         elif criteria == 'connectSlot':
-            #get all the gadgets compatible with the given event
-            gadgetlist = get_resources_that_must_be_shown(user=user).filter(Q(gadgetwiring__friendcode = criteria_value), Q(gadgetwiring__wiring = 'out'))
+            #get all the gadgets compatible with the given events
+            search_criteria = search_criteria.split()
+            for e in search_criteria:
+                gadgetlist += get_resources_that_must_be_shown(user=user).filter(Q(gadgetwiring__friendcode = e), Q(gadgetwiring__wiring = 'out'))
 
         elif criteria == 'connectEvent':
-            #get all the gadgets compatible with the given slot
-            gadgetlist = get_resources_that_must_be_shown(user=user).filter(Q(gadgetwiring__friendcode = criteria_value), Q(gadgetwiring__wiring = 'in'))
+            #get all the gadgets compatible with the given slots
+            search_criteria = search_criteria.split()
+            for e in search_criteria:
+                gadgetlist += get_resources_that_must_be_shown(user=user).filter(Q(gadgetwiring__friendcode = e), Q(gadgetwiring__wiring = 'in'))
+
+        elif criteria == 'connectEventSlot':
+            #get all the gadgets compatible with the given slots
+            search_criteria[0] = search_criteria[0].split()
+            for e in search_criteria[0]:
+                gadgetlist += get_resources_that_must_be_shown(user=user).filter(Q(gadgetwiring__friendcode = e), Q(gadgetwiring__wiring = 'in'))
+            #get all the gadgets compatible with the given events
+            search_criteria[1] = search_criteria[1].split()
+            for e in search_criteria[1]:
+                gadgetlist += get_resources_that_must_be_shown(user=user).filter(Q(gadgetwiring__friendcode = e), Q(gadgetwiring__wiring = 'out'))
 
         gadgetlist = get_uniquelist(gadgetlist)
+        items = len(gadgetlist)
         gadgetlist = get_sortedlist(gadgetlist, orderby)
         gadgetlist = get_paginatedlist(gadgetlist, pag, offset)
+
+        return get_resource_response(gadgetlist, format, items, user)
+
+
+class GadgetsCollectionByGlobalSearch(Resource):
+
+    def read(self, request, user_name, pag=0, offset=0):
+
+        user = user_authentication(request, user_name)
+
+        try:
+            orderby = request.GET.__getitem__('orderby')
+        except:
+            orderby = '-creation_date'
+
+        try:
+            format = request.GET.__getitem__('format')
+        except:
+            format = 'default'
+
+        search_criteria = request.GET.getlist('search_criteria')
+        search_boolean = request.GET.__getitem__('search_boolean')
+
+        andlist = []
+        orlist = []
+        notlist = []
+        taglist = []
+        eventlist = []
+        slotlist = []
+        # This variable counts the number of criteria for the search to be passed as a parameter to the function
+        # get_uniquelist in order to get the gadgets that match the number of criteria
+        fields = 0
+
+        if (search_criteria[0] != ""):
+            andlist = get_and_list(search_criteria[0], user)
+            fields = fields+1
+        if (search_criteria[1] != ""):
+            orlist = get_or_list(search_criteria[1], user)
+            fields = fields+1
+        if (search_criteria[2] != ""):
+            notlist = get_not_list(search_criteria[2], user)
+            fields = fields+1
+        if (search_criteria[3] != ""):
+            #get all the gadgets that match any of the given tags
+            criteria = search_criteria[3].split()
+            for e in criteria:
+                taglist += get_resources_that_must_be_shown(user=user).filter(usertag__tag__icontains = e)
+            taglist = get_uniquelist(taglist)
+            fields = fields+1
+        if (search_criteria[4] != ""):
+            #get all the gadgets that match any of the given events
+            criteria = search_criteria[4].split()
+            for e in criteria:
+                eventlist += get_resources_that_must_be_shown(user=user).filter(Q(gadgetwiring__friendcode__icontains = e), Q(gadgetwiring__wiring = 'out'))
+            eventlist = get_uniquelist(eventlist)
+            fields = fields+1
+        if (search_criteria[5] != ""):
+            #get all the gadgets that match any of the given slots
+            criteria = search_criteria[5].split()
+            for e in criteria:
+                slotlist += get_resources_that_must_be_shown(user=user).filter(Q(gadgetwiring__friendcode__icontains = e), Q(gadgetwiring__wiring = 'in'))
+            slotlist = get_uniquelist(slotlist)
+            fields = fields+1
+
+        gadgetlist = andlist+orlist+notlist+taglist+eventlist+slotlist
+        if search_boolean=="AND":
+            gadgetlist = get_uniquelist(gadgetlist,fields)
+        else:
+            gadgetlist = get_uniquelist(gadgetlist)
         items = len(gadgetlist)
+        gadgetlist = get_sortedlist(gadgetlist, orderby)
+        gadgetlist = get_paginatedlist(gadgetlist, pag, offset)
 
         return get_resource_response(gadgetlist, format, items, user)
 
@@ -297,15 +346,15 @@ class GadgetTagsCollection(Resource):
     def create(self,request, user_name, vendor, name, version):
 
         try:
-            format = request.__getitem__('format')
+            format = request.POST.__getitem__('format')
         except:
             format = 'default'
         
         user = user_authentication(request, user_name)
         
         # Get the xml containing the tags from the request
-        tags_xml = request.__getitem__('tags_xml')
-        print(tags_xml)
+        tags_xml = request.POST.__getitem__('tags_xml')
+
         tags_xml = tags_xml.encode("utf-8")
         # Parse the xml containing the tags
         parser = make_parser()
@@ -341,7 +390,7 @@ class GadgetTagsCollection(Resource):
     def read(self,request,user_name,vendor,name,version):
 
         try:
-            format = request.__getitem__('format')
+            format = request.GET.__getitem__('format')
         except:
             format = 'default'
 
@@ -364,7 +413,7 @@ class GadgetTagsCollection(Resource):
             return HttpResponseForbidden(get_xml_error(msg), mimetype='application/xml; charset=UTF-8')
 
         try:
-            format = request.__getitem__('format')
+            format = request.GET.__getitem__('format')
         except:
             format = 'default'
 
@@ -388,7 +437,7 @@ def update_popularity(gadget):
     #Calculate the gadget popularity
     popularity = get_popularity(votes_sum,votes_number)
     #Update the gadget in the database
-    gadget.popularity = popularity
+    gadget.popularity = unicode(popularity)
     gadget.save()
 
 
@@ -412,14 +461,14 @@ class GadgetVotesCollection(Resource):
     def create(self,request, user_name, vendor, name, version):
 
         try:
-            format = request.__getitem__('format')
+            format = request.GET.__getitem__('format')
         except:
             format = 'default'
 
         user = user_authentication(request, user_name)
 
         # Get the vote from the request
-        vote = request.__getitem__('vote')
+        vote = request.POST.__getitem__('vote')
 
         # Get the gadget's id for those vendor, name and version
         gadget = get_object_or_404(GadgetResource, short_name=name,vendor=vendor,version=version)
@@ -443,7 +492,7 @@ class GadgetVotesCollection(Resource):
     def read(self,request,user_name,vendor,name,version):
 
         try:
-            format = request.__getitem__('format')
+            format = request.GET.__getitem__('format')
         except:
             format = 'default'
 

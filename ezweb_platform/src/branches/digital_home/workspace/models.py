@@ -1,61 +1,75 @@
 # -*- coding: utf-8 -*-
 
-# MORFEO Project 
-# http://morfeo-project.org 
-# 
-# Component: EzWeb
-# 
-# (C) Copyright 2004 Telefónica Investigación y Desarrollo 
-#     S.A.Unipersonal (Telefónica I+D) 
-# 
-# Info about members and contributors of the MORFEO project 
-# is available at: 
-# 
-#   http://morfeo-project.org/
-# 
-# This program is free software; you can redistribute it and/or modify 
-# it under the terms of the GNU General Public License as published by 
-# the Free Software Foundation; either version 2 of the License, or 
-# (at your option) any later version. 
-# 
-# This program is distributed in the hope that it will be useful, 
-# but WITHOUT ANY WARRANTY; without even the implied warranty of 
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
-# GNU General Public License for more details. 
-# 
-# You should have received a copy of the GNU General Public License 
-# along with this program; if not, write to the Free Software 
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
-# 
-# If you want to use this software an plan to distribute a 
-# proprietary application in any way, and you are not licensing and 
-# distributing your source code under GPL, you probably need to 
-# purchase a commercial license of the product.  More info about 
-# licensing options is available at: 
-# 
-#   http://morfeo-project.org/
+#...............................licence...........................................
+#
+#     (C) Copyright 2008 Telefonica Investigacion y Desarrollo
+#     S.A.Unipersonal (Telefonica I+D)
+#
+#     This file is part of Morfeo EzWeb Platform.
+#
+#     Morfeo EzWeb Platform is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     Morfeo EzWeb Platform is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public License
+#     along with Morfeo EzWeb Platform.  If not, see <http://www.gnu.org/licenses/>.
+#
+#     Info about members and contributors of the MORFEO project
+#     is available at
+#
+#     http://morfeo-project.org
+#
+#...............................licence...........................................#
+
+
 #
 
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as  _
-    
+
 class WorkSpace(models.Model):
     
     name = models.CharField(_('Name'), max_length=30)
     active = models.BooleanField(_('Active'))
     
-    user = models.ForeignKey(User, verbose_name=_('User'))
-
-    class Meta:
-        unique_together = ('user', 'name')
-
-    class Admin:
-        pass
+    users = models.ManyToManyField(User, verbose_name=_('Users'))
 
     def __unicode__(self):
-        return str(self.pk) + " " + self.name
+        return str(self.pk) + " " + self.name  
+
+class PublishedWorkSpace(models.Model):
+    WORKSPACE_TYPES = (
+        ('CLONED', _('Cloned')),
+        ('SHARED', _('Shared')),
+    )
+    type = models.CharField(_('Type'), max_length=10, choices=WORKSPACE_TYPES)
     
+    credentials = models.CharField(_('Credentials'), max_length=30)
+    
+    vendor = models.CharField(_('Vendor'), max_length=250)
+    name = models.CharField(_('Name'), max_length=250)
+    version = models.CharField(_('Version'), max_length=150)
+    
+    wikiURI = models.URLField(_('wikiURI'))
+    imageURI = models.URLField(_('imageURI'))
+    
+    description = models.TextField(_('Description'))
+    
+    author = models.CharField(_('Author'), max_length=250)
+    mail = models.CharField(_('Mail'), max_length=30)
+    
+    workspace = models.ForeignKey(WorkSpace, verbose_name=_('Workspace'))
+
+    def __unicode__(self):
+        return str(self.pk) + " " + self.workspace.name  
+
 class AbstractVariable(models.Model):
     
     VAR_TYPES = (
@@ -64,13 +78,21 @@ class AbstractVariable(models.Model):
     )
     type = models.CharField(_('Type'), max_length=10, choices=VAR_TYPES)
     name = models.CharField(_('Name'), max_length=30)
-    value = models.TextField(_('Value'))
-
-    class Admin:
-        pass
 
     def __unicode__(self):
         return str(self.pk) + " " + self.name
+
+class VariableValue(models.Model):
+    
+    user = models.ForeignKey(User, verbose_name=_('User'))
+    value = models.TextField(_('Value'))
+    abstract_variable = models.ForeignKey(AbstractVariable, verbose_name=_('AbstractVariable'))
+    
+    class Meta:
+        unique_together = ('user', 'abstract_variable')
+
+    def __unicode__(self):
+        return self.abstract_variable.name + self.value
     
 class WorkSpaceVariable(models.Model):
     
@@ -91,9 +113,6 @@ class WorkSpaceVariable(models.Model):
     )
     aspect = models.CharField(_('Aspect'), max_length=10, choices=ASPECTS)
 
-    class Admin:
-        pass
-
     def __unicode__(self):
         return str(self.pk) + " " + self.aspect
 
@@ -104,9 +123,6 @@ class Tab(models.Model):
     locked = models.BooleanField(_('Locked'))
     workspace = models.ForeignKey(WorkSpace, verbose_name=_('WorkSpace'))
     abstract_variable = models.ForeignKey(AbstractVariable, verbose_name=_('AbstractVariable'))
-
-    class Meta:
-        unique_together = ('workspace', 'name')
         
     class Admin:
         pass

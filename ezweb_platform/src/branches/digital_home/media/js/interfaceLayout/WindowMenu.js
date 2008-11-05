@@ -1,38 +1,26 @@
 /* 
- * MORFEO Project 
- * http://morfeo-project.org 
- * 
- * Component: EzWeb
- * 
- * (C) Copyright 2004 Telefónica Investigación y Desarrollo 
- *     S.A.Unipersonal (Telefónica I+D) 
- * 
- * Info about members and contributors of the MORFEO project 
- * is available at: 
- * 
- *   http://morfeo-project.org/
- * 
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License as published by 
- * the Free Software Foundation; either version 2 of the License, or 
- * (at your option) any later version. 
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
- * GNU General Public License for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
- * 
- * If you want to use this software an plan to distribute a 
- * proprietary application in any way, and you are not licensing and 
- * distributing your source code under GPL, you probably need to 
- * purchase a commercial license of the product.  More info about 
- * licensing options is available at: 
- * 
- *   http://morfeo-project.org/
+*     (C) Copyright 2008 Telefonica Investigacion y Desarrollo
+*     S.A.Unipersonal (Telefonica I+D)
+*
+*     This file is part of Morfeo EzWeb Platform.
+*
+*     Morfeo EzWeb Platform is free software: you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation, either version 3 of the License, or
+*     (at your option) any later version.
+*
+*     Morfeo EzWeb Platform is distributed in the hope that it will be useful,
+*     but WITHOUT ANY WARRANTY; without even the implied warranty of
+*     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*     GNU Affero General Public License for more details.
+*
+*     You should have received a copy of the GNU Affero General Public License
+*     along with Morfeo EzWeb Platform.  If not, see <http://www.gnu.org/licenses/>.
+*
+*     Info about members and contributors of the MORFEO project
+*     is available at
+*
+*     http://morfeo-project.org
  */
 
 //Hierachy for managing a window menu whose HTML code is in templates/index.html.
@@ -54,7 +42,7 @@ function WindowMenu(){
 	WindowMenu.prototype.calculatePosition = function(){
 		var coordenates = [];
 		
-		coordenates[1] = BrowserUtilsFactory.getInstance().getHeight()/2 - this.htmlElement.getHeight();
+		coordenates[1] = BrowserUtilsFactory.getInstance().getHeight()/2 - this.htmlElement.getHeight()/2;
 		coordenates[0] = BrowserUtilsFactory.getInstance().getWidth()/2 - this.htmlElement.getWidth()/2;
 		
 		this.htmlElement.style.top = coordenates[1]+"px";
@@ -80,6 +68,8 @@ function WindowMenu(){
 	WindowMenu.prototype.stopObserving = function (){
 	}
 	WindowMenu.prototype.hide = function (){		
+	}
+	WindowMenu.prototype.setFocus = function (){		
 	}
 
 }
@@ -160,30 +150,17 @@ function AlertWindowMenu (element) {
 	this.msgElement = $('alert_window_msg');	//error message gap
 	this.element = element;				//workspace or tab
 	this.button = $('alert_btn1');
-	this.button2 = $('alert_btn2');
 	
 	this.operationHandler = null;
-	this.operationHandler2 = null;
 
 	this.title = gettext('Warning');
 	
-	AlertWindowMenu.prototype.setHandler = function(handlerYesButton, handlerNoButton){	
-		this.operationHandler = handlerYesButton;
-		
-		if (!handlerNoButton)
-			this.operationHandler2 = function () { LayoutManagerFactory.getInstance().hideCover(); }
-		else
-			this.operationHandler2 = handlerNoButton;
-	}
-
 	AlertWindowMenu.prototype.initObserving = function(){	
 			Event.observe(this.button, "click", this.operationHandler);
-			Event.observe(this.button2, "click", this.operationHandler2);
 		}
 	
 	AlertWindowMenu.prototype.stopObserving = function(){	
 			Event.stopObserving(this.button, "click", this.operationHandler);
-			Event.stopObserving(this.button2, "click", this.operationHandler2);
 	}	
 	
 	AlertWindowMenu.prototype.setFocus = function(){
@@ -226,3 +203,70 @@ function MessageWindowMenu (element) {
 
 MessageWindowMenu.prototype = new WindowMenu;
 
+
+//Especific class for publish windows
+function PublishWindowMenu (element) {
+
+	//constructor
+	this.htmlElement = $('publish_menu');		//create-window HTML element
+	this.titleElement = $('publish_window_title');	//title gap
+	this.msgElement = $('publish_window_msg');	//error message gap
+	this.button = $('publish_btn1');
+	this.title = gettext('Publish Workspace');
+	
+	this.operationHandler = function(e){
+								if ($('publish_name').value!="" && $('publish_vendor').value!="" && $('publish_name').version!="" && $('publish_email').value!="") {
+									this.executeOperation();
+									LayoutManagerFactory.getInstance().hideCover();
+								}
+								else{
+									this.msgElement.update("All the required fields must be filled");
+								}
+							}.bind(this);
+
+
+	PublishWindowMenu.prototype.initObserving = function(){	
+			Event.observe(this.button, "click", this.operationHandler);
+	}
+	
+	PublishWindowMenu.prototype.stopObserving = function(){	
+			Event.stopObserving(this.button, "click", this.operationHandler);
+	}	
+	
+	PublishWindowMenu.prototype.setFocus = function(){
+		$('publish_name').focus();
+	}
+	
+	PublishWindowMenu.prototype.executeOperation = function(){
+		var o = new Object;
+		o.name = $('publish_name').value;
+		o.vendor = $('publish_vendor').value;
+		o.version = $('publish_version').value;
+		o.author = $('publish_author').value;
+		o.email = $('publish_email').value;
+		o.description = $('publish_description').value;
+		o.imageURI = $('publish_imageURI').value;
+		o.wikiURI = $('publish_wikiURI').value;
+		OpManagerFactory.getInstance().activeWorkSpace.publish(o);
+	}
+	
+
+
+	//hides the window and clears all the inputs
+	PublishWindowMenu.prototype.hide = function (){
+
+		var inputArray = $$('#publish_menu input:not([type=button])');
+		for (var i=0; i<inputArray.length; i++){
+			inputArray[i].value = '';
+		}
+		$('publish_description').value="";
+		var msg = $('create_window_msg');
+		msg.update();
+		this.stopObserving();
+		this.msgElement.update();
+		this.htmlElement.style.display = "none";		
+	}
+
+}
+
+PublishWindowMenu.prototype = new WindowMenu;

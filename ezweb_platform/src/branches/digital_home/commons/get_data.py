@@ -1,50 +1,44 @@
 ﻿#-*- coding: utf-8 -*-
 
-# MORFEO Project 
-# http://morfeo-project.org 
-# 
-# Component: EzWeb
-# 
-# (C) Copyright 2004 Telefónica Investigación y Desarrollo 
-#     S.A.Unipersonal (Telefónica I+D) 
-# 
-# Info about members and contributors of the MORFEO project 
-# is available at: 
-# 
-#   http://morfeo-project.org/
-# 
-# This program is free software; you can redistribute it and/or modify 
-# it under the terms of the GNU General Public License as published by 
-# the Free Software Foundation; either version 2 of the License, or 
-# (at your option) any later version. 
-# 
-# This program is distributed in the hope that it will be useful, 
-# but WITHOUT ANY WARRANTY; without even the implied warranty of 
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
-# GNU General Public License for more details. 
-# 
-# You should have received a copy of the GNU General Public License 
-# along with this program; if not, write to the Free Software 
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
-# 
-# If you want to use this software an plan to distribute a 
-# proprietary application in any way, and you are not licensing and 
-# distributing your source code under GPL, you probably need to 
-# purchase a commercial license of the product.  More info about 
-# licensing options is available at: 
-# 
-#   http://morfeo-project.org/
+#...............................licence...........................................
+#
+#     (C) Copyright 2008 Telefonica Investigacion y Desarrollo
+#     S.A.Unipersonal (Telefonica I+D)
+#
+#     This file is part of Morfeo EzWeb Platform.
+#
+#     Morfeo EzWeb Platform is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     Morfeo EzWeb Platform is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public License
+#     along with Morfeo EzWeb Platform.  If not, see <http://www.gnu.org/licenses/>.
+#
+#     Info about members and contributors of the MORFEO project
+#     is available at
+#
+#     http://morfeo-project.org
+#
+#...............................licence...........................................#
+
+
 #
 
 from django.shortcuts import get_object_or_404, get_list_or_404
 
 from django.core import serializers
 
-from gadget.models import Gadget, XHTML, ContextOption, UserPrefOption, Capability
+from gadget.models import Gadget, XHTML, ContextOption, UserPrefOption
 from igadget.models import Variable, VariableDef, Position, IGadget
 from connectable.models import In, Out, InOut
 from context.models import Concept, ConceptName
-from workspace.models import Tab, WorkSpaceVariable, AbstractVariable
+from workspace.models import Tab, WorkSpaceVariable, AbstractVariable, VariableValue
 from django.utils.translation import get_language
 
 def get_abstract_variable(id):    
@@ -121,13 +115,14 @@ def get_gadget_data(data):
         data_vars.append(data_var)
     
     data_code = get_object_or_404(XHTML.objects.all().values('uri'), id=data_fields['xhtml'])
-
+ 
     data_ret['name'] = data_fields['name']
     data_ret['vendor'] = data_fields['vendor']
     data_ret['description'] = data_fields['description']
     data_ret['uri'] = data_fields['uri']
     data_ret['wikiURI'] = data_fields['wikiURI']
     data_ret['imageURI'] = data_fields['imageURI']
+    data_ret['iPhoneImageURI'] = data_fields['iPhoneImageURI']
     data_ret['version'] = data_fields['version']
     data_ret['mail'] = data_fields['mail']
     data_ret['shared'] = data_fields['shared']
@@ -137,27 +132,7 @@ def get_gadget_data(data):
     data_ret['size']['height'] = data_fields['height']
     data_ret['variables'] = data_vars
     data_ret['xhtml'] = data_code
-    
-    data_ret['capabilities'] = get_gadget_capabilities(gadget_id=data['pk'])
 
-    return data_ret
-
-def get_gadget_capabilities(gadget_id):
-    data_ret = []
-    
-    try:
-        capability_list = Capability.objects.filter(gadget__id=gadget_id)
-        
-        for capability in capability_list:
-            cap = {}
-            
-            cap['name'] = capability.name
-            cap['value'] = capability.value
-            
-            data_ret.append(cap)
-    except Capability.DoesNotExist:
-        data_ret = {}
-        
     return data_ret
 
 
@@ -221,14 +196,14 @@ def get_workspace_data(data):
         data_ret['active'] = "false"
     return data_ret
 
-def get_workspace_variables_data(workSpaceDAO):
+def get_workspace_variables_data(workSpaceDAO, user):
     tab_variables = WorkSpaceVariable.objects.filter(workspace=workSpaceDAO, aspect='TAB')  
     tabs_data = serializers.serialize('python', tab_variables, ensure_ascii=False)
-    ws_variables_data = [get_workspace_variable_data(d) for d in tabs_data]
+    ws_variables_data = [get_workspace_variable_data(d, user) for d in tabs_data]
     
     inout_variables = WorkSpaceVariable.objects.filter(workspace=workSpaceDAO, aspect='CHANNEL')  
     inouts_data = serializers.serialize('python', inout_variables, ensure_ascii=False)
-    ws_inout_variables_data = [get_workspace_variable_data(d) for d in inouts_data]
+    ws_inout_variables_data = [get_workspace_variable_data(d, user) for d in inouts_data]
     
     for inout in ws_inout_variables_data:
         ws_variables_data.append(inout)
@@ -242,7 +217,7 @@ def get_workspace_channels_data(workSpaceDAO):
     
     return ws_variables_data
 
-def get_workspace_variable_data(data):
+def get_workspace_variable_data(data, user):
     data_ret = {}
     data_fields = data['fields']
     
@@ -254,7 +229,10 @@ def get_workspace_variable_data(data):
     data_ret['abstract_var_id'] = abstract_var_id
     
     data_ret['aspect'] = data_fields['aspect']
-    data_ret['value'] = abstract_var.value
+    
+    variable_value = VariableValue.objects.get(abstract_variable=abstract_var, user=user)
+    
+    data_ret['value'] = variable_value.value
     data_ret['name'] = abstract_var.name
     data_ret['type'] = data_fields['type']
     
@@ -322,7 +300,7 @@ def get_connectable_data(connectable):
     return res_data
 
 
-def get_global_workspace_data(data, workSpaceDAO, concept_values):
+def get_global_workspace_data(data, workSpaceDAO, concept_values, user):
     data_ret = {}
     data_ret['workspace'] = get_workspace_data(data)  
     
@@ -337,11 +315,11 @@ def get_global_workspace_data(data, workSpaceDAO, concept_values):
         tab_pk = tab['id']
         igadgets = IGadget.objects.filter(tab__id = tab_pk).order_by('id')
         igadget_data = serializers.serialize('python', igadgets, ensure_ascii=False)
-        igadget_data = [get_igadget_data(d) for d in igadget_data]
+        igadget_data = [get_igadget_data(d, user, workSpaceDAO) for d in igadget_data]
         tab['igadgetList'] = igadget_data
         
     #WorkSpace variables processing
-    workspace_variables_data = get_workspace_variables_data(workSpaceDAO)
+    workspace_variables_data = get_workspace_variables_data(workSpaceDAO, user)
     data_ret['workspace']['workSpaceVariableList'] = workspace_variables_data
     
     #Context information
@@ -375,7 +353,7 @@ def get_tab_data(data):
 
     return data_ret
 
-def get_igadget_data(data):
+def get_igadget_data(data, user, workspace):
     data_ret = {}
     data_fields = data['fields']
 
@@ -398,11 +376,11 @@ def get_igadget_data(data):
     
     variables = Variable.objects.filter (igadget__pk=data['pk'])
     data = serializers.serialize('python', variables, ensure_ascii=False)
-    data_ret['variables'] = [get_variable_data(d) for d in data]
+    data_ret['variables'] = [get_variable_data(d, user, workspace) for d in data]
    
     return data_ret
 
-def get_variable_data(data):
+def get_variable_data(data, user, workspace):
     data_ret = {}
     data_fields = data['fields']
     
@@ -412,11 +390,13 @@ def get_variable_data(data):
     abstract_var_id = data['fields']['abstract_variable']
     
     abstract_var = get_abstract_variable(abstract_var_id) 
+    
+    variable_value = VariableValue.objects.get(abstract_variable=abstract_var, user=user)
 
     data_ret['id'] = data['pk']
     
     data_ret['aspect'] = var_def.aspect
-    data_ret['value'] = abstract_var.value
+    data_ret['value'] = variable_value.value
     data_ret['type'] = var_def.type
     data_ret['igadgetId'] = data_fields['igadget']
     data_ret['vardefId'] = var_def.pk

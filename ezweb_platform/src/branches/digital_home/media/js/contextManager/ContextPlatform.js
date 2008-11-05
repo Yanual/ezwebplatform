@@ -1,38 +1,26 @@
 /* 
- * MORFEO Project 
- * http://morfeo-project.org 
- * 
- * Component: EzWeb
- * 
- * (C) Copyright 2004 Telefónica Investigación y Desarrollo 
- *     S.A.Unipersonal (Telefónica I+D) 
- * 
- * Info about members and contributors of the MORFEO project 
- * is available at: 
- * 
- *   http://morfeo-project.org/
- * 
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License as published by 
- * the Free Software Foundation; either version 2 of the License, or 
- * (at your option) any later version. 
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
- * GNU General Public License for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
- * 
- * If you want to use this software an plan to distribute a 
- * proprietary application in any way, and you are not licensing and 
- * distributing your source code under GPL, you probably need to 
- * purchase a commercial license of the product.  More info about 
- * licensing options is available at: 
- * 
- *   http://morfeo-project.org/
+*     (C) Copyright 2008 Telefonica Investigacion y Desarrollo
+*     S.A.Unipersonal (Telefonica I+D)
+*
+*     This file is part of Morfeo EzWeb Platform.
+*
+*     Morfeo EzWeb Platform is free software: you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation, either version 3 of the License, or
+*     (at your option) any later version.
+*
+*     Morfeo EzWeb Platform is distributed in the hope that it will be useful,
+*     but WITHOUT ANY WARRANTY; without even the implied warranty of
+*     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*     GNU Affero General Public License for more details.
+*
+*     You should have received a copy of the GNU Affero General Public License
+*     along with Morfeo EzWeb Platform.  If not, see <http://www.gnu.org/licenses/>.
+*
+*     Info about members and contributors of the MORFEO project
+*     is available at
+*
+*     http://morfeo-project.org
  */
 
 function ContextVar(igadgetId_, varName_, conceptName_) {
@@ -41,6 +29,7 @@ function ContextVar(igadgetId_, varName_, conceptName_) {
 	this._conceptName = conceptName_;
 	this._varManager = null;
 	this._value = null;
+	this._gadgetLoaded = false;
 }
 
 ContextVar.prototype.getName = function () {
@@ -57,6 +46,14 @@ ContextVar.prototype.getConceptName = function () {
 
 ContextVar.prototype.getValue = function () {
 	return this._value;
+}
+
+ContextVar.prototype.propagateValue = function () {
+	if (this._gadgetLoaded)
+		return;
+	
+	this._gadgetLoaded = true;
+	this.setValue(this._value);
 }
 
 ContextVar.prototype.setValue = function (newValue_) {
@@ -111,9 +108,13 @@ Concept.prototype.IGADGET = 'GCTX';
 Concept.prototype.USERNAME = "username";
 Concept.prototype.LANGUAGE = "language";
 Concept.prototype.WIDTH = "width";
+Concept.prototype.WIDTHINPIXELS = "widthInPixels";
 Concept.prototype.HEIGHT = "height";
+Concept.prototype.HEIGHTINPIXELS = "heightInPixels";
 Concept.prototype.XPOSITION = "xPosition";
 Concept.prototype.YPOSITION = "yPosition";
+Concept.prototype.LOCKSTATUS = "lockStatus";
+Concept.prototype.ORIENTATION = "orientation";
 
 Concept.prototype.getSemanticConcept = function () {
 	return this._semanticConcept;
@@ -150,18 +151,15 @@ Concept.prototype.setType = function (type_) {
 
 Concept.prototype.setValue = function (value_) {
 	switch (this._type) {
-		case Concept.prototype.EXTERNAL:
+		case Concept.prototype.IGADGET:
+			throw gettext("Concept does not have value, this is a Gadget Concept.");
+			break;
+		default:
 			this._value = value_;
 			for (var i = 0; i < this._igadgetVars.length; i++){
 				var ivar = this._igadgetVars[i];
 				ivar.setValue(value_);
 			} 
-			break;
-		case Concept.prototype.IGADGET:
-			throw gettext("Concept does not have value, this is a Gadget Concept.");
-			break;
-		default:
-			throw gettext("Unexpected concept value. Please, check the concept type (is EXTERNAL?)");
 			break;
 	}
 }
@@ -170,8 +168,12 @@ Concept.prototype.setInitialValue = function (newValue_) {
 	this._initialValue = newValue_;
 }
 
-Concept.prototype.getInitialValue = function () {
-	return this._initialValue;
+Concept.prototype.propagateIGadgetVarValues = function (iGadget_) {
+	for (var i = 0; i < this._igadgetVars.length; i++){
+		var ivar = this._igadgetVars[i];
+		if ((iGadget_ == null) || (ivar.getIGadgetId() == iGadget_))
+			ivar.propagateValue();
+	} 
 }
 
 Concept.prototype.addIGadgetVar = function (ivar_) {
@@ -249,9 +251,13 @@ Concept.prototype.unload = function () {
 	delete this.USERNAME;
 	delete this.LANGUAGE;
 	delete this.WIDTH;
+	delete this.WIDTHINPIXELS;
 	delete this.HEIGHT;
+	delete this.HEIGHTINPIXELS;
 	delete this.XPOSITION;
 	delete this.YPOSITION;
+	delete this.LOCKSTATUS;
+	delete this.ORIENTATION;
 	
 	delete this;
 

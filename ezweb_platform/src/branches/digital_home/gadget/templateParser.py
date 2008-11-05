@@ -1,51 +1,49 @@
 #-*- coding: utf-8 -*-
 
-# MORFEO Project 
-# http://morfeo-project.org 
-# 
-# Component: EzWeb
-# 
-# (C) Copyright 2004 Telefónica Investigación y Desarrollo 
-#     S.A.Unipersonal (Telefónica I+D) 
-# 
-# Info about members and contributors of the MORFEO project 
-# is available at: 
-# 
-#   http://morfeo-project.org/
-# 
-# This program is free software; you can redistribute it and/or modify 
-# it under the terms of the GNU General Public License as published by 
-# the Free Software Foundation; either version 2 of the License, or 
-# (at your option) any later version. 
-# 
-# This program is distributed in the hope that it will be useful, 
-# but WITHOUT ANY WARRANTY; without even the implied warranty of 
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
-# GNU General Public License for more details. 
-# 
-# You should have received a copy of the GNU General Public License 
-# along with this program; if not, write to the Free Software 
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
-# 
-# If you want to use this software an plan to distribute a 
-# proprietary application in any way, and you are not licensing and 
-# distributing your source code under GPL, you probably need to 
-# purchase a commercial license of the product.  More info about 
-# licensing options is available at: 
-# 
-#   http://morfeo-project.org/
+#...............................licence...........................................
+#
+#     (C) Copyright 2008 Telefonica Investigacion y Desarrollo
+#     S.A.Unipersonal (Telefonica I+D)
+#
+#     This file is part of Morfeo EzWeb Platform.
+#
+#     Morfeo EzWeb Platform is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     Morfeo EzWeb Platform is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public License
+#     along with Morfeo EzWeb Platform.  If not, see <http://www.gnu.org/licenses/>.
+#
+#     Info about members and contributors of the MORFEO project
+#     is available at
+#
+#     http://morfeo-project.org
+#
+#...............................licence...........................................#
+
+
 #
 
+from os import path, environ
 from xml.sax import parseString, handler
+
+from django.conf import settings
+from django.db import transaction
+from django.template import Context, Template
+from django.utils.translation import ugettext as _
+
+from gadgetCodeParser import GadgetCodeParser
+from gadget.models import VariableDef, ContextOption, UserPrefOption, Gadget, XHTML
 
 from commons.exceptions import TemplateParseException
 from commons.http_utils import download_http_content
 
-from django.utils.translation import ugettext as _
-from django.db import transaction
-
-from gadgetCodeParser import GadgetCodeParser
-from gadget.models import VariableDef, ContextOption, UserPrefOption, Gadget, Capability
 
 class TemplateParser:
     def __init__(self, uri):
@@ -160,6 +158,7 @@ class TemplateHandler(handler.ContentHandler):
         self._gadgetVersion = ""
         self._gadgetVendor = ""
         self._gadgetImage = ""
+        self._gadgetIPhoneImage = ""
         self._gadgetWiki = ""
         self._gadgetAuthor = ""
         self._gadgetMail = ""
@@ -170,7 +169,6 @@ class TemplateHandler(handler.ContentHandler):
         self._xhtml = ""
         self._lastPreference = ""
         self._gadget = Gadget ()
-        self._capabilities = []
         
     def typeText2typeCode (self, typeText):
         if typeText == 'text':
@@ -343,25 +341,7 @@ class TemplateHandler(handler.ContentHandler):
             relationship_eltos['option'] = []
             self._relationships.append(relationship_eltos)
         else:
-            raise TemplateParseException(_("ERROR: missing attribute at Slot element"))   
-        
-    def processCapability(self, attrs):     
-        name = None
-        value = None
-
-        if (attrs.has_key('name')):
-            name = attrs.get('name')
-            
-        if (attrs.has_key('value')):
-            value = attrs.get('value')
-
-        if (not name or not value):
-            raise TemplateParseException(_("ERROR: missing attribute at Capability element"))
-        
-        if (not self._gadget):
-            raise TemplateParseException(_("ERROR: capabilities must be placed AFTER Resource definition!"))
-        
-        self._capabilities.append(Capability(name=name, value=value, gadget=self._gadget))
+            raise TemplateParseException(_("ERROR: missing attribute at Slot element"))            
 
             
     def processGadgetContext(self, attrs):
@@ -434,19 +414,24 @@ class TemplateHandler(handler.ContentHandler):
         else:
             raise TemplateParseException(_("ERROR: missing attribute at External Context element"))            
 
-    
     def processXHTML (self, attrs):
         _href=""
 
         if (attrs.has_key('href')):
             _href = attrs.get('href')
         
+        _content_type = None
+        if (attrs.has_key('content-type')):
+            _content_type = attrs.get('content-type')
+        
         if (_href != ""):
             try:
                 # Gadget Code Parsing
+                if environ.get("RUN_MAIN_DEV") == "true" and hasattr(settings, 'GADGETS_ROOT'):
+                    if path.isfile(path.join(settings.GADGETS_ROOT, _href)):
+                        _href = "file://%s" % path.join(settings.GADGETS_ROOT, _href)
                 gadgetParser = GadgetCodeParser()
-                gadgetParser.parse(_href, self._gadgetURI)
-
+                gadgetParser.parse(_href, self._gadgetURI, _content_type)
                 self._xhtml = gadgetParser.getXHTML()
             except Exception, e:
                 raise TemplateParseException(_("ERROR: XHTML could not be read") + " - " + unicode(e))
@@ -490,7 +475,7 @@ class TemplateHandler(handler.ContentHandler):
 
     def startElement(self, name, attrs):
         # Catalogue
-        if (name == 'Name') or (name=='Version') or (name=='Vendor') or (name=='ImageURI') or (name=='WikiURI') or (name=='Mail') or (name=='Description') or (name=='Author'):
+        if (name == 'Name') or (name=='Version') or (name=='Vendor') or (name=='ImageURI') or (name=='iPhoneImageURI') or (name=='WikiURI') or (name=='Mail') or (name=='Description') or (name=='Author'):
             self.reset_Accumulator()
             return
 
@@ -509,10 +494,6 @@ class TemplateHandler(handler.ContentHandler):
 
         if (name == 'Event'):
             self.processEvent(attrs)
-            return
-    
-        if (name == 'Capability'):
-            self.processCapability(attrs)
             return
 
         if (name == 'GadgetContext'):
@@ -562,7 +543,11 @@ class TemplateHandler(handler.ContentHandler):
         if (name == 'ImageURI'):
             self._gadgetImage = self._accumulator
             return
-
+        
+        if (name == 'iPhoneImageURI'):
+            self._gadgetIPhoneImage = self._accumulator
+            return
+        
         if (name == 'WikiURI'):
             self._gadgetWiki = self._accumulator
             return
@@ -632,6 +617,7 @@ class TemplateHandler(handler.ContentHandler):
         self._gadget.mail=self._gadgetMail
         self._gadget.wikiURI=self._gadgetWiki
         self._gadget.imageURI=self._gadgetImage
+        self._gadget.iPhoneImageURI=self._gadgetIPhoneImage
         self._gadget.width=self._gadgetWidth
         self._gadget.height=self._gadgetHeight
         self._gadget.description=self._gadgetDesc
@@ -649,11 +635,6 @@ class TemplateHandler(handler.ContentHandler):
             for opt in rel['option']:
                 opt.variableDef = rel['vdef']
                 opt.save()
-        
-        # All capabilities 
-        for cap in self._capabilities:
-            cap.gadget=self._gadget
-            cap.save()
                  
     def reset_Accumulator(self):
         self._accumulator = ""

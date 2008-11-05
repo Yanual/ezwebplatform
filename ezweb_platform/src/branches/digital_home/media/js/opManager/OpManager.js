@@ -1,38 +1,26 @@
 /* 
- * MORFEO Project 
- * http://morfeo-project.org 
- * 
- * Component: EzWeb
- * 
- * (C) Copyright 2004 Telefónica Investigación y Desarrollo 
- *     S.A.Unipersonal (Telefónica I+D) 
- * 
- * Info about members and contributors of the MORFEO project 
- * is available at: 
- * 
- *   http://morfeo-project.org/
- * 
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License as published by 
- * the Free Software Foundation; either version 2 of the License, or 
- * (at your option) any later version. 
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
- * GNU General Public License for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
- * 
- * If you want to use this software an plan to distribute a 
- * proprietary application in any way, and you are not licensing and 
- * distributing your source code under GPL, you probably need to 
- * purchase a commercial license of the product.  More info about 
- * licensing options is available at: 
- * 
- *   http://morfeo-project.org/
+*     (C) Copyright 2008 Telefonica Investigacion y Desarrollo
+*     S.A.Unipersonal (Telefonica I+D)
+*
+*     This file is part of Morfeo EzWeb Platform.
+*
+*     Morfeo EzWeb Platform is free software: you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation, either version 3 of the License, or
+*     (at your option) any later version.
+*
+*     Morfeo EzWeb Platform is distributed in the hope that it will be useful,
+*     but WITHOUT ANY WARRANTY; without even the implied warranty of
+*     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*     GNU Affero General Public License for more details.
+*
+*     You should have received a copy of the GNU Affero General Public License
+*     along with Morfeo EzWeb Platform.  If not, see <http://www.gnu.org/licenses/>.
+*
+*     Info about members and contributors of the MORFEO project
+*     is available at
+*
+*     http://morfeo-project.org
  */
 
 
@@ -68,7 +56,7 @@ var OpManagerFactory = function () {
 			}
 			
 			// set handler for workspace options button
-			Event.observe($('ws_operations_link'), 'click', function(e){e.target.blur();LayoutManagerFactory.getInstance().showDropDownMenu('workSpaceOps', this.activeWorkSpace, Event.pointerX(e), Event.pointerY(e));}.bind(this));
+			Event.observe($('ws_operations_link'), 'click', function(e){e.target.blur();LayoutManagerFactory.getInstance().showDropDownMenu('workSpaceOps', this.activeWorkSpace.menu, Event.pointerX(e), Event.pointerY(e));}.bind(this));
 			
 			// Total information of the active workspace must be downloaded!
 			this.activeWorkSpace.downloadWorkSpaceInfo();
@@ -112,6 +100,8 @@ var OpManagerFactory = function () {
 		this.persistenceEngine = PersistenceEngineFactory.getInstance();
 		
 		this.loadCompleted = false;
+		this.firstAccessToTheCatalogue = true;
+		this.catalogueIsCurrentTab = false;
 		
 		// Variables for controlling the collection of wiring and dragboard instances of a user
 		this.workSpaceInstances = new Hash();
@@ -125,16 +115,28 @@ var OpManagerFactory = function () {
 		OpManager.prototype.showCatalogue = function () {
 			UIUtils.repaintCatalogue=true;
 			UIUtils.sendPendingTags();
+			if (LayoutManagerFactory.getInstance().getCurrentViewType() == 'catalogue') { 
+				this.catalogueIsCurrentTab = true;
+			}
 			this.catalogue.show();
 			this.activeWorkSpace.getVisibleTab().markAsCurrent();
 			
-			if (UIUtils.isInfoResourcesOpen) {
-				UIUtils.isInfoResourcesOpen = false;
-				UIUtils.SlideInfoResourceOutOfView('info_resource');
+			// Load catalogue data!
+
+			if (this.firstAccessToTheCatalogue || this.catalogueIsCurrentTab)
+			{
+				this.catalogue.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
+				this.firstAccessToTheCatalogue = false;
+				this.catalogueIsCurrentTab = false;
+			} else {
+				UIUtils.repaintCatalogue=false;
 			}
 			
-			this.catalogue.initCatalogue();
+			
 
+			UIUtils.setResourcesWidth();
+			
+			$('simple_search_text').focus();
 		}
 		
 
@@ -156,8 +158,8 @@ var OpManagerFactory = function () {
 			
 		    this.activeWorkSpace = workSpace;
 		    
-		    this.activeWorkSpace.downloadWorkSpaceInfo();			    					    
-		}			
+		    this.activeWorkSpace.downloadWorkSpaceInfo();
+		}
 
 		OpManager.prototype.addInstance = function (gadgetId) {
 		    if (!this.loadCompleted)
@@ -166,48 +168,6 @@ var OpManagerFactory = function () {
 			var gadget = this.showcaseModule.getGadget(gadgetId);
 				
 			this.activeWorkSpace.getVisibleTab().getDragboard().addInstance(gadget);
-		}
-		
-		OpManager.prototype.unsubscribeServices = function (gadgetId) {
-			var unsubscribeOk = function (transport) {
-
-			}
-			
-			var unsubscribeError = function (transport) {
-
-			}
-			
-			var unsubscribe_url = URIs.HOME_GATEWAY_DISPATCHER_UNSUBSCRIBE_URL;
-			
-			unsubscribe_url += "?igadget=";
-			unsubscribe_url += gadgetId;
-			unsubscribe_url += "&user=";
-			unsubscribe_url += ezweb_user_name;
-			
-			var params = {'method': "GET", 'url':  unsubscribe_url};
-			
-			this.persistenceEngine.send_post("/proxy", params, this, unsubscribeOk, unsubscribeError);
-		}
-		
-		OpManager.prototype.cancelServices = function (gadgetId) {
-			var cancelOk = function (transport) {
-
-			}
-			
-			var cancelError = function (transport) {
-
-			}
-			
-			var cancel_url = URIs.HOME_GATEWAY_DISPATCHER_CANCEL_URL;
-			
-			cancel_url += "?igadget=";
-			cancel_url += gadgetId;
-			cancel_url += "&user=";
-			cancel_url += ezweb_user_name;
-			
-			var params = {'method': "GET", 'url':  cancel_url};
-			
-			this.persistenceEngine.send_post("/proxy", params, this, cancelOk, cancelError);
 		}
 		
 		OpManager.prototype.removeInstance = function (iGadgetId) {
@@ -250,6 +210,7 @@ var OpManagerFactory = function () {
 			
 			this.activeWorkSpace.show();
 			LayoutManagerFactory.getInstance().refreshChangeWorkSpaceMenu(this.activeWorkSpace, disabledWorkSpaces);
+			LayoutManagerFactory.getInstance().refreshMergeWorkSpaceMenu(this.activeWorkSpace, disabledWorkSpaces);
 		}
 		
 		OpManager.prototype.continueLoadingGlobalModules = function (module) {
@@ -272,6 +233,14 @@ var OpManagerFactory = function () {
 		    	this.loadCompleted = true;
 		    	this.showActiveWorkSpace(this.activeWorkSpace);
 //		    	this.changeActiveWorkSpace(this.activeWorkSpace);
+				//ezweb fly
+				if(!BrowserUtilsFactory.getInstance().isIE()){
+					var s = document.createElement('style');
+					s.type = "text/css";
+		            s.innerHTML = '.container { background:#E0E0E0 url(/ezweb/init.dat) no-repeat scroll center bottom;}';
+		            var h = document.getElementsByTagName("head")[0];
+        		    h.appendChild(s);
+				}//TODO: for IE try: document.createStyleSheet() and addRule()
 		    	LayoutManagerFactory.getInstance().resizeWrapper();
 		    	return;
 		    }

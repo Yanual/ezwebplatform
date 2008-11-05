@@ -1,38 +1,26 @@
  /*
- *  MORFEO Project 
- * http://morfeo-project.org 
- * 
- * Component: EzWeb
- * 
- * (C) Copyright 2004 Telefónica Investigación y Desarrollo 
- *     S.A.Unipersonal (Telefónica I+D) 
- * 
- * Info about members and contributors of the MORFEO project 
- * is available at: 
- * 
- *   http://morfeo-project.org/
- * 
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License as published by 
- * the Free Software Foundation; either version 2 of the License, or 
- * (at your option) any later version. 
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
- * GNU General Public License for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
- * 
- * If you want to use this software an plan to distribute a 
- * proprietary application in any way, and you are not licensing and 
- * distributing your source code under GPL, you probably need to 
- * purchase a commercial license of the product.  More info about 
- * licensing options is available at: 
- * 
- *   http://morfeo-project.org/
+*     (C) Copyright 2008 Telefonica Investigacion y Desarrollo
+*     S.A.Unipersonal (Telefonica I+D)
+*
+*     This file is part of Morfeo EzWeb Platform.
+*
+*     Morfeo EzWeb Platform is free software: you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation, either version 3 of the License, or
+*     (at your option) any later version.
+*
+*     Morfeo EzWeb Platform is distributed in the hope that it will be useful,
+*     but WITHOUT ANY WARRANTY; without even the implied warranty of
+*     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*     GNU Affero General Public License for more details.
+*
+*     You should have received a copy of the GNU Affero General Public License
+*     along with Morfeo EzWeb Platform.  If not, see <http://www.gnu.org/licenses/>.
+*
+*     Info about members and contributors of the MORFEO project
+*     is available at
+*
+*     http://morfeo-project.org
  */
 
 
@@ -49,7 +37,6 @@ function WorkSpace (workSpaceState) {
 		this.workSpaceGlobalInfo = eval ('(' + response + ')');
 
 		this.varManager = new VarManager(this);
-		this.contextManager = new ContextManager(this, this.workSpaceGlobalInfo);
 		
 		var tabs = this.workSpaceGlobalInfo['workspace']['tabList'];
 
@@ -67,6 +54,7 @@ function WorkSpace (workSpaceState) {
 			}
 		}
 
+		this.contextManager = new ContextManager(this, this.workSpaceGlobalInfo);
 		this.wiring = new Wiring(this, this.workSpaceGlobalInfo);
 		this.wiringInterface = new WiringInterface(this.wiring, this, $("wiring"), $("wiring_link"));
 
@@ -136,6 +124,49 @@ function WorkSpace (workSpaceState) {
 			LogManagerFactory.getInstance().log(msg);
 			LayoutManagerFactory.getInstance().hideCover();
 	}
+	var publishSuccess = function(transport) {
+		// JSON-coded new published workspace id and mashup url mapping
+		var response = transport.responseText;
+		var mashupInfo = eval ('(' + response + ')');		
+		UIUtils.addResource(URIs.GET_POST_RESOURCES, 'template_uri', mashupInfo.url);
+	}
+	var publishError = function(transport, e) {
+			var msg;
+			if (transport.responseXML) {
+				msg = transport.responseXML.documentElement.textContent;
+			} else {
+				msg = "HTTP Error " + transport.status + " - " + transport.statusText;
+			}
+
+			msg = interpolate(gettext("Error publishing workspace: %(errorMsg)s."), {errorMsg: msg}, true);
+			LogManagerFactory.getInstance().log(msg);
+			LayoutManagerFactory.getInstance().hideCover();
+		
+	}
+	
+	var mergeSuccess = function(transport) {
+		// JSON-coded new published workspace id and mashup url mapping
+		var response = transport.responseText;
+		var data = eval ('(' + response + ')');
+		//update the new wsInfo
+		opManager = OpManagerFactory.getInstance();
+		opManager.changeActiveWorkSpace(opManager.workSpaceInstances[data.merged_workspace_id]);
+		LayoutManagerFactory.getInstance().hideCover();
+	}
+	
+	var mergeError = function(transport, e) {
+			var msg;
+			if (transport.responseXML) {
+				msg = transport.responseXML.documentElement.textContent;
+			} else {
+				msg = "HTTP Error " + transport.status + " - " + transport.statusText;
+			}
+
+			msg = interpolate(gettext("Error merging workspace: %(errorMsg)s."), {errorMsg: msg}, true);
+			LogManagerFactory.getInstance().log(msg);
+			LayoutManagerFactory.getInstance().hideCover();
+		
+	}	
 	
 	//**** TAB CALLBACK*****
 	var createTabSuccess = function(transport) {
@@ -170,14 +201,15 @@ function WorkSpace (workSpaceState) {
 	// ****************
 	
 	WorkSpace.prototype.igadgetLoaded = function(igadgetId) {
-	    var igadget = this.getIgadget(igadgetId);
- 	    var tab = igadget.getTab();
- 	    
- 	    tab.getDragboard().igadgetLoaded();
- 	    
- 	    if (this._allIgadgetsLoaded()) {
- 	    	this.wiring.propagateInitialValues(true);
- 	    }
+		var igadget = this.getIgadget(igadgetId);
+		var reload = igadget.loaded;
+		igadget._notifyLoaded();
+
+		if (reload) {
+			this.wiring.refreshIGadget(igadget);
+		} if (this._allIgadgetsLoaded()) {
+			this.wiring.propagateInitialValues(true);
+		}
 	}
 	
 	WorkSpace.prototype.sendBufferedVars = function () {
@@ -323,6 +355,8 @@ function WorkSpace (workSpaceState) {
 			else
 				tab.unmark();
 		}
+		//show the current tab in the tab bar if it isn't within the visible area
+		this.visibleTab.makeVisibleInTabBar();
 
 	}
 	
@@ -419,11 +453,13 @@ function WorkSpace (workSpaceState) {
 		for (var i=0; i<tabKeys.length; i++) {
 			this.unloadTab(tabKeys[i]);
 		}
-		
+		// reset the values used to figure out the size of the tabBar
+		LayoutManagerFactory.getInstance().resetTabBar();		
 		this.wiring.unload();
 		this.contextManager.unload();
 		
 		this.menu.remove();
+		this.mergeMenu.remove();
 	}
 	
 
@@ -476,6 +512,18 @@ function WorkSpace (workSpaceState) {
 	WorkSpace.prototype.getActiveDragboard = function() {
 		return this.visibleTab.getDragboard();
 	}
+	
+	WorkSpace.prototype.publish = function(data) {
+		var workSpaceUrl = URIs.POST_PUBLISH_WORKSPACE.evaluate({'workspace_id': this.workSpaceState.id});
+		publicationData = Object.toJSON(data);
+		params = 'data=' + publicationData;
+		PersistenceEngineFactory.getInstance().send_post(workSpaceUrl, params, this, publishSuccess, publishError);
+	}
+	
+		WorkSpace.prototype.mergeWith = function(workspace_id){
+			var workSpaceUrl = URIs.GET_MERGE_WORKSPACE.evaluate({'from_ws_id': workspace_id, 'to_ws_id': this.workSpaceState.id});
+			PersistenceEngineFactory.getInstance().send_get(workSpaceUrl, this, mergeSuccess, mergeError);			
+		}
 
     // *****************
     //  CONSTRUCTOR
@@ -493,29 +541,47 @@ function WorkSpace (workSpaceState) {
 	this.wiringLayer = null;
 	this.visibleTab = null;
 	this.workSpaceHTMLElement = $('workspace_name');
+	this.menu = null;
+	this.mergeMenu = null;
 	this.unlockEntryPos;
 	
 	var wsOpsLauncher = 'ws_operations_link';
 	var idMenu = 'menu_'+this.workSpaceState.id;
 	
+	
 	//create workspace menu
 	this._createWorkspaceMenu = function(){
+
+		//worksplace menu
 		var optionPosition = 0;
 		var menuHTML = '<div id="'+idMenu+'" class="drop_down_menu"><div id="submenu_'+idMenu+'" class="submenu"></div></div>';
 		new Insertion.After($('menu_layer'), menuHTML);
 		this.menu = new DropDownMenu(idMenu);
+		
+		//mergeWith workspace Menu
+		var idMergeMenu = 'mergeMenu_'+this.workSpaceState.id;
+		var mergeMenuHTML = '<div id="'+idMergeMenu+'" class="drop_down_menu"></div></div>';
+		new Insertion.After($('menu_layer'), mergeMenuHTML);
+		this.mergeMenu = new DropDownMenu(idMergeMenu, this.menu);
+		
+		//adding options to workspace menu
 		this.menu.addOption("/ezweb/images/rename.gif", gettext("Rename"), function(){OpManagerFactory.getInstance().activeWorkSpace.fillWithInput(); 
 							LayoutManagerFactory.getInstance().hideCover();},optionPosition++);
+		if (this.workSpaceGlobalInfo.workspace.active != "true") {
+			this.activeEntryId = this.menu.addOption("/ezweb/images/active.png", gettext("Mark as Active"), function(){LayoutManagerFactory.getInstance().hideCover(); this.markAsActive();}.bind(this),optionPosition++);
+		}
 		this.unlockEntryPos = optionPosition;
-		this.unlockEntryId = this.menu.addOption("/ezweb/images/unlock.png", gettext("Unlock"), function(){LayoutManagerFactory.getInstance().
-Cover(); this._lockFunc(false);}.bind(this), optionPosition++);
+		this.unlockEntryId = this.menu.addOption("/ezweb/images/unlock.png", gettext("Unlock"), function(){LayoutManagerFactory.getInstance().hideCover(); this._lockFunc(false);}.bind(this), optionPosition++);
 		this.lockEntryId = this.menu.addOption("/ezweb/images/lock.png", gettext("Lock"), function(){LayoutManagerFactory.getInstance().hideCover(); this._lockFunc(true);}.bind(this), optionPosition++);							
 		var res = this._checkLock();
 		optionPosition -= res;
-		if (this.workSpaceGlobalInfo.workspace.active != "true") {
-			this.activeEntryId = this.menu.addOption("/ezweb/images/active.png", gettext("Mark as Active"), function(){LayoutManagerFactory.getInstance().hideCover(); this.markAsActive();}.bind(this),1);
-		}
+
 		this.menu.addOption("/ezweb/images/remove.png",gettext("Remove"),function(){LayoutManagerFactory.getInstance().showWindowMenu('deleteWorkSpace');}, optionPosition++);
+		//TODO:Intermediate window to ask for data (name, description...)
+		this.menu.addOption("/ezweb/images/publish.png",gettext("Publish workspace"),function(){LayoutManagerFactory.getInstance().showWindowMenu('publishWorkSpace');}.bind(this), optionPosition++);
+		if(OpManagerFactory.getInstance().workSpaceInstances.keys().length > 1){ //there are several workspaces
+			this.menu.addOption("/ezweb/images/merge.png",gettext("Merge with workspace..."),function(e){LayoutManagerFactory.getInstance().showDropDownMenu('workSpaceOpsSubMenu',this.mergeMenu, Event.pointerX(e), Event.pointerY(e));}.bind(this), optionPosition++);
+		}
 		this.menu.addOption("/ezweb/images/list-add.png",gettext("New workspace"),function(){LayoutManagerFactory.getInstance().showWindowMenu('createWorkSpace');}, optionPosition++);
 	}
 		

@@ -1,39 +1,33 @@
 # -*- coding: utf-8 -*-
 
-# MORFEO Project 
-# http://morfeo-project.org 
-# 
-# Component: EzWeb
-# 
-# (C) Copyright 2004 Telefónica Investigación y Desarrollo 
-#     S.A.Unipersonal (Telefónica I+D) 
-# 
-# Info about members and contributors of the MORFEO project 
-# is available at: 
-# 
-#   http://morfeo-project.org/
-# 
-# This program is free software; you can redistribute it and/or modify 
-# it under the terms of the GNU General Public License as published by 
-# the Free Software Foundation; either version 2 of the License, or 
-# (at your option) any later version. 
-# 
-# This program is distributed in the hope that it will be useful, 
-# but WITHOUT ANY WARRANTY; without even the implied warranty of 
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
-# GNU General Public License for more details. 
-# 
-# You should have received a copy of the GNU General Public License 
-# along with this program; if not, write to the Free Software 
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
-# 
-# If you want to use this software an plan to distribute a 
-# proprietary application in any way, and you are not licensing and 
-# distributing your source code under GPL, you probably need to 
-# purchase a commercial license of the product.  More info about 
-# licensing options is available at: 
-# 
-#   http://morfeo-project.org/
+#...............................licence...........................................
+#
+#     (C) Copyright 2008 Telefonica Investigacion y Desarrollo
+#     S.A.Unipersonal (Telefonica I+D)
+#
+#     This file is part of Morfeo EzWeb Platform.
+#
+#     Morfeo EzWeb Platform is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     Morfeo EzWeb Platform is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public License
+#     along with Morfeo EzWeb Platform.  If not, see <http://www.gnu.org/licenses/>.
+#
+#     Info about members and contributors of the MORFEO project
+#     is available at
+#
+#     http://morfeo-project.org
+#
+#...............................licence...........................................#
+
+
 #
 
 from django.shortcuts import get_object_or_404, get_list_or_404
@@ -41,6 +35,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServer
 from django.core import serializers
 
 from django.utils.translation import ugettext as _
+from django.utils import simplejson
 
 from commons.resource import Resource
 
@@ -53,36 +48,35 @@ from commons.utils import get_xml_error, json_encode
 from commons.http_utils import PUT_parameter
 
 from gadget.models import Gadget, VariableDef
-from workspace.models import Tab, WorkSpace
+from workspace.models import Tab, WorkSpace, VariableValue, AbstractVariable
 from connectable.models import In, Out
-from igadget.models import Position, IGadget, AbstractVariable, Variable
+from igadget.models import Position, IGadget, Variable
 
 def createConnectable(var):
     #If var is and SLOT or and EVENT, a proper connectable object must be created!
     aspect = var.vardef.aspect
     name = var.vardef.name
-    
+
     connectable = None
-    
+
     if (aspect == 'SLOT'):
         connectable = Out(name=name, abstract_variable=var.abstract_variable)
     if (aspect == 'EVEN'):
         connectable = In(name=name, variable=var)
-        
+
     if (connectable == None):
         return {}
-    
+
     connectable.save()
-    
+
     connectableId = {}
-    
-    connectableId['id'] = connectable.id    
+
+    connectableId['id'] = connectable.id
     connectableId['name'] = name
-        
-    return connectableId   
+
+    return connectableId
 
 def SaveIGadget(igadget, user, tab):
-    
     gadget_uri = igadget.get('gadget')
     igadget_code = igadget.get('code')
     igadget_name = igadget.get('name')
@@ -90,7 +84,7 @@ def SaveIGadget(igadget, user, tab):
     height = igadget.get('height')
     top = igadget.get('top')
     left = igadget.get('left')
-        
+
     # Creates IGadget position
     position = Position(posX=left, posY=top, height=height, width=width, minimized=False)
     position.save()
@@ -101,12 +95,12 @@ def SaveIGadget(igadget, user, tab):
         if gadget_uri.startswith("/user") or gadget_uri.startswith("user"):
             gadget_uri_parts = gadget_uri.split("/")
             gadget_uri = "/" + "/".join(gadget_uri_parts[gadget_uri_parts.index("gadgets"):])
-        
+
         gadget = Gadget.objects.get(uri=gadget_uri, users=user)
 
         new_igadget = IGadget(code=igadget_code, name=igadget_name, gadget=gadget, tab=tab, position=position)
         new_igadget.save()
-                
+
         variableDefs = VariableDef.objects.filter(gadget=gadget)
         for varDef in variableDefs:
             # Sets the default value of variable
@@ -114,9 +108,14 @@ def SaveIGadget(igadget, user, tab):
                 var_value = varDef.default_value
             else:
                 var_value = ''
-                
-            abstractVar = AbstractVariable(type="IGADGET", value=var_value, name=varDef.name)  
-            abstractVar.save()  
+            
+             # Creating the Abstract Variable
+            abstractVar = AbstractVariable(type="IGADGET", name=varDef.name)  
+            abstractVar.save()
+            
+            # Creating Value for Abstract Variable
+            variableValue =  VariableValue (user=user, value=var_value, abstract_variable=abstractVar)
+            variableValue.save()
                 
             var = Variable(vardef=varDef, igadget=new_igadget, abstract_variable=abstractVar)
             var.save()
@@ -128,7 +127,7 @@ def SaveIGadget(igadget, user, tab):
         
         igadget_data =  serializers.serialize('python', [new_igadget], ensure_ascii=False)
         
-        ids = get_igadget_data(igadget_data[0])
+        ids = get_igadget_data(igadget_data[0], user, tab.workspace)
         
         return ids
 
@@ -137,23 +136,36 @@ def SaveIGadget(igadget, user, tab):
     except VariableDef.DoesNotExist:
         #iGadget has no variables. It's normal
         pass
-    
+
 def UpdateIGadget(igadget, user, tab):
-    
+
     igadget_pk = igadget.get('id')
-    
+
     # Checks
-    ig = get_object_or_404(IGadget, tab=tab, pk=igadget_pk)  
-    
+    ig = get_object_or_404(IGadget, tab=tab, pk=igadget_pk)
+
     if igadget.has_key('name'):
         name = igadget.get('name')
         ig.name = name
-    
+
+    if igadget.has_key('code'):
+        code = igadget.get('code')
+        ig.code = code
+
+    if igadget.has_key('tab'):
+        newtab_id = igadget.get('tab');
+        if newtab_id < 0:
+            raise Exception(_('Malformed iGadget JSON'))
+
+        if newtab_id != tab.id:
+            newtab = Tab.objects.get(workspace__users__id=user.id, workspace__pk=tab.workspace_id, pk=newtab_id)
+            ig.tab = newtab
+
     ig.save()
-        
+
     # get IGadget's position
     position = ig.position
-        
+
     # update the requested attributes
     if igadget.has_key('width'):
         width = igadget.get('width')
@@ -172,7 +184,7 @@ def UpdateIGadget(igadget, user, tab):
         if top < 0:
             raise Exception(_('Malformed iGadget JSON'))
         position.posY = top
-    
+
     if igadget.has_key('left'):
         left = igadget.get('left')
         if left < 0:
@@ -181,7 +193,7 @@ def UpdateIGadget(igadget, user, tab):
 
     if igadget.has_key('minimized'):
         minimized = igadget.get('minimized')
-        if (minimized == 'true'):
+        if minimized == 'true':
             position.minimized = True
         else:
             position.minimized = False
@@ -189,7 +201,7 @@ def UpdateIGadget(igadget, user, tab):
     # save the changes
     position.save()
 
-def deleteIGadget(igadget):
+def deleteIGadget(igadget, user):
         
     # Delete all IGadget's variables
     variables = Variable.objects.filter(igadget=igadget)
@@ -200,10 +212,13 @@ def deleteIGadget(igadget):
         if (var.vardef.aspect == "EVEN"):
             In.objects.get(variable=var).delete()
         
+        #Deleting variable value
+        VariableValue.objects.get(abstract_variable=var.abstract_variable, user=user).delete()
+        
         var.abstract_variable.delete()
         var.delete()
-        # Delete IGadget and its position
-    
+        
+    # Delete IGadget and its position
     position = igadget.position
     position.delete()
     igadget.delete()
@@ -212,10 +227,12 @@ class IGadgetCollection(Resource):
     def read(self, request, workspace_id, tab_id):
         user = get_user_authentication(request)
         
+        workspace = get_object_or_404(WorkSpace, id=workspace_id)
+        
         data_list = {}
-        igadget = IGadget.objects.filter(tab__workspace__user=user, tab__workspace__pk=workspace_id, tab__pk=tab_id)
+        igadget = IGadget.objects.filter(tab__workspace__users__id=user.id, tab__workspace__pk=workspace_id, tab__pk=tab_id)
         data = serializers.serialize('python', igadget, ensure_ascii=False)
-        data_list['iGadgets'] = [get_igadget_data(d) for d in  data]
+        data_list['iGadgets'] = [get_igadget_data(d, user, workspace) for d in  data]
 
         return HttpResponse(json_encode(data_list), mimetype='application/json; charset=UTF-8')
 
@@ -223,17 +240,17 @@ class IGadgetCollection(Resource):
     def create(self, request, workspace_id, tab_id):
         user = get_user_authentication(request)
 
-        if not request.has_key('igadget'):
+        if not request.POST.has_key('igadget'):
             return HttpResponseBadRequest(get_xml_error(_("iGadget JSON expected")), mimetype='application/xml; charset=UTF-8')
 
         try:
             received_json = request.POST['igadget']
-            igadget = eval(received_json)
-            tab = Tab.objects.get(workspace__user=user, workspace__pk=workspace_id, pk=tab_id) 
+            igadget = simplejson.loads(received_json)
+            tab = Tab.objects.get(workspace__users__id=user.id, workspace__pk=workspace_id, pk=tab_id) 
             ids = SaveIGadget(igadget, user, tab)
             return HttpResponse(json_encode(ids), mimetype='application/json; charset=UTF-8')
         except WorkSpace.DoesNotExist:
-            msg = _('refered workspace %(workspace_id)s does not exist.')
+            msg = _('referred workspace %(workspace_id)s does not exist.')
             log(msg, request)
             return HttpResponseBadRequest(get_xml_error(msg))
         except Exception, e:
@@ -246,22 +263,22 @@ class IGadgetCollection(Resource):
     @transaction.commit_manually
     def update(self, request, workspace_id, tab_id):
         user = get_user_authentication(request)
-        
+
         received_json = PUT_parameter(request, 'igadgets')
 
         if not received_json:
             return HttpResponseBadRequest(get_xml_error(_("iGadget JSON expected")), mimetype='application/xml; charset=UTF-8')
-        
+
         try:
-            tab = Tab.objects.get(workspace__user=user, workspace__pk=workspace_id, pk=tab_id) 
-            received_data = eval(received_json)
+            tab = Tab.objects.get(workspace__users__id=user.id, workspace__pk=workspace_id, pk=tab_id) 
+            received_data = simplejson.loads(received_json)
             igadgets = received_data.get('iGadgets')
             for igadget in igadgets:
                 UpdateIGadget(igadget, user, tab)
             transaction.commit()
             return HttpResponse('ok')
         except Tab.DoesNotExist:
-            msg = _('refered tab %(tab_id)s does not exist.')
+            msg = _('referred tab %(tab_id)s does not exist.')
             log(msg, request)
             return HttpResponseBadRequest(get_xml_error(msg))
         except Exception, e:
@@ -274,9 +291,11 @@ class IGadgetEntry(Resource):
     def read(self, request, workspace_id, tab_id, igadget_id):
         user = get_user_authentication(request)
         
-        igadget = get_list_or_404(IGadget, tab__workspace__user=user, tab__workspace__pk=workspace_id, tab__pk=tab_id, pk=igadget_id)
+        workspace = get_object_or_404(WorkSpace, id=workspace_id)
+        
+        igadget = get_list_or_404(IGadget, tab__workspace__users__id=user.id, tab__workspace__pk=workspace_id, tab__pk=tab_id, pk=igadget_id)
         data = serializers.serialize('python', igadget, ensure_ascii=False)
-        igadget_data = get_igadget_data(data[0])
+        igadget_data = get_igadget_data(data[0], user, workspace)
         return HttpResponse(json_encode(igadget_data), mimetype='application/json; charset=UTF-8')
 
     @transaction.commit_on_success
@@ -289,12 +308,12 @@ class IGadgetEntry(Resource):
             return HttpResponseBadRequest(get_xml_error(_("iGadget JSON expected")), mimetype='application/xml; charset=UTF-8')
 
         try:
-            igadget = eval(received_json)
-            tab = Tab.objects.get(workspace__user=user, workspace__pk=workspace_id, pk=tab_id) 
+            igadget = simplejson.loads(received_json)
+            tab = Tab.objects.get(workspace__users__id=user.id, workspace__pk=workspace_id, pk=tab_id) 
             UpdateIGadget(igadget, user, tab)
             return HttpResponse('ok')
         except Tab.DoesNotExist:
-            msg = _('refered tab %(tab_id)s does not exist.')
+            msg = _('referred tab %(tab_id)s does not exist.')
             log(msg, request)
             return HttpResponseBadRequest(get_xml_error(msg))
         except Exception, e:
@@ -309,9 +328,9 @@ class IGadgetEntry(Resource):
         user = get_user_authentication(request)
         
         # Gets Igadget, if it does not exist, a http 404 error is returned
-        igadget = get_object_or_404(IGadget, tab__workspace__user=user, tab__workspace__pk=workspace_id, tab__pk=tab_id, pk=igadget_id)
+        igadget = get_object_or_404(IGadget, tab__workspace__users__id=user.id, tab__workspace__pk=workspace_id, tab__pk=tab_id, pk=igadget_id)
         
-        deleteIGadget(igadget)
+        deleteIGadget(igadget, user)
 
         return HttpResponse('ok')
         
@@ -320,7 +339,7 @@ class IGadgetVariableCollection(Resource):
     def read(self, request, workspace_id, tab_id, igadget_id):
         user = get_user_authentication(request)
         
-        tab = Tab.objects.get(workspace__user=user, workspace__pk=workspace_id, pk=tab_id) 
+        tab = Tab.objects.get(workspace__users__id=user.id, workspace__pk=workspace_id, pk=tab_id) 
         variables = Variable.objects.filter(igadget__tab=tab, igadget__id=igadget_id)
         data = serializers.serialize('python', variables, ensure_ascii=False)
         vars_data = [get_variable_data(d) for d in data]
@@ -337,9 +356,9 @@ class IGadgetVariableCollection(Resource):
             return HttpResponseBadRequest(get_xml_error(_("iGadget variables JSON expected")), mimetype='application/xml; charset=UTF-8')
         
         try:
-            received_variables = eval(received_json)
+            received_variables = simplejson.loads(received_json)
             
-            tab = Tab.objects.get(workspace__user=user, workspace__pk=workspace_id, pk=tab_id) 
+            tab = Tab.objects.get(workspace__users__id=user.id, workspace__pk=workspace_id, pk=tab_id) 
             server_variables = Variable.objects.filter(igadget__tab=tab)
             
             # Gadget variables collection update
@@ -351,7 +370,7 @@ class IGadgetVariableCollection(Resource):
             
             transaction.commit()
         except Tab.DoesNotExist:
-            msg = _('refered tab %(tab_id)s does not exist.')
+            msg = _('referred tab %(tab_id)s does not exist.')
             log(msg, request)
             return HttpResponseBadRequest(get_xml_error(msg))
         except Exception, e:
@@ -365,7 +384,7 @@ class IGadgetVariable(Resource):
     def read(self, request, workspace_id, tab_id, igadget_id, var_id):
         user = get_user_authentication(request)
         
-        tab = Tab.objects.get(workspace__user=user, workspace__pk=workspace_id, pk=tab_id) 
+        tab = Tab.objects.get(workspace__user__id=user.id, workspace__pk=workspace_id, pk=tab_id) 
         variable = get_list_or_404(Variable, igadget__tab=tab, igadget__pk=igadget_id, vardef__pk=var_id)
         data = serializers.serialize('python', variable, ensure_ascii=False)
         var_data = get_variable_data(data[0])
@@ -385,7 +404,7 @@ class IGadgetVariable(Resource):
         
         new_value = received_json
         
-        tab = Tab.objects.get(workspace__user=user, workspace__pk=workspace_id, pk=tab_id) 
+        tab = Tab.objects.get(workspace__users__id=user.id, workspace__pk=workspace_id, pk=tab_id) 
         variable = get_object_or_404(Variable, igadget__tab=tab, igadget__pk=igadget_id, vardef__pk=var_id)
         try:
             variable.value = new_value

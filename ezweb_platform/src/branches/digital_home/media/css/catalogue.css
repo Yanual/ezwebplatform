@@ -47,6 +47,10 @@
 	outline: none;
 }
 
+#catalogue .head #global_search_links {
+	text-align: center;
+}
+
 #catalogue .head .header_link {
    background-color: transparent;
    border: none;
@@ -158,7 +162,7 @@
 }
 
 #catalogue .head .advanced_search {
-	height: 95px;
+	height: 115px;
 	border-top: 1px solid #EFEFEF;
 }
 
@@ -203,7 +207,7 @@
 	height:86.3px;
 	overflow:auto;
 	margin-top:3px;
-	margin-bottom:0px;message
+	margin-bottom:0px;
 }
 
 #catalogue .head .advanced_tag .advanced_tag_left .tagcloud .tags .multiple_size_tag {
@@ -236,7 +240,7 @@
 	margin-top:5px;
 	margin-left:1px;
 	margin-right:1px;
-}message
+}
 
 #catalogue .head .advanced_tag .advanced_tag_left .tagcloud .link span
 {
@@ -306,7 +310,7 @@
 }
 
 #catalogue .head .advanced_tag .advanced_tag_right .new_tags .my_tags .new_global_tag img {
-	margin-left:2px;message
+	margin-left:2px;
 	border:none;
 }
 
@@ -551,19 +555,16 @@
 }
 
 #catalogue .center .resources .resource .content button{
-	background: url("/ezweb/images/button.gif") top left;
 	color:white;
 	border:none;
 	font-size:100%;
 	cursor:pointer;
 }
-
-#catalogue .center .resources .resource .content .contratable{
-	background: url("/ezweb/images/contratable.gif") top left;
-	color:white;
-	border:none;
-	font-size:100%;
-	cursor:pointer;
+#catalogue .center .resources .resource .content button.add_gadget{
+	background: url("/ezweb/images/button.gif") top left;
+}
+#catalogue .center .resources .resource .content button.add_mashup{
+	background: url("/ezweb/images/button_mashup.gif") top left;
 }
 
 .description_balloon
@@ -689,7 +690,7 @@
 #catalogue .center .info_resource .content .title_fieldset
 {
 	margin-top:15px;
-	font-size:15px;
+	font-size:14pt;
 	font-weight:bold;
 }
 
@@ -705,6 +706,7 @@
 	padding-bottom:15px;
 	padding-left:5px;
 	padding-right:5px;
+	overflow: hidden;
 }
 
 #catalogue .center .info_resource .content .title
@@ -777,6 +779,12 @@
 	display:block;
 	font-size:12px;
 	width:100%;
+}
+
+#catalogue .center .info_resource .content .connect img
+{
+	margin-right: 5px;
+	vertical-align:middle;
 }
 
 #catalogue .center .info_resource .content .connect .text
@@ -961,13 +969,21 @@
 	margin-top:5px;
 }
 
-#catalogue .center .info_resource .content .add_gadget_button
+#catalogue .center .info_resource .content .add_gadget
 {
-	background: url("/ezweb/images/button.gif") top left;
 	color:white;
 	border:none;
 	font-size:100%;
 	cursor:pointer;
+	background: url("/ezweb/images/button.gif") top left;
+}
+#catalogue .center .info_resource .content .add_mashup
+{
+	color:white;
+	border:none;
+	font-size:100%;
+	cursor:pointer;
+	background: url("/ezweb/images/button_mashup.gif") top left;
 }
 
 #catalogue .center .info_resource .content #rateStatus

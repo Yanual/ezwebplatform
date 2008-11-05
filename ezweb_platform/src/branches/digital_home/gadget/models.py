@@ -1,39 +1,33 @@
 ﻿# -*- coding: utf-8 -*-
 
-# MORFEO Project 
-# http://morfeo-project.org 
-# 
-# Component: EzWeb
-# 
-# (C) Copyright 2004 Telefónica Investigación y Desarrollo 
-#     S.A.Unipersonal (Telefónica I+D) 
-# 
-# Info about members and contributors of the MORFEO project 
-# is available at: 
-# 
-#   http://morfeo-project.org/
-# 
-# This program is free software; you can redistribute it and/or modify 
-# it under the terms of the GNU General Public License as published by 
-# the Free Software Foundation; either version 2 of the License, or 
-# (at your option) any later version. 
-# 
-# This program is distributed in the hope that it will be useful, 
-# but WITHOUT ANY WARRANTY; without even the implied warranty of 
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
-# GNU General Public License for more details. 
-# 
-# You should have received a copy of the GNU General Public License 
-# along with this program; if not, write to the Free Software 
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
-# 
-# If you want to use this software an plan to distribute a 
-# proprietary application in any way, and you are not licensing and 
-# distributing your source code under GPL, you probably need to 
-# purchase a commercial license of the product.  More info about 
-# licensing options is available at: 
-# 
-#   http://morfeo-project.org/
+#...............................licence...........................................
+#
+#     (C) Copyright 2008 Telefonica Investigacion y Desarrollo
+#     S.A.Unipersonal (Telefonica I+D)
+#
+#     This file is part of Morfeo EzWeb Platform.
+#
+#     Morfeo EzWeb Platform is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     Morfeo EzWeb Platform is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public License
+#     along with Morfeo EzWeb Platform.  If not, see <http://www.gnu.org/licenses/>.
+#
+#     Info about members and contributors of the MORFEO project
+#     is available at
+#
+#     http://morfeo-project.org
+#
+#...............................licence...........................................#
+
+
 #
 from django.db import models
 from django.contrib.auth.models import User
@@ -56,9 +50,7 @@ class XHTML(models.Model):
     uri = models.CharField(_('URI'), max_length=500, unique=True)
     code = models.TextField(_('Code'))
     url = models.URLField(_('URL'), max_length=500)
-
-    class Admin:
-        pass
+    content_type = models.CharField(_('Content type'), max_length=50, blank=True, null=True)
 
     def __unicode__(self):
         return self.uri
@@ -78,6 +70,7 @@ class Gadget(models.Model):
    
     wikiURI = models.URLField(_('wikiURI'))
     imageURI = models.URLField(_('imageURI'))
+    iPhoneImageURI = models.URLField(_('iPhoneImageURI'))
 
     width = models.IntegerField(_('Width'), default=1)
     height = models.IntegerField(_('Height'), default=1)
@@ -90,23 +83,15 @@ class Gadget(models.Model):
     class Meta:
         unique_together = ('vendor', 'name', 'version')
 
-    class Admin:
-        pass
-
     def __unicode__(self):
         return self.uri
     
-class Capability(models.Model):
-    name = models.CharField(_('Name'), max_length=50)
-    value = models.CharField(_('Value'), max_length=50)
-    gadget = models.ForeignKey(Gadget)
-    
-    class Meta:
-        unique_together = ('name', 'value', 'gadget')
-    
-    class Admin:
-         pass
-    
+    def get_related_events(self):
+        return VariableDef.objects.filter(gadget=self, aspect='EVEN')
+
+    def get_related_slots(self):
+        return VariableDef.objects.filter(gadget=self, aspect='SLOT')
+
 
 class VariableDef(models.Model):
     name = models.CharField(_('Name'), max_length=30)
@@ -133,9 +118,6 @@ class VariableDef(models.Model):
     default_value = models.TextField(_('Default value'), blank=True, null=True)
     gadget = models.ForeignKey(Gadget)
 
-    class Admin:
-        pass
-
     def __unicode__(self):
         return self.gadget.uri + " " + self.aspect
 
@@ -144,10 +126,7 @@ class UserPrefOption(models.Model):
     value = models.CharField(_('Value'), max_length=30)
     name = models.CharField(_('Name'), max_length=30)
     variableDef = models.ForeignKey(VariableDef)
-    
-    class Admin:
-        pass
-    
+        
     def __unicode__(self):
         return self.variableDef.gadget.uri + " " + self.name
 
@@ -157,18 +136,12 @@ class VariableDefAttr(models.Model):
     name = models.CharField(_('Name'), max_length=30)
     variableDef = models.ForeignKey(VariableDef)
     
-    class Admin:
-        pass
-    
     def __unicode__(self):
         return self.variableDef + self.name
 
 class ContextOption(models.Model):
     concept = models.CharField(_('Concept'), max_length=256)
     varDef = models.ForeignKey(VariableDef, verbose_name=_('Variable'))
-        
-    class Admin:
-        pass
 
     def __unicode__(self):
         return self.concept

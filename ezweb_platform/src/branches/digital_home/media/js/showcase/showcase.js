@@ -1,38 +1,26 @@
 /* 
- * MORFEO Project 
- * http://morfeo-project.org 
- * 
- * Component: EzWeb
- * 
- * (C) Copyright 2004 Telefónica Investigación y Desarrollo 
- *     S.A.Unipersonal (Telefónica I+D) 
- * 
- * Info about members and contributors of the MORFEO project 
- * is available at: 
- * 
- *   http://morfeo-project.org/
- * 
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License as published by 
- * the Free Software Foundation; either version 2 of the License, or 
- * (at your option) any later version. 
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
- * GNU General Public License for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
- * 
- * If you want to use this software an plan to distribute a 
- * proprietary application in any way, and you are not licensing and 
- * distributing your source code under GPL, you probably need to 
- * purchase a commercial license of the product.  More info about 
- * licensing options is available at: 
- * 
- *   http://morfeo-project.org/
+*     (C) Copyright 2008 Telefonica Investigacion y Desarrollo
+*     S.A.Unipersonal (Telefonica I+D)
+*
+*     This file is part of Morfeo EzWeb Platform.
+*
+*     Morfeo EzWeb Platform is free software: you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation, either version 3 of the License, or
+*     (at your option) any later version.
+*
+*     Morfeo EzWeb Platform is distributed in the hope that it will be useful,
+*     but WITHOUT ANY WARRANTY; without even the implied warranty of
+*     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*     GNU Affero General Public License for more details.
+*
+*     You should have received a copy of the GNU Affero General Public License
+*     along with Morfeo EzWeb Platform.  If not, see <http://www.gnu.org/licenses/>.
+*
+*     Info about members and contributors of the MORFEO project
+*     is available at
+*
+*     http://morfeo-project.org
  */
 
 
@@ -63,8 +51,7 @@ var ShowcaseFactory = function () {
 		// CALLBACK METHODS 
 		// ****************
 
-		// Load gadgets from persistence system
-		loadGadgets = function (receivedData_) {
+		this.parseGadgets = function (receivedData_){
 			var response = receivedData_.responseText;
 			var jsonGadgetList = eval ('(' + response + ')');
 		
@@ -75,28 +62,65 @@ var ShowcaseFactory = function () {
 				var gadgetId = gadget.getVendor() + '_' + gadget.getName() + '_' + gadget.getVersion();
 				
 				// Insert gadget object in showcase object model
-				_gadgets[gadgetId] = gadget;
+				this.gadgets[gadgetId] = gadget;
+			}
+		}
+
+		Showcase.prototype.reload = function (workspace_id) {
+			
+			var id = workspace_id;
+			
+			this.gadgets = []
+			
+			var onSuccess = function (receivedData_) {
+
+				this.parseGadgets(receivedData_);
+				
+				opManager = OpManagerFactory.getInstance();
+	
+				opManager.changeActiveWorkSpace(opManager.workSpaceInstances[id]);
 			}
 			
-			// Showcase loaded
-			_loaded = true;
-			_opManager.continueLoadingGlobalModules(Modules.prototype.SHOWCASE);
+			var onError = function (receivedData_) {
+				alert("eerror en showcase")
+			}
+
+			// Initial load from persitence system
+			this.persistenceEngine.send_get(URIs.GET_GADGETS, this, onSuccess, onError);			
+		}
+		
+		Showcase.prototype.init = function () {
+
+			// Load gadgets from persistence system
+			var onSuccess = function (receivedData_) {
+
+				this.parseGadgets(receivedData_);
+				
+				// Showcase loaded
+				this.loaded = true;
+				this.opManager.continueLoadingGlobalModules(Modules.prototype.SHOWCASE);
+			
+			}
+		
+			// Error callback (empty gadget list)
+			var onError = function (receivedData_) {
+				this.loaded = true;
+				this.opManager.continueLoadingGlobalModules(Modules.prototype.SHOWCASE);
+			}
+			
+			// Initial load from persitence system
+			this.persistenceEngine.send_get(URIs.GET_GADGETS, this, onSuccess, onError);
 			
 		}
 		
-		// Error callback (empty gadget list)
-		onErrorCallback = function (receivedData_) {
-			_loaded = true;
-			_opManager.continueLoadingGlobalModules(Modules.prototype.SHOWCASE);
-		}
 		
 		// *******************************
 		// PRIVATE METHODS AND VARIABLES
 		// *******************************
-		var _gadgets = new Hash();
-		var _loaded = false;
-		var _opManager = OpManagerFactory.getInstance();
-		var _persistenceEngine = PersistenceEngineFactory.getInstance();			
+		this.gadgets = new Hash();
+		this.loaded = false;
+		this.opManager = OpManagerFactory.getInstance();
+		this.persistenceEngine = PersistenceEngineFactory.getInstance();			
 		
 		// ****************
 		// PUBLIC METHODS
@@ -105,24 +129,26 @@ var ShowcaseFactory = function () {
 		// Add a new gadget from Internet
 		Showcase.prototype.addGadget = function (vendor_, name_, version_, url_) {
 			var gadgetId = vendor_ + '_' + name_ + '_' + version_;
-			var gadget = _gadgets[gadgetId];
+			var gadget = this.gadgets[gadgetId];
+
 			if (gadget == null){
 				gadget = new Gadget (null, url_);		
 			}else{
-				_opManager.addInstance(gadgetId);
+				this.opManager.addInstance(gadgetId);
 			}
 		}
 		
 		// Insert gadget object in showcase object model
 		Showcase.prototype.gadgetToShowcaseGadgetModel = function(gadget_) {
 			var gadgetId = gadget_.getId();
-			_gadgets[gadgetId] = gadget_;
-			_opManager.addInstance(gadgetId);
+
+			this.gadgets[gadgetId] = gadget_;
+			this.opManager.addInstance(gadgetId);
 		}
 		
 		// Remove a Showcase gadget
 		Showcase.prototype.deleteGadget = function (gadgetId_) {
-			var gadget = _gadgets.remove(gadgetId_);
+			var gadget = this.gadgets.remove(gadgetId_);
 			//gadget.remove();
 		}
 		
@@ -134,12 +160,13 @@ var ShowcaseFactory = function () {
 
 		// Get a gadget by its gadgetID
 		Showcase.prototype.getGadget = function (gadgetId_) {
-			return _gadgets[gadgetId_];
+			return this.gadgets[gadgetId_];
 		}
 		
 		// Set gadget properties (User Interface)
 		Showcase.prototype.setGadgetProperties = function (gadgetId_, imageSrc_, tags_) {
-			var gadget = _gadgets[gadgetId_];
+			var gadget = this.gadgets[gadgetId_];
+
 			gadget.setImage(imageSrc_);
 			gadget.setTags(tags_);
 		}
@@ -148,20 +175,16 @@ var ShowcaseFactory = function () {
 		Showcase.prototype.tagGadget = function (gadgetId_, tags_) {
 			for (var i = 0; i<tags_.length; i++) {
 				var tag = tags_[i];
-				_gadgets[gadgetId_].addTag(tag);
+				this.gadgets[gadgetId_].addTag(tag);
 			}
 		}
 		
 		// Deploy a Showcase gadget into dragboard as gadget instance  
 		Showcase.prototype.addInstance = function (gadgetId_) {
-			var gadget = _gadgets[gadgetId_];
-			_opManager.addInstance (gadget);
+			var gadget = this.gadgets[gadgetId_];
+			this.opManager.addInstance (gadget);
 		}
-		
-		Showcase.prototype.init = function () {
-			// Initial load from persitence system
-			_persistenceEngine.send_get(URIs.GET_GADGETS, this, loadGadgets, onErrorCallback);
-		}
+
 		
 	}
 	

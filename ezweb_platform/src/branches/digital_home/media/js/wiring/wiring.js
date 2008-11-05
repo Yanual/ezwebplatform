@@ -1,38 +1,26 @@
 /* 
- * MORFEO Project 
- * http://morfeo-project.org 
- * 
- * Component: EzWeb
- * 
- * (C) Copyright 2008 Telefónica Investigación y Desarrollo 
- *     S.A.Unipersonal (Telefónica I+D) 
- * 
- * Info about members and contributors of the MORFEO project 
- * is available at: 
- * 
- *   http://morfeo-project.org/
- * 
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License as published by 
- * the Free Software Foundation; either version 2 of the License, or 
- * (at your option) any later version. 
- * 
- * This program is distributed in the hope that it will be useful, 
- * but WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
- * GNU General Public License for more details. 
- * 
- * You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software 
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
- * 
- * If you want to use this software an plan to distribute a 
- * proprietary application in any way, and you are not licensing and 
- * distributing your source code under GPL, you probably need to 
- * purchase a commercial license of the product.  More info about 
- * licensing options is available at: 
- * 
- *   http://morfeo-project.org/
+*     (C) Copyright 2008 Telefonica Investigacion y Desarrollo
+*     S.A.Unipersonal (Telefonica I+D)
+*
+*     This file is part of Morfeo EzWeb Platform.
+*
+*     Morfeo EzWeb Platform is free software: you can redistribute it and/or modify
+*     it under the terms of the GNU Affero General Public License as published by
+*     the Free Software Foundation, either version 3 of the License, or
+*     (at your option) any later version.
+*
+*     Morfeo EzWeb Platform is distributed in the hope that it will be useful,
+*     but WITHOUT ANY WARRANTY; without even the implied warranty of
+*     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*     GNU Affero General Public License for more details.
+*
+*     You should have received a copy of the GNU Affero General Public License
+*     along with Morfeo EzWeb Platform.  If not, see <http://www.gnu.org/licenses/>.
+*
+*     Info about members and contributors of the MORFEO project
+*     is available at
+*
+*     http://morfeo-project.org
  */
 
 
@@ -50,7 +38,7 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 		for (i=0; i<variables.length; i++) {
 			var variable = variables[i];
 			
-			if (variable.name = name && variable.igadgetId == igadgetId) {
+			if ((variable.name == name) && (variable.igadgetId == igadgetId)) {
 				return variable.connectable.id;
 			}
 		}
@@ -142,13 +130,21 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 		    this.channels.push(channel);
 		}	
 	}
-	
-	Wiring.prototype.propagateInitialValues = function (initial) {
 
-			for (var i = 0; i < this.channels.length; i++) {
-				var channel = this.channels[i];
-				channel.propagate(channel.variable.value, initial);
-			}
+	Wiring.prototype.propagateInitialValues = function (initial) {
+		for (var i = 0; i < this.channels.length; i++) {
+			var channel = this.channels[i];
+			channel.propagate(channel.variable.value, initial);
+		}
+	}
+
+	Wiring.prototype.refreshIGadget = function(igadget) {
+		var connectables = this.getIGadgetConnectables(igadget);
+
+		for (var i = 0; i < connectables.length; i++) {
+			var connectable = connectables[i];
+			connectable.refresh();
+		}
 	}
 
 	Wiring.prototype.loadWiring = function (workSpaceData) {
@@ -203,8 +199,9 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 			    gadgetEntry.connectables.push(connectable);
 			}
 			
-			this.iGadgets[iGadgetId] = gadgetEntry;
 		}
+		
+		this.iGadgets[iGadgetId] = gadgetEntry;
 	}
 	
 	// TODO
@@ -212,7 +209,7 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 		var entry = this.iGadgets[iGadgetId];
 
 		if (!entry) {
-			var msg = gettext("Wiring error: Trying to remove an inexistant igadget.");
+			var msg = gettext("Wiring error: Trying to remove an inexistent igadget.");
 			LogManagerFactory.getInstance().log(msg);
 			return;
 		}
@@ -232,7 +229,7 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 		var iGadgetEntry = this.iGadgets[iGadget.id];
 
 		if (iGadgetEntry == null) {
-			var msg = gettext("Wiring error: Trying to retreive the connectables of an inexistant igadget.");
+			var msg = gettext("Wiring error: Trying to retreive the connectables of an inexistent igadget.");
 			LogManagerFactory.getInstance().log(msg);
 			return;
 		}
@@ -277,17 +274,20 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 		var channel = this.channels.getElementById(channelId);
 
 		if (channel == undefined) {
-			var msg = gettext("Error removing channel %(channelName)s: Channel does not exists");
+			var msg = gettext("Error removing channel %(channelName)s: Channel does not exist");
 			msg = interpolate(msg, {channelName: channelName});
 			LogManagerFactory.getInstance().log(msg);
 			return;
 		}
-
-		channel.fullDisconnect();
+		
+		//delete the workspace variable
+		this.workspace.getVarManager().removeWorkspaceVariable(channel.variable.id);
 		
 		this.channelsForRemoving.push(channel.id);
 		
 		this.channels.removeById(channelId);
+		
+		channel.destroy();
 	}
 
 	Wiring.prototype.serializationSuccess = function (transport){
@@ -303,6 +303,7 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 					this.channels[j].id = mapping.id;
 					this.channels[j].provisional_id = false;
 					this.channels[j].variable.id = mapping.var_id;
+					this.workspace.getVarManager().addWorkspaceVariable(mapping.var_id, this.channels[j].variable);
 					break;
 				}
 			}

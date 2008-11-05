@@ -1,39 +1,33 @@
-﻿# -*- coding: utf-8 -*-
+﻿ # -*- coding: utf-8 -*-
 
-# MORFEO Project 
-# http://morfeo-project.org 
-# 
-# Component: EzWeb
-# 
-# (C) Copyright 2004 Telefónica Investigación y Desarrollo 
-#     S.A.Unipersonal (Telefónica I+D) 
-# 
-# Info about members and contributors of the MORFEO project 
-# is available at: 
-# 
-#   http://morfeo-project.org/
-# 
-# This program is free software; you can redistribute it and/or modify 
-# it under the terms of the GNU General Public License as published by 
-# the Free Software Foundation; either version 2 of the License, or 
-# (at your option) any later version. 
-# 
-# This program is distributed in the hope that it will be useful, 
-# but WITHOUT ANY WARRANTY; without even the implied warranty of 
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
-# GNU General Public License for more details. 
-# 
-# You should have received a copy of the GNU General Public License 
-# along with this program; if not, write to the Free Software 
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
-# 
-# If you want to use this software an plan to distribute a 
-# proprietary application in any way, and you are not licensing and 
-# distributing your source code under GPL, you probably need to 
-# purchase a commercial license of the product.  More info about 
-# licensing options is available at: 
-# 
-#   http://morfeo-project.org/
+#...............................licence...........................................
+#
+#     (C) Copyright 2008 Telefonica Investigacion y Desarrollo
+#     S.A.Unipersonal (Telefonica I+D)
+#
+#     This file is part of Morfeo EzWeb Platform.
+#
+#     Morfeo EzWeb Platform is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     Morfeo EzWeb Platform is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public License
+#     along with Morfeo EzWeb Platform.  If not, see <http://www.gnu.org/licenses/>.
+#
+#     Info about members and contributors of the MORFEO project
+#     is available at
+#
+#     http://morfeo-project.org
+#
+#...............................licence...........................................#
+
+
 #
 
 # Django settings for mymem project.
@@ -60,9 +54,6 @@ DATABASE_USER = 'ezweb'             # Not used with sqlite3.
 DATABASE_PASSWORD = 'ezweb'         # Not used with sqlite3.
 DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
-
-#HOME_GATEWAY_DISPATCHER_URL = "http://fry.hi.inet:8001/hgwDispatcher/serviceGadgets"
-HOME_GATEWAY_DISPATCHER_URL = "http://fry.hi.inet:8001/hgwDispatcher/"
 
 # Local time zone for this installation. Choices can be found here:
 # http://www.postgresql.org/docs/8.1/static/datetime-keywords.html#DATETIME-TIMEZONE-SET-TABLE
@@ -113,12 +104,14 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
+ #   'django.contrib.sessions.middleware.SessionMiddleware',
+    'middleware.session_middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
+#    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'middleware.auth_middleware.AuthenticationMiddleware',
     'django.middleware.doc.XViewMiddleware',
-    'middleware.ConsoleExceptionMiddleware',
+    'middleware.console_middleware.ConsoleExceptionMiddleware',
 )
 
 ROOT_URLCONF = 'urls'
@@ -142,10 +135,32 @@ INSTALLED_APPS = (
     'context',
 )
 
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 5184000    #2 months
+#SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 AUTH_PROFILE_MODULE = 'user.UserProfile'
 
 #Set the proxy server here if needed
-PROXY_SERVER = 'nube.hi.inet:8080'
+#PROXY_SERVER = 'nube.hi.inet:8080'
 
+# Set the log path
+# When empty, defaults to MEDIA_ROOT/logs
+#LOG_PATH='/var/log/ezweb'
+
+#Authentication
+AUTHENTICATION_BACKENDS = (  
+#'authentication.ldapaccess.LDAPBackend',
+'django.contrib.auth.backends.ModelBackend',  
+)
+#LDAP Backend
+#AD_LDAP_URL = 'ldap://host:port'
+#AD_SEARCH_DN = 'uid=%s,ou=OUExample,o=OExample'
+
+# Absolute path to the directory that holds in development gadgets.
+GADGETS_ROOT = path.join(BASEDIR, 'media', 'gadgets')
+
+# Template Generator URL. This URL is only needed to allow publishing
+# a Workspace when EzWeb is running with the develop server (manage.py)
+# PLEASE DON'T SET ITS VALUE IN ANY OTHER CASE.
+#TEMPLATE_GENERATOR_URL = 'http://localhost:8000'

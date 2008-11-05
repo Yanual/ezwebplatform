@@ -1,44 +1,38 @@
 # -*- coding: utf-8 -*-
 
-# MORFEO Project 
-# http://morfeo-project.org 
-# 
-# Component: EzWeb
-# 
-# (C) Copyright 2004 Telef�nica Investigaci�n y Desarrollo 
-#     S.A.Unipersonal (Telef�nica I+D) 
-# 
-# Info about members and contributors of the MORFEO project 
-# is available at: 
-# 
-#   http://morfeo-project.org/
-# 
-# This program is free software; you can redistribute it and/or modify 
-# it under the terms of the GNU General Public License as published by 
-# the Free Software Foundation; either version 2 of the License, or 
-# (at your option) any later version. 
-# 
-# This program is distributed in the hope that it will be useful, 
-# but WITHOUT ANY WARRANTY; without even the implied warranty of 
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
-# GNU General Public License for more details. 
-# 
-# You should have received a copy of the GNU General Public License 
-# along with this program; if not, write to the Free Software 
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. 
-# 
-# If you want to use this software an plan to distribute a 
-# proprietary application in any way, and you are not licensing and 
-# distributing your source code under GPL, you probably need to 
-# purchase a commercial license of the product.  More info about 
-# licensing options is available at: 
-# 
-#   http://morfeo-project.org/
+#...............................licence...........................................
+#
+#     (C) Copyright 2008 Telefonica Investigacion y Desarrollo
+#     S.A.Unipersonal (Telefonica I+D)
+#
+#     This file is part of Morfeo EzWeb Platform.
+#
+#     Morfeo EzWeb Platform is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     Morfeo EzWeb Platform is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public License
+#     along with Morfeo EzWeb Platform.  If not, see <http://www.gnu.org/licenses/>.
+#
+#     Info about members and contributors of the MORFEO project
+#     is available at
+#
+#     http://morfeo-project.org
+#
+#...............................licence...........................................#
+
+
 #
 
 from django.shortcuts import get_object_or_404
 
-from catalogue.models import GadgetWiring, UserTag, UserVote
+from catalogue.models import GadgetWiring, UserTag, UserVote, UserRelatedToGadgetResource
 
 
 def get_xml_description(gadgetlist, user):
@@ -55,27 +49,23 @@ def get_xml_description(gadgetlist, user):
         xml_event = get_events_by_resource(e.id)
         xml_slot = get_slots_by_resource(e.id)
         xml_vote = get_vote_by_resource(e, user)
-        xml_user_data = get_related_user_by_resource(e.id, user)
-
-        if e.added_by_user_id == user.id:
-            added_by_user='Yes'
-        else:
-            added_by_user='No'
+        xml_user_data = get_related_user_by_resource(e.id, user.id)
 
         xml_resource += "\n".join(['<resource>',
-            '<vendor>%s</vendor>' % str(e.vendor),
-            '<name>%s</name>' % str(e.short_name),
-            '<version>%s</version>' % str(e.version),
-            '<Author>%s</Author>' % str(e.author),
-            '<Mail>%s</Mail>' % str(e.mail),
-            '<description>%s</description>' % str(e.description),
-            '<uriImage>%s</uriImage>' % str(e.image_uri),
-            '<uriWiki>%s</uriWiki>' % str(e.wiki_page_uri),
-            '<uriTemplate>%s</uriTemplate>' % str(e.template_uri),
+            '<vendor>%s</vendor>' % e.vendor,
+            '<name>%s</name>' % e.short_name,
+            '<version>%s</version>' % e.version,
+            '<Author>%s</Author>' % e.author,
+            '<Mail>%s</Mail>' % e.mail,
+            '<description>%s</description>' % e.description,
+            '<uriImage>%s</uriImage>' % e.image_uri,
+            '<uriWiki>%s</uriWiki>' % e.wiki_page_uri,
+            '<mashupId>%s</mashupId>' % str(e.mashup_id),
+            '<uriTemplate>%s</uriTemplate>' % e.template_uri,
             xml_user_data, xml_tag, xml_event, xml_slot, xml_vote, 
             '</resource>'])
 
-    response = "\n".join(['<?xml version="1.0" encoding="UTF-8" ?>',
+    response = "".join(['<?xml version="1.0" encoding="UTF-8" ?>',
         '<resources>%s</resources>' % xml_resource])
     return response
 
@@ -101,20 +91,20 @@ def get_slots_by_resource(gadget_id):
     response='<Slots>'+xml_slot+'</Slots>'
     return response
 
-def get_related_user_by_resource(gadget_id, user):
+def get_related_user_by_resource(gadget_id, user_id):
     
     added_by_user = ''
     preferred_by_user = ''
     
     try:
-        user_related_data_list = UserRelatedToGadgetResource.objects.filter(gadget__id=gadget_id, user__id=user_id)[0]
-        
+        user_related_data_list = UserRelatedToGadgetResource.objects.filter(gadget__id=gadget_id, user__id=user_id)
+
         if len(user_related_data_list) == 0:
-            data_ret['added_by_user'] = 'No'
-            return data_ret
+            added_by_user = 'No'
+            return "<Added_by_User>%s</Added_by_User>" % added_by_user
         
         user_related_data = user_related_data_list[0]
-        if user_related_to_data.added_by:
+        if user_related_data.added_by:
             added_by_user = 'Yes'
         else:
             added_by_user = 'No'
@@ -135,14 +125,14 @@ def get_tags_by_resource(gadget_id, user_id):
 
     for e in UserTag.objects.filter(idResource=gadget_id, idUser=user_id):
         xml_tag += "".join(['<Tag>\n'
-                            '<Identifier>'+e.id+'</Identifier>\n',
+                            '<Identifier>'+str(e.id)+'</Identifier>\n',
                             '<Value>'+e.tag+'</Value>\n',
                             '<Added_by>Yes</Added_by>\n',
                             '</Tag>'])
 
     for e in UserTag.objects.filter(idResource=gadget_id).exclude(idUser=user_id):
         xml_tag += "".join(['<Tag>\n',
-                            '<Identifier>'+e.id+'</Identifier>\n',
+                            '<Identifier>'+str(e.id)+'</Identifier>\n',
                             '<Value>'+e.tag+'</Value>\n',
                             '<Added_by>No</Added_by>\n',
                             '</Tag>'])
