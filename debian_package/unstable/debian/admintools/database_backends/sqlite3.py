@@ -61,22 +61,24 @@ class SQLite3Resources:
     if site_cfg['database'].has_key('database_type') and site_cfg['database']['database_type'] != "sqlite3":
       raise InvalidEzWebInstance()
 
-    if site_cfg['database'].has_key('schema'):
-      schema = site_cfg['database']['schema']
-    else:
-      schema = "default"
+    # Not used at this moment
+    #
+    #if site_cfg['database'].has_key('schema'):
+    #  schema = site_cfg['database']['schema']
+    #else:
+    #  schema = "default"
 
-    sqlite3_settings = self.get_sqlite3_settings()
-    if sqlite3_settings.has_key(schema):
-      schema = sqlite3_settings[schema]
-    else:
-      schema = {}
+    #sqlite3_settings = self.get_sqlite3_settings()
+    #if sqlite3_settings.has_key(schema):
+    #  schema = sqlite3_settings[schema]
+    #else:
+    #  schema = {}
 
     # Database path
-    if options.name != None:
-      site_cfg['database']['name'] = options.name
-    elif not site_cfg['database'].has_key("name"):
-      site_cfg['database']['name'] = self.DB_BASE_PATH + site_cfg['name'] + ".sqlite3"
+    if options.path != None:
+      site_cfg['database']['path'] = options.path
+    elif not site_cfg['database'].has_key("path"):
+      site_cfg['database']['path'] = os.path.join(self.DB_BASE_PATH, site_cfg['name'], site_cfg['name'] + ".sqlite3")
 
     return site_cfg
 
@@ -85,7 +87,7 @@ class SQLite3Resources:
     template.replace("DATABASE_ENGINE", "sqlite3")
     template.replace("DATABASE_USER", '')
     template.replace("DATABASE_PASS", '')
-    template.replace("DATABASE_NAME", site_cfg['database']['name'])
+    template.replace("DATABASE_NAME", site_cfg['database']['path'])
     template.replace("DATABASE_OPTIONS", '')
     template.replace("DATABASE_HOST", '')
     template.replace("DATABASE_PORT", '')
@@ -96,7 +98,7 @@ class SQLite3Resources:
     else:
       self.resources = EzWebAdminToolResources()
 
-class ClearCommand(Command):
+class CleanCommand(Command):
 
   def __init__(self, resources):
     self.resources = resources
@@ -105,10 +107,10 @@ class ClearCommand(Command):
   def execute(self, site_cfg, options):
     cfg = site_cfg['database']
 
-    f = open(cfg['name'], "w")
+    f = open(cfg['path'], "w")
     f.close()
-    os.chown(cfg['name'], -1, grp.getgrnam("www-data").gr_gid)
-    os.chmod(cfg['name'], 0660)
+    os.chown(cfg['path'], -1, grp.getgrnam("www-data").gr_gid)
+    os.chmod(cfg['path'], 0660)
 
 class PurgeCommand(Command):
 
@@ -119,9 +121,9 @@ class PurgeCommand(Command):
   def execute(self, site_cfg, options):
     cfg = site_cfg['database']
 
-    if os.path.exists(cfg['name']):
-      self.resources.printMsg("Removing database file (" + cfg['name'] + ")... ")
-      os.unlink(cfg['name'])
+    if os.path.exists(cfg['path']):
+      self.resources.printMsg("Removing database file (" + cfg['path'] + ")... ")
+      os.unlink(cfg['path'])
       self.resources.printlnMsgNP("Done")
 
     self.resources.printlnMsg("Database for \"%s\" purged successfully." % site_cfg['name'])
@@ -165,16 +167,13 @@ class SetDefaultsCommand(Command):
 class UpdateCommand(Command):
 
   option_list = [make_option ("--path","--path", action="store",
-                             dest="name", help=_("Path to the sqlite database file."))]
+                             dest="path", help=_("Path to the sqlite database file."))]
 
   def __init__(self, resources):
     self.sqlite3Resources = SQLite3Resources(resources)
 
-  def execute(self, options, site_cfg):
+  def execute(self, site_cfg, options):
     self.sqlite3Resources.fill_config(site_cfg, options)
-
-    if options.name != None:
-      site_cfg['database']['name'] = options.name
 
 class ProcessCommand(Command):
 
@@ -187,8 +186,8 @@ class ProcessCommand(Command):
     self.sqlite3Resources.update_settings_py(template, site_cfg)
     cfg = site_cfg['database']
 
-    db_file = cfg['name']
+    db_file = cfg['path']
     f = open(db_file, "w")
     f.close()
-    os.chown(cfg['name'], -1, grp.getgrnam("www-data").gr_gid)
-    os.chmod(cfg['name'], 0660)
+    os.chown(cfg['path'], -1, grp.getgrnam("www-data").gr_gid)
+    os.chmod(cfg['path'], 0660)

@@ -5,158 +5,92 @@
 #
 . /usr/share/debconf/confmodule
 
-function float_cond() {
-    local cond=0
-    if [[ $# -gt 0 ]]; then
-        cond=$(echo "$*" | bc -q 2>/dev/null)
-        if [[ -z "$cond" ]]; then cond=0; fi
-        if [[ "$cond" != 0  &&  "$cond" != 1 ]]; then cond=0; fi
-    fi
-    local stat=$((cond == 0))
-    return $stat
-}
+EZWEB_ADMIN_SCRIPT="/usr/sbin/update-ezweb-platform"
 
 function create_admin_user() {
-  PSQL_VER=`psql --version | grep "psql (PostgreSQL)"`
-  PSQL_VER=`expr match "$PSQL_VER" 'psql (PostgreSQL) \([0-9]*\.[0-9]*\)\.[0-9]*'`
-  PSQL_CONF_FILE="/etc/postgresql/$PSQL_VER/main/pg_hba.conf"
+  db_get ezweb-platform-postgres/adminuser
+  ADMIN_USER="$RET"
 
-  su - postgres -c "psql -c \"CREATE ROLE $1 PASSWORD '$2' SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN\""
-  su - postgres -c "createdb --owner $1 $1"
+  if [ "$ADMIN_USER" = "ezwebadmin" ]; then
+    db_get ezweb-platform-postgres/adminpass
+    ADMIN_PASS="$RET"
 
-  RET=`sed -n 's/local\s\s*all\s\s*ezwebadmin\s\s*password/&/p' < $PSQL_CONF_FILE`
-  if [ "x$RET" == "x" ]; then
-    echo "Backing up $PSQL_CONF_FILE ..."
-    cp $PSQL_CONF_FILE $PSQL_CONF_FILE~ezweb
-    CONTENT=`cat $PSQL_CONF_FILE | sed '/#\s*TYPE\s*DATABASE\s*USER\s*CIDR-ADDRESS\s*METHOD/alocal   all         ezwebadmin                 password'`
-    echo "$CONTENT" > $PSQL_CONF_FILE
+    PSQL_VER=`psql --version | grep "psql (PostgreSQL)"`
+    PSQL_VER=`expr match "$PSQL_VER" 'psql (PostgreSQL) \([0-9]*\.[0-9]*\)\.[0-9]*'`
+    PSQL_CONF_FILE="/etc/postgresql/$PSQL_VER/main/pg_hba.conf"
+
+    if `dpkg --compare-versions "$PSQL_VER" lt "8.0"`; then
+      su - postgres -c "psql -c \"CREATE USER $ADMIN_USER PASSWORD '$ADMIN_PASS' CREATEDB CREATEUSER\""
+    else
+      su - postgres -c "psql -c \"CREATE ROLE $ADMIN_USER PASSWORD '$ADMIN_PASS' SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN\""
+    fi
+    su - postgres -c "createdb --owner $ADMIN_USER $ADMIN_USER"
+
+    RET=`sed -n 's/local\s\s*all\s\s*ezwebadmin\s\s*password/&/p' < $PSQL_CONF_FILE`
+    if [ "x$RET" == "x" ]; then
+      echo "Backing up $PSQL_CONF_FILE ..."
+      cp $PSQL_CONF_FILE $PSQL_CONF_FILE.ezweb-postinst
+      CONTENT=`cat $PSQL_CONF_FILE | sed '/#\s*TYPE\s*DATABASE\s*USER\s*CIDR-ADDRESS\s*METHOD/alocal   all         ezwebadmin                 password'`
+      echo "$CONTENT" > $PSQL_CONF_FILE
+    fi
+
+    invoke-rc.d postgresql-$PSQL_VER restart
   fi
-
-  invoke-rc.d postgresql-$PSQL_VER restart
 }
 
-function quit() {
+if [ "$1" = "configure" -a -n "$2" ]; then
 
-  #DEBHELPER#
+  # If we are upgrading from the old package style, then configure the default instance
+  # to use old configuration
+  VER=`expr match "$2" '\([0-9]*\.[0-9]*\)~svn[0-9]*'`
+  #SVNREV=`expr match "$2" '[0-9]*\.[0-9]*~svn\([0-9]*\)'`
+  if `dpkg --compare-versions "$VER" lt "0.4"`; then
 
-  db_stop
-  exit $1
-}
+    db_get ezweb-platform-postgres/olduser
+    DBUSER="$RET"
 
-if [ "$1" = "configure" ]; then
+    db_get ezweb-platform-postgres/oldpass
+    DBPASSWD="$RET"
 
-  EZWEB_ADMIN_SCRIPT="/usr/sbin/update-ezweb-platform"
+    $EZWEB_ADMIN_SCRIPT update default --database-engine postgres \
+                                       --database-user "$DBUSER" \
+                                       --database-pass "$DBPASSWD"
 
-  # Upgrade from old packages
-  if [ "$2" != "" ]; then
-    VER=`expr match "$2" '\([0-9]*\.[0-9]*\)~svn[0-9]*'`
-    #SVNREV=`expr match "$2" '[0-9]*\.[0-9]*~svn\([0-9]*\)'`
-    if float_cond "$VER < 0.3"; then
-      # If we are upgrading from the old package style, then configure the default instance
-      # to use old configuration
-      db_get ezweb/pg/dbuser
-      DBUSER="$RET"
-      db_unregister ezweb/pg/dbuser
+    # create the default admin user
+    create_admin_user
 
-      db_get ezweb/pg/dbpasswd
-      DBPASSWD="$RET"
-      db_unregister ezweb/pg/dbpasswd
-
-      /usr/sbin/update-ezweb-platform update default --database-engine postgres
-      $EZWEB_ADMIN_SCRIPT update default --database-user $DBUSER --database-passwd $DBPASS
-      # Purge old database
-      $EZWEB_ADMIN_SCRIPT purge default
-
-      rm "/usr/share/ezweb-platform/.update-db"
-      if [ ! -f "/usr/share/ezweb-platform/.update-server" ]; then
-        $EZWEB_ADMIN_SCRIPT enable default
-      fi
-
-      quit 0
+    rm "/usr/share/ezweb-platform/.update-db"
+    if [ ! -f "/usr/share/ezweb-platform/.update-server" ]; then
+      $EZWEB_ADMIN_SCRIPT enable default
     fi
   fi
+fi
 
-  # Load current config
-  if [ -f "/etc/ezweb-platform/postgres.conf" ]; then
-    RET=`$EZWEB_ADMIN_SCRIPT getdbmsdefaults postgres default`
-    eval $RET
-
-    db_set ezweb-platform-postgres/serveraddress "$SERVER_HOST"
-    db_set ezweb-platform-postgres/adminuser "$ADMIN_USER"
-    db_set ezweb-platform-postgres/adminpass "$ADMIN_PASS"
-  else
-#    if [ -x "/usr/lib/postgresql/7.4/bin/postmaster" -o
-#         -x "/usr/lib/postgresql/8.3/bin/postmaster" ]; then
-      db_set ezweb-platform-postgres/serveraddress "localhost"
-
-      db_set ezweb-platform-postgres/adminuser "ezwebadmin"
-      db_fset ezweb-platform-postgres/adminuser seen true
-      db_set ezweb-platform-postgres/adminpass "ezwebpass"
-      db_fset ezweb-platform-postgres/adminpass seen true
-
-      ###
-      # Create the admin user
-      #
-      create_admin_user "ezwebadmin" "ezwebpass"
-
-#    else
-#      FORCE_SERVER_QUESTION=1
-#    fi
-
-  fi
-
+if [ "$1" = "configure" -a -z "$2" ]; then
   ###
-  # Read postgres config from user
+  # Create the default admin user if needed
   #
-  if [ "x$FORCE_SERVER_QUESTION" != "x" ]; then
-    db_fset ezweb-platform-postgres/upgrading seen false
-    db_input high ezweb-platform-postgres/serveraddress
-  else
-    db_input low ezweb-platform-postgres/serveraddress
-  fi
-  db_go
+  create_admin_user
+fi
+
+if [ "$1" = "configure" -o "$1" = "reconfigure" ]; then
 
   db_get ezweb-platform-postgres/serveraddress
   SERVER_HOST="$RET"
 
-  db_input high ezweb-platform-postgres/adminuser
-  db_go
-
   db_get ezweb-platform-postgres/adminuser
   ADMIN_USER="$RET"
 
-  db_input high ezweb-platform-postgres/adminpass
-  db_go
-
   db_get ezweb-platform-postgres/adminpass
   ADMIN_PASS="$RET"
+
 
   $EZWEB_ADMIN_SCRIPT setdbmsdefaults postgres default --database-host "$SERVER_HOST" --admin-user "$ADMIN_USER" --admin-pass "$ADMIN_PASS"
 
   ###
   # Configure the instances
   #
-  INSTANCES=`$EZWEB_ADMIN_SCRIPT list all --debconf`
   OLD_VAL=`$EZWEB_ADMIN_SCRIPT list database_engine postgres --debconf`
-  UNASSIGNED=`$EZWEB_ADMIN_SCRIPT list database_engine "" --debconf`
-
-  if [ "x$UNASSIGNED" != "x" ]; then
-    if [ "x$OLD_VAL" != "x" ]; then
-      CURRENT_VAL="$OLD_VAL, $UNASSIGNED"
-    else
-      CURRENT_VAL=$UNASSIGNED
-    fi
-  else
-    CURRENT_VAL="$OLD_VAL"
-  fi
-
-  db_subst ezweb-platform-postgres/instances choices $INSTANCES
-  db_fset ezweb-platform-postgres/instances seen false
-  db_set ezweb-platform-postgres/instances $CURRENT_VAL
-
-  db_input high ezweb-platform-postgres/instances || true
-  db_go || true
-
   db_get ezweb-platform-postgres/instances
 
   if [ "$RET" != "" -a "$RET" != "$OLD_VAL" ]; then
@@ -175,4 +109,8 @@ if [ "$1" = "configure" ]; then
 
 fi
 
-quit 0
+#DEBHELPER#
+
+db_stop
+
+exit 0

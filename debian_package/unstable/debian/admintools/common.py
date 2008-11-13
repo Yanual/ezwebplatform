@@ -11,7 +11,7 @@ class EzWebAdminToolResources:
   SERVER_ADMIN_SCRIPTS_PATH  = "/usr/share/ezweb-platform/admintools/server_backends/"
   CONFIG_BASE_PATH           = "/etc/ezweb-platform/"
   SITE_CONFIG_BASE_PATH      = CONFIG_BASE_PATH + "sites/"
-  DEFAULT_DOCUMENT_BASE_PATH = "/var/ezweb-instances/"
+  DATA_PATH                  = "/var/lib/ezweb-platform/"
   DEFAULT_LOG_BASE_PATH      = "/var/log/ezweb-platform/"
   SETTINGS_TEMPLATE_PATH     = CONFIG_BASE_PATH + "settings.py-template"
 
@@ -98,13 +98,13 @@ class EzWebAdminToolResources:
     self.printlnMsgNP("Done")
 
   def get_settings_path(self, conf_name):
-    return self.SITE_CONFIG_BASE_PATH + conf_name + "/settings.py"
+    return os.path.join(self.SITE_CONFIG_BASE_PATH, conf_name, "settings.py")
 
   def get_default_document_root(self, conf_name):
-    return self.DEFAULT_DOCUMENT_BASE_PATH + conf_name
+    return os.path.join(self.DATA_PATH, conf_name, "public_html")
 
   def get_default_log_path(self, conf_name):
-    return self.DEFAULT_LOG_BASE_PATH + conf_name
+    return os.path.join(self.DEFAULT_LOG_BASE_PATH, conf_name)
 
   def get_default_admin_email(self, cfg):
     return "webmaster@localhost"
@@ -368,6 +368,64 @@ class Template:
     file.write(self.template)
     file.close()
 
+class ConfigCopy:
+
+  def __init__(self, config):
+    self.refConfig = config
+    self.copyConfig = config.dict()
+
+  def setAndUpdate(self, value, root, *entries):
+    tmp = self.copyConfig
+    tmp2 = self.refConfig
+
+    length = len(entries)
+    if length > 0:
+      tmp = tmp[root]
+      tmp2 = tmp2[root]
+      for argument in entries[:-1]:
+        tmp = tmp[argument]
+        tmp2 = tmp2[argument]
+
+      tmp[entries[length - 1]] = value
+      tmp2[entries[length - 1]] = value
+    else:
+      tmp[root] = value
+      tmp2[root] = value
+
+  def set(self, value, root, *entries):
+    tmp = self.copyConfig
+
+    length = len(entries)
+    if length > 0:
+      tmp = tmp[root]
+      for argument in entries[:-1]:
+        tmp = tmp[argument]
+
+      tmp[entries[length - 1]] = value
+    else:
+      tmp[root] = value
+
+  def get(self, root, *entries):
+    tmp = self.copyConfig
+
+    length = len(entries)
+    if length > 0:
+      tmp = tmp[root]
+      for argument in entries[:-1]:
+        tmp = tmp[argument]
+
+      return tmp[entries[length - 1]]
+    else:
+      return tmp[root]
+
+  def getDefault(self, defaultValue, root, *entries):
+    try:
+      tmp = self.get(root, *entries)
+    except KeyError:
+      return defaultValue
+
+  def __getitem__(self, entry):
+    return self.copyConfig[entry]
 
 class EzWebInstanceNotFound(Exception):
   None

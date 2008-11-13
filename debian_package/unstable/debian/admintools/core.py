@@ -78,47 +78,77 @@ class MainEzWebAdminTool:
     directory = os.path.dirname(self.resources.get_config_file(site_cfg['name']))
     self.resources.rmdir(directory)
 
+  def isEnableable(self, site_cfg):
+    enableable = site_cfg['server'].has_key('server_type') and site_cfg['server'].has_key('connection_type') and site_cfg['database'].has_key('database_engine')
+    if enableable:
+      enableable = site_cfg['server']['server_type'] != "" and site_cfg['server']['connection_type'] != "" and site_cfg['database']['database_engine'] != ""
+
+    if enableable:
+      try:
+        server_command = self.resources.get_server_admin_command(site_cfg['server']['server_type'], "Process")
+        dbms_command = self.resources.get_dbms_admin_command(site_cfg['database']['database_engine'], "Process")
+      except:
+        enableable = False
+
+    return enableable
+
   def enable(self, site_cfg, options):
     server_cfg = site_cfg['server']
+
     if not server_cfg.has_key('document_root') or server_cfg['document_root'] == "":
       newDocumentRoot = self.resources.get_default_document_root(site_cfg['name'])
-      self.resources.printlnMsg("Assigning \"" + newDocumentRoot + "\" as document root for \"" + site_cfg['name'] + "\"\n")
+      self.resources.printlnMsg("Assigning \"" + newDocumentRoot + "\" as document root.")
       server_cfg['document_root'] = newDocumentRoot
 
     options.force_syncdb = True
+    site_cfg["enabled"] = True
     self.process_cfg(site_cfg, options)
 
-    site_cfg["enabled"] = True
-    self.resources.save_site_config(site_cfg, options.backup)
+    # Config saved at process_cfg
+    #self.resources.save_site_config(site_cfg, options.backup)
 
   def process_cfg(self, site_cfg, options):
+
+    valid = site_cfg['server'].has_key('server_type') and site_cfg['server']['server_type'] != ""
+    valid = valid and site_cfg['server'].has_key('connection_type') and site_cfg['server']['connection_type'] != ""
+    valid = valid and site_cfg['database'].has_key('database_engine') and site_cfg['database']['database_engine'] != ""
+    if not valid:
+      return;
+
+    data_dir = os.path.join(self.resources.DATA_PATH, site_cfg['name'])
+    self.resources.makedirs(data_dir)
+    os.chown(data_dir, -1, grp.getgrnam("www-data").gr_gid)
+    os.chmod(data_dir, 0775)
+
     # Update settings.py
     settings_template = self.update_settings_py(site_cfg)
 
     # Update server settings
-    if site_cfg['server'].has_key('server_type') and site_cfg['server'].has_key('connection_type'):
-      server_type = site_cfg['server']['server_type']
-      self.resources.printlnMsg()
-      self.resources.printlnMsg("Updating server settings (using " + server_type + " as server)... ")
-      self.resources.incPrintNestingLevel()
-      server_command = self.resources.get_server_admin_command(server_type, "Process")
-      server_command.execute(options, site_cfg, settings_template)
-      self.resources.decPrintNestingLevel()
-      self.resources.printlnMsg("Done")
+    server_type = site_cfg['server']['server_type']
+    self.resources.printlnMsg()
+    self.resources.printlnMsg("Processing server settings (using " + server_type + " as server)... ")
+    self.resources.incPrintNestingLevel()
+    server_command = self.resources.get_server_admin_command(server_type, "Process")
+    server_command.execute(options, site_cfg, settings_template)
+    self.resources.decPrintNestingLevel()
+    self.resources.printlnMsg("Done")
 
     # Update database settings
-    if site_cfg['database'].has_key('database_engine'):
-      database_engine = site_cfg['database']['database_engine']
-      self.resources.printlnMsg()
-      self.resources.printlnMsg("Updating database config (using " + database_engine + " DBMS)... ")
-      self.resources.incPrintNestingLevel()
-      dbms_command = self.resources.get_dbms_admin_command(database_engine, "Process")
-      dbms_command.execute(options, site_cfg, settings_template)
-      self.resources.decPrintNestingLevel()
-      self.resources.printlnMsg("Done")
+    database_engine = site_cfg['database']['database_engine']
+    self.resources.printlnMsg()
+    self.resources.printlnMsg("Processing database config (using " + database_engine + " as DBMS)... ")
+    self.resources.incPrintNestingLevel()
+    dbms_command = self.resources.get_dbms_admin_command(database_engine, "Process")
+    dbms_command.execute(options, site_cfg, settings_template)
+    self.resources.decPrintNestingLevel()
+    self.resources.printlnMsg("Done")
 
     # Save django settings
     self.resources.save_django_settings(site_cfg['name'], settings_template)
+
+    # Save EzWeb config
+    self.resources.printlnMsg()
+    self.resources.save_site_config(site_cfg, options.backup)
 
     # Synchronise database
     if options.force_syncdb:
@@ -142,6 +172,13 @@ class MainEzWebAdminTool:
 
       sys.path = syspathbackup
       self.resources.printlnMsg("Done")
+
+    self.resources.printlnMsg()
+    if site_cfg['server']['connection_type'] == 'fastcgi':
+      os.system("invoke-rc.d ezweb-platform-fastcgi restart")
+
+    server_command = self.resources.get_server_admin_command(server_type, "Apply")
+    server_command.execute(options)
 
   def update_settings_py(self, site_cfg):
     template = self.resources.get_settings_template()
@@ -240,11 +277,13 @@ class MainEzWebAdminTool:
           self.admintool.purgeserver(site_cfg, options)
           reenable = True
 
+        self.resources.printlnMsg("Assigning \"%s\" as server for this instance." % options.server_type)
         site_cfg['server']['server_type'] = options.server_type
         server_type = options.server_type
 
       if options.connection_type != None:
         changed = True
+        self.resources.printlnMsg("Using \"%s\" for connecting with the server." % options.connection_type)
         site_cfg['server']['connection_type'] = options.connection_type
 
 
@@ -258,7 +297,9 @@ class MainEzWebAdminTool:
         if enabled:
           self.admintool.purgedb(site_cfg, options)
           reenable = True
+          options.force_syncdb = True
 
+        self.resources.printlnMsg("Assigning \"%s\" as dbms for this instance." % options.database_engine)
         site_cfg['database']['database_engine'] = options.database_engine
         database_engine = options.database_engine
 
@@ -283,33 +324,35 @@ class MainEzWebAdminTool:
 
       if update_server:
         self.resources.printMsg("Updating server config (%s)... " % server_type)
-        server_command.execute(parser.get_current_options(), site_cfg)
+        server_command.execute(site_cfg, parser.get_current_options())
         self.resources.printlnMsgNP("Done")
 
       if update_database:
         self.resources.printMsg("Updating database config (%s)... " % database_engine)
-        dbms_command.execute(parser.get_current_options(), site_cfg)
+        dbms_command.execute(site_cfg, parser.get_current_options())
         self.resources.printlnMsgNP("Done")
-
-
-      # Save it
-      self.resources.save_site_config(site_cfg, options.backup)
 
       if reenable:
         self.admintool.enable(site_cfg, options)
       elif enabled:
         self.admintool.process_cfg(site_cfg, options)
+      elif site_cfg.has_key("schedule_enable") and site_cfg.as_bool("schedule_enable") and self.admintool.isEnableable(site_cfg):
+        del site_cfg["schedule_enable"]
+        self.admintool.enable(site_cfg, options)
+      else:
+        # EzWeb config is saved only if enable or process_cfg is called
+        self.resources.save_site_config(site_cfg, options.backup)
 
       self.resources.decPrintNestingLevel()
       self.resources.printlnMsg()
       self.resources.printlnMsg("EzWeb instance updated sucessfully.")
-      if enabled:
-        self.resources.printlnMsg("Please, restart %s to active the changes." % server_type)
 
 
   class EnableCommand(Command):
     option_list = [make_option("-f", "--force", action="store_true", default=False,
-                               dest="force", help=_("Force enabling the instance")),]
+                               dest="force", help=_("Force enabling the instance")),
+                   make_option("-s", "--schedule", action="store_true", default=False,
+                               dest="schedule", help=_("Schedule the enabling of this instance")),]
     final = True
 
     def __init__(self, resources, admintool):
@@ -321,7 +364,20 @@ class MainEzWebAdminTool:
       conf_name = args[0]
       site_cfg = self.resources.get_site_config(conf_name)
 
-      if not site_cfg['server'].has_key('server_type') or not site_cfg['database'].has_key('database_engine'):
+      enableable = self.admintool.isEnableable(site_cfg)
+
+      if options.schedule and not enableable:
+        self.resources.printlnMsg("Scheduling the enabling of the \"%s\" EzWeb instance..." % site_cfg['name'])
+        self.resources.incPrintNestingLevel()
+
+        site_cfg['schedule_enable'] = True
+        self.resources.save_site_config(site_cfg, options.backup)
+
+        self.resources.decPrintNestingLevel()
+        self.resources.printlnMsg("Done")
+        return
+
+      elif not options.schedule and not enableable:
         print "Please, configure this EzWeb instance before enabling it."
         sys.exit(-1)
 
@@ -363,10 +419,77 @@ class MainEzWebAdminTool:
         self.admintool.purgeserver(site_cfg, options)
         self.resources.printlnMsg("Done")
 
+        self.resources.printlnMsg()
+        if site_cfg['server']['connection_type'] == 'fastcgi':
+          os.system("invoke-rc.d ezweb-platform-fastcgi restart")
+
+        server_command = self.resources.get_server_admin_command(site_cfg['server']['server_type'], "Apply")
+        server_command.execute(options)
+
         self.resources.decPrintNestingLevel()
         self.resources.printlnMsg("Done")
       else:
         self.resources.printlnMsg("\"%s\" EzWeb instance is not going to be disabled as it is already disabled." % site_cfg['name'])
+
+  class CleanCommand(Command):
+    option_list = []
+
+    final = False
+
+    def __init__(self, resources, admintool):
+      self.resources = resources
+      self.admintool = admintool
+
+    def execute(self, parser, options, args):
+      if len(args) < 1:
+        return -1
+
+      conf_name = args[0]
+
+      self.resources.printlnMsg()
+      self.resources.printlnMsg("Cleaning \"%s\" instance" % conf_name)
+      self.resources.printlnMsg()
+      self.resources.incPrintNestingLevel()
+
+      site_cfg = self.resources.get_site_config(conf_name)
+
+      if site_cfg['server'].has_key("server_type"):
+        server_type = site_cfg['server']['server_type']
+      else:
+        server_type = None
+
+      if site_cfg['database'].has_key("database_engine"):
+        database_engine = site_cfg['database']['database_engine']
+      else:
+        database_engine = None
+
+      clean_server = server_type != None and server_type != ""
+      clean_database = database_engine != None and database_engine != ""
+
+      if clean_server:
+        self.resources.printlnMsg("Cleaning server resources (%s)... " % server_type)
+        self.resources.incPrintNestingLevel()
+        server_command = self.resources.get_server_admin_command(server_type, "Purge")
+        server_command.execute(site_cfg, options)
+        self.resources.decPrintNestingLevel()
+        self.resources.printlnMsg("Done")
+
+      if clean_database:
+        self.resources.printlnMsg("Cleaning database resources (%s)... " % database_engine)
+        self.resources.incPrintNestingLevel()
+        dbms_command = self.resources.get_dbms_admin_command(database_engine, "Clean")
+        dbms_command.execute(site_cfg, parser.get_current_options())
+        self.resources.decPrintNestingLevel()
+        self.resources.printlnMsg("Done")
+
+      if site_cfg.as_bool('enabled'):
+        options.force_syncdb = True
+        self.admintool.process_cfg(site_cfg, options)
+
+      self.resources.decPrintNestingLevel()
+      self.resources.printlnMsg()
+      self.resources.printlnMsg("Done")
+      self.resources.printlnMsg()
 
   class PurgeCommand(Command):
     option_list = []
@@ -699,6 +822,7 @@ class MainEzWebAdminTool:
     parser.add_command("create", self.CreateCommand(self.resources, self))
     parser.add_command("update", self.UpdateCommand(self.resources, self))
     parser.add_command("enable", self.EnableCommand(self.resources, self))
+    parser.add_command("clean", self.CleanCommand(self.resources, self))
     parser.add_command("purge", self.PurgeCommand(self.resources, self))
     parser.add_command("disable", self.DisableCommand(self.resources, self))
     parser.add_command("list", self.ListCommand(self.resources, self))

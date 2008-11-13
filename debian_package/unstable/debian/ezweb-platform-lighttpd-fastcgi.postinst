@@ -1,43 +1,23 @@
 #!/bin/bash
 
+###
+# Include debconf module
+#
+. /usr/share/debconf/confmodule
+
 reload_lighttpd() {
-  if lighttpd -t 2>/dev/null; then
+  if lighttpd -t -f /etc/lighttpd/lighttpd.conf &> /dev/null; then
     invoke-rc.d lighttpd force-reload || true
   else
     echo "Your lighttpd configuration is broken, so we're not restarting it for you."
   fi
 }
 
-if [ "$1" = "configure" ]; then
-
-  ###
-  # Include debconf module
-  #
-  . /usr/share/debconf/confmodule
+if [ "$1" = "configure" -o "$1" = "reconfigure" ]; then
 
   EZWEB_ADMIN_SCRIPT="/usr/sbin/update-ezweb-platform"
 
-  INSTANCES=`$EZWEB_ADMIN_SCRIPT list all --debconf`
   OLD_VAL=`$EZWEB_ADMIN_SCRIPT list server lighttpd connection_type fastcgi --debconf`
-  UNASSIGNED=`$EZWEB_ADMIN_SCRIPT list server "" --debconf`
-
-  if [ "x$UNASSIGNED" != "x" ]; then
-    if [ "x$OLD_VAL" != "x" ]; then
-      CURRENT_VAL="$OLD_VAL, $UNASSIGNED"
-    else
-      CURRENT_VAL=$UNASSIGNED
-    fi
-  else
-    CURRENT_VAL="$OLD_VAL"
-  fi
-
-  db_subst ezweb-platform-lighttpd-fastcgi/instances choices $INSTANCES
-  db_fset ezweb-platform-lighttpd-fastcgi/instances seen false
-  db_set ezweb-platform-lighttpd-fastcgi/instances $CURRENT_VAL
-
-  db_input high ezweb-platform-lighttpd-fastcgi/instances || true
-  db_go || true
-
   db_get ezweb-platform-lighttpd-fastcgi/instances
 
   if [ "$RET" != "" -a "$RET" != "$OLD_VAL" ]; then
@@ -67,5 +47,7 @@ if [ "$1" = "configure" ]; then
 fi
 
 #DEBHELPER#
+
+db_stop
 
 exit 0

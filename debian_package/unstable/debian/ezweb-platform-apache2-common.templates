@@ -1,15 +1,31 @@
+Template: ezweb-platform-common/configured
+Type: boolean
+Default: false
+Description: for internal use
+	.
+
+Template: ezweb-platform-common/abortupgrade
+Type: boolean
+Default: true
+_Description: Abort EzWeb upgrading?
+	EzWeb Platform is currently in heavy development, this means that
+	database models are changed very often. This needs to drop EzWeb database tables and
+	thus your EzWeb data will be lost.
+	.
+	The configuration will remain untouched.
+
 Template: ezweb-platform-apache2-common/defaultservername
 Type: string
 Default: localhost
-_Description: Default ServerName for EzWeb instances using apache2:
+_Description: Default ServerName for EzWeb instances using Apache2:
 	Each Apache2 virtual host is attached to one or more servernames. Here
 	you can define the default value for this virtual host attribute that
 	will be use by the EzWeb instances.
 
 Template: ezweb-platform-apache2-common/defaultserverport
 Type: string
-Default: 80
-_Description: Default port for EzWeb instances using apache2:
+Default: 8000
+_Description: Default port for EzWeb instances using Apache2:
 	Each Apache2 virtual host can be attached to one port. However, a
 	virtual host does not have to be attached to a port at all.
 	.

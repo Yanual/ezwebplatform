@@ -1,5 +1,15 @@
 #!/bin/bash
 
+###
+# Include debconf module
+#
+. /usr/share/debconf/confmodule
+
+if [ -n "$DEBCONF_RECONFIGURE" ]; then
+  db_set ezweb-platform-common/abortupgrade false
+  exit 0
+fi
+
 reload_lighttpd() {
   if lighttpd -t 2>/dev/null; then
     invoke-rc.d lighttpd force-reload || true
@@ -8,23 +18,45 @@ reload_lighttpd() {
   fi
 }
 
-if [ "$1" == "remove" ]; then
-  # Disable all the Lighttpd EzWeb instances
-  INSTANCES=`/usr/sbin/update-ezweb-platform list enabled server lighttpd connection_type fastcgi`
+case "${1}" in
+  failed-upgrade)
+    exit -1
+    ;;
 
-  invoke-rc.d ezweb-platform-fastcgi stop
+  upgrade)
+    db_get ezweb-platform-common/abortupgrade
+    if [ "$RET" == true ]; then
+      echo "Aborting EzWeb upgrade by user request"
+      exit 1
+    fi
+    ;;
 
-  for conf_name in $INSTANCES; do
-    RELOAD=1
-    /usr/sbin/update-ezweb-platform disable $conf_name
-  done
+  remove)
+    # Disable all the Lighttpd EzWeb instances
+    INSTANCES=`/usr/sbin/update-ezweb-platform list enabled server lighttpd connection_type fastcgi`
 
-  invoke-rc.d ezweb-platform-fastcgi start
-  if [ "$RELOAD" == 1 ]; then
-    reload_lighttpd
-  fi
+    invoke-rc.d ezweb-platform-fastcgi stop
 
-fi
+    for conf_name in $INSTANCES; do
+      RELOAD=1
+      /usr/sbin/update-ezweb-platform disable $conf_name
+    done
+
+    invoke-rc.d ezweb-platform-fastcgi start
+    if [ "$RELOAD" == 1 ]; then
+      reload_lighttpd
+    fi
+    ;;
+
+  abort-install|abort-upgrade|dissappear)
+    ;;
+
+  *)
+    echo "prerm called with unknown argument \"${1}\"" >&2
+    exit 1
+    ;;
+
+esac
 
 #DEBHELPER#
 

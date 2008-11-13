@@ -1,5 +1,15 @@
 #!/bin/bash
 
+###
+# Include debconf module
+#
+. /usr/share/debconf/confmodule
+
+if [ -n "$DEBCONF_RECONFIGURE" ]; then
+  db_set ezweb-platform-common/abortupgrade false
+  exit 0
+fi
+
 reload_apache() {
   if apache2ctl configtest 2>/dev/null; then
     invoke-rc.d apache2 force-reload || true
@@ -9,24 +19,46 @@ reload_apache() {
   fi
 }
 
-if [ "$1" == "remove" ]; then
-  INSTANCES=`/usr/sbin/update-ezweb-platform list enabled server apache2 connection_type fastcgi`
+case "${1}" in
+  failed-upgrade)
+    exit -1
+    ;;
 
-  invoke-rc.d ezweb-platform-fastcgi stop
+  upgrade)
+    db_get ezweb-platform-common/abortupgrade
+    if [ "$RET" == true ]; then
+      echo "Aborting EzWeb upgrade by user request"
+      exit 1
+    fi
+    ;;
 
-  # Disable all Apache2 EzWeb instances
-  for conf_name in $INSTANCES; do
-    RELOAD=1
-    /usr/sbin/update-ezweb-platform disable $conf_name
-  done
+  remove)
+    INSTANCES=`/usr/sbin/update-ezweb-platform list enabled server apache2 connection_type fastcgi`
 
-  invoke-rc.d ezweb-platform-fastcgi start
+    invoke-rc.d ezweb-platform-fastcgi stop
 
-  if [ "$RELOAD" == 1 ]; then
-    reload_apache
-  fi
+    # Disable all Apache2 EzWeb instances
+    for conf_name in $INSTANCES; do
+      RELOAD=1
+      /usr/sbin/update-ezweb-platform disable $conf_name
+    done
 
-fi
+    invoke-rc.d ezweb-platform-fastcgi start
+
+    if [ "$RELOAD" == 1 ]; then
+      reload_apache
+    fi
+    ;;
+
+  abort-install|abort-upgrade|dissappear)
+    ;;
+
+  *)
+    echo "prerm called with unknown argument \"${1}\"" >&2
+    exit 1
+    ;;
+
+esac
 
 #DEBHELPER#
 

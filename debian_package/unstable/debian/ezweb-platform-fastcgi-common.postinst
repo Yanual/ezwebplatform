@@ -1,7 +1,14 @@
 #!/bin/bash
 
-chgrp www-data /var/run/ezweb-platform
-chmod 775      /var/run/ezweb-platform
+###
+# Include debconf module
+#
+. /usr/share/debconf/confmodule
+
+if [ "$1" = "configure" -o "$1" = "reconfigure" ]; then
+  chgrp www-data /var/run/ezweb-platform &> /dev/null
+  chmod 775      /var/run/ezweb-platform &> /dev/null
+fi
 
 #DEBHELPER#
 

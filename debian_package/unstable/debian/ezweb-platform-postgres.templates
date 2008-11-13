@@ -1,3 +1,19 @@
+Template: ezweb-platform-common/configured
+Type: boolean
+Default: false
+Description: for internal use
+	.
+
+Template: ezweb-platform-common/abortupgrade
+Type: boolean
+Default: true
+_Description: Abort EzWeb upgrading?
+	EzWeb Platform is currently in heavy development, this means that
+	database models are changed very often. This needs to drop EzWeb database tables and
+	thus your EzWeb data will be lost.
+	.
+	The configuration will remain untouched.
+
 Template: ezweb-platform-postgres/serveraddress
 Type: string
 Default: localhost
@@ -24,10 +40,21 @@ Template: ezweb-platform-postgres/instances
 Type: multiselect
 Default: default
 Choices: ${choices}
-_Description: Select the instances of EzWeb you want to configure to use PostgreSQL
+_Description: Ezweb instances that will use PostgreSQL:
 	The selected EzWeb instances will be configured to use PostgreSQL as
 	DBMS.
 	.
 	This will not enable the selected EzWeb instances, although they will
 	continue to be enabled if they are currently enabled.
 
+Template: ezweb-platform-postgres/olduser
+Type: string
+Default: ezweb
+Description: for internal use
+	.
+
+Template: ezweb-platform-postgres/oldpass
+Type: string
+Default: ezweb
+Description: for internal use
+	.

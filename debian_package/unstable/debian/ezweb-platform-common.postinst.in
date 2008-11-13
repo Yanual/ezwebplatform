@@ -1,0 +1,69 @@
+#!/bin/bash
+
+if [ "$1" = "abort-upgrade" ]; then
+  exit 0
+fi
+
+###
+# Include debconf module
+#
+. /usr/share/debconf/confmodule
+
+EZWEB_ADMIN_SCRIPT="/usr/sbin/update-ezweb-platform"
+
+db_set ezweb-platform-common/configured false
+
+if [ "$1" = "configure" -a -n "$2" ]; then
+  newversion=`echo $2 | cut -f1 -d"-"`
+
+  if `dpkg --compare-versions "$newversion" ne "CURRENTVERSION"`; then
+    RET=`$EZWEB_ADMIN_SCRIPT list all --debconf`
+    if [ "$RET" != "" ]; then
+      list=`echo $RET | sed -e 's/, /,/g'`
+
+      saved_IFS=$IFS
+      IFS=,
+      for conf in $list; do
+        $EZWEB_ADMIN_SCRIPT clean $conf
+      done
+      IFS=$saved_IFS
+    fi
+  fi
+fi
+
+if [ "$1" = "configure" -o "$1" = "reconfigure" ]; then
+  if [ -z "$2" -a ! -f "/etc/ezweb-platform/sites/default/config" ]; then
+    # If we are installing (not upgrading) and there is not a default config
+    # yet, then create a default EzWeb instance config
+    $EZWEB_ADMIN_SCRIPT create default
+    $EZWEB_ADMIN_SCRIPT enable default --schedule
+  elif [ "x$2" != "x" ]; then
+    VER=`expr match "$2" '\([0-9]*\.[0-9]*\)~svn[0-9]*'`
+    if `dpkg --compare-versions "$VER" "lt" "0.4"` ; then
+      # If we are upgrading from the old package style, then create a
+      # default EzWeb instance config that will use the oldconfig
+      $EZWEB_ADMIN_SCRIPT create default
+
+      touch /usr/share/ezweb-platform/.update-server
+      touch /usr/share/ezweb-platform/.update-db
+    fi
+  fi
+
+  db_get ezweb-platform-common/proxy
+  PROXY="$RET"
+
+  # Save the config
+  $EZWEB_ADMIN_SCRIPT setdefaults default --proxy "$PROXY"
+
+  # fix ownership and permissions
+  chgrp www-data /var/lib/ezweb-platform
+  chmod 775      /var/lib/ezweb-platform
+
+  chgrp www-data /var/log/ezweb-platform
+  chmod 775      /var/log/ezweb-platform
+fi
+
+
+#DEBHELPER#
+
+exit 0

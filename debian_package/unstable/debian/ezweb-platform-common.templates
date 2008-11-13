@@ -1,25 +1,31 @@
-Template: ezweb-platform-common/upgrading
+Template: ezweb-platform-common/configured
+Type: boolean
+Default: false
+Description: for internal use
+	.
+
+Template: ezweb-platform-common/abortupgrade
 Type: boolean
 Default: true
 _Description: Abort EzWeb upgrading?
-	EzWeb Platform is currently in heavy development, this mean that
-	database models are changed very often. To upgrade your EzWeb instances,
-	we need to drop EzWeb databases, so all your EzWeb data will be lost.
+	EzWeb Platform is currently in heavy development, this means that
+	database models are changed very often. This needs to drop EzWeb database tables and
+	thus your EzWeb data will be lost.
 	.
-	The configuration will be untouched.
+	The configuration will remain untouched.
 
 Template: ezweb-platform-common/proxy
 Type: string
 Default:
-_Description: Default proxy for the EzWeb instances
+_Description: Default proxy for the EzWeb instances:
 	The EzWeb Platform usually acts as an HTTP proxy for the EzWeb IGadgets,
-	so it needs to be connected to the internet. If this machine don't have
-	a direct connection to the internet, you can provide the address of a
+	so it needs to be connected to the Internet. If this machine don't have
+	a direct connection to the Internet, you can provide the address of a
 	HTTP proxy.
 	.
-	Each EzWeb Instance can be configured individually, but normally all the
-	instances will use the same Proxy, so you can stablish one proxy as the
-	default one.
+	Each EzWeb Instance can be individually configured, but default every
+	instance will use the same proxy, here you can configure the default
+	proxy.
 	.
 	If this machine is connected directly to the internet, you can leave
 	this field empty.

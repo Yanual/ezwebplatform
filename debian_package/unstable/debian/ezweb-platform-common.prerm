@@ -1,19 +1,56 @@
 #!/bin/bash
 
-if [ "$1" == "remove" ]; then
-  # Disable all EzWeb instances
-  INSTANCES=`/usr/sbin/update-ezweb-platform list enabled`
+###
+# Include debconf module
+#
+. /usr/share/debconf/confmodule
 
-  for conf_name in $INSTANCES; do
-    /usr/sbin/update-ezweb-platform disable $conf_name
-  done
+if [ -n "$DEBCONF_RECONFIGURE" ]; then
+  db_set ezweb-platform-common/abortupgrade false
+  exit 0
 fi
+
+EZWEB_ADMIN_SCRIPT="/usr/sbin/update-ezweb-platform"
+
+case "${1}" in
+  failed-upgrade)
+    exit -1
+    ;;
+
+  upgrade)
+    db_get ezweb-platform-common/abortupgrade
+    if [ "$RET" == true ]; then
+      db_set ezweb-platform-common/configured false
+      echo "Aborting EzWeb upgrade by user request"
+      exit 1
+    fi
+    ;;
+
+  remove)
+    # Disable all EzWeb instances
+    INSTANCES=`$EZWEB_ADMIN_SCRIPT list enabled`
+
+    for conf_name in $INSTANCES; do
+      $EZWEB_ADMIN_SCRIPT disable $conf_name
+    done
+    ;;
+
+  abort-install|abort-upgrade|dissappear)
+    ;;
+
+  *)
+    echo "prerm called with unknown argument \"${1}\"" >&2
+    exit 1
+    ;;
+
+esac
+
 
 # Remove python object files
 find /usr/share/ezweb-platform -name "*.pyc" -delete
 
-# Remove
-rm -rf /var/lib/ezweb-platform
+# Remove .update-server and .update-db flag files
+rm -f /usr/share/ezweb-platform/.update-server /usr/share/ezweb-platform/.update-db
 
 #DEBHELPER#
 

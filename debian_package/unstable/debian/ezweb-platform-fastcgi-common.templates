@@ -13,15 +13,3 @@ _Description: Abort EzWeb upgrading?
 	thus your EzWeb data will be lost.
 	.
 	The configuration will remain untouched.
-
-Template: ezweb-platform-apache2-mod-python/instances
-Type: multiselect
-Default: default
-Choices: ${choices}
-_Description: EzWeb instances that will use Apache2 with mod-python:
-	The selected EzWeb instances will be configured to use Apache2 with
-	mod-python.
-	.
-	This will not enable the selected EzWeb instances, although they will
-	continue to be enabled if they are currently enabled.
-

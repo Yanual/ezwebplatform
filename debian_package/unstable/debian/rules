@@ -3,6 +3,8 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+VERSION := $(shell dpkg-parsechangelog | sed -n 's/^Version: *\([^-]\+\)-.\+/\1/p')
+
 # Include dpatch stuff.
 include /usr/share/dpatch/dpatch.make
 
@@ -16,6 +18,9 @@ clean1:
 	dh_testroot
 	
 	rm -f debian/*.py[co]
+	
+	chmod +w debian/po/*.po
+	debconf-updatepo
 	
 	dh_clean
 
@@ -42,10 +47,11 @@ binary-indep: build install
 	    cp -a $$f debian/ezweb-platform-common/usr/share/ezweb-platform; \
 	  fi; \
 	done
+	sed -e 's/CURRENTVERSION/$(VERSION)/' < debian/ezweb-platform-common.config.in > debian/ezweb-platform-common.config
+	sed -e 's/CURRENTVERSION/$(VERSION)/' < debian/ezweb-platform-common.postinst.in > debian/ezweb-platform-common.postinst
 	
 	mkdir -p debian/ezweb-platform-common/usr/sbin
 	cp -p debian/update-ezweb-platform debian/ezweb-platform-common/usr/sbin
-	mkdir -p debian/ezweb-platform-common/var/ezweb-instances
 	
 	mkdir -p debian/ezweb-platform-common/usr/share/ezweb-platform/admintools/server_backends
 	mkdir -p debian/ezweb-platform-common/usr/share/ezweb-platform/admintools/database_backends
@@ -58,6 +64,7 @@ binary-indep: build install
 	: # Remove unwanted files
 	rm -f `find debian/ezweb-platform-common -name "*.pyc"`
 	rm -rf `find debian/ezweb-platform-common -name ".svn"`
+	rmdir debian/ezweb-platform-common/usr/share/ezweb-platform/media/gadgets
 	rm -rf debian/ezweb-platform-common/usr/share/ezweb-platform/media/logs
 	rm -f debian/ezweb-platform-common/usr/share/ezweb-platform/config.conf
 	rm -f debian/ezweb-platform-common/usr/share/ezweb-platform/rebuild_db.sh

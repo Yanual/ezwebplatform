@@ -1,0 +1,25 @@
+#!/bin/bash
+
+if [ "$1" == "purge" ]; then
+
+  PSQL_VER=`psql --version | grep "psql (PostgreSQL)"`
+  PSQL_VER=`expr match "$PSQL_VER" 'psql (PostgreSQL) \([0-9]*\.[0-9]*\)\.[0-9]*'`
+  PSQL_CONF_FILE="/etc/postgresql/$PSQL_VER/main/pg_hba.conf"
+
+  su - postgres -c "dropdb ezwebadmin" 2> /dev/null || true
+  if su - postgres -c "dropuser ezwebadmin"; then
+    RET=`sed -n 's/local\s\s*all\s\s*ezwebadmin\s\s*password/&/p' < $PSQL_CONF_FILE`
+    if [ "x$RET" != "x" ]; then
+      echo "Backing up $PSQL_CONF_FILE ..."
+      cp $PSQL_CONF_FILE $PSQL_CONF_FILE.ezweb-postrm
+      CONTENT=`cat $PSQL_CONF_FILE | sed 's/local\s\s*all\s\s*ezwebadmin\s\s*password//'`
+      echo "$CONTENT" > $PSQL_CONF_FILE
+    fi
+
+    invoke-rc.d postgresql-$PSQL_VER restart
+  fi
+fi
+
+#DEBHELPER#
+
+exit 0

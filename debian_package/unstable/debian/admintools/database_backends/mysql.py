@@ -12,7 +12,7 @@ import MySQLdb
 import warnings
 from optparse import OptionParser, make_option
 from configobj import ConfigObj
-from admintools.common import Command, EzWebAdminToolResources
+from admintools.common import Command, EzWebAdminToolResources, ConfigCopy
 
 class MySQLResources:
   def __init__(self, resources):
@@ -67,14 +67,13 @@ class MySQLResources:
     self.resources.printlnMsgNP("Done")
 
 
-  def fill_settings(self, site_cfg, options):
-    settings = {}
-
+  def fill_settings(self, site_cfg):
+    site_cfg = ConfigCopy(site_cfg)
     conf_name = site_cfg["name"]
 
-    if site_cfg['database'].has_key('schema'):
-      schema = site_cfg['database']['schema']
-    else:
+    schema = site_cfg.getDefault('', 'database', 'schema')
+    if schema == '':
+      site_cfg.set("default", 'database', 'schema')
       schema = "default"
 
     mysql_settings = self.get_mysql_settings()
@@ -84,34 +83,33 @@ class MySQLResources:
       schema = {}
 
     # Database host
-    if not site_cfg['database'].has_key("host"):
+    host = site_cfg.getDefault('', 'database', 'host')
+    if host == '':
       if schema.has_key('server_host'):
-        site_cfg['database']['host'] = schema['server_host']
+        site_cfg.set(schema['server_host'], 'database', 'host')
       else:
-        site_cfg['database']['host'] = "localhost"
+        site_cfg.set("localhost", 'database', 'host')
 
     # Database admin user
-    if not site_cfg['database'].has_key("admin_user"):
+    admin_user = site_cfg.getDefault('', 'database', 'admin_user')
+    if admin_user == '':
       if schema.has_key('admin_user'):
-        site_cfg['database']['admin_user'] = schema['admin_user']
+        site_cfg.set(schema['admin_user'], 'database', 'admin_user')
 
-    if not site_cfg['database'].has_key("admin_pass"):
+    admin_pass = site_cfg.getDefault('', 'database', 'admin_pass')
+    if admin_pass == '':
       if schema.has_key('admin_pass'):
-        site_cfg['database']['admin_pass'] = schema['admin_pass']
+        site_cfg.set(schema['admin_pass'], 'database', 'admin_pass')
 
     # Database user
     if not site_cfg['database'].has_key("user"):
-      site_cfg['database']['user'] = "ezweb-" + conf_name
+      site_cfg.setAndUpdate("ezweb-" + conf_name, 'database', 'user')
 
-    if options.__dict__.has_key("database_name") and options.database_name != None:
-      site_cfg['database']['name'] = options.database_name
-    elif not site_cfg['database'].has_key("name"):
-      site_cfg['database']['name'] = "ezweb-" + conf_name
+    if not site_cfg['database'].has_key("name"):
+      site_cfg.setAndUpdate("ezweb-" + conf_name, 'database', 'name')
 
-    if options.__dict__.has_key("database_pass") and options.database_pass != None:
-      site_cfg['database']['pass'] = options.database_name
-    elif not site_cfg['database'].has_key("pass"):
-      site_cfg['database']['pass'] = ''.join(Random().sample(string.letters+string.digits, 12))
+    if not site_cfg['database'].has_key("pass"):
+      site_cfg.setAndUpdate(''.join(Random().sample(string.letters+string.digits, 12)), 'database', 'pass')
 
     return site_cfg
 
@@ -155,7 +153,7 @@ class UpdateCommand(Command):
     self.mysqlResources = MySQLResources(resources)
     self.resources = resources
 
-  def execute(self, options, site_cfg):
+  def execute(self, site_cfg, options):
 
     database_cfg = site_cfg['database']
     if options.database_host != None:
@@ -180,7 +178,7 @@ class ProcessCommand(Command):
 
   def execute(self, options, site_cfg, settings_template):
 
-    self.mysqlResources.fill_settings(site_cfg, options)
+    site_cfg = self.mysqlResources.fill_settings(site_cfg)
     cfg = site_cfg['database']
 
     self.mysqlResources.update_settings_py(settings_template, site_cfg)
@@ -191,7 +189,7 @@ class ProcessCommand(Command):
     cursor.execute("SELECT 1 FROM `user` where `user` = '" + cfg['user'] + "';")
     if cursor.rowcount == 0:
       self.resources.printMsg("User %s doesn't exists ... " % cfg['user'])
-      cursor.execute("CREATE USER '" + cfg['user'] + "'@'localhost' IDENTIFIED BY '" + cfg['pass'] + "';")
+      cursor.execute("CREATE USER '%s'@'%s' IDENTIFIED BY '%s';" % (cfg['user'], "localhost", cfg['pass']))
       self.resources.printlnMsgNP("created.")
 
     warnings.filterwarnings("ignore", "Can't create database .* database exists")
@@ -274,7 +272,7 @@ class PurgeCommand(Command):
     self.mysqlResources = MySQLResources(resources)
 
   def execute(self, site_cfg, options):
-    self.mysqlResources.fill_settings(site_cfg, options)
+    site_cfg = self.mysqlResources.fill_settings(site_cfg)
     cfg = site_cfg['database']
     conn = self.mysqlResources.get_ezweb_connection(cfg)
 
@@ -284,23 +282,25 @@ class PurgeCommand(Command):
     cursor.execute("DROP DATABASE IF EXISTS `" + cfg['name'] + "`;")
     self.resources.printlnMsgNP("Done")
 
-    cursor.execute("SELECT 1 FROM `user` where `user` = '" + cfg['user'] + "';")
+    cursor.execute("SELECT 1 FROM `user` where `User` = '%s' AND `Host` = '%s';" % (cfg['user'], "localhost"))
     if cursor.rowcount == 1:
       self.resources.printMsg("Droping user \"" + cfg['user'] + "\"... ")
-      cursor.execute("DROP USER '" + cfg['user'] + "';")
+      cursor.execute("DROP USER '%s'@'%s';" % (cfg['user'], "localhost"))
       self.resources.printlnMsgNP("Done")
 
-class ClearCommand(Command):
+class CleanCommand(Command):
 
   option_list = ()
 
   def __init__(self, resources):
     self.mysqlResources = MySQLResources(resources)
 
-  def execute(self, options, args):
-    conn = self.get_ezweb_connection()
+  def execute(self, site_cfg, options):
+    cfg = self.mysqlResources.fill_settings(site_cfg)
+    cfg = cfg['database']
+    conn = self.mysqlResources.get_ezweb_connection(cfg)
     cursor = conn.cursor()
     warnings.filterwarnings("ignore", "Can't drop database .* database doesn't exist")
-    cursor.execute("DROP DATABASE IF EXISTS `" + settings['name'] + "`;")
-    cursor.execute("CREATE DATABASE `" + settings['name'] + "`;")
+    cursor.execute("DROP DATABASE IF EXISTS `" + cfg['name'] + "`;")
+    cursor.execute("CREATE DATABASE `" + cfg['name'] + "`;")
 

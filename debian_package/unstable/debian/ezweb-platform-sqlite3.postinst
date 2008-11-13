@@ -5,72 +5,35 @@
 #
 . /usr/share/debconf/confmodule
 
-function float_cond() {
-    local cond=0
-    if [[ $# -gt 0 ]]; then
-        cond=$(echo "$*" | bc -q 2>/dev/null)
-        if [[ -z "$cond" ]]; then cond=0; fi
-        if [[ "$cond" != 0  &&  "$cond" != 1 ]]; then cond=0; fi
-    fi
-    local stat=$((cond == 0))
-    return $stat
-}
+EZWEB_ADMIN_SCRIPT="/usr/sbin/update-ezweb-platform"
 
-function quit() {
+if [ "$1" = "configure" -a -n "$2" -a -f "/usr/share/ezweb-platform/.update-db" ]; then
+
+  # If we are upgrading from the old package style, then create a
+  # default EzWeb instance config using the old configuration
+  $EZWEB_ADMIN_SCRIPT update default --database-engine sqlite3
+
+  # Create a backup with the previous database
+  mkdir /var/lib/ezweb-platform/default
+  mv /var/lib/ezweb-platform/db /var/lib/ezweb-platform/default/default.sqlite3~
+
+  rm "/usr/share/ezweb-platform/.update-db"
+  if [ ! -f "/usr/share/ezweb-platform/.update-server" ]; then
+    $EZWEB_ADMIN_SCRIPT enable default
+  fi
 
   #DEBHELPER#
+  exit 0
 
-  exit $1
-}
+fi
 
-if [ "$1" = "configure" ]; then
 
-  EZWEB_ADMIN_SCRIPT="/usr/sbin/update-ezweb-platform"
-
-  if [ "$2" != "" ]; then
-    VER=`expr match "$2" '\([0-9]*\.[0-9]*\)~svn[0-9]*'`
-    #SVNREV=`expr match "$2" '[0-9]*\.[0-9]*~svn\([0-9]*\)'`
-    if float_cond "$VER < 0.3"; then
-      # If we are upgrading from the old package style, then create a
-      # default EzWeb instance config using the old configuration
-      /usr/sbin/update-ezweb-platform update default --database-engine sqlite3
-
-      # Create a backup with the previous database
-      mv /var/lib/ezweb-platform/db /var/lib/ezweb-platform/default.sqlite3~
-
-      rm "/usr/share/ezweb-platform/.update-db"
-      if [ ! -f "/usr/share/ezweb-platform/.update-server" ]; then
-        $EZWEB_ADMIN_SCRIPT enable default
-      fi
-
-      quit 0
-    fi
-  fi
+if [ "$1" = "configure" -o "$1" = "reconfigure" ]; then
 
   ###
   # Configure the instances
   #
-  INSTANCES=`$EZWEB_ADMIN_SCRIPT list all --debconf`
   OLD_VAL=`$EZWEB_ADMIN_SCRIPT list database_engine sqlite3 --debconf`
-  UNASSIGNED=`$EZWEB_ADMIN_SCRIPT list database_engine "" --debconf`
-
-  if [ "x$UNASSIGNED" != "x" ]; then
-    if [ "x$OLD_VAL" != "x" ]; then
-      CURRENT_VAL="$OLD_VAL, $UNASSIGNED"
-    else
-      CURRENT_VAL=$UNASSIGNED
-    fi
-  else
-    CURRENT_VAL="$OLD_VAL"
-  fi
-
-  db_subst ezweb-platform-sqlite3/instances choices $INSTANCES
-  db_fset ezweb-platform-sqlite3/instances seen false
-  db_set ezweb-platform-sqlite3/instances $CURRENT_VAL
-
-  db_input high ezweb-platform-sqlite3/instances || true
-  db_go || true
-
   db_get ezweb-platform-sqlite3/instances
 
   if [ "$RET" != "" -a "$RET" != "$OLD_VAL" ]; then
@@ -88,4 +51,4 @@ if [ "$1" = "configure" ]; then
 
 fi
 
-quit 0
+exit 0

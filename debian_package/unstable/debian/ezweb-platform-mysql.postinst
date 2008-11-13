@@ -9,45 +9,11 @@ if [ "$1" = "configure" ]; then
 
   EZWEB_ADMIN_SCRIPT="/usr/sbin/update-ezweb-platform"
 
-  if [ -f "/etc/ezweb-platform/mysql.conf" ]; then
-    RET=`$EZWEB_ADMIN_SCRIPT getdbmsdefaults mysql default`
-    eval $RET
-
-    db_set ezweb-platform-mysql/serveraddress "$SERVER_HOST"
-    db_set ezweb-platform-mysql/adminuser "$ADMIN_USER"
-    db_set ezweb-platform-mysql/adminpass "$ADMIN_PASS"
-  else
-    if [ -x "/usr/sbin/mysqld" ]; then
-      db_set ezweb-platform-mysql/serveraddress "localhost"
-    else
-      FORCE_SERVER_QUESTION=1
-    fi
-
-    db_set ezweb-platform-mysql/adminuser "root"
-  fi
-
-  ###
-  # Read mysql config from user
-  #
-
-  if [ "$FORCE_SERVER_QUESTION" == 1 ]; then
-    db_input high ezweb-platform-mysql/serveraddress
-  else
-    db_input low ezweb-platform-mysql/serveraddress
-  fi
-  db_go
-
   db_get ezweb-platform-mysql/serveraddress
   SERVER_HOST="$RET"
 
-  db_input high ezweb-platform-mysql/adminuser
-  db_go
-
   db_get ezweb-platform-mysql/adminuser
   ADMIN_USER="$RET"
-
-  db_input high ezweb-platform-mysql/adminpass
-  db_go
 
   db_get ezweb-platform-mysql/adminpass
   ADMIN_PASS="$RET"
@@ -57,27 +23,7 @@ if [ "$1" = "configure" ]; then
   ###
   # Configure the instances
   #
-  INSTANCES=`$EZWEB_ADMIN_SCRIPT list all --debconf`
   OLD_VAL=`$EZWEB_ADMIN_SCRIPT list database_engine mysql --debconf`
-  UNASSIGNED=`$EZWEB_ADMIN_SCRIPT list database_engine "" --debconf`
-
-  if [ "x$UNASSIGNED" != "x" ]; then
-    if [ "x$OLD_VAL" != "x" ]; then
-      CURRENT_VAL="$OLD_VAL, $UNASSIGNED"
-    else
-      CURRENT_VAL=$UNASSIGNED
-    fi
-  else
-    CURRENT_VAL="$OLD_VAL"
-  fi
-
-  db_subst ezweb-platform-mysql/instances choices $INSTANCES
-  db_fset ezweb-platform-mysql/instances seen false
-  db_set ezweb-platform-mysql/instances $CURRENT_VAL
-
-  db_input high ezweb-platform-mysql/instances || true
-  db_go || true
-
   db_get ezweb-platform-mysql/instances
 
   if [ "$RET" != "" -a "$RET" != "$OLD_VAL" ]; then

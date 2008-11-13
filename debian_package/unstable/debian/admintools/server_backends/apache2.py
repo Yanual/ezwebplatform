@@ -100,8 +100,8 @@ class Apache2Resources:
     template.replace("CONF_NAME", cfg['name'])
     template.replace("DOCUMENT_ROOT", server_cfg['document_root'])
 
-    if server_cfg.has_key('server_name') and server_cfg['server_name'] != "":
-      servername = server_cfg['server_name']
+    if server_cfg.has_key('name') and server_cfg['name'] != "":
+      servername = server_cfg['name']
     elif schema_cfg.has_key('server_name') and schema_cfg['server_name'] != "":
       servername = schema_cfg['server_name']
     else:
@@ -170,7 +170,7 @@ class UpdateCommand(Command):
     self.apache2Resources = Apache2Resources(resources)
     self.resources = resources
 
-  def execute(self, options, site_cfg):
+  def execute(self, site_cfg, options):
     server_cfg = site_cfg['server']
 
     if options.document_root != None:
@@ -182,6 +182,20 @@ class UpdateCommand(Command):
     if options.server_port != None:
       server_cfg["port"] = options.server_port
 
+class ApplyCommand(Command):
+  option_list = []
+
+  def __init__(self, resources):
+    self.resources = resources
+
+  def execute(self, options):
+    ret = os.system("apache2ctl configtest 2> /dev/null")
+    if ret == 0:
+      os.system("invoke-rc.d apache2 force-reload")
+      self.resources.printlnMsg()
+    else:
+      self.resources.printlnMsg("Your apache2 configuration is broken, so we're not restarting it for you.")
+
 class ProcessCommand(Command):
   def __init__(self, resources):
     self.apache2Resources = Apache2Resources(resources)
@@ -192,7 +206,7 @@ class ProcessCommand(Command):
     server_cfg = site_cfg['server']
     conf_name = site_cfg['name']
 
-    if server_cfg.has_key('document_root') or server_cfg['document_root'] == "":
+    if not server_cfg.has_key('document_root') or server_cfg['document_root'] == "":
       server_cfg['document_root'] = self.resources.get_default_document_root(conf_name)
 
     # assign and create a document root if needed

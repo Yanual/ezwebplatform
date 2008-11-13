@@ -1,0 +1,51 @@
+#!/bin/bash
+
+###
+# Include debconf module
+#
+. /usr/share/debconf/confmodule
+
+if [ "$1" = "configure" -a -n "$2" ]; then
+  # FIXME  this is needed to act only the first time we are called
+  db_get ezweb-platform-common/configured
+
+  if [ "$RET" != "true" ]; then
+
+    db_set ezweb-platform-common/configured true
+
+    newversion=`echo $2 | cut -f1 -d"-"`
+
+    if `dpkg --compare-versions "$newversion" ne "CURRENTVERSION"`; then
+      db_set ezweb-platform-common/abortupgrade true
+      db_fset ezweb-platform-common/abortupgrade seen false
+
+      db_input high ezweb-platform-common/abortupgrade
+      db_go
+    else
+      db_set ezweb-platform-common/abortupgrade false
+      db_fset ezweb-platform-common/abortupgrade seen true
+    fi
+  fi
+
+  db_get  ezweb-platform-common/abortupgrade
+  if [ "$RET" = true ]; then
+    exit 0
+  fi
+fi
+
+if [ "$1" = "configure" -o "$1" = "reconfigure" ]; then
+  # Load previous configuration if needed
+  if [ -x "$EZWEB_ADMIN_SCRIPT" -a -f "/etc/ezweb-platform/default.conf" ]; then
+    RET=`$EZWEB_ADMIN_SCRIPT getdefaults default`
+    eval $RET
+
+    db_set ezweb-platform-common/proxy "$PROXY"
+  fi
+
+  db_input high ezweb-platform-common/proxy
+  db_go
+fi
+
+#DEBHELPER#
+
+exit 0

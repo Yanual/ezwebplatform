@@ -1,3 +1,19 @@
+Template: ezweb-platform-common/configured
+Type: boolean
+Default: false
+Description: for internal use
+	.
+
+Template: ezweb-platform-common/abortupgrade
+Type: boolean
+Default: true
+_Description: Abort EzWeb upgrading?
+	EzWeb Platform is currently in heavy development, this means that
+	database models are changed very often. This needs to drop EzWeb database tables and
+	thus your EzWeb data will be lost.
+	.
+	The configuration will remain untouched.
+
 Template: ezweb-platform-lighttpd-common/defaultservername
 Type: string
 Default: localhost
