@@ -63,7 +63,19 @@ var OpManagerFactory = function () {
 		}
 		
 		var onError = function (transport, e) {
-		    alert("error en loadEnvironment");
+			var msg;
+			if (e) {
+				msg = interpolate(gettext("JavaScript exception on file %(errorFile)s (line: %(errorLine)s): %(errorDesc)s"),
+				                  {errorFile: e.fileName, errorLine: e.lineNumber, errorDesc: e},
+				                  true);
+			} else if (transport.responseXML) {
+				msg = transport.responseXML.documentElement.textContent;
+			} else {
+				msg = "HTTP Error " + transport.status + " - " + transport.statusText;
+			}
+			msg = interpolate(gettext("Error loading EzWeb environment: %(errorMsg)s."),
+			                          {errorMsg: msg}, true);
+			LogManagerFactory.getInstance().log(msg);
 		}
 		
 		/*****WORKSPACE CALLBACK***/
@@ -125,18 +137,13 @@ var OpManagerFactory = function () {
 
 			if (this.firstAccessToTheCatalogue || this.catalogueIsCurrentTab)
 			{
-				this.catalogue.repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());
-				this.firstAccessToTheCatalogue = false;
-				this.catalogueIsCurrentTab = false;
+			    this.catalogue.initCatalogue();
+			    this.firstAccessToTheCatalogue = false;
+			    this.catalogueIsCurrentTab = false;
 			} else {
-				UIUtils.repaintCatalogue=false;
+			    UIUtils.repaintCatalogue=false;
 			}
 			
-			
-
-			UIUtils.setResourcesWidth();
-			
-			$('simple_search_text').focus();
 		}
 		
 
@@ -145,6 +152,11 @@ var OpManagerFactory = function () {
 				this.activeWorkSpace.getVisibleTab().unmark();
 			
 			LogManagerFactory.getInstance().show();
+		}
+		
+		OpManager.prototype.clearLogs = function () {
+			LogManagerFactory.getInstance().reset();
+			LayoutManagerFactory.getInstance().clearErrors();
 		}
 		
 		OpManager.prototype.sendBufferedVars = function () {
@@ -168,6 +180,46 @@ var OpManagerFactory = function () {
 			var gadget = this.showcaseModule.getGadget(gadgetId);
 				
 			this.activeWorkSpace.getVisibleTab().getDragboard().addInstance(gadget);
+		}
+
+		OpManager.prototype.unsubscribeServices = function (gadgetId) {
+			var unsubscribeOk = function (transport) {
+				
+			}
+			
+			var unsubscribeError = function (transport) {
+				
+			}
+			
+			unsubscribe_url += "?igadget=";
+			unsubscribe_url += gadgetId;
+			unsubscribe_url += "&user=";
+			unsubscribe_url += ezweb_user_name;
+
+			var params = {'method': "GET", 'url':  unsubscribe_url}; 
+			
+			this.persistenceEngine.send_post("/proxy", params, this, unsubscribeOk, unsubscribeError);
+		}
+
+		OpManager.prototype.cancelServices = function (gadgetId) {
+			var cancelOk = function (transport) {
+
+			}
+			
+			var cancelError = function (transport) {
+
+			}
+			
+			var cancel_url = URIs.HOME_GATEWAY_DISPATCHER_CANCEL_URL;
+			
+			cancel_url += "?igadget=";
+			cancel_url += gadgetId;
+			cancel_url += "&user=";
+			cancel_url += ezweb_user_name;
+			
+			var params = {'method': "GET", 'url':  cancel_url};
+			
+			this.persistenceEngine.send_post("/proxy", params, this, cancelOk, cancelError);
 		}
 		
 		OpManager.prototype.removeInstance = function (iGadgetId) {
@@ -333,3 +385,4 @@ var OpManagerFactory = function () {
 	}
 	
 }();
+

@@ -109,6 +109,7 @@ var LayoutManagerFactory = function () {
 			var opManager = OpManagerFactory.getInstance();
 			if(opManager.loadCompleted){
 				var wiringInterface = opManager.activeWorkSpace.getWiringInterface()
+				wiringInterface.wiringTable.setStyle({'width' : (wiringInterface.wiringContainer.getWidth()-20)+"px"});
 				if(wiringInterface.currentChannel){
 					wiringInterface.uncheckChannel(wiringInterface.currentChannel);
 					wiringInterface.highlightChannel(wiringInterface.currentChannel);				
@@ -156,6 +157,10 @@ var LayoutManagerFactory = function () {
 			this.logsLink.setStyle({'display' : 'inline'});
 		}
 		
+		LayoutManager.prototype.clearErrors = function (labelContent){
+			this.logsLink.innerHTML = '';
+		}
+
 		// Tab operations
 		LayoutManager.prototype.unmarkTab = function(tab, launcher, changeEvent, renameEvent){
 			tab.className = "tab";
@@ -248,6 +253,8 @@ var LayoutManagerFactory = function () {
 			this.wiringLink.className = "toolbar_marked";
 			this.wiringLink.blur();
 			wiring.wiringContainer.setStyle({'zIndex' : this.showLevel, 'display': 'block', 'visibility': 'visible'});
+			//resizing the wiring table so that the scroll bar don't modify the table width.
+			wiring.wiringTable.setStyle({'width' : (wiring.wiringContainer.getWidth()-20)+"px"});
 		}
 		
 		//the disabling layer can be clicable (in order to hide a menu) or not
@@ -309,6 +316,15 @@ var LayoutManagerFactory = function () {
 				this.currentMenu = menu;
 				this.currentMenu.show('right', x, y);
 				break;
+			case 'filterMenu':
+				this.currentMenu = menu;
+				this.currentMenu.show('left', x, y);
+				this.showClickableCover();
+				break;
+			case 'filterHelp':
+				this.currentMenu = menu;
+				this.currentMenu.show('right', x, y);
+				break;
 			default:
 				break;
 			}
@@ -316,7 +332,7 @@ var LayoutManagerFactory = function () {
 		}
 
 		//Shows the asked window menu
-		LayoutManager.prototype.showWindowMenu = function(window){
+		LayoutManager.prototype.showWindowMenu = function(window, handlerYesButton, handlerNoButton){
 			//the disabling layer is displayed as long as a menu is shown. If there isn't a menu, there isn't a layer.
 			if(this.currentMenu != null){//only if the layer is displayed.
 				this.hideCover();
@@ -336,7 +352,16 @@ var LayoutManagerFactory = function () {
 				}
 				this.currentMenu = this.menus['alertMenu'];
 				this.currentMenu.setMsg(gettext('Do you really want to remove this tab?'));
-				this.currentMenu.setHandler(function(){OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().deleteTab();});
+				this.currentMenu.setHandler(function(){OpManagerFactory.getInstance().activeWorkSpace.getVisibleTab().deleteTab();}, handlerNoButton);
+				this.currentMenu.show();
+				break;
+			case 'cancelService':
+				if(!this.menus['alertMenu']){
+					this.menus['alertMenu'] = new AlertWindowMenu(null);
+				}
+				this.currentMenu = this.menus['alertMenu'];
+				this.currentMenu.setMsg(gettext('Do you want to cancel the subscription to the service?'));
+				this.currentMenu.setHandler(handlerYesButton, handlerNoButton);
 				this.currentMenu.show();
 				break;
 			case 'deleteWorkSpace':
@@ -345,7 +370,7 @@ var LayoutManagerFactory = function () {
 				}
 				this.currentMenu = this.menus['alertMenu'];
 				this.currentMenu.setMsg(gettext('Do you really want to remove this workspace?'));
-				this.currentMenu.setHandler(function(){OpManagerFactory.getInstance().activeWorkSpace.deleteWorkSpace();});
+				this.currentMenu.setHandler(function(){OpManagerFactory.getInstance().activeWorkSpace.deleteWorkSpace();}, handlerNoButton);
 				this.currentMenu.show();
 				break;
 			case 'publishWorkSpace':
@@ -365,7 +390,7 @@ var LayoutManagerFactory = function () {
 				}else{
 					this.currentMenu.setMsg(gettext('WARNING! All versions of this gadget will be removed too! Do you really want to remove this gadget?'));
 				}
-				this.currentMenu.setHandler(function(){UIUtils.deleteGadget(UIUtils.selectedResource);});
+				this.currentMenu.setHandler(function(){UIUtils.deleteGadget(UIUtils.selectedResource);}, handlerNoButton);
 				this.currentMenu.show();
 				break;
 			default:
@@ -482,7 +507,7 @@ var LayoutManagerFactory = function () {
 
 	/*remove a tab from the tab bar*/
 	LayoutManager.prototype.removeFromTabBar = function(tabHTMLElement){
-		var tabWidth = -1 * (tabHTMLElement.getWidth()-this.tabImgSize +2*this.tabMarginRight);
+		var tabWidth = -1 * (tabHTMLElement.getWidth()-this.tabImgSize + 2*this.tabMarginRight);
 		Element.remove(tabHTMLElement);
 		this.changeTabBarSize(tabWidth);
 		this.scrollTabBar.setStyle({right: (this.fixedTabBarWidth - this.scrollTabBarWidth) + 'px', left:''});

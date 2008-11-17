@@ -477,8 +477,8 @@ function WorkSpace (workSpaceState) {
 		this.varManager.addInstance(igadget, igadgetJSON);
 		this.contextManager.addInstance(igadget, igadget.getGadget().getTemplate());
 		this.wiring.addInstance(igadget, igadgetJSON.variables);
-		
-		tab.getDragboard().showInstance(igadget);
+
+		igadget.paint();
 
 		// The dragboard must be shown after an igadget insertion
 		//LayoutManagerFactory.getInstance().unMarkGlobalTabs();

@@ -149,8 +149,7 @@ IGadget.prototype.isVisible = function() {
 }
 
 /**
- * Paints the gadget instance
- * @param where HTML Element where the igadget will be painted
+ * Paints the gadget instance into the assigned dragboard
  */
 IGadget.prototype.paint = function() {
 	if (this.element != null) // exit if the igadgets is already visible
@@ -185,7 +184,18 @@ IGadget.prototype.paint = function() {
 	button.setAttribute("type", "button");
 	button.setAttribute("class", "closebutton");
 	button.setAttribute("className", "closebutton"); //IE hack
-	Event.observe (button, "click", function() {OpManagerFactory.getInstance().removeInstance(this.id);}.bind(this), true);
+	
+	if (this.gadget.isContratable()) {
+		var remove_and_cancel = function () { OpManagerFactory.getInstance().removeInstance(this.id);  OpManagerFactory.getInstance().cancelServices(this.id); LayoutManagerFactory.getInstance().hideCover();}.bind(this);
+		
+		var remove = function () { OpManagerFactory.getInstance().removeInstance(this.id); OpManagerFactory.getInstance().unsubscribeServices(this.id); LayoutManagerFactory.getInstance().hideCover();}.bind(this);
+		
+		Event.observe (button, "click", function() {LayoutManagerFactory.getInstance().showWindowMenu('cancelService', remove_and_cancel, remove);}, true);
+	}
+	else {
+		Event.observe (button, "click", function() {OpManagerFactory.getInstance().removeInstance(this.id);}.bind(this), true);
+	}
+		
 	button.setAttribute("title", gettext("Close"));
 	button.setAttribute("alt", gettext("Close"));
 	this.gadgetMenu.appendChild(button);
@@ -238,10 +248,9 @@ IGadget.prototype.paint = function() {
 	this.element.appendChild(this.contentWrapper);
 
 	// Gadget configuration (Initially empty and hidden)
-	this.configurationElement = document.createElement("form");
+	this.configurationElement = document.createElement("div");
 	this.configurationElement.setAttribute("class", "config_interface");
 	this.configurationElement.setAttribute("className", "config_interface"); //IE hack
-	Event.observe(this.configurationElement, "submit", function(){return false;}) //W3C and IE compliant
 	this.contentWrapper.appendChild(this.configurationElement);
 
 	// Gadget Content
@@ -433,7 +442,7 @@ IGadget.prototype.remove = function() {
 		}
 
 		if (this.element.parentNode != null) {
-			this.layout.removeIGadget(this);
+			this.layout.removeIGadget(this, true);
 		}
 
 		this.element = null;
@@ -974,7 +983,7 @@ IGadget.prototype.save = function() {
 		LogManagerFactory.getInstance().log(msg);
 
 		// Remove this iGadget from the layout
-		this.layout.removeIGadget(this);
+		this.layout.removeIGadget(this, true);
 		this.destroy();
 	}
 
@@ -1005,7 +1014,6 @@ IGadget.prototype.moveToLayout = function(layout) {
 		return;
 
 	var dragboardChange = this.dragboard != layout.dragboard;
-
 	var oldLayout = this.layout;
 	oldLayout.removeIGadget(this, dragboardChange);
 
@@ -1038,7 +1046,7 @@ IGadget.prototype.moveToLayout = function(layout) {
 	iGadgetInfo['top'] = this.position.y;
 	iGadgetInfo['left'] = this.position.x;
 	iGadgetInfo['tab'] = this.dragboard.tabId;
-	iGadgetInfo['code'] = this.dragboard.code;
+	iGadgetInfo['code'] = this.code;
 
 	data['iGadgets'].push(iGadgetInfo);
 

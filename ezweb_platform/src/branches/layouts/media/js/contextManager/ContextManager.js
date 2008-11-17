@@ -37,13 +37,14 @@ function ContextManager (workspace_, workSpaceInfo_) {
 			var cVar = cVars_[i];
 			cVar.setVarManager(this._workspace.getVarManager());
 			if (this._name2Concept[cVar.getConceptName()] == null){
-				var msg = interpolate(gettext("Context variable") + " [" + cVar.getName() + "] " + gettext("without related concept. Its value cannot be established: %(errorMsg)s."), {errorMsg: transport.status}, true);
+				var msg = gettext("The value of the context variable [%(varName)s] of the IGadget %(iGadgetId)s could not be established as it was not related with a concept.");
+				msg = interpolate(msg, {varName: cVar.getName(), iGadgetId: cVar.getIGadgetId()}, true);
 				LogManagerFactory.getInstance().log(msg);
 				return;
 			}
 			var relatedConcept = this._concepts[this._name2Concept[cVar.getConceptName()]];
 			relatedConcept.setType(type_);
-			relatedConcept.addIGadgetVar(cVar);							
+			relatedConcept.addIGadgetVar(cVar);
 		}
 	}
 

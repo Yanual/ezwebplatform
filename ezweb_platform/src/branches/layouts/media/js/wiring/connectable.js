@@ -34,6 +34,7 @@ function wConnectable (name, type, friendCode, id) {
   this._type = type;
   this._friendCode = friendCode;
   this.connectableType = null;
+  this.view = null;
 }
 
 wConnectable.prototype.getType = function() {
@@ -54,6 +55,10 @@ wConnectable.prototype.getId = function() {
 
 wConnectable.prototype.getFriendCode = function() {
   return this._friendCode;
+}
+
+wConnectable.prototype.setInterface = function(view) {
+	this.view=view;
 }
 
 wConnectable.prototype.destroy = function () {
@@ -206,17 +211,42 @@ function wChannel (variable, name, id, provisional_id) {
   this.provisional_id=provisional_id;
   wInOut.call(this, name, null, null, id);
   this.variable.assignConnectable(this);
+  this.filter = null;
+  this.filterParams = new Array();
 }
 
 wChannel.prototype = new wInOut();
 
 wChannel.prototype.getValue = function() {
-  return this.variable.get();
+  if (this.filter == null)
+	return this.variable.get();  	
+  else
+ 	return this.filter.run(this.variable.get(), this.filterParams);
+}
+
+wChannel.prototype.getValueWithoutFilter = function() {
+	return this.variable.get();  	
+}
+
+wChannel.prototype.getFilter = function() {
+  return this.filter;
+}
+
+wChannel.prototype.setFilter = function(newFilter) {
+  this.filter = newFilter;
+}
+
+wChannel.prototype.setFilterParams = function(filterParams) {
+  this.filterParams = filterParams;
+}
+
+wChannel.prototype.getFilterParams = function() {
+  return this.filterParams;
 }
 
 wChannel.prototype.propagate = function(newValue, initial) {
   this.variable.set(newValue);
-  wInOut.prototype.propagate.call(this, newValue, initial);
+  wInOut.prototype.propagate.call(this, this.getValue(), initial);
 }
 
 wChannel.prototype.getQualifiedName = function () {

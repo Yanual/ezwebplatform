@@ -151,7 +151,7 @@ FreeLayout.prototype.addIGadget = function(iGadget, affectsDragboard) {
 	iGadget.setPosition(new DragboardPosition(0, 0));
 }
 
-FreeLayout.prototype.initializeMove = function(igadget) {
+FreeLayout.prototype.initializeMove = function(igadget, draggable) {
 	this.igadgetToMove = igadget;
 	this.newPosition = igadget.getPosition().clone();
 }

@@ -34,6 +34,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 	this.currentCode = 1;
 	this.dragboardElement;
 	this.baseLayout = null;
+	this.freeLayout = null;
 	this.gadgetToMove = null;
 	this.iGadgets = new Hash();
 	this.iGadgetsByCode = new Hash();
@@ -50,6 +51,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 		this.dragboardElement.innerHTML = "";
 
 		this.baseLayout.initialize(this.iGadgetsByCode);
+		this.freeLayout.initialize(new Hash());
 	}
 
 	/**
@@ -104,14 +106,21 @@ function Dragboard(tab, workSpace, dragboardElement) {
 
 	Dragboard.prototype.recomputeSize = function() {
 		this.baseLayout._notifyWindowResizeEvent();
+		this.freeLayout._notifyWindowResizeEvent();
 	}
 
 	Dragboard.prototype.hide = function () {
 		LayoutManagerFactory.getInstance().hideView(this.dragboardElement);
 	}
 
+	/**
+	 * This method must be called to avoid memory leaks caused by circular references.
+	 */
 	Dragboard.prototype.destroy = function () {
 		this.baseLayout.destroy();
+		this.freeLayout.destroy();
+		this.baseLayout = null;
+		this.freeLayout = null;
 
 		var keys = this.iGadgets.keys();
 		//disconect and delete the connectables and variables of all tab iGadgets
@@ -254,7 +263,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 		var height = template.getHeight();
 
 		// Check if the gadget doesn't fit in the dragboard
-		if (this.baseLayout instanceof ColumnLayout) {
+		if (this.freeLayout instanceof ColumnLayout) {
 			var maxColumns = this.baseLayout.getColumns();
 			if (width > maxColumns) {
 				// TODO warning
@@ -264,10 +273,10 @@ function Dragboard(tab, workSpace, dragboardElement) {
 
 		// Create the instance
 		var igadgetName = gadget.getName() + ' (' + this.currentCode + ')';
-		var iGadget = new IGadget(gadget, null, this.currentCode, igadgetName, this.baseLayout, null, width, height, false, this);
+		var iGadget = new IGadget(gadget, null, this.currentCode, igadgetName, this.freeLayout, null, width, height, false, this);
 		this.currentCode++;
 
-		this.baseLayout.addIGadget(iGadget, true);
+		this.freeLayout.addIGadget(iGadget, true);
 
 		iGadget.save();
 	}
@@ -316,10 +325,6 @@ function Dragboard(tab, workSpace, dragboardElement) {
 		igadget.notifyError();
 	}
 
-	Dragboard.prototype.showInstance = function (igadget) {
-		igadget.paint(this.dragboardElement, this.baseLayout);
-	}
-
 	Dragboard.prototype.initializeMove = function (iGadgetId, draggable) {
 		draggable = draggable || null; // default value of draggable argument
 
@@ -340,7 +345,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 			return;
 		}
 
-		this.baseLayout.moveTemporally(x, y);
+		this.gadgetToMove.layout.moveTemporally(x, y);
 	}
 
 	Dragboard.prototype.cancelMove = function() {
@@ -413,9 +418,9 @@ function Dragboard(tab, workSpace, dragboardElement) {
 	 * horizontal Margin between IGadgets = 4 pixels
 	 * scroll bar reserved space          = 17 pixels
 	 */
-	//this.baseLayout = new SmartColumnLayout(this, 20, 12, 2, 4, 17);
+	this.baseLayout = new SmartColumnLayout(this, 20, 12, 2, 4, 17);
 
-	this.baseLayout = new FreeLayout(this, 17);
+	this.freeLayout = new FreeLayout(this, 17);
 
 	this.parseTab(tab.tabInfo);
 }
@@ -552,10 +557,12 @@ function Draggable(draggableElement, handler, data, onStart, onDrag, onFinish) {
 	function drag(e) {
 		e = e || window.event; // needed for IE
 
-		xDelta = xStart - parseInt(e.screenX);
-		yDelta = yStart - parseInt(e.screenY);
-		xStart = parseInt(e.screenX);
-		yStart = parseInt(e.screenY);
+		var screenX = parseInt(e.screenX);
+		var screenY = parseInt(e.screenY);
+		xDelta = xStart - screenX;
+		yDelta = yStart - screenY;
+		xStart = screenX;
+		yStart = screenY;
 		y = y - yDelta;
 		x = x - xDelta;
 		draggableElement.style.top = y + 'px';
@@ -673,8 +680,12 @@ IGadgetDraggable.prototype.startFunc = function (draggable, context) {
 }
 
 IGadgetDraggable.prototype.updateFunc = function (event, draggable, context, x, y) {
+	var element = null;
+
 	// Check if the mouse is over a tab
-	var element = document.elementFromPoint(event.clientX, event.clientY);
+	if (y < 0)
+		element = document.elementFromPoint(event.clientX, event.clientY);
+
 	var id = null;
 	if (element != null && element instanceof Element) {
 		id = element.getAttribute("id");
@@ -703,7 +714,7 @@ IGadgetDraggable.prototype.updateFunc = function (event, draggable, context, x, 
 
 	// The mouse is not over a tab
 	// The cursor must allways be inside the dragboard
-	var position = context.dragboard.baseLayout.getCellAt(x, y);
+	var position = context.layout.getCellAt(x, y);
 	if (position.y < 0)
 		position.y = 0;
 	if (position.x < 0)

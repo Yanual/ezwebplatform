@@ -11,6 +11,8 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 
 <link rel="stylesheet" type="text/css" media="screen,projection" href="{{ MEDIA_URL }}css/ezweb.css" />
+<!-- CSS for different header -->
+{% block css %}{% endblock %}
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/dragboard.css">
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/wiring.css">
 <link rel="shortcut icon" type="image/x-icon" href="{{ MEDIA_URL }}css/favicon.ico" />
@@ -39,7 +41,6 @@ _URIConstants.prototype.POST_IGADGET = new Template ('/workspace/#{workspaceId}/
 _URIConstants.prototype.PROXY = '/proxy';
 _URIConstants.prototype.GET_IGADGET_VARIABLES = new Template ('/user/{{ user.username }}/igadgets/#{iGadgetId}/variables');
 _URIConstants.prototype.GET_POST_GADGET_VARIABLE = new Template ('/user/{{ user.username }}/igadgets/#{iGadgetId}/variables/#{varName}');
-_URIConstants.prototype.GET_POST_CHANNEL = new Template ('/user/{{ user.username }}/channel/#{channelName}');
 _URIConstants.prototype.PUT_VARIABLES = new Template ('/workspace/#{workspaceId}/variables');
 _URIConstants.prototype.GET_POST_WORKSPACES = '/workspaces';
 _URIConstants.prototype.GET_POST_WIRING = new Template ('/workspaces/#{id}/wiring');
@@ -50,7 +51,19 @@ _URIConstants.prototype.POST_PUBLISH_WORKSPACE = new Template('/workspace/#{work
 _URIConstants.prototype.GET_ADD_WORKSPACE = new Template('/workspace/#{workspace_id}/add');
 _URIConstants.prototype.GET_MERGE_WORKSPACE = new Template('/workspace/#{from_ws_id}/merge/#{to_ws_id}');
 
+{% if home_gateway_dispatcher_url %}
+    _URIConstants.prototype.HOME_GATEWAY_DISPATCHER_URL = '{{ home_gateway_dispatcher_url }}serviceGadgets?user={{ user.username }}';
+    _URIConstants.prototype.HOME_GATEWAY_DISPATCHER_UNSUBSCRIBE_URL = '{{ home_gateway_dispatcher_url }}unsubscribeServices';
+    _URIConstants.prototype.HOME_GATEWAY_DISPATCHER_CANCEL_URL = '{{ home_gateway_dispatcher_url }}cancelServices';
+{% else %}
+    _URIConstants.prototype.HOME_GATEWAY_DISPATCHER_URL = null;
+{% endif%}
+
+
 var URIs = new _URIConstants();
+
+var ezweb_user_name = '{{ user.username }}'
+
 </script>
 
 <script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/common/constants.js"></script>
@@ -91,16 +104,16 @@ var URIs = new _URIConstants();
 <script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/dragboard/UserPref.js"></script>
 <script type="text/javascript" language="javascript" src="{{ MEDIA_URL }}js/dragboard/ElementPositions.js"></script>
 
+<script language="JavaScript" src="{{ MEDIA_URL }}js/wiring/filter.js"></script>
 <script language="JavaScript" src="{{ MEDIA_URL }}js/wiring/connectable.js"></script>
 <script language="JavaScript" src="{{ MEDIA_URL }}js/wiring/wiring.js"></script>
-<!--<script language="JavaScript" src="{{ MEDIA_URL }}js/wiring/wiringInterface.js"></script>-->
-<script language="JavaScript" src="{{ MEDIA_URL}}js/wiring/wiringGUI.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/wiring/wiringGUI.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/wiring/connectableInterface.js"></script>
 <!--<script language="JavaScript" src="{{ MEDIA_URL}}js/wiring/color_scheme.js"></script>-->
 
 <script type="text/javascript" src="/jsi18n/?language={{ LANGUAGE_CODE }}"></script>
 
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/catalogue.css" />
-<script language="JavaScript" src="{{ MEDIA_URL }}js/lib/helpballoon/HelpBalloon.js"></script>
 <script language="JavaScript" src="{{ MEDIA_URL }}js/catalogue/UIUtils.js"></script>
 <script language="JavaScript" src="{{ MEDIA_URL }}js/catalogue/Catalogue.js"></script>
 <script language="JavaScript" src="{{ MEDIA_URL }}js/catalogue/Resource.js"></script>
@@ -168,8 +181,8 @@ var URIs = new _URIConstants();
 		<div id="rename_window_msg" class="window_msg_error"></div>
 	</div>
 	<div class="window_bottom">
-		<button id="rename_btn">{% trans "Rename"%}</button>
-		<button onclick="LayoutManagerFactory.getInstance().hideCover();">{% trans "Cancel"%}</button>
+		<button id ="alert_btn1">{% trans "Yes"%}</button> 
+		<button id = "alert_btn2">{% trans "No"%}</button>
 	</div>
 </div> -->
 <div id="create_menu" class="window_menu" style="display:none">
@@ -196,8 +209,8 @@ var URIs = new _URIConstants();
 		<div id="alert_window_msg" class="window_msg"></div>
 	</div>
 	<div class="window_bottom">
-		<button id ="alert_btn1">{% trans "Accept"%}</button>
-		<button id = "alert_btn2" onclick="LayoutManagerFactory.getInstance().hideCover();">{% trans "Cancel"%}</button>
+		<button id="alert_btn1">{% trans "Accept"%}</button>
+		<button id="alert_btn2" onclick="LayoutManagerFactory.getInstance().hideCover();">{% trans "Cancel"%}</button>
 	</div>
 </div>
 <div id="message_menu" class="window_menu" style="display:none">
@@ -242,6 +255,7 @@ var URIs = new _URIConstants();
 
 
 <!-- HEADER -->
+{% block header %}
 <div id="header">
 <div id="banner">
   	<div id="greeting">
@@ -274,6 +288,7 @@ var URIs = new _URIConstants();
 	</div>
 </div>
 </div>
+{% endblock %}
 <div id="wrapper">
   <!-- DRAGBOARD LAYER -->
   <div id="dragboard_template">
@@ -298,6 +313,7 @@ var URIs = new _URIConstants();
 
   <!-- LOGS LAYER -->
   <div id="logs_container" class="container">
+	<div id="logs_header" style="" title="{% trans 'Clear' %}" class=""><a href="#" onclick="OpManagerFactory.getInstance().clearLogs();">{% trans 'Clear' %}</a></div>
     <div id="logs_console" class="container_content">
     </div>
   </div>

@@ -33,20 +33,34 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+
 from django.conf import settings
 
 
 @login_required
-def index(request, user_name=None):
+def index(request, user_name=None, template="index.html"):
     """ Vista principal """
+
     is_anonymous = False
     if hasattr(request, 'anonymous_id') and request.anonymous_id and request.anonymous_id==request.user.id:
         is_anonymous = True
+
+    try:
+        home_gw_url = settings.HOME_GATEWAY_DISPATCHER_URL
+    except:
+        home_gw_url = None
+    
     
     if request.META['HTTP_USER_AGENT'].find("iPhone") >= 0 or request.META['HTTP_USER_AGENT'].find("iPod") >= 0:
-        return render_to_response('iphone.html', {}, context_instance=RequestContext(request, {'is_anonymous': is_anonymous}))
+        return render_to_response('iphone.html', {}, 
+                  context_instance=RequestContext(request, 
+                        {'is_anonymous': is_anonymous, 
+                         'home_gateway_dispatcher_url': home_gw_url }))
     else:
-        return render_to_response('index.html', {'current_tab': 'dragboard'}, context_instance=RequestContext(request, {'is_anonymous': is_anonymous}))
+        return render_to_response(template, {'current_tab': 'dragboard'}, 
+                  context_instance=RequestContext(request, 
+                        {'is_anonymous': is_anonymous, 
+                         'home_gateway_dispatcher_url': home_gw_url }))
 
 @login_required
 def wiring(request, user_name=None):
@@ -56,4 +70,4 @@ def wiring(request, user_name=None):
 @login_required
 def index_lite(request, user_name=None):
     """ Vista de ezweb sin cabecera"""
-    return render_to_response('index_lite.html', {}, context_instance=RequestContext(request))
+    return index(request, template="index_lite.html")
