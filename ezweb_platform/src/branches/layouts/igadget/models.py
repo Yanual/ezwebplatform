@@ -50,7 +50,6 @@ class Position(models.Model):
 
 class IGadget(models.Model):
 
-    code = models.IntegerField(_('Code'))
     name = models.CharField(_('Name'), max_length=250)
         
     gadget = models.ForeignKey(Gadget, verbose_name=_('Gadget'))

@@ -124,16 +124,14 @@ FreeLayout.prototype._notifyResizeEvent = function(iGadget, oldWidth, oldHeight,
 	}
 }
 
-FreeLayout.prototype.initialize = function (iGadgets) {
+FreeLayout.prototype.initialize = function () {
 	var iGadget, key;
 
-	this.iGadgets = iGadgets;
-
 	// Insert igadgets
-	var igadgetKeys = iGadgets.keys();
-	for (var i=0; i<igadgetKeys.length; i++) {
+	var igadgetKeys = this.iGadgets.keys();
+	for (var i = 0; i < igadgetKeys.length; i++) {
 		key = igadgetKeys[i];
-		iGadget = iGadgets[key];
+		iGadget = this.iGadgets[key];
 		iGadget.paint();
 	}
 }

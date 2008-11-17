@@ -50,8 +50,8 @@ function Dragboard(tab, workSpace, dragboardElement) {
 	Dragboard.prototype.paint = function () {
 		this.dragboardElement.innerHTML = "";
 
-		this.baseLayout.initialize(this.iGadgetsByCode);
-		this.freeLayout.initialize(new Hash());
+		this.baseLayout.initialize();
+		this.freeLayout.initialize();
 	}
 
 	/**
@@ -236,12 +236,8 @@ function Dragboard(tab, workSpace, dragboardElement) {
 			minimized = curIGadget.minimized == "true" ? true : false;
 
 			// Create instance model
-			igadget = new IGadget(gadget, curIGadget.id, curIGadget.code, curIGadget.name, this.baseLayout, position, width, height, minimized, this);
-			this.iGadgets[curIGadget.id] = igadget;
-			this.iGadgetsByCode[curIGadget.code] = igadget;
-
-			if (curIGadget.code >= this.currentCode)
-				this.currentCode = curIGadget.code + 1;
+			igadget = new IGadget(gadget, curIGadget.id, curIGadget.name, this.baseLayout, position, width, height, minimized);
+			this.baseLayout.addIGadget(igadget, true);
 		}
 
 		this.loaded = true;
@@ -273,9 +269,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 
 		// Create the instance
 		var igadgetName = gadget.getName() + ' (' + this.currentCode + ')';
-		var iGadget = new IGadget(gadget, null, this.currentCode, igadgetName, this.freeLayout, null, width, height, false, this);
-		this.currentCode++;
-
+		var iGadget = new IGadget(gadget, null, igadgetName, this.freeLayout, null, width, height, false);
 		this.freeLayout.addIGadget(iGadget, true);
 
 		iGadget.save();
@@ -382,14 +376,19 @@ function Dragboard(tab, workSpace, dragboardElement) {
 	Dragboard.prototype.getWorkspace = function () {
 		return this.workSpace;
 	}
-	
+
+	Dragboard.prototype._notifyIGadgetId = function (iGadget) {
+		if (!this.iGadgetsByCode[iGadget.code])
+			throw new Exception();
+
+		this.iGadgets[iGadget.id] = iGadget;
+	}
 
 	Dragboard.prototype._registerIGadget = function (iGadget) {
 		if (iGadget.id)
 			this.iGadgets[iGadget.id] = iGadget;
 
-		if (!iGadget.code)
-			iGadget.code = this.currentCode++
+		iGadget.code = this.currentCode++
 
 		this.iGadgetsByCode[iGadget.code] = iGadget;
 	}

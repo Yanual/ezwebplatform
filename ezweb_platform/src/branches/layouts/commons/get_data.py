@@ -54,8 +54,6 @@ def get_wiring_variable_data(var, ig):
     res_data['type'] = var.vardef.type
     res_data['value'] = var.value
     res_data['friend_code'] = var.vardef.friend_code
-    res_data['code'] = ig.code
-    res_data['igadget_code'] = ig.code
     res_data['igadget_id'] = ig.id
 
     return res_data
@@ -70,7 +68,6 @@ def get_wiring_data(igadgets):
         igObject = {}
         list = []
 
-        igObject['code'] = ig.code
         igObject['id'] = ig.pk
 
         #Searching wiring variables
@@ -424,7 +421,6 @@ def get_igadget_data(data, user, workspace):
     position = Position.objects.get(pk=data_fields['position'])
 
     data_ret['id'] = data['pk']
-    data_ret['code'] = data_fields['code']
     data_ret['name'] = data_fields['name']
     data_ret['tab'] = data_fields['tab']
     data_ret['gadget'] = gadget.uri

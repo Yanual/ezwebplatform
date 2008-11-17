@@ -26,10 +26,18 @@
 /**
  * This class represents a instance of a Gadget.
  * @author aarranz
+ * @param gadget      Gadget of this iGadget
+ * @param iGadgetId   iGadget id in persistence. This parameter can be null for new iGadget instances
+ * @param iGadgetName current gadget
+ * @param layout      associated layout
+ * @param position    initial position
+ * @param width       initial content width
+ * @param height      initial content height
+ * @param minimized   initial minimized status
  */
-function IGadget(gadget, iGadgetId, iGadgetCode, iGadgetName, layout, position, width, height, minimized, dragboard) {
+function IGadget(gadget, iGadgetId, iGadgetName, layout, position, width, height, minimized) {
 	this.id = iGadgetId;
-	this.code = iGadgetCode;
+	this.code = null;
 	this.name = iGadgetName;
 	this.gadget = gadget;
 	this.layout = layout;
@@ -38,7 +46,7 @@ function IGadget(gadget, iGadgetId, iGadgetCode, iGadgetName, layout, position, 
 	this.contentHeight = height;
 	this.loaded = false;
 
-	this.dragboard = dragboard;
+	this.dragboard = layout.dragboard;
 
 	if (!minimized)
 		this.height = this.contentHeight + layout.getExtraCells();

@@ -78,7 +78,6 @@ def createConnectable(var):
 
 def SaveIGadget(igadget, user, tab):
     gadget_uri = igadget.get('gadget')
-    igadget_code = igadget.get('code')
     igadget_name = igadget.get('name')
     width = igadget.get('width')
     height = igadget.get('height')
@@ -98,7 +97,7 @@ def SaveIGadget(igadget, user, tab):
 
         gadget = Gadget.objects.get(uri=gadget_uri, users=user)
 
-        new_igadget = IGadget(code=igadget_code, name=igadget_name, gadget=gadget, tab=tab, position=position)
+        new_igadget = IGadget(name=igadget_name, gadget=gadget, tab=tab, position=position)
         new_igadget.save()
 
         variableDefs = VariableDef.objects.filter(gadget=gadget)
@@ -147,10 +146,6 @@ def UpdateIGadget(igadget, user, tab):
     if igadget.has_key('name'):
         name = igadget.get('name')
         ig.name = name
-
-    if igadget.has_key('code'):
-        code = igadget.get('code')
-        ig.code = code
 
     if igadget.has_key('tab'):
         newtab_id = igadget.get('tab');

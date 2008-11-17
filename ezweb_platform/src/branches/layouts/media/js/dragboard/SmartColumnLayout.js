@@ -427,18 +427,17 @@ ColumnLayout.prototype._searchFreeSpace = function(width, height) {
 			}
 }
 
-ColumnLayout.prototype.initialize = function (iGadgets) {
+ColumnLayout.prototype.initialize = function () {
 	var iGadget, key, position, iGadgetsToReinsert = new Array();
 
 	this._clearMatrix();
-	this.iGadgets = iGadgets.clone();
 
 	// Insert igadgets
-	var igadgetKeys = iGadgets.keys();
-	for (var i=0; i<igadgetKeys.length; i++) {
+	var igadgetKeys = this.iGadgets.keys();
+	for (var i = 0; i < igadgetKeys.length; i++) {
 		key = igadgetKeys[i];
 
-		iGadget = iGadgets[key];
+		iGadget = this.iGadgets[key];
 
 		position = iGadget.getPosition();
 
@@ -712,14 +711,14 @@ SmartColumnLayout.prototype._searchInsertPoint = function(_matrix, x, y, width, 
 	return this.searchInsertPointCache[x][y];
 }
 
-SmartColumnLayout.prototype.initialize = function(iGadgets) {
-	ColumnLayout.prototype.initialize.call(this, iGadgets);
+SmartColumnLayout.prototype.initialize = function() {
+	ColumnLayout.prototype.initialize.call(this);
 
 	// remove holes moving igadgets to the topmost positions
 	var iGadget;
-	var keys = iGadgets.keys();
+	var keys = this.iGadgets.keys();
 	for (var i = 0; i < keys.length; i++) {
-		iGadget = iGadgets[keys[i]];
+		iGadget = this.iGadgets[keys[i]];
 		this._moveSpaceUp(this.matrix, iGadget);
 	}
 }
