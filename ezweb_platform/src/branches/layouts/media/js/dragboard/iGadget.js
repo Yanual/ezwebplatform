@@ -192,7 +192,7 @@ IGadget.prototype.paint = function() {
 	button.setAttribute("type", "button");
 	button.setAttribute("class", "closebutton");
 	button.setAttribute("className", "closebutton"); //IE hack
-	
+
 	if (this.gadget.isContratable()) {
 		var remove_and_cancel = function () { OpManagerFactory.getInstance().removeInstance(this.id);  OpManagerFactory.getInstance().cancelServices(this.id); LayoutManagerFactory.getInstance().hideCover();}.bind(this);
 		
@@ -203,7 +203,7 @@ IGadget.prototype.paint = function() {
 	else {
 		Event.observe (button, "click", function() {OpManagerFactory.getInstance().removeInstance(this.id);}.bind(this), true);
 	}
-		
+
 	button.setAttribute("title", gettext("Close"));
 	button.setAttribute("alt", gettext("Close"));
 	this.gadgetMenu.appendChild(button);
@@ -236,6 +236,19 @@ IGadget.prototype.paint = function() {
 	this.gadgetMenu.appendChild(button);
 	this.minimizeButtonElement = button;
 
+	// #########
+	// New
+	// #########
+	// free button
+	button = document.createElement("input");
+	button.setAttribute("type", "button");
+	button.observe("click", function() {this.toggleLayout()}.bind(this), true);
+	button.setAttribute("alt", gettext("F"));
+	this.gadgetMenu.appendChild(button);
+	// #########
+	// New
+	// #########
+
 	// error button
 	button = document.createElement("input");
 	button.setAttribute("type", "button");
@@ -246,7 +259,7 @@ IGadget.prototype.paint = function() {
 	this.errorButtonElement = button;
 
 	this.fillWithLabel();
-	
+
 	this.element.appendChild(this.gadgetMenu);
 
 	// Content wrapper
@@ -281,7 +294,7 @@ IGadget.prototype.paint = function() {
 		this.content.setAttribute("standby", "Loading...");
 		this.content.setAttribute("onload", "OpManagerFactory.getInstance().igadgetLoaded("+this.id+")");  
 		this.content.innerHTML = "Loading...."; // TODO add an animation ?
-	
+
 		this.content.setStyle({"width": "100%", "height": contentHeight + "px"});
 	}
 	this.contentWrapper.appendChild(this.content);
@@ -383,11 +396,11 @@ IGadget.prototype.fillWithInput = function () {
 	//new Insertion.Bottom(this.gadgetMenu, inputHTML);
 	//this.igadgetNameHTMLElement =  this.gadgetMenu.firstDescendant();
 	
-	this.igadgetNameHTMLElement.focus();	
+	this.igadgetNameHTMLElement.focus();
 	Event.observe(this.igadgetNameHTMLElement, 'blur', function(e){Event.stop(e);
 				this.fillWithLabel()}.bind(this));
 	Event.observe(this.igadgetNameHTMLElement, 'keypress', function(e){if(e.keyCode == Event.KEY_RETURN){Event.stop(e);
-				e.target.blur();}}.bind(this));					
+				e.target.blur();}}.bind(this));
 	Event.observe(this.igadgetNameHTMLElement, 'change', function(e){Event.stop(e);
 				this.updateName(e.target.value);}.bind(this));
 	Event.observe(this.igadgetNameHTMLElement, 'keyup', function(e){Event.stop(e);
@@ -720,12 +733,9 @@ IGadget.prototype._recomputeHeight = function(basedOnContent) {
 			            this.configurationElement.offsetHeight;
 			fullSize += this._computeExtraHeightPixels();
 			
-			fullSize += this.layout.topMargin + this.layout.bottomMargin;
-			var paddedFullSizeInCells = Math.ceil(this.layout.fromPixelsToVCells(fullSize));
-			var paddedFullSize = this.layout.fromVCellsToPixels(paddedFullSizeInCells);
-
-			contentHeight += paddedFullSize - fullSize;
-			this.height = paddedFullSizeInCells;
+			processedSize = this.layout.adaptHeight(contentHeight, fullSize);
+			contentHeight = processedSize.inPixels;
+			this.height = processedSize.inLU;
 			this.content.setStyle({height: contentHeight + "px"});
 
 			// Notify Context Manager about the new igadget's size
@@ -768,10 +778,10 @@ IGadget.prototype._recomputeSize = function(basedOnContent) {
  *                  final height for this gadget (that is, counting the
  *                  igadget's title bar, the configuration form, etc)
  * @param resizeLeftSide true if the gadget will be resized using the topRight
- *                       as base point.
- * @param persist true if is needed to send the new widths/positions of the
- *                igadgets (the resize operation can move other igadgets) to
- *                persistence.
+ *                       corner as base point.
+ * @param persist true if is needed to notify the new widths/positions of the
+ *                igadget (then the associated layout can move other igadgets)
+ *                to persistence.
  */
 IGadget.prototype._setSize = function(newWidth, newHeight, resizeLeftSide, persist) {
 	var oldWidth = this.getWidth();
@@ -868,6 +878,13 @@ IGadget.prototype.notifyError = function() {
 		}
 		this._updateErrorInfo();
 	}
+}
+
+IGadget.prototype.toggleLayout = function() {
+	if (this.layout.dragboard.baseLayout == this.layout)
+		this.moveToLayout(this.layout.dragboard.freeLayout);
+	else
+		this.moveToLayout(this.layout.dragboard.baseLayout);
 }
 
 /**
@@ -1001,7 +1018,6 @@ IGadget.prototype.save = function() {
 	data['top'] = this.position.y;
 	data['width'] = this.contentWidth;
 	data['height'] = this.contentHeight;
-	data['code'] = this.code;
 	data['name'] = this.name;
 
 	var uri = URIs.POST_IGADGET.evaluate({tabId: this.dragboard.tabId, workspaceId: this.dragboard.workSpaceId});
@@ -1021,14 +1037,43 @@ IGadget.prototype.moveToLayout = function(layout) {
 	if (this.layout == layout)
 		return;
 
+	// ##### NEW
+	var contentWidth = this.element.offsetWidth;
+	var fullWidth = contentWidth;
+	contentWidth -= this._computeExtraWidthPixels();
+
+	var contentHeight = this.content.offsetHeight;
+	var fullHeight = contentHeight;
+	fullHeight += this.gadgetMenu.offsetHeight +
+	              this.statusBar.offsetHeight +
+	              this.configurationElement.offsetHeight;
+	fullHeight += this._computeExtraHeightPixels();
+	// ##### NEW
+
 	var dragboardChange = this.dragboard != layout.dragboard;
 	var oldLayout = this.layout;
 	oldLayout.removeIGadget(this, dragboardChange);
 
 	this.layout = layout;
 	this.dragboard = layout.dragboard;
-	this.position = null;
+	if (dragboardChange) {
+		this.position = null;
+	} else {
+		this.position.x = oldLayout.getColumnOffset(this.position.x);
+		this.position.x = this.layout.adaptColumnOffset(this.position.x).inLU;
 
+		this.position.y = oldLayout.getRowOffset(this.position.y);
+		this.position.y = this.layout.adaptRowOffset(this.position.y).inLU;
+	}
+
+	// ##### NEW
+	var newWidth = this.layout.adaptWidth(contentWidth, fullWidth)
+	this.contentWidth = newWidth.inLU;
+
+	var newHeight = this.layout.adaptHeight(contentHeight, fullHeight)
+	this.height = newHeight.inLU;
+	this._recomputeSize(false);
+	// ##### NEW
 	this.layout.addIGadget(this, dragboardChange);
 
 	// Persistence
@@ -1054,7 +1099,6 @@ IGadget.prototype.moveToLayout = function(layout) {
 	iGadgetInfo['top'] = this.position.y;
 	iGadgetInfo['left'] = this.position.x;
 	iGadgetInfo['tab'] = this.dragboard.tabId;
-	iGadgetInfo['code'] = this.code;
 
 	data['iGadgets'].push(iGadgetInfo);
 

@@ -243,6 +243,12 @@ function Dragboard(tab, workSpace, dragboardElement) {
 		this.loaded = true;
 	}
 
+	/**
+	 * Creates a new instance of the given gadget and inserts it into this
+	 * dragboard.
+	 *
+	 * @param gadget the gadget to use for creating the instance
+	 */
 	Dragboard.prototype.addInstance = function (gadget) {
 		if ((gadget == null) || !(gadget instanceof Gadget))
 			return; // TODO exception
@@ -255,7 +261,8 @@ function Dragboard(tab, workSpace, dragboardElement) {
 		}
 
 		var template = gadget.getTemplate();
-		var width = template.getWidth();
+		var width = this.freeLayout.unitConvert(template.getWidth() + "cm", CSSPrimitiveValue.CSS_PX)[0];
+		width = this.freeLayout.adaptWidth(width, width).inLU;
 		var height = template.getHeight();
 
 		// Check if the gadget doesn't fit in the dragboard
@@ -377,13 +384,6 @@ function Dragboard(tab, workSpace, dragboardElement) {
 		return this.workSpace;
 	}
 
-	Dragboard.prototype._notifyIGadgetId = function (iGadget) {
-		if (!this.iGadgetsByCode[iGadget.code])
-			throw new Exception();
-
-		this.iGadgets[iGadget.id] = iGadget;
-	}
-
 	Dragboard.prototype._registerIGadget = function (iGadget) {
 		if (iGadget.id)
 			this.iGadgets[iGadget.id] = iGadget;
@@ -401,7 +401,10 @@ function Dragboard(tab, workSpace, dragboardElement) {
 	}
 
 	Dragboard.prototype.addIGadget = function (iGadget, igadgetInfo) {
-		this._registerIGadget(iGadget);
+		if (!this.iGadgetsByCode[iGadget.code])
+			throw new Exception();
+
+		this.iGadgets[iGadget.id] = iGadget;
 		this.workSpace.addIGadget(this.tab, iGadget, igadgetInfo);
 	}
 
@@ -878,6 +881,9 @@ function IGadgetResizeHandle(handleElement, iGadget, resizeLeftSide) {
 
 IGadgetResizeHandle.prototype.startFunc = function (resizableElement, handleElement, data) {
 	handleElement.addClassName("inUse");
+	// TODO merge with igadget minimum sizes
+	data.minWidth = Math.ceil(data.iGadget.layout.fromPixelsToHCells(80));
+	data.minHeight = Math.ceil(data.iGadget.layout.fromPixelsToVCells(50));
 	data.iGadget.igadgetNameHTMLElement.blur();
 }
 
@@ -897,11 +903,13 @@ IGadgetResizeHandle.prototype.updateFunc = function (resizableElement, handleEle
 		}
 		var height = position.y - currentPosition.y + 1;
 
-		if (width < 1)  // Minimum width = 1 cells
-			width = 1;
+		// Minimum width
+		if (width < data.minWidth)
+			width = data.minWidth;
 
-		if (height < 3) // Minimum height = 3 cells
-			height = 3;
+		// Minimum height
+		if (height < data.minHeight)
+			height = data.minHeight;
 
 		if (width != iGadget.getWidth() || height != iGadget.getHeight())
 			iGadget._setSize(width, height, data.resizeLeftSide, false);

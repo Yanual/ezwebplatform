@@ -40,42 +40,6 @@ function FreeLayout(dragboard, scrollbarSpace) {
 		return; // Allow empty constructor (allowing hierarchy)
 
 	DragboardLayout.call(this, dragboard, scrollbarSpace);
-
-	this.scrollbarSpace = scrollbarSpace;
-
-	this._notifyWindowResizeEvent = function () {
-		this._recomputeSize();
-
-		// Notify each igadget
-		var iGadget;
-		var igadgetKeys = this.iGadgets.keys();
-		for (var i = 0; i < igadgetKeys.length; i++) {
-			iGadget = this.iGadgets[igadgetKeys[i]];
-			iGadget._notifyWindowResizeEvent();
-		}
-	}.bind(this);
-
-	this._recomputeSize();
-	Event.observe(window, 'resize', this._notifyWindowResizeEvent);
-}
-
-function unitConvert(element, from, toUnits, value) {
-	// Create a square div using the given value
-	var testDiv = document.createElement("div");
-	testDiv.style.height = value;
-	testDiv.style.width = value;
-	testDiv.style.visibility = "hidden";
-	element.appendChild(testDiv);
-
-	// Retrieve target measurements
-	var xres = getComputedStyle(testDiv, null).getPropertyCSSValue("width").getFloatValue(toUnits);
-	var yres = getComputedStyle(testDiv, null).getPropertyCSSValue("height").getFloatValue(toUnits);
-
-	// Remove the test element
-	testDiv.parentNode.removeChild(testDiv);
-
-	// Return results in an array
-	return Array(xres,yres);
 }
 
 FreeLayout.prototype = new DragboardLayout();
@@ -100,20 +64,42 @@ FreeLayout.prototype.getHeightInPixels = function (cells) {
 	return this.fromVCellsToPixels(cells);
 }
 
+FreeLayout.prototype.fromPixelsToHCells = function(pixels) {
+	return (pixels  * 100000/ this.dragboardWidth);
+}
+
 FreeLayout.prototype.fromHCellsToPixels = function(cells) {
-	return Math.ceil((this.dragboardWidth * cells) / 100);
+	return Math.ceil((this.dragboardWidth * cells) / 100000);
 }
 
 FreeLayout.prototype.fromHCellsToPercentage = function(cells) {
-	return cells;
+	return cells / 1000;
 }
 
 FreeLayout.prototype.getColumnOffset = function(column) {
-	return Math.ceil((this.dragboardWidth * column) / 100);
+	return Math.ceil((this.dragboardWidth * column) / 100000);
 }
 
 FreeLayout.prototype.getRowOffset = function(row) {
 	return row;
+}
+
+FreeLayout.prototype.adaptColumnOffset = function(pixels) {
+	var offsetInLU = Math.ceil(this.fromPixelsToHCells(pixels));
+	return new MultiValuedSize(this.fromHCellsToPixels(offsetInLU), offsetInLU);
+}
+
+FreeLayout.prototype.adaptRowOffset = function(pixels) {
+	return new MultiValuedSize(pixels, pixels);
+}
+
+FreeLayout.prototype.adaptHeight = function(contentHeight, fullSize) {
+	return new MultiValuedSize(contentHeight, fullSize);
+}
+
+FreeLayout.prototype.adaptWidth = function(contentWidth, fullSize) {
+	var widthInLU = Math.floor(this.fromPixelsToHCells(fullSize));
+	return new MultiValuedSize(this.fromHCellsToPixels(widthInLU), widthInLU);
 }
 
 FreeLayout.prototype._notifyResizeEvent = function(iGadget, oldWidth, oldHeight, newWidth, newHeight, resizeLeftSide, persist) {
@@ -140,18 +126,23 @@ FreeLayout.prototype.initialize = function () {
  * Calculate what cell is at a given position in pixels
  */
 FreeLayout.prototype.getCellAt = function (x, y) {
-	return new DragboardPosition((x * 100) / this.dragboardWidth,
+	return new DragboardPosition((x * 100000) / this.dragboardWidth,
 	                             y);
 }
 
 FreeLayout.prototype.addIGadget = function(iGadget, affectsDragboard) {
 	DragboardLayout.prototype.addIGadget.call(this, iGadget, affectsDragboard);
-	iGadget.setPosition(new DragboardPosition(0, 0));
+
+	if (iGadget.getPosition() == null)
+		iGadget.setPosition(new DragboardPosition(0, 0));
 }
 
 FreeLayout.prototype.initializeMove = function(igadget, draggable) {
 	this.igadgetToMove = igadget;
 	this.newPosition = igadget.getPosition().clone();
+
+	draggable.setXOffset(0);
+	draggable.setYOffset(0);
 }
 
 FreeLayout.prototype.moveTemporally = function(x, y) {
@@ -160,8 +151,8 @@ FreeLayout.prototype.moveTemporally = function(x, y) {
 }
 
 FreeLayout.prototype._acceptMove = function() {
-	if (this.newPosition.x > 99)
-		this.newPosition.x = 99;
+	if (this.newPosition.x > 99999)
+		this.newPosition.x = 99999;
 	if (this.newPosition.y < 0)
 		this.newPosition.y = 0;
 
