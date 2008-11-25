@@ -410,7 +410,7 @@ ColumnLayout.prototype._notifyResizeEvent = function(iGadget, oldWidth, oldHeigh
 
 	this._notifyWindowResizeEvent(); // TODO
 	if (persist)
-		iGadget.dragboard._commitChanges(); // FIXME
+		this.dragboard._commitChanges(); // FIXME
 }
 
 ColumnLayout.prototype._insertAt = function(iGadget, x, y) {
@@ -503,8 +503,25 @@ ColumnLayout.prototype.initialize = function () {
 	 * @param affectsDragboard if true, the dragbaord associated to this layout will be notified
 	 */
 	this.addIGadget = function(iGadget, affectsDragboard) {
+		DragboardLayout.prototype.addIGadget.call(this, iGadget, affectsDragboard);
+
 		var position = iGadget.getPosition();
 		if (position) {
+			// Check height
+			if (iGadget.getContentHeight() < 2)
+				iGadget.contentHeight = 2;
+
+			// Check Width
+			if (iGadget.getWidth() < 2)
+				iGadget.contentWidth = 2;
+			else if (iGadget.getWidth() > this.getColumns())
+				iGadget.contentWidth = this.getColumns();
+
+			var diff = iGadget.getWidth() + position.x - this.getColumns();
+			if (diff > 0)
+				position.x -= diff
+
+			// Insert it
 			this._insertAt(iGadget, position.x, position.y);
 		} else {
 			// Search a position for the gadget
@@ -514,8 +531,6 @@ ColumnLayout.prototype.initialize = function () {
 			// Pre-reserve the cells for the gadget instance
 			this._reserveSpace(this.matrix, iGadget);
 		}
-
-		DragboardLayout.prototype.addIGadget.call(this, iGadget, affectsDragboard);
 	}
 }
 
@@ -871,7 +886,7 @@ SmartColumnLayout.prototype._notifyResizeEvent = function(iGadget, oldWidth, old
 	if (persist) {
 		this._moveSpaceUp(this.matrix, iGadget);
 		// Save new positions into persistence
-		iGadget.dragboard._commitChanges(); // FIXME
+		this.dragboard._commitChanges(); // FIXME
 	}
 }
 

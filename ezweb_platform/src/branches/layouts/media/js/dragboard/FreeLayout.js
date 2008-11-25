@@ -44,6 +44,8 @@ function FreeLayout(dragboard, scrollbarSpace) {
 
 FreeLayout.prototype = new DragboardLayout();
 
+FreeLayout.prototype.MAX_LU = 1000000;
+
 FreeLayout.prototype.getWidth = function() {
 	return this.dragboardWidth;
 }
@@ -65,19 +67,19 @@ FreeLayout.prototype.getHeightInPixels = function (cells) {
 }
 
 FreeLayout.prototype.fromPixelsToHCells = function(pixels) {
-	return (pixels  * 100000/ this.dragboardWidth);
+	return (pixels  * this.MAX_LU/ this.dragboardWidth);
 }
 
 FreeLayout.prototype.fromHCellsToPixels = function(cells) {
-	return Math.ceil((this.dragboardWidth * cells) / 100000);
+	return Math.ceil((this.dragboardWidth * cells) / this.MAX_LU);
 }
 
 FreeLayout.prototype.fromHCellsToPercentage = function(cells) {
-	return cells / 1000;
+	return cells / (this.MAX_LU / 100);
 }
 
 FreeLayout.prototype.getColumnOffset = function(column) {
-	return Math.ceil((this.dragboardWidth * column) / 100000);
+	return Math.ceil((this.dragboardWidth * column) / this.MAX_LU);
 }
 
 FreeLayout.prototype.getRowOffset = function(row) {
@@ -103,7 +105,17 @@ FreeLayout.prototype.adaptWidth = function(contentWidth, fullSize) {
 }
 
 FreeLayout.prototype._notifyResizeEvent = function(iGadget, oldWidth, oldHeight, newWidth, newHeight, resizeLeftSide, persist) {
-	// Nothing to do, except if we have to persit the changes
+	if (resizeLeftSide) {
+		var widthDiff = newWidth - oldWidth;
+		var position = iGadget.getPosition();
+		position.x -= widthDiff;
+
+		if (persist)
+			iGadget.setPosition(position);
+		else
+			iGadget._notifyWindowResizeEvent();
+	}
+
 	if (persist) {
 		// Save new position into persistence
 		this.dragboard._commitChanges([iGadget.code]);
@@ -126,7 +138,7 @@ FreeLayout.prototype.initialize = function () {
  * Calculate what cell is at a given position in pixels
  */
 FreeLayout.prototype.getCellAt = function (x, y) {
-	return new DragboardPosition((x * 100000) / this.dragboardWidth,
+	return new DragboardPosition((x * this.MAX_LU) / this.dragboardWidth,
 	                             y);
 }
 
@@ -151,8 +163,8 @@ FreeLayout.prototype.moveTemporally = function(x, y) {
 }
 
 FreeLayout.prototype._acceptMove = function() {
-	if (this.newPosition.x > 99999)
-		this.newPosition.x = 99999;
+	if (this.newPosition.x > (this.MAX_LU - 1))
+		this.newPosition.x = (this.MAX_LU - 1);
 	if (this.newPosition.y < 0)
 		this.newPosition.y = 0;
 

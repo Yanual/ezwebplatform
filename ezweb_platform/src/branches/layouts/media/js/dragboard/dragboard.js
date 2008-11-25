@@ -203,7 +203,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 	}
 
 	Dragboard.prototype.parseTab = function(tabInfo) {
-		var curIGadget, position, width, height, igadget, gadget, gadgetid, minimized;
+		var curIGadget, position, width, height, igadget, gadget, gadgetid, minimized, layout;
 
 		var opManager = OpManagerFactory.getInstance();
 
@@ -232,12 +232,18 @@ function Dragboard(tab, workSpace, dragboardElement) {
 			// Get gadget model
 			gadget = ShowcaseFactory.getInstance().getGadget(gadgetid);
 
+			// Parse layout field
+			if (curIGadget.layout == 0) {
+				layout = this.baseLayout;
+			} else {
+				layout = this.freeLayout;
+			}
+
 			// Parse minimize status
 			minimized = curIGadget.minimized == "true" ? true : false;
 
 			// Create instance model
-			igadget = new IGadget(gadget, curIGadget.id, curIGadget.name, this.baseLayout, position, width, height, minimized);
-			this.baseLayout.addIGadget(igadget, true);
+			igadget = new IGadget(gadget, curIGadget.id, curIGadget.name, layout, position, width, height, minimized);
 		}
 
 		this.loaded = true;
@@ -277,7 +283,6 @@ function Dragboard(tab, workSpace, dragboardElement) {
 		// Create the instance
 		var igadgetName = gadget.getName() + ' (' + this.currentCode + ')';
 		var iGadget = new IGadget(gadget, null, igadgetName, this.freeLayout, null, width, height, false);
-		this.freeLayout.addIGadget(iGadget, true);
 
 		iGadget.save();
 	}
@@ -311,7 +316,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 		try {
 			igadget.saveConfig();
 
-			igadget.setConfigurationVisible(igadget.getId(), false);
+			igadget.setConfigurationVisible(false);
 		} catch (e) {
 		}
 	}
@@ -675,8 +680,8 @@ function IGadgetDraggable (iGadget) {
 }
 
 IGadgetDraggable.prototype.startFunc = function (draggable, context) {
-	context.dragboard = context.iGadget.dragboard;
 	context.layout = context.iGadget.layout;
+	context.dragboard = context.layout.dragboard;
 	context.currentTab = context.dragboard.tabId;
 	context.dragboard.initializeMove(context.iGadget.id, draggable);
 }

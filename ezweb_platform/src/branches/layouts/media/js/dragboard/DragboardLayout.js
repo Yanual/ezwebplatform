@@ -134,6 +134,12 @@ DragboardLayout.prototype.getWidth = function() {
  * @param affectsDragboard true if the associated dragboard must be notified
  */
 DragboardLayout.prototype.addIGadget = function(iGadget, affectsDragboard) {
+	if (iGadget.layout != null) {
+		var msg = gettext("the iGadget could not be associated with this layout as it already has an associated layout.");
+		throw new Error(msg);
+	}
+	iGadget.layout = this;
+
 	if (affectsDragboard) {
 		this.dragboard._registerIGadget(iGadget);
 
@@ -158,6 +164,8 @@ DragboardLayout.prototype.removeIGadget = function(iGadget, affectsDragboard) {
 		if (iGadget.element != null) // TODO
 			this.dragboard.dragboardElement.removeChild(iGadget.element);
 	}
+
+	iGadget.layout = null;
 }
 
 /**

@@ -83,6 +83,7 @@ def SaveIGadget(igadget, user, tab):
     height = igadget.get('height')
     top = igadget.get('top')
     left = igadget.get('left')
+    layout = igadget.get('layout')
 
     # Creates IGadget position
     position = Position(posX=left, posY=top, height=height, width=width, minimized=False)
@@ -97,7 +98,7 @@ def SaveIGadget(igadget, user, tab):
 
         gadget = Gadget.objects.get(uri=gadget_uri, users=user)
 
-        new_igadget = IGadget(name=igadget_name, gadget=gadget, tab=tab, position=position)
+        new_igadget = IGadget(name=igadget_name, gadget=gadget, tab=tab, layout=layout, position=position)
         new_igadget.save()
 
         variableDefs = VariableDef.objects.filter(gadget=gadget)
@@ -107,27 +108,27 @@ def SaveIGadget(igadget, user, tab):
                 var_value = varDef.default_value
             else:
                 var_value = ''
-            
+
              # Creating the Abstract Variable
-            abstractVar = AbstractVariable(type="IGADGET", name=varDef.name)  
+            abstractVar = AbstractVariable(type="IGADGET", name=varDef.name)
             abstractVar.save()
-            
+
             # Creating Value for Abstract Variable
             variableValue =  VariableValue (user=user, value=var_value, abstract_variable=abstractVar)
             variableValue.save()
-                
+
             var = Variable(vardef=varDef, igadget=new_igadget, abstract_variable=abstractVar)
             var.save()
-            
+
             #Wiring related vars (SLOT&EVENTS) have implicit connectables!
             connectableId = createConnectable(var)
-        
+
         transaction.commit()
-        
+
         igadget_data =  serializers.serialize('python', [new_igadget], ensure_ascii=False)
-        
+
         ids = get_igadget_data(igadget_data[0], user, tab.workspace)
-        
+
         return ids
 
     except Gadget.DoesNotExist:
@@ -155,6 +156,10 @@ def UpdateIGadget(igadget, user, tab):
         if newtab_id != tab.id:
             newtab = Tab.objects.get(workspace__users__id=user.id, workspace__pk=tab.workspace_id, pk=newtab_id)
             ig.tab = newtab
+
+    if igadget.has_key('layout'):
+        layout = igadget.get('layout')
+        ig.layout = layout
 
     ig.save()
 
@@ -197,7 +202,7 @@ def UpdateIGadget(igadget, user, tab):
     position.save()
 
 def deleteIGadget(igadget, user):
-        
+
     # Delete all IGadget's variables
     variables = Variable.objects.filter(igadget=igadget)
     for var in variables:
@@ -328,7 +333,7 @@ class IGadgetEntry(Resource):
         deleteIGadget(igadget, user)
 
         return HttpResponse('ok')
-        
+
 
 class IGadgetVariableCollection(Resource):
     def read(self, request, workspace_id, tab_id, igadget_id):
@@ -372,7 +377,7 @@ class IGadgetVariableCollection(Resource):
             transaction.rollback()
             log(e, request)
             return HttpResponseServerError(get_xml_error(unicode(e)), mimetype='application/xml; charset=UTF-8')
-        
+
         return HttpResponse("<ok>", mimetype='text/xml; charset=UTF-8')
 
 class IGadgetVariable(Resource):
