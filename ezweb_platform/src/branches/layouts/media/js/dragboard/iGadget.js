@@ -1243,7 +1243,10 @@ IGadget.prototype.save = function() {
 	data['width'] = this.contentWidth;
 	data['height'] = this.contentHeight;
 	data['name'] = this.name;
-	data['layout'] = 1;
+	if (this.onFreeLayout())
+		data['layout'] = 1;
+	else
+		data['layout'] = 0;
 
 	var uri = URIs.POST_IGADGET.evaluate({tabId: this.layout.dragboard.tabId,
 	                                      workspaceId: this.layout.dragboard.workSpaceId});
