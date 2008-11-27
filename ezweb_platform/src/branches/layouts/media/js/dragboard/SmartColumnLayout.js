@@ -467,12 +467,9 @@ ColumnLayout.prototype.initialize = function () {
 
 		position = iGadget.getPosition();
 
-		if (iGadget.getContentHeight() < 2)
-			iGadget.contentHeight = 2;
+		this._ensureMinimalSize(iGadget);
 
-		if (iGadget.getWidth() < 2)
-			iGadget.contentWidth = 2;
-		else if (iGadget.getWidth() > this.getColumns())
+		if (iGadget.getWidth() > this.getColumns())
 			iGadget.contentWidth = this.getColumns();
 
 		if (iGadget.getWidth() + position.x > this.getColumns()) {
@@ -497,7 +494,7 @@ ColumnLayout.prototype.initialize = function () {
 	delete this.initialize;
 
 	/**
-	 * Inserts the given iGadget in this layout.
+	 * Inserts the given iGadget into this layout.
 	 *
 	 * @param iGadget the iGadget to insert in this layout
 	 * @param affectsDragboard if true, the dragbaord associated to this layout will be notified
@@ -507,14 +504,7 @@ ColumnLayout.prototype.initialize = function () {
 
 		var position = iGadget.getPosition();
 		if (position) {
-			// Check height
-			if (iGadget.getContentHeight() < 2)
-				iGadget.contentHeight = 2;
-
-			// Check Width
-			if (iGadget.getWidth() < 2)
-				iGadget.contentWidth = 2;
-			else if (iGadget.getWidth() > this.getColumns())
+			if (iGadget.getWidth() > this.getColumns())
 				iGadget.contentWidth = this.getColumns();
 
 			var diff = iGadget.getWidth() + position.x - this.getColumns();
@@ -551,6 +541,15 @@ ColumnLayout.prototype.removeIGadget = function(iGadget, affectsDragboard) {
 }
 
 ColumnLayout.prototype.initializeMove = function(igadget, draggable) {
+	draggable = draggable || null; // default value of draggable argument
+
+	// Check for pendings moves
+	if (this.igadgetToMove != null) {
+		var msg = gettext("There was a pending move that was cancelled because initializedMove function was called before it was finished.")
+		LogManagerFactory.getInstance().log(msg, Constants.WARN_MSG);
+		this.cancelMove();
+	}
+
 	this.igadgetToMove = igadget;
 
 	// Make a copy of the positions of the gadgets
@@ -590,8 +589,10 @@ ColumnLayout.prototype.initializeMove = function(igadget, draggable) {
 	this.dragboardCursor.paint(this.dragboard.dragboardElement);
 	this._reserveSpace(this.matrix, this.dragboardCursor);
 
-	draggable.setXOffset(this.fromHCellsToPixels(1) / 2);
-	draggable.setYOffset(this.getCellHeight());
+	if (draggable) {
+		draggable.setXOffset(this.fromHCellsToPixels(1) / 2);
+		draggable.setYOffset(this.getCellHeight());
+	}
 }
 
 ColumnLayout.prototype._destroyCursor = function(clearSpace) {
@@ -608,6 +609,12 @@ ColumnLayout.prototype.disableCursor = function() {
 }
 
 ColumnLayout.prototype.moveTemporally = function(x, y) {
+	if (this.igadgetToMove == null) {
+		var msg = gettext("Dragboard: You must call initializeMove function before calling to this function (moveTemporally).");
+		LogManagerFactory.getInstance().log(msg, Constants.WARN_MSG);
+		return;
+	}
+
 	var maxX = this.getColumns() - this.igadgetToMove.getWidth();
 	if (x > maxX) x = maxX;
 
@@ -630,6 +637,12 @@ ColumnLayout.prototype.moveTemporally = function(x, y) {
 }
 
 ColumnLayout.prototype.cancelMove = function() {
+	if (this.igadgetToMove == null) {
+		var msg = gettext("Trying to cancel an inexistant temporal move.");
+		LogManagerFactory.getInstance().log(msg, Constants.WARN_MSG);
+		return;
+	}
+
 	this._destroyCursor(true);
 	var position = this.igadgetToMove.getPosition();
 	this._insertAt(this.igadgetToMove, position.x, position.y);
@@ -638,7 +651,13 @@ ColumnLayout.prototype.cancelMove = function() {
 	this.dragboardCursor = null;
 }
 
-ColumnLayout.prototype._acceptMove = function() {
+ColumnLayout.prototype.acceptMove = function() {
+	if (this.igadgetToMove == null) {
+		var msg = gettext("Function acceptMove called when there is not an started igadget move.");
+		LogManagerFactory.getInstance().log(msg, Constants.WARN_MSG);
+		return;
+	}
+
 	var oldposition = this.igadgetToMove.getPosition();
 	var newposition = this.dragboardCursor.getPosition();
 	this._destroyCursor(false);
@@ -653,6 +672,10 @@ ColumnLayout.prototype._acceptMove = function() {
 	if (oldposition.y != newposition.y || oldposition.x != newposition.x) {
 		this.dragboard._commitChanges();
 	}
+
+	this.shadowMatrix = null;
+	this.igadgetToMove = null;
+	this.dragboardCursor = null;
 }
 
 /////////////////////////////////////

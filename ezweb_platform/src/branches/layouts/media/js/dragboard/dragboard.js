@@ -267,8 +267,9 @@ function Dragboard(tab, workSpace, dragboardElement) {
 		}
 
 		var template = gadget.getTemplate();
-		var width = this.freeLayout.unitConvert(template.getWidth() + "cm", CSSPrimitiveValue.CSS_PX)[0];
-		width = this.freeLayout.adaptWidth(width, width).inLU;
+		//var width = this.freeLayout.unitConvert(template.getWidth() + "cm", CSSPrimitiveValue.CSS_PX)[0];
+		//width = this.freeLayout.adaptWidth(width, width).inLU;
+		var width = template.getWidth();
 		var height = template.getHeight();
 
 		// Check if the gadget doesn't fit in the dragboard
@@ -282,7 +283,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 
 		// Create the instance
 		var igadgetName = gadget.getName() + ' (' + this.currentCode + ')';
-		var iGadget = new IGadget(gadget, null, igadgetName, this.freeLayout, null, width, height, false);
+		var iGadget = new IGadget(gadget, null, igadgetName, this.baseLayout, null, width, height, false);
 
 		iGadget.save();
 	}
@@ -331,52 +332,6 @@ function Dragboard(tab, workSpace, dragboardElement) {
 		igadget.notifyError();
 	}
 
-	Dragboard.prototype.initializeMove = function (iGadgetId, draggable) {
-		draggable = draggable || null; // default value of draggable argument
-
-		if (this.gadgetToMove != null) {
-			LogManagerFactory.getInstance().log(gettext("There was a pending move that was cancelled because initializedMove function was called before it was finished."), Constants.WARN_MSG);
-			this.cancelMove();
-		}
-
-		this.gadgetToMove = this.iGadgets[iGadgetId];
-
-		this.gadgetToMove.layout.initializeMove(this.gadgetToMove, draggable);
-	}
-
-	Dragboard.prototype.moveTemporally = function (x, y) {
-		if (this.gadgetToMove == null) {
-			var msg = gettext("Dragboard: You must call initializeMove function before calling to this function (moveTemporally).");
-			LogManagerFactory.getInstance().log(msg, Constants.WARN_MSG);
-			return;
-		}
-
-		this.gadgetToMove.layout.moveTemporally(x, y);
-	}
-
-	Dragboard.prototype.cancelMove = function() {
-		if (this.gadgetToMove == null) {
-			var msg = gettext("Dragboard: Trying to cancel an inexistant temporal move.");
-			LogManagerFactory.getInstance().log(msg, Constants.WARN_MSG);
-			return;
-		}
-
-		this.gadgetToMove.layout.cancelMove();
-		this.gadgetToMove = null;
-	}
-
-	Dragboard.prototype.acceptMove = function() {
-		if (this.gadgetToMove == null) {
-			var msg = gettext("Dragboard: function acceptMove called when there is not any igadget's move started.");
-			LogManagerFactory.getInstance().log(msg, Constants.WARN_MSG);
-			return;
-		}
-
-		this.gadgetToMove.layout._acceptMove();
-		this.gadgetToMove = null;
-		this.shadowMatrix = null;
-	}
-
 	Dragboard.prototype.getIGadgets = function() {
 		return this.iGadgets.values();
 	}
@@ -389,6 +344,12 @@ function Dragboard(tab, workSpace, dragboardElement) {
 		return this.workSpace;
 	}
 
+	/**
+	 * Registers an iGadget into this dragboard.
+	 *
+	 * @private
+	 * @param iGadget the iGadget to register
+	 */
 	Dragboard.prototype._registerIGadget = function (iGadget) {
 		if (iGadget.id)
 			this.iGadgets[iGadget.id] = iGadget;
@@ -398,6 +359,12 @@ function Dragboard(tab, workSpace, dragboardElement) {
 		this.iGadgetsByCode[iGadget.code] = iGadget;
 	}
 
+	/**
+	 * Deregisters an iGadget from this dragboard.
+	 *
+	 * @private
+	 * @param iGadget the iGadget to register
+	 */
 	Dragboard.prototype._deregisterIGadget = function (iGadget) {
 		delete this.iGadgets[iGadget.id];
 		delete this.iGadgetsByCode[iGadget.code];
@@ -447,7 +414,18 @@ DragboardPosition.prototype.clone = function() {
 /////////////////////////////////////
 // DragboardCursor
 /////////////////////////////////////
-function DragboardCursor(iGadget, position) {
+
+/**
+ * @class This class represents a dragboard cursor. It is usually used in drag
+ *        & drop operations and always represents the place where an iGadget is
+ *        going to be placed.
+ *
+ * @author Álvaro Arranz
+ *
+ * @param iGadget iGadget that is going to be represented by the new dragboard
+ *                cursor
+ */
+function DragboardCursor(iGadget) {
 	var positiontmp = iGadget.getPosition();
 	this.position = positiontmp.clone();
 
@@ -483,6 +461,10 @@ DragboardCursor.prototype.paint = function(dragboard) {
 	this.element = dragboardCursor;
 }
 
+/**
+ * This method must be called to avoid memory leaks caused by circular
+ * references.
+ */
 DragboardCursor.prototype.destroy = function() {
 	if (this.element != null) {
 		this.element.parentNode.removeChild(this.element);
@@ -683,7 +665,7 @@ IGadgetDraggable.prototype.startFunc = function (draggable, context) {
 	context.layout = context.iGadget.layout;
 	context.dragboard = context.layout.dragboard;
 	context.currentTab = context.dragboard.tabId;
-	context.dragboard.initializeMove(context.iGadget.id, draggable);
+	context.layout.initializeMove(context.iGadget, draggable);
 }
 
 IGadgetDraggable.prototype.updateFunc = function (event, draggable, context, x, y) {
@@ -730,15 +712,21 @@ IGadgetDraggable.prototype.updateFunc = function (event, draggable, context, x, 
 		context.selectedTabElement.removeClassName("selected");
 	context.selectedTab = null;
 	context.selectedTabElement = null;
-	context.dragboard.moveTemporally(position.x, position.y);
+	context.layout.moveTemporally(position.x, position.y);
 	return;
 }
 
 IGadgetDraggable.prototype.finishFunc = function (draggable, context) {
 	if (context.selectedTab != null) {
-		context.dragboard.cancelMove();
-		var destLayout = context.dragboard.workSpace.getTab(context.selectedTab);
-		destLayout = destLayout.getDragboard().baseLayout;
+		context.layout.cancelMove();
+		var dragboard = context.dragboard.workSpace.getTab(context.selectedTab).getDragboard();
+
+		var destLayout;
+		if (context.iGadget.onFreeLayout())
+			destLayout = dragboard.freeLayout;
+		else
+			destLayout = dragboard.baseLayout;
+
 		context.iGadget.moveToLayout(destLayout);
 
 		var tabElement = context.selectedTabElement;
@@ -749,7 +737,7 @@ IGadgetDraggable.prototype.finishFunc = function (draggable, context) {
 		context.selectedTab = null;
 		context.selectedTabElement = null;
 	} else {
-		context.dragboard.acceptMove();
+		context.layout.acceptMove();
 	}
 
 	context.dragboard = null;
@@ -917,12 +905,12 @@ IGadgetResizeHandle.prototype.updateFunc = function (resizableElement, handleEle
 			height = data.minHeight;
 
 		if (width != iGadget.getWidth() || height != iGadget.getHeight())
-			iGadget._setSize(width, height, data.resizeLeftSide, false);
+			iGadget.setSize(width, height, data.resizeLeftSide, false);
 	}
 }
 
 IGadgetResizeHandle.prototype.finishFunc = function (resizableElement, handleElement, data) {
 	var iGadget = data.iGadget;
-	iGadget._setSize(iGadget.getWidth(), iGadget.getHeight(), data.resizeLeftSide, true);
+	iGadget.setSize(iGadget.getWidth(), iGadget.getHeight(), data.resizeLeftSide, true);
 	handleElement.removeClassName("inUse");
 }

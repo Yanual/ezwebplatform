@@ -28,12 +28,11 @@
 /////////////////////////////////////
 
 /**
- * Represents a dragboard layout to be used to place igadgets into the dragboard.
+ * @class Represents a dragboard layout to be used to place igadgets into the dragboard.
  *
- * This dragobard uses percentages for horizontal units and mm for vertical units
+ * This dragobard uses percentages for horizontal units and px for vertical units.
  *
- * @param dragboard      associated dragboard
- * @param scrollbarSpace space reserved for the right scroll bar in pixels
+ * @extends DragboardLayout
  */
 function FreeLayout(dragboard, scrollbarSpace) {
 	if (arguments.length == 0)
@@ -44,7 +43,7 @@ function FreeLayout(dragboard, scrollbarSpace) {
 
 FreeLayout.prototype = new DragboardLayout();
 
-FreeLayout.prototype.MAX_LU = 1000000;
+FreeLayout.prototype.MAX_HLU = 1000000;
 
 FreeLayout.prototype.getWidth = function() {
 	return this.dragboardWidth;
@@ -67,19 +66,19 @@ FreeLayout.prototype.getHeightInPixels = function (cells) {
 }
 
 FreeLayout.prototype.fromPixelsToHCells = function(pixels) {
-	return (pixels  * this.MAX_LU/ this.dragboardWidth);
+	return (pixels  * this.MAX_HLU/ this.dragboardWidth);
 }
 
 FreeLayout.prototype.fromHCellsToPixels = function(cells) {
-	return Math.ceil((this.dragboardWidth * cells) / this.MAX_LU);
+	return Math.ceil((this.dragboardWidth * cells) / this.MAX_HLU);
 }
 
 FreeLayout.prototype.fromHCellsToPercentage = function(cells) {
-	return cells / (this.MAX_LU / 100);
+	return cells / (this.MAX_HLU / 100);
 }
 
 FreeLayout.prototype.getColumnOffset = function(column) {
-	return Math.ceil((this.dragboardWidth * column) / this.MAX_LU);
+	return Math.ceil((this.dragboardWidth * column) / this.MAX_HLU);
 }
 
 FreeLayout.prototype.getRowOffset = function(row) {
@@ -138,7 +137,7 @@ FreeLayout.prototype.initialize = function () {
  * Calculate what cell is at a given position in pixels
  */
 FreeLayout.prototype.getCellAt = function (x, y) {
-	return new DragboardPosition((x * this.MAX_LU) / this.dragboardWidth,
+	return new DragboardPosition((x * this.MAX_HLU) / this.dragboardWidth,
 	                             y);
 }
 
@@ -150,21 +149,44 @@ FreeLayout.prototype.addIGadget = function(iGadget, affectsDragboard) {
 }
 
 FreeLayout.prototype.initializeMove = function(igadget, draggable) {
+	draggable = draggable || null; // default value for the draggable parameter
+
+	// Check for pendings moves
+	if (this.igadgetToMove != null) {
+		var msg = gettext("There was a pending move that was cancelled because initializedMove function was called before it was finished.")
+		LogManagerFactory.getInstance().log(msg, Constants.WARN_MSG);
+		this.cancelMove();
+	}
+
 	this.igadgetToMove = igadget;
 	this.newPosition = igadget.getPosition().clone();
 
-	draggable.setXOffset(0);
-	draggable.setYOffset(0);
+	if (draggable) {
+		draggable.setXOffset(0);
+		draggable.setYOffset(0);
+	}
 }
 
 FreeLayout.prototype.moveTemporally = function(x, y) {
+	if (this.igadgetToMove == null) {
+		var msg = gettext("Dragboard: You must call initializeMove function before calling to this function (moveTemporally).");
+		LogManagerFactory.getInstance().log(msg, Constants.WARN_MSG);
+		return;
+	}
+
 	this.newPosition.x = x;
 	this.newPosition.y = y;
 }
 
-FreeLayout.prototype._acceptMove = function() {
-	if (this.newPosition.x > (this.MAX_LU - 1))
-		this.newPosition.x = (this.MAX_LU - 1);
+FreeLayout.prototype.acceptMove = function() {
+	if (this.igadgetToMove == null) {
+		var msg = gettext("Function acceptMove called when there is not an started igadget move.");
+		LogManagerFactory.getInstance().log(msg, Constants.WARN_MSG);
+		return;
+	}
+
+	if (this.newPosition.x > (this.MAX_HLU - 1))
+		this.newPosition.x = (this.MAX_HLU - 1);
 	if (this.newPosition.y < 0)
 		this.newPosition.y = 0;
 
@@ -177,6 +199,12 @@ FreeLayout.prototype._acceptMove = function() {
 }
 
 FreeLayout.prototype.cancelMove = function() {
+	if (this.igadgetToMove == null) {
+		var msg = gettext("Trying to cancel an inexistant temporal move.");
+		LogManagerFactory.getInstance().log(msg, Constants.WARN_MSG);
+		return;
+	}
+
 	this.igadgetToMove._notifyWindowResizeEvent();
 	this.igadgetToMove = null;
 	this.newPosition = null;
