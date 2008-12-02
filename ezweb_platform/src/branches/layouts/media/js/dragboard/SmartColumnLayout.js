@@ -41,6 +41,7 @@ function ColumnLayout(dragboard, columns, cellHeight, verticalMargin, horizontal
 	if (arguments.length == 0)
 		return; // Allow empty constructor (allowing hierarchy)
 
+	this.initialized = false;
 	this.shadowMatrix = null;    // Temporal matrix of igadgets used for D&D
 	this.shadowPositions = null;
 	this.columns = columns;
@@ -491,37 +492,7 @@ ColumnLayout.prototype.initialize = function () {
 		this._reserveSpace(this.matrix, iGadgetsToReinsert[i]);
 	}
 
-	delete this.initialize;
-
-	/**
-	 * Inserts the given iGadget into this layout.
-	 *
-	 * @param iGadget the iGadget to insert in this layout
-	 * @param affectsDragboard if true, the dragbaord associated to this layout will be notified
-	 */
-	this.addIGadget = function(iGadget, affectsDragboard) {
-		DragboardLayout.prototype.addIGadget.call(this, iGadget, affectsDragboard);
-
-		var position = iGadget.getPosition();
-		if (position) {
-			if (iGadget.getWidth() > this.getColumns())
-				iGadget.contentWidth = this.getColumns();
-
-			var diff = iGadget.getWidth() + position.x - this.getColumns();
-			if (diff > 0)
-				position.x -= diff
-
-			// Insert it
-			this._insertAt(iGadget, position.x, position.y);
-		} else {
-			// Search a position for the gadget
-			position = this._searchFreeSpace(iGadget.getWidth(), iGadget.getHeight());
-			iGadget.setPosition(position);
-
-			// Pre-reserve the cells for the gadget instance
-			this._reserveSpace(this.matrix, iGadget);
-		}
-	}
+	this.initialized = true;
 }
 
 /**
@@ -534,6 +505,40 @@ ColumnLayout.prototype.getCellAt = function (x, y) {
 	                             Math.floor(y / this.getCellHeight()));
 }
 
+/**
+ * Inserts the given iGadget into this layout.
+ *
+ * @param iGadget the iGadget to insert in this layout
+ * @param affectsDragboard if true, the dragbaord associated to this layout will be notified
+ */
+ColumnLayout.prototype.addIGadget = function(iGadget, affectsDragboard) {
+	DragboardLayout.prototype.addIGadget.call(this, iGadget, affectsDragboard);
+
+	iGadget.setZPosition(0);
+
+	if (!this.initialized)
+		return;
+
+	var position = iGadget.getPosition();
+	if (position) {
+		if (iGadget.getWidth() > this.getColumns())
+			iGadget.contentWidth = this.getColumns();
+
+		var diff = iGadget.getWidth() + position.x - this.getColumns();
+		if (diff > 0)
+			position.x -= diff
+
+		// Insert it
+		this._insertAt(iGadget, position.x, position.y);
+	} else {
+		// Search a position for the gadget
+		position = this._searchFreeSpace(iGadget.getWidth(), iGadget.getHeight());
+		iGadget.setPosition(position);
+
+		// Pre-reserve the cells for the gadget instance
+		this._reserveSpace(this.matrix, iGadget);
+	}
+}
 
 ColumnLayout.prototype.removeIGadget = function(iGadget, affectsDragboard) {
 	this._removeFromMatrix(this.matrix, iGadget);

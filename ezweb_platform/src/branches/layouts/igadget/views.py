@@ -83,10 +83,11 @@ def SaveIGadget(igadget, user, tab):
     height = igadget.get('height')
     top = igadget.get('top')
     left = igadget.get('left')
+    zIndex = igadget.get('zIndex')
     layout = igadget.get('layout')
 
     # Creates IGadget position
-    position = Position(posX=left, posY=top, height=height, width=width, minimized=False)
+    position = Position(posX=left, posY=top, posZ=zIndex, height=height, width=width, minimized=False)
     position.save()
 
     # Creates the new IGadget
@@ -190,6 +191,12 @@ def UpdateIGadget(igadget, user, tab):
         if left < 0:
             raise Exception(_('Malformed iGadget JSON'))
         position.posX = left
+
+    if igadget.has_key('zIndex'):
+        zIndex = igadget.get('zIndex')
+        if not isinstance(zIndex, int):
+            raise Exception(_('Malformed iGadget JSON'))
+        position.posZ = zIndex
 
     if igadget.has_key('minimized'):
         minimized = igadget.get('minimized')

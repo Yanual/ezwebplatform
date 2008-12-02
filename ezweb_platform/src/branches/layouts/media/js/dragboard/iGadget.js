@@ -32,16 +32,21 @@
  *
  * @param {Gadget}            gadget      Gadget of this iGadget
  * @param {Number}            iGadgetId   iGadget id in persistence. This
- *                                        parameter can be null for new iGadget
- *                                        instances
+ *                                        parameter can be null for new iGadgets
+ *                                        (not coming from persistence)
  * @param {String}            iGadgetName current gadget
  * @param {DragboardLayout}   layout      associated layout
- * @param {DragboardPosition} position    initial position
+ * @param {DragboardPosition} position    initial position. This parameter can
+ *                                        be null for new iGadgets (not coming
+ *                                        from persistence)
+ * @param {Number}            zPos        initial z coordinate position. This
+ *                                        parameter can be null for new iGadgets
+ *                                        (not coming from persistence)
  * @param {Number}            width       initial content width
  * @param {Number}            height      initial content height
  * @param {Boolean}           minimized   initial minimized status
  */
-function IGadget(gadget, iGadgetId, iGadgetName, layout, position, width, height, minimized) {
+function IGadget(gadget, iGadgetId, iGadgetName, layout, position, zPos, width, height, minimized) {
 	this.id = iGadgetId;
 	this.code = null;
 	this.name = iGadgetName;
@@ -50,6 +55,7 @@ function IGadget(gadget, iGadgetId, iGadgetName, layout, position, width, height
 	this.contentWidth = width;
 	this.contentHeight = height;
 	this.loaded = false;
+	this.zPos = zPos;
 
 	if (!minimized)
 		this.height = this.contentHeight + layout.getExtraSize().inLU;
@@ -90,7 +96,7 @@ IGadget.prototype.getGadget = function() {
 }
 
 /**
- * Sets the position of a gadget instance. The position is calculated relative
+ * Sets the position ina gadget instance. The position is calculated relative
  * to the top-left square of the gadget instance box using cells units.
  *
  * @param {DragboardPosition} position the new position for the iGadget.
@@ -110,6 +116,18 @@ IGadget.prototype.setPosition = function(position) {
 }
 
 /**
+ * Sets the z coordinate position of this iGadget.
+ *
+ * @param {Number} zPos the new Z coordinate position for the iGadget.
+ */
+IGadget.prototype.setZPosition = function(zPos) {
+	this.zPos = zPos;
+
+	if (this.element)
+		this.element.style.zIndex = zPos;
+}
+
+/**
  * Gets the position of a gadget instance. The position is calculated relative
  * to the top-left square of the gadget instance box using cells units.
  *
@@ -117,6 +135,15 @@ IGadget.prototype.setPosition = function(position) {
  */
 IGadget.prototype.getPosition = function() {
 	return this.position;
+}
+
+/**
+ * Gets the z coordinate of this iGadget.
+ *
+ * @returns {Number} the Z coordinate of the iGadget.
+ */
+IGadget.prototype.getZPosition = function(zPos) {
+	return this.zPos;
 }
 
 /**
@@ -215,7 +242,7 @@ IGadget.prototype.onFreeLayout = function() {
 IGadget.prototype._updateExtractOption = function() {
 	if (this.onFreeLayout()) {
 		this.menu.updateOption(this.extractOptionId,
-		                       "/ezweb/images/igadget/extract.png",
+		                       "/ezweb/images/igadget/snap.png",
 		                       gettext("Snap to grid"),
 		                       function() {
 		                           this.toggleLayout();
@@ -314,6 +341,35 @@ IGadget.prototype.paint = function() {
 	// Extract/Snap from/to grid option
 	this.extractOptionId = this.menu.addOption("", "", function(){}, 1);
 	this._updateExtractOption();
+
+	this.menu.addOption("/ezweb/images/igadget/lower.png",
+	                    gettext("Lower"),
+	                    function() {
+	                        this.layout.lower(this);
+	                        LayoutManagerFactory.getInstance().hideCover();
+	                    }.bind(this),
+	                    2);
+	this.menu.addOption("/ezweb/images/igadget/raise.png",
+	                    gettext("Raise"),
+	                    function() {
+	                        this.layout.raise(this);
+	                        LayoutManagerFactory.getInstance().hideCover();
+	                    }.bind(this),
+	                    3);
+	this.menu.addOption("/ezweb/images/igadget/lowerToBottom.png",
+	                    gettext("Lower To Bottom"),
+	                    function() {
+	                        this.layout.lowerToBottom(this);
+	                        LayoutManagerFactory.getInstance().hideCover();
+	                    }.bind(this),
+	                    4);
+	this.menu.addOption("/ezweb/images/igadget/raiseToTop.png",
+	                    gettext("Raise To Top"),
+	                    function() {
+	                        this.layout.raiseToTop(this);
+	                        LayoutManagerFactory.getInstance().hideCover();
+	                    }.bind(this),
+	                    5);
 
 	// iGadget's menu button
 	button = document.createElement("input");
@@ -443,6 +499,7 @@ IGadget.prototype.paint = function() {
 	// Position
 	this.element.style.left = this.layout.getColumnOffset(this.position.x) + "px";
 	this.element.style.top = this.layout.getRowOffset(this.position.y) + "px";
+	this.element.style.zIndex = this.zPos;
 
 	// Sizes
 	var widthInPixels = this.layout.getWidthInPixels(this.contentWidth);
@@ -835,7 +892,7 @@ IGadget.prototype._notifyLoaded = function() {
 
 	}
 
-	this.setContentSize(this.contentWidth, this.contentHeight);
+	this.setContentSize(this.contentWidth, this.contentHeight, false);
 
 	// Notify to the context manager the igadget has been loaded
 	this.layout.dragboard.getWorkspace().getContextManager().propagateInitialValues(this.id);
@@ -1240,6 +1297,7 @@ IGadget.prototype.save = function() {
 	var data = new Hash();
 	data['left'] = this.position.x;
 	data['top'] = this.position.y;
+	data['zIndex'] = this.zPos;
 	data['width'] = this.contentWidth;
 	data['height'] = this.contentHeight;
 	data['name'] = this.name;
@@ -1328,6 +1386,7 @@ IGadget.prototype.moveToLayout = function(newLayout) {
 	iGadgetInfo['id'] = this.id;
 	iGadgetInfo['top'] = this.position.y;
 	iGadgetInfo['left'] = this.position.x;
+	iGadgetInfo['zIndex'] = this.zPos;
 	iGadgetInfo['width'] = this.contentWidth;
 	iGadgetInfo['height'] = this.contentHeight;
 	iGadgetInfo['tab'] = this.layout.dragboard.tabId;

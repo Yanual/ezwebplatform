@@ -38,6 +38,8 @@ function FreeLayout(dragboard, scrollbarSpace) {
 	if (arguments.length == 0)
 		return; // Allow empty constructor (allowing hierarchy)
 
+	this.initialized = false;
+	this.orderList = new Array();
 	DragboardLayout.call(this, dragboard, scrollbarSpace);
 }
 
@@ -122,15 +124,42 @@ FreeLayout.prototype._notifyResizeEvent = function(iGadget, oldWidth, oldHeight,
 }
 
 FreeLayout.prototype.initialize = function () {
-	var iGadget, key;
+	var iGadget, key, zPos, iGadgetsToReinsert = new Array();
 
 	// Insert igadgets
 	var igadgetKeys = this.iGadgets.keys();
 	for (var i = 0; i < igadgetKeys.length; i++) {
 		key = igadgetKeys[i];
 		iGadget = this.iGadgets[key];
+
+		zPos = iGadget.getZPosition() - 1000;
+		if (this.orderList[zPos]) {
+			iGadgetsToReinsert.push(iGadget);
+		} else {
+			this.orderList[zPos] = iGadget;
+		}
+
 		iGadget.paint();
 	}
+
+	// Reinsert the igadgets that didn't fit in their positions
+	for (i = 0; i < iGadgetsToReinsert.length; i++) {
+		iGadget = iGadgetsToReinsert[i];
+		zPos = this.orderList.push(iGadget) - 1;
+		iGadget.setZPosition(1000 + zPos);
+		iGadget.paint();
+	}
+
+	// Check if we have to readjust the z positions
+	var oldLength = this.orderList.length;
+	this.orderList = this.orderList.compact();
+	if (oldLength != this.orderList.length) {
+		for ( i = 0; i < this.orderList.length; i++) {
+			this.orderList[i].setZPosition(1000 + i);
+		}
+	}
+
+	this.initialized = true;
 }
 
 /**
@@ -144,8 +173,27 @@ FreeLayout.prototype.getCellAt = function (x, y) {
 FreeLayout.prototype.addIGadget = function(iGadget, affectsDragboard) {
 	DragboardLayout.prototype.addIGadget.call(this, iGadget, affectsDragboard);
 
+	if (!this.initialized)
+		return;
+
 	if (iGadget.getPosition() == null)
 		iGadget.setPosition(new DragboardPosition(0, 0));
+
+	var posZ = this.orderList.push(iGadget) - 1;
+	iGadget.setZPosition(1000 + posZ);
+}
+
+FreeLayout.prototype.removeIGadget = function(iGadget, affectsDragboard) {
+	var posZ = iGadget.getZPosition() - 1000;
+	delete this.orderList[posZ];
+	this.orderList = this.orderList.compact();
+
+	var i = 0;
+	for (; i < this.orderList.length; i++) {
+		this.orderList[i].setZPosition(1000 + i);
+	}
+
+	DragboardLayout.prototype.removeIGadget.call(this, iGadget, affectsDragboard);
 }
 
 FreeLayout.prototype.initializeMove = function(igadget, draggable) {
@@ -208,4 +256,67 @@ FreeLayout.prototype.cancelMove = function() {
 	this.igadgetToMove._notifyWindowResizeEvent();
 	this.igadgetToMove = null;
 	this.newPosition = null;
+}
+
+FreeLayout.prototype.lowerToBottom = function(iGadget) {
+	var zPos = iGadget.getZPosition() - 1000;
+	delete this.orderList[zPos];
+	this.orderList = [iGadget].concat(this.orderList).compact();
+
+	var i = 0;
+	for (; i < this.orderList.length; i++) {
+		this.orderList[i].setZPosition(1000 + i);
+	}
+
+	this.dragboard._commitChanges();
+}
+
+FreeLayout.prototype.lower = function(iGadget) {
+	var zPos = iGadget.getZPosition() - 1000;
+	if (zPos == 0) {
+		// Nothing to do if we are already in the bottom
+		return;
+	}
+
+	var prevIGadget = this.orderList[zPos - 1];
+	this.orderList[zPos - 1] = iGadget;
+	this.orderList[zPos] = prevIGadget;
+
+	zPos += 1000;
+	iGadget.setZPosition(zPos -1);
+	prevIGadget.setZPosition(zPos);
+
+	this.dragboard._commitChanges([iGadget.code, prevIGadget.code]);
+}
+
+FreeLayout.prototype.raiseToTop = function(iGadget) {
+	var zPos = iGadget.getZPosition() - 1000;
+	delete this.orderList[zPos];
+	this.orderList = this.orderList.compact();
+	this.orderList.push(iGadget);
+
+	var i = 0;
+	for (; i < this.orderList.length; i++) {
+		this.orderList[i].setZPosition(1000 + i);
+	}
+
+	this.dragboard._commitChanges();
+}
+
+FreeLayout.prototype.raise = function(iGadget) {
+	var zPos = iGadget.getZPosition() - 1000;
+	if (zPos == (this.orderList.length - 1)) {
+		// Nothing to do if we are already in the top
+		return;
+	}
+
+	var nextIGadget = this.orderList[zPos + 1];
+	this.orderList[zPos + 1] = iGadget;
+	this.orderList[zPos] = nextIGadget;
+
+	zPos += 1000;
+	iGadget.setZPosition(zPos + 1);
+	nextIGadget.setZPosition(zPos);
+
+	this.dragboard._commitChanges([iGadget.code, nextIGadget.code]);
 }

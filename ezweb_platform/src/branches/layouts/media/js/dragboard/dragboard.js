@@ -86,6 +86,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 			iGadgetInfo['id'] = iGadget.id;
 			iGadgetInfo['top'] = position.y;
 			iGadgetInfo['left'] = position.x;
+			iGadgetInfo['zIndex'] = iGadget.zPos;
 			iGadgetInfo['minimized'] = iGadget.isMinimized() ? "true" : "false";
 			iGadgetInfo['width'] = iGadget.getContentWidth();
 			iGadgetInfo['height'] = iGadget.getContentHeight();
@@ -203,7 +204,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 	}
 
 	Dragboard.prototype.parseTab = function(tabInfo) {
-		var curIGadget, position, width, height, igadget, gadget, gadgetid, minimized, layout;
+		var curIGadget, position, zPos, width, height, igadget, gadget, gadgetid, minimized, layout;
 
 		var opManager = OpManagerFactory.getInstance();
 
@@ -222,15 +223,17 @@ function Dragboard(tab, workSpace, dragboardElement) {
 		for (var i = 0; i < this.igadgets.length; i++) {
 			curIGadget = this.igadgets[i];
 
-			position = new DragboardPosition(parseInt(curIGadget.left), parseInt(curIGadget.top));
-			width = parseInt(curIGadget.width);
-			height = parseInt(curIGadget.height);
-
 			// Parse gadget id
 			gadgetid = curIGadget.gadget.split("/");
 			gadgetid = gadgetid[2] + "_" + gadgetid[3] + "_" + gadgetid[4];
 			// Get gadget model
 			gadget = ShowcaseFactory.getInstance().getGadget(gadgetid);
+
+			// Parse width, height and the position of the igadget
+			width = parseInt(curIGadget.width);
+			height = parseInt(curIGadget.height);
+			position = new DragboardPosition(parseInt(curIGadget.left), parseInt(curIGadget.top));
+			zPos = parseInt(curIGadget.zIndex);
 
 			// Parse layout field
 			if (curIGadget.layout == 0) {
@@ -243,7 +246,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 			minimized = curIGadget.minimized == "true" ? true : false;
 
 			// Create instance model
-			igadget = new IGadget(gadget, curIGadget.id, curIGadget.name, layout, position, width, height, minimized);
+			igadget = new IGadget(gadget, curIGadget.id, curIGadget.name, layout, position, zPos, width, height, minimized);
 		}
 
 		this.loaded = true;
@@ -283,7 +286,7 @@ function Dragboard(tab, workSpace, dragboardElement) {
 
 		// Create the instance
 		var igadgetName = gadget.getName() + ' (' + this.currentCode + ')';
-		var iGadget = new IGadget(gadget, null, igadgetName, this.baseLayout, null, width, height, false);
+		var iGadget = new IGadget(gadget, null, igadgetName, this.baseLayout, null, null, width, height, false);
 
 		iGadget.save();
 	}
@@ -532,7 +535,6 @@ function Draggable(draggableElement, handler, data, onStart, onDrag, onFinish) {
 		dragboardCover = null;
 
 		onFinish(draggable, data);
-		draggableElement.style.zIndex = "";
 
 		Event.observe (handler, "mousedown", startdrag);
 
@@ -589,7 +591,7 @@ function Draggable(draggableElement, handler, data, onStart, onDrag, onFinish) {
 		dragboardCover.observe("mouseup" , enddrag, true);
 		dragboardCover.observe("mousemove", drag, true);
 
-		dragboardCover.style.zIndex = "201";
+		dragboardCover.style.zIndex = "1000000";
 		dragboardCover.style.position = "absolute";
 		dragboardCover.style.top = "0";
 		dragboardCover.style.left = "0";
@@ -601,8 +603,6 @@ function Draggable(draggableElement, handler, data, onStart, onDrag, onFinish) {
 		dragboard.observe("scroll", scroll);
 
 		dragboard.insertBefore(dragboardCover, dragboard.firstChild);
-
-		draggableElement.style.zIndex = "200";
 
 		return false;
 	}
@@ -666,6 +666,8 @@ IGadgetDraggable.prototype.startFunc = function (draggable, context) {
 	context.dragboard = context.layout.dragboard;
 	context.currentTab = context.dragboard.tabId;
 	context.layout.initializeMove(context.iGadget, draggable);
+	context.oldZIndex = context.iGadget.getZPosition();
+	context.iGadget.setZPosition("999999");
 }
 
 IGadgetDraggable.prototype.updateFunc = function (event, draggable, context, x, y) {
@@ -717,6 +719,8 @@ IGadgetDraggable.prototype.updateFunc = function (event, draggable, context, x, 
 }
 
 IGadgetDraggable.prototype.finishFunc = function (draggable, context) {
+	context.iGadget.setZPosition(context.oldZIndex);
+
 	if (context.selectedTab != null) {
 		context.layout.cancelMove();
 		var dragboard = context.dragboard.workSpace.getTab(context.selectedTab).getDragboard();
@@ -772,7 +776,6 @@ function ResizeHandle(resizableElement, handleElement, data, onStart, onResize, 
 		handleElement.stopObserving("mousemove", resize, true);
 
 		onFinish(resizableElement, handleElement, data);
-		resizableElement.style.zIndex = null;
 
 		// Restore start event listener
 		handleElement.observe("mousedown", startresize);
@@ -834,7 +837,7 @@ function ResizeHandle(resizableElement, handleElement, data, onStart, onResize, 
 		dragboardCover.observe("mouseup" , endresize, true);
 		dragboardCover.observe("mousemove", resize, true);
 
-		dragboardCover.style.zIndex = "201";
+		dragboardCover.style.zIndex = "1000000";
 		dragboardCover.style.position = "absolute";
 		dragboardCover.style.top = "0";
 		dragboardCover.style.left = "0";
@@ -846,8 +849,6 @@ function ResizeHandle(resizableElement, handleElement, data, onStart, onResize, 
 		dragboard.observe("scroll", scroll);
 
 		dragboard.insertBefore(dragboardCover, dragboard.firstChild);
-
-		resizableElement.style.zIndex = "200"; // TODO
 
 		handleElement.observe("mouseup", endresize, true);
 		handleElement.observe("mousemove", resize, true);
@@ -878,6 +879,8 @@ IGadgetResizeHandle.prototype.startFunc = function (resizableElement, handleElem
 	data.minWidth = Math.ceil(data.iGadget.layout.fromPixelsToHCells(80));
 	data.minHeight = Math.ceil(data.iGadget.layout.fromPixelsToVCells(50));
 	data.iGadget.igadgetNameHTMLElement.blur();
+	data.oldZIndex = data.iGadget.getZPosition();
+	data.iGadget.setZPosition("999999");
 }
 
 IGadgetResizeHandle.prototype.updateFunc = function (resizableElement, handleElement, data, x, y) {
@@ -911,6 +914,7 @@ IGadgetResizeHandle.prototype.updateFunc = function (resizableElement, handleEle
 
 IGadgetResizeHandle.prototype.finishFunc = function (resizableElement, handleElement, data) {
 	var iGadget = data.iGadget;
+	data.iGadget.setZPosition(data.oldZIndex);
 	iGadget.setSize(iGadget.getWidth(), iGadget.getHeight(), data.resizeLeftSide, true);
 	handleElement.removeClassName("inUse");
 }

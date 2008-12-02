@@ -424,8 +424,9 @@ def get_igadget_data(data, user, workspace):
     data_ret['tab'] = data_fields['tab']
     data_ret['layout'] = data_fields['layout']
     data_ret['gadget'] = gadget.uri
-    data_ret['top'] = position.posY 
+    data_ret['top'] = position.posY
     data_ret['left'] = position.posX
+    data_ret['zIndex'] = position.posZ
     data_ret['width'] = position.width
     data_ret['height'] = position.height
     if position.minimized:
