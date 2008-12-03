@@ -76,6 +76,13 @@ function IGadget(gadget, iGadgetId, iGadgetName, layout, position, zPos, width, 
 	this.errorButtonElement = null;
 	this.igadgetNameHTMLElement = null;
 	this.statusBar = null;
+	this.extractButton = null;
+
+	// TODO
+	this.lowerOpId = null;
+	this.raiseOpId = null;
+	this.lowerToBottomOpId = null;
+	this.raiseToTopOpId = null;
 
 	// iGadget drop box menu
 	this.menu = null;
@@ -248,6 +255,40 @@ IGadget.prototype._updateExtractOption = function() {
 		                           this.toggleLayout();
 		                           LayoutManagerFactory.getInstance().hideCover();
 		                       }.bind(this));
+
+		this.extractButton.removeClassName("extractButton");
+		this.extractButton.addClassName("snapButton");
+		this.extractButton.setAttribute("title", gettext("This iGadget outside the grid."));
+
+		// TODO more generic code
+		this.lowerOpId = this.menu.addOption("/ezweb/images/igadget/lower.png",
+		                    gettext("Lower"),
+		                    function() {
+		                        this.layout.lower(this);
+		                        LayoutManagerFactory.getInstance().hideCover();
+		                    }.bind(this),
+		                    2);
+		this.raiseOpId = this.menu.addOption("/ezweb/images/igadget/raise.png",
+		                    gettext("Raise"),
+		                    function() {
+		                        this.layout.raise(this);
+		                        LayoutManagerFactory.getInstance().hideCover();
+		                    }.bind(this),
+		                    3);
+		this.lowerToBottomOpId = this.menu.addOption("/ezweb/images/igadget/lowerToBottom.png",
+		                    gettext("Lower To Bottom"),
+		                    function() {
+		                        this.layout.lowerToBottom(this);
+		                        LayoutManagerFactory.getInstance().hideCover();
+		                    }.bind(this),
+		                    4);
+		this.raiseToTopOpId = this.menu.addOption("/ezweb/images/igadget/raiseToTop.png",
+		                    gettext("Raise To Top"),
+		                    function() {
+		                        this.layout.raiseToTop(this);
+		                        LayoutManagerFactory.getInstance().hideCover();
+		                    }.bind(this),
+		                    5);
 	} else {
 		this.menu.updateOption(this.extractOptionId,
 		                       "/ezweb/images/igadget/extract.png",
@@ -256,6 +297,21 @@ IGadget.prototype._updateExtractOption = function() {
 		                           this.toggleLayout();
 		                           LayoutManagerFactory.getInstance().hideCover();
 		                       }.bind(this));
+
+		this.extractButton.removeClassName("snapButton");
+		this.extractButton.addClassName("extractButton");
+		this.extractButton.setAttribute("title", gettext("This iGadget is aligned to the grid."));
+
+		if (this.lowerOpId != null) {
+			this.menu.removeOption(this.lowerOpId);
+			this.menu.removeOption(this.raiseOpId);
+			this.menu.removeOption(this.lowerToBottomOpId);
+			this.menu.removeOption(this.raiseToTopOpId);
+			this.lowerOpId = null;
+			this.raiseOpId = null;
+			this.lowerToBottomOpId = null;
+			this.raiseToTopOpId = null;
+		}
 	}
 }
 
@@ -338,38 +394,8 @@ IGadget.prototype.paint = function() {
 	                    }.bind(this),
 	                    0);
 
-	// Extract/Snap from/to grid option
+	// Extract/Snap from/to grid option (see _updateExtractOption)
 	this.extractOptionId = this.menu.addOption("", "", function(){}, 1);
-	this._updateExtractOption();
-
-	this.menu.addOption("/ezweb/images/igadget/lower.png",
-	                    gettext("Lower"),
-	                    function() {
-	                        this.layout.lower(this);
-	                        LayoutManagerFactory.getInstance().hideCover();
-	                    }.bind(this),
-	                    2);
-	this.menu.addOption("/ezweb/images/igadget/raise.png",
-	                    gettext("Raise"),
-	                    function() {
-	                        this.layout.raise(this);
-	                        LayoutManagerFactory.getInstance().hideCover();
-	                    }.bind(this),
-	                    3);
-	this.menu.addOption("/ezweb/images/igadget/lowerToBottom.png",
-	                    gettext("Lower To Bottom"),
-	                    function() {
-	                        this.layout.lowerToBottom(this);
-	                        LayoutManagerFactory.getInstance().hideCover();
-	                    }.bind(this),
-	                    4);
-	this.menu.addOption("/ezweb/images/igadget/raiseToTop.png",
-	                    gettext("Raise To Top"),
-	                    function() {
-	                        this.layout.raiseToTop(this);
-	                        LayoutManagerFactory.getInstance().hideCover();
-	                    }.bind(this),
-	                    5);
 
 	// iGadget's menu button
 	button = document.createElement("input");
@@ -495,6 +521,15 @@ IGadget.prototype.paint = function() {
 	this.statusBar.appendChild(resizeHandle);
 	new IGadgetResizeHandle(resizeHandle, this, false);
 
+	// extract/snap button
+	this.extractButton = document.createElement("div");
+	this.extractButton.observe("click",
+	                           function() {
+	                               this.toggleLayout();
+	                           }.bind(this),
+	                           false);
+	this.statusBar.appendChild(this.extractButton);
+
 	// TODO use setStyle from prototype
 	// Position
 	this.element.style.left = this.layout.getColumnOffset(this.position.x) + "px";
@@ -511,6 +546,8 @@ IGadget.prototype.paint = function() {
 
 	// Insert it into the dragboard
 	this.layout.dragboard.dragboardElement.appendChild(this.element);
+
+	this._updateExtractOption();
 
 	// Ensure a minimal size
 	this.layout._ensureMinimalSize(this, false);
