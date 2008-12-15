@@ -1,0 +1,146 @@
+_ezwebplatform_args()
+{
+       local ARGS_WITH_OPT ARGS CMD_ARGS
+       ARGS=$1
+       ARGS_WITH_OPT=$2
+       CMD_ARGS=$3
+}
+
+_ezwebplatform_conf()
+{
+       opts=`update-ezweb-platform list all --debconf`
+       COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+}
+
+_ezwebplatform_update()
+{
+       local cur opts
+
+       COMPREPLY=()
+       cur=${COMP_WORDS[COMP_CWORD]}
+
+       if [ $COMP_CWORD == 1 ]; then
+         opts="enable getdefaults create listdbmss listservers list update \
+               setserverdefaults purge disable setdefaults clean \
+               setdbmsdefaults getserverdefaults getdbmsdefaults"
+         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+         return 0
+       fi
+
+       case "${COMP_WORDS[1]}" in
+       disable | purge | clean)
+         if [ $COMP_CWORD == 2 ]; then
+           _ezwebplatform_conf $cur
+         else
+           opts="--no-backup"
+           COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+         fi
+         return 0
+         ;;
+       setdefaults)
+         opts="--no-backup"
+         if [ $COMP_CWORD == 2 ]; then
+           opts="$opts default"
+         fi
+         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+         return 0
+         ;;
+       getdefaults)
+         opts="--no-backup"
+         if [ $COMP_CWORD == 2 ]; then
+           opts="$opts default"
+         fi
+         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+         return 0
+         ;;
+       setserverdefaults)
+         opts="--no-backup"
+         if [ $COMP_CWORD == 2 ]; then
+           local servers
+           servers=`update-ezweb-platform listservers`
+           opts="$opts $servers"
+         elif [ $COMP_CWORD == 3 ]; then
+           opts="$opts default"
+         fi
+         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+         return 0
+         ;;
+       setdbmsdefaults)
+         opts="--no-backup"
+         if [ $COMP_CWORD == 2 ]; then
+           local dbmss
+           dbmss=`update-ezweb-platform listdbmss`
+           opts="$opts $dbmss"
+         elif [ $COMP_CWORD == 3 ]; then
+           opts="$opts default"
+         fi
+         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+         return 0
+         ;;
+       getdbmsdefaults)
+         opts="--no-backup"
+         if [ $COMP_CWORD == 2 ]; then
+           local dbmss
+           dbmss=`update-ezweb-platform listdbmss`
+           opts="$opts $dbmss"
+         elif [ $COMP_CWORD == 3 ]; then
+           opts="$opts default"
+         fi
+         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+         return 0
+         ;;
+       getserversdefaults)
+         opts="--no-backup"
+         if [ $COMP_CWORD == 2 ]; then
+           local servers
+           servers=`update-ezweb-platform listservers`
+           opts="$opts $servers"
+         elif [ $COMP_CWORD == 3 ]; then
+           opts="$opts default"
+         fi
+         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+         return 0
+         ;;
+       clean)
+         if [ $COMP_CWORD == 2 ]; then
+           _ezwebplatform_conf $cur
+         else
+           opts="--no-backup"
+           COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+         fi
+         return 0
+         ;;
+       update)
+         if [ $COMP_CWORD == 2 ]; then
+           _ezwebplatform_conf $cur
+         else
+           opts="--no-backup --force-syncdb"
+           COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+         fi
+         return 0
+         ;;
+       enable)
+         if [ $COMP_CWORD == 2 ]; then
+           _ezwebplatform_conf $cur
+         else
+           opts="--no-backup -f --force -s --schedule"
+           COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+         fi
+         return 0
+         ;;
+       create)
+         if [ $COMP_CWORD != 2 ]; then
+           opts="--no-backup"
+           COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+         fi
+         return 0
+         ;;
+       listservers)
+         return 0
+         ;;
+       listdbmss)
+         return 0
+         ;;
+       esac
+}
+complete -F _ezwebplatform_update update-ezweb-platform

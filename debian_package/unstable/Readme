@@ -5,6 +5,26 @@
   * dch
   * reprepro
 
+ dch
+======
+
+Este programa sirve para manejar los ficheros changelog de los paquetes debian y
+se utiliza en los scripts de creación de los paquetes para asegurar que la
+última versión indicada en este fichero coincide con la versión indicada en el
+nombre del paquete, dado que esto es un requisito de los paquetes debian.
+
+Lo más importante de cara a crear los paquetes debian, es tener bien configurado
+el dch para el usuario que va a crear los paquetes, dado que este programa
+realiza distintas operaciones dependiendo de la configuración (por ejemplo,
+añade distintos comentarios en el fichero changelog si el que crea el paquete es
+un "maintainer" o "uploader" que si no es uno de estos [mirar el fichero
+debian/control para más información]).
+
+Los parametros más importante se configuran mediante las variables de entorno
+DEBFULLNAME y DEBEMAIL (en caso de no establecerse estas variables de entorno,
+dch intenta usar las variables de entono NAME y EMAIL respectivamente, aunque
+estas últimas son más genéricas y no son usadas solamente por dch).
+
  Reprepro
 ============
 

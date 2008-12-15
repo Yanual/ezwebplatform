@@ -1,9 +1,9 @@
-ezweb-platform (0.4~svn1515-1) unstable; urgency=low
+ezweb-platform (0.4~svn1585-1) unstable; urgency=low
 
   * New upstream snapshot.
   * New ezweb admin scripts.
 
- -- Álvaro Arranz García <aarranz@pegaso.ls.fi.upm.es>  Tue, 13 Nov 2008 16:54:01 +0200
+ -- Álvaro Arranz García <aarranz@pegaso.ls.fi.upm.es>  Mon, 15 Dec 2008 11:47:48 +0100
 
 ezweb-platform (0.3~svn1442-1) UNRELEASED; urgency=low
 

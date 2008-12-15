@@ -1,0 +1,21 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 04_remove_empty_fixtures.dpatch by  <aarranz@pegaso.ls.fi.upm.es>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Remove empty xml fixtures as they break django syncdb command.
+
+@DPATCH@
+diff -urNad ezweb-platform-0.4~svn1584~/gadget/fixtures/initial_data.xml ezweb-platform-0.4~svn1584/gadget/fixtures/initial_data.xml
+--- ezweb-platform-0.4~svn1584~/gadget/fixtures/initial_data.xml	2008-12-01 15:25:17.000000000 +0100
++++ ezweb-platform-0.4~svn1584/gadget/fixtures/initial_data.xml	1970-01-01 01:00:00.000000000 +0100
+@@ -1,3 +0,0 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<django-objects version="1.0">
+-</django-objects>
+diff -urNad ezweb-platform-0.4~svn1584~/igadget/fixtures/initial_data.xml ezweb-platform-0.4~svn1584/igadget/fixtures/initial_data.xml
+--- ezweb-platform-0.4~svn1584~/igadget/fixtures/initial_data.xml	2008-12-01 15:25:17.000000000 +0100
++++ ezweb-platform-0.4~svn1584/igadget/fixtures/initial_data.xml	1970-01-01 01:00:00.000000000 +0100
+@@ -1,3 +0,0 @@
+-<?xml version="1.0" encoding="utf-8"?>
+-<django-objects version="1.0">
+-</django-objects>

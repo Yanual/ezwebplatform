@@ -1,9 +1,42 @@
+# -*- coding: utf-8 -*-
+
+#...............................licence...........................................
+#
+#     (C) Copyright 2008 Telefonica Investigacion y Desarrollo
+#     S.A.Unipersonal (Telefonica I+D)
+#
+#     This file is part of Morfeo EzWeb Platform.
+#
+#     Morfeo EzWeb Platform is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     Morfeo EzWeb Platform is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public License
+#     along with Morfeo EzWeb Platform.  If not, see <http://www.gnu.org/licenses/>.
+#
+#     Info about members and contributors of the MORFEO project
+#     is available at
+#
+#     http://morfeo-project.org
+#
+#...............................licence...........................................#
+
+
+#
+
 import sys
 import os
 import shutil
+import textwrap
 
 from configobj import ConfigObj
-from optparse import OptionParser, Option
+from optparse import OptionParser, Option, TitledHelpFormatter
 
 class EzWebAdminToolResources:
 
@@ -211,45 +244,101 @@ class EzWebAdminToolResources:
       os.makedirs(path)
 
 
+class Argument:
+  def __init__(self, name, desc):
+    self.name = name
+    self.desc = desc
+
 """
 An multi command option parser based on LaxOptionParser from django
 """
 class MultiCommandOptionParser(OptionParser):
 
   def __init__(self,
-               usage=None,
                option_list=None,
                option_class=Option,
                version=None,
                conflict_handler="error",
-               description=None,
                formatter=None,
-               add_help_option=False,
                prog=None):
-
-    if usage == None:
-      usage = sys.argv[0] + " command [args...] [options]"
 
     self.base_options = []
 
     OptionParser.__init__(self,
-                          usage,
+                          None,
                           option_list,
                           option_class,
                           version,
                           conflict_handler,
-                          description,
+                          None,
                           formatter,
-                          add_help_option,
+                          False,
                           prog)
     self.subcommand = None
     self.subcommands = {}
+    self.parseFinished = False
 
   def error(self, msg):
     pass
 
-  def print_help(self):
-    OptionParser.print_help(self)
+  def format_help(self, formatter=None):
+    if formatter is None:
+      formatter = self.formatter
+
+    result = []
+
+    if self.subcommand:
+      subcommand = self.subcommands[self.subcommand]
+    else:
+      subcommand = None
+
+    if subcommand:
+      if hasattr(subcommand, "args_help"):
+        args_help = subcommand.args_help + " "
+      elif hasattr(subcommand, "args"):
+        args_help = ""
+        for arg in subcommand.args:
+          args_help += arg.name + " "
+      else:
+        args_help = ""
+
+      self.usage = sys.argv[0] + " " + self.subcommand + " " + args_help + "[options]"
+    else:
+      self.usage = sys.argv[0] + " <command> [args...] [options]"
+
+    result.append(self.get_usage() + "\n")
+    if self.description:
+      result.append(self.format_description(formatter) + "\n")
+
+    if hasattr(subcommand, "args"):
+      result.append(formatter.format_heading("Arguments"))
+
+      help_pos = 0
+      for arg in subcommand.args:
+        help_pos = max(help_pos, len(arg.name))
+
+      help_pos += 3
+      width = formatter.width - help_pos
+      for arg in subcommand.args:
+        result.append("  " + arg.name + "\n")
+        help_lines = textwrap.wrap(arg.desc, width)
+        result.extend(["%*s%s\n" % (help_pos, "", line)
+                       for line in help_lines])
+
+      result.append("\n")
+
+    result.append(self.format_option_help(formatter) + "\n")
+
+    if subcommand == None:
+      result.append(formatter.format_heading("Commands"))
+
+      subcommands = self.subcommands.keys()
+      subcommands.sort()
+      for subcommand in subcommands:
+        result.append("  " + subcommand + "\n")
+      result.append("\n")
+
+    return "".join(result)
 
   def get_subcommand(self):
     return self.subcommand
@@ -258,16 +347,22 @@ class MultiCommandOptionParser(OptionParser):
     self.parse_args(True, args, values)
 
     if self.subcommand == None or not self.subcommands.has_key(self.subcommand):
+      self.subcommand = None
       self.print_help()
       return
 
     subcommand = self.subcommands[self.subcommand]
+    if hasattr(subcommand, "final"):
+      self.parseFinished = subcommand.final
+    else:
+      self.parseFinished = False
+
     self.add_options(subcommand.option_list)
 
-    self.parse_args(True, args, values)
+    self.parse_args(not self.parseFinished, args, values)
     ret = subcommand.execute(self, self.current_options, self.current_args)
     if ret == -1:
-      self.print_help();
+      self.print_help()
       sys.exit(-1)
 
 
@@ -285,6 +380,7 @@ class MultiCommandOptionParser(OptionParser):
     else:
       newparser = OptionParser(option_list = self.base_options)
       (self.current_options, self.current_args) = newparser.parse_args()
+      self.subcommand = self.current_args[0]
       del self.current_args[0]
 
     return (self.current_options, self.current_args)

@@ -2,7 +2,7 @@ Source: ezweb-platform
 Section: web
 Priority: optional
 Maintainer: Álvaro Arranz García <aarranz@pegaso.ls.fi.upm.es>
-Build-Depends: debhelper (>= 5.0.37.2), po-debconf, dpatch
+Build-Depends: debhelper (>= 7), po-debconf, dpatch
 Build-Depends-Indep: debconf, lsb-release
 Homepage: http://ezweb.morfeo-project.org/
 XS-Vcs-Svn: https://svn.forge.morfeo-project.org/svn/ezwebplatform/debian_package
@@ -13,9 +13,9 @@ Package: ezweb-platform
 Section: web
 Priority: optional
 Architecture: all
-Depends: ezweb-platform-postgres (= ${binary:Version}) | ezweb-platform-database-backend, ezweb-platform-apache2-mod-python (= ${binary:Version}) | ezweb-platform-server-backend
+Depends: ezweb-platform-postgres | ezweb-platform-database-backend, ezweb-platform-apache2-mod-python | ezweb-platform-server-backend
 Pre-Depends: debconf, ezweb-platform-common (= ${binary:Version})
-Recommends: ezweb-platform-postgres (= ${binary:Version}) | ezweb-platform-mysql (= ${binary:Version}) | ezweb-platform-sqlite3 (= ${binary:Version}), ezweb-platform-apache2-mod-python (= ${binary:Version}) | ezweb-platform-apache2-fastcgi (= ${binary:Version}) | ezweb-platform-lighttpd-fastcgi (= ${binary:Version})
+Recommends: ezweb-platform-postgres | ezweb-platform-mysql | ezweb-platform-sqlite3, ezweb-platform-apache2-mod-python | ezweb-platform-apache2-fastcgi | ezweb-platform-lighttpd-fastcgi
 Description: Web mashup platform - metapackage
  EzWeb Platform, the MORFEO Open Source Community Mashup Platform, provides you
  a framework for building modern enterprise and personal mashups following the
@@ -168,9 +168,10 @@ Package: ezweb-platform-sqlite3
 Section: web
 Priority: optional
 Architecture: all
-Depends: python-pysqlite2
+Depends: python-pysqlite2 | python (>= 2.5)
 Pre-Depends: debconf, ezweb-platform-common (= ${binary:Version})
 Provides: ezweb-platform-database-backend
+Suggests: python-pysqlite2
 Description: SQLite3 support for EzWeb Platform
  EzWeb Platform, the MORFEO Open Source Community Mashup Platform, provides you
  a framework for building modern enterprise and personal mashups following the

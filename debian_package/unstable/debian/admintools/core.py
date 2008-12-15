@@ -1,9 +1,42 @@
+# -*- coding: utf-8 -*-
+
+#...............................licence...........................................
+#
+#     (C) Copyright 2008 Telefonica Investigacion y Desarrollo
+#     S.A.Unipersonal (Telefonica I+D)
+#
+#     This file is part of Morfeo EzWeb Platform.
+#
+#     Morfeo EzWeb Platform is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     Morfeo EzWeb Platform is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public License
+#     along with Morfeo EzWeb Platform.  If not, see <http://www.gnu.org/licenses/>.
+#
+#     Info about members and contributors of the MORFEO project
+#     is available at
+#
+#     http://morfeo-project.org
+#
+#...............................licence...........................................#
+
+
+#
+
 import sys
 import os
 import grp
 import shutil
 
 import string
+from random import Random
 
 import gettext
 from gettext import gettext as _
@@ -11,7 +44,7 @@ from gettext import gettext as _
 from configobj import ConfigObj
 from optparse import make_option
 from django.core import management
-from admintools.common import EzWebAdminToolResources, MultiCommandOptionParser, Command, EzWebInstanceNotFound
+from admintools.common import EzWebAdminToolResources, MultiCommandOptionParser, Command, EzWebInstanceNotFound, Argument
 from admintools.conditions import AndCondition, NotCondition, AllValidCondition, EnabledCondition, NameCondition, ServerCondition, ConnectionTypeCondition, DatabaseEngineCondition
 
 
@@ -95,11 +128,6 @@ class MainEzWebAdminTool:
   def enable(self, site_cfg, options):
     server_cfg = site_cfg['server']
 
-    if not server_cfg.has_key('document_root') or server_cfg['document_root'] == "":
-      newDocumentRoot = self.resources.get_default_document_root(site_cfg['name'])
-      self.resources.printlnMsg("Assigning \"" + newDocumentRoot + "\" as document root.")
-      server_cfg['document_root'] = newDocumentRoot
-
     options.force_syncdb = True
     site_cfg["enabled"] = True
     self.process_cfg(site_cfg, options)
@@ -120,6 +148,19 @@ class MainEzWebAdminTool:
     os.chown(data_dir, -1, grp.getgrnam("www-data").gr_gid)
     os.chmod(data_dir, 0775)
 
+    # Ensure this instance has assigned a secret key
+    if not site_cfg.has_key('secret_key') or site_cfg['secret_key'] == "":
+      validchars = string.letters + string.digits
+      validchars += string.punctuation.replace("'", "")
+      site_cfg["secret_key"] = ''.join(Random().sample(validchars, 50))
+
+    # Ensure this instance has a document root
+    server_cfg = site_cfg['server']
+    if not server_cfg.has_key('document_root') or server_cfg['document_root'] == "":
+      newDocumentRoot = self.resources.get_default_document_root(site_cfg['name'])
+      self.resources.printlnMsg("Assigning \"" + newDocumentRoot + "\" as document root.")
+      server_cfg['document_root'] = newDocumentRoot
+
     # Update settings.py
     settings_template = self.update_settings_py(site_cfg)
 
@@ -128,6 +169,7 @@ class MainEzWebAdminTool:
     self.resources.printlnMsg()
     self.resources.printlnMsg("Processing server settings (using " + server_type + " as server)... ")
     self.resources.incPrintNestingLevel()
+
     server_command = self.resources.get_server_admin_command(server_type, "Process")
     server_command.execute(options, site_cfg, settings_template)
     self.resources.decPrintNestingLevel()
@@ -196,14 +238,24 @@ class MainEzWebAdminTool:
       schema = {}
 
     # Fill the template
+
+    # Instance name
     template.replace("CONF_NAME", site_cfg['name'])
 
+
+    # Admin email
     if site_cfg.has_key('admin_user_email') and site_cfg['admin_user_email']:
       template.replace("SERVER_ADMIN_EMAIL", site_cfg['admin_user_email'])
     else:
       template.replace("SERVER_ADMIN_EMAIL", self.resources.get_default_admin_email(site_cfg))
 
-    if site_cfg.has_key('log_path') and site_cfg['log_path']:
+
+    # Secret key
+    template.replace("SECRET_KEY", site_cfg['secret_key'])
+
+
+    # Log path
+    if site_cfg.has_key('log_path') and site_cfg['log_path'] != "":
       log_path = site_cfg['log_path']
     else:
       log_path = self.resources.get_default_log_path(site_cfg['name'])
@@ -213,6 +265,8 @@ class MainEzWebAdminTool:
     os.chown(log_path, -1, grp.getgrnam("www-data").gr_gid)
     os.chmod(log_path, 0660)
 
+
+    # Proxy
     proxy_server = ""
     if site_cfg.has_key("proxy"):
       proxy_server = site_cfg['proxy']
@@ -229,18 +283,19 @@ class MainEzWebAdminTool:
 
 
   class UpdateCommand(Command):
-    option_list = [make_option("--server-type","--server-type", action="store",
+    option_list = [make_option("--server-type", action="store",
                                dest="server_type", help=_("The server type to use with this instance")),
-                   make_option("--connection-type","--connection-type", action="store",
+                   make_option("--connection-type", action="store",
                                dest="connection_type", help=_("Connection type to use with to connect this instance to the server")),
-                   make_option("--database-engine","--database-engine", action="store",
+                   make_option("--database-engine", action="store",
                                dest="database_engine", help=_("DBMS to use with this instance")),
-                   make_option("--proxy","--proxy", action="store",
+                   make_option("--proxy", action="store",
                                dest="proxy", help=_("The proxy to use")),
-                   make_option("--force-syncdb","--force-syncdb", action="store_true",
+                   make_option("--force-syncdb", action="store_true",
                                dest="force_syncdb", help=_("Force a syncdb operation (only if the instance is already enabled)"), default=False),
                   ]
 
+    args = [Argument("conf_name", _("Name of the configuration to update."))]
     final = False
 
     def __init__(self, resources, admintool):
@@ -353,6 +408,7 @@ class MainEzWebAdminTool:
                                dest="force", help=_("Force enabling the instance")),
                    make_option("-s", "--schedule", action="store_true", default=False,
                                dest="schedule", help=_("Schedule the enabling of this instance")),]
+    args = [Argument("conf_name", _("Name of the configuration to enable."))]
     final = True
 
     def __init__(self, resources, admintool):
@@ -360,6 +416,8 @@ class MainEzWebAdminTool:
       self.admintool = admintool
 
     def execute(self, parser, options, args):
+      if len(args) < 1:
+        return -1
 
       conf_name = args[0]
       site_cfg = self.resources.get_site_config(conf_name)
@@ -396,6 +454,7 @@ class MainEzWebAdminTool:
 
   class DisableCommand(Command):
     option_list = []
+    args = [Argument("conf_name", _("Name of the configuration to disable."))]
     final = True
 
     def __init__(self, resources, admintool):
@@ -403,6 +462,8 @@ class MainEzWebAdminTool:
       self.admintool = admintool
 
     def execute(self, parser, options, args):
+      if len(args) < 1:
+        return -1
 
       conf_name = args[0]
       site_cfg = self.resources.get_site_config(conf_name)
@@ -433,6 +494,7 @@ class MainEzWebAdminTool:
 
   class CleanCommand(Command):
     option_list = []
+    args = [Argument("conf_name", _("Name of the configuration to clean."))]
 
     final = False
 
@@ -493,6 +555,7 @@ class MainEzWebAdminTool:
 
   class PurgeCommand(Command):
     option_list = []
+    args = [Argument("conf_name", _("Name of the configuration to purge."))]
     final = True
 
     def __init__(self, resources, admintool):
@@ -500,6 +563,8 @@ class MainEzWebAdminTool:
       self.admintool = admintool
 
     def execute(self, parser, options, args):
+      if len(args) < 1:
+        return -1
 
       conf_name = args[0]
       site_cfg = self.resources.get_site_config(conf_name)
@@ -515,9 +580,12 @@ class MainEzWebAdminTool:
 
   class ListCommand(Command):
 
-    option_list = [make_option("--debconf","--debconf", action="store_true",
+    option_list = [make_option("--debconf", action="store_true",
                                dest="debconf", help=_("Use debconf output format"))
                   ]
+    args_help = "condition [value] [condition [value]]*"
+    args = [Argument("condition", "all, enabled, disabled, server+, connection_type+, database_engine+, name+."),
+            Argument("value", "Value used to check the condition.")]
     final = True
 
     def __init__(self, resources, admintool):
@@ -525,7 +593,6 @@ class MainEzWebAdminTool:
       self.admintool = admintool
 
     def execute(self, parser, options, args):
-
       if len(args) < 1:
         return -1
 
@@ -533,7 +600,6 @@ class MainEzWebAdminTool:
       tmp_root = None
       while len(args) > 0:
         what = args.pop(0)
-
 
         if what == "not":
           if len(args) < 1:
@@ -543,8 +609,6 @@ class MainEzWebAdminTool:
           what = args.pop(0)
           root_condition = NotCondition()
           tmp_root.append(root_condition)
-
-
 
         if what == "enabled":
           root_condition.append(EnabledCondition(True))
@@ -627,6 +691,9 @@ class MainEzWebAdminTool:
       self.admintool = admintool
 
     def execute(self, parser, options, args):
+      if len(args) > 0:
+        return -1
+
       for subdir, dirs, files in os.walk(EzWebAdminToolResources.SERVER_ADMIN_SCRIPTS_PATH):
         for script in files:
           (server_type, ext) = os.path.splitext(script)
@@ -639,10 +706,32 @@ class MainEzWebAdminTool:
           except:
             pass # Ignore errors
 
+  class ListDBMSsCommand(Command):
+    option_list = []
+    final = True
+
+    def __init__(self, resources, admintool):
+      self.resources = resources
+      self.admintool = admintool
+
+    def execute(self, parser, options, args):
+      if len(args) > 0:
+        return -1
+
+      for subdir, dirs, files in os.walk(EzWebAdminToolResources.DB_ADMIN_SCRIPTS_PATH):
+        for script in files:
+          (dbms, ext) = os.path.splitext(script)
+          if dbms == "__init__" or ext != ".py":
+            continue
+
+          print dbms
+
   class SetDefaultsCommand(Command):
-    option_list = [make_option("--proxy","--proxy", action="store",
+    option_list = [make_option("--proxy", action="store",
                                dest="proxy", help=_("The default proxy to use")),
                   ]
+    args_help = "[schema]"
+    args = [Argument("schema", _("Name of the schema to configure. (default: \"default\")"))]
     final = True
 
     def __init__(self, resources, admintool):
@@ -672,6 +761,8 @@ class MainEzWebAdminTool:
 
   class GetDefaultsCommand(Command):
     option_list = []
+    args_help = "[schema]"
+    args = [Argument("schema", _("Name of the schema to read. (default: \"default\")"))]
     final = True
 
     def __init__(self, resources, admintool):
@@ -701,6 +792,8 @@ class MainEzWebAdminTool:
 
   class GetDBMSDefaultsCommand(Command):
     option_list = []
+    args_help = "[schema]"
+    args = [Argument("schema", _("Name of the schema to read. (default: \"default\")"))]
     final = True
 
     def __init__(self, resources, admintool):
@@ -721,6 +814,8 @@ class MainEzWebAdminTool:
 
   class SetDBMSDefaultsCommand(Command):
     option_list = []
+    args_help = "[schema]"
+    args = [Argument("schema", _("Name of the schema to configure. (default: \"default\")"))]
     final = False
 
     def __init__(self, resources, admintool):
@@ -744,6 +839,8 @@ class MainEzWebAdminTool:
 
   class GetServerDefaultsCommand(Command):
     option_list = []
+    args_help = "[schema]"
+    args = [Argument("schema", _("Name of the schema to read. (default: \"default\")"))]
     final = True
 
     def __init__(self, resources, admintool):
@@ -764,6 +861,8 @@ class MainEzWebAdminTool:
 
   class SetServerDefaultsCommand(Command):
     option_list = []
+    args_help = "[schema]"
+    args = [Argument("schema", _("Name of the schema to configure. (default: \"default\")"))]
     final = False
 
     def __init__(self, resources, admintool):
@@ -787,6 +886,7 @@ class MainEzWebAdminTool:
 
   class CreateCommand(Command):
     option_list = []
+    args = [Argument("conf_name", _("Name for the new configuration."))]
     final = True
 
     def __init__(self, resources, admintool):
@@ -814,7 +914,7 @@ class MainEzWebAdminTool:
     except AttributeError:
       os.SEEK_SET, os.SEEK_CUR, os.SEEK_END = range(3)
 
-    option_list = [make_option("--no-backup","--no-backup", action="store_false",
+    option_list = [make_option("--no-backup", action="store_false",
                                dest="backup", default=True, help=_("Do not backup files before modify it."))
                   ]
     parser = MultiCommandOptionParser(option_list = option_list)
@@ -827,6 +927,7 @@ class MainEzWebAdminTool:
     parser.add_command("disable", self.DisableCommand(self.resources, self))
     parser.add_command("list", self.ListCommand(self.resources, self))
     parser.add_command("listservers", self.ListServersCommand(self.resources, self))
+    parser.add_command("listdbmss", self.ListDBMSsCommand(self.resources, self))
     parser.add_command("getdbmsdefaults", self.GetDBMSDefaultsCommand(self.resources, self))
     parser.add_command("setdbmsdefaults", self.SetDBMSDefaultsCommand(self.resources, self))
     parser.add_command("getserverdefaults", self.GetServerDefaultsCommand(self.resources, self))

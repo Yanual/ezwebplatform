@@ -2,6 +2,7 @@
 DEFAULT_SVN_LOCATION="https://svn.forge.morfeo-project.org/svn/ezwebplatform/ezweb_platform/src/trunk"
 REPO_DIR="/var/www/debian"
 BRANCH="unstable"
+BASE_VER="0.4"
 
 fetch() {
   TMPDIR=`mktemp -d -p .`
@@ -13,7 +14,8 @@ fetch() {
   fi
 
   REVISION=`LC_ALL=C svn info $TMPDIR | grep "Revision: " | awk '{print $2}'`
-  COPYDIR="ezweb-platform-$REVISION"
+  FULLVER=$BASE_VER"~svn$REVISION"
+  COPYDIR="ezweb-platform-$FULLVER"
   if [ -e $COPYDIR ]; then
     echo "  Error: $COPYDIR already exists."
     rm -rf $TMPDIR
@@ -22,6 +24,65 @@ fetch() {
 
   svn export $TMPDIR $COPYDIR
   rm -rf $TMPDIR
+}
+
+parse_deb_fullver() {
+  DEB_FULLVER=`head -1 "$1/debian/changelog" | cut -f2 -d\( | cut -f1 -d\)`
+}
+
+debianize() {
+  if [ -z "$1" ]; then
+    exit -2
+  fi
+
+  local FULVER COPYDIR
+
+  FULLVER="$1"
+  COPYDIR="ezweb-platform-$FULLVER"
+
+  if [ -d $COPYDIR/debian ]; then
+    LASTDIR=`pwd`
+
+    cd "$COPYDIR"
+    fakeroot make -f debian/rules clean
+    cd "$LASTDIR"
+
+    rm -rf $COPYDIR/debian
+  fi
+
+  tar -c $COPYDIR | gzip > ezweb-platform_$FULLVER.orig.tar.gz
+
+  # Check if the version of the changelog match with the version we are packaging
+  parse_deb_fullver .
+  TMP_FULLVER=`echo $DEB_FULLVER | cut -f1 -d\-`
+
+  if [ "$NEWVERSION" == 1 ]; then
+    if [ "$FULLVER" != "$TMP_FULLVER" ]; then
+
+      dch -v "$FULLVER-1"
+
+      parse_deb_fullver .
+      echo "$DEB_FULLVER" "@" "$FULLVER-1"
+      if [ "$DEB_FULLVER" != "$FULLVER-1" ]; then
+        exit -2
+      fi
+    else
+      OLDDEB_FULLVER=$DEB_FULLVER
+
+      dch -i
+
+      parse_deb_fullver .
+      if [ "$DEB_FULLVER" == "$OLD_DEB_FULLVER" ]; then
+        exit -2
+      fi
+    fi
+  else
+    if [ "$FULLVER" != "$TMP_FULLVER" ]; then
+      echo "  Error: changelog reports we are packaging version $TMP_FULLVER but we are packaging version $FULLVER."
+      echo "  If you like to change the changelog to package this new version use the -n option."
+      exit -2
+    fi
+  fi
   svn export debian $COPYDIR/debian
 }
 
@@ -54,19 +115,26 @@ uninstallpkg() {
 }
 
 installpkg() {
-  REVISION=$1
-  FULLVER="0.2~svn$REVISION"
-  RET=`sudo reprepro -Vb $REPO_DIR listfilter $BRANCH "Package (== ezweb-platform), Version (== $FULLVER)"`
+  DEB_FULLVER=$1
+  RET=`sudo reprepro -Vb $REPO_DIR listfilter $BRANCH "Package (== ezweb-platform), Version (== $DEB_FULLVER)"`
   if [ "x$RET" != "x" ]; then
-    uninstallpkg $REVISION
+    uninstallpkg
   fi
-  sudo reprepro -Vb $REPO_DIR include $BRANCH ezweb-platform_$FULLVER_*.changes
+  sudo reprepro -Vb $REPO_DIR include $BRANCH ezweb-platform_$DEB_FULLVER_*.changes
 }
 
-#REVISION=1432
-#COPYDIR="ezweb-platform-$REVISION"
+NEWVERSION=0
+case $1 in
+  -n)
+    NEWVERSION=1
+    ;;
+esac
+
+REVISION=1584
+FULLVER="$BASE_VER~svn$REVISION"
+COPYDIR="ezweb-platform-$FULLVER"
 
 fetch
+debianize $FULLVER
 build $COPYDIR
-#uninstallpkg $REVISION
-installpkg $REVISION
+installpkg $DEB_FULLVER

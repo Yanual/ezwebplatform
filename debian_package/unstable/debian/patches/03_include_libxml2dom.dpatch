@@ -1,0 +1,4562 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## include_libxml2dom.dpatch by  <aarranz@europa.ls.fi.upm.es>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: This patch adds libxml2dom to the EzWeb Platform code, as it is not
+## DP: available as debian package yet.
+
+@DPATCH@
+diff -urNad ezweb-platform-0.4~svn1581~/libxml2dom/__init__.py ezweb-platform-0.4~svn1581/libxml2dom/__init__.py
+--- ezweb-platform-0.4~svn1581~/libxml2dom/__init__.py	1970-01-01 01:00:00.000000000 +0100
++++ ezweb-platform-0.4~svn1581/libxml2dom/__init__.py	2008-12-15 10:40:09.610962558 +0100
+@@ -0,0 +1,888 @@
++#!/usr/bin/env python
++
++"""
++DOM wrapper around libxml2, specifically the libxml2mod Python extension module.
++
++Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 Paul Boddie <paul@boddie.org.uk>
++
++This program is free software; you can redistribute it and/or modify it under
++the terms of the GNU Lesser General Public License as published by the Free
++Software Foundation; either version 3 of the License, or (at your option) any
++later version.
++
++This program is distributed in the hope that it will be useful, but WITHOUT
++ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
++FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
++details.
++
++You should have received a copy of the GNU Lesser General Public License along
++with this program.  If not, see <http://www.gnu.org/licenses/>.
++"""
++
++__version__ = "0.4.7"
++
++from libxml2dom.macrolib import *
++from libxml2dom.macrolib import \
++    createDocument as Node_createDocument, \
++    parseString as Node_parseString, parseURI as Node_parseURI, \
++    parseFile as Node_parseFile, \
++    toString as Node_toString, toStream as Node_toStream, \
++    toFile as Node_toFile
++import urllib # for parseURI in HTML mode
++import libxml2dom.errors
++
++# Standard namespaces.
++
++XML_NAMESPACE = xml.dom.XML_NAMESPACE
++
++# Default namespace bindings for XPath.
++
++default_ns = {
++    "xml" : XML_NAMESPACE
++    }
++
++class Implementation(object):
++
++    "Contains an abstraction over the DOM implementation."
++
++    def createDocumentType(self, localName, publicId, systemId):
++        return DocumentType(localName, publicId, systemId)
++
++    def createDocument(self, namespaceURI, localName, doctype):
++        return Document(Node_createDocument(namespaceURI, localName, doctype), self)
++
++    # Wrapping of documents.
++
++    def adoptDocument(self, node):
++        return Document(node, self)
++
++    # Factory functions.
++
++    def get_node(self, _node, context_node):
++
++        # Return the existing document.
++
++        if Node_nodeType(_node) == context_node.DOCUMENT_NODE:
++            return context_node.ownerDocument
++
++        # Return an attribute using the parent of the attribute as the owner
++        # element.
++
++        elif Node_nodeType(_node) == context_node.ATTRIBUTE_NODE:
++            return Attribute(_node, self, context_node.ownerDocument,
++                self.get_node(Node_parentNode(_node), context_node))
++
++        # Return other nodes.
++
++        else:
++            return Node(_node, self, context_node.ownerDocument)
++
++    def get_node_or_none(self, _node, context_node):
++        if _node is None:
++            return None
++        else:
++            return self.get_node(_node, context_node)
++
++# Attribute and node list wrappers.
++
++class NamedNodeMap(object):
++
++    """
++    A wrapper around Node objects providing DOM and dictionary convenience
++    methods.
++    """
++
++    def __init__(self, node, impl):
++        self.node = node
++        self.impl = impl
++
++    def getNamedItem(self, name):
++        return self.node.getAttributeNode(name)
++
++    def getNamedItemNS(self, ns, localName):
++        return self.node.getAttributeNodeNS(ns, localName)
++
++    def setNamedItem(self, node):
++        try:
++            old = self.getNamedItem(node.nodeName)
++        except KeyError:
++            old = None
++        self.node.setAttributeNode(node)
++        return old
++
++    def setNamedItemNS(self, node):
++        try:
++            old = self.getNamedItemNS(node.namespaceURI, node.localName)
++        except KeyError:
++            old = None
++        self.node.setAttributeNodeNS(node)
++        return old
++
++    def removeNamedItem(self, name):
++        try:
++            old = self.getNamedItem(name)
++        except KeyError:
++            old = None
++        self.node.removeAttribute(name)
++        return old
++
++    def removeNamedItemNS(self, ns, localName):
++        try:
++            old = self.getNamedItemNS(ns, localName)
++        except KeyError:
++            old = None
++        self.node.removeAttributeNS(ns, localName)
++        return old
++
++    # Iterator emulation.
++
++    def __iter__(self):
++        return NamedNodeMapIterator(self)
++
++    # Dictionary emulation methods.
++
++    def __getitem__(self, name):
++        return self.getNamedItem(name)
++
++    def __setitem__(self, name, node):
++        if name == node.nodeName:
++            self.setNamedItem(node)
++        else:
++            raise KeyError, name
++
++    def __delitem__(self, name):
++        # NOTE: To be implemented.
++        pass
++
++    def values(self):
++        return [Attribute(_node, self.impl, self.node.ownerDocument) for _node in Node_attributes(self.node.as_native_node()).values()]
++
++    def keys(self):
++        return [(attr.namespaceURI, attr.localName) for attr in self.values()]
++
++    def items(self):
++        return [((attr.namespaceURI, attr.localName), attr) for attr in self.values()]
++
++    def __repr__(self):
++        return str(self)
++
++    def __str__(self):
++        return "{%s}" % ",\n".join(["%s : %s" % (repr(key), repr(value)) for key, value in self.items()])
++
++    def _length(self):
++        return len(self.values())
++
++    length = property(_length)
++
++class NamedNodeMapIterator(object):
++
++    "An iterator over a NamedNodeMap."
++
++    def __init__(self, nodemap):
++        self.nodemap = nodemap
++        self.items = self.nodemap.items()
++
++    def next(self):
++        if self.items:
++            current = self.items[0][1]
++            self.items = self.items[1:]
++            return current
++        else:
++            raise StopIteration
++
++class NodeList(list):
++
++    "A wrapper around node lists."
++
++    def item(self, index):
++        return self[index]
++
++    def _length(self):
++        return len(self)
++
++    length = property(_length)
++
++# Node classes.
++
++class Node(object):
++
++    """
++    A DOM-style wrapper around libxml2mod objects.
++    """
++
++    ATTRIBUTE_NODE = xml.dom.Node.ATTRIBUTE_NODE
++    COMMENT_NODE = xml.dom.Node.COMMENT_NODE
++    DOCUMENT_NODE = xml.dom.Node.DOCUMENT_NODE
++    DOCUMENT_TYPE_NODE = xml.dom.Node.DOCUMENT_TYPE_NODE
++    ELEMENT_NODE = xml.dom.Node.ELEMENT_NODE
++    ENTITY_NODE = xml.dom.Node.ENTITY_NODE
++    ENTITY_REFERENCE_NODE = xml.dom.Node.ENTITY_REFERENCE_NODE
++    NOTATION_NODE = xml.dom.Node.NOTATION_NODE
++    PROCESSING_INSTRUCTION_NODE = xml.dom.Node.PROCESSING_INSTRUCTION_NODE
++    TEXT_NODE = xml.dom.Node.TEXT_NODE
++
++    def __init__(self, node, impl=None, ownerDocument=None):
++        self._node = node
++        self.impl = impl or default_impl
++        self.ownerDocument = ownerDocument
++
++    def as_native_node(self):
++        return self._node
++
++    def _nodeType(self):
++        return Node_nodeType(self._node)
++
++    def _childNodes(self):
++
++        # NOTE: Consider a generator instead.
++
++        return NodeList([self.impl.get_node(_node, self) for _node in Node_childNodes(self._node)])
++
++    def _firstChild(self):
++        return (self.childNodes or [None])[0]
++
++    def _lastChild(self):
++        return (self.childNodes or [None])[-1]
++
++    def _attributes(self):
++        return NamedNodeMap(self, self.impl)
++
++    def _namespaceURI(self):
++        return Node_namespaceURI(self._node)
++
++    def _textContent(self):
++        return Node_textContent(self._node)
++
++    def _nodeValue(self):
++        if self.nodeType in null_value_node_types:
++            return None
++        return Node_nodeValue(self._node)
++
++    def _setNodeValue(self, value):
++        Node_setNodeValue(self._node, value)
++
++    def _prefix(self):
++        return Node_prefix(self._node)
++
++    def _nodeName(self):
++        return Node_nodeName(self._node)
++
++    def _tagName(self):
++        return Node_tagName(self._node)
++
++    def _localName(self):
++        return Node_localName(self._node)
++
++    def _parentNode(self):
++        return self.impl.get_node_or_none(Node_parentNode(self._node), self)
++
++    def _previousSibling(self):
++        return self.impl.get_node_or_none(Node_previousSibling(self._node), self)
++
++    def _nextSibling(self):
++        return self.impl.get_node_or_none(Node_nextSibling(self._node), self)
++
++    def _doctype(self):
++        _doctype = Node_doctype(self._node)
++        if _doctype is not None:
++            return self.impl.get_node(_doctype, self)
++        else:
++            return None
++
++    def _publicId(self):
++        # NOTE: To be fixed when the libxml2mod API has been figured out.
++        if self.nodeType != self.DOCUMENT_TYPE_NODE:
++            return None
++        declaration = self.toString()
++        return self._findId(declaration, "PUBLIC")
++
++    def _systemId(self):
++        # NOTE: To be fixed when the libxml2mod API has been figured out.
++        if self.nodeType != self.DOCUMENT_TYPE_NODE:
++            return None
++        declaration = self.toString()
++        if self._findId(declaration, "PUBLIC"):
++            return self._findIdValue(declaration, 0)
++        return self._findId(declaration, "SYSTEM")
++
++    # NOTE: To be removed when the libxml2mod API has been figured out.
++
++    def _findId(self, declaration, identifier):
++        i = declaration.find(identifier)
++        if i == -1:
++            return None
++        return self._findIdValue(declaration, i)
++
++    def _findIdValue(self, declaration, i):
++        q = declaration.find('"', i)
++        if q == -1:
++            return None
++        q2 = declaration.find('"', q + 1)
++        if q2 == -1:
++            return None
++        return declaration[q+1:q2]
++
++    def hasAttributeNS(self, ns, localName):
++        return Node_hasAttributeNS(self._node, ns, localName)
++
++    def hasAttribute(self, name):
++        return Node_hasAttribute(self._node, name)
++
++    def getAttributeNS(self, ns, localName):
++        return Node_getAttributeNS(self._node, ns, localName)
++
++    def getAttribute(self, name):
++        return Node_getAttribute(self._node, name)
++
++    def getAttributeNodeNS(self, ns, localName):
++        return Attribute(Node_getAttributeNodeNS(self._node, ns, localName), self.impl, self.ownerDocument, self)
++
++    def getAttributeNode(self, localName):
++        return Attribute(Node_getAttributeNode(self._node, localName), self.impl, self.ownerDocument, self)
++
++    def setAttributeNS(self, ns, name, value):
++        Node_setAttributeNS(self._node, ns, name, value)
++
++    def setAttribute(self, name, value):
++        Node_setAttribute(self._node, name, value)
++
++    def setAttributeNodeNS(self, node):
++        Node_setAttributeNodeNS(self._node, node._node)
++
++    def setAttributeNode(self, node):
++        Node_setAttributeNode(self._node, node._node)
++
++    def removeAttributeNS(self, ns, localName):
++        Node_removeAttributeNS(self._node, ns, localName)
++
++    def removeAttribute(self, name):
++        Node_removeAttribute(self._node, name)
++
++    def createElementNS(self, ns, name):
++        return self.impl.get_node(Node_createElementNS(self._node, ns, name), self)
++
++    def createElement(self, name):
++        return self.impl.get_node(Node_createElement(self._node, name), self)
++
++    def createAttributeNS(self, ns, name):
++        tmp = self.createElement("tmp")
++        return Attribute(Node_createAttributeNS(tmp._node, self.impl, ns, name))
++
++    def createAttribute(self, name):
++        tmp = self.createElement("tmp")
++        return Attribute(Node_createAttribute(tmp._node, name), self.impl)
++
++    def createTextNode(self, value):
++        return self.impl.get_node(Node_createTextNode(self._node, value), self)
++
++    def createComment(self, value):
++        return self.impl.get_node(Node_createComment(self._node, value), self)
++
++    def createCDATASection(self, value):
++        return self.impl.get_node(Node_createCDATASection(self._node, value), self)
++
++    def importNode(self, node, deep):
++        if hasattr(node, "as_native_node"):
++            return self.impl.get_node(Node_importNode(self._node, node.as_native_node(), deep), self)
++        else:
++            return self.impl.get_node(Node_importNode_DOM(self._node, node, deep), self)
++
++    def cloneNode(self, deep):
++        # This takes advantage of the ubiquity of importNode (in spite of the DOM specification).
++        return self.importNode(self, deep)
++
++    def insertBefore(self, tmp, oldNode):
++        if tmp.ownerDocument != self.ownerDocument:
++            raise xml.dom.WrongDocumentErr()
++        if oldNode.parentNode != self:
++            raise xml.dom.NotFoundErr()
++        if hasattr(tmp, "as_native_node"):
++            return self.impl.get_node(Node_insertBefore(self._node, tmp.as_native_node(), oldNode.as_native_node()), self)
++        else:
++            return self.impl.get_node(Node_insertBefore(self._node, tmp, oldNode.as_native_node()), self)
++
++    def replaceChild(self, tmp, oldNode):
++        if tmp.ownerDocument != self.ownerDocument:
++            raise xml.dom.WrongDocumentErr()
++        if oldNode.parentNode != self:
++            raise xml.dom.NotFoundErr()
++        if hasattr(tmp, "as_native_node"):
++            return self.impl.get_node(Node_replaceChild(self._node, tmp.as_native_node(), oldNode.as_native_node()), self)
++        else:
++            return self.impl.get_node(Node_replaceChild(self._node, tmp, oldNode.as_native_node()), self)
++
++    def appendChild(self, tmp):
++        if tmp.ownerDocument != self.ownerDocument:
++            raise xml.dom.WrongDocumentErr()
++        if hasattr(tmp, "as_native_node"):
++            return self.impl.get_node(Node_appendChild(self._node, tmp.as_native_node()), self)
++        else:
++            return self.impl.get_node(Node_appendChild(self._node, tmp), self)
++
++    def removeChild(self, tmp):
++        if hasattr(tmp, "as_native_node"):
++            Node_removeChild(self._node, tmp.as_native_node())
++        else:
++            Node_removeChild(self._node, tmp)
++        return tmp
++
++    def getElementById(self, identifier):
++        _node = Node_getElementById(self.ownerDocument.as_native_node(), identifier)
++        if _node is None:
++            return None
++        else:
++            return self.impl.get_node(_node, self)
++
++    def getElementsByTagName(self, tagName):
++        return self.xpath(".//" + tagName)
++
++    def getElementsByTagNameNS(self, namespaceURI, localName):
++        return self.xpath(".//ns:" + localName, namespaces={"ns" : namespaceURI})
++
++    def normalize(self):
++        text_nodes = []
++        for node in self.childNodes:
++            if node.nodeType == node.TEXT_NODE:
++                text_nodes.append(node)
++            elif len(text_nodes) != 0:
++                self._normalize(text_nodes)
++                text_nodes = []
++        if len(text_nodes) != 0:
++            self._normalize(text_nodes)
++
++    def _normalize(self, text_nodes):
++        texts = []
++        for text_node in text_nodes[:-1]:
++            texts.append(text_node.nodeValue)
++            self.removeChild(text_node)
++        texts.append(text_nodes[-1].nodeValue)
++        self.replaceChild(self.ownerDocument.createTextNode("".join(texts)), text_nodes[-1])
++
++    childNodes = property(_childNodes)
++    firstChild = property(_firstChild)
++    lastChild = property(_lastChild)
++    value = data = nodeValue = property(_nodeValue, _setNodeValue)
++    textContent = property(_textContent)
++    name = nodeName = property(_nodeName)
++    tagName = property(_tagName)
++    namespaceURI = property(_namespaceURI)
++    prefix = property(_prefix)
++    localName = property(_localName)
++    parentNode = property(_parentNode)
++    nodeType = property(_nodeType)
++    attributes = property(_attributes)
++    previousSibling = property(_previousSibling)
++    nextSibling = property(_nextSibling)
++    doctype = property(_doctype)
++    publicId = property(_publicId)
++    systemId = property(_systemId)
++
++    # NOTE: To be fixed - these being doctype-specific values.
++
++    entities = {}
++    notations = {}
++
++    def isSameNode(self, other):
++        return self == other
++
++    def __hash__(self):
++        return hash(self.localName)
++
++    def __eq__(self, other):
++        return isinstance(other, Node) and Node_equals(self._node, other._node)
++
++    def __ne__(self, other):
++        return not (self == other)
++
++    # 4DOM extensions to the usual PyXML API.
++    # NOTE: To be finished.
++
++    def xpath(self, expr, variables=None, namespaces=None):
++
++        """
++        Evaluate the given expression 'expr' using the optional 'variables' and
++        'namespaces' mappings.
++        """
++
++        ns = {}
++        ns.update(default_ns)
++        ns.update(namespaces or {})
++        result = Node_xpath(self._node, expr, variables, ns)
++        if isinstance(result, str):
++            return to_unicode(result)
++        elif hasattr(result, "__len__"):
++            return NodeList([self.impl.get_node(_node, self) for _node in result])
++        else:
++            return result
++
++    # Other extensions to the usual PyXML API.
++
++    def xinclude(self):
++
++        """
++        Process XInclude declarations within the document, returning the number
++        of substitutions performed (zero or more), raising an XIncludeException
++        otherwise.
++        """
++
++        return Node_xinclude(self._node)
++
++    # Convenience methods.
++
++    def toString(self, encoding=None, prettyprint=0):
++        return toString(self, encoding, prettyprint)
++
++    def toStream(self, stream, encoding=None, prettyprint=0):
++        toStream(self, stream, encoding, prettyprint)
++
++    def toFile(self, f, encoding=None, prettyprint=0):
++        toFile(self, f, encoding, prettyprint)
++
++# Attribute nodes.
++
++class Attribute(Node):
++
++    "A class providing attribute access."
++
++    def __init__(self, node, impl, ownerDocument=None, ownerElement=None):
++        Node.__init__(self, node, impl, ownerDocument)
++        self.ownerElement = ownerElement
++
++    def _parentNode(self):
++        return self.ownerElement
++
++    parentNode = property(_parentNode)
++
++# Document housekeeping mechanisms.
++
++class _Document:
++
++    """
++    An abstract class providing document-level housekeeping and distinct
++    functionality. Configuration of the document is also supported.
++    See: http://www.w3.org/TR/DOM-Level-3-Core/core.html#DOMConfiguration
++    """
++
++    # Constants from 
++    # See: http://www.w3.org/TR/DOM-Level-3-Val/validation.html#VAL-Interfaces-NodeEditVAL
++
++    VAL_TRUE = 5
++    VAL_FALSE = 6
++    VAL_UNKNOWN = 7
++
++    def __init__(self, node, impl):
++        self._node = node
++        self.implementation = self.impl = impl
++        self.error_handler = libxml2dom.errors.DOMErrorHandler()
++
++    # Standard DOM properties and their implementations.
++
++    def _documentElement(self):
++        return self.xpath("*")[0]
++
++    def _ownerDocument(self):
++        return self
++
++    def __del__(self):
++        #print "Freeing document", self._node
++        libxml2mod.xmlFreeDoc(self._node)
++
++    documentElement = property(_documentElement)
++    ownerDocument = property(_ownerDocument)
++
++    # DOM Level 3 Core DOMConfiguration methods.
++
++    def setParameter(self, name, value):
++        if name == "error-handler":
++            raise xml.dom.NotSupportedErr()
++        raise xml.dom.NotFoundErr()
++
++    def getParameter(self, name):
++        if name == "error-handler":
++            return self.error_handler
++        raise xml.dom.NotFoundErr()
++
++    def canSetParameter(self, name, value):
++        return 0
++
++    def _parameterNames(self):
++        return []
++
++    # Extensions to the usual PyXML API.
++
++    def validate(self, doc):
++
++        """
++        Validate the document against the given schema document, 'doc'.
++        """
++
++        validation_ns = doc.documentElement.namespaceURI
++
++        if hasattr(doc, "as_native_node"):
++            _schema = Document_schema(doc.as_native_node(), validation_ns)
++        else:
++            _schema = Document_schemaFromString(doc.toString(), validation_ns)
++        try:
++            self.error_handler.reset()
++            return Document_validate(_schema, self._node, self.error_handler, validation_ns)
++        finally:
++            Schema_free(_schema, validation_ns)
++
++    # DOM Level 3 Validation methods.
++
++    def validateDocument(self, doc):
++
++        """
++        Validate the document against the given schema document, 'doc'.
++        See: http://www.w3.org/TR/DOM-Level-3-Val/validation.html#VAL-Interfaces-DocumentEditVAL-validateDocument
++        """
++
++        return self.validate(doc) and self.VAL_TRUE or self.VAL_FALSE
++
++class Document(_Document, Node):
++
++    """
++    A generic document class. Specialised document classes should inherit from
++    the _Document class and their own variation of Node.
++    """
++
++    pass
++
++class DocumentType(object):
++
++    "A class providing a container for document type information."
++
++    def __init__(self, localName, publicId, systemId):
++        self.name = self.localName = localName
++        self.publicId = publicId
++        self.systemId = systemId
++
++        # NOTE: Nothing is currently provided to support the following
++        # NOTE: attributes.
++
++        self.entities = {}
++        self.notations = {}
++
++# Constants.
++
++null_value_node_types = [
++    Node.DOCUMENT_NODE, Node.DOCUMENT_TYPE_NODE, Node.ELEMENT_NODE,
++    Node.ENTITY_NODE, Node.ENTITY_REFERENCE_NODE, Node.NOTATION_NODE
++    ]
++
++# Utility functions.
++
++def createDocumentType(localName, publicId, systemId):
++    return default_impl.createDocumentType(localName, publicId, systemId)
++
++def createDocument(namespaceURI, localName, doctype):
++    return default_impl.createDocument(namespaceURI, localName, doctype)
++
++def parse(stream_or_string, html=0, htmlencoding=None, unfinished=0, validate=0, remote=0, impl=None):
++
++    """
++    Parse the given 'stream_or_string', where the supplied object can either be
++    a stream (such as a file or stream object), or a string (containing the
++    filename of a document). The optional parameters described below should be
++    provided as keyword arguments.
++
++    If the optional 'html' parameter is set to a true value, the content to be
++    parsed will be treated as being HTML rather than XML. If the optional
++    'htmlencoding' is specified, HTML parsing will be performed with the
++    document encoding assumed to that specified.
++
++    If the optional 'unfinished' parameter is set to a true value, unfinished
++    documents will be parsed, even though such documents may be missing content
++    such as closing tags.
++
++    If the optional 'validate' parameter is set to a true value, an attempt will
++    be made to validate the parsed document.
++
++    If the optional 'remote' parameter is set to a true value, references to
++    remote documents (such as DTDs) will be followed in order to obtain such
++    documents.
++
++    A document object is returned by this function.
++    """
++
++    impl = impl or default_impl
++
++    if hasattr(stream_or_string, "read"):
++        stream = stream_or_string
++        return parseString(stream.read(), html=html, htmlencoding=htmlencoding,
++            unfinished=unfinished, validate=validate, remote=remote, impl=impl)
++    else:
++        return parseFile(stream_or_string, html=html, htmlencoding=htmlencoding,
++            unfinished=unfinished, validate=validate, remote=remote, impl=impl)
++
++def parseFile(filename, html=0, htmlencoding=None, unfinished=0, validate=0, remote=0, impl=None):
++
++    """
++    Parse the file having the given 'filename'. The optional parameters
++    described below should be provided as keyword arguments.
++
++    If the optional 'html' parameter is set to a true value, the content to be
++    parsed will be treated as being HTML rather than XML. If the optional
++    'htmlencoding' is specified, HTML parsing will be performed with the
++    document encoding assumed to that specified.
++
++    If the optional 'unfinished' parameter is set to a true value, unfinished
++    documents will be parsed, even though such documents may be missing content
++    such as closing tags.
++
++    If the optional 'validate' parameter is set to a true value, an attempt will
++    be made to validate the parsed document.
++
++    If the optional 'remote' parameter is set to a true value, references to
++    remote documents (such as DTDs) will be followed in order to obtain such
++    documents.
++
++    A document object is returned by this function.
++    """
++
++    impl = impl or default_impl
++    return impl.adoptDocument(Node_parseFile(filename, html=html, htmlencoding=htmlencoding,
++        unfinished=unfinished, validate=validate, remote=remote))
++
++def parseString(s, html=0, htmlencoding=None, unfinished=0, validate=0, remote=0, impl=None):
++
++    """
++    Parse the content of the given string 's'. The optional parameters described
++    below should be provided as keyword arguments.
++
++    If the optional 'html' parameter is set to a true value, the content to be
++    parsed will be treated as being HTML rather than XML. If the optional
++    'htmlencoding' is specified, HTML parsing will be performed with the
++    document encoding assumed to that specified.
++
++    If the optional 'unfinished' parameter is set to a true value, unfinished
++    documents will be parsed, even though such documents may be missing content
++    such as closing tags.
++
++    If the optional 'validate' parameter is set to a true value, an attempt will
++    be made to validate the parsed document.
++
++    If the optional 'remote' parameter is set to a true value, references to
++    remote documents (such as DTDs) will be followed in order to obtain such
++    documents.
++
++    A document object is returned by this function.
++    """
++
++    impl = impl or default_impl
++    return impl.adoptDocument(Node_parseString(s, html=html, htmlencoding=htmlencoding,
++        unfinished=unfinished, validate=validate, remote=remote))
++
++def parseURI(uri, html=0, htmlencoding=None, unfinished=0, validate=0, remote=0, impl=None):
++
++    """
++    Parse the content found at the given 'uri'. The optional parameters
++    described below should be provided as keyword arguments.
++
++    If the optional 'html' parameter is set to a true value, the content to be
++    parsed will be treated as being HTML rather than XML. If the optional
++    'htmlencoding' is specified, HTML parsing will be performed with the
++    document encoding assumed to that specified.
++
++    If the optional 'unfinished' parameter is set to a true value, unfinished
++    documents will be parsed, even though such documents may be missing content
++    such as closing tags.
++
++    If the optional 'validate' parameter is set to a true value, an attempt will
++    be made to validate the parsed document.
++
++    If the optional 'remote' parameter is set to a true value, references to
++    remote documents (such as DTDs) will be followed in order to obtain such
++    documents.
++
++    XML documents are retrieved using libxml2's own network capabilities; HTML
++    documents are retrieved using the urllib module provided by Python. To
++    retrieve either kind of document using Python's own modules for this purpose
++    (such as urllib), open a stream and pass it to the parse function:
++
++    f = urllib.urlopen(uri)
++    try:
++        doc = libxml2dom.parse(f, html)
++    finally:
++        f.close()
++
++    A document object is returned by this function.
++    """
++
++    if html:
++        f = urllib.urlopen(uri)
++        try:
++            return parse(f, html=html, htmlencoding=htmlencoding, unfinished=unfinished,
++                validate=validate, remote=remote, impl=impl)
++        finally:
++            f.close()
++    else:
++        impl = impl or default_impl
++        return impl.adoptDocument(Node_parseURI(uri, html=html, htmlencoding=htmlencoding,
++            unfinished=unfinished, validate=validate, remote=remote))
++
++def toString(node, encoding=None, prettyprint=0):
++
++    """
++    Return a string containing the serialised form of the given 'node' and its
++    children. The optional 'encoding' can be used to override the default
++    character encoding used in the serialisation. The optional 'prettyprint'
++    indicates whether the serialised form is prettyprinted or not (the default
++    setting).
++    """
++
++    return Node_toString(node.as_native_node(), encoding, prettyprint)
++
++def toStream(node, stream, encoding=None, prettyprint=0):
++
++    """
++    Write the serialised form of the given 'node' and its children to the given
++    'stream'. The optional 'encoding' can be used to override the default
++    character encoding used in the serialisation. The optional 'prettyprint'
++    indicates whether the serialised form is prettyprinted or not (the default
++    setting).
++    """
++
++    Node_toStream(node.as_native_node(), stream, encoding, prettyprint)
++
++def toFile(node, filename, encoding=None, prettyprint=0):
++
++    """
++    Write the serialised form of the given 'node' and its children to a file
++    having the given 'filename'. The optional 'encoding' can be used to override
++    the default character encoding used in the serialisation. The optional
++    'prettyprint' indicates whether the serialised form is prettyprinted or not
++    (the default setting).
++    """
++
++    Node_toFile(node.as_native_node(), filename, encoding, prettyprint)
++
++def adoptNodes(nodes, impl=None):
++
++    """
++    A special utility method which adopts the given low-level 'nodes' and which
++    returns a list of high-level equivalents. This is currently experimental and
++    should not be casually used.
++    """
++
++    impl = impl or default_impl
++
++    if len(nodes) == 0:
++        return []
++    doc = impl.adoptDocument(libxml2mod.doc(nodes[0]))
++    results = []
++    for node in nodes:
++        results.append(Node(node, impl, doc))
++    return results
++
++def getDOMImplementation():
++
++    "Return the default DOM implementation."
++
++    return default_impl
++
++# Single instance of the implementation.
++
++default_impl = Implementation()
++
++# vim: tabstop=4 expandtab shiftwidth=4
+diff -urNad ezweb-platform-0.4~svn1581~/libxml2dom/errors.py ezweb-platform-0.4~svn1581/libxml2dom/errors.py
+--- ezweb-platform-0.4~svn1581~/libxml2dom/errors.py	1970-01-01 01:00:00.000000000 +0100
++++ ezweb-platform-0.4~svn1581/libxml2dom/errors.py	2008-12-15 10:40:09.610962558 +0100
+@@ -0,0 +1,73 @@
++#!/usr/bin/env python
++
++"""
++Errors for DOM Level 3.
++
++Copyright (C) 2008 Paul Boddie <paul@boddie.org.uk>
++
++This program is free software; you can redistribute it and/or modify it under
++the terms of the GNU Lesser General Public License as published by the Free
++Software Foundation; either version 3 of the License, or (at your option) any
++later version.
++
++This program is distributed in the hope that it will be useful, but WITHOUT
++ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
++FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
++details.
++
++You should have received a copy of the GNU Lesser General Public License along
++with this program.  If not, see <http://www.gnu.org/licenses/>.
++"""
++
++class DOMError:
++
++    """
++    DOM Level 3 Core exception.
++    See: http://www.w3.org/TR/DOM-Level-3-Core/core.html#ERROR-Interfaces-DOMError
++    """
++
++    SEVERITY_WARNING = 1
++    SEVERITY_ERROR = 2
++    SEVERITY_FATAL_ERROR = 3
++
++    def __init__(self, severity=None, message=None, type=None, relatedException=None, relatedData=None, location=None):
++        self.severity = severity
++        self.message = message
++        self.type = type
++        self.relatedException = relatedException
++        self.relatedData = relatedData
++        self.location = location
++
++    def __repr__(self):
++        return "DOMError(%d, %r, %r)" % (self.severity, self.message, self.type)
++
++    def __str__(self):
++        return "DOMError: %s" % self.message
++
++# NOTE: Find a reasonable way of exposing error details.
++
++class DOMErrorHandler:
++
++    """
++    DOM Level 3 Core error handler.
++    See: http://www.w3.org/TR/DOM-Level-3-Core/core.html#ERROR-Interfaces-DOMErrorHandler
++    """
++
++    def __init__(self):
++        self.errors = []
++
++    def handleError(self, error):
++        self.errors.append(error)
++
++    # Special extension methods.
++
++    def reset(self):
++        self.errors = []
++
++    def __repr__(self):
++        return "DOMErrorHandler()"
++
++    def __str__(self):
++        return "DOMErrorHandler: %r" % self.errors
++
++# vim: tabstop=4 expandtab shiftwidth=4
+diff -urNad ezweb-platform-0.4~svn1581~/libxml2dom/events.py ezweb-platform-0.4~svn1581/libxml2dom/events.py
+--- ezweb-platform-0.4~svn1581~/libxml2dom/events.py	1970-01-01 01:00:00.000000000 +0100
++++ ezweb-platform-0.4~svn1581/libxml2dom/events.py	2008-12-15 10:40:09.610962558 +0100
+@@ -0,0 +1,268 @@
++#!/usr/bin/env python
++
++"""
++DOM Level 3 Events support, with SVG Tiny 1.2 implementation additions.
++See: http://www.w3.org/TR/DOM-Level-3-Events/events.html
++See: http://www.w3.org/TR/xml-events/
++
++Copyright (C) 2007 Paul Boddie <paul@boddie.org.uk>
++
++This program is free software; you can redistribute it and/or modify it under
++the terms of the GNU Lesser General Public License as published by the Free
++Software Foundation; either version 3 of the License, or (at your option) any
++later version.
++
++This program is distributed in the hope that it will be useful, but WITHOUT
++ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
++FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
++details.
++
++You should have received a copy of the GNU Lesser General Public License along
++with this program.  If not, see <http://www.gnu.org/licenses/>.
++"""
++
++import xml.dom
++import time
++
++XML_EVENTS_NAMESPACE = "http://www.w3.org/2001/xml-events"
++
++class EventException(Exception):
++
++    UNSPECIFIED_EVENT_TYPE_ERR = 0
++    DISPATCH_REQUEST_ERR = 1
++
++class DocumentEvent:
++
++    """
++    An event interface supportable by documents.
++    See: http://www.w3.org/TR/DOM-Level-3-Events/events.html#Events-DocumentEvent
++    """
++
++    def canDispatch(self, namespaceURI, type):
++        return namespaceURI is None and event_types.has_key(type)
++
++    def createEvent(self, eventType):
++        try:
++            return event_types[eventType]()
++        except KeyError:
++            raise xml.dom.DOMException(xml.dom.NOT_SUPPORTED_ERR)
++
++class Event:
++
++    """
++    An event class.
++    See: http://www.w3.org/TR/SVGMobile12/svgudom.html#events__Event
++    See: http://www.w3.org/TR/DOM-Level-3-Events/events.html#Events-Event
++    """
++
++    CAPTURING_PHASE = 1
++    AT_TARGET = 2
++    BUBBLING_PHASE = 3
++
++    def __init__(self):
++
++        "Initialise the event."
++
++        # Initialised later:
++
++        self.target = None
++        self.currentTarget = None
++        self.defaultPrevented = 0
++        self.type = None
++        self.namespaceURI = None
++
++        # DOM Level 3 Events:
++
++        self.bubbles = 1
++        self.eventPhase = self.AT_TARGET # permits direct invocation of dispatchEvent
++        self.timeStamp = time.time()
++
++        # Propagation flags:
++
++        self.stop = 0
++        self.stop_now = 0
++
++    def initEvent(self, eventTypeArg, canBubbleArg, cancelableArg):
++        self.initEventNS(None, eventTypeArg, canBubbleArg, cancelableArg)
++
++    def initEventNS(self, namespaceURIArg, eventTypeArg, canBubbleArg, cancelableArg):
++        self.namespaceURI = namespaceURIArg
++        self.type = eventTypeArg
++        self.bubbles = canBubbleArg
++        self.cancelable = cancelableArg
++
++    def preventDefault(self):
++        self.defaultPrevented = 1
++
++    def stopPropagation(self):
++        self.stop = 1
++
++    def stopImmediatePropagation(self):
++        self.stop = 1
++        self.stop_now = 1
++
++class UIEvent(Event):
++
++    "A user interface event."
++
++    def __init__(self):
++        Event.__init__(self)
++        self.detail = None
++
++class MouseEvent(UIEvent):
++
++    "A mouse-related event."
++
++    def __init__(self):
++        Event.__init__(self)
++        self.screenX, self.screenY, self.clientX, self.clientY, self.button = None, None, None, None, None
++
++# Event types registry.
++
++event_types = {
++    "Event" : Event,
++    "UIEvent" : UIEvent,
++    "MouseEvent" : MouseEvent
++    }
++
++class EventTarget:
++
++    """
++    An event target class.
++    See: http://www.w3.org/TR/SVGMobile12/svgudom.html#events__EventTarget
++    See: http://www.w3.org/TR/DOM-Level-3-Events/events.html#Events-EventTarget
++
++    The listeners for a node are accessed through the global object. This common
++    collection is consequently accessed by all nodes in a document, meaning that
++    distinct objects representing the same node can still obtain the set of
++    listeners registered for that node. In contrast, any attempt to directly
++    store listeners on particular objects would result in the specific object
++    which registered the listeners holding the record of such objects, whereas
++    other objects obtained independently for the same node would hold no such
++    record.
++    """
++
++    def addEventListener(self, type, listener, useCapture):
++
++        """
++        For the given event 'type', register the given 'listener' for events in
++        the capture phase if 'useCapture' is a true value, or for events in the
++        target and bubble phases otherwise.
++        """
++
++        self.addEventListenerNS(None, type, listener, useCapture)
++
++    def addEventListenerNS(self, namespaceURI, type, listener, useCapture, group=None): # NOTE: group ignored
++
++        """
++        For the given 'namespaceURI' and event 'type', register the given
++        'listener' for events in the capture phase if 'useCapture' is a true
++        value, or for events in the target and bubble phases otherwise.
++        """
++
++        listeners = self.ownerDocument.global_.listeners
++        if not listeners.has_key(self):
++            listeners[self] = {}
++        if not listeners[self].has_key((namespaceURI, type)):
++            listeners[self][(namespaceURI, type)] = []
++        listeners[self][(namespaceURI, type)].append((listener, useCapture))
++
++    def dispatchEvent(self, evt):
++
++        "For this node, dispatch event 'evt' to the registered listeners."
++
++        listeners = self.ownerDocument.global_.listeners
++        if not evt.type:
++            raise EventException(EventException.UNSPECIFIED_EVENT_TYPE_ERR)
++
++        # Determine the phase and define the current target (this node) for the
++        # use of listeners.
++
++        capturing = evt.eventPhase == evt.CAPTURING_PHASE
++        evt.currentTarget = self
++
++        # Dispatch on namespaceURI, type.
++
++        for listener, useCapture in listeners.get(self, {}).get((evt.namespaceURI, evt.type), []):
++
++            # Detect requests to stop propagation immediately.
++
++            if evt.stop_now:
++                break
++
++            # Dispatch the event to the appropriate listeners according to the
++            # phase.
++
++            if capturing and useCapture or not capturing and not useCapture:
++                listener.handleEvent(evt)
++
++        return evt.defaultPrevented
++
++    def removeEventListener(self, type, listener, useCapture):
++
++        """
++        For the given event 'type', deregister the given 'listener' for events
++        in the capture phase if 'useCapture' is a true value, or for events in
++        the target and bubble phases otherwise.
++        """
++
++        self.removeEventListenerNS(None, type, listener, useCapture)
++
++    def removeEventListenerNS(self, namespaceURI, type, listener, useCapture):
++
++        """
++        For the given 'namespaceURI' and event 'type', deregister the given
++        'listener' for events in the capture phase if 'useCapture' is a true
++        value, or for events in the target and bubble phases otherwise.
++        """
++
++        listeners = self.ownerDocument.global_.listeners
++        if listeners.has_key(self) and listeners[self].has_key((namespaceURI, type)):
++            try:
++                listeners[self][(namespaceURI, type)].remove((listener, useCapture))
++            except ValueError:
++                pass
++
++# NOTE: The specification doesn't say much about the event system, but we will
++# NOTE: provide a class to manage the different phases. This is mixed into the
++# NOTE: SVGDocument class (and potentially other classes in future).
++
++class EventSystem:
++
++    "An event system which manages the different DOM event flow phases."
++
++    def sendEventToTarget(self, evt, target):
++
++        "Send event 'evt' to the specified 'target' element."
++
++        # Determine the path of the event.
++
++        bubble_route = target.xpath("ancestor::*")
++        capture_route = bubble_route[:]
++        capture_route.reverse()
++
++        # Initialise the target and execute the capture phase.
++
++        evt.target = target
++        evt.eventPhase = evt.CAPTURING_PHASE
++        for element in capture_route:
++            if evt.stop:
++                break
++            element.dispatchEvent(evt)
++
++        # Execute the target phase.
++
++        evt.eventPhase = evt.AT_TARGET
++        if not evt.stop:
++            target.dispatchEvent(evt)
++
++        # Execute the bubble phase, if appropriate.
++
++        evt.eventPhase = evt.BUBBLING_PHASE
++        if evt.bubbles:
++            for element in bubble_route:
++                if evt.stop:
++                    break
++                element.dispatchEvent(evt)
++
++# vim: tabstop=4 expandtab shiftwidth=4
+diff -urNad ezweb-platform-0.4~svn1581~/libxml2dom/macrolib/__init__.py ezweb-platform-0.4~svn1581/libxml2dom/macrolib/__init__.py
+--- ezweb-platform-0.4~svn1581~/libxml2dom/macrolib/__init__.py	1970-01-01 01:00:00.000000000 +0100
++++ ezweb-platform-0.4~svn1581/libxml2dom/macrolib/__init__.py	2008-12-15 10:40:09.610962558 +0100
+@@ -0,0 +1,28 @@
++#!/usr/bin/env python
++
++"""
++DOM macro library for libxml2.
++
++Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 Paul Boddie <paul@boddie.org.uk>
++
++This program is free software; you can redistribute it and/or modify it under
++the terms of the GNU Lesser General Public License as published by the Free
++Software Foundation; either version 3 of the License, or (at your option) any
++later version.
++
++This program is distributed in the hope that it will be useful, but WITHOUT
++ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
++FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
++details.
++
++You should have received a copy of the GNU Lesser General Public License along
++with this program.  If not, see <http://www.gnu.org/licenses/>.
++"""
++
++__version__ = "0.4.7"
++
++# Expose all functions here.
++
++from libxml2dom.macrolib.macrolib import *
++
++# vim: tabstop=4 expandtab shiftwidth=4
+diff -urNad ezweb-platform-0.4~svn1581~/libxml2dom/macrolib/macrolib.py ezweb-platform-0.4~svn1581/libxml2dom/macrolib/macrolib.py
+--- ezweb-platform-0.4~svn1581~/libxml2dom/macrolib/macrolib.py	1970-01-01 01:00:00.000000000 +0100
++++ ezweb-platform-0.4~svn1581/libxml2dom/macrolib/macrolib.py	2008-12-15 10:40:09.610962558 +0100
+@@ -0,0 +1,847 @@
++#!/usr/bin/env python
++
++"""
++DOM macros for virtual libxml2mod node methods and properties.
++
++Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 Paul Boddie <paul@boddie.org.uk>
++
++This program is free software; you can redistribute it and/or modify it under
++the terms of the GNU Lesser General Public License as published by the Free
++Software Foundation; either version 3 of the License, or (at your option) any
++later version.
++
++This program is distributed in the hope that it will be useful, but WITHOUT
++ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
++FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
++details.
++
++You should have received a copy of the GNU Lesser General Public License along
++with this program.  If not, see <http://www.gnu.org/licenses/>.
++"""
++
++import xml.dom
++from libxml2dom.errors import DOMError
++
++# Try the conventional import first.
++
++try:
++    import libxml2mod
++except ImportError:
++    from libxmlmods import libxml2mod
++
++# NOTE: libxml2 seems to use UTF-8 throughout.
++# NOTE: Implement: http://www.w3.org/TR/2006/REC-xml-20060816/#AVNormalize
++
++def from_unicode(s):
++    if isinstance(s, unicode):
++        return s.encode("utf-8")
++    else:
++        # The string might contain non-ASCII characters, thus upsetting libxml2
++        # as it encounters a non-UTF-8 string.
++        try:
++            unicode(s)
++        except UnicodeError:
++            raise TypeError, "Please use Unicode for non-ASCII data."
++        return s
++
++def to_unicode(s):
++    if isinstance(s, str):
++        return unicode(s, encoding="utf-8")
++    else:
++        return s
++
++def get_ns(ns):
++    out_ns = to_unicode(libxml2mod.xmlNodeGetContent(ns))
++    # Detect "" and produce None as the empty namespace.
++    if out_ns:
++        return out_ns
++    else:
++        return None
++
++def _get_prefix_and_localName(name):
++    t = name.split(":")
++    if len(t) == 1:
++        return None, name
++    elif len(t) == 2:
++        return t
++    else:
++        # NOTE: Should raise an exception.
++        return None, None
++
++def _find_namespace_for_prefix(node, prefix):
++
++    "Find the namespace definition node in the given 'node' for 'prefix'."
++
++    current = libxml2mod.xmlNodeGetNsDefs(node)
++    while current is not None:
++        if libxml2mod.name(current) == prefix:
++            return current
++        current = libxml2mod.next(current)
++    return None
++
++def _find_namespace(node, ns, prefix):
++
++    """
++    Find the namespace definition node in the given 'node' for the given 'ns'
++    and 'prefix'.
++    """
++
++    # Special treatment for XML namespace.
++
++    if prefix == "xml" and ns == xml.dom.XML_NAMESPACE:
++        return libxml2mod.xmlSearchNsByHref(Node_ownerDocument(node), node, xml.dom.XML_NAMESPACE)
++
++    new_ns = None
++    current = libxml2mod.xmlNodeGetNsDefs(node)
++    while current is not None:
++        if _check_namespace(current, ns, prefix):
++            new_ns = current
++            break
++        current = libxml2mod.next(current)
++    if new_ns is None:
++        node_ns = libxml2mod.xmlNodeGetNs(node)
++        if node_ns is not None and _check_namespace(node_ns, ns, prefix):
++            new_ns = node_ns
++    return new_ns
++
++def _check_namespace(current, ns, prefix):
++
++    "Check the 'current' namespace definition node against 'ns' and 'prefix'."
++
++    current_ns = get_ns(current)
++    current_prefix = libxml2mod.name(current)
++    if ns == current_ns and (prefix is None or prefix == current_prefix):
++        return 1
++    else:
++        return 0
++
++def _make_namespace(node, ns, prefix, set_default=0):
++
++    """
++    Make a new namespace definition node within the given 'node' for 'ns',
++    'prefix', setting the default namespace on 'node' when 'prefix' is None and
++    'set_default' is set to a true value (unlike the default value for that
++    parameter).
++    """
++
++    if prefix is not None or set_default:
++        new_ns = libxml2mod.xmlNewNs(node, ns, prefix)
++    else:
++        new_ns = None
++    return new_ns
++
++def _get_invented_prefix(node, ns):
++    current = libxml2mod.xmlNodeGetNsDefs(node)
++    prefixes = []
++    while current is not None:
++        current_prefix = libxml2mod.name(current)
++        prefixes.append(current_prefix)
++        current = libxml2mod.next(current)
++    i = 0
++    while 1:
++        prefix = "NS%d" % i
++        if prefix not in prefixes:
++            return prefix
++        i += 1
++
++_nodeTypes = {
++    "attribute" : xml.dom.Node.ATTRIBUTE_NODE,
++    "cdata" : xml.dom.Node.CDATA_SECTION_NODE,
++    "comment" : xml.dom.Node.COMMENT_NODE,
++    "document_xml" : xml.dom.Node.DOCUMENT_NODE,
++    "document_html" : xml.dom.Node.DOCUMENT_NODE,
++    "doctype" : xml.dom.Node.DOCUMENT_TYPE_NODE,
++    "dtd" : xml.dom.Node.DOCUMENT_TYPE_NODE, # NOTE: Needs verifying.
++    "element" : xml.dom.Node.ELEMENT_NODE,
++    "entity" : xml.dom.Node.ENTITY_NODE,
++    "entity_ref" : xml.dom.Node.ENTITY_REFERENCE_NODE,
++    "notation" : xml.dom.Node.NOTATION_NODE,
++    "pi" : xml.dom.Node.PROCESSING_INSTRUCTION_NODE,
++    "text" : xml.dom.Node.TEXT_NODE
++    }
++
++_reverseNodeTypes = {}
++for label, value in _nodeTypes.items():
++    _reverseNodeTypes[value] = label
++
++def Node_equals(node, other):
++    return libxml2mod.xmlXPathCmpNodes(node, other) == 0
++
++def Node_ownerDocument(node):
++    return libxml2mod.doc(node)
++
++def Node_nodeType(node):
++    return _nodeTypes[libxml2mod.type(node)]
++
++def Node_childNodes(node):
++
++    # NOTE: Consider a generator instead.
++
++    child_nodes = []
++    node = libxml2mod.children(node)
++    while node is not None:
++        # Remove doctypes.
++        if Node_nodeType(node) != xml.dom.Node.DOCUMENT_TYPE_NODE:
++            child_nodes.append(node)
++        node = libxml2mod.next(node)
++    return child_nodes
++
++def Node_attributes(node):
++    attributes = {}
++
++    # Include normal attributes.
++
++    current = libxml2mod.properties(node)
++    while current is not None:
++        ns = libxml2mod.xmlNodeGetNs(current)
++        if ns is not None:
++            attributes[(get_ns(ns), libxml2mod.name(current))] = current
++        else:
++            attributes[(None, libxml2mod.name(current))] = current
++        current = libxml2mod.next(current)
++
++    # Include xmlns attributes.
++
++    #current = libxml2mod.xmlNodeGetNsDefs(node)
++    #while current is not None:
++    #    ns = get_ns(current)
++    #    prefix = libxml2mod.name(current)
++    #    attributes[(xml.dom.XMLNS_NAMESPACE, "xmlns:" + prefix)] = ns # NOTE: Need a real node here.
++    #    current = libxml2mod.next(current)
++
++    return attributes
++
++def Node_namespaceURI(node):
++    ns = libxml2mod.xmlNodeGetNs(node)
++    if ns is not None:
++        return get_ns(ns)
++    else:
++        return None
++
++def Node_nodeValue(node):
++    return to_unicode(libxml2mod.xmlNodeGetContent(node))
++
++# NOTE: This is not properly exposed in the libxml2macro interface as the
++# NOTE: writable form of nodeValue.
++
++def Node_setNodeValue(node, value):
++    # NOTE: Cannot set attribute node values.
++    libxml2mod.xmlNodeSetContent(node, from_unicode(value))
++
++# NOTE: Verify this. The data attribute should only really exist for text,
++# NOTE: character data, processing instructions and comments.
++
++Node_data = Node_nodeValue
++
++Node_textContent = Node_nodeValue
++
++def Node_prefix(node):
++    ns = libxml2mod.xmlNodeGetNs(node)
++    if ns is not None:
++        return to_unicode(libxml2mod.name(ns))
++    else:
++        return None
++
++def Node_nodeName(node):
++    prefix = Node_prefix(node)
++    if prefix is not None:
++        return prefix + ":" + Node_localName(node)
++    else:
++        return Node_localName(node)
++
++def Node_tagName(node):
++    if libxml2mod.type(node) == "element":
++        return Node_nodeName(node)
++    else:
++        return None
++
++def Node_localName(node):
++    return to_unicode(libxml2mod.name(node))
++
++def Node_parentNode(node):
++    if node is None or libxml2mod.type(node) == "document_xml":
++        return None
++    else:
++        return libxml2mod.parent(node)
++
++def Node_previousSibling(node):
++    if node is not None and libxml2mod.prev(node) is not None:
++        return libxml2mod.prev(node)
++    else:
++        return None
++
++def Node_nextSibling(node):
++    if node is not None and libxml2mod.next(node) is not None:
++        return libxml2mod.next(node)
++    else:
++        return None
++
++def Node_doctype(node):
++    return libxml2mod.xmlGetIntSubset(node)
++
++def Node_hasAttributeNS(node, ns, localName):
++    return Node_getAttributeNS(node, ns, localName) is not None or \
++        _find_namespace(node, ns, localName) is not None
++
++def Node_hasAttribute(node, name):
++    return Node_getAttribute(node, name) is not None
++
++def Node_getAttributeNS(node, ns, localName):
++    if ns == xml.dom.XMLNS_NAMESPACE:
++        ns_def = _find_namespace_for_prefix(node, localName)
++        if ns_def is not None:
++            return get_ns(ns_def)
++        else:
++            return None
++    else:
++        return to_unicode(libxml2mod.xmlGetNsProp(node, localName, ns))
++
++def Node_getAttribute(node, name):
++    return to_unicode(libxml2mod.xmlGetProp(node, name))
++
++def Node_getAttributeNodeNS(node, ns, localName):
++    # NOTE: Needs verifying.
++    return Node_attributes(node)[(ns, localName)]
++
++def Node_getAttributeNode(node, name):
++    # NOTE: Needs verifying.
++    return Node_attributes(node)[(None, name)]
++
++def Node_setAttributeNS(node, ns, name, value):
++    ns, name, value = map(from_unicode, [ns, name, value])
++    prefix, localName = _get_prefix_and_localName(name)
++
++    # Detect setting of xmlns:localName=value, looking for cases where
++    # x:attr=value have caused the definition of xmlns:x=y (as a declaration
++    # with prefix=x, ns=y).
++    if prefix == "xmlns" and ns == xml.dom.XMLNS_NAMESPACE:
++        if _find_namespace(node, value, localName):
++            return
++        new_ns = _make_namespace(node, value, localName, set_default=0)
++    # For non-xmlns attributes, we find or make a namespace declaration and then
++    # set an attribute.
++    elif ns is not None:
++        # Look for a suitable namespace.
++        new_ns = _find_namespace(node, ns, prefix)
++        # Create a declaration if no suitable one was found.
++        if new_ns is None:
++            # Invent a prefix for unprefixed attributes with namespaces.
++            if prefix is None:
++                prefix = _get_invented_prefix(node, ns)
++            new_ns = _make_namespace(node, ns, prefix, set_default=0)
++        # Remove any conflicting attribute.
++        if Node_hasAttributeNS(node, ns, localName):
++            Node_removeAttributeNS(node, ns, localName)
++        libxml2mod.xmlSetNsProp(node, new_ns, localName, value)
++    else:
++        # NOTE: Needs verifying: what should happen to the namespace?
++        # NOTE: This also catches the case where None is the element's
++        # NOTE: namespace and is also used for the attribute.
++        libxml2mod.xmlSetNsProp(node, None, localName, value)
++
++def Node_setAttribute(node, name, value):
++    name, value = map(from_unicode, [name, value])
++
++    libxml2mod.xmlSetProp(node, name, value)
++
++def Node_setAttributeNodeNS(node, attr):
++    # NOTE: Not actually putting the node on the element.
++    Node_setAttributeNS(node, Node_namespaceURI(attr), Node_nodeName(attr), Node_nodeValue(attr))
++
++def Node_setAttributeNode(node, attr):
++    # NOTE: Not actually putting the node on the element.
++    Node_setAttribute(node, Node_nodeName(attr), Node_nodeValue(attr))
++
++def Node_removeAttributeNS(node, ns, localName):
++    attr = Node_getAttributeNodeNS(node, ns, localName)
++    libxml2mod.xmlUnsetNsProp(node, libxml2mod.xmlNodeGetNs(attr), libxml2mod.name(attr))
++
++def Node_removeAttribute(node, name):
++    name = from_unicode(name)
++    libxml2mod.xmlUnsetProp(node, name)
++
++def Node_createElementNS(node, ns, name):
++    ns, name = map(from_unicode, [ns, name])
++
++    prefix, localName = _get_prefix_and_localName(name)
++    new_node = libxml2mod.xmlNewNode(localName)
++
++    # If the namespace is not empty, set the declaration.
++    if ns is not None:
++        new_ns = _find_namespace(new_node, ns, prefix)
++        if new_ns is None:
++            new_ns = _make_namespace(new_node, ns, prefix, set_default=1)
++        libxml2mod.xmlSetNs(new_node, new_ns)
++    # If the namespace is empty, set a "null" declaration.
++    elif prefix is not None:
++        new_ns = _find_namespace(new_node, "", prefix)
++        if new_ns is None:
++            new_ns = _make_namespace(new_node, "", prefix)
++        libxml2mod.xmlSetNs(new_node, new_ns)
++    else:
++        libxml2mod.xmlSetNs(new_node, None)
++        Node_setAttribute(new_node, "xmlns", "")
++    return new_node
++
++def Node_createElement(node, name):
++    name = from_unicode(name)
++
++    new_node = libxml2mod.xmlNewNode(name)
++    return new_node
++
++def Node_createAttributeNS(node, ns, name):
++    ns, name = map(from_unicode, [ns, name])
++
++    prefix, localName = _get_prefix_and_localName(name)
++    # NOTE: Does it make sense to set the namespace if it is empty?
++    if ns is not None:
++        new_ns = _find_namespace(node, ns, prefix)
++        if new_ns is None:
++            new_ns = _make_namespace(node, ns, prefix, set_default=0)
++    else:
++        new_ns = None
++    new_node = libxml2mod.xmlNewNsProp(node, new_ns, localName, None)
++    return new_node
++
++def Node_createAttribute(node, name):
++    name = from_unicode(name)
++
++    # NOTE: xmlNewProp does not seem to work.
++    return Node_createAttributeNS(node, None, name)
++
++def Node_createTextNode(node, value):
++    value = from_unicode(value)
++
++    return libxml2mod.xmlNewText(value)
++
++def Node_createComment(node, value):
++    value = from_unicode(value)
++
++    return libxml2mod.xmlNewComment(value)
++
++def Node_createCDATASection(node, value):
++    value = from_unicode(value)
++
++    return libxml2mod.xmlNewCDataBlock(Node_ownerDocument(node), value, len(value))
++
++def Node_insertBefore(node, tmp, oldNode):
++    return libxml2mod.xmlAddPrevSibling(oldNode, tmp)
++
++def Node_replaceChild(node, tmp, oldNode):
++    return libxml2mod.xmlReplaceNode(oldNode, tmp)
++
++def Node_appendChild(node, tmp):
++    return libxml2mod.xmlAddChild(node, tmp)
++
++def Node_removeChild(node, child):
++    libxml2mod.xmlUnlinkNode(child)
++
++def Node_importNode(node, other, deep):
++    if Node_nodeType(other) == xml.dom.Node.ELEMENT_NODE:
++        imported_element = Node_createElementNS(node, Node_namespaceURI(other), Node_tagName(other))
++        for attr in Node_attributes(other).values():
++            Node_setAttributeNS(imported_element, Node_namespaceURI(attr), Node_nodeName(attr), Node_nodeValue(attr))
++
++        if deep:
++            for child in Node_childNodes(other):
++                imported_child = Node_importNode(node, child, deep)
++                if imported_child:
++                    Node_appendChild(imported_element, imported_child)
++
++        return imported_element
++
++    elif Node_nodeType(other) == xml.dom.Node.TEXT_NODE:
++        return Node_createTextNode(node, Node_nodeValue(other))
++
++    elif Node_nodeType(other) == xml.dom.Node.COMMENT_NODE:
++        return Node_createComment(node, Node_data(other))
++
++    elif Node_nodeType(other) == xml.dom.Node.CDATA_SECTION_NODE:
++        return Node_createCDATASection(node, Node_data(other))
++
++    raise xml.dom.NotSupportedErr("Node type '%s' (%d) not supported." % (other, Node_nodeType(other)))
++
++def Node_importNode_DOM(node, other, deep):
++    if other.nodeType == xml.dom.Node.ELEMENT_NODE:
++        imported_element = Node_createElementNS(node, other.namespaceURI, other.tagName)
++        for attr in other.attributes.values():
++            Node_setAttributeNS(imported_element, attr.namespaceURI, attr.nodeName, attr.nodeValue)
++
++        if deep:
++            for child in other.childNodes:
++                imported_child = Node_importNode_DOM(node, child, deep)
++                if imported_child:
++                    Node_appendChild(imported_element, imported_child)
++
++        return imported_element
++
++    elif other.nodeType == xml.dom.Node.TEXT_NODE:
++        return Node_createTextNode(node, other.nodeValue)
++
++    elif other.nodeType == xml.dom.Node.COMMENT_NODE:
++        return Node_createComment(node, other.data)
++
++    elif other.nodeType == xml.dom.Node.CDATA_SECTION_NODE:
++        return Node_createCDATASection(node, other.data)
++
++    raise xml.dom.NotSupportedErr(
++        "Node type '%s' (%d) not supported." % (_reverseNodeTypes[other.nodeType], other.nodeType)
++        )
++
++def Node_getElementById(doc, identifier):
++    node = libxml2mod.xmlGetID(doc, identifier)
++    if node is None:
++        return None
++    else:
++        return Node_parentNode(node)
++
++def Node_xpath(node, expr, variables=None, namespaces=None):
++    expr = from_unicode(expr)
++
++    context = libxml2mod.xmlXPathNewContext(Node_ownerDocument(node) or node)
++    libxml2mod.xmlXPathSetContextNode(context, node)
++    # NOTE: Discover namespaces from the node.
++    # NOTE: Work out how to specify paths without having to use prefixes on
++    # NOTE: names all the time.
++    for prefix, ns in (namespaces or {}).items():
++        libxml2mod.xmlXPathRegisterNs(context, prefix, ns)
++    # NOTE: No such functions are exposed in current versions of libxml2.
++    #for (prefix, ns), value in (variables or {}).items():
++    #    value = from_unicode(value)
++    #    libxml2mod.xmlXPathRegisterVariableNS(context, prefix, ns, value)
++    result = libxml2mod.xmlXPathEval(expr, context)
++    libxml2mod.xmlXPathFreeContext(context)
++    return result
++
++def Node_xinclude(node):
++    result = libxml2mod.xmlXIncludeProcessFlags(node, XML_PARSE_NOERROR | XML_PARSE_NOWARNING | XML_PARSE_NONET)
++    if result == -1:
++        raise XIncludeException()
++    else:
++        return result
++
++# Exceptions.
++
++class LSException(Exception):
++
++    "DOM Level 3 Load/Save exception."
++
++    PARSE_ERR = 81
++    SERIALIZE_ERR = 82
++
++    def __repr__(self):
++        exctype, excdata = self.args[0:2]
++        return "LSException(%d, %r)" % (exctype, excdata)
++
++    def __str__(self):
++        exctype, excdata = self.args[0:2]
++        if exctype == self.PARSE_ERR:
++            return "Parse error: %s" % excdata
++        elif exctype == self.SERIALIZE_ERR:
++            return "Serialize error: %s" % excdata
++        else:
++            return repr(self)
++
++class XIncludeException(Exception):
++
++    "Unstandardised XInclude exception."
++
++    pass
++
++# Utility functions.
++
++def createDocument(namespaceURI, localName, doctype):
++    # NOTE: Fixed to use version 1.0 only.
++    d = libxml2mod.xmlNewDoc("1.0")
++    if localName is not None:
++        # NOTE: Verify that this is always what should occur.
++        root = Node_createElementNS(d, namespaceURI, localName)
++        Node_appendChild(d, root)
++    if doctype is not None:
++        libxml2mod.xmlCreateIntSubset(d, doctype.localName, doctype.publicId, doctype.systemId)
++    return d
++
++def parse(stream_or_string, html=0, htmlencoding=None, unfinished=0):
++    if hasattr(stream_or_string, "read"):
++        stream = stream_or_string
++        return parseString(stream.read(), html=html, htmlencoding=htmlencoding, unfinished=unfinished)
++    else:
++        return parseFile(stream_or_string, html=html, htmlencoding=htmlencoding, unfinished=unfinished)
++
++def parseFile(s, html=0, htmlencoding=None, unfinished=0, validate=0, remote=0):
++    if not html:
++        context = libxml2mod.xmlCreateFileParserCtxt(s)
++        return _parseXML(context, unfinished, validate, remote)
++    else:
++        return libxml2mod.htmlReadFile(s, htmlencoding,
++            HTML_PARSE_NOERROR | HTML_PARSE_NOWARNING | html_net_flag(remote))
++
++def parseString(s, html=0, htmlencoding=None, unfinished=0, validate=0, remote=0):
++    if not html:
++        context = libxml2mod.xmlCreateMemoryParserCtxt(s, len(s))
++        return _parseXML(context, unfinished, validate, remote)
++    else:
++        # NOTE: URL given as None.
++        html_url = None
++        return libxml2mod.htmlReadMemory(s, len(s), html_url, htmlencoding,
++            HTML_PARSE_NOERROR | HTML_PARSE_NOWARNING | html_net_flag(remote))
++
++def parseURI(uri, html=0, htmlencoding=None, unfinished=0, validate=0, remote=0):
++    if not html:
++        context = libxml2mod.xmlCreateURLParserCtxt(uri, 0)
++        return _parseXML(context, unfinished, validate, remote)
++    else:
++        raise NotImplementedError, "parseURI does not yet support HTML"
++
++def _parseXML(context, unfinished, validate, remote):
++    if context is None:
++        raise LSException(LSException.PARSE_ERR, DOMError(DOMError.SEVERITY_FATAL_ERROR))
++
++    Parser_configure(context, validate, remote)
++    Parser_parse(context)
++    doc = Parser_document(context)
++    error = Parser_error()
++
++    try:
++        if validate and not Parser_valid(context):
++
++            # NOTE: May not be the correct exception.
++
++            raise LSException(
++                LSException.PARSE_ERR,
++                DOMError(
++                    DOMError.SEVERITY_FATAL_ERROR,
++                    get_parse_error_message() or "Document did not validate"
++                    ))
++
++        elif unfinished and (error is None or Parser_errorCode(error) == XML_ERR_TAG_NOT_FINISHED):
++
++            # NOTE: There may be other unfinished conditions.
++
++            return doc
++
++        elif error is not None and Parser_errorLevel(error) == XML_ERR_FATAL:
++            raise LSException(
++                LSException.PARSE_ERR,
++                DOMError(
++                    DOMError.SEVERITY_FATAL_ERROR,
++                    get_parse_error_message() or "Document caused fatal error"
++                    ))
++
++        else:
++
++            # NOTE: Could provide non-fatal errors or warnings.
++
++            return doc
++
++    finally:
++        Parser_resetError(error)
++        libxml2mod.xmlFreeParserCtxt(context)
++
++def toString(node, encoding=None, prettyprint=0):
++    return libxml2mod.serializeNode(node, encoding, prettyprint)
++
++def toStream(node, stream, encoding=None, prettyprint=0):
++    stream.write(toString(node, encoding, prettyprint))
++
++def toFile(node, f, encoding=None, prettyprint=0):
++    libxml2mod.saveNodeTo(node, f, encoding, prettyprint)
++
++# libxml2mod constants and helper functions.
++
++HTML_PARSE_NOERROR = 32
++HTML_PARSE_NOWARNING = 64
++HTML_PARSE_NONET = 2048
++XML_PARSE_DTDVALID = 16
++XML_PARSE_NOERROR = 32
++XML_PARSE_NOWARNING = 64
++XML_PARSE_NONET = 2048
++
++XML_ERR_NONE = 0
++XML_ERR_WARNING = 1
++XML_ERR_ERROR = 2
++XML_ERR_FATAL = 3
++
++XML_ERR_TAG_NOT_FINISHED = 77
++
++def html_net_flag(remote):
++    if remote:
++        return 0
++    else:
++        return HTML_PARSE_NONET
++
++def xml_net_flag(remote):
++    if remote:
++        return 0
++    else:
++        return XML_PARSE_NONET
++
++def xml_validate_flag(validate):
++    if validate:
++        return XML_PARSE_DTDVALID
++    else:
++        return 0
++
++def get_parse_error_message():
++    error = Parser_error()
++    if error is not None:
++        filename = libxml2mod.xmlErrorGetFile(error)
++        if filename is None:
++            filename = "<string>"
++        else:
++            filename = repr(filename)
++        line = libxml2mod.xmlErrorGetLine(error)
++        error_message = libxml2mod.xmlErrorGetMessage(error).strip()
++        return "Filename %s, line %d: %s" % (filename, line, error_message)
++    else:
++        return None
++
++def Parser_error():
++    return libxml2mod.xmlGetLastError()
++
++def Parser_resetError(error):
++    if error is None:
++        return libxml2mod.xmlResetLastError()
++    else:
++        return libxml2mod.xmlResetError(error)
++
++def Parser_errorLevel(error):
++    return libxml2mod.xmlErrorGetLevel(error)
++
++def Parser_errorCode(error):
++    return libxml2mod.xmlErrorGetCode(error)
++
++def Parser_push():
++    return libxml2mod.xmlCreatePushParser(None, "", 0, None)
++
++def Parser_configure(context, validate, remote):
++    libxml2mod.xmlParserSetPedantic(context, 0)
++    #libxml2mod.xmlParserSetValidate(context, validate)
++    libxml2mod.xmlCtxtUseOptions(context,
++        XML_PARSE_NOERROR | XML_PARSE_NOWARNING | xml_net_flag(remote) | xml_validate_flag(validate))
++
++def Parser_feed(context, s):
++    libxml2mod.xmlParseChunk(context, s, len(s), 1)
++
++def Parser_well_formed(context):
++    return libxml2mod.xmlParserGetWellFormed(context)
++
++def Parser_valid(context):
++    return libxml2mod.xmlParserGetIsValid(context)
++
++def Parser_document(context):
++    return libxml2mod.xmlParserGetDoc(context)
++
++def Parser_parse(context):
++    libxml2mod.xmlParseDocument(context)
++
++# Schema and validation helper functions and classes.
++# NOTE: Should potentially combine these with other definitions.
++
++RELAXNG_NS = "http://relaxng.org/ns/structure/1.0"
++SCHEMATRON_NS = "http://purl.oclc.org/dsdl/schematron"
++XMLSCHEMA_NS = "http://www.w3.org/2001/XMLSchema"
++
++def Document_schema(doc, namespaceURI):
++    if namespaceURI == RELAXNG_NS:
++        return Schema_parseRelaxNG(libxml2mod.xmlRelaxNGNewDocParserCtxt(doc))
++    elif namespaceURI == SCHEMATRON_NS:
++        return Schema_parseSchematron(libxml2mod.xmlSchematronNewDocParserCtxt(doc))
++    elif namespaceURI == XMLSCHEMA_NS:
++        return Schema_parseSchema(libxml2mod.xmlSchemaNewDocParserCtxt(doc))
++    else:
++        return None
++
++def Document_schemaFromString(s, namespaceURI):
++    if namespaceURI == RELAXNG_NS:
++        return Schema_parseRelaxNG(libxml2mod.xmlRelaxNGNewMemParserCtxt(s, len(s)))
++    elif namespaceURI == SCHEMATRON_NS:
++        return Schema_parseSchematron(libxml2mod.xmlSchematronNewMemParserCtxt(s, len(s)))
++    elif namespaceURI == XMLSCHEMA_NS:
++        return Schema_parseSchema(libxml2mod.xmlSchemaNewMemParserCtxt(s, len(s)))
++    else:
++        return None
++
++def Document_validate(schema, doc, error_handler, namespaceURI):
++    if namespaceURI == RELAXNG_NS:
++        return Document_validateRelaxNG(schema, doc, error_handler)
++    elif namespaceURI == SCHEMATRON_NS:
++        return Document_validateSchematron(schema, doc, error_handler)
++    elif namespaceURI == XMLSCHEMA_NS:
++        return Document_validateSchema(schema, doc, error_handler)
++    else:
++        return 0
++
++def Document_validateRelaxNG(schema, doc, error_handler):
++    validator_context = libxml2mod.xmlRelaxNGNewValidCtxt(schema)
++    handler = ValidationHandler(error_handler)
++    libxml2mod.xmlRelaxNGSetValidErrors(validator_context, handler.error, handler.warning, None)
++    try:
++        status = libxml2mod.xmlRelaxNGValidateDoc(validator_context, doc)
++        return status == 0
++    finally:
++        libxml2mod.xmlRelaxNGFreeValidCtxt(validator_context)
++
++def Document_validateSchematron(schema, doc, error_handler):
++    validator_context = libxml2mod.xmlSchematronNewValidCtxt(schema)
++    handler = ValidationHandler(error_handler)
++    libxml2mod.xmlSchematronSetValidErrors(validator_context, handler.error, handler.warning, None)
++    try:
++        status = libxml2mod.xmlSchematronValidateDoc(validator_context, doc)
++        return status == 0
++    finally:
++        libxml2mod.xmlSchematronFreeValidCtxt(validator_context)
++
++def Document_validateSchema(schema, doc, error_handler):
++    validator_context = libxml2mod.xmlSchemaNewValidCtxt(schema)
++    handler = ValidationHandler(error_handler)
++    libxml2mod.xmlSchemaSetValidErrors(validator_context, handler.error, handler.warning, None)
++    try:
++        status = libxml2mod.xmlSchemaValidateDoc(validator_context, doc)
++        return status == 0
++    finally:
++        libxml2mod.xmlSchemaFreeValidCtxt(validator_context)
++
++def Schema_parseRelaxNG(context):
++    try:
++        return libxml2mod.xmlRelaxNGParse(context)
++    finally:
++        libxml2mod.xmlRelaxNGFreeParserCtxt(context)
++
++def Schema_parseSchematron(context):
++    try:
++        return libxml2mod.xmlSchematronParse(context)
++    finally:
++        libxml2mod.xmlSchematronFreeParserCtxt(context)
++
++def Schema_parseSchema(context):
++    try:
++        return libxml2mod.xmlSchemaParse(context)
++    finally:
++        libxml2mod.xmlSchemaFreeParserCtxt(context)
++
++def Schema_free(schema, namespaceURI):
++    if namespaceURI == RELAXNG_NS:
++        libxml2mod.xmlRelaxNGFree(schema)
++    elif namespaceURI == SCHEMATRON_NS:
++        libxml2mod.xmlSchematronFree(schema)
++    elif namespaceURI == XMLSCHEMA_NS:
++        libxml2mod.xmlSchemaFree(schema)
++
++class ValidationHandler:
++
++    """
++    A handler which collects validation errors and warnings and passes them to a
++    DOMErrorHandler.
++    """
++
++    def __init__(self, error_handler):
++        self.error_handler = error_handler
++
++    def error(self, msg, arg):
++        self.error_handler.handleError(DOMError(DOMError.SEVERITY_FATAL_ERROR, msg.strip()))
++
++    def warning(self, msg, arg):
++        self.error_handler.handleError(DOMError(DOMError.SEVERITY_WARNING, msg.strip()))
++
++# vim: tabstop=4 expandtab shiftwidth=4
+diff -urNad ezweb-platform-0.4~svn1581~/libxml2dom/soap.py ezweb-platform-0.4~svn1581/libxml2dom/soap.py
+--- ezweb-platform-0.4~svn1581~/libxml2dom/soap.py	1970-01-01 01:00:00.000000000 +0100
++++ ezweb-platform-0.4~svn1581/libxml2dom/soap.py	2008-12-15 10:40:09.610962558 +0100
+@@ -0,0 +1,425 @@
++#!/usr/bin/env python
++
++"""
++SOAP support using libxml2dom. Support for the archaic SOAP namespaces is also
++provided.
++
++See: http://www.w3.org/TR/2007/REC-soap12-part0-20070427/
++
++Copyright (C) 2007 Paul Boddie <paul@boddie.org.uk>
++
++This program is free software; you can redistribute it and/or modify it under
++the terms of the GNU Lesser General Public License as published by the Free
++Software Foundation; either version 3 of the License, or (at your option) any
++later version.
++
++This program is distributed in the hope that it will be useful, but WITHOUT
++ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
++FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
++details.
++
++You should have received a copy of the GNU Lesser General Public License along
++with this program.  If not, see <http://www.gnu.org/licenses/>.
++
++--------
++
++The sending and receiving of SOAP messages can be done using traditional HTTP
++libraries.
++
++See tests/soap_test.py for more details.
++"""
++
++import libxml2dom
++from libxml2dom.macrolib import *
++from libxml2dom.macrolib import \
++    createDocument as Node_createDocument
++
++# SOAP-related namespaces.
++
++SOAP_ENVELOPE_NAMESPACE = "http://www.w3.org/2003/05/soap-envelope"
++SOAP_ENCODING_NAMESPACE = "http://www.w3.org/2003/05/soap-encoding"
++SOAP_RPC_NAMESPACE = "http://www.w3.org/2003/05/soap-rpc"
++XS_NAMESPACE = "http://www.w3.org/2001/XMLSchema"
++XSI_NAMESPACE = "http://www.w3.org/2001/XMLSchema-instance"
++
++# Archaic namespaces.
++
++OLD_SOAP_ENVELOPE_NAMESPACE = "http://schemas.xmlsoap.org/soap/envelope/"
++OLD_SOAP_ENCODING_NAMESPACE = "http://schemas.xmlsoap.org/soap/encoding/"
++
++# Default namespace bindings for XPath.
++
++default_ns = {
++    "env" : SOAP_ENVELOPE_NAMESPACE,
++    "enc" : SOAP_ENCODING_NAMESPACE,
++    "rpc" : SOAP_RPC_NAMESPACE,
++    "xs" : XS_NAMESPACE,
++    "xsi" : XSI_NAMESPACE,
++    "SOAP-ENV" : OLD_SOAP_ENVELOPE_NAMESPACE,
++    "SOAP-ENC" : OLD_SOAP_ENCODING_NAMESPACE
++    }
++
++class SOAPImplementation(libxml2dom.Implementation):
++
++    "Contains a SOAP-specific implementation."
++
++    # Wrapping of documents.
++
++    def adoptDocument(self, node):
++        return SOAPDocument(node, self)
++
++    # Factory functions.
++
++    def get_node(self, _node, context_node):
++
++        """
++        Get a libxml2dom node for the given low-level '_node' and libxml2dom
++        'context_node'.
++        """
++
++        if Node_nodeType(_node) == context_node.ELEMENT_NODE:
++
++            # Make special envelope elements.
++
++            if Node_namespaceURI(_node) in (SOAP_ENVELOPE_NAMESPACE, OLD_SOAP_ENVELOPE_NAMESPACE):
++                if Node_localName(_node) == "Envelope":
++                    return SOAPEnvelopeElement(_node, self, context_node.ownerDocument)
++                elif Node_localName(_node) == "Header":
++                    return SOAPHeaderElement(_node, self, context_node.ownerDocument)
++                elif Node_localName(_node) == "Body":
++                    return SOAPBodyElement(_node, self, context_node.ownerDocument)
++                elif Node_localName(_node) == "Fault":
++                    return SOAPFaultElement(_node, self, context_node.ownerDocument)
++                elif Node_localName(_node) == "Code":
++                    return SOAPCodeElement(_node, self, context_node.ownerDocument)
++                elif Node_localName(_node) == "Subcode":
++                    return SOAPSubcodeElement(_node, self, context_node.ownerDocument)
++                elif Node_localName(_node) == "Value":
++                    return SOAPValueElement(_node, self, context_node.ownerDocument)
++                elif Node_localName(_node) == "Text":
++                    return SOAPTextElement(_node, self, context_node.ownerDocument)
++
++            # Detect the method element.
++
++            if Node_parentNode(_node) and Node_localName(Node_parentNode(_node)) == "Body" and \
++                Node_namespaceURI(Node_parentNode(_node)) in (SOAP_ENVELOPE_NAMESPACE, OLD_SOAP_ENVELOPE_NAMESPACE):
++
++                return SOAPMethodElement(_node, self, context_node.ownerDocument)
++
++            # Otherwise, make generic SOAP elements.
++
++            return SOAPElement(_node, self, context_node.ownerDocument)
++
++        else:
++            return libxml2dom.Implementation.get_node(self, _node, context_node)
++
++    # Convenience functions.
++
++    def createSOAPMessage(self, namespaceURI, localName):
++
++        "Create a new SOAP message document (fragment)."
++
++        return SOAPDocument(Node_createDocument(namespaceURI, localName, None), self).documentElement
++
++# Node classes.
++
++class SOAPNode(libxml2dom.Node):
++
++    "Convenience modifications to nodes specific to libxml2dom.soap."
++
++    def xpath(self, expr, variables=None, namespaces=None):
++
++        """
++        Evaluate the given 'expr' using the optional 'variables' and
++        'namespaces'. If not otherwise specified, the prefixes given in the
++        module global 'default_ns' will be bound as in that dictionary.
++        """
++
++        ns = {}
++        ns.update(default_ns)
++        ns.update(namespaces or {})
++        return libxml2dom.Node.xpath(self, expr, variables, ns)
++
++    # All nodes support convenience methods.
++
++    def convert(self, node):
++        return node.textContent.strip()
++
++    def _contents(self):
++        # NOTE: Should check whether this should be a leaf element.
++        if not self.xpath("*"):
++            return (self.localName, getattr(self.ownerDocument, "convert", self.convert)(self))
++        else:
++            return (self.localName, SOAPContents(self))
++
++    def __len__(self):
++        return 2
++
++    def __getitem__(self, i):
++        return self.contents[i]
++
++    def __eq__(self, other):
++        if hasattr(other, "contents"):
++            return self.contents == other.contents
++        else:
++            return self.contents == other
++
++    # Node construction methods.
++
++    def createSOAPElement(self, localName):
++
++        "Create an element with the appropriate namespace and prefix."
++
++        ref_element = self.ownerDocument.documentElement
++        prefix = ref_element.prefix
++        if prefix:
++            name = prefix + ":" + localName
++        else:
++            name = localName
++        return self.createElementNS(ref_element.namespaceURI, name)
++
++    contents = property(_contents)
++
++class SOAPContents(object):
++
++    "A wrapper around another node in order to provide sequence-like access."
++
++    def __init__(self, node):
++        self.node = node
++
++    def __len__(self):
++        return len(self.node.xpath("*"))
++
++    def __getitem__(self, i):
++        return self.node.xpath("*")[i]
++
++    def __eq__(self, other):
++        for i, j in map(None, self, other):
++            if i != j:
++                return False
++        return True
++
++class SOAPDocument(libxml2dom._Document, SOAPNode):
++
++    "A SOAP document fragment."
++
++    def _envelope(self):
++        return self.xpath("env:Envelope|SOAP-ENV:Envelope")[0]
++
++    envelope = property(_envelope)
++
++    # Convenience methods and properties.
++
++    def _fault(self):
++        return self.envelope.body.fault
++
++    def _method(self):
++        return self.envelope.body.method
++
++    fault = property(_fault)
++    method = property(_method)
++
++class SOAPElement(SOAPNode):
++
++    "A SOAP element."
++
++    pass
++
++class SOAPEnvelopeElement(SOAPNode):
++
++    "A SOAP envelope element."
++
++    def _body(self):
++        return self.xpath("env:Body|SOAP-ENV:Body")[0]
++
++    def _setBody(self, body):
++        self.appendChild(body)
++
++    def _delBody(self):
++        self.removeChild(self.body)
++
++    def createBody(self):
++        return self.createSOAPElement("Body")
++
++    body = property(_body, _setBody, _delBody)
++
++class SOAPHeaderElement(SOAPNode):
++
++    "A SOAP header element."
++
++    pass
++
++class SOAPBodyElement(SOAPNode):
++
++    "A SOAP body element."
++
++    def _fault(self):
++        return (self.xpath("env:Fault|SOAP-ENV:Fault") or [None])[0]
++
++    def _method(self):
++        if self.namespaceURI == SOAP_ENVELOPE_NAMESPACE:
++            return (self.xpath("*[@env:encodingStyle = '%s']" % SOAP_ENCODING_NAMESPACE) or [None])[0]
++        else:
++            return (self.xpath("*") or [None])[0]
++
++    # Node construction methods.
++
++    def createFault(self):
++        return self.createSOAPElement("Fault")
++
++    fault = property(_fault)
++    method = property(_method)
++
++class SOAPMethodElement(SOAPNode):
++
++    "A SOAP method element."
++
++    def _methodName(self):
++        return self.localName
++
++    def _resultParameter(self):
++        return (self.xpath(".//rpc:result") or [None])[0]
++
++    def _resultParameterValue(self):
++        if self.resultParameter:
++            name = self.resultParameter.textContent.strip()
++            result = self.xpath(".//" + name, namespaces={self.prefix : self.namespaceURI})
++            if result:
++                return result[0].textContent.strip()
++            else:
++                return None
++        else:
++            return None
++
++    def _parameterValues(self):
++        return [value.contents for value in self.xpath("*")]
++
++    methodName = property(_methodName)
++    resultParameter = property(_resultParameter)
++    resultParameterValue = property(_resultParameterValue)
++    parameterValues = property(_parameterValues)
++
++class SOAPFaultElement(SOAPNode):
++
++    "A SOAP fault element."
++
++    def _code(self):
++        code = self.xpath("env:Code|SOAP-ENV:Code")
++        if code:
++            return code[0].value
++        else:
++            return None
++
++    def _subcode(self):
++        subcode = self.xpath("./env:Code/env:Subcode|./SOAP-ENV:Code/SOAP-ENV:Subcode")
++        if subcode:
++            return subcode[0].value
++        else:
++            return None
++
++    def _reason(self):
++        return (self.xpath("env:Reason|SOAP-ENV:Reason") or [None])[0]
++
++    def _detail(self):
++        return (self.xpath("env:Detail|SOAP-ENV:Detail") or [None])[0]
++
++    def createCode(self):
++        return self.createSOAPElement("Code")
++
++    code = property(_code)
++    subcode = property(_subcode)
++    reason = property(_reason)
++    detail = property(_detail)
++
++class SOAPSubcodeElement(SOAPNode):
++
++    "A SOAP subcode element."
++
++    def _value(self):
++        value = self.xpath("env:Value|SOAP-ENV:Value")
++        if value:
++            return value[0].textContent.strip()
++        else:
++            return None
++
++    def _setValue(self, value):
++        nodes = self.xpath("env:Value|SOAP-ENV:Value")
++        v = self.createValue()
++        if nodes:
++            self.replaceChild(v, nodes[0])
++        else:
++            self.appendChild(v)
++        v.value = value
++
++    def createValue(self, value=None):
++        code_value = self.createSOAPElement("Value")
++        if value is not None:
++            code_value.value = code
++        return code_value
++
++    value = property(_value, _setValue)
++
++class SOAPCodeElement(SOAPSubcodeElement):
++
++    "A SOAP code element."
++
++    def _subcode(self):
++        return (self.xpath("env:Subcode|SOAP-ENV:Subcode") or [None])[0]
++
++    def createSubcode(self):
++        return self.createSOAPElement("Subcode")
++
++    subcode = property(_subcode)
++
++class SOAPValueElement(SOAPNode):
++
++    "A SOAP value element."
++
++    def _value(self):
++        return self.textContent
++
++    def _setValue(self, value):
++        for node in self.childNodes:
++            self.removeChild(node)
++        text = self.ownerDocument.createTextNode(value)
++        self.appendChild(text)
++
++    value = property(_value, _setValue)
++
++class SOAPTextElement(SOAPValueElement):
++
++    "A SOAP text element."
++
++    def _lang(self):
++        return self.getAttributeNS(libxml2dom.XML_NAMESPACE, "lang")
++
++    def _setLang(self, value):
++        self.setAttributeNS(libxml2dom.XML_NAMESPACE, "xml:lang", value)
++
++    lang = property(_lang, _setLang)
++
++# Utility functions.
++
++createDocument = libxml2dom.createDocument
++createDocumentType = libxml2dom.createDocumentType
++
++def createSOAPMessage(namespaceURI, localName):
++    return default_impl.createSOAPMessage(namespaceURI, localName)
++
++def parse(stream_or_string, html=0, htmlencoding=None, unfinished=0, impl=None):
++    return libxml2dom.parse(stream_or_string, html=html, htmlencoding=htmlencoding, unfinished=unfinished, impl=(impl or default_impl))
++
++def parseFile(filename, html=0, htmlencoding=None, unfinished=0, impl=None):
++    return libxml2dom.parseFile(filename, html=html, htmlencoding=htmlencoding, unfinished=unfinished, impl=(impl or default_impl))
++
++def parseString(s, html=0, htmlencoding=None, unfinished=0, impl=None):
++    return libxml2dom.parseString(s, html=html, htmlencoding=htmlencoding, unfinished=unfinished, impl=(impl or default_impl))
++
++def parseURI(uri, html=0, htmlencoding=None, unfinished=0, impl=None):
++    return libxml2dom.parseURI(uri, html=html, htmlencoding=htmlencoding, unfinished=unfinished, impl=(impl or default_impl))
++
++# Single instance of the implementation.
++
++default_impl = SOAPImplementation()
++
++# vim: tabstop=4 expandtab shiftwidth=4
+diff -urNad ezweb-platform-0.4~svn1581~/libxml2dom/svg.py ezweb-platform-0.4~svn1581/libxml2dom/svg.py
+--- ezweb-platform-0.4~svn1581~/libxml2dom/svg.py	1970-01-01 01:00:00.000000000 +0100
++++ ezweb-platform-0.4~svn1581/libxml2dom/svg.py	2008-12-15 10:40:09.610962558 +0100
+@@ -0,0 +1,932 @@
++#!/usr/bin/env python
++
++"""
++SVG-specific document support.
++See: http://www.w3.org/TR/SVGMobile12/python-binding.html
++See: http://www.w3.org/TR/SVGMobile12/svgudom.html
++
++Copyright (C) 2007 Paul Boddie <paul@boddie.org.uk>
++
++This program is free software; you can redistribute it and/or modify it under
++the terms of the GNU Lesser General Public License as published by the Free
++Software Foundation; either version 3 of the License, or (at your option) any
++later version.
++
++This program is distributed in the hope that it will be useful, but WITHOUT
++ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
++FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
++details.
++
++You should have received a copy of the GNU Lesser General Public License along
++with this program.  If not, see <http://www.gnu.org/licenses/>.
++"""
++
++import libxml2dom
++from libxml2dom.events import *
++from libxml2dom.macrolib import *
++from libxml2dom.macrolib import \
++    createDocument as Node_createDocument
++import xml.dom
++import urllib
++import math
++import re
++
++SVG_NAMESPACE = "http://www.w3.org/2000/svg"
++
++class _Exception(Exception):
++
++    "A generic SVG exception."
++
++    def __init__(self, code):
++        Exception.__init__(self, code)
++        self.code = code
++
++class SVGException(_Exception):
++
++    "An SVG exception."
++
++    SVG_WRONG_TYPE_ERR = 0
++    SVG_INVALID_VALUE_ERR = 1
++    SVG_MATRIX_NOT_INVERTABLE = 2
++
++class GlobalException(_Exception):
++
++    "A global exception."
++
++    NOT_CONNECTED_ERR = 1
++    ENCODING_ERR = 2
++    DENIED_ERR = 3
++    UNKNOWN_ERR = 4
++
++class SVGImplementation(libxml2dom.Implementation):
++
++    "Contains an SVG-specific implementation."
++
++    # Wrapping of documents.
++
++    def adoptDocument(self, node):
++        return SVGDocument(node, self)
++
++    # Factory functions.
++
++    def get_node(self, _node, context_node):
++        if Node_nodeType(_node) == context_node.ELEMENT_NODE and \
++            Node_namespaceURI(_node) == SVG_NAMESPACE:
++
++            if Node_localName(_node) == "svg":
++                return SVGSVGElement(_node, self, context_node.ownerDocument)
++            else:
++                return SVGElement(_node, self, context_node.ownerDocument)
++        else:
++            return libxml2dom.Implementation.get_node(self, _node, context_node)
++
++    def get_global(self, doc):
++        return SVGGlobal(doc)
++
++    # Convenience functions.
++
++    def createSVGDocument(self):
++
++        "Create a new SVG document."
++
++        return SVGDocument(Node_createDocument(SVG_NAMESPACE, "svg", None), self)
++
++# Interfaces and helper classes.
++
++class AsyncStatusCallback:
++
++    "An asynchronous callback interface."
++
++    def operationComplete(self, status):
++        pass
++
++class AsyncURLStatus:
++
++    "The status of a URL retrieval operation."
++
++    def __init__(self, success, contentType, content):
++        self.success, self.contentType, self.content = success, contentType, content
++
++class ElementTraversal:
++
++    "An interface for element traversal."
++
++    def _firstElementChild(self):
++        l = self.xpath("*")
++        if l:
++            return l[0]
++        else:
++            return None
++
++    def _lastElementChild(self):
++        l = self.xpath("*")
++        if l:
++            return l[-1]
++        else:
++            return None
++
++    def _nextElementSibling(self):
++        l = self.xpath("following-sibling::*")
++        if l:
++            return l[0]
++        else:
++            return None
++
++    def _previousElementSibling(self):
++        l = self.xpath("preceding-sibling::*")
++        if l:
++            return l[0]
++        else:
++            return None
++
++    firstElementChild = property(_firstElementChild)
++    lastElementChild = property(_lastElementChild)
++    nextElementSibling = property(_nextElementSibling)
++    previousElementSibling = property(_previousElementSibling)
++
++class EventListenerInitializer2:
++
++    "An event listener initialisation interface."
++
++    def initializeEventListeners(self, scriptElement):
++        pass
++
++    def createEventListener(self, handlerElement):
++        pass
++
++class Global:
++
++    "An empty global interface."
++
++    pass
++
++class SVGGlobal(Global, EventListenerInitializer2):
++
++    "An SVG global."
++
++    def __init__(self, document): # parent
++
++        "Initialise the global with the given 'document'."
++
++        self.document = document
++
++        # Listener management.
++
++        self.listeners = {}
++
++    def createConnection(self):
++        raise NotImplementedError, "createConnection"
++
++    def createTimer(self, initialInterval, repeatInterval):
++        raise NotImplementedError, "createTimer"
++
++    def gotoLocation(self, newIRI):
++        raise NotImplementedError, "gotoLocation"
++
++    def binaryToString(self, octets, encoding):
++        try:
++            return unicode(octets, encoding)
++        except UnicodeDecodeError, exc:
++            raise GlobalException(GlobalException.ENCODING_ERR)
++
++    def stringToBinary(self, data, encoding):
++        try:
++            return data.encode(encoding)
++        except UnicodeEncodeError, exc:
++            raise GlobalException(GlobalException.ENCODING_ERR)
++
++    def getURL(self, iri, callback):
++
++        # NOTE: Not asynchronous.
++        # NOTE: The urlopen function may not support IRIs.
++        # No exceptions are supposed to be raised, which is a bit nasty.
++
++        f = urllib.urlopen(iri)
++        try:
++            try:
++                content = f.read()
++                contentType = f.headers["Content-Type"]
++                callback.operationComplete(AsyncURLStatus(1, contentType, content))
++            except:
++                callback.operationComplete(AsyncURLStatus(0, None, None))
++        finally:
++            f.close()
++
++    def postURL(self, iri, data, callback, type=None, encoding=None):
++
++        # NOTE: Not asynchronous.
++        # NOTE: The urlopen function may not support IRIs.
++        # No exceptions are supposed to be raised, which is a bit nasty.
++
++        opener = urllib.URLopener()
++        opener.addheader("Content-Type", type or "text/plain")
++        if encoding:
++            opener.addheader("Content-Encoding", encoding)
++        f = opener.open(iri, data)
++        try:
++            try:
++                content = f.read()
++                contentType = f.headers["Content-Type"]
++                callback.operationComplete(AsyncURLStatus(1, contentType, content))
++            except:
++                callback.operationComplete(AsyncURLStatus(0, None, None))
++        finally:
++            f.close()
++            opener.close()
++
++    def parseXML(self, data, contextDoc):
++        doc = parseString(data)
++        return contextDoc.importNode(doc.documentElement, 1)
++
++class SVGLocatable:
++
++    "A locatable interface."
++
++    pass
++
++class SVGMatrix:
++
++    """
++    A matrix.
++    See: http://www.w3.org/TR/SVGMobile12/svgudom.html#svg__SVGMatrix
++    """
++
++    translate_regexp = re.compile("translate\((.*)\)$")
++    scale_regexp = re.compile("scale\((.*)\)$")
++    rotate_regexp = re.compile("rotate\((.*)\)$")
++    skewX_regexp = re.compile("skewX\((.*)\)$")
++    skewY_regexp = re.compile("skewY\((.*)\)$")
++    matrix_regexp = re.compile("matrix\((.*)\)$")
++
++    def __init__(self, a=0, b=0, c=0, d=0, e=0, f=0):
++        self.matrix = a, b, c, d, e, f
++
++    def __repr__(self):
++        return "SVGMatrix(%f, %f, %f, %f, %f, %f)" % self.matrix
++
++    def __eq__(self, other):
++        return self.matrix == other.matrix
++
++    def __ne__(self, other):
++        return not (self == other)
++
++    def _get_params(self, param_string):
++        return map(float, map(lambda s: s.strip(), param_string.split(",")))
++
++    def fromNode(self, node, name):
++
++        """
++        Initialise this object from the trait on the 'node' having the given
++        'name'.
++        """
++
++        value = node.getAttribute(name)
++        if value is None:
++            raise xml.dom.DOMException(xml.dom.NOT_SUPPORTED_ERR)
++
++        value = value.strip()
++
++        # Translation.
++
++        m = self.translate_regexp.match(value)
++        if m:
++            a, b, c, d = 1, 0, 0, 1
++            e, f = self._get_params(m.group(1))
++            self.matrix = a, b, c, d, e, f
++            return
++
++        # Scaling.
++
++        m = self.scale_regexp.match(value)
++        if m:
++            b, c, e, f = 0, 0, 0, 0
++            a, d = self._get_params(m.group(1))
++            self.matrix = a, b, c, d, e, f
++            return
++
++        # Rotation.
++
++        m = self.rotate_regexp.match(value)
++        if m:
++            e, f = 0, 0
++            angle = float(m.group(1).strip())
++            a = d = math.cos(math.radians(angle))
++            b = math.sin(math.radians(angle))
++            c = -b
++            self.matrix = a, b, c, d, e, f
++            return
++
++        # Skew.
++
++        m = self.skewX_regexp.match(value)
++        if m:
++            a, b, d, e, f = 1, 0, 1, 0, 0
++            angle = float(m.group(1).strip())
++            c = math.tan(math.radians(angle))
++            self.matrix = a, b, c, d, e, f
++            return
++
++        m = self.skewY_regexp.match(value)
++        if m:
++            a, c, d, e, f = 1, 0, 1, 0, 0
++            angle = float(m.group(1).strip())
++            b = math.tan(math.radians(angle))
++            self.matrix = a, b, c, d, e, f
++            return
++
++        # Generic.
++
++        m = self.matrix_regexp.match(value)
++        if m:
++            self.matrix = self._get_params(m.group(1))
++            return
++
++        # Otherwise, complain.
++
++        raise xml.dom.DOMException(xml.dom.TYPE_MISMATCH_ERR)
++
++    def toNode(self, node, name):
++
++        """
++        Set the trait on the given 'node' using the given 'name' according to
++        this object's attributes.
++        """
++
++        a, b, c, d, e, f = self.matrix
++
++        # Translation.
++
++        if (a, b, c, d) == (1, 0, 0, 1):
++            node.setAttribute(name, "translate(%f, %f)" % (e, f))
++
++        # Scaling.
++
++        elif (b, c, e, f) == (0, 0, 0, 0):
++            node.setAttribute(name, "scale(%f, %f)" % (a, d))
++
++        # Rotation.
++
++        elif a == d and b == -c and (e, f) == (0, 0) and math.degrees(math.acos(a)) == math.degrees(math.asin(b)):
++            node.setAttribute(name, "rotate(%f)" % math.degrees(math.acos(a)))
++
++        # Skew.
++
++        elif (a, b, d, e, f) == (1, 0, 1, 0, 0) and c != 0:
++            node.setAttribute(name, "skewX(%f)" % math.degrees(math.atan(c)))
++
++        elif (a, c, d, e, f) == (1, 0, 1, 0, 0) and b != 0:
++            node.setAttribute(name, "skewX(%f)" % math.degrees(math.atan(b)))
++
++        # Generic matrix.
++
++        else:
++            node.setAttribute(name, "matrix(%f, %f, %f, %f, %f, %f)" % (a, b, c, d, e, f))
++
++    def getComponent(self, index):
++
++        """
++        Return the component with the given 'index' (starting at zero) from the
++        sequence a, b, c, d, e, f where each element corresponds to the matrix
++        as follows:
++
++        [ a c e ]
++        [ b d f ]
++        [ 0 0 1 ]
++        """
++
++        try:
++            return self.matrix[index]
++        except IndexError:
++            raise xml.dom.DOMException(xml.dom.INDEX_SIZE_ERR)
++
++    def mMultiply(self, secondMatrix):
++
++        """
++        Post-multiply this matrix with 'secondMatrix' and update its contents to
++        the result of the multiplication operation defined as follows:
++
++        [ A C E ] [ a c e ]
++        [ B D F ] [ b d f ]
++        [ 0 0 1 ] [ 0 0 1 ]
++
++        Return this object as a result.
++        """
++
++        a, b, c, d, e, f = self.matrix
++        A, B, C, D, E, F = secondMatrix.matrix
++        self.matrix = A*a + C*b, B*a + D*b, A*c + C*d, B*c + D*d, A*e + C*f + E, B*e + D*f + F
++        return self
++
++    def inverse(self):
++
++        """
++        det = ad - cb
++
++        See (for example): http://mathworld.wolfram.com/MatrixInverse.html
++        """
++
++        det = a*d - c*b
++        if det != 0:
++            m = 1/det
++            a, b, c, d, e, f = self.matrix
++            self.matrix = m * d, m * -b, m * -c, m * a, m * (c*f - e*d), m * (e*b - a*f)
++            return self
++        else:
++            raise SVGException(SVGException.SVG_MATRIX_NOT_INVERTABLE)
++
++    def mTranslate(self, x, y):
++
++        """
++        [ 1 0 x ]
++        [ 0 1 y ]
++        [ 0 0 1 ]
++        """
++
++        return self.mMultiply(SVGMatrix(1, 0, 0, 1, x, y))
++
++    def mScale(self, scaleFactor):
++
++        """
++        [ scaleFactor 0           0 ]
++        [ 0           scaleFactor 0 ]
++        [ 0           0           1 ]
++        """
++
++        return self.mMultiply(SVGMatrix(scaleFactor, 0, 0, scaleFactor, 0, 0))
++
++    def mRotate(self, angle):
++
++        """
++        [ cos(angle) -sin(angle) 0 ]
++        [ sin(angle) cos(angle)  0 ]
++        [ 0          0           1 ]
++        """
++
++        return self.mMultiply(
++            SVGMatrix(
++                math.cos(math.radians(angle)),
++                math.sin(math.radians(angle)),
++                -math.sin(math.radians(angle)),
++                math.cos(math.radians(angle)),
++                0, 0
++                )
++            )
++
++class SVGPath:
++
++    """
++    A path.
++    See: http://www.w3.org/TR/SVGMobile12/svgudom.html#svg__SVGPath
++    See: http://www.w3.org/TR/SVGMobile12/paths.html
++    """
++
++    MOVE_TO = 77
++    LINE_TO = 76
++    CURVE_TO = 67
++    QUAD_TO = 81
++    CLOSE = 90
++    _CLOSE = 122 # More baggage (name not standard).
++
++    nparams = {
++        MOVE_TO : 2,
++        LINE_TO : 2,
++        CURVE_TO : 6,
++        QUAD_TO : 4,
++        CLOSE : 0,
++        _CLOSE : 0
++        }
++
++    def __init__(self):
++        self.segments = []
++
++    def __eq__(self, other):
++        return self.segments == other.segments
++
++    def __ne__(self, other):
++        return not (self == other)
++
++    def fromNode(self, node, name):
++
++        """
++        Initialise this object from the trait on the 'node' having the given
++        'name'.
++        """
++
++        value = node.getAttribute(name)
++        if value is None:
++            raise xml.dom.DOMException(xml.dom.NOT_SUPPORTED_ERR)
++
++        # Try and unpack the attribute value.
++
++        data = value.split()
++        self.segments = []
++        try:
++            i = 0
++            while i < len(data):
++                cmd = ord(data[i])
++                if cmd == self._CLOSE:
++                    cmd = self.CLOSE
++                i += 1
++                n = self.nparams[cmd]
++                params = map(float, data[i:i+n])
++                self.segments.append((cmd, params))
++                i += n
++        except (IndexError, ValueError):
++            raise xml.dom.DOMException(xml.dom.TYPE_MISMATCH_ERR)
++
++    def toNode(self, node, name):
++
++        """
++        Set the trait on the given 'node' using the given 'name' according to
++        this object's attributes.
++        """
++
++        try:
++            l = []
++            for cmd, params in self.segments:
++                l.append(unichr(cmd))
++                for param in params:
++                    l.append(str(param))
++            node.setAttribute(name, " ".join(l))
++        except (IndexError, ValueError):
++            raise xml.dom.DOMException(xml.dom.TYPE_MISMATCH_ERR)
++
++    # Interface methods.
++
++    def _numberOfSegments(self):
++        return len(self.segments)
++
++    numberOfSegments = property(_numberOfSegments)
++
++    def getSegment(self, cmdIndex):
++        try:
++            return self.segments[cmdIndex][0]
++        except IndexError:
++            raise xml.dom.DOMException(xml.dom.INDEX_SIZE_ERR)
++
++    def getSegmentParam(self, cmdIndex, paramIndex):
++        try:
++            return self.segments[cmdIndex][1][paramIndex]
++        except IndexError:
++            raise xml.dom.DOMException(xml.dom.INDEX_SIZE_ERR)
++
++    def moveTo(self, x, y):
++        self.segments.append((self.MOVE_TO, (x, y)))
++
++    def lineTo(self, x, y):
++        self.segments.append((self.LINE_TO, (x, y)))
++
++    def quadTo(self, x1, y1, x2, y2):
++        self.segments.append((self.QUAD_TO, (x1, y1, x2, y2)))
++
++    def curveTo(self, x1, y1, x2, y2, x3, y3):
++        self.segments.append((self.CURVE_TO, (x1, y1, x2, y2, x3, y3)))
++
++    def close(self):
++        self.segments.append((self.CLOSE,))
++
++class SVGPoint:
++
++    "A point used to provide currentTranslate."
++
++    def __init__(self, x, y):
++        self.x = x
++        self.y = y
++
++    def __repr__(self):
++        return "SVGPoint(%f, %f)" % (self.x, self.y)
++
++class SVGRect:
++
++    "A rectangle."
++
++    def __init__(self, x=0, y=0, width=0, height=0):
++        self.x, self.y, self.width, self.height = x, y, width, height
++
++    def __eq__(self, other):
++        return (self.x, self.y, self.width, self.height) == (other.x, other.y, other.width, other.height)
++
++    def __ne__(self, other):
++        return not (self == other)
++
++    def fromNode(self, node, name):
++
++        """
++        Initialise this object from the trait on the 'node' having the given
++        'name'.
++        """
++
++        value = node.getAttribute(name)
++        if value is None:
++            raise xml.dom.DOMException(xml.dom.NOT_SUPPORTED_ERR)
++        try:
++            values = map(float, value.split())
++            self.x, self.y, self.width, self.height = values
++        except (IndexError, ValueError):
++            raise xml.dom.DOMException(xml.dom.TYPE_MISMATCH_ERR)
++
++    def toNode(self, node, name):
++
++        """
++        Set the trait on the given 'node' using the given 'name' according to
++        this object's attributes.
++        """
++
++        try:
++            values = map(str, [self.x, self.y, self.width, self.height])
++            node.setAttribute(name, " ".join(values))
++        except (IndexError, ValueError):
++            raise xml.dom.DOMException(xml.dom.TYPE_MISMATCH_ERR)
++
++    def __repr__(self):
++        return "SVGRect(%f, %f, %f, %f)" % (self.x, self.y, self.width, self.height)
++
++class SVGRGBColor:
++
++    """
++    A colour.
++    See: http://www.w3.org/TR/SVGMobile12/painting.html#colorSyntax
++    """
++
++    def __init__(self, red, green, blue):
++        self.red, self.green, self.blue = red, green, blue
++
++    def __repr__(self):
++        return "SVGRGBColor(%f, %f, %f)" % (self.red, self.green, self.blue)
++
++class TraitAccess:
++
++    """
++    Access to traits stored on elements.
++    See: http://www.w3.org/TR/SVGMobile12/svgudom.html#svg__TraitAccess
++    """
++
++    def getPathTrait(self, name):
++        path = SVGPath()
++        path.fromNode(self, name)
++        return path
++
++    def setPathTrait(self, name, path):
++        path.toNode(self, name)
++
++    def getRectTrait(self, name):
++        rect = SVGRect()
++        rect.fromNode(self, name)
++        return rect
++
++    def setRectTrait(self, name, rect):
++        rect.toNode(self, name) 
++
++    def getMatrixTrait(self, name):
++        if name != "transform":
++            raise xml.dom.DOMException(xml.dom.NOT_SUPPORTED_ERR)
++        matrix = SVGMatrix()
++        matrix.fromNode(self, name)
++        return matrix
++
++    def setMatrixTrait(self, name, matrix):
++        if name != "transform":
++            raise xml.dom.DOMException(xml.dom.NOT_SUPPORTED_ERR)
++        matrix.toNode(self, name) 
++
++# Node classes.
++
++class SVGNode(libxml2dom.Node):
++
++    "Convenience modifications to nodes specific to libxml2dom.svg."
++
++    def xpath(self, expr, variables=None, namespaces=None):
++
++        """
++        Evaluate the given 'expr' using the optional 'variables' and
++        'namespaces'. If not otherwise specified, the "svg" prefix will be bound
++        to SVG_NAMESPACE as defined in this module.
++        """
++
++        namespaces = namespaces or {}
++        if not namespaces.has_key("svg"):
++            namespaces["svg"] = SVG_NAMESPACE
++        return libxml2dom.Node.xpath(self, expr, variables, namespaces)
++
++# NOTE: DocumentEvent is from DOM Level 3 Events.
++# NOTE: EventSystem is a special libxml2dom.events class.
++
++class SVGDocument(libxml2dom._Document, SVGNode, EventTarget, DocumentEvent, EventSystem):
++
++    "An SVG-specific document node."
++
++    def __init__(self, node, impl):
++
++        """
++        Initialise the document with the given 'node', implementation 'impl',
++        and global (SVGGlobal) details.
++        """
++
++        libxml2dom._Document.__init__(self, node, impl)
++        self.global_ = self.impl.get_global(self) # parent
++
++class SVGElement(SVGNode, EventTarget, TraitAccess, ElementTraversal): # NOTE: SVGNode instead of Element.
++
++    "An SVG-specific element."
++
++    def __init__(self, *args, **kw):
++        SVGNode.__init__(self, *args, **kw)
++
++    def _id(self):
++        return self.getAttribute("id")
++
++    def _setId(self, value):
++        self.setAttribute("id", value)
++
++    id = property(_id, _setId)
++
++class SVGLocatableElement(SVGElement, SVGLocatable):
++
++    "A locatable element."
++
++    pass
++
++class SVGTimedElement(SVGElement): # smil::ElementTimeControl
++
++    "A timed element."
++
++    def __init__(self, *args):
++
++        "Initialise the element with the underlying 'args'."
++
++        SVGElement.__init__(self, *args)
++        self.document_time = 0
++        self.paused = 0
++
++    def _isPaused(self):
++        return self.paused
++
++    def pauseElement(self):
++        self.paused = 1
++
++    def resumeElement(self):
++        self.paused = 0
++
++class SVGSVGElement(SVGLocatableElement, SVGTimedElement):
++
++    "An SVG-specific top-level element."
++
++    NAV_AUTO = 1
++    NAV_NEXT = 2
++    NAV_PREV = 3
++    NAV_UP = 4
++    NAV_UP_RIGHT = 5
++    NAV_RIGHT = 6
++    NAV_DOWN_RIGHT = 7
++    NAV_DOWN = 8
++    NAV_DOWN_LEFT = 9
++    NAV_LEFT = 10
++    NAV_UP_LEFT = 11
++
++    def __init__(self, *args):
++
++        "Initialise the element with the underlying 'args'."
++
++        SVGTimedElement.__init__(self, *args)
++        self.scale = 1
++        self.rotate = 0
++        self.translate = SVGPoint(0, 0)
++
++    # NOTE: The scale, rotate and translate properties are not persistent, and
++    # NOTE: are specific to individual objects.
++
++    def _currentScale(self):
++        return self.scale
++
++    def _currentRotate(self):
++        return self.rotate
++
++    def _currentTranslate(self):
++        return self.translate
++
++    def _setCurrentScale(self, scale):
++        if scale == 0:
++            raise xml.dom.DOMException(xml.dom.INVALID_ACCESS_ERR)
++        self.scale = scale
++
++    def _setCurrentRotate(self, rotate):
++        self.rotate = rotate
++
++    def _viewport(self):
++        if self.hasAttribute("viewBox"):
++            return self.getRectTrait("viewBox")
++        else:
++            return SVGRect(0, 0, self._convertMeasurement(self.getAttribute("width")),
++                self._convertMeasurement(self.getAttribute("height")))
++
++    # Utility methods.
++
++    units = ["in", "cm", "mm", "pt", "pc", "px", "%"]
++
++    def _convertMeasurement(self, value):
++        value = value.strip()
++        for unit in self.units:
++            if value.endswith(unit):
++                # NOTE: No conversion yet!
++                return float(value[:-len(unit)].strip())
++
++        raise xml.dom.DOMException(xml.dom.TYPE_MISMATCH_ERR)
++
++    # Standard methods.
++
++    def getCurrentTime(self):
++        return self.document_time
++
++    def setCurrentTime(self, setCurrentTime):
++        self.document_time = setCurrentTime
++
++    def createSVGMatrixComponents(self, a, b, c, d, e, f):
++        return SVGMatrix(a, b, c, d, e, f)
++
++    def createSVGRect(self):
++        return SVGRect()
++
++    def createSVGPath(self):
++        return SVGPath()
++
++    def createSVGRGBColor(self, red, green, blue):
++        return SVGRGBColor(red, green, blue)
++
++    def moveFocus(self, motionType):
++        raise NotImplementedError, "moveFocus"
++
++    def setFocus(self, object):
++        raise NotImplementedError, "setFocus"
++
++    def getCurrentFocusedObject(self):
++        raise NotImplementedError, "getCurrentFocusedObject"
++
++    currentScale = property(_currentScale, _setCurrentScale)
++    currentRotate = property(_currentRotate, _setCurrentRotate)
++    currentTranslate = property(_currentTranslate)
++    viewport = property(_viewport)
++
++# Event handler initialisation.
++
++def initialiseEvents(doc):
++
++    """
++    See: http://www.w3.org/TR/SVGMobile12/svgudom.html#svg__EventListenerInitializer2
++    See: http://www.w3.org/TR/xml-events/#section-listener-element
++    """
++
++    # Initialise script element listeners.
++
++    for script in doc.xpath("//svg:script"):
++        doc.global_.initializeEventListeners(script)
++
++    # Initialise handler element listeners using XML Events.
++
++    for handler in doc.xpath("//svg:handler"):
++        listener = doc.global_.createEventListener(handler)
++
++        # Attempt to parameterise the registration using the XML Events attributes.
++
++        phase = handler.getAttributeNS(libxml2dom.events.XML_EVENTS_NAMESPACE, "phase")
++
++        # Add the listener for the appropriate type and phases.
++
++        handler.parentNode.addEventListener(
++            handler.getAttributeNS(libxml2dom.events.XML_EVENTS_NAMESPACE, "event"),
++            listener,
++            phase == "capture"
++            )
++
++# Utility functions.
++
++createDocument = libxml2dom.createDocument
++createDocumentType = libxml2dom.createDocumentType
++
++def createSVGDocument():
++    return default_impl.createSVGDocument()
++
++def parse(stream_or_string, html=0, htmlencoding=None, unfinished=0, impl=None):
++    doc = libxml2dom.parse(stream_or_string, html=html, htmlencoding=htmlencoding, unfinished=unfinished, impl=(impl or default_impl))
++    initialiseEvents(doc)
++    return doc
++
++def parseFile(filename, html=0, htmlencoding=None, unfinished=0, impl=None):
++    doc = libxml2dom.parseFile(filename, html=html, htmlencoding=htmlencoding, unfinished=unfinished, impl=(impl or default_impl))
++    initialiseEvents(doc)
++    return doc
++
++def parseString(s, html=0, htmlencoding=None, unfinished=0, impl=None):
++    doc = libxml2dom.parseString(s, html=html, htmlencoding=htmlencoding, unfinished=unfinished, impl=(impl or default_impl))
++    initialiseEvents(doc)
++    return doc
++
++def parseURI(uri, html=0, htmlencoding=None, unfinished=0, impl=None):
++    doc = libxml2dom.parseURI(uri, html=html, htmlencoding=htmlencoding, unfinished=unfinished, impl=(impl or default_impl))
++    initialiseEvents(doc)
++    return doc
++
++# Single instance of the implementation.
++
++default_impl = SVGImplementation()
++
++# vim: tabstop=4 expandtab shiftwidth=4
+diff -urNad ezweb-platform-0.4~svn1581~/libxml2dom/xmlrpc.py ezweb-platform-0.4~svn1581/libxml2dom/xmlrpc.py
+--- ezweb-platform-0.4~svn1581~/libxml2dom/xmlrpc.py	1970-01-01 01:00:00.000000000 +0100
++++ ezweb-platform-0.4~svn1581/libxml2dom/xmlrpc.py	2008-12-15 10:40:09.610962558 +0100
+@@ -0,0 +1,496 @@
++#!/usr/bin/env python
++
++"""
++XML-RPC support using libxml2dom.
++
++See: http://www.xmlrpc.com/spec
++
++Copyright (C) 2007 Paul Boddie <paul@boddie.org.uk>
++
++This program is free software; you can redistribute it and/or modify it under
++the terms of the GNU Lesser General Public License as published by the Free
++Software Foundation; either version 3 of the License, or (at your option) any
++later version.
++
++This program is distributed in the hope that it will be useful, but WITHOUT
++ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
++FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
++details.
++
++You should have received a copy of the GNU Lesser General Public License along
++with this program.  If not, see <http://www.gnu.org/licenses/>.
++
++--------
++
++The sending and receiving of XML-RPC messages can be done using traditional HTTP
++libraries.
++
++See tests/xmlrpc_test.py for more details.
++"""
++
++import libxml2dom
++from libxml2dom.macrolib import *
++from libxml2dom.macrolib import \
++    createDocument as Node_createDocument
++import datetime
++
++class XMLRPCImplementation(libxml2dom.Implementation):
++
++    "Contains an XML-RPC-specific implementation."
++
++    # Wrapping of documents.
++
++    def adoptDocument(self, node):
++        return XMLRPCDocument(node, self)
++
++    # Factory functions.
++
++    def get_node(self, _node, context_node):
++
++        """
++        Get a libxml2dom node for the given low-level '_node' and libxml2dom
++        'context_node'.
++        """
++
++        if Node_nodeType(_node) == context_node.ELEMENT_NODE:
++
++            # Make special elements.
++
++            if Node_localName(_node) in ("methodCall", "methodResponse"):
++                return XMLRPCMethodElement(_node, self, context_node.ownerDocument)
++            elif Node_localName(_node) == "methodName":
++                return XMLRPCMethodNameElement(_node, self, context_node.ownerDocument)
++            elif Node_localName(_node) == "fault":
++                return XMLRPCFaultElement(_node, self, context_node.ownerDocument)
++            elif Node_localName(_node) == "string":
++                return XMLRPCStringElement(_node, self, context_node.ownerDocument)
++            elif Node_localName(_node) in ("int", "i4"):
++                return XMLRPCIntegerElement(_node, self, context_node.ownerDocument)
++            elif Node_localName(_node) == "boolean":
++                return XMLRPCBooleanElement(_node, self, context_node.ownerDocument)
++            elif Node_localName(_node) == "double":
++                return XMLRPCDoubleElement(_node, self, context_node.ownerDocument)
++            elif Node_localName(_node) == "dateTime.iso8601":
++                return XMLRPCDateTimeElement(_node, self, context_node.ownerDocument)
++            elif Node_localName(_node) == "base64":
++                return XMLRPCBase64Element(_node, self, context_node.ownerDocument)
++            elif Node_localName(_node) == "struct":
++                return XMLRPCStructElement(_node, self, context_node.ownerDocument)
++            elif Node_localName(_node) == "member":
++                return XMLRPCMemberElement(_node, self, context_node.ownerDocument)
++            elif Node_localName(_node) == "value":
++                return XMLRPCValueElement(_node, self, context_node.ownerDocument)
++            elif Node_localName(_node) == "name":
++                return XMLRPCNameElement(_node, self, context_node.ownerDocument)
++            elif Node_localName(_node) == "array":
++                return XMLRPCArrayElement(_node, self, context_node.ownerDocument)
++            elif Node_localName(_node) == "data":
++                return XMLRPCDataElement(_node, self, context_node.ownerDocument)
++
++            # Otherwise, make generic XML-RPC elements.
++
++            return XMLRPCElement(_node, self, context_node.ownerDocument)
++
++        else:
++            return libxml2dom.Implementation.get_node(self, _node, context_node)
++
++    # Convenience functions.
++
++    def createXMLRPCMessage(self, namespaceURI, localName):
++
++        "Create a new XML-RPC message document (fragment)."
++
++        return XMLRPCDocument(Node_createDocument(namespaceURI, localName, None), self).documentElement
++
++    def createMethodCall(self):
++        return self.createXMLRPCMessage(None, "methodCall")
++
++    def createMethodResponse(self):
++        return self.createXMLRPCMessage(None, "methodResponse")
++
++# Node classes.
++
++class XMLRPCNode(libxml2dom.Node):
++
++    "Convenience modifications to nodes specific to libxml2dom.xmlrpc."
++
++    pass
++
++class XMLRPCElement(XMLRPCNode):
++
++    "An XML-RPC element."
++
++    pass
++
++class XMLRPCDocument(libxml2dom._Document, XMLRPCNode):
++
++    "An XML-RPC document fragment."
++
++    def _method(self):
++        return (self.xpath("methodCall|methodResponse") or [None])[0]
++
++    def _fault(self):
++        if self.method is not None:
++            return self.method.fault
++        else:
++            return None
++
++    method = property(_method)
++    fault = property(_fault)
++
++    # Node construction methods.
++
++    def createMethodCall(self):
++        return self.ownerDocument.createElement("methodCall")
++
++    def createMethodResponse(self):
++        return self.ownerDocument.createElement("methodResponse")
++
++class XMLRPCMethodElement(XMLRPCNode):
++
++    "An XML-RPC method element."
++
++    def _fault(self):
++        return (self.xpath("./fault") or [None])[0]
++
++    def _methodNameElement(self):
++        return (self.xpath("./methodName") or [None])[0]
++
++    def _methodName(self):
++        name = self.methodNameElement
++        if name is not None:
++            return name.value
++        else:
++            return None
++
++    def _setMethodName(self, name):
++        if self.methodNameElement is None:
++            methodName = self.createMethodName()
++            self.appendChild(methodName)
++        self.methodNameElement.value = name
++
++    def _parameterValues(self):
++        return [value.container.contents for value in self.xpath("./params/param/value")]
++
++    # Node construction methods.
++
++    def createMethodName(self):
++        return self.ownerDocument.createElement("methodName")
++
++    def createParameters(self):
++        return self.ownerDocument.createElement("params")
++
++    def createFault(self):
++        return self.ownerDocument.createElement("fault")
++
++    fault = property(_fault)
++    methodNameElement = property(_methodNameElement)
++    methodName = property(_methodName, _setMethodName)
++    parameterValues = property(_parameterValues)
++
++class XMLRPCArrayElement(XMLRPCNode):
++
++    "An XML-RPC array element."
++
++    def _data(self):
++        return (self.xpath("./data") or [None])[0]
++
++    def _contents(self):
++        return self
++
++    # Sequence emulation.
++
++    def __len__(self):
++        if self.data:
++            return len(self.data)
++        else:
++            return 0
++
++    def __getitem__(self, i):
++        if self.data:
++            return self.data[i]
++        else:
++            raise IndexError, i
++
++    def __eq__(self, other):
++        for i, j in map(None, self, other):
++            if i != j:
++                return False
++        return True
++
++    # Node construction methods.
++
++    def createData(self):
++        return self.ownerDocument.createElement("data")
++
++    data = property(_data)
++    contents = property(_contents)
++
++class XMLRPCStructElement(XMLRPCNode):
++
++    "An XML-RPC structure element."
++
++    def _members(self):
++        return self.xpath("./member")
++
++    def _contents(self):
++        return self
++
++    # Sequence emulation.
++
++    def __len__(self):
++        return len(self.members)
++
++    def __getitem__(self, i):
++        return self.members[i]
++
++    def __eq__(self, other):
++        for i, j in map(None, self, other):
++            if i != j:
++                return False
++        return True
++
++    # Node construction methods.
++
++    def createMember(self):
++        return self.ownerDocument.createElement("member")
++
++    members = property(_members)
++    contents = property(_contents)
++
++class XMLRPCDataElement(XMLRPCNode):
++
++    "An XML-RPC array data element."
++
++    def _values(self):
++        return self.xpath("./value")
++
++    # Sequence emulation.
++
++    def __len__(self):
++        return len(self.values)
++
++    def __getitem__(self, i):
++        return self.values[i].container.contents
++
++    # Node construction methods.
++
++    def createValue(self):
++        return self.ownerDocument.createElement("value")
++
++    values = property(_values)
++
++class XMLRPCMemberElement(XMLRPCNode):
++
++    "An XML-RPC structure member element."
++
++    def _value(self):
++        return (self.xpath("./value") or [None])[0]
++
++    def _nameElement(self):
++        return (self.xpath("./name") or [None])[0]
++
++    def _memberName(self):
++        if self.nameElement is not None:
++            return self.nameElement.value
++        else:
++            return None
++
++    def _setMemberName(self, name):
++        if self.nameElement is None:
++            nameElement = self.createName()
++            self.appendChild(nameElement)
++        self.nameElement.value = name
++
++    def _contents(self):
++        return self
++
++    # Item (name, value) emulation.
++
++    def __len__(self):
++        return 2
++
++    def __getitem__(self, i):
++        return (self.memberName, self.value.container.contents)[i]
++
++    def __eq__(self, other):
++        return self[0] == other[0] and self[1] == other[1]
++
++    # Node construction methods.
++
++    def createName(self):
++        return self.ownerDocument.createElement("name")
++
++    def createValue(self):
++        return self.ownerDocument.createElement("value")
++
++    value = property(_value)
++    nameElement = property(_nameElement)
++    memberName = property(_memberName, _setMemberName)
++    contents = property(_contents)
++
++class XMLRPCStringElement(XMLRPCNode):
++
++    "An XML-RPC string element."
++
++    typename = "string"
++
++    def _value(self):
++        return self.textContent.strip()
++
++    def _setValue(self, value):
++        for node in self.childNodes:
++            self.removeChild(node)
++        text = self.ownerDocument.createTextNode(value)
++        self.appendChild(text)
++
++    def _contents(self):
++        return convert(self.typename, self.value)
++
++    def __eq__(self, other):
++        if hasattr(other, "contents"):
++            return self.contents == other.contents
++        else:
++            return self.contents == other
++
++    value = property(_value, _setValue)
++    contents = property(_contents)
++
++class XMLRPCNameElement(XMLRPCStringElement):
++
++    "An XML-RPC name element."
++
++    pass
++
++class XMLRPCValueElement(XMLRPCStringElement):
++
++    "An XML-RPC value element."
++
++    def _type(self):
++        elements = self.xpath("*")
++        if elements:
++            return elements[0].localName
++        else:
++            return "string"
++
++    def _container(self):
++        return (self.xpath("*") or [self])[0]
++
++    type = property(_type)
++    container = property(_container)
++
++class XMLRPCMethodNameElement(XMLRPCStringElement):
++
++    "An XML-RPC method element."
++
++    pass
++
++class XMLRPCIntegerElement(XMLRPCStringElement):
++
++    "An XML-RPC integer element."
++
++    typename = "int"
++
++class XMLRPCBooleanElement(XMLRPCStringElement):
++
++    "An XML-RPC boolean element."
++
++    typename = "boolean"
++
++class XMLRPCDoubleElement(XMLRPCStringElement):
++
++    "An XML-RPC double floating point number element."
++
++    typename = "double"
++
++class XMLRPCDateTimeElement(XMLRPCStringElement):
++
++    "An XML-RPC date/time element."
++
++    typename = "datetime"
++
++class XMLRPCBase64Element(XMLRPCStringElement):
++
++    "An XML-RPC integer element."
++
++    typename = "base64"
++
++class XMLRPCFaultElement(XMLRPCNode):
++
++    "An XML-RPC fault element."
++
++    def _code(self):
++        code = self.xpath("./value/struct/member[./name/text() = 'faultCode']/value/int")
++        if code:
++            return code[0].value
++        else:
++            return None
++
++    def _reason(self):
++        reason = self.xpath("./value/struct/member[./name/text() = 'faultString']/value/string")
++        if reason:
++            return reason[0].value
++        else:
++            return None
++
++    code = property(_code)
++    reason = property(_reason)
++
++# Conversion functions.
++
++def convert(typename, value):
++    return default_converters[typename](value)
++
++def boolean(s):
++    if s.lower() == "true":
++        return True
++    elif s.lower() == "false":
++        return False
++    else:
++        raise ValueError, "String value %s not convertable to boolean." % repr(s)
++
++def iso8601(s):
++    year, month, day, hour, minute, second = map(int, (s[:4], s[4:6], s[6:8], s[9:11], s[12:14], s[15:17]))
++    return datetime.datetime(year, month, day, hour, minute, second)
++
++default_converters = {
++    "string" : unicode,
++    "int" : int,
++    "i4" : int,
++    "double" : float,
++    "boolean" : boolean,
++    "dateTime.iso8601" : iso8601,
++    "base64" : str
++    }
++
++# Utility functions.
++
++createDocument = libxml2dom.createDocument
++createDocumentType = libxml2dom.createDocumentType
++
++def createXMLRPCMessage(namespaceURI, localName):
++    return default_impl.createXMLRPCMessage(None, localName)
++
++def createMethodCall():
++    return default_impl.createMethodCall()
++
++def createMethodResponse():
++    return default_impl.createMethodResponse()
++
++def parse(stream_or_string, html=0, htmlencoding=None, unfinished=0, impl=None):
++    return libxml2dom.parse(stream_or_string, html=html, htmlencoding=htmlencoding, unfinished=unfinished, impl=(impl or default_impl))
++
++def parseFile(filename, html=0, htmlencoding=None, unfinished=0, impl=None):
++    return libxml2dom.parseFile(filename, html=html, htmlencoding=htmlencoding, unfinished=unfinished, impl=(impl or default_impl))
++
++def parseString(s, html=0, htmlencoding=None, unfinished=0, impl=None):
++    return libxml2dom.parseString(s, html=html, htmlencoding=htmlencoding, unfinished=unfinished, impl=(impl or default_impl))
++
++def parseURI(uri, html=0, htmlencoding=None, unfinished=0, impl=None):
++    return libxml2dom.parseURI(uri, html=html, htmlencoding=htmlencoding, unfinished=unfinished, impl=(impl or default_impl))
++
++# Single instance of the implementation.
++
++default_impl = XMLRPCImplementation()
++
++# vim: tabstop=4 expandtab shiftwidth=4
+diff -urNad ezweb-platform-0.4~svn1581~/libxml2dom/xmpp.py ezweb-platform-0.4~svn1581/libxml2dom/xmpp.py
+--- ezweb-platform-0.4~svn1581~/libxml2dom/xmpp.py	1970-01-01 01:00:00.000000000 +0100
++++ ezweb-platform-0.4~svn1581/libxml2dom/xmpp.py	2008-12-15 10:40:09.610962558 +0100
+@@ -0,0 +1,561 @@
++#!/usr/bin/env python
++
++"""
++XMPP support using libxml2dom to capture stanzas as documents. The XMPP
++specification employs an "open" or unfinished document as the basis for
++communications between client and server - this presents problems for
++DOM-oriented libraries.
++
++Various Internet standards specifications exist for XMPP.
++See: http://www.xmpp.org/rfcs/rfc3920.html
++See: http://www.xmpp.org/rfcs/rfc3921.html
++
++Copyright (C) 2007 Paul Boddie <paul@boddie.org.uk>
++
++This program is free software; you can redistribute it and/or modify it under
++the terms of the GNU Lesser General Public License as published by the Free
++Software Foundation; either version 3 of the License, or (at your option) any
++later version.
++
++This program is distributed in the hope that it will be useful, but WITHOUT
++ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
++FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
++details.
++
++You should have received a copy of the GNU Lesser General Public License along
++with this program.  If not, see <http://www.gnu.org/licenses/>.
++
++--------
++
++The process of connecting, authenticating, and so on is quite convoluted:
++
++s = libxml2dom.xmpp.Session(("localhost", 5222))
++d = s.connect("host")
++auth = s.createAuth()                        # provides access to the stanza
++auth.mechanism = "PLAIN"                     # choose a supported mechanism
++auth.setCredentials(jid, username, password) # for PLAIN authentication only
++d = s.send(auth)                             # hopefully a success response
++d = s.connect("host")                        # have to reconnect!
++iq = s.createIq()                            # make an 'iq' stanza
++iq.makeBind()                                # set up a binding operation
++d = s.send(iq)                               # hopefully a success response
++iq = s.createIq()                            # make an 'iq' stanza
++iq.makeSession()                             # set up a session
++d = s.send(iq)                               # hopefully a success response
++
++See tests/xmpp_test.py for more details.
++"""
++
++import libxml2dom
++from libxml2dom.macrolib import *
++from libxml2dom.macrolib import \
++    createDocument as Node_createDocument
++import socket
++import select
++import base64 # for auth elements
++
++# XMPP-related namespaces.
++
++XMPP_BIND_NAMESPACE = "urn:ietf:params:xml:ns:xmpp-bind"
++XMPP_CLIENT_NAMESPACE = "jabber:client"
++XEP_0022_EVENT_NAMESPACE = "jabber:x:event"
++XMPP_REGISTER_NAMESPACE = "jabber:iq:register"
++XMPP_SASL_NAMESPACE = "urn:ietf:params:xml:ns:xmpp-sasl"
++XMPP_SESSION_NAMESPACE = "urn:ietf:params:xml:ns:xmpp-session"
++XMPP_STREAMS_NAMESPACE = "http://etherx.jabber.org/streams"
++
++# Default namespace bindings for XPath.
++
++default_ns = {
++    "bind" : XMPP_BIND_NAMESPACE,
++    "client" : XMPP_CLIENT_NAMESPACE,
++    "event": XEP_0022_EVENT_NAMESPACE,
++    "register" : XMPP_REGISTER_NAMESPACE,
++    "sasl" : XMPP_SASL_NAMESPACE,
++    "session" : XMPP_SESSION_NAMESPACE,
++    "stream" : XMPP_STREAMS_NAMESPACE
++    }
++
++class XMPPImplementation(libxml2dom.Implementation):
++
++    "Contains an XMPP-specific implementation."
++
++    # Wrapping of documents.
++
++    def adoptDocument(self, node):
++        return XMPPDocument(node, self)
++
++    # Factory functions.
++
++    def get_node(self, _node, context_node):
++
++        """
++        Get a libxml2dom node for the given low-level '_node' and libxml2dom
++        'context_node'.
++        """
++
++        if Node_nodeType(_node) == context_node.ELEMENT_NODE:
++
++            # Make special binding elements.
++
++            if Node_namespaceURI(_node) == XMPP_BIND_NAMESPACE:
++                if Node_localName(_node) == "bind":
++                    return XMPPBindElement(_node, self, context_node.ownerDocument)
++
++            # Make special client elements.
++
++            elif Node_namespaceURI(_node) == XMPP_CLIENT_NAMESPACE:
++                if Node_localName(_node) == "iq":
++                    return XMPPIqElement(_node, self, context_node.ownerDocument)
++                elif Node_localName(_node) == "message":
++                    return XMPPMessageElement(_node, self, context_node.ownerDocument)
++                elif Node_localName(_node) == "presence":
++                    return XMPPPresenceElement(_node, self, context_node.ownerDocument)
++                else:
++                    return XMPPClientElement(_node, self, context_node.ownerDocument)
++
++            # Make special event elements.
++
++            elif Node_namespaceURI(_node) == XEP_0022_EVENT_NAMESPACE:
++                return XEP0022EventElement(_node, self, context_node.ownerDocument)
++
++            # Make special registration elements.
++
++            elif Node_namespaceURI(_node) == XMPP_REGISTER_NAMESPACE:
++                return XMPPRegisterElement(_node, self, context_node.ownerDocument)
++
++            # Make special authentication elements.
++
++            elif Node_namespaceURI(_node) == XMPP_SASL_NAMESPACE:
++                if Node_localName(_node) == "auth":
++                    return XMPPAuthElement(_node, self, context_node.ownerDocument)
++
++            # Make special stream elements.
++
++            elif Node_namespaceURI(_node) == XMPP_STREAMS_NAMESPACE:
++                if Node_localName(_node) == "stream":
++                    return XMPPStreamElement(_node, self, context_node.ownerDocument)
++
++            # Otherwise, make generic XMPP elements.
++
++            return XMPPElement(_node, self, context_node.ownerDocument)
++
++        else:
++            return libxml2dom.Implementation.get_node(self, _node, context_node)
++
++    # Convenience functions.
++
++    def createXMPPStanza(self, namespaceURI, localName):
++
++        "Create a new XMPP stanza document (fragment)."
++
++        return XMPPDocument(Node_createDocument(namespaceURI, localName, None), self).documentElement
++
++# Node classes.
++
++class XMPPNode(libxml2dom.Node):
++
++    "Convenience modifications to nodes specific to libxml2dom.xmpp."
++
++    def xpath(self, expr, variables=None, namespaces=None):
++
++        """
++        Evaluate the given 'expr' using the optional 'variables' and
++        'namespaces'. If not otherwise specified, the prefixes given in the
++        module global 'default_ns' will be bound as in that dictionary.
++        """
++
++        ns = {}
++        ns.update(default_ns)
++        ns.update(namespaces or {})
++        return libxml2dom.Node.xpath(self, expr, variables, ns)
++
++class XMPPDocument(libxml2dom._Document, XMPPNode):
++
++    "An XMPP document fragment."
++
++    pass
++
++class XMPPElement(XMPPNode):
++    pass
++
++class XMPPAuthElement(XMPPNode):
++
++    "An XMPP auth element."
++
++    def _mechanism(self):
++        return self.getAttribute("mechanism")
++
++    def _setMechanism(self, value):
++        self.setAttribute("mechanism", value)
++
++    def _value(self):
++        return self.textContent
++
++    def setCredentials(self, jid, username, password):
++
++        # NOTE: This is what xmpppy does. Beware of the leopard, with respect to
++        # NOTE: the specifications.
++
++        b64value = base64.encodestring("%s\x00%s\x00%s" % (jid, username, password))
++        text = self.ownerDocument.createTextNode(b64value)
++        self.appendChild(text)
++
++    mechanism = property(_mechanism, _setMechanism)
++    value = property(_value)
++
++class XMPPBindElement(XMPPNode):
++
++    "An XMPP bind element."
++
++    def _resource(self):
++        return "".join(self.xpath("resource/text()"))
++
++    def _setResource(self, value):
++        resources = self.xpath("resource")
++        for resource in resources:
++            self.removeChild(resource)
++        resource = self.ownerDocument.createElement("resource")
++        self.appendChild(resource)
++        text = self.ownerDocument.createTextNode(value)
++        resource.appendChild(text)
++
++    resource = property(_resource, _setResource)
++
++class XMPPClientElement(XMPPNode):
++
++    "An XMPP client element."
++
++    def _id(self):
++        return self.getAttribute("id")
++
++    def _setId(self, value):
++        self.setAttribute("id", value)
++
++    def _delId(self):
++        self.removeAttribute("id")
++
++    def _from(self):
++        return self.getAttribute("from")
++
++    def _setFrom(self, value):
++        self.setAttribute("from", value)
++
++    def _delFrom(self):
++        self.removeAttribute("from")
++
++    def _to(self):
++        return self.getAttribute("to")
++
++    def _setTo(self, value):
++        self.setAttribute("to", value)
++
++    def _delTo(self):
++        self.removeAttribute("to")
++
++    def _type(self):
++        return self.getAttribute("type")
++
++    def _setType(self, value):
++        self.setAttribute("type", value)
++
++    def _delType(self):
++        self.removeAttribute("type")
++
++    id = property(_id, _setId, _delId)
++    from_ = property(_from, _setFrom, _delFrom)
++    to = property(_to, _setTo, _delTo)
++    type = property(_type, _setType, _delType)
++
++class XMPPMessageElement(XMPPClientElement):
++
++    "An XMPP message element."
++
++    def _event(self):
++        return self.xpath(".//event:*")[0]
++
++    def _body(self):
++        return self.xpath("./client:body")[0]
++
++    def _setBody(self, body):
++        self.appendChild(body)
++
++    def _delBody(self):
++        self.removeChild(self.body)
++
++    def createBody(self):
++        return self.ownerDocument.createElementNS(XMPP_CLIENT_NAMESPACE, "body")
++
++    body = property(_body, _setBody, _delBody)
++    event = property(_event)
++
++class XEP0022EventElement(XMPPNode):
++
++    "An XEP-0022 event element."
++
++    def _offline(self):
++        return bool(self.xpath("./event:offline"))
++
++    def _delivered(self):
++        return bool(self.xpath("./event:delivered"))
++
++    def _displayed(self):
++        return bool(self.xpath("./event:displayed"))
++
++    def _composing(self):
++        return bool(self.xpath("./event:composing"))
++
++    def _id(self):
++        ids = self.xpath("./event:id")
++        if ids:
++            return ids[0].textContent
++        else:
++            return None
++
++    offline = property(_offline)
++    delivered = property(_delivered)
++    displayed = property(_displayed)
++    composing = property(_composing)
++    id = property(_id)
++
++class XMPPPresenceElement(XMPPClientElement):
++
++    "An XMPP presence element."
++
++    pass
++
++class XMPPIqElement(XMPPClientElement):
++
++    """
++    An XMPP 'iq' element used in instant messaging and registration.
++    See: http://www.xmpp.org/rfcs/rfc3921.html
++    See: http://www.xmpp.org/extensions/xep-0077.html
++    """
++
++    def _bind(self):
++        return (self.xpath("bind:bind") or [None])[0]
++
++    def _query(self):
++        return (self.xpath("register:query") or [None])[0]
++
++    def _session(self):
++        return (self.xpath("session:session") or [None])[0]
++
++    bind = property(_bind)
++    query = property(_query)
++    session = property(_session)
++
++    def createBind(self):
++        return self.ownerDocument.createElementNS(XMPP_BIND_NAMESPACE, "bind")
++
++    def createQuery(self):
++        return self.ownerDocument.createElementNS(XMPP_REGISTER_NAMESPACE, "query")
++
++    def createSession(self):
++        return self.ownerDocument.createElementNS(XMPP_SESSION_NAMESPACE, "session")
++
++    def makeBind(self):
++        bind = self.createBind()
++        self.appendChild(bind)
++        self.id = "bind1"
++        self.type = "set"
++
++    def makeQuery(self):
++        query = self.createQuery()
++        self.appendChild(query)
++        self.id = "register1"
++        self.type = "get"
++
++    def makeRegistration(self):
++        self.id = "register2"
++        self.type = "set"
++
++    def makeSession(self, host):
++        session = self.createSession()
++        self.appendChild(session)
++        self.id = "session1"
++        self.type = "set"
++        self.to = host
++
++class XMPPRegisterElement(XMPPNode):
++
++    """
++    A registration element.
++    See: http://www.xmpp.org/extensions/xep-0077.html
++    """
++
++    def __setitem__(self, name, value):
++        element = self.ownerDocument.createElement(name)
++        text = self.ownerDocument.createTextNode(value)
++        element = self.appendChild(element)
++        element.appendChild(text)
++
++class XMPPStreamElement(XMPPNode):
++    pass
++
++# Classes providing XMPP session support.
++
++class SessionTerminated(Exception):
++    pass
++
++class Session:
++
++    "An XMPP session."
++
++    connect_str = """\
++<?xml version="1.0"?>
++<stream:stream to='%s' xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams' version='1.0'>"""
++
++    disconnect_str = """\
++</stream:stream>"""
++
++    def __init__(self, address, timeout=500, bufsize=1024, encoding="utf-8"):
++
++        """
++        Initialise an XMPP session using the given 'address': a tuple of the
++        form (hostname, port). The optional 'timeout' (in milliseconds) is used
++        for polling the connection for new data, and the optional 'encoding'
++        specifies the character encoding employed in the communications.
++        """
++
++        self.timeout = timeout
++        self.bufsize = bufsize
++        self.encoding = encoding
++        self.poller = select.poll()
++        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
++        self.socket.setblocking(1)
++        self.socket.connect(address)
++        self.poller.register(self.socket.fileno(), select.POLLIN | select.POLLHUP | select.POLLNVAL | select.POLLERR)
++
++    def _ready(self, timeout):
++
++        """
++        Return whether data can be read from the server, waiting as long as the
++        specified 'timeout' (forever if set to None).
++        """
++
++        return self.poller.poll(timeout)
++
++    def read(self):
++
++        "Read as much as possible from the server."
++
++        context = Parser_push()
++        Parser_configure(context)
++
++        have_read = 0
++        fds = self._ready(self.timeout)
++        try:
++            while fds:
++                for fd, status in fds:
++                    if fd == self.socket.fileno():
++                        if status & (select.POLLHUP | select.POLLNVAL | select.POLLERR):
++                            raise SessionTerminated
++                        if status & select.POLLIN:
++                            have_read = 1
++                            c = self.socket.recv(self.bufsize)
++                            Parser_feed(context, c)
++                            if Parser_well_formed(context):
++                                return default_impl.adoptDocument(Parser_document(context))
++
++                fds = self.poller.poll(self.timeout)
++
++        except SessionTerminated:
++            pass
++
++        if have_read:
++            return default_impl.adoptDocument(Parser_document(context))
++        else:
++            return None
++
++    def write(self, s):
++
++        "Write the plain string 's' to the server."
++
++        self.socket.send(s)
++        
++    def send(self, stanza):
++
++        """
++        Send the 'stanza' to the server, returning a response stanza if an
++        immediate response was provided, or None otherwise.
++        """
++
++        stanza.toStream(self, encoding=self.encoding)
++        return self._receive()
++
++    def _receive(self):
++
++        "Return a stanza for data read from the server."
++
++        doc = self.read()
++        if doc is None:
++            return doc
++        else:
++            return doc.documentElement
++
++    def receive(self, timeout=None):
++
++        """
++        Wait for an incoming stanza, or as long as 'timeout' (in milliseconds),
++        or forever if 'timeout' is omitted or set to None, returning either a
++        stanza document (fragment) or None if nothing was received.
++        """
++
++        if self._ready(timeout):
++            return self._receive()
++        else:
++            return None
++
++    # Stanza creation.
++
++    def createAuth(self):
++        return self.createStanza(XMPP_SASL_NAMESPACE, "auth")
++
++    def createIq(self):
++        return self.createStanza(XMPP_CLIENT_NAMESPACE, "iq")
++
++    def createMessage(self):
++        return self.createStanza(XMPP_CLIENT_NAMESPACE, "message")
++
++    def createPresence(self):
++        return self.createStanza(XMPP_CLIENT_NAMESPACE, "presence")
++
++    def createStanza(self, namespaceURI, localName):
++        return createXMPPStanza(namespaceURI, localName)
++
++    # High-level methods.
++
++    def connect(self, host):
++
++        # NOTE: Nasty sending of the raw text because it involves only a start
++        # NOTE: tag.
++
++        self.write(self.connect_str % host)
++        return self._receive()
++
++# Utility functions.
++
++createDocument = libxml2dom.createDocument
++createDocumentType = libxml2dom.createDocumentType
++
++def createXMPPStanza(namespaceURI, localName):
++    return default_impl.createXMPPStanza(namespaceURI, localName)
++
++def parse(stream_or_string, html=0, htmlencoding=None, unfinished=0, impl=None):
++    return libxml2dom.parse(stream_or_string, html=html, htmlencoding=htmlencoding, unfinished=unfinished, impl=(impl or default_impl))
++
++def parseFile(filename, html=0, htmlencoding=None, unfinished=0, impl=None):
++    return libxml2dom.parseFile(filename, html=html, htmlencoding=htmlencoding, unfinished=unfinished, impl=(impl or default_impl))
++
++def parseString(s, html=0, htmlencoding=None, unfinished=0, impl=None):
++    return libxml2dom.parseString(s, html=html, htmlencoding=htmlencoding, unfinished=unfinished, impl=(impl or default_impl))
++
++def parseURI(uri, html=0, htmlencoding=None, unfinished=0, impl=None):
++    return libxml2dom.parseURI(uri, html=html, htmlencoding=htmlencoding, unfinished=unfinished, impl=(impl or default_impl))
++
++# Single instance of the implementation.
++
++default_impl = XMPPImplementation()
++
++# vim: tabstop=4 expandtab shiftwidth=4

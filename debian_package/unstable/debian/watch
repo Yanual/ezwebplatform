@@ -1,0 +1,4 @@
+# Compulsory line, this is a version 3 file
+version=3
+
+# For now, there is not any way to check for new versions of EzWeb

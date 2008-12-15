@@ -61,6 +61,10 @@ binary-indep: build install
 	echo -n > debian/ezweb-platform-common/usr/share/ezweb-platform/admintools/server_backends/__init__.py
 	echo -n > debian/ezweb-platform-common/usr/share/ezweb-platform/admintools/database_backends/__init__.py
 	
+	mkdir -p debian/ezweb-platform-common/etc/bash_completion.d
+	install -m644 debian/bash_completion \
+		debian/ezweb-platform-common/etc/bash_completion.d/ezweb-platform
+	
 	: # Remove unwanted files
 	rm -f `find debian/ezweb-platform-common -name "*.pyc"`
 	rm -rf `find debian/ezweb-platform-common -name ".svn"`
