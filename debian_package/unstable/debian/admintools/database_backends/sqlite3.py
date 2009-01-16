@@ -198,7 +198,7 @@ class SetDefaultsCommand(Command):
 
 class UpdateCommand(Command):
 
-  option_list = [make_option ("--path","--path", action="store",
+  option_list = [make_option ("--path", action="store",
                              dest="path", help=_("Path to the sqlite database file."))]
 
   def __init__(self, resources):

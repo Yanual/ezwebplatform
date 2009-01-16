@@ -2,13 +2,13 @@
 from os import path
 from django.utils.translation import ugettext_lazy as _
 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-
-APPEND_SLASH=False
+#@ENABLE_DEBUG@DEBUG = True
+#@ENABLE_DEBUG@TEMPLATE_DEBUG = True
 
 BASEDIR = '/usr/share/ezweb-platform'
 APPEND_SLASH = False
+
+FORCE_SCRIPT_NAME = '' # TODO use @URL_PREFIX@
 
 ADMINS = ()
 MANAGERS = ADMINS
@@ -62,43 +62,6 @@ ADMIN_MEDIA_PREFIX = '/media/'
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '@SECRET_KEY@'
 
-#Authentication
-AUTHENTICATION_BACKENDS = (
-'authentication.anonymousaccess.AnonymousBackend',
-#'authentication.ldapaccess.LDAPBackend',
-#'authentication.ezsteroidsaccess.EzSteroidsBackend',
-'django.contrib.auth.backends.ModelBackend',
-)
-
-#LDAP Backend
-#AD_LDAP_URL = '@LDAP_SERVER@'
-#AD_SEARCH_DN = '@LDAP_SEARCH_DN@'
-
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.load_template_source',
-    'django.template.loaders.app_directories.load_template_source',
-#    'django.template.loaders.eggs.load_template_source',
-)
-
-MIDDLEWARE_CLASSES = (
-#    'django.contrib.sessions.middleware.SessionMiddleware',
-    'middleware.session_middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
-    'django.middleware.common.CommonMiddleware',
-#    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'middleware.auth_middleware.AuthenticationMiddleware',
-    'django.middleware.doc.XViewMiddleware',
-    'middleware.console_middleware.ConsoleExceptionMiddleware',
-)
-
-
-ROOT_URLCONF = 'urls'
-
-TEMPLATE_DIRS = (
-    path.join(BASEDIR, 'templates'),
-)
-
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -115,19 +78,57 @@ INSTALLED_APPS = (
     'clms'
 )
 
-SESSION_COOKIE_AGE = 5184000    #2 months
-SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+#Authentication
+AUTHENTICATION_BACKENDS = (@AUTH_BACKENDS@)
+
+@AUTH_BACKENDS_CONF@
 
 AUTH_PROFILE_MODULE = 'user.UserProfile'
 
+# Middleware classes
+MIDDLEWARE_CLASSES = (
+    'middleware.session_middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    @AUTH_MIDDLEWARE_CLASSES@
+    'django.middleware.doc.XViewMiddleware',
+    'middleware.console_middleware.ConsoleExceptionMiddleware',
+)
+
+ROOT_URLCONF = 'urls'
+
+# List of callables that know how to import templates from various sources.
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.load_template_source',
+    'django.template.loaders.app_directories.load_template_source',
+#    'django.template.loaders.eggs.load_template_source',
+)
+
+TEMPLATE_DIRS = (
+    path.join(BASEDIR, 'templates'),
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.core.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.request',
+    'processors.context_processors.home_gateway_url',
+    'processors.context_processors.server_url',
+    'processors.context_processors.is_anonymous',
+)
+
+SESSION_COOKIE_AGE = 5184000    #2 months
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
 # Set the log path
-# When empty, defaults to MEDIA_ROOT/logs
 LOG_PATH='@LOG_PATH@'
 
 # Set the proxy server here if needed
-@DISABLE_PROXY@PROXY_SERVER = '@PROXY_SERVER@'
+#@ENABLE_PROXY@PROXY_SERVER = '@PROXY_SERVER@'
 
-#@DISABLE_HOME_GATEWAY@HOME_GATEWAY_DISPATCHER_URL = '@HOME_GATEWAY_DISPATCHER'
+#@ENABLE_HOME_GATEWAY@HOME_GATEWAY_DISPATCHER_URL = '@HOME_GATEWAY_DISPATCHER'
 
 try:
     from clms.settings import *

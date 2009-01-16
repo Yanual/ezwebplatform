@@ -107,3 +107,25 @@ class DatabaseEngineCondition:
       return site_cfg['database']['database_engine'] == self.compareStatus
     else:
       return self.compareStatus == ""
+
+class HasAuthMethodCondition:
+
+  def __init__(self, compareStatus):
+    self.compareStatus = compareStatus
+
+  def pass_check(self, site_cfg):
+    if site_cfg.has_key("auth_methods"):
+      return self.compareStatus in site_cfg['auth_methods']
+    else:
+      return False
+
+class AuthMethodCondition:
+
+  def __init__(self, compareStatus):
+    self.compareStatus = compareStatus
+
+  def pass_check(self, site_cfg):
+    if site_cfg.has_key("auth_methods"):
+      return site_cfg['auth_methods'] == self.compareStatus
+    else:
+      return [] == self.compareStatus

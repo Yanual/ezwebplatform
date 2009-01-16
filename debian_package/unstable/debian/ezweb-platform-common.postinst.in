@@ -52,8 +52,16 @@ if [ "$1" = "configure" -o "$1" = "reconfigure" ]; then
   db_get ezweb-platform-common/proxy
   PROXY="$RET"
 
+  db_get ezweb-platform-common/allow-anonymous-access
+  ALLOW_ANONYMOUS_ACCESS="$RET"
+
+  db_get ezweb-platform-common/debug
+  DEBUG_MODE="$RET"
+
   # Save the config
-  $EZWEB_ADMIN_SCRIPT setdefaults default --proxy "$PROXY"
+  $EZWEB_ADMIN_SCRIPT setdefaults default --proxy "$PROXY" \
+                                          --allow-anonymous-access "$ALLOW_ANONYMOUS_ACCESS" \
+                                          --debug-mode "$DEBUG_MODE"
 
   # fix ownership and permissions
   chgrp www-data /var/lib/ezweb-platform

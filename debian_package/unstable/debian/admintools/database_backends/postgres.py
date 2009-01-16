@@ -188,14 +188,14 @@ class PostgreSQLResources:
 
 
 class UpdateCommand(Command):
-  option_list = [make_option("--database-user","--database-user", action="store",
-                             dest="database_user", help=_("Try to run a dist-upgrade")),
-                 make_option("--database-name","--database-name", action="store",
-                             dest="database_name", help=_("Try to run a dist-upgrade")),
-                 make_option("--database-pass","--database-pass", action="store",
-                             dest="database_pass", help=_("Try to run a dist-upgrade")),
-                 make_option("--database-host","--database-host", action="store",
-                             dest="database_host", help=_("Try to run a dist-upgrade"))
+  option_list = [make_option("--database-user", action="store",
+                             dest="database_user", help=_("User to use to connect to the database")),
+                 make_option("--database-name", action="store",
+                             dest="database_name", help=_("Name of the database to use")),
+                 make_option("--database-pass", action="store",
+                             dest="database_pass", help=_("Password to use to connect to the database server")),
+                 make_option("--database-host", action="store",
+                             dest="database_host", help=_("Address of the database server"))
                 ]
 
   def __init__(self, resources):
@@ -305,11 +305,11 @@ class GetDefaultsCommand(Command):
 
 
 class SetDefaultsCommand(Command):
-  option_list = [make_option("--database-host","--database-host", action="store",
+  option_list = [make_option("--database-host", action="store",
                              dest="database_host", help=_("Address of the server where the database is hosted")),
-                 make_option("--admin-user","--admin-user", action="store",
-                             dest="admin_user", help=_("User to use for administre PostgeSQL databases")),
-                 make_option("--admin-pass","--admin-pass", action="store",
+                 make_option("--admin-user", action="store",
+                             dest="admin_user", help=_("User to use for managing the PostgeSQL databases")),
+                 make_option("--admin-pass", action="store",
                              dest="admin_pass", help=_("Password associated to the admin user")),
                 ]
 

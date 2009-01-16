@@ -190,11 +190,11 @@ class Apache2Resources:
 
 
 class UpdateCommand(Command):
-  option_list = [make_option("--server-name","--server-name", action="store",
+  option_list = [make_option("--server-name", action="store",
                              dest="server_name", help=_("Try to run a dist-upgrade")),
-                 make_option("--server-port","--server-port", action="store",
+                 make_option("--server-port", action="store",
                              dest="server_port", help=_("Try to run a dist-upgrade")),
-                 make_option("--document-root","--document-root", action="store",
+                 make_option("--document-root", action="store",
                              dest="document_root", help=_("Try to run a dist-upgrade"))
                 ]
 
@@ -346,8 +346,13 @@ class ListTypesCommand(Command):
     self.apache2Resources = Apache2Resources(resources)
     self.resources = resources
 
-  def execute(self):
+  def execute(self, show_server):
+    if show_server:
+      prefix = "apache2 "
+    else:
+      prefix = ""
+
     for subdir, dirs, files in os.walk(self.apache2Resources.TEMPLATES_PATH):
       for template in files:
-        print("apache2 " + template.replace(".vhost", "")); # TODO
+        print(prefix + template.replace(".vhost", "")); # TODO
 

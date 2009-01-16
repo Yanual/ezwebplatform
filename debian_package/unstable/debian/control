@@ -28,7 +28,7 @@ Section: web
 Priority: optional
 Architecture: all
 Pre-Depends: debconf
-Depends: python-configobj, python (>= 2.4), python-xml, python-django (>=1.0)
+Depends: python (>= 2.4), python-django (>=1.0), python-libxml2, python-imaging, python-configobj
 Description: Web mashup platform - shared files
  EzWeb Platform, the MORFEO Open Source Community Mashup Platform, provides you
  a framework for building modern enterprise and personal mashups following the
@@ -64,7 +64,7 @@ Description: Apache2 support for EzWeb Platform - shared files
  main Web 2.0 ideas.
  .
  This package provides common files for supporting EzWeb Platform instances
- using apache2. However, there are several ways to connect EzWeb Platform
+ using Apache2. However, there are several ways to connect EzWeb Platform
  instances to apache2, and this package does *not* provide support for any of
  they. For this, you need to install one of the ezweb-platform-apache2-*
  packages. For example ezweb-platform-apache2-mod-python.
@@ -168,10 +168,9 @@ Package: ezweb-platform-sqlite3
 Section: web
 Priority: optional
 Architecture: all
-Depends: python-pysqlite2 | python (>= 2.5)
+Depends: python (>= 2.5) | python-pysqlite2
 Pre-Depends: debconf, ezweb-platform-common (= ${binary:Version})
 Provides: ezweb-platform-database-backend
-Suggests: python-pysqlite2
 Description: SQLite3 support for EzWeb Platform
  EzWeb Platform, the MORFEO Open Source Community Mashup Platform, provides you
  a framework for building modern enterprise and personal mashups following the
@@ -179,3 +178,34 @@ Description: SQLite3 support for EzWeb Platform
  .
  This package provides common files for supporting EzWeb Platform instances
  using SQLite3 as database engine.
+
+Package: ezweb-platform-ldap
+Section: web
+Priority: optional
+Architecture: all
+Depends: python-ldap
+Pre-Depends: debconf, ezweb-platform-common (= ${binary:Version})
+Provides: ezweb-platform-auth-backend
+Suggests: slapd
+Description: LDAP support for EzWeb Platform
+ EzWeb Platform, the MORFEO Open Source Community Mashup Platform, provides you
+ a framework for building modern enterprise and personal mashups following the
+ main Web 2.0 ideas.
+ .
+ This package provides common files for supporting EzWeb Platform instances
+ using LDAP as auth method.
+
+Package: ezweb-platform-ezsteroids
+Section: web
+Priority: optional
+Architecture: all
+Pre-Depends: debconf, ezweb-platform-common (= ${binary:Version})
+Provides: ezweb-platform-auth-backend
+Suggests: ezsteroids
+Description: EzSteroids support for EzWeb Platform
+ EzWeb Platform, the MORFEO Open Source Community Mashup Platform, provides you
+ a framework for building modern enterprise and personal mashups following the
+ main Web 2.0 ideas.
+ .
+ This package provides common files for supporting EzWeb Platform instances
+ using EzSteroids as auth method.

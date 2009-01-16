@@ -1,0 +1,40 @@
+#!/bin/bash
+
+###
+# Include debconf module
+#
+. /usr/share/debconf/confmodule
+
+if [ "$1" = "configure" ]; then
+
+  EZWEB_ADMIN_SCRIPT="/usr/sbin/update-ezweb-platform"
+
+  db_get ezweb-platform-ezsteroids/serveraddress
+  SERVER_HOST="$RET"
+
+  $EZWEB_ADMIN_SCRIPT setauthdefaults ezsteroids default --ezsteroids-server "$SERVER_HOST"
+
+  ###
+  # Configure the instances
+  #
+  OLD_VAL=`$EZWEB_ADMIN_SCRIPT list auth_method ezsteroids --debconf`
+  db_get ezweb-platform-ezsteroids/instances
+
+  if [ "$RET" != "" -a "$RET" != "$OLD_VAL" ]; then
+    list=`echo $RET | sed -e 's/, /,/g'`
+
+    saved_IFS=$IFS
+    IFS=,
+    for conf in $list; do
+      echo
+      echo "Configuring \"$conf\" for using EzSteroids as auth method..."
+      $EZWEB_ADMIN_SCRIPT update $conf --auth-method "ezsteroids"
+    done
+    IFS=$saved_IFS
+  fi
+
+fi
+
+#DEBHELPER#
+
+exit 0

@@ -8,3 +8,5 @@
 [type: gettext/rfc822deb] ezweb-platform-fastcgi-common.templates
 [type: gettext/rfc822deb] ezweb-platform-lighttpd-fastcgi.templates
 [type: gettext/rfc822deb] ezweb-platform-postgres.templates
+[type: gettext/rfc822deb] ezweb-platform-ldap.templates
+[type: gettext/rfc822deb] ezweb-platform-ezsteroids.templates

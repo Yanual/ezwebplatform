@@ -53,11 +53,13 @@ binary-indep: build install
 	mkdir -p debian/ezweb-platform-common/usr/sbin
 	cp -p debian/update-ezweb-platform debian/ezweb-platform-common/usr/sbin
 	
+	mkdir -p debian/ezweb-platform-common/usr/share/ezweb-platform/admintools/auth_backends
 	mkdir -p debian/ezweb-platform-common/usr/share/ezweb-platform/admintools/server_backends
 	mkdir -p debian/ezweb-platform-common/usr/share/ezweb-platform/admintools/database_backends
 	cp debian/admintools/*.py \
 	   debian/ezweb-platform-common/usr/share/ezweb-platform/admintools
 	echo -n > debian/ezweb-platform-common/usr/share/ezweb-platform/admintools/__init__.py
+	echo -n > debian/ezweb-platform-common/usr/share/ezweb-platform/admintools/auth_backends/__init__.py
 	echo -n > debian/ezweb-platform-common/usr/share/ezweb-platform/admintools/server_backends/__init__.py
 	echo -n > debian/ezweb-platform-common/usr/share/ezweb-platform/admintools/database_backends/__init__.py
 	
@@ -72,6 +74,8 @@ binary-indep: build install
 	rm -rf debian/ezweb-platform-common/usr/share/ezweb-platform/media/logs
 	rm -f debian/ezweb-platform-common/usr/share/ezweb-platform/config.conf
 	rm -f debian/ezweb-platform-common/usr/share/ezweb-platform/rebuild_db.sh
+	rm -f debian/ezweb-platform-common/usr/share/ezweb-platform/manage.py
+	rm -f debian/ezweb-platform-common/usr/share/ezweb-platform/save_fixtures.sh
 	rm -f debian/ezweb-platform-common/usr/share/ezweb-platform/*-stamp
 	rm -f debian/ezweb-platform-common/usr/share/ezweb-platform/settings.py
 	
@@ -143,6 +147,26 @@ binary-indep: build install
 	mkdir -p debian/ezweb-platform-sqlite3/usr/share/ezweb-platform/admintools/database_backends
 	cp -p debian/admintools/database_backends/sqlite3.py \
 	      debian/ezweb-platform-sqlite3/usr/share/ezweb-platform/admintools/database_backends
+	
+	: ###
+	: # ezweb-platform-ldap
+	: #
+	mkdir -p debian/ezweb-platform-ldap/usr/share/ezweb-platform/admintools/auth_backends
+	mv debian/admintools/auth_backends/ldap.py \
+	      debian/ezweb-platform-ldap/usr/share/ezweb-platform/admintools/auth_backends
+	mkdir -p debian/ezweb-platform-ldap/usr/share/ezweb-platform/authentication
+	mv debian/ezweb-platform-common/usr/share/ezweb-platform/authentication/ldapaccess.py \
+	   debian/ezweb-platform-ldap/usr/share/ezweb-platform/authentication/ldapaccess.py
+	
+	: ###
+	: # ezweb-platform-ezsteroids
+	: #
+	mkdir -p debian/ezweb-platform-ezsteroids/usr/share/ezweb-platform/admintools/auth_backends
+	cp -p debian/admintools/auth_backends/ezsteroids.py \
+	      debian/ezweb-platform-ezsteroids/usr/share/ezweb-platform/admintools/auth_backends
+	mkdir -p debian/ezweb-platform-ezsteroids/usr/share/ezweb-platform/authentication
+	mv debian/ezweb-platform-common/usr/share/ezweb-platform/authentication/ezsteroidsaccess.py \
+	   debian/ezweb-platform-ezsteroids/usr/share/ezweb-platform/authentication/ezsteroidsaccess.py
 	
 	dh_installdocs -i
 	dh_installchangelogs -i

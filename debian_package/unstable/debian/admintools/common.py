@@ -42,6 +42,7 @@ class EzWebAdminToolResources:
 
   DB_ADMIN_SCRIPTS_PATH      = "/usr/share/ezweb-platform/admintools/database_backends/"
   SERVER_ADMIN_SCRIPTS_PATH  = "/usr/share/ezweb-platform/admintools/server_backends/"
+  AUTH_ADMIN_SCRIPTS_PATH    = "/usr/share/ezweb-platform/admintools/auth_backends/"
   CONFIG_BASE_PATH           = "/etc/ezweb-platform/"
   SITE_CONFIG_BASE_PATH      = CONFIG_BASE_PATH + "sites/"
   DATA_PATH                  = "/var/lib/ezweb-platform/"
@@ -53,6 +54,7 @@ class EzWebAdminToolResources:
     self.site_cfgs = {}
     self.dbms_modules = {}
     self.server_modules = {}
+    self.auth_modules = {}
 
   def incPrintNestingLevel(self):
     self.printPrefix += "  "
@@ -141,6 +143,44 @@ class EzWebAdminToolResources:
 
   def get_default_admin_email(self, cfg):
     return "webmaster@localhost"
+
+  def get_auth_method(self, auth_method):
+    if not self.auth_modules.has_key(auth_method):
+      try:
+        mod = __import__("admintools.auth_backends.%s" % auth_method, {}, {}, ["AuthMethod"])
+      except ImportError, errormsg:
+        msg = "Unknown auth method \"%s\". May be you need to install other ezweb-platform packages." % auth_method
+        self.printlnMsg(msg)
+        sys.exit(-1)
+      except Exception, errormsg:
+        self.printlnMsg("Error loading \"%s\" module: %s" % (auth_method, errormsg))
+        sys.exit(-1)
+
+      self.auth_modules[auth_method] = mod
+
+    else:
+      mod = self.auth_modules[auth_method]
+
+    return getattr(mod, "AuthMethod")(self)
+
+  def get_auth_admin_command(self, auth_method, command_name):
+    if not self.auth_modules.has_key(auth_method):
+      try:
+        mod = __import__("admintools.auth_backends.%s" % auth_method, {}, {}, ["AuthMethod"])
+      except ImportError, errormsg:
+        msg = "Unknown auth method \"%s\". May be you need to install other ezweb-platform packages." % auth_method
+        self.printlnMsg(msg)
+        sys.exit(-1)
+      except Exception, errormsg:
+        self.printlnMsg("Error loading \"%s\" module: %s" % (auth_method, errormsg))
+        sys.exit(-1)
+
+      self.auth_modules[auth_method] = mod
+
+    else:
+      mod = self.auth_modules[auth_method]
+
+    return getattr(mod, command_name + "Command")(self)
 
   def get_server_admin_command(self, server_type, command_name):
     if not self.server_modules.has_key(server_type):
@@ -249,6 +289,28 @@ class Argument:
     self.name = name
     self.desc = desc
 
+
+class ExtendedOption(Option):
+
+    ACTIONS = Option.ACTIONS + ("store_list",)
+    STORE_ACTIONS = Option.STORE_ACTIONS + ("store_list",)
+    TYPED_ACTIONS = Option.TYPED_ACTIONS + ("store_list",)
+    ALWAYS_TYPED_ACTIONS = Option.ALWAYS_TYPED_ACTIONS + ("store_list",)
+
+    def take_action(self, action, dest, opt, value, values, parser):
+        if action == "store_list":
+            value = value.strip()
+            lvalue = value.split(",")
+            size = len(lvalue)
+            if size > 0 and lvalue[size - 1] == "":
+              lvalue.pop()
+
+            values.ensure_value(dest, []).extend(lvalue)
+        else:
+            Option.take_action(
+                self, action, dest, opt, value, values, parser)
+
+
 """
 An multi command option parser based on LaxOptionParser from django
 """
@@ -256,7 +318,7 @@ class MultiCommandOptionParser(OptionParser):
 
   def __init__(self,
                option_list=None,
-               option_class=Option,
+               option_class=ExtendedOption,
                version=None,
                conflict_handler="error",
                formatter=None,
@@ -445,10 +507,15 @@ class MultiCommandOptionParser(OptionParser):
       else:
         del rargs[0]
 
+
 class Command:
 
   def __init__(resources):
     self.resources = resources
+
+
+class AuthMethod:
+  pass
 
 
 class Template:
@@ -458,6 +525,12 @@ class Template:
 
   def replace(self, key, value):
     self.template = self.template.replace("@" + key + "@", value)
+
+  def replaceEnableOption(self, key, value):
+    if value:
+      self.template = self.template.replace("#@" + key + "@", "")
+    else:
+      self.template = self.template.replace("#@" + key + "@", "#")
 
   def save(self, filepath):
     file = open(filepath, "w")
@@ -517,6 +590,7 @@ class ConfigCopy:
   def getDefault(self, defaultValue, root, *entries):
     try:
       tmp = self.get(root, *entries)
+      return tmp
     except KeyError:
       return defaultValue
 

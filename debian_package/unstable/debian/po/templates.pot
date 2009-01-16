@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: ezweb-platform@packages.debian.org\n"
-"POT-Creation-Date: 2008-11-07 09:55+0100\n"
+"POT-Creation-Date: 2009-01-16 14:53+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,191 +16,37 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. Type: string
-#. Description
-#: ../ezweb-platform-apache2-common.templates:1001
-msgid "Default ServerName for EzWeb instances using Apache2:"
-msgstr ""
-
-#. Type: string
-#. Description
-#: ../ezweb-platform-apache2-common.templates:1001
-msgid ""
-"Each Apache2 virtual host is attached to one or more servernames. Here you "
-"can define the default value for this virtual host attribute that will be "
-"use by the EzWeb instances."
-msgstr ""
-
-#. Type: string
-#. Description
-#: ../ezweb-platform-apache2-common.templates:2001
-msgid "Default port for EzWeb instances using Apache2:"
-msgstr ""
-
-#. Type: string
-#. Description
-#: ../ezweb-platform-apache2-common.templates:2001
-msgid ""
-"Each Apache2 virtual host can be attached to one port. However, a virtual "
-"host does not have to be attached to a port at all."
-msgstr ""
-
-#. Type: string
-#. Description
-#: ../ezweb-platform-apache2-common.templates:2001
-msgid ""
-"Here you can define the default port the EzWeb instances will be attached to "
-"by default. But, if you want you can use * as the default port to indicate "
-"that EzWeb instances will be not attached to any port by default."
-msgstr ""
-
-#. Type: multiselect
-#. Description
-#: ../ezweb-platform-apache2-mod-python.templates:1001
-msgid "EzWeb instances that will use Apache2 with mod-python:"
-msgstr ""
-
-#. Type: multiselect
-#. Description
-#: ../ezweb-platform-apache2-mod-python.templates:1001
-msgid ""
-"The selected EzWeb instances will be configured to use Apache2 with mod-"
-"python."
-msgstr ""
-
-#. Type: multiselect
-#. Description
-#: ../ezweb-platform-apache2-mod-python.templates:1001
-#: ../ezweb-platform-mysql.templates:4001
-#: ../ezweb-platform-sqlite3.templates:1001
-#: ../ezweb-platform-apache2-fastcgi.templates:1001
-#: ../ezweb-platform-lighttpd-fastcgi.templates:1001
-#: ../ezweb-platform-postgres.templates:4001
-msgid ""
-"This will not enable the selected EzWeb instances, although they will "
-"continue to be enabled if they are currently enabled."
-msgstr ""
-
-#. Type: string
-#. Description
-#: ../ezweb-platform-lighttpd-common.templates:1001
-msgid "Default Server Name for EzWeb instances using Lighttpd:"
-msgstr ""
-
-#. Type: string
-#. Description
-#: ../ezweb-platform-lighttpd-common.templates:1001
-msgid ""
-"Each Lighttpd virtual host is attached to one or more servernames. Here you "
-"can define the default value for this virtual host attribute that will be "
-"use by the EzWeb instances."
-msgstr ""
-
-#. Type: string
-#. Description
-#: ../ezweb-platform-lighttpd-common.templates:2001
-msgid "Default port for EzWeb instances using Lighttpd:"
-msgstr ""
-
-#. Type: string
-#. Description
-#: ../ezweb-platform-lighttpd-common.templates:2001
-msgid ""
-"Each Lighttpd virtual host is attached to one port. Here you can define the "
-"default value for this virtual host attribute that will be use by the EzWeb "
-"instances."
-msgstr ""
-
-#. Type: string
-#. Description
-#: ../ezweb-platform-mysql.templates:1001
-msgid "Address of the default MySQL server:"
-msgstr ""
-
-#. Type: string
-#. Description
-#: ../ezweb-platform-mysql.templates:1001
-msgid ""
-"You should enter the address for the default MySQL server to use. You must "
-"use a IP or a Server Name without port (for example mysql.server.com or "
-"127.0.0.1)."
-msgstr ""
-
-#. Type: string
-#. Description
-#: ../ezweb-platform-mysql.templates:2001
-msgid "MySQL admin user:"
-msgstr ""
-
-#. Type: string
-#. Description
-#: ../ezweb-platform-mysql.templates:2001
-msgid ""
-"Please enter a valid user name for connecting to the MySQL server to do "
-"administrative tasks. This user must be able to create databases and new "
-"users."
-msgstr ""
-
-#. Type: password
-#. Description
-#: ../ezweb-platform-mysql.templates:3001
-msgid "MySQL admin password:"
-msgstr ""
-
-#. Type: password
-#. Description
-#: ../ezweb-platform-mysql.templates:3001
-msgid ""
-"Please enter the password of the admin user for connecting to the MySQL "
-"server."
-msgstr ""
-
-#. Type: multiselect
-#. Description
-#: ../ezweb-platform-mysql.templates:4001
-msgid "Ezweb instances that will use MySQL:"
-msgstr ""
-
-#. Type: multiselect
-#. Description
-#: ../ezweb-platform-mysql.templates:4001
-msgid "The selected EzWeb instances will be configured to use MySQL as DBMS."
-msgstr ""
-
-#. Type: multiselect
-#. Description
-#: ../ezweb-platform-sqlite3.templates:1001
-msgid "EzWeb instances that will use SQLite3:"
-msgstr ""
-
-#. Type: multiselect
-#. Description
-#: ../ezweb-platform-sqlite3.templates:1001
-msgid "The selected EzWeb instances will be configured to use SQLite3 as DBMS."
-msgstr ""
-
-#. Type: multiselect
-#. Description
-#: ../ezweb-platform-apache2-fastcgi.templates:1001
-msgid "EzWeb instances that will use Apache2 with fastcgi:"
-msgstr ""
-
-#. Type: multiselect
-#. Description
-#: ../ezweb-platform-apache2-fastcgi.templates:1001
-msgid ""
-"The selected EzWeb instances will be configured to use Apache2 with fastcgi."
-msgstr ""
-
 #. Type: boolean
 #. Description
-#: ../ezweb-platform-common.templates:1001
+#: ../ezweb-platform-apache2-common.templates:2001
+#: ../ezweb-platform-apache2-mod-python.templates:2001
+#: ../ezweb-platform-lighttpd-common.templates:2001
+#: ../ezweb-platform-mysql.templates:2001
+#: ../ezweb-platform-sqlite3.templates:2001
+#: ../ezweb-platform-apache2-fastcgi.templates:2001
+#: ../ezweb-platform-common.templates:2001
+#: ../ezweb-platform-fastcgi-common.templates:2001
+#: ../ezweb-platform-lighttpd-fastcgi.templates:2001
+#: ../ezweb-platform-postgres.templates:2001
+#: ../ezweb-platform-ldap.templates:2001
+#: ../ezweb-platform-ezsteroids.templates:2001
 msgid "Abort EzWeb upgrading?"
 msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../ezweb-platform-common.templates:1001
+#: ../ezweb-platform-apache2-common.templates:2001
+#: ../ezweb-platform-apache2-mod-python.templates:2001
+#: ../ezweb-platform-lighttpd-common.templates:2001
+#: ../ezweb-platform-mysql.templates:2001
+#: ../ezweb-platform-sqlite3.templates:2001
+#: ../ezweb-platform-apache2-fastcgi.templates:2001
+#: ../ezweb-platform-common.templates:2001
+#: ../ezweb-platform-fastcgi-common.templates:2001
+#: ../ezweb-platform-lighttpd-fastcgi.templates:2001
+#: ../ezweb-platform-postgres.templates:2001
+#: ../ezweb-platform-ldap.templates:2001
+#: ../ezweb-platform-ezsteroids.templates:2001
 msgid ""
 "EzWeb Platform is currently in heavy development, this means that database "
 "models are changed very often. This needs to drop EzWeb database tables and "
@@ -209,19 +55,208 @@ msgstr ""
 
 #. Type: boolean
 #. Description
-#: ../ezweb-platform-common.templates:1001
+#: ../ezweb-platform-apache2-common.templates:2001
+#: ../ezweb-platform-apache2-mod-python.templates:2001
+#: ../ezweb-platform-lighttpd-common.templates:2001
+#: ../ezweb-platform-mysql.templates:2001
+#: ../ezweb-platform-sqlite3.templates:2001
+#: ../ezweb-platform-apache2-fastcgi.templates:2001
+#: ../ezweb-platform-common.templates:2001
+#: ../ezweb-platform-fastcgi-common.templates:2001
+#: ../ezweb-platform-lighttpd-fastcgi.templates:2001
+#: ../ezweb-platform-postgres.templates:2001
+#: ../ezweb-platform-ldap.templates:2001
+#: ../ezweb-platform-ezsteroids.templates:2001
 msgid "The configuration will remain untouched."
 msgstr ""
 
 #. Type: string
 #. Description
-#: ../ezweb-platform-common.templates:2001
+#: ../ezweb-platform-apache2-common.templates:3001
+msgid "Default ServerName for EzWeb instances using Apache2:"
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../ezweb-platform-apache2-common.templates:3001
+msgid ""
+"Each Apache2 virtual host is attached to one or more servernames. Here you "
+"can define the default value for this virtual host attribute that will be "
+"use by the EzWeb instances."
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../ezweb-platform-apache2-common.templates:4001
+msgid "Default port for EzWeb instances using Apache2:"
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../ezweb-platform-apache2-common.templates:4001
+msgid ""
+"Each Apache2 virtual host can be attached to one port. However, a virtual "
+"host does not have to be attached to a port at all."
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../ezweb-platform-apache2-common.templates:4001
+msgid ""
+"Here you can define the default port the EzWeb instances will be attached to "
+"by default. But, if you want you can use * as the default port to indicate "
+"that EzWeb instances will be not attached to any port by default."
+msgstr ""
+
+#. Type: multiselect
+#. Description
+#: ../ezweb-platform-apache2-mod-python.templates:3001
+msgid "EzWeb instances that will use Apache2 with mod-python:"
+msgstr ""
+
+#. Type: multiselect
+#. Description
+#: ../ezweb-platform-apache2-mod-python.templates:3001
+msgid ""
+"The selected EzWeb instances will be configured to use Apache2 with mod-"
+"python."
+msgstr ""
+
+#. Type: multiselect
+#. Description
+#: ../ezweb-platform-apache2-mod-python.templates:3001
+#: ../ezweb-platform-mysql.templates:6001
+#: ../ezweb-platform-sqlite3.templates:3001
+#: ../ezweb-platform-apache2-fastcgi.templates:3001
+#: ../ezweb-platform-lighttpd-fastcgi.templates:3001
+#: ../ezweb-platform-postgres.templates:6001
+#: ../ezweb-platform-ldap.templates:5001
+#: ../ezweb-platform-ezsteroids.templates:4001
+msgid ""
+"This will not enable the selected EzWeb instances, although they will "
+"continue to be enabled if they are currently enabled."
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../ezweb-platform-lighttpd-common.templates:3001
+msgid "Default Server Name for EzWeb instances using Lighttpd:"
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../ezweb-platform-lighttpd-common.templates:3001
+msgid ""
+"Each Lighttpd virtual host is attached to one or more servernames. Here you "
+"can define the default value for this virtual host attribute that will be "
+"use by the EzWeb instances."
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../ezweb-platform-lighttpd-common.templates:4001
+msgid "Default port for EzWeb instances using Lighttpd:"
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../ezweb-platform-lighttpd-common.templates:4001
+msgid ""
+"Each Lighttpd virtual host is attached to one port. Here you can define the "
+"default value for this virtual host attribute that will be use by the EzWeb "
+"instances."
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../ezweb-platform-mysql.templates:3001
+msgid "Address of the default MySQL server:"
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../ezweb-platform-mysql.templates:3001
+msgid ""
+"You should enter the address for the default MySQL server to use. You must "
+"use a IP or a Server Name without port (for example mysql.server.com or "
+"127.0.0.1)."
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../ezweb-platform-mysql.templates:4001
+msgid "MySQL admin user:"
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../ezweb-platform-mysql.templates:4001
+msgid ""
+"Please enter a valid user name for connecting to the MySQL server to do "
+"administrative tasks. This user must be able to create databases and new "
+"users."
+msgstr ""
+
+#. Type: password
+#. Description
+#: ../ezweb-platform-mysql.templates:5001
+msgid "MySQL admin password:"
+msgstr ""
+
+#. Type: password
+#. Description
+#: ../ezweb-platform-mysql.templates:5001
+msgid ""
+"Please enter the password of the admin user for connecting to the MySQL "
+"server."
+msgstr ""
+
+#. Type: multiselect
+#. Description
+#: ../ezweb-platform-mysql.templates:6001
+msgid "Ezweb instances that will use MySQL:"
+msgstr ""
+
+#. Type: multiselect
+#. Description
+#: ../ezweb-platform-mysql.templates:6001
+msgid "The selected EzWeb instances will be configured to use MySQL as DBMS."
+msgstr ""
+
+#. Type: multiselect
+#. Description
+#: ../ezweb-platform-sqlite3.templates:3001
+msgid "EzWeb instances that will use SQLite3:"
+msgstr ""
+
+#. Type: multiselect
+#. Description
+#: ../ezweb-platform-sqlite3.templates:3001
+msgid "The selected EzWeb instances will be configured to use SQLite3 as DBMS."
+msgstr ""
+
+#. Type: multiselect
+#. Description
+#: ../ezweb-platform-apache2-fastcgi.templates:3001
+msgid "EzWeb instances that will use Apache2 with fastcgi:"
+msgstr ""
+
+#. Type: multiselect
+#. Description
+#: ../ezweb-platform-apache2-fastcgi.templates:3001
+msgid ""
+"The selected EzWeb instances will be configured to use Apache2 with fastcgi."
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../ezweb-platform-common.templates:3001
 msgid "Default proxy for the EzWeb instances:"
 msgstr ""
 
 #. Type: string
 #. Description
-#: ../ezweb-platform-common.templates:2001
+#: ../ezweb-platform-common.templates:3001
 msgid ""
 "The EzWeb Platform usually acts as an HTTP proxy for the EzWeb IGadgets, so "
 "it needs to be connected to the Internet. If this machine don't have a "
@@ -231,7 +266,7 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../ezweb-platform-common.templates:2001
+#: ../ezweb-platform-common.templates:3001
 msgid ""
 "Each EzWeb Instance can be individually configured, but default every "
 "instance will use the same proxy, here you can configure the default proxy."
@@ -239,34 +274,72 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../ezweb-platform-common.templates:2001
+#: ../ezweb-platform-common.templates:3001
 msgid ""
 "If this machine is connected directly to the internet, you can leave this "
 "field empty."
 msgstr ""
 
+#. Type: boolean
+#. Description
+#: ../ezweb-platform-common.templates:4001
+msgid "Do you want to allow anonymous accesses to EzWeb by default?"
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../ezweb-platform-common.templates:4001
+msgid ""
+"By default, the EzWeb Platform allows anonymous accesses, making possible to "
+"use EzWeb without being logged at all."
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../ezweb-platform-common.templates:4001
+msgid ""
+"This is done by creating a new user per browser session (they are removed "
+"periodically). According to your objetives, this can be considered an "
+"overhead or an unwanted access."
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../ezweb-platform-common.templates:5001
+msgid "Use EzWeb in debug mode by default?"
+msgstr ""
+
+#. Type: boolean
+#. Description
+#: ../ezweb-platform-common.templates:5001
+msgid ""
+"EzWeb Platform is currently in heavy development, this means you are going "
+"to find some bug. Therefore, it is very recomended to set up your EzWeb "
+"instances to run in debug mode."
+msgstr ""
+
 #. Type: multiselect
 #. Description
-#: ../ezweb-platform-lighttpd-fastcgi.templates:1001
+#: ../ezweb-platform-lighttpd-fastcgi.templates:3001
 msgid "EzWeb instances that will use Lighttpd with fastcgi:"
 msgstr ""
 
 #. Type: multiselect
 #. Description
-#: ../ezweb-platform-lighttpd-fastcgi.templates:1001
+#: ../ezweb-platform-lighttpd-fastcgi.templates:3001
 msgid ""
 "The selected EzWeb instances will be configured to use Lighttpd with fastcgi."
 msgstr ""
 
 #. Type: string
 #. Description
-#: ../ezweb-platform-postgres.templates:1001
+#: ../ezweb-platform-postgres.templates:3001
 msgid "Address of the default PostgreSQL server:"
 msgstr ""
 
 #. Type: string
 #. Description
-#: ../ezweb-platform-postgres.templates:1001
+#: ../ezweb-platform-postgres.templates:3001
 msgid ""
 "You should enter the address for the default PostgreSQL server to use. You "
 "must use a IP or a Server Name without port (for example postgres.server.com "
@@ -275,13 +348,13 @@ msgstr ""
 
 #. Type: string
 #. Description
-#: ../ezweb-platform-postgres.templates:2001
+#: ../ezweb-platform-postgres.templates:4001
 msgid "PostgreSQL admin user:"
 msgstr ""
 
 #. Type: string
 #. Description
-#: ../ezweb-platform-postgres.templates:2001
+#: ../ezweb-platform-postgres.templates:4001
 msgid ""
 "Please enter a valid user name for connecting to the PostgreSQL server to do "
 "administrative tasks. This user must be able to create databases and new "
@@ -290,13 +363,13 @@ msgstr ""
 
 #. Type: password
 #. Description
-#: ../ezweb-platform-postgres.templates:3001
+#: ../ezweb-platform-postgres.templates:5001
 msgid "PostgreSQL admin password:"
 msgstr ""
 
 #. Type: password
 #. Description
-#: ../ezweb-platform-postgres.templates:3001
+#: ../ezweb-platform-postgres.templates:5001
 msgid ""
 "Please enter the password of the admin user for connecting to the PostgreSQL "
 "server."
@@ -304,13 +377,106 @@ msgstr ""
 
 #. Type: multiselect
 #. Description
-#: ../ezweb-platform-postgres.templates:4001
+#: ../ezweb-platform-postgres.templates:6001
 msgid "Ezweb instances that will use PostgreSQL:"
 msgstr ""
 
 #. Type: multiselect
 #. Description
-#: ../ezweb-platform-postgres.templates:4001
+#: ../ezweb-platform-postgres.templates:6001
 msgid ""
 "The selected EzWeb instances will be configured to use PostgreSQL as DBMS."
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../ezweb-platform-ldap.templates:3001
+msgid "default LDAP server Uniform Resource Identifier:"
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../ezweb-platform-ldap.templates:3001
+msgid ""
+"Please enter the URI of the default LDAP server to use. This is a string in "
+"the form ldap://<hostname or IP>:<port>/ . ldaps:// or ldapi:// can also be "
+"used. The port number is optional."
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../ezweb-platform-ldap.templates:3001
+msgid ""
+"Note: It is usually a good idea to add the hostname of your LDAP server in /"
+"etc/hosts; this reduces risks of failure in the event name service is "
+"unavailable."
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../ezweb-platform-ldap.templates:4001
+msgid "Search DN pattern:"
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../ezweb-platform-ldap.templates:4001
+#, no-c-format
+msgid ""
+"Please enter the pattern for building the distinguished name to use when "
+"searching for users into the LDAP database. Use \"%s\" to indicate where the "
+"user id must to go in the pattern. For example, you can use something like "
+"\"uid=%s,ou=people,dc=example,dc=com\" as pattern."
+msgstr ""
+
+#. Type: multiselect
+#. Description
+#: ../ezweb-platform-ldap.templates:5001
+msgid "Ezweb instances that will use LDAP:"
+msgstr ""
+
+#. Type: multiselect
+#. Description
+#: ../ezweb-platform-ldap.templates:5001
+msgid ""
+"The selected EzWeb instances will be configured to use LDAP as auth method."
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../ezweb-platform-ezsteroids.templates:3001
+msgid "Default EzSteroids server Uniform Resource Identifier:"
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../ezweb-platform-ezsteroids.templates:3001
+msgid ""
+"Please enter the address of the default EzSteroids server to use. You Please "
+"enter the URI of the default EzSteroids server to use. This is a string in "
+"the form http://<hostname or IP>:<port>/ . https:// can also be used. The "
+"port number is optional."
+msgstr ""
+
+#. Type: string
+#. Description
+#: ../ezweb-platform-ezsteroids.templates:3001
+msgid ""
+"Note: It is usually a good idea to add the hostname of your EzSteroids "
+"server in /etc/hosts; this reduces risks of failure in the event name  "
+"service is unavailable."
+msgstr ""
+
+#. Type: multiselect
+#. Description
+#: ../ezweb-platform-ezsteroids.templates:4001
+msgid "Ezweb instances that will use EzSteroids:"
+msgstr ""
+
+#. Type: multiselect
+#. Description
+#: ../ezweb-platform-ezsteroids.templates:4001
+msgid ""
+"The selected EzWeb instances will be configured to use EzSteroids as auth "
+"method."
 msgstr ""

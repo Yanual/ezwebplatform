@@ -1,0 +1,43 @@
+#!/bin/bash
+
+###
+# Include debconf module
+#
+. /usr/share/debconf/confmodule
+
+if [ "$1" = "configure" ]; then
+
+  EZWEB_ADMIN_SCRIPT="/usr/sbin/update-ezweb-platform"
+
+  db_get ezweb-platform-ldap/serveraddress
+  SERVER_HOST="$RET"
+
+  db_get ezweb-platform-ldap/search-dn
+  SEARCH_DN="$RET"
+
+  $EZWEB_ADMIN_SCRIPT setauthdefaults ldap default --ldap-server "$SERVER_HOST" --ldap-search-dn "$SEARCH_DN"
+
+  ###
+  # Configure the instances
+  #
+  OLD_VAL=`$EZWEB_ADMIN_SCRIPT list auth_method ldap --debconf`
+  db_get ezweb-platform-ldap/instances
+
+  if [ "$RET" != "" -a "$RET" != "$OLD_VAL" ]; then
+    list=`echo $RET | sed -e 's/, /,/g'`
+
+    saved_IFS=$IFS
+    IFS=,
+    for conf in $list; do
+      echo
+      echo "Configuring \"$conf\" for using LDAP as auth method..."
+      $EZWEB_ADMIN_SCRIPT update $conf --auth-method "ldap"
+    done
+    IFS=$saved_IFS
+  fi
+
+fi
+
+#DEBHELPER#
+
+exit 0

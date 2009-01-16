@@ -9,8 +9,8 @@ Type: boolean
 Default: true
 _Description: Abort EzWeb upgrading?
 	EzWeb Platform is currently in heavy development, this means that
-	database models are changed very often. This needs to drop EzWeb database tables and
-	thus your EzWeb data will be lost.
+	database models are changed very often. This needs to drop EzWeb
+	database tables and thus your EzWeb data will be lost.
 	.
 	The configuration will remain untouched.
 
@@ -29,3 +29,22 @@ _Description: Default proxy for the EzWeb instances:
 	.
 	If this machine is connected directly to the internet, you can leave
 	this field empty.
+
+Template: ezweb-platform-common/allow-anonymous-access
+Type: boolean
+Default: true
+_Description: Do you want to allow anonymous accesses to EzWeb by default?
+	By default, the EzWeb Platform allows anonymous accesses, making
+	possible to use EzWeb without being logged at all.
+	.
+	This is done by creating a new user per browser session (they are
+	removed periodically). According to your objetives, this can be
+	considered an overhead or an unwanted access.
+
+Template: ezweb-platform-common/debug
+Type: boolean
+Default: true
+_Description: Use EzWeb in debug mode by default?
+	EzWeb Platform is currently in heavy development, this means you are
+	going to find some bug. Therefore, it is very recomended to set up your
+	EzWeb instances to run in debug mode.

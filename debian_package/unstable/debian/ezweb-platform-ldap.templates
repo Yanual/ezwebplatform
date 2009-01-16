@@ -1,0 +1,48 @@
+Template: ezweb-platform-common/configured
+Type: boolean
+Default: false
+Description: for internal use
+	.
+
+Template: ezweb-platform-common/abortupgrade
+Type: boolean
+Default: true
+_Description: Abort EzWeb upgrading?
+	EzWeb Platform is currently in heavy development, this means that
+	database models are changed very often. This needs to drop EzWeb
+	database tables and thus your EzWeb data will be lost.
+	.
+	The configuration will remain untouched.
+
+Template: ezweb-platform-ldap/serveraddress
+Type: string
+Default: ldap://localhost
+_Description: default LDAP server Uniform Resource Identifier:
+	Please enter the URI of the default LDAP server to use. This is a string
+	in the form ldap://<hostname or IP>:<port>/ . ldaps:// or ldapi:// can
+	also be used. The port number is optional.
+	.
+	Note: It is usually a good idea to add the hostname of your LDAP server
+	in /etc/hosts; this reduces risks of failure in the event name service
+	is unavailable.
+
+Template: ezweb-platform-ldap/search-dn
+Type: string
+Default: uid=%s,ou=people,dc=example,dc=com
+_Description: Search DN pattern:
+	Please enter the pattern for building the distinguished name to use when
+	searching for users into the LDAP database. Use "%s" to indicate where
+	the user id must to go in the pattern. For example, you can use
+	something like "uid=%s,ou=people,dc=example,dc=com" as pattern.
+
+Template: ezweb-platform-ldap/instances
+Type: multiselect
+Default: default
+Choices: ${choices}
+_Description: Ezweb instances that will use LDAP:
+	The selected EzWeb instances will be configured to use LDAP as auth
+	method.
+	.
+	This will not enable the selected EzWeb instances, although they will
+	continue to be enabled if they are currently enabled.
+

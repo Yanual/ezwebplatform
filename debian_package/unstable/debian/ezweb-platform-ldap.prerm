@@ -1,0 +1,47 @@
+#!/bin/bash
+
+###
+# Include debconf module
+#
+. /usr/share/debconf/confmodule
+
+if [ -n "$DEBCONF_RECONFIGURE" ]; then
+  db_set ezweb-platform-common/abortupgrade false
+  exit 0
+fi
+
+case "${1}" in
+  failed-upgrade)
+    exit -1
+    ;;
+
+  upgrade)
+    db_get ezweb-platform-common/abortupgrade
+    if [ "$RET" == true ]; then
+      echo "Aborting EzWeb upgrade by user request"
+      exit 1
+    fi
+    ;;
+
+  remove)
+    # Disable all the EzWeb instances using ldap as auth method
+    INSTANCES=`/usr/sbin/update-ezweb-platform list enabled auth_method ldap`
+
+    for conf_name in $INSTANCES; do
+      /usr/sbin/update-ezweb-platform disable $conf_name
+    done
+    ;;
+
+  abort-install|abort-upgrade|dissappear)
+    ;;
+
+  *)
+    echo "prerm called with unknown argument \"${1}\"" >&2
+    exit 1
+    ;;
+
+esac
+
+#DEBHELPER#
+
+exit 0

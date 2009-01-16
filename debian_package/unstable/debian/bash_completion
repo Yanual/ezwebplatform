@@ -12,16 +12,41 @@ _ezwebplatform_conf()
        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
 }
 
-_ezwebplatform_update()
+_ezwebplatform_is_prev_in()
 {
-       local cur opts
+       local opt
+
+       for opt in "$2"; do
+         if [ "$1" == "$opt" ]; then
+           return 1
+         fi
+       done
+
+       return 0
+}
+
+_ezwebplatform()
+{
+       local c=1 cur opts options_used
+
+       options_used=0
+       while [ $c -lt $COMP_CWORD ]; do
+         cur="${COMP_WORDS[c]}"
+         case "$cur" in
+         -*)
+           options_used=1
+           break
+           ;;
+         esac
+         c=$((++c))
+       done
 
        COMPREPLY=()
        cur=${COMP_WORDS[COMP_CWORD]}
 
        if [ $COMP_CWORD == 1 ]; then
-         opts="enable getdefaults create listdbmss listservers list update \
-               setserverdefaults purge disable setdefaults clean \
+         opts="enable getdefaults create listdbmss listservers listconnections \
+               list update setserverdefaults purge disable setdefaults clean \
                setdbmsdefaults getserverdefaults getdbmsdefaults"
          COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
          return 0
@@ -54,49 +79,73 @@ _ezwebplatform_update()
          return 0
          ;;
        setserverdefaults)
-         opts="--no-backup"
          if [ $COMP_CWORD == 2 ]; then
-           local servers
-           servers=`update-ezweb-platform listservers`
-           opts="$opts $servers"
-         elif [ $COMP_CWORD == 3 ]; then
-           opts="$opts default"
+           opts=`update-ezweb-platform listservers`
+         else
+           opts="--no-backup"
+           if [ $COMP_CWORD == 3 ]; then
+             opts="$opts default"
+           fi
          fi
          COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
          return 0
          ;;
        setdbmsdefaults)
-         opts="--no-backup"
          if [ $COMP_CWORD == 2 ]; then
-           local dbmss
-           dbmss=`update-ezweb-platform listdbmss`
-           opts="$opts $dbmss"
-         elif [ $COMP_CWORD == 3 ]; then
-           opts="$opts default"
+           opts=`update-ezweb-platform listdbmss`
+         else
+           opts="--no-backup"
+           if [ $COMP_CWORD == 3 ]; then
+             opts="$opts default"
+           fi
+         fi
+         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+         return 0
+         ;;
+       setauthdefaults)
+         if [ $COMP_CWORD == 2 ]; then
+           opts=`update-ezweb-platform listauthmethods`
+         else
+           opts="--no-backup"
+           if [ $COMP_CWORD == 3 ]; then
+             opts="$opts default"
+           fi
          fi
          COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
          return 0
          ;;
        getdbmsdefaults)
-         opts="--no-backup"
          if [ $COMP_CWORD == 2 ]; then
-           local dbmss
-           dbmss=`update-ezweb-platform listdbmss`
-           opts="$opts $dbmss"
-         elif [ $COMP_CWORD == 3 ]; then
-           opts="$opts default"
+           opts=`update-ezweb-platform listdbmss`
+         else
+           opts="--no-backup"
+           if [ $COMP_CWORD == 3 ]; then
+             opts="$opts default"
+           fi
          fi
          COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
          return 0
          ;;
        getserversdefaults)
-         opts="--no-backup"
          if [ $COMP_CWORD == 2 ]; then
-           local servers
-           servers=`update-ezweb-platform listservers`
-           opts="$opts $servers"
-         elif [ $COMP_CWORD == 3 ]; then
-           opts="$opts default"
+           opts=`update-ezweb-platform listservers`
+         else
+           opts="--no-backup"
+           if [ $COMP_CWORD == 3 ]; then
+             opts="$opts default"
+           fi
+         fi
+         COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+         return 0
+         ;;
+       getauthdefaults)
+         if [ $COMP_CWORD == 2 ]; then
+           opts=`update-ezweb-platform listauthmethods`
+         else
+           opts="--no-backup"
+           if [ $COMP_CWORD == 3 ]; then
+             opts="$opts default"
+           fi
          fi
          COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
          return 0
@@ -114,8 +163,19 @@ _ezwebplatform_update()
          if [ $COMP_CWORD == 2 ]; then
            _ezwebplatform_conf $cur
          else
-           opts="--no-backup --force-syncdb"
-           COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+           opts_with_arg="-a --allow-anonymous-access --auth-methods \
+                          --server-schema --database-schema --server-type \
+                          --connection-type --database-engine --auth-methods \
+                          -d --debug-mode --proxy"
+
+           prev=${COMP_WORDS[COMP_CWORD-1]}
+           if [ `_ezwebplatform_is_prev_in $prev "$opt_with_arg"` ]; then
+             # TODO
+             return 0
+           else
+             opts="--no-backup --force-syncdb $opts_with_arg"
+             COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+           fi
          fi
          return 0
          ;;
@@ -138,9 +198,17 @@ _ezwebplatform_update()
        listservers)
          return 0
          ;;
+       listconnections)
+         if [ $COMP_CWORD == 2 ]; then
+           opts=`update-ezweb-platform listservers`
+           COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+         else
+           return 0
+         fi
+         ;;
        listdbmss)
          return 0
          ;;
        esac
 }
-complete -F _ezwebplatform_update update-ezweb-platform
+complete -F _ezwebplatform update-ezweb-platform

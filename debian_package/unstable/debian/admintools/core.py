@@ -44,8 +44,8 @@ from gettext import gettext as _
 from configobj import ConfigObj
 from optparse import make_option
 from django.core import management
-from admintools.common import EzWebAdminToolResources, MultiCommandOptionParser, Command, EzWebInstanceNotFound, Argument
-from admintools.conditions import AndCondition, NotCondition, AllValidCondition, EnabledCondition, NameCondition, ServerCondition, ConnectionTypeCondition, DatabaseEngineCondition
+from admintools.common import EzWebAdminToolResources, MultiCommandOptionParser, Command, EzWebInstanceNotFound, Argument, ExtendedOption
+from admintools.conditions import AndCondition, NotCondition, AllValidCondition, EnabledCondition, NameCondition, ServerCondition, ConnectionTypeCondition, DatabaseEngineCondition, HasAuthMethodCondition, AuthMethodCondition
 
 
 class MainEzWebAdminTool:
@@ -137,10 +137,7 @@ class MainEzWebAdminTool:
 
   def process_cfg(self, site_cfg, options):
 
-    valid = site_cfg['server'].has_key('server_type') and site_cfg['server']['server_type'] != ""
-    valid = valid and site_cfg['server'].has_key('connection_type') and site_cfg['server']['connection_type'] != ""
-    valid = valid and site_cfg['database'].has_key('database_engine') and site_cfg['database']['database_engine'] != ""
-    if not valid:
+    if not self.isEnableable(site_cfg):
       return;
 
     data_dir = os.path.join(self.resources.DATA_PATH, site_cfg['name'])
@@ -274,10 +271,60 @@ class MainEzWebAdminTool:
       proxy_server = schema['proxy']
 
     if proxy_server == "":
-      template.replace("DISABLE_PROXY", "#")
+      template.replaceEnableOption("ENABLE_PROXY", False)
     else:
-      template.replace("DISABLE_PROXY", "")
+      template.replaceEnableOption("ENABLE_PROXY", True)
       template.replace("PROXY_SERVER", proxy_server)
+
+    # Debug
+    if site_cfg.has_key("debug"):
+      debug = site_cfg.as_bool("debug")
+    elif schema.has_key("debug"):
+      debug = schema.as_bool("debug")
+    else:
+      debug = True
+    template.replaceEnableOption("ENABLE_DEBUG", debug)
+
+    # Allow anonymous access
+    if site_cfg.has_key("allow_anonymous_access"):
+      allow_anonymous_access = site_cfg.as_bool("allow_anonymous_access")
+    elif schema.has_key("allow_anonymous_access"):
+      allow_anonymous_access = schema.as_bool("allow_anonymous_access")
+    else:
+      allow_anonymous_access = True
+
+    # Auth backends
+    auth_backends = "\n"
+    auth_middleware_classes = "\n"
+    auth_conf = ""
+
+    if allow_anonymous_access:
+      auth_backends += "    'authentication.anonymousaccess.AnonymousBackend',\n"
+      auth_middleware_classes += "    'middleware.auth_middleware.AuthenticationMiddleware',\n"
+    else:
+      auth_middleware_classes += "    'django.contrib.auth.middleware.AuthenticationMiddleware',\n"
+
+    if site_cfg.has_key("auth_methods"):
+      auth_methods = site_cfg["auth_methods"]
+    elif site_cfg.has_key("auth_methods"):
+      auth_methods = schema["auth_methods"]
+    else:
+      auth_methods = []
+
+    for auth_method in auth_methods:
+      auth_method = self.resources.get_auth_method(auth_method)
+      backends = auth_method.getBackends()
+      for backend in backends:
+        auth_backends += "    '" + backend + "',\n"
+
+      auth_conf += auth_method.processConf(site_cfg)
+
+    auth_backends += "    'django.contrib.auth.backends.ModelBackend',\n"
+
+    template.replace("AUTH_BACKENDS", auth_backends)
+    template.replace("AUTH_MIDDLEWARE_CLASSES", auth_middleware_classes)
+
+    template.replace("AUTH_BACKENDS_CONF", auth_conf)
 
     return template
 
@@ -289,6 +336,20 @@ class MainEzWebAdminTool:
                                dest="connection_type", help=_("Connection type to use with to connect this instance to the server")),
                    make_option("--database-engine", action="store",
                                dest="database_engine", help=_("DBMS to use with this instance")),
+                   make_option("--schema", action="store",
+                               dest="schema", help=_("The schema to use for the general configuration")),
+                   make_option("--server-schema", action="store",
+                               dest="server_schema", help=_("The schema to use for the server configuration")),
+                   make_option("--database-schema", action="store",
+                               dest="database_schema", help=_("The schema to use for the database configuration")),
+#                   make_option("--auth-schema", action="store",
+#                               dest="auth-schema", help=_("The schema to use for the auth configuration")),
+                   ExtendedOption("--auth-methods", action="store_list",
+                                  dest="auth_methods", help=_("Auth methods use with this instance")),
+                   make_option("-a", "--allow-anonymous-access", action="store",
+                               dest="allow_anonymous_access", help=_("Allow/Deny anonymous users in this instance")),
+                   make_option("-d", "--debug-mode", action="store",
+                               dest="debug", help=_("Enables/Disables the debug mode")),
                    make_option("--proxy", action="store",
                                dest="proxy", help=_("The proxy to use")),
                    make_option("--force-syncdb", action="store_true",
@@ -309,7 +370,7 @@ class MainEzWebAdminTool:
       conf_name = args[0]
       site_cfg = self.resources.get_site_config(conf_name)
       reenable = False
-      changed = False
+      changed = False # TODO not used yet
       enabled = site_cfg.as_bool('enabled')
 
       self.resources.printlnMsg()
@@ -321,6 +382,7 @@ class MainEzWebAdminTool:
       self.resources.printlnMsg("Updating general config... ")
       self.resources.incPrintNestingLevel()
 
+      # Server type
       if site_cfg['server'].has_key("server_type"):
         server_type = site_cfg['server']['server_type']
       else:
@@ -336,12 +398,13 @@ class MainEzWebAdminTool:
         site_cfg['server']['server_type'] = options.server_type
         server_type = options.server_type
 
+      # Connection type
       if options.connection_type != None:
         changed = True
         self.resources.printlnMsg("Using \"%s\" for connecting with the server." % options.connection_type)
         site_cfg['server']['connection_type'] = options.connection_type
 
-
+      # Database engine
       if site_cfg['database'].has_key("database_engine"):
         database_engine = site_cfg['database']['database_engine']
       else:
@@ -358,6 +421,76 @@ class MainEzWebAdminTool:
         site_cfg['database']['database_engine'] = options.database_engine
         database_engine = options.database_engine
 
+      # Auth methods
+      if site_cfg.has_key("auth_methods"):
+        auth_methods = site_cfg["auth_methods"]
+      else:
+        auth_methods = []
+
+      if options.auth_methods != None and auth_methods != options.auth_methods:
+        changed = True
+        self.resources.printlnMsg("Using \"%s\" as auth methods for this instance." % options.auth_methods)
+        site_cfg['auth_methods'] = options.auth_methods
+        auth_methods = options.auth_methods
+
+      # Proxy
+      if options.proxy != None:
+        changed = True
+        self.resources.printlnMsg("Assigning \"%s\" as Proxy for this instance." % options.proxy)
+        site_cfg['proxy'] = options.proxy
+
+      # Allow anonymous access
+      if options.allow_anonymous_access != None:
+        changed = True
+        a = options.allow_anonymous_access
+        if a == "True" or a == "true" or a == "1":
+          self.resources.printlnMsg("Enabling anonymous accesses to this instance.")
+          site_cfg['allow_anonymous_access'] = True
+        else:
+          self.resources.printlnMsg("Disabling anonymous accesses to this instance.")
+          site_cfg['allow_anonymous_access'] = False
+
+      # Debug mode
+      if options.debug != None:
+        changed = True
+        a = options.debug
+        if a == "True" or a == "true" or a == "1":
+          self.resources.printlnMsg("Configuring this instance in debug mode.")
+          site_cfg['debug'] = True
+        else:
+          self.resources.printlnMsg("Configuring this instance in normal mode (debug=off).")
+          site_cfg['debug'] = False
+
+      # general schema
+      if options.schema != None:
+        if options.server_schema == "":
+          options.server_schema = "default"
+
+        if not site_cfg.has_key('schema') or options.schema != site_cfg['schema']:
+          changed = True
+          self.resources.printlnMsg("Using \"%s\" as schema for the general settings." % options.schema)
+          site_cfg['schema'] = options.schema
+
+      # server schema
+      if options.server_schema != None:
+        if options.server_schema == "":
+          options.server_schema = "default"
+
+        if not site_cfg['server'].has_key('schema') or options.server_schema != site_cfg['server']['schema']:
+          changed = True
+          self.resources.printlnMsg("Using \"%s\" as schema for the server settings." % options.server_schema)
+          site_cfg['server']['schema'] = options.server_schema
+
+      # database schema
+      if options.database_schema != None:
+        if options.database_schema == "":
+          options.database_schema = "default"
+
+        if not site_cfg['database'].has_key('schema') or options.server_schema != site_cfg['database']['schema']:
+          changed = True
+          self.resources.printlnMsg("Using \"%s\" as schema for the database settings." % options.database_schema)
+          site_cfg['database']['schema'] = options.database_schema
+
       self.resources.decPrintNestingLevel()
       self.resources.printlnMsg("Done")
       self.resources.printlnMsg()
@@ -365,6 +498,11 @@ class MainEzWebAdminTool:
       # Specific server & datatabase option updating
       update_server = server_type != None and server_type != ""
       update_database = database_engine != None and database_engine != ""
+
+      if len(auth_methods) > 0:
+        for auth_method in auth_methods:
+          auth_command = self.resources.get_auth_admin_command(auth_method, "Update")
+          parser.add_options(auth_command.option_list)
 
       if update_server:
         server_command = self.resources.get_server_admin_command(server_type, "Update")
@@ -376,6 +514,13 @@ class MainEzWebAdminTool:
 
       # Check command line args
       parser.parse_args(False)
+
+      if len(auth_methods) > 0:
+        for auth_method in auth_methods:
+          self.resources.printMsg("Updating auth backend config (%s)... " % auth_method)
+          auth_command = self.resources.get_auth_admin_command(auth_method, "Update")
+          auth_command.execute(site_cfg, parser.get_current_options())
+          self.resources.printlnMsgNP("Done")
 
       if update_server:
         self.resources.printMsg("Updating server config (%s)... " % server_type)
@@ -474,6 +619,7 @@ class MainEzWebAdminTool:
         self.resources.incPrintNestingLevel()
 
         site_cfg["enabled"] = False
+        site_cfg["schedule_enabled"] = False
         self.resources.save_site_config(site_cfg, options.backup)
 
         self.resources.printlnMsg("Disabling %s server instance... " % site_cfg['name'])
@@ -486,6 +632,15 @@ class MainEzWebAdminTool:
 
         server_command = self.resources.get_server_admin_command(site_cfg['server']['server_type'], "Apply")
         server_command.execute(options)
+
+        self.resources.decPrintNestingLevel()
+        self.resources.printlnMsg("Done")
+      elif site_cfg.has_key("schedule_enable") and site_cfg.as_bool('schedule_enable'):
+        self.resources.printlnMsg("Aborting planed activation of the \"%s\" EzWeb instance..." % site_cfg['name'])
+        self.resources.incPrintNestingLevel()
+
+        site_cfg["schedule_enabled"] = False
+        self.resources.save_site_config(site_cfg, options.backup)
 
         self.resources.decPrintNestingLevel()
         self.resources.printlnMsg("Done")
@@ -563,7 +718,7 @@ class MainEzWebAdminTool:
       self.admintool = admintool
 
     def execute(self, parser, options, args):
-      if len(args) < 1:
+      if len(args) != 1:
         return -1
 
       conf_name = args[0]
@@ -581,7 +736,7 @@ class MainEzWebAdminTool:
   class ListCommand(Command):
 
     option_list = [make_option("--debconf", action="store_true",
-                               dest="debconf", help=_("Use debconf output format"))
+                               dest="debconf", help=_("Use plain output format"))
                   ]
     args_help = "condition [value] [condition [value]]*"
     args = [Argument("condition", "all, enabled, disabled, server+, connection_type+, database_engine+, name+."),
@@ -615,6 +770,16 @@ class MainEzWebAdminTool:
 
         elif what == "disabled":
           root_condition.append(EnabledCondition(False))
+
+        elif what == "auth_method":
+          if len(args) < 1:
+            return -1
+
+          auth_method = args.pop(0)
+          root_condition.append(HasAuthMethodCondition(auth_method))
+
+        elif what == "no_auth_method":
+          root_condition.append(AuthMethodCondition(""))
 
         elif what == "server":
           if len(args) < 1:
@@ -683,7 +848,8 @@ class MainEzWebAdminTool:
               print site_cfg['name']
 
   class ListServersCommand(Command):
-    option_list = []
+    option_list = [make_option("--full", action="store_true",
+                               dest="full", help=_("List available servers with their corresponding connection types."))]
     final = True
 
     def __init__(self, resources, admintool):
@@ -700,11 +866,30 @@ class MainEzWebAdminTool:
           if server_type == "__init__" or ext != ".py":
             continue
 
-          try:
-            command = self.resources.get_server_admin_command(server_type, "ListTypes")
-            command.execute();
-          except:
-            pass # Ignore errors
+          if options.full:
+            try:
+              command = self.resources.get_server_admin_command(server_type, "ListTypes")
+              command.execute(true);
+            except:
+              pass # Ignore errors
+          else:
+            print server_type
+
+  class ListServerConnectionsCommand(Command):
+    option_list = []
+    final = True
+
+    def __init__(self, resources, admintool):
+      self.resources = resources
+      self.admintool = admintool
+
+    def execute(self, parser, options, args):
+      if len(args) != 1:
+        return -1
+
+      server_type = args[0]
+      command = self.resources.get_server_admin_command(server_type, "ListTypes")
+      command.execute(false);
 
   class ListDBMSsCommand(Command):
     option_list = []
@@ -726,9 +911,33 @@ class MainEzWebAdminTool:
 
           print dbms
 
+  class ListAuthMethodsCommand(Command):
+    option_list = []
+    final = True
+
+    def __init__(self, resources, admintool):
+      self.resources = resources
+      self.admintool = admintool
+
+    def execute(self, parser, options, args):
+      if len(args) > 0:
+        return -1
+
+      for subdir, dirs, files in os.walk(EzWebAdminToolResources.DB_AUTH_SCRIPTS_PATH):
+        for script in files:
+          (auth_method, ext) = os.path.splitext(script)
+          if auth_method == "__init__" or ext != ".py":
+            continue
+
+          print auth_method
+
   class SetDefaultsCommand(Command):
     option_list = [make_option("--proxy", action="store",
                                dest="proxy", help=_("The default proxy to use")),
+                   make_option("-a", "--allow-anonymous-access", action="store",
+                               dest="allow_anonymous_access", help=_("Allow/Disallows anonymous accesses by default")),
+                   make_option("-d", "--debug-mode", action="store",
+                               dest="debug", help=_("Enables/Disables the debug mode")),
                   ]
     args_help = "[schema]"
     args = [Argument("schema", _("Name of the schema to configure. (default: \"default\")"))]
@@ -754,8 +963,17 @@ class MainEzWebAdminTool:
         schema_settings[schema_name] = {}
         cfg = schema_settings[schema_name]
 
+      # Proxy
       if options.proxy != None:
         cfg["proxy"] = options.proxy
+
+      # Allow Anonymous Accesses
+      if options.allow_anonymous_access != None:
+        cfg["allow_anonymous_access"] = options.allow_anonymous_access
+
+      # Debug mode
+      if options.debug != None:
+        cfg["debug"] = options.debug
 
       self.admintool.save_default_settings(schema_settings)
 
@@ -785,15 +1003,39 @@ class MainEzWebAdminTool:
       else:
         cfg = {}
 
+      # Proxy
       if cfg.has_key("proxy"):
         print "PROXY=" + cfg["proxy"]
       else:
         print "PROXY="
 
+      # Allow Anonymous
+      if cfg.has_key("allow_anonymous_access"):
+        if cfg["allow_anonymous_access"]:
+          value = "true"
+        else:
+          value = "false"
+
+        print "ALLOW_ANONYMOUS_ACCESS=" + value
+      else:
+        print "ALLOW_ANONYMOUS_ACCESS=true"
+
+      # Debug
+      if cfg.has_key("debug"):
+        if cfg["debug"]:
+          value = "true"
+        else:
+          value = "false"
+
+        print "DEBUG_MODE=" + value
+      else:
+        print "DEBUG_MODE=true"
+
   class GetDBMSDefaultsCommand(Command):
     option_list = []
-    args_help = "[schema]"
-    args = [Argument("schema", _("Name of the schema to read. (default: \"default\")"))]
+    args_help = "<dbms> [schema]"
+    args = [Argument("dbms", _("DBMS to configure")),
+            Argument("schema", _("Name of the schema to configure. (default: \"default\")"))]
     final = True
 
     def __init__(self, resources, admintool):
@@ -814,8 +1056,9 @@ class MainEzWebAdminTool:
 
   class SetDBMSDefaultsCommand(Command):
     option_list = []
-    args_help = "[schema]"
-    args = [Argument("schema", _("Name of the schema to configure. (default: \"default\")"))]
+    args_help = "<dbms> [schema]"
+    args = [Argument("dbms", _("DBMS to configure")),
+            Argument("schema", _("Name of the schema to configure. (default: \"default\")"))]
     final = False
 
     def __init__(self, resources, admintool):
@@ -839,8 +1082,9 @@ class MainEzWebAdminTool:
 
   class GetServerDefaultsCommand(Command):
     option_list = []
-    args_help = "[schema]"
-    args = [Argument("schema", _("Name of the schema to read. (default: \"default\")"))]
+    args_help = "<server> [schema]"
+    args = [Argument("server", _("Server to retreive the config from.")),
+            Argument("schema", _("Name of the schema to read. (default: \"default\")"))]
     final = True
 
     def __init__(self, resources, admintool):
@@ -861,8 +1105,9 @@ class MainEzWebAdminTool:
 
   class SetServerDefaultsCommand(Command):
     option_list = []
-    args_help = "[schema]"
-    args = [Argument("schema", _("Name of the schema to configure. (default: \"default\")"))]
+    args_help = "<server> [schema]"
+    args = [Argument("server", _("Server to configure.")),
+            Argument("schema", _("Name of the schema to configure. (default: \"default\")"))]
     final = False
 
     def __init__(self, resources, admintool):
@@ -879,6 +1124,55 @@ class MainEzWebAdminTool:
 
       server = args[0]
       command = self.resources.get_server_admin_command(server, "SetDefaults")
+      # add options of the real command
+      parser.add_options(command.option_list)
+      parser.parse_args(False)
+      command.execute(schema_name, parser.get_current_options());
+
+  class GetAuthDefaultsCommand(Command):
+    option_list = []
+    args_help = "<auth_method> [schema]"
+    args = [Argument("auth_method", _("Auth method to retreive the config info from.")),
+            Argument("schema", _("Name of the schema to read. (default: \"default\")"))]
+    final = True
+
+    def __init__(self, resources, admintool):
+      self.resources = resources
+      self.admintool = admintool
+
+    def execute(self, parser, options, args):
+      if len(args) > 2 or len(args) < 1:
+        return -1
+      elif len(args) == 1:
+        schema_name = "default"
+      else:
+        schema_name = args[1]
+
+      auth_method = args[0]
+      command = self.resources.get_auth_admin_command(auth_method, "GetDefaults")
+      command.execute(schema_name, options);
+
+  class SetAuthDefaultsCommand(Command):
+    option_list = []
+    args_help = "<auth_method> [schema]"
+    args = [Argument("auth_method", _("Auth method to retreive the config info from.")),
+            Argument("schema", _("Name of the schema to configure. (default: \"default\")"))]
+    final = False
+
+    def __init__(self, resources, admintool):
+      self.resources = resources
+      self.admintool = admintool
+
+    def execute(self, parser, options, args):
+      if len(args) > 2 or len(args) < 1:
+        return -1
+      elif len(args) == 1:
+        schema_name = "default"
+      else:
+        schema_name = args[1]
+
+      auth_method = args[0]
+      command = self.resources.get_auth_admin_command(auth_method, "SetDefaults")
       # add options of the real command
       parser.add_options(command.option_list)
       parser.parse_args(False)
@@ -927,11 +1221,15 @@ class MainEzWebAdminTool:
     parser.add_command("disable", self.DisableCommand(self.resources, self))
     parser.add_command("list", self.ListCommand(self.resources, self))
     parser.add_command("listservers", self.ListServersCommand(self.resources, self))
+    parser.add_command("listconnections", self.ListServerConnectionsCommand(self.resources, self))
     parser.add_command("listdbmss", self.ListDBMSsCommand(self.resources, self))
+    parser.add_command("listauthmethods", self.ListAuthMethodsCommand(self.resources, self))
     parser.add_command("getdbmsdefaults", self.GetDBMSDefaultsCommand(self.resources, self))
     parser.add_command("setdbmsdefaults", self.SetDBMSDefaultsCommand(self.resources, self))
     parser.add_command("getserverdefaults", self.GetServerDefaultsCommand(self.resources, self))
     parser.add_command("setserverdefaults", self.SetServerDefaultsCommand(self.resources, self))
+    parser.add_command("getauthdefaults", self.GetAuthDefaultsCommand(self.resources, self))
+    parser.add_command("setauthdefaults", self.SetAuthDefaultsCommand(self.resources, self))
     parser.add_command("getdefaults", self.GetDefaultsCommand(self.resources, self))
     parser.add_command("setdefaults", self.SetDefaultsCommand(self.resources, self))
 
