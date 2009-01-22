@@ -8,7 +8,7 @@ _ezwebplatform_args()
 
 _ezwebplatform_conf()
 {
-       opts=`update-ezweb-platform list all --debconf`
+       opts=`update-ezweb-platform list all`
        COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
 }
 

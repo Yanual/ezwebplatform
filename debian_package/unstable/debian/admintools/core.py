@@ -869,7 +869,7 @@ class MainEzWebAdminTool:
           if options.full:
             try:
               command = self.resources.get_server_admin_command(server_type, "ListTypes")
-              command.execute(true);
+              command.execute(True);
             except:
               pass # Ignore errors
           else:
@@ -889,7 +889,7 @@ class MainEzWebAdminTool:
 
       server_type = args[0]
       command = self.resources.get_server_admin_command(server_type, "ListTypes")
-      command.execute(false);
+      command.execute(False);
 
   class ListDBMSsCommand(Command):
     option_list = []

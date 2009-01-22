@@ -5,29 +5,59 @@ BRANCH="unstable"
 BASE_VER="0.4"
 
 fetch() {
-  TMPDIR=`mktemp -d -p .`
+  if [ -n "$1" ]; then
+    REVISION=$1
+    FULLVER=$BASE_VER"~svn$REVISION"
+    COPYDIR="ezweb-platform-$FULLVER"
 
-  svn co $DEFAULT_SVN_LOCATION $TMPDIR
-  if [ "$?" != "0" ]; then
-    echo "  Error: SVN checkout failed."
-    exit -2
+    if [ -d $COPYDIR ]; then
+#      LOCAL_REVISION=`LC_ALL=C svn info $COPYDIR | grep "Revision: " | awk '{print $2}'`
+#      if [ "$LOCAL_REVISION" != "$REVISION" ]; then
+#        echo "  Error: $COPYDIR is not usable. Move or delete it and re-run this script."
+#        exit -2
+#      fi
+      echo "  Warning: using existing directory \"$COPYDIR\""
+      return
+    elif [ -e $COPYDIR ]; then
+      echo "  Error: $COPYDIR already exists."
+      exit -2
+    else
+      svn export -r "$REVISION" $DEFAULT_SVN_LOCATION $COPYDIR
+      if [ "$?" != "0" ]; then
+        echo "  Error: SVN checkout failed."
+        exit -2
+      fi
+    fi
+  else
+    REVISION=`LC_ALL=C svn info $DEFAULT_SVN_LOCATION | grep "Revision: " | awk '{print $2}'`
+    FULLVER=$BASE_VER"~svn$REVISION"
+    COPYDIR="ezweb-platform-$FULLVER"
+    if [ -d $COPYDIR ]; then
+#      LOCAL_REVISION=`LC_ALL=C svn info $COPYDIR | grep "Revision: " | awk '{print $2}'`
+#      if [ "$LOCAL_REVISION" != "$REVISION" ]; then
+#        echo "  Error: $COPYDIR is not usable. Move or delete it and re-run this script."
+#        exit -2
+#      fi
+      echo "  Warning: using existing directory \"$COPYDIR\""
+      return
+    elif [ -e $COPYDIR ]; then
+      echo "  Error: $COPYDIR already exists."
+      exit -2
+    else
+      svn export $DEFAULT_SVN_LOCATION $COPYDIR
+      if [ "$?" != "0" ]; then
+        echo "  Error: SVN checkout failed."
+        exit -2
+      fi
+    fi
   fi
-
-  REVISION=`LC_ALL=C svn info $TMPDIR | grep "Revision: " | awk '{print $2}'`
-  FULLVER=$BASE_VER"~svn$REVISION"
-  COPYDIR="ezweb-platform-$FULLVER"
-  if [ -e $COPYDIR ]; then
-    echo "  Error: $COPYDIR already exists."
-    rm -rf $TMPDIR
-    exit -2
-  fi
-
-  svn export $TMPDIR $COPYDIR
-  rm -rf $TMPDIR
 }
 
 parse_deb_fullver() {
   DEB_FULLVER=`head -1 "$1/debian/changelog" | cut -f2 -d\( | cut -f1 -d\)`
+  DEB_VERSION=`echo $DEB_FULLVER | cut -f1 -d\-`
+  DEB_MAINVER=`echo $DEB_VERSION | cut -f1 -d~`
+  DEB_SVNREV=`echo $DEB_VERSION | cut -f2 -dn`
 }
 
 debianize() {
@@ -35,7 +65,7 @@ debianize() {
     exit -2
   fi
 
-  local FULVER COPYDIR
+  local FULLVER COPYDIR
 
   FULLVER="$1"
   COPYDIR="ezweb-platform-$FULLVER"
@@ -54,7 +84,7 @@ debianize() {
 
   # Check if the version of the changelog match with the version we are packaging
   parse_deb_fullver .
-  TMP_FULLVER=`echo $DEB_FULLVER | cut -f1 -d\-`
+  TMP_FULLVER=$DEB_VERSION
 
   if [ "$NEWVERSION" == 1 ]; then
     if [ "$FULLVER" != "$TMP_FULLVER" ]; then
@@ -62,7 +92,6 @@ debianize() {
       dch -v "$FULLVER-1"
 
       parse_deb_fullver .
-      echo "$DEB_FULLVER" "@" "$FULLVER-1"
       if [ "$DEB_FULLVER" != "$FULLVER-1" ]; then
         exit -2
       fi
@@ -99,42 +128,53 @@ build() {
 }
 
 uninstallpkg() {
-  LIST="ezweb-platform \
-    ezweb-platform-apache2-common \
-    ezweb-platform-apache2-fastcgi \
-    ezweb-platform-apache2-mod-python \
-    ezweb-platform-common \
-    ezweb-platform-fastcgi-common \
-    ezweb-platform-lighttpd-common \
-    ezweb-platform-lighttpd-fastcgi \
-    ezweb-platform-mysql \
-    ezweb-platform-postgres \
-    ezweb-platform-sqlite3"
-
-  sudo reprepro -Vb $REPO_DIR remove $BRANCH $LIST
+  sudo reprepro -Vb $REPO_DIR removesrc $BRANCH "ezweb-platform" $1
 }
 
 installpkg() {
   DEB_FULLVER=$1
-  RET=`sudo reprepro -Vb $REPO_DIR listfilter $BRANCH "Package (== ezweb-platform), Version (== $DEB_FULLVER)"`
+  RET=`sudo reprepro -Vb $REPO_DIR listfilter $BRANCH "Source (== ezweb-platform), Version (== $DEB_FULLVER)"`
   if [ "x$RET" != "x" ]; then
-    uninstallpkg
+    uninstallpkg $DEB_FULLVER
   fi
-  sudo reprepro -Vb $REPO_DIR include $BRANCH ezweb-platform_$DEB_FULLVER_*.changes
+  sudo reprepro -Vb $REPO_DIR include $BRANCH ezweb-platform_${DEB_FULLVER}_*.changes
 }
 
+
+#
+# Main script
+#
+
 NEWVERSION=0
+PARSEDEBCONF=1
 case $1 in
   -n)
     NEWVERSION=1
     ;;
 esac
 
-REVISION=1584
-FULLVER="$BASE_VER~svn$REVISION"
-COPYDIR="ezweb-platform-$FULLVER"
+if [ "$NEWVERSION" == 1 ]; then
+  fetch
+  DEB_VERSION=$FULLVER
+  DEB_FULLVER="$FULLVER-1"
+elif [ "$PARSEDEBCONF" == 1 ]; then
+  parse_deb_fullver .
+  COPYDIR="ezweb-platform-$DEB_VERSION"
 
-fetch
-debianize $FULLVER
+  if [ -e $COPYDIR ]; then
+    if [ ! -d $COPYDIR ]; then
+      echo "ERROR: \"$COPYDIR\" exists, but it is not a directory."
+      exit -2
+    fi
+  else
+    fetch $DEB_SVNREV
+  fi
+else
+  echo "ERROR: Unsupported operation."
+  exit -2
+fi
+
+debianize $DEB_VERSION
 build $COPYDIR
+#uninstallpkg $DEB_FULLVER
 installpkg $DEB_FULLVER
