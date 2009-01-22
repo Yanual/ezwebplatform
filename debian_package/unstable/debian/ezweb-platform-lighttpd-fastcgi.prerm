@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 ###
 # Include debconf module
 #
@@ -33,13 +35,13 @@ case "${1}" in
 
   remove)
     # Disable all the Lighttpd EzWeb instances
-    INSTANCES=`/usr/sbin/update-ezweb-platform list enabled server lighttpd connection_type fastcgi`
+    INSTANCES=`update-ezweb-platform list enabled server lighttpd connection_type fastcgi`
 
     invoke-rc.d ezweb-platform-fastcgi stop
 
     for conf_name in $INSTANCES; do
       RELOAD=1
-      /usr/sbin/update-ezweb-platform disable $conf_name
+      update-ezweb-platform disable $conf_name
     done
 
     invoke-rc.d ezweb-platform-fastcgi start

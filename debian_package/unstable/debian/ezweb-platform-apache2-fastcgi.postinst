@@ -1,11 +1,13 @@
 #!/bin/bash
 
+set -e
+
 ###
 # Include debconf module
 #
 . /usr/share/debconf/confmodule
 
-EZWEB_ADMIN_SCRIPT=/usr/sbin/update-ezweb-platform
+EZWEB_ADMIN_SCRIPT="update-ezweb-platform"
 
 reload_apache() {
   if apache2ctl configtest 2>/dev/null; then

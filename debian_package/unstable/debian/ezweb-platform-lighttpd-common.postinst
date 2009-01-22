@@ -1,12 +1,14 @@
 #!/bin/bash
 
+set -e
+
 ###
 # Include debconf module
 #
 . /usr/share/debconf/confmodule
 
 if [ "$1" = "configure" -o "$2" = "reconfigure" ]; then
-  EZWEB_ADMIN_SCRIPT="/usr/sbin/update-ezweb-platform"
+  EZWEB_ADMIN_SCRIPT="update-ezweb-platform"
 
   db_get ezweb-platform-lighttpd-common/defaultservername
   SERVER_NAME="$RET"

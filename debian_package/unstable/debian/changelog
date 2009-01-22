@@ -1,11 +1,11 @@
-ezweb-platform (0.4~svn1603-1) unstable; urgency=low
+ezweb-platform (0.4~svn1604-1) unstable; urgency=low
 
   * New upstream snapshot.
   * New packages:
     + ezweb-platform-ldap
     + ezweb-platform-ezsteroids
   * Allow to configure the default "Allow Anonymous Access" setting.
-  * Lot of bugs fixed
+  * Lots of bugs fixed
 
  -- Álvaro Arranz García <aarranz@pegaso.ls.fi.upm.es>  Fri, 16 Jan 2009 13:23:22 +0100
 

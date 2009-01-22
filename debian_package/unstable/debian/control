@@ -13,7 +13,7 @@ Package: ezweb-platform
 Section: web
 Priority: optional
 Architecture: all
-Depends: ezweb-platform-postgres | ezweb-platform-database-backend, ezweb-platform-apache2-mod-python | ezweb-platform-server-backend
+Depends: ${misc:Depends}, ezweb-platform-postgres | ezweb-platform-database-backend, ezweb-platform-apache2-mod-python | ezweb-platform-server-backend
 Pre-Depends: debconf, ezweb-platform-common (= ${binary:Version})
 Recommends: ezweb-platform-postgres | ezweb-platform-mysql | ezweb-platform-sqlite3, ezweb-platform-apache2-mod-python | ezweb-platform-apache2-fastcgi | ezweb-platform-lighttpd-fastcgi
 Description: Web mashup platform - metapackage
@@ -28,7 +28,7 @@ Section: web
 Priority: optional
 Architecture: all
 Pre-Depends: debconf
-Depends: python (>= 2.4), python-django (>=1.0), python-libxml2, python-imaging, python-configobj
+Depends: ${misc:Depends}, python (>= 2.4), python-django (>=1.0), python-libxml2, python-imaging, python-configobj
 Description: Web mashup platform - shared files
  EzWeb Platform, the MORFEO Open Source Community Mashup Platform, provides you
  a framework for building modern enterprise and personal mashups following the
@@ -42,7 +42,7 @@ Priority: optional
 Architecture: all
 Depends: debconf
 Pre-Depends: ezweb-platform-common (= ${binary:Version})
-Suggests: ezweb-platform-apache2-fastcgi, ezweb-platform-lighttpd-fastcgi
+Suggests: ${misc:Depends}, ezweb-platform-apache2-fastcgi, ezweb-platform-lighttpd-fastcgi
 Description: Fastcgi support for EzWeb Platform - shared files
  EzWeb Platform, the MORFEO Open Source Community Mashup Platform, provides you
  a framework for building modern enterprise and personal mashups following the
@@ -55,7 +55,7 @@ Package: ezweb-platform-apache2-common
 Section: web
 Priority: optional
 Architecture: all
-Depends: debconf, apache2 (>= 2.0)
+Depends: ${misc:Depends}, debconf, apache2 (>= 2.0)
 Pre-Depends: ezweb-platform-common (= ${binary:Version})
 Suggests: ezweb-platform-apache2-mod-python | ezweb-platform-apache2-fastcgi
 Description: Apache2 support for EzWeb Platform - shared files
@@ -73,7 +73,7 @@ Package: ezweb-platform-apache2-mod-python
 Section: web
 Priority: optional
 Architecture: all
-Depends: python (>= 2.4), libapache2-mod-python, ezweb-platform-apache2-common (= ${binary:Version})
+Depends: ${misc:Depends}, python (>= 2.4), libapache2-mod-python, ezweb-platform-apache2-common (= ${binary:Version})
 Pre-Depends: debconf, ezweb-platform-common (= ${binary:Version})
 Provides: ezweb-platform-server-backend
 Description: Apache2 using mod-python support for EzWeb Platform
@@ -88,7 +88,7 @@ Package: ezweb-platform-apache2-fastcgi
 Section: web
 Priority: optional
 Architecture: all
-Depends: debconf, python (>= 2.4), python-flup, libapache2-mod-fastcgi | libapache2-mod-fcgid, ezweb-platform-apache2-common (= ${binary:Version}), ezweb-platform-fastcgi-common (= ${binary:Version})
+Depends: ${misc:Depends}, debconf, python (>= 2.4), python-flup, libapache2-mod-fastcgi | libapache2-mod-fcgid, ezweb-platform-apache2-common (= ${binary:Version}), ezweb-platform-fastcgi-common (= ${binary:Version})
 Pre-Depends: ezweb-platform-common (= ${binary:Version})
 Provides: ezweb-platform-server-backend
 Description: Apache2 using fastcgi support for EzWeb Platform
@@ -103,7 +103,7 @@ Package: ezweb-platform-lighttpd-common
 Section: web
 Priority: optional
 Architecture: all
-Depends: debconf, lighttpd
+Depends: ${misc:Depends}, debconf, lighttpd
 Pre-Depends: ezweb-platform-common (= ${binary:Version})
 Recommends: ezweb-platform-lighttpd-fastcgi
 Description: Lighttpd support for EzWeb Platform - shared files
@@ -121,7 +121,7 @@ Package: ezweb-platform-lighttpd-fastcgi
 Section: web
 Priority: optional
 Architecture: all
-Depends: debconf, ezweb-platform-lighttpd-common (= ${binary:Version}), ezweb-platform-fastcgi-common (= ${binary:Version})
+Depends: ${misc:Depends}, debconf, ezweb-platform-lighttpd-common (= ${binary:Version}), ezweb-platform-fastcgi-common (= ${binary:Version})
 Pre-Depends: ezweb-platform-common (= ${binary:Version})
 Provides: ezweb-platform-server-backend
 Description: Lighttpd using fastcgi support for EzWeb Platform
@@ -136,7 +136,7 @@ Package: ezweb-platform-postgres
 Section: web
 Priority: optional
 Architecture: all
-Depends: python-psycopg2
+Depends: ${misc:Depends}, python-psycopg2
 Pre-Depends: debconf, ezweb-platform-common (= ${binary:Version})
 Recommends: postgresql | postgresql-7.4 | postgresql-8.3
 Provides: ezweb-platform-database-backend
@@ -152,7 +152,7 @@ Package: ezweb-platform-mysql
 Section: web
 Priority: optional
 Architecture: all
-Depends: debconf, python-mysqldb
+Depends: ${misc:Depends}, debconf, python-mysqldb
 Pre-Depends: ezweb-platform-common (= ${binary:Version})
 Recommends: mysql-server | mysql-server-5.0 | mysql-server-5.1
 Provides: ezweb-platform-database-backend
@@ -168,7 +168,7 @@ Package: ezweb-platform-sqlite3
 Section: web
 Priority: optional
 Architecture: all
-Depends: python (>= 2.5) | python-pysqlite2
+Depends: ${misc:Depends}, python (>= 2.5) | python-pysqlite2
 Pre-Depends: debconf, ezweb-platform-common (= ${binary:Version})
 Provides: ezweb-platform-database-backend
 Description: SQLite3 support for EzWeb Platform
@@ -183,7 +183,7 @@ Package: ezweb-platform-ldap
 Section: web
 Priority: optional
 Architecture: all
-Depends: python-ldap
+Depends: ${misc:Depends}, python-ldap
 Pre-Depends: debconf, ezweb-platform-common (= ${binary:Version})
 Provides: ezweb-platform-auth-backend
 Suggests: slapd
@@ -199,6 +199,7 @@ Package: ezweb-platform-ezsteroids
 Section: web
 Priority: optional
 Architecture: all
+Depends: ${misc:Depends}
 Pre-Depends: debconf, ezweb-platform-common (= ${binary:Version})
 Provides: ezweb-platform-auth-backend
 Suggests: ezsteroids

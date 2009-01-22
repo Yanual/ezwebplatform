@@ -32,7 +32,7 @@ ezweb_fcgi_start() {
 ezweb_fcgi_start_all() {
   log_daemon_msg "Starting fastcgi EzWeb servers"
 
-  INSTANCES=`/usr/sbin/update-ezweb-platform list enabled connection_type fastcgi`
+  INSTANCES=`update-ezweb-platform list enabled connection_type fastcgi`
 
   for conf_name in $INSTANCES; do
     ezweb_fcgi_start "$conf_name"
