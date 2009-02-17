@@ -34,14 +34,17 @@ public class HttpProxy extends HttpServlet {
 			throws ServletException, IOException {
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
-		String title = "Simple Get Example";
-		out.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">" +
-				"<HTML>" +
-				"<HEAD><TITLE>" + title + "</TITLE>" + 
-				"</HEAD>" +
-		        "<BODY BGCOLOR=\"#FDF5E6\">\n" +
-		        "<H3 ALIGN=CENTER>Hello World!!!</H3>\n");
-		out.println("</BODY></HTML>");
+		out.println("<html><head><meta http-equiv=Content-Type content=\"text/html; charset=iso-8859-1\"/> "
+			+ "<title>Proxy EzWeb Test</title>"
+			+ "</head>"
+			+ "<body><h1>Proxy EzWeb Test</h1><br>"
+			+ "<form name=\"test\" method=\"POST\" action=\"/EzWebJavaProxy/proxy\">"
+			+ "Url: <input type=\"text\" name=\"url\" /></br>" 
+			+ "Method:<input type=\"text\" name=\"method\" /></br>"
+			+ "Params:<input type=\"text\" name=\"params\" /></br>"
+			+ "Headers:<input type=\"text\" name=\"headers\" /></br>"
+			+ "<input type=\"submit\" value=\"Make request\"/>"
+			+ "</form></body></html>");
 		out.close();
 	}
 	
