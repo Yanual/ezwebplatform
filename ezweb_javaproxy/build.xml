@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="EzWebJavaProxy" default="war" basedir=".">
+
+		<!-- Create the time stamp -->
+		<tstamp>
+        	<format property="TODAY_EN" pattern="dd MMMM yyyy HH:mm:ss" locale="en"/>
+		</tstamp>
+	
+		<echo message="Ant build (${TODAY_EN})"/>
+	
+        <property name="src" value="${basedir}/WEB-INF/src"/>
+        <property name="lib" value="${basedir}/WEB-INF/lib"/>
+        <property name="lib_servlet" value="${basedir}/lib"/>
+        <property name="propiedadesWeb" value="${basedir}/WEB-INF"/>
+        <property name="instalacion" value="${basedir}/Instalacion"/>
+        <property name="tmp" value="${instalacion}/tmp"/>
+        <property name="jar" value="EzWebJavaProxy.jar"/>
+        <property name="war" value="${instalacion}/EzWebJavaProxy.war"/>
+	
+		<!-- Versioning -->
+		<property name="spec.title" value="EzWebJavaProxy"/>
+        <property name="spec.version" value="1.0.0"/>
+        <property name="impl.version" value="build_${DSTAMP}"/>
+	
+        <path id="classpath">
+                <fileset dir="${lib}">
+                        <include name="*.jar"/>
+                </fileset>
+        	    <fileset dir="${lib_servlet}">
+        	     		<include name="*.jar"/>
+        	    </fileset>
+        </path>
+
+        <target name="clean">
+                <delete file="${war}"/>
+                <delete file="${instalacion}/${jar}"/>
+                <delete dir="${tmp}"/>
+                <mkdir dir="${tmp}/classes"/>
+                <mkdir dir="${instalacion}"/>
+        </target>
+
+        <target name="compila" depends="clean">
+        		<copy todir="${tmp}/src">
+                	<fileset dir="${src}">
+                	</fileset>
+  		        </copy>
+                <javac srcdir="${tmp}/src" destdir="${tmp}/classes" debug="true">
+                        <classpath refid="classpath"/>
+                </javac>
+ 				<copy todir="${tmp}/classes">
+        	       	<fileset dir="${src}">
+        	       		<exclude name="log4j.properties*"/>
+        	       		<exclude name="proxy.properties*"/>
+						<include name="**.properties"/>
+        	       		<include name="**.xml"/>
+					</fileset>
+        	  	</copy>
+                <jar destfile="${tmp}/${jar}" basedir="${tmp}/classes">
+        			<manifest>
+        				<attribute name="Date-of-Build" value="${TODAY_EN}"/>
+						<attribute name="Build-OS" value="${os.name} version ${os.version} on ${os.arch}"/>
+						<attribute name="Java-Version" value="${ant.java.version}"/>
+        				<attribute name="Specification-Title" value="${spec.title}"/>
+						<attribute name="Specification-Version" value="${spec.version}"/>
+						<attribute name="Implementation-Version" value="${impl.version}"/>
+					</manifest>
+        		</jar>
+        		<copy file="${tmp}/${jar}" todir="${instalacion}"/>
+        </target>
+
+		<target name="generateWar" depends="compila">
+   	  		<echo message="log4jFile=${log4jFile}"/>
+   	  		
+	   		<!-- Copiamos el fichero de configuracion de log4j apropiado a la generacion de este war -->
+	   	  	<!--copy file="${log4jFile}" tofile="${propiedadesWeb}/classes/log4j.properties" overwrite="true"/-->
+
+      		<war destfile="${war}" webxml="${propiedadesWeb}/web.xml">
+        		<fileset dir=".">
+         			<exclude name="src/**"/>
+         			<exclude name="lib/**"/>
+         			<exclude name="work/**"/>
+         			<exclude name="properties/**"/>
+         			<exclude name="build.xml"/>
+         			<exclude name=".**/**"/>
+         			<exclude name="Instalacion/**"/>
+         			<exclude name="WEB-INF/**"/>
+         			<exclude name="trazas/**"/>
+         			<exclude name="imagenes/fotos/export/**.jpg"/>
+         			<exclude name="imagenes/fotos/import/**.jpg"/>
+         		</fileset>
+         		<lib dir="${lib}"></lib>
+  	     		<lib file="${tmp}/${jar}"/>
+  	     		<classes dir="${propiedadesWeb}/classes">
+  	     			<include name="log4j.properties"/>
+  	     			<include name="proxy.properties"/>
+  	    		</classes>
+  	     		<webinf dir="${propiedadesWeb}">
+  	   	 			<exclude name="web.xml"/>
+  	     			<exclude name="web.xml.produccion"/>
+  	     			<exclude name="classes/**"/>
+  	     			<exclude name="src/**"/>
+  	     			<exclude name="lib/**"/>
+  	     			<exclude name="**.bak"/>
+  	     		</webinf>
+				<manifest>
+        			<attribute name="Date-of-Build" value="${TODAY_EN}"/>
+					<attribute name="Build-OS" value="${os.name} version ${os.version} on ${os.arch}"/>
+					<attribute name="Java-Version" value="${ant.java.version}"/>
+        			<attribute name="Specification-Title" value="${spec.title}"/>
+					<attribute name="Specification-Version" value="${spec.version}"/>
+					<attribute name="Implementation-Version" value="${impl.version}"/>
+				</manifest>
+      		</war>
+			
+			<delete dir="${tmp}"/>
+      		<!-- Volvemos a dejar el fichero de configuracion de log4j por defecto -->
+   	  		<!--copy file="${src}/log4j.properties" tofile="${propiedadesWeb}/classes/log4j.properties" overwrite="true"/-->
+   		</target>
+
+		<target name="war" depends="compila">
+   	  		<antcall target="generateWar">
+    			<param name="log4jFile" value="${src}/log4j.properties"/>
+  	  		</antcall>
+   		</target>
+   
+</project>
