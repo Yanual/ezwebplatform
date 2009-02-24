@@ -76,22 +76,11 @@ public class HttpProxy extends HttpServlet {
 			// If there are no request headers params copy the request headers
 			while (reqHeaders.hasMoreElements()) {
 				String head = reqHeaders.nextElement();
-				
-				if (method.equalsIgnoreCase("PUT") || method.equalsIgnoreCase("POST")) {
-					if (!head.equalsIgnoreCase("cache-control")) {
-						// NOTE:do not copy the CACHE_CONTROL header in order to allow 301 redirection
-						String value = request.getHeader(head);
-						_req.add(new NameValuePair (head, value));
-					}
-				} else {
-					// GET / DELETE
-					if (!head.equalsIgnoreCase("cache-control") && !head.equalsIgnoreCase("content-type") && !head.equalsIgnoreCase("content-length")) {
-						// NOTE:do not copy the CACHE_CONTROL header in order to allow 301 redirection
-						// NOTE:do not copy the content-type/content-lenght for GET/DELETE requests
-						String value = request.getHeader(head);
-						_req.add(new NameValuePair (head, value));
-					} 
-				} 
+				if (!head.equalsIgnoreCase("cache-control") && !head.equalsIgnoreCase("content-type") && !head.equalsIgnoreCase("content-length")) {
+					// NOTE:do not copy the CACHE_CONTROL header in order to allow 301 redirection
+					String value = request.getHeader(head);
+					_req.add(new NameValuePair (head, value));
+				}
 			}
 			
 			// Add the EzWeb "Via" header
