@@ -19,6 +19,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpState;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.httpclient.NTCredentials;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.URI;
 import org.apache.commons.httpclient.URIException;
@@ -87,12 +88,21 @@ public final class Invoker {
 				// Check if is an Authenticated Proxy
 				String proxyUser = proxyProp.getProperty("proxy.user");
 				String proxyPass = proxyProp.getProperty("proxy.pass");
+				String proxyAuthType = proxyProp.getProperty("proxy.authentication_type");
+				String proxyNtmlHost = proxyProp.getProperty("proxy.ntlm.host");
+				String proxyNtmlDomain = proxyProp.getProperty("proxy.ntlm.domain");
 							
 				if (proxyUser != null && proxyPass != null) {
+					UsernamePasswordCredentials usernamePasswordCredentials = null;
+					if (proxyAuthType != null && proxyAuthType.equalsIgnoreCase("NTLM")) {
+						usernamePasswordCredentials = new NTCredentials(proxyUser, proxyPass, proxyNtmlHost, proxyNtmlDomain);
+					} else {
+						usernamePasswordCredentials = new UsernamePasswordCredentials(proxyUser, proxyPass);
+					}
 					client.getState().setProxyCredentials(
 							new AuthScope(proxyHost, proxyPort),
-							new UsernamePasswordCredentials(proxyUser, proxyPass));
-				}
+							usernamePasswordCredentials);
+				} 
 			}
         } catch (Exception e) {
 			log.error("Properties file not found!!!");

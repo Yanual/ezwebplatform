@@ -5,8 +5,10 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Vector;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -34,11 +36,12 @@ public class HttpProxy extends HttpServlet {
 			throws ServletException, IOException {
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
+		String contextPath = req.getContextPath();
 		out.println("<html><head><meta http-equiv=Content-Type content=\"text/html; charset=iso-8859-1\"/> "
 			+ "<title>Proxy EzWeb Test</title>"
 			+ "</head>"
 			+ "<body><h1>Proxy EzWeb Test</h1><br>"
-			+ "<form name=\"test\" method=\"POST\" action=\"/EzWebJavaProxy/proxy\">"
+			+ "<form name=\"test\" method=\"POST\" action=\"" + contextPath + "/proxy\">"
 			+ "Url: <input type=\"text\" name=\"url\" /></br>" 
 			+ "Method:<input type=\"text\" name=\"method\" /></br>"
 			+ "Params:<input type=\"text\" name=\"params\" /></br>"
@@ -57,6 +60,8 @@ public class HttpProxy extends HttpServlet {
 		String method = request.getParameter("method");
 		String params = request.getParameter("params");
 		String requestHeaders = request.getParameter("headers");
+		
+		
 			
 		//JSONObject object = new JSONObject()
 		
@@ -64,12 +69,36 @@ public class HttpProxy extends HttpServlet {
 		NameValuePair[] requestHeaderNameValuePairs = extractNameValueParams(requestHeaders);
 		
 		if (requestHeaderNameValuePairs.length == 0) {
-			// If there are no request headers, add the EzWeb 'standards': User-Agent, Via and propagate Cookies
-			requestHeaderNameValuePairs = new NameValuePair[] {
-					new NameValuePair("User-Agent", request.getHeader("User-Agent")),
-					new NameValuePair("Via", "EzWeb-Proxy"),
-					new NameValuePair("Cookie", request.getHeader("Cookie")),
-					};	
+			
+			Enumeration<String> reqHeaders = request.getHeaderNames();
+			Vector<NameValuePair> _req = new Vector();
+			
+			// If there are no request headers params copy the request headers
+			while (reqHeaders.hasMoreElements()) {
+				String head = reqHeaders.nextElement();
+				
+				if (method.equalsIgnoreCase("PUT") || method.equalsIgnoreCase("POST")) {
+					if (!head.equalsIgnoreCase("cache-control")) {
+						// NOTE:do not copy the CACHE_CONTROL header in order to allow 301 redirection
+						String value = request.getHeader(head);
+						_req.add(new NameValuePair (head, value));
+					}
+				} else {
+					// GET / DELETE
+					if (!head.equalsIgnoreCase("cache-control") && !head.equalsIgnoreCase("content-type") && !head.equalsIgnoreCase("content-length")) {
+						// NOTE:do not copy the CACHE_CONTROL header in order to allow 301 redirection
+						// NOTE:do not copy the content-type/content-lenght for GET/DELETE requests
+						String value = request.getHeader(head);
+						_req.add(new NameValuePair (head, value));
+					} 
+				} 
+			}
+			
+			// Add the EzWeb "Vía" header
+			_req.add(new NameValuePair("Via", "EzWeb-Proxy"));
+			
+			requestHeaderNameValuePairs = new NameValuePair[_req.size()];
+			_req.toArray(requestHeaderNameValuePairs);
 
 		}
 		
@@ -86,51 +115,56 @@ public class HttpProxy extends HttpServlet {
 			contentType = "";
 		}
 		
-		HttpMethod responseMethod;	
+		HttpMethod responseMethod = null;	
 		
-		HashMap<String, Header> responseHeaders = new HashMap<String, Header>();
-		
-		if (method != null) {
-			if (method.equalsIgnoreCase("GET")) {
-				responseMethod = Invoker.getInstance().invokeGET(url, method, requestHeaderNameValuePairs, null, null, contentType, 60000, responseHeaders);
-			} else if (method.equalsIgnoreCase("POST")) {
-				responseMethod = Invoker.getInstance().invokePOST(url, method, postNameValuePairs,
-						requestHeaderNameValuePairs, null, null, null,
-			        	contentType, 60000, responseHeaders);
-			} else if (method.equalsIgnoreCase("PUT")) {
-				responseMethod = Invoker.getInstance().invokePUT(url, method, postNameValuePairs,
-						requestHeaderNameValuePairs, null, null, null,
-			        	contentType, 60000, responseHeaders);
-			} else if (method.equalsIgnoreCase("DELETE")) {
-				responseMethod = Invoker.getInstance().invokeDELETE(url, method, requestHeaderNameValuePairs, null, null, contentType, 60000, responseHeaders);
+		try {
+			HashMap<String, Header> responseHeaders = new HashMap<String, Header>();
+			
+			if (method != null) {
+				if (method.equalsIgnoreCase("GET")) {
+					responseMethod = Invoker.getInstance().invokeGET(url, method, requestHeaderNameValuePairs, null, null, contentType, 60000, responseHeaders);
+				} else if (method.equalsIgnoreCase("POST")) {
+					responseMethod = Invoker.getInstance().invokePOST(url, method, postNameValuePairs,
+							requestHeaderNameValuePairs, null, null, null,
+				        	contentType, 60000, responseHeaders);
+				} else if (method.equalsIgnoreCase("PUT")) {
+					responseMethod = Invoker.getInstance().invokePUT(url, method, postNameValuePairs,
+							requestHeaderNameValuePairs, null, null, null,
+				        	contentType, 60000, responseHeaders);
+				} else if (method.equalsIgnoreCase("DELETE")) {
+					responseMethod = Invoker.getInstance().invokeDELETE(url, method, requestHeaderNameValuePairs, null, null, contentType, 60000, responseHeaders);
+				} else {
+					response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Method: " + method + " is not allowed");
+					return;
+				}
+				
 			} else {
-				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Method: " + method + " is not allowed");
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "No method received");
 				return;
 			}
 			
-		} else {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "No method received");
-			return;
-		}
-		
-		// Add all the headers recieved to the response (including Content-Type)
-		for (Iterator iterator = responseHeaders.keySet().iterator(); iterator.hasNext();) {
-			String key = (String) iterator.next();
+			// Add all the headers recieved to the response (including Content-Type)
+			for (Iterator iterator = responseHeaders.keySet().iterator(); iterator.hasNext();) {
+				String key = (String) iterator.next();
+				
+				response.setHeader(key, responseHeaders.get(key).getValue());
+			}
 			
-			response.setHeader(key, responseHeaders.get(key).getValue());
-		}
-		
-		// Set status code to the response
-		response.setStatus(responseMethod.getStatusCode());
-		
-		InputStream in = responseMethod.getResponseBodyAsStream();
-		OutputStream out = response.getOutputStream();
-		
-		org.apache.commons.io.IOUtils.copy(in, out);
-		in.close();
-		out.flush();
-		out.close();
-
+			// Set status code to the response
+			response.setStatus(responseMethod.getStatusCode());
+			
+			InputStream in = responseMethod.getResponseBodyAsStream();
+			OutputStream out = response.getOutputStream();
+			
+			org.apache.commons.io.IOUtils.copy(in, out);
+			in.close();
+			out.flush();
+			out.close();
+		} finally {
+            if (responseMethod != null) {
+            	responseMethod.releaseConnection();
+            }
+        }
 	}
 	
 	@SuppressWarnings("unchecked")
