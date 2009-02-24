@@ -70,9 +70,11 @@
 
 		<target name="generateWar" depends="compila">
    	  		<echo message="log4jFile=${log4jFile}"/>
+			<echo message="proxyProps=${proxyProps}"/>
    	  		
-	   		<!-- Copiamos el fichero de configuracion de log4j apropiado a la generacion de este war -->
-	   	  	<!--copy file="${log4jFile}" tofile="${propiedadesWeb}/classes/log4j.properties" overwrite="true"/-->
+	   		<!-- Copiamos los ficheros de configuracion apropiados a la generacion de este war -->
+	   	  	<copy file="${log4jFile}" tofile="${propiedadesWeb}/classes/log4j.properties" overwrite="true"/>
+			<copy file="${proxyProps}" tofile="${propiedadesWeb}/classes/proxy.properties" overwrite="true"/>
 
       		<war destfile="${war}" webxml="${propiedadesWeb}/web.xml">
         		<fileset dir=".">
@@ -120,6 +122,7 @@
 		<target name="war" depends="compila">
    	  		<antcall target="generateWar">
     			<param name="log4jFile" value="${src}/log4j.properties"/>
+   	  			<param name="proxyProps" value="${src}/proxy.properties"/>
   	  		</antcall>
    		</target>
    
