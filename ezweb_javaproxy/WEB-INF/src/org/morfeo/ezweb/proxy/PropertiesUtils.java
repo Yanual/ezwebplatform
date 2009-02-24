@@ -63,7 +63,7 @@ public class PropertiesUtils {
 			return instance;
 		} catch (Exception e) {
 			throw new Exception(
-					"No existe fichero de definicion de menú de operaciones", e);
+					"No existe fichero de definicion de menu de operaciones", e);
 		}
 	
 	}
