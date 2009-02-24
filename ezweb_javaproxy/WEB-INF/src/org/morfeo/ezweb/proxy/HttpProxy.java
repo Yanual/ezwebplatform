@@ -79,7 +79,8 @@ public class HttpProxy extends HttpServlet {
 				if (!head.equalsIgnoreCase("cache-control") 
 						&& !head.equalsIgnoreCase("content-type") 
 						&& !head.equalsIgnoreCase("content-length")
-						&& !head.equalsIgnoreCase("x-forwarded-for")) {
+						&& !head.equalsIgnoreCase("x-forwarded-for")
+						&& !head.equalsIgnoreCase("x-forwarded-proto")) {
 					// NOTE:do not copy the CACHE_CONTROL header in order to allow 301 redirection
 					String value = request.getHeader(head);
 					_req.add(new NameValuePair (head, value));
