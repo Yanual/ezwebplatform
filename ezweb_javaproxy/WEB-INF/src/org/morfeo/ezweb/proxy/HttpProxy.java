@@ -76,7 +76,10 @@ public class HttpProxy extends HttpServlet {
 			// If there are no request headers params copy the request headers
 			while (reqHeaders.hasMoreElements()) {
 				String head = reqHeaders.nextElement();
-				if (!head.equalsIgnoreCase("cache-control") && !head.equalsIgnoreCase("content-type") && !head.equalsIgnoreCase("content-length")) {
+				if (!head.equalsIgnoreCase("cache-control") 
+						&& !head.equalsIgnoreCase("content-type") 
+						&& !head.equalsIgnoreCase("content-length")
+						&& !head.equalsIgnoreCase("x-forwarded-for")) {
 					// NOTE:do not copy the CACHE_CONTROL header in order to allow 301 redirection
 					String value = request.getHeader(head);
 					_req.add(new NameValuePair (head, value));
