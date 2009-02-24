@@ -94,7 +94,7 @@ public class HttpProxy extends HttpServlet {
 				} 
 			}
 			
-			// Add the EzWeb "Vía" header
+			// Add the EzWeb "Via" header
 			_req.add(new NameValuePair("Via", "EzWeb-Proxy"));
 			
 			requestHeaderNameValuePairs = new NameValuePair[_req.size()];

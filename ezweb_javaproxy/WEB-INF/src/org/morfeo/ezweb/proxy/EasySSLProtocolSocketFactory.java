@@ -204,7 +204,7 @@ public class EasySSLProtocolSocketFactory
     }
 
     /**
-     * Descripción del método.
+     * Descripcion del metodo.
      *
      * @see org.apache.commons.httpclient.protocol.
      * ProtocolSocketFactory#createSocket(
