@@ -17,6 +17,11 @@
 				<a id="advanced_search_toggle" class="header_link" href="#" onclick="UIUtils.SlideAdvanced('advanced_search','head');">{% trans  "Advanced Search" %}</a>
 				<a id="advanced_tag_toggle" class="header_link" href="#" onclick="UIUtils.SlideAdvanced('advanced_tag','head');">{% trans  "Advanced Tagging" %}</a>
 			</div>
+            <div id="wallet_options" class="wallet_options">
+                <img src="{{ MEDIA_URL }}images/wallet.png" class="header_link">
+                <a id="wallet_current_balance" class="header_link" onclick="MarketplaceFactory.getInstance().walletManager.getBalance();">0.00</a>
+				<a id="wallet_recharge" class="header_link" href="#" onclick="MarketplaceFactory.getInstance().walletManager.recharge();">{% trans  "Wallet Recharge" %}</a>
+            </div>
 			<div id="header_always_status" class="header_always_status"></div>
 			<div id="header_always_error" class="message_error"></div>
 		</div>

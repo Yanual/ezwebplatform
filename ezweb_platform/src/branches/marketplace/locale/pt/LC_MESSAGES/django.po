@@ -835,3 +835,43 @@ msgstr ""
 
 #~ msgid "iGadgets cannot be saved: "
 #~ msgstr "IGadgets não podem ser salvos:"
+
+#: Marketplace module messages
+msgid "Duration"
+msgstr "Duración"
+
+msgid "Duration Type"
+msgstr "Tipo de Duración"
+
+msgid "Price"
+msgstr "Precio"
+
+msgid "Purchase"
+msgstr "Comprar"
+
+msgid "periodicity_P"
+msgstr "Permanente"
+
+msgid "periodicity_D"
+msgstr "Dia"
+
+msgid "periodicity_W"
+msgstr "Semanas"
+
+msgid "periodicity_M"
+msgstr "Meses"
+
+msgid "periodicity_Y"
+msgstr "Anos"
+
+msgid "duration_unit_D"
+msgstr "Dia"
+
+msgid "duration_unit_W"
+msgstr "Semanas"
+
+msgid "duration_unit_M"
+msgstr "Meses"
+
+msgid "duration_unit_Y"
+msgstr "Anos"

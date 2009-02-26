@@ -45,7 +45,7 @@ var CatalogueFactory  = function () {
 		var min_offset = 10;
 		var selectedResourceName = "";
 		var selectedResourceVersion = "";
-		var purchasableGadgets = []; 
+		var purchasableGadgets = [];
 
 		this.catalogueElement = $('showcase_container');
 		
@@ -102,8 +102,9 @@ var CatalogueFactory  = function () {
 		}
 		
 		this.reloadCompleteCatalogue = function() {
+            OpManagerFactory.getInstance().marketplace.initMarketplace();
 			this.initCatalogue();
-		}
+        }
 		
 	 	this.emptyResourceList = function() {
 			$("resources").innerHTML="";
@@ -398,7 +399,7 @@ var CatalogueFactory  = function () {
 		      if (resource.uriTemplate == purchasableGadgets[i].gadget)  	            
  	                 return true; 
  	              } 
- 	          return false; 
+ 	          return false;
  	        } 
 
 		this.loadCatalogue = function(urlCatalogue_) {

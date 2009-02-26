@@ -48,9 +48,9 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DATABASE_ENGINE = 'postgresql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = 'ezweb'             # Or path to database file if using sqlite3.
-DATABASE_USER = 'ezweb'             # Not used with sqlite3.
+DATABASE_ENGINE = 'postgresql_psycopg2'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+DATABASE_NAME = 'EzWeb20081213'             # Or path to database file if using sqlite3.
+DATABASE_USER = 'EzWeb'             # Not used with sqlite3.
 DATABASE_PASSWORD = 'ezweb'         # Not used with sqlite3.
 DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
@@ -136,6 +136,8 @@ INSTALLED_APPS = (
     'catalogue',
     'context',
 #    'clms',
+    'marketplace',
+    'marketplace.payment',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

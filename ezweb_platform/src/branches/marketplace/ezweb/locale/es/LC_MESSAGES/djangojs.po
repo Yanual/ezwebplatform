@@ -960,3 +960,28 @@ msgstr "indefinido"
 
 #~ msgid "Save & New"
 #~ msgstr "Guardar & Nueva"
+
+#: media/js/marketplace/Marketplace.js:77
+msgid "periodicity_P"
+msgstr "Permanente"
+
+#: media/js/marketplace/Marketplace.js:79
+msgid "periodicity_D"
+msgstr "Días"
+
+#: media/js/marketplace/Marketplace.js:79
+msgid "periodicity_S"
+msgstr "Semanas"
+
+#: media/js/marketplace/Marketplace.js:79
+msgid "periodicity_M"
+msgstr "Meses"
+
+#: media/js/marketplace/Marketplace.js:79
+msgid "periodicity_A"
+msgstr "Años"
+
+#: media/js/marketplace/Marketplace.js:81
+msgid "Purchase"
+msgstr "Comprar"
+

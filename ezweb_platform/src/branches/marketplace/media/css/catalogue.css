@@ -94,6 +94,10 @@
 	display: inline;
 }
 
+#catalogue .head .header_always .wallet_options {
+	display: inline;
+}
+
 #catalogue .header_always_status {
 	background-color:#2E9AFE;
 	border:none;
@@ -1049,4 +1053,8 @@
 {
 	font-size: 70%;
 	margin-left:10px;
+}
+
+#catalogue table.pricing {
+    
 }

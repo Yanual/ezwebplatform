@@ -30,12 +30,29 @@
 
 #
 
-from django.conf.urls.defaults import patterns
+from django.contrib import admin
+from marketplace.models import GadgetPricing, Wallet, Transaction
 
-urlpatterns = patterns('ezweb.views',
-    (r'^$', 'index'),
-    (r'restful_tools$', 'restful_tools'),
-    (r'^wiring$', 'wiring'),
-    (r'^lite$', 'index_lite'),
+# Class to manage the gadget pricing via admin
+class GadgetPricingAdmin(admin.ModelAdmin):
+    field_sets = (
+        (None, {
+            'fields': ('gadget', ('duration', 'periodicity'), 'price')
+            }),
+        )
+    list_display = ('gadget', 'duration', 'periodicity', 'price')
 
-)
+
+# Class to manage manually the transactions (Wallet recharges and gadget purchases)
+class TransactionAdmin(admin.ModelAdmin):
+    field_sets = (
+        (None, {
+            'fields': ('wallet', 'creation_date', 'transaction_type', 'concept', 'amount', 'status', 'gadget_pricing', 'finish_date')
+            }),
+        )
+    list_display = ('creation_date', 'transaction_type', 'status', 'amount')
+
+# Management modules registation
+admin.site.register(GadgetPricing, GadgetPricingAdmin)
+admin.site.register(Transaction, TransactionAdmin)
+admin.site.register(Wallet)

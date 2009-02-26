@@ -600,14 +600,14 @@ UIUtils.deleteGadget = function(id) {
 	UIUtils.repaintCatalogue=true;
 	UIUtils.sendPendingTags();
 	UIUtils.closeInfoResource();
-	
+
 	var onError = function(transport) {
 				LayoutManagerFactory.getInstance().hideCover();
 				var msg = interpolate(gettext("Error deleting the Gadget: %(errorMsg)s."), {errorMsg: transport.status}, true);
 				LogManagerFactory.getInstance().log(msg);
 				// Process
 			}
-			
+
 	var loadCatalogue = function(transport) {
 				LayoutManagerFactory.getInstance().hideCover();
 				CatalogueFactory.getInstance().repaintCatalogue(URIs.GET_POST_RESOURCES + "/" + UIUtils.getPage() + "/" + UIUtils.getOffset());

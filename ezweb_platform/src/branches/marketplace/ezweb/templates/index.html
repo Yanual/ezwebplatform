@@ -50,6 +50,13 @@ _URIConstants.prototype.POST_PUBLISH_WORKSPACE = new Template('/workspace/#{work
 _URIConstants.prototype.GET_ADD_WORKSPACE = new Template('/workspace/#{workspace_id}/add');
 _URIConstants.prototype.GET_MERGE_WORKSPACE = new Template('/workspace/#{from_ws_id}/merge/#{to_ws_id}');
 
+// Marketplace URIConstants
+_URIConstants.prototype.GET_PURCHASED_RESOURCES = new Template('/marketplace/purchased/user/{{ user.username }}');
+_URIConstants.prototype.GET_GADGET_PRICING = new Template('/marketplace/pricing/resource/#{vendor}/#{name}/#{version}');
+_URIConstants.prototype.POST_PURCHASE_GADGET = new Template('/marketplace/purchased/user/{{ user.username }}');
+_URIConstants.prototype.GET_WALLET_BALANCE = new Template('/marketplace/wallet/user/{{ user.username }}');
+_URIConstants.prototype.GET_PAYMENT_ACCOUNTS = new Template('/marketplace/payment/accounts/user/{{ user.username }}');
+
 {% if home_gateway_dispatcher_url %}
     _URIConstants.prototype.HOME_GATEWAY_DISPATCHER_URL = '{{ home_gateway_dispatcher_url }}serviceGadgets?user={{ user.username }}';
     _URIConstants.prototype.HOME_GATEWAY_DISPATCHER_UNSUBSCRIBE_URL = '{{ home_gateway_dispatcher_url }}unsubscribeServices';
@@ -117,6 +124,7 @@ var ezweb_user_name = '{{ user.username }}'
 <script type="text/javascript" src="{{ MEDIA_URL }}js/catalogue/Resource.js"></script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/catalogue/Tagger.js"></script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/catalogue/Tag.js"></script>
+
 <script type="text/javascript">
     window.onresize = function () {
         LayoutManagerFactory.getInstance().resizeWrapper()
@@ -124,11 +132,13 @@ var ezweb_user_name = '{{ user.username }}'
     }
 </script>
 
-<script type="text/javascript" src="{{ MEDIA_URL }}js/interfaceLayout/DropDownMenu.js"></script>
-<script type="text/javascript" src="{{ MEDIA_URL }}js/interfaceLayout/WindowMenu.js"></script>
-<script type="text/javascript" src="{{ MEDIA_URL }}js/interfaceLayout/LayoutManager.js"></script>
-<script type="text/javascript" src="{{ MEDIA_URL }}js/interfaceLayout/BrowserUtils.js"></script>
-<script type="text/javascript" src="{{ MEDIA_URL }}js/wiring/wz_jsgraphics.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/marketplace/Marketplace.js"></script>
+
+<script language="javascript" src="{{ MEDIA_URL }}js/interfaceLayout/DropDownMenu.js"></script>
+<script language="javascript" src="{{ MEDIA_URL }}js/interfaceLayout/WindowMenu.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/interfaceLayout/LayoutManager.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/interfaceLayout/BrowserUtils.js"></script>
+<script language="JavaScript" src="{{ MEDIA_URL }}js/wiring/wz_jsgraphics.js"></script>
 
 {% if AUTHENTICATION_SERVER_URL %}
 <script type="text/javascript" src="{{ AUTHENTICATION_SERVER_URL }}/ezweb/js/js_library.js"></script>
@@ -318,6 +328,57 @@ var ezweb_user_name = '{{ user.username }}'
 		 </div>
 	</div>
 	<!-- LOGS LAYER -->
+</div>
+
+
+
+
+
+<div id="wallet_recharge_window" class="window_menu" style="display:none">
+    <div class="window_top">
+		<label id="wallet_recharge_window_title" class="window_title"></label>
+		<input type="button" class="closebutton button" onclick="LayoutManagerFactory.getInstance().hideCover();" />
+	</div>
+	<div class="window_content">
+		<div id="wallet_recharge_window_msg" class="window_msg">
+        </div>
+        <div id="wallet_recharge_content">
+        </div>
+	</div>
+	<div class="window_bottom">
+        <button id="wallet_recharge_btn1" style="display:none;">{% trans "Purchase"%}</button>
+        <button id="wallet_recharge_btn2" onclick="LayoutManagerFactory.getInstance().hideCover();">{% trans "Cancel"%}</button>
+	</div>
+</div>
+
+
+
+
+
+<div id="purchase_window" class="window_menu" style="display:none">
+	<div class="window_top">
+		<label id="purchase_window_title" class="window_title"></label>
+		<input type="button" class="closebutton button" onclick="LayoutManagerFactory.getInstance().hideCover();" />
+	</div>
+	<div class="window_content">
+		<div id="purchase_window_msg" class="window_msg">
+        </div>
+        <table id="purchase_window_pricing" class="pricing" style="width:100%;">
+            <thead>
+                <tr>
+                    <th>{% trans "Duration"%}</th>
+                    <th>{% trans "Price"%}</th>
+                    <th>{% trans "Action"%}</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+	</div>
+	<div class="window_bottom">
+        <button id="purchase_btn1" style="display:none;">{% trans "Purchase"%}</button>
+        <button id="purchase_btn2" onclick="LayoutManagerFactory.getInstance().hideCover();">{% trans "Cancel"%}</button>
+	</div>
 </div>
 </body>
 </html>

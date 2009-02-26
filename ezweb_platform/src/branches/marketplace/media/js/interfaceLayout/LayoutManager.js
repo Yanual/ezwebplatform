@@ -249,6 +249,7 @@ var LayoutManagerFactory = function () {
 
 			if (!this.catalogue) {
 				this.catalogue = CatalogueFactory.getInstance();
+				this.marketplace = MarketplaceFactory.getInstance();
 			}
 
 			this.currentView = this.catalogue;
@@ -441,6 +442,24 @@ var LayoutManagerFactory = function () {
 					this.currentMenu.setMsg(gettext('WARNING! All versions of this gadget will be removed too! Do you really want to remove this gadget?'));
 				}
 				this.currentMenu.setHandler(function(){UIUtils.deleteGadget(UIUtils.selectedResource);}, handlerNoButton);
+				this.currentMenu.show();
+				break;
+			case 'purchaseResource':
+				if(!this.menus['purchaseMenu']){
+					this.menus['purchaseMenu'] = new PurchaseWindowMenu(null);
+				}
+				this.currentMenu = this.menus['purchaseMenu'];
+                this.currentMenu.setMsg(gettext('Do you really want to purchase this gadget?'));
+				this.currentMenu.setHandler(function(){}, handlerNoButton);
+				this.currentMenu.show();
+				break;
+			case 'walletRecharge':
+				if(!this.menus['walletRechargeMenu']){
+					this.menus['walletRechargeMenu'] = new WalletRechargeWindowMenu(null);
+				}
+				this.currentMenu = this.menus['walletRechargeMenu'];
+                this.currentMenu.setMsg(gettext('Select a method to recharge your wallet'));
+				this.currentMenu.setHandler(function(){}, handlerNoButton);
 				this.currentMenu.show();
 				break;
 			default:

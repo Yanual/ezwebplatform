@@ -770,3 +770,28 @@ msgstr ""
 #: media/js/wiring/wiringGUI.js:773
 msgid "undefined"
 msgstr ""
+
+#: media/js/marketplace/Marketplace.js:77
+msgid "periodicity_P"
+msgstr "Permanent"
+
+#: media/js/marketplace/Marketplace.js:79
+msgid "periodicity_D"
+msgstr "Days"
+
+#: media/js/marketplace/Marketplace.js:79
+msgid "periodicity_S"
+msgstr "Weeks"
+
+#: media/js/marketplace/Marketplace.js:79
+msgid "periodicity_M"
+msgstr "Months"
+
+#: media/js/marketplace/Marketplace.js:79
+msgid "periodicity_A"
+msgstr "Years"
+
+#: media/js/marketplace/Marketplace.js:81
+msgid "Purchase"
+msgstr "Purchase"
+

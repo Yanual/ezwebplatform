@@ -820,3 +820,146 @@ msgstr "no se pudieron actualizar las variables"
 
 #~ msgid "iGadgets cannot be saved: "
 #~ msgstr "No se pudo guardar el IGadget: "
+
+#: Marketplace module messages
+msgid "periodicity_P"
+msgstr "Permanente"
+
+msgid "periodicity_D"
+msgstr "Días"
+
+msgid "periodicity_W"
+msgstr "Semanas"
+
+msgid "periodicity_M"
+msgstr "Meses"
+
+msgid "periodicity_Y"
+msgstr "Años"
+
+msgid "duration_unit_D"
+msgstr "Días"
+
+msgid "duration_unit_W"
+msgstr "Semanas"
+
+msgid "duration_unit_M"
+msgstr "Meses"
+
+msgid "duration_unit_Y"
+msgstr "Años"
+
+msgid "Duration"
+msgstr "Duración"
+
+msgid "Duration Type"
+msgstr "Tipo de Duración"
+
+msgid "Price"
+msgstr "Precio"
+
+msgid "Permanent Contract"
+msgstr "Contratación PERMANENTE de %s"
+
+msgid "Periodic Contract"
+msgstr "Contratación de %s durante %d %s"
+
+msgid "Current Balance"
+msgstr "Saldo Actual"
+
+msgid "Outstanding Balance"
+msgstr "Saldo Pendiente"
+
+msgid "Recharge"
+msgstr "Recarga"
+
+msgid "Purchase"
+msgstr "Compra"
+
+msgid "Refund"
+msgstr "Devolución"
+
+msgid "Pending"
+msgstr "Pendiente"
+
+msgid "Completed"
+msgstr "Completada"
+
+msgid "Creation Date"
+msgstr "Fecha de Creación"
+
+msgid "Transaction Type"
+msgstr "Tipo de Transacción"
+
+msgid "Concept"
+msgstr "Concepto"
+
+msgid "Amount"
+msgstr "Importe"
+
+msgid "Status"
+msgstr "Estado"
+
+msgid "Finish Date"
+msgstr "Vencimiento"
+
+msgid "Extended Info"
+msgstr "Información Extendida"
+
+msgid "Purchase Description"
+msgstr "%s de %d"
+
+msgid "Transaction Description"
+msgstr "%s de %s por importe %d"
+
+msgid "Error retrieving gadgets pricing"
+msgstr "Error obteniendo la tarifa de precios"
+
+msgid "Gadget is currently purchased"
+msgstr "Este gadget ya ha sido comprado"
+
+msgid "There is not enough balance"
+msgstr "No hay suficiente saldo. Recarge su Monedero"
+
+msgid "Gadget purchasing"
+msgstr "Compra de un gadget"
+
+msgid "account_types_I"
+msgstr "Notificación de Pago Instantánea"
+
+msgid "account_types_P"
+msgstr "Transferencia de Datos de Pago"
+
+msgid "Title"
+msgstr "Título"
+
+msgid "Payment Account Type"
+msgstr "Tipo de Cuenta de Pago"
+
+msgid "Validation Method"
+msgstr "Método de Validación"
+
+msgid "Identity Token"
+msgstr "Token de Identificación (Suministrado por la plataforma de pago)"
+
+msgid "Form Element HTML"
+msgstr "HTML del elemento Form"
+
+msgid "No Payment Accounts"
+msgstr "NO Hay Cuentas de Pago"
+
+msgid "Error getting objects"
+msgstr "Error obteniendo objetos"
+
+msgid "Wallet Recharge"
+msgstr "Recarga de Monedero"
+
+msgid "Error creating transaction"
+msgstr "Error creando la transacción"
+
+msgid "Error creating transaction extended info"
+msgstr "Error creando la información extendida de la transacción"
+
+msgid "Error updating balance"
+msgstr "Error al actualizar el saldo del monedero"
+

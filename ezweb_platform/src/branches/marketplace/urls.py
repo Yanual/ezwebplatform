@@ -102,4 +102,8 @@ urlpatterns = patterns('',
     # Django JavaScript Internacionalitation
     (r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
 
+    # Marketplace Module
+    (r'^user/(?P<user_name>[_\w]+)/marketplace/resource/(?P<gadget_id>\d+)?', include('marketplace.urls')),
+    (r'^marketplace/', include('marketplace.urls')),
+
 )

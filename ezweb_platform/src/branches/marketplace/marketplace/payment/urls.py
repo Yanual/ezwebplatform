@@ -29,13 +29,13 @@
 
 
 #
+from django.conf.urls.defaults import patterns, include
 
-from django.conf.urls.defaults import patterns
+from marketplace.payment.views import PaymentAccountCollection
 
-urlpatterns = patterns('ezweb.views',
-    (r'^$', 'index'),
-    (r'restful_tools$', 'restful_tools'),
-    (r'^wiring$', 'wiring'),
-    (r'^lite$', 'index_lite'),
-
+urlpatterns = patterns('marketplace.payment.views',
+    # Marketplace gets a list of Payment Accounts to Recharge the User Wallet (GET)
+    (r'^accounts/user/(?P<user_name>[_\w]+)$', PaymentAccountCollection(permitted_methods=('GET',))),
+    # Paypal URLs
+    (r'^paypal/', include('marketplace.payment.paypal.urls')),
 )

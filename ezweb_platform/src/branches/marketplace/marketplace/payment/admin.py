@@ -30,12 +30,8 @@
 
 #
 
-from django.conf.urls.defaults import patterns
+from django.contrib import admin
+from marketplace.payment.models import Account
 
-urlpatterns = patterns('ezweb.views',
-    (r'^$', 'index'),
-    (r'restful_tools$', 'restful_tools'),
-    (r'^wiring$', 'wiring'),
-    (r'^lite$', 'index_lite'),
-
-)
+# Management modules registation for Payment Accounts
+admin.site.register(Account)

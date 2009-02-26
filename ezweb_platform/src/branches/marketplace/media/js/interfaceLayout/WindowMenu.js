@@ -283,3 +283,115 @@ function PublishWindowMenu (element) {
 }
 
 PublishWindowMenu.prototype = new WindowMenu;
+
+
+
+
+
+
+//Especific class for Purchase Gadget windows
+function PurchaseWindowMenu (element) {
+
+	//constructor
+	this.htmlElement = $('purchase_window');		//create-window HTML element
+	this.titleElement = $('purchase_window_title');	//title gap
+	this.msgElement = $('purchase_window_msg');	//error message gap
+	this.element = element;				//workspace or tab
+	this.button = $('purchase_btn1');
+	this.button2 = $('purchase_btn2');
+
+	this.operationHandler = null;
+	this.operationHandler2 = null;
+
+	this.title = gettext('Purchase Gadget');
+
+	PurchaseWindowMenu.prototype.setHandler = function(handlerYesButton, handlerNoButton){
+		this.operationHandler = handlerYesButton;
+
+		if (!handlerNoButton)
+			this.operationHandler2 = function () { LayoutManagerFactory.getInstance().hideCover(); }
+		else
+			this.operationHandler2 = handlerNoButton;
+	}
+
+	PurchaseWindowMenu.prototype.initObserving = function(){
+        Event.observe(this.button, "click", this.operationHandler);
+        Event.observe(this.button2, "click", this.operationHandler2);
+		}
+
+	PurchaseWindowMenu.prototype.stopObserving = function(){
+        Event.stopObserving(this.button, "click", this.operationHandler);
+        Event.stopObserving(this.button2, "click", this.operationHandler2);
+	}
+
+	PurchaseWindowMenu.prototype.setFocus = function(){
+		this.button.focus();
+	}
+
+	//hides the window and clears all the inputs
+	PurchaseWindowMenu.prototype.hide = function (){
+		this.msgElement.update();
+		this.stopObserving();
+		this.htmlElement.style.display = "none";
+	}
+
+}
+
+PurchaseWindowMenu.prototype = new WindowMenu;
+
+
+
+
+
+
+
+//Especific class for Recharging Wallet windows
+function WalletRechargeWindowMenu (element) {
+
+	//constructor
+	this.htmlElement = $('wallet_recharge_window');		//create-window HTML element
+	this.titleElement = $('wallet_recharge_window_title');	//title gap
+	this.msgElement = $('wallet_recharge_window_msg');	//error message gap
+	this.element = element;				//workspace or tab
+	this.button = $('wallet_recharge_btn1');
+	this.button2 = $('wallet_recharge_btn2');
+
+	this.operationHandler = null;
+	this.operationHandler2 = null;
+
+	this.title = gettext('Recharging Wallet');
+
+	WalletRechargeWindowMenu.prototype.setHandler = function(handlerYesButton, handlerNoButton){
+		this.operationHandler = handlerYesButton;
+
+		if (!handlerNoButton)
+			this.operationHandler2 = function () { LayoutManagerFactory.getInstance().hideCover(); }
+		else
+			this.operationHandler2 = handlerNoButton;
+	}
+
+	WalletRechargeWindowMenu.prototype.initObserving = function(){
+        Event.observe(this.button, "click", this.operationHandler);
+        Event.observe(this.button2, "click", this.operationHandler2);
+		}
+
+	WalletRechargeWindowMenu.prototype.stopObserving = function(){
+        Event.stopObserving(this.button, "click", this.operationHandler);
+        Event.stopObserving(this.button2, "click", this.operationHandler2);
+	}
+
+	WalletRechargeWindowMenu.prototype.setFocus = function(){
+		this.button.focus();
+	}
+
+	//hides the window and clears all the inputs
+	WalletRechargeWindowMenu.prototype.hide = function (){
+		this.msgElement.update();
+		this.stopObserving();
+		this.htmlElement.style.display = "none";
+	}
+
+}
+
+WalletRechargeWindowMenu.prototype = new WindowMenu;
+

@@ -1,4 +1,4 @@
-/* 
+/*
 *     (C) Copyright 2008 Telefonica Investigacion y Desarrollo
 *     S.A.Unipersonal (Telefonica I+D)
 *
@@ -28,11 +28,11 @@
   //////////////////////////////////////////////
 
 function Resource( id_, resourceJSON_, urlTemplate_) {
-	
+
 	// ******************
 	//  PUBLIC FUNCTIONS
 	// ******************
-	
+
 	this.getVendor = function() { return state.getVendor();}
 	this.getName = function() { return state.getName();}
 	this.getVersion = function() { return state.getVersion();}
@@ -41,7 +41,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 	this.getUriImage = function() { return state.getUriImage();}
 	this.getUriTemplate = function() { return state.getUriTemplate();}
 	this.getUriWiki = function() { return state.getUriWiki();}
-	this.getMashupId = function() { return state.getMashupId();}	
+	this.getMashupId = function() { return state.getMashupId();}
 	this.getAddedBy = function() { return state.getAddedBy();}
 	this.getTags = function() { return state.getTags();}
 	this.setTags = function(tags_) { state.setTags(tags_);}
@@ -60,7 +60,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 	this.getPopularity = function() {return state.getPopularity();}
 	this.getSelectedVersion = function() {return versionSelected;}
 	this.setSelectedVersion = function(version_) {versionSelected = version_;}
-	
+
 	this.paint = function(){
 		var newResource = UIUtils.createHTMLElement("div", $H({
             id: id_
@@ -155,10 +155,10 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 		content.appendChild(UIUtils.createHTMLElement("div", $H({
             class_name: 'title',
 			innerHTML: state.getName()
-        }))); 
+        })));
 		var image_div = UIUtils.createHTMLElement("div", $H({
             class_name: 'image'
-        })); 
+        }));
 		content.appendChild(image_div);
 		var image_link = UIUtils.createHTMLElement("a", $H({
             title: gettext('Show resource details')
@@ -183,42 +183,45 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 		// Tags
 		var tags = UIUtils.createHTMLElement("div", $H({
             class_name: 'tags'
-        })); 
+        }));
 		content.appendChild(tags);
 		var important_tags = UIUtils.createHTMLElement("div", $H({
             id: id_ + '_important_tags',
 			class_name: 'important_tags'
-        })); 
+        }));
 		tags.appendChild(important_tags);
 		_tagsToMoreImportantTags(important_tags, 3);
 
-	   	// Depending on capabilities, the add button can be different! 
+	   	// Depending on capabilities, the add button can be different!
 		// Depending on resource type (Gadget, mashup), the add button can be different!
 
-		if (state.getMashupId()==null){ 
+		if (state.getMashupId()==null){
 		    //Gadget
 
-		    var bottom_message = gettext('Add Gadget'); 
-		    var bottom_class = ''
+		    var bottom_message = gettext('Add Gadget');
+		    var bottom_class = '';
+            var bottom_function = function(event) { CatalogueFactory.getInstance().addResourceToShowCase(id_);}
 
 		    if (this.isContratable(state.getCapabilities())) {
-		       bottom_message = gettext('Purchase');
-		       bottom_class = 'contratable';
+                if(!MarketplaceFactory.getInstance().purchaseManager.isGadgetPurchased(this.getName(), this.getVendor(), this.getVersion())) {
+                    bottom_message = gettext('Purchase');
+                    bottom_class = 'contratable';
+                    bottom_function = function(event) { MarketplaceFactory.getInstance().purchaseResource(resourceJSON_.name, resourceJSON_.vendor, resourceJSON_.version);}
+                }
 		    }
 
 		    var button = UIUtils.createHTMLElement("button", $H({
 		        innerHTML: bottom_message,
-			class_name: bottom_class
-	            })); 
-		
-		    button.observe("click", function(event){
-				CatalogueFactory.getInstance().addResourceToShowCase(id_);
-			},false,"instance_gadget");
+                class_name: bottom_class,
+                related: this
+	            }));
+
+            button.observe("click", bottom_function, false, "instance_gadget");
 		}
-		else{ 
+		else{
 		    //Mashup
 
-		    var bottom_message = gettext('Add Mashup'); 
+		    var bottom_message = gettext('Add Mashup');
 		    var bottom_class = 'add_mashup'
 
 		    if (this.isContratable(state.getCapabilities())) {
@@ -253,75 +256,75 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 				return false
 		}
 	}
-	
+
 	this.showInfo = function() {
 		$("info_resource_content").innerHTML = '';
 		if (state.getMashupId()==null){ //Gadget
-			$("info_resource_content").appendChild(UIUtils.createHTMLElement("div", $H({ 
+			$("info_resource_content").appendChild(UIUtils.createHTMLElement("div", $H({
 				class_name: 'title_fieldset',
 				innerHTML: gettext('Gadget details')
 			})));
 		}
 		else{ //Mashup
-			$("info_resource_content").appendChild(UIUtils.createHTMLElement("div", $H({ 
+			$("info_resource_content").appendChild(UIUtils.createHTMLElement("div", $H({
 				class_name: 'title_fieldset',
 				innerHTML: gettext('Mashup details')
 			})));
 		}
-		var fieldset = UIUtils.createHTMLElement("div", $H({ 
+		var fieldset = UIUtils.createHTMLElement("div", $H({
 			class_name: 'fieldset'
 		}));
 		$("info_resource_content").appendChild(fieldset);
-		var title = UIUtils.createHTMLElement("div", $H({ 
+		var title = UIUtils.createHTMLElement("div", $H({
 			class_name: 'title'
 		}));
 		fieldset.appendChild(title);
-		title.appendChild(UIUtils.createHTMLElement("span", $H({ 
+		title.appendChild(UIUtils.createHTMLElement("span", $H({
 			class_name: 'name',
 			innerHTML: state.getName()
 		})));
-		/*title.appendChild(UIUtils.createHTMLElement("span", $H({ 
+		/*title.appendChild(UIUtils.createHTMLElement("span", $H({
 			class_name: 'version',
 			innerHTML: state.getVersion()
 		})));*/
-		fieldset.appendChild(UIUtils.createHTMLElement("div", $H({ 
+		fieldset.appendChild(UIUtils.createHTMLElement("div", $H({
 			class_name: 'vendor',
 			innerHTML: state.getVendor()
 		})));
-		var rating = UIUtils.createHTMLElement("div", $H({ 
+		var rating = UIUtils.createHTMLElement("div", $H({
 			class_name: 'rating'
 		}));
 		fieldset.appendChild(rating);
-		rating.appendChild(UIUtils.createHTMLElement("span", $H({ 
+		rating.appendChild(UIUtils.createHTMLElement("span", $H({
 			id: 'rateStatus',
 			innerHTML: gettext('Vote Me... ')
 		})));
-		rating.appendChild(UIUtils.createHTMLElement("span", $H({ 
+		rating.appendChild(UIUtils.createHTMLElement("span", $H({
 			id: 'ratingSaved',
 			innerHTML: gettext('Vote Saved ')
 		})));
-		var rate_me = UIUtils.createHTMLElement("span", $H({ 
+		var rate_me = UIUtils.createHTMLElement("span", $H({
 			id: 'rateMe'
 		}));
 		rating.appendChild(rate_me);
 		var rate_me_array = [];
-		rate_me_array[0] = UIUtils.createHTMLElement("a", $H({ 
+		rate_me_array[0] = UIUtils.createHTMLElement("a", $H({
 			id: '_1',
 			title: gettext('Ehh...')
 		}));
-		rate_me_array[1] = UIUtils.createHTMLElement("a", $H({ 
+		rate_me_array[1] = UIUtils.createHTMLElement("a", $H({
 			id: '_2',
 			title: gettext('Not Bad')
 		}));
-		rate_me_array[2] = UIUtils.createHTMLElement("a", $H({ 
+		rate_me_array[2] = UIUtils.createHTMLElement("a", $H({
 			id: '_3',
 			title: gettext('Pretty Good')
 		}));
-		rate_me_array[3] = UIUtils.createHTMLElement("a", $H({ 
+		rate_me_array[3] = UIUtils.createHTMLElement("a", $H({
 			id: '_4',
 			title: gettext('Out Standing')
 		}));
-		rate_me_array[4] = UIUtils.createHTMLElement("a", $H({ 
+		rate_me_array[4] = UIUtils.createHTMLElement("a", $H({
 			id: '_5',
 			title: gettext('Awesome!')
 		}));
@@ -338,68 +341,68 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 			});
 			rate_me.appendChild(item);
 		});
-		rating.appendChild(UIUtils.createHTMLElement("span", $H({ 
+		rating.appendChild(UIUtils.createHTMLElement("span", $H({
 			id: 'rateResultStatus',
 			innerHTML: gettext('Vote Result:')
 		})));
-		var rate_result = UIUtils.createHTMLElement("span", $H({ 
+		var rate_result = UIUtils.createHTMLElement("span", $H({
 			id: 'rateResult'
 		}));
 		rating.appendChild(rate_result);
-		rate_result.appendChild(UIUtils.createHTMLElement("a", $H({ 
+		rate_result.appendChild(UIUtils.createHTMLElement("a", $H({
 			id: 'res_1',
 			title: gettext('Ehh...')
 		})));
-		rate_result.appendChild(UIUtils.createHTMLElement("a", $H({ 
+		rate_result.appendChild(UIUtils.createHTMLElement("a", $H({
 			id: 'res_2',
 			title: gettext('Not Bad')
 		})));
-		rate_result.appendChild(UIUtils.createHTMLElement("a", $H({ 
+		rate_result.appendChild(UIUtils.createHTMLElement("a", $H({
 			id: 'res_3',
 			title: gettext('Pretty Good')
 		})));
-		rate_result.appendChild(UIUtils.createHTMLElement("a", $H({ 
+		rate_result.appendChild(UIUtils.createHTMLElement("a", $H({
 			id: 'res_4',
 			title: gettext('Out Standing')
 		})));
-		rate_result.appendChild(UIUtils.createHTMLElement("a", $H({ 
+		rate_result.appendChild(UIUtils.createHTMLElement("a", $H({
 			id: 'res_5',
 			title: gettext('Awesome!')
 		})));
-		rating.appendChild(UIUtils.createHTMLElement("span", $H({ 
+		rating.appendChild(UIUtils.createHTMLElement("span", $H({
 			id: 'votes'
 		})));
-		var image = UIUtils.createHTMLElement("div", $H({ 
+		var image = UIUtils.createHTMLElement("div", $H({
 			class_name: 'image'
 		}));
 		fieldset.appendChild(image);
-		image.appendChild(UIUtils.createHTMLElement("img", $H({ 
+		image.appendChild(UIUtils.createHTMLElement("img", $H({
 			src: state.getUriImage(),
 			alt: state.getName()+ ' ' + state.getVersion()
 		})));
-		var description = UIUtils.createHTMLElement("div", $H({ 
+		var description = UIUtils.createHTMLElement("div", $H({
 			class_name: 'description'
 		}));
 		fieldset.appendChild(description);
-		description.appendChild(UIUtils.createHTMLElement("span", $H({ 
+		description.appendChild(UIUtils.createHTMLElement("span", $H({
 			innerHTML: gettext('Description') + ':'
 		})));
-		description.appendChild(UIUtils.createHTMLElement("div", $H({ 
+		description.appendChild(UIUtils.createHTMLElement("div", $H({
 			class_name: 'text',
 			innerHTML: state.getDescription()
 		})));
-		var connect = UIUtils.createHTMLElement("div", $H({ 
+		var connect = UIUtils.createHTMLElement("div", $H({
 			class_name: 'connect'
 		}));
 		fieldset.appendChild(connect);
-		connect.appendChild(UIUtils.createHTMLElement("span", $H({ 
+		connect.appendChild(UIUtils.createHTMLElement("span", $H({
 			innerHTML: gettext('Resource connectivity') + ':'
 		})));
-		var connect_text = UIUtils.createHTMLElement("div", $H({ 
+		var connect_text = UIUtils.createHTMLElement("div", $H({
 			class_name: 'text'
 		}));
 		connect.appendChild(connect_text);
-		var events = UIUtils.createHTMLElement("div", $H({ 
+		var events = UIUtils.createHTMLElement("div", $H({
 			class_name: 'events'
 		}));
 		connect_text.appendChild(events);
@@ -419,12 +422,12 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 			});
 			events.appendChild(events_link);
 		} else {
-			events.appendChild(UIUtils.createHTMLElement("span", $H({ 
+			events.appendChild(UIUtils.createHTMLElement("span", $H({
 				innerHTML: gettext('Events') + ': '
 			})));
 		}
 		_events(events);
-		var slots = UIUtils.createHTMLElement("div", $H({ 
+		var slots = UIUtils.createHTMLElement("div", $H({
 			class_name: 'slots'
 		}));
 		connect_text.appendChild(slots);
@@ -444,7 +447,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 			});
 			slots.appendChild(slots_link);
 		} else {
-			slots.appendChild(UIUtils.createHTMLElement("span", $H({ 
+			slots.appendChild(UIUtils.createHTMLElement("span", $H({
 				innerHTML: gettext('Slots') + ': '
 			})));
 		}
@@ -466,11 +469,11 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 			});
 			search_events_slots_div.appendChild(search_events_slots_link);
 		}
-		var versions = UIUtils.createHTMLElement("div", $H({ 
+		var versions = UIUtils.createHTMLElement("div", $H({
 			class_name: 'versions'
 		}));
 		fieldset.appendChild(versions);
-		versions.appendChild(UIUtils.createHTMLElement("span", $H({ 
+		versions.appendChild(UIUtils.createHTMLElement("span", $H({
 			innerHTML: gettext('Selected version') + ': '
 		})));
 		versions.appendChild(UIUtils.createHTMLElement("span", $H({
@@ -484,10 +487,10 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 			style: 'display:none;'
 		}));
 		versions.appendChild(version_panel);
-		var title_versions_div = UIUtils.createHTMLElement("div", $H({ 
+		var title_versions_div = UIUtils.createHTMLElement("div", $H({
 			class_name: 'version_title'
 		}));
-		title_versions_div.appendChild(UIUtils.createHTMLElement("span", $H({ 
+		title_versions_div.appendChild(UIUtils.createHTMLElement("span", $H({
 			innerHTML: gettext('Choose the version you want to view') + ': '
 		})));
 		version_panel.appendChild(title_versions_div);
@@ -507,36 +510,36 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 			CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).showVersionPanel();
 		});
 		show_versions_div.appendChild(show_versions_link);
-		var tagcloud = UIUtils.createHTMLElement("div", $H({ 
+		var tagcloud = UIUtils.createHTMLElement("div", $H({
 			class_name: 'tagcloud'
 		}));
 		fieldset.appendChild(tagcloud);
-		tagcloud.appendChild(UIUtils.createHTMLElement("span", $H({ 
+		tagcloud.appendChild(UIUtils.createHTMLElement("span", $H({
 			innerHTML: gettext('Tagcloud') + ':'
 		})));
-		var tag_links = UIUtils.createHTMLElement("div", $H({ 
+		var tag_links = UIUtils.createHTMLElement("div", $H({
 			class_name: 'link',
 			id: 'view_tags_links'
 		}));
 		tagcloud.appendChild(tag_links);
-		tag_links.appendChild(UIUtils.createHTMLElement("span", $H({ 
+		tag_links.appendChild(UIUtils.createHTMLElement("span", $H({
 			innerHTML: gettext('All tags')
 		})));
-		var my_tags = UIUtils.createHTMLElement("a", $H({ 
+		var my_tags = UIUtils.createHTMLElement("a", $H({
 			innerHTML: gettext('My tags')
 		}));
 		my_tags.observe("click", function(event){
 			CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud("mytags");
 		});
 		tag_links.appendChild(my_tags);
-		var others_tags = UIUtils.createHTMLElement("a", $H({ 
+		var others_tags = UIUtils.createHTMLElement("a", $H({
 			innerHTML: gettext('Others tags')
 		}));
 		others_tags.observe("click", function(event){
 			CatalogueFactory.getInstance().getResource(UIUtils.selectedResource).changeTagcloud("others");
 		});
 		tag_links.appendChild(others_tags);
-		var tags = UIUtils.createHTMLElement("div", $H({ 
+		var tags = UIUtils.createHTMLElement("div", $H({
 			class_name: 'tags',
 			id: id_ + '_tagcloud'
 		}));
@@ -664,6 +667,14 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 				style: 'text-align:center;',
 				innerHTML: gettext('Add Gadget')
 			}));
+
+            if (this.isContratable(state.getCapabilities())) {
+                if(!MarketplaceFactory.getInstance().purchaseManager.isGadgetPurchased(this.getName(), this.getVendor(), this.getVersion())) {
+                    add_gadget_button.innerHTML = gettext('Purchase');
+                    add_gadget_button.class_name = 'contratable';
+                }
+		    }
+
 			add_gadget_button.observe("click", function(event){
 				CatalogueFactory.getInstance().addResourceToShowCase(UIUtils.getSelectedResource());
 			},false,"instance_gadget");
@@ -779,7 +790,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 	this.showVersionPanel = function(){
 		if ($("version_panel").style.display == 'none'){
 			$("version_panel").style.display = 'block';
-			$("view_versions_link").innerHTML = gettext('Hide all versions'); 
+			$("view_versions_link").innerHTML = gettext('Hide all versions');
 		}else{
 			$("version_panel").style.display = 'none'
 			$("view_versions_link").innerHTML = gettext('Show all versions');
@@ -789,14 +800,14 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 	// *******************
 	//  PRIVATE FUNCTIONS
 	// *******************
-	
+
 	var _getFirstTagNonRepeat = function(list1_, list2_) {
 		for (var i=0; i<list1_.length; i++) {
 			if (!_containsTag(list1_[i], list2_)) return list1_[i];
 		}
 		return;
 	}
-	
+
 	var _containsTag = function(element_, list_)
 	{
 		for (var i=0; i<list_.length; i++) {
@@ -806,12 +817,12 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 		}
 		return false;
 	}
-	
+
 	var _tagsToMoreImportantTags = function(parent, tagsNumber_){
 		var tagsHTML = '';
 		var tagsAux = state.getTags();
 		var moreImportantTags = [];
-		
+
 		var tagNumber = Math.min(tagsNumber_, tagsAux.length);
 		for (var i=0; i<tagNumber; i++){
 			var firstTag = _getFirstTagNonRepeat(tagsAux, moreImportantTags);
@@ -826,7 +837,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 				break;
 			}
 		}
-		
+
 		parent.innerHTML='';
 		for (var i=0; i<moreImportantTags.length; i++)
 		{
@@ -842,14 +853,14 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 	var _events = function(parent){
 		parent.innerHMTL = '';
 		var eventsAux = state.getEvents();
-		
+
 		for (var i=0; i<eventsAux.length; i++)
 		{
-			var tag = UIUtils.createHTMLElement("span", $H({ 
+			var tag = UIUtils.createHTMLElement("span", $H({
 				class_name: 'multiple_size_tag'
 			}));
 			parent.appendChild(tag);
-			var tag_link = UIUtils.createHTMLElement("a", $H({ 
+			var tag_link = UIUtils.createHTMLElement("a", $H({
 				title: gettext('Search by ') + eventsAux[i],
 				innerHTML: eventsAux[i]
 			}));
@@ -857,31 +868,31 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 				UIUtils.searchByConnectivity(URIs.GET_RESOURCES_SIMPLE_SEARCH, 'connectEvent', this.innerHTML);
 			});
 			tag.appendChild(tag_link);
-			tag.appendChild(UIUtils.createHTMLElement("span", $H({ 
+			tag.appendChild(UIUtils.createHTMLElement("span", $H({
 				innerHTML: ((i<(eventsAux.length-1))?",":"")
 			})));
 		}
 	}
-	
+
 	var _addVersionsToPanel = function (parent){
-		
+
 		var sortByMin = function (a, b){
 			var x = parseFloat(a);
 			var y = parseFloat(b);
 			return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-		} 
+		}
 		parent.innerHMTL = '';
 		var versions = state.getAllVersions().sort(sortByMin);
 		for (var i=0; i<versions.length; i++){
-			var ver_element = UIUtils.createHTMLElement("span", $H({ 
+			var ver_element = UIUtils.createHTMLElement("span", $H({
 			}));
 			parent.appendChild(ver_element);
 			if (versions[i] == state.getVersion()){
-				ver_element.appendChild(UIUtils.createHTMLElement("span", $H({ 
+				ver_element.appendChild(UIUtils.createHTMLElement("span", $H({
 					innerHTML: 'v' + versions[i]
-				})));					
+				})));
 			}else{
-				var ver_link = UIUtils.createHTMLElement("a", $H({ 
+				var ver_link = UIUtils.createHTMLElement("a", $H({
 					title: gettext('Select this version as preferred version'),
 					innerHTML: 'v' + versions[i]
 				}));
@@ -892,7 +903,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 				ver_element.appendChild(ver_link);
 			}
 			if (state.getAddedBy() == 'Yes') {
-				ver_element.appendChild(UIUtils.createHTMLElement("span", $H({ 
+				ver_element.appendChild(UIUtils.createHTMLElement("span", $H({
 					innerHTML: " "
 				})));
 				var delete_img = UIUtils.createHTMLElement("img", $H({
@@ -913,17 +924,17 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 					this.src='/ezweb/images/cancel_gray.png';
 				});
 				ver_element.appendChild(delete_img);
-				ver_element.appendChild(UIUtils.createHTMLElement("span", $H({ 
+				ver_element.appendChild(UIUtils.createHTMLElement("span", $H({
 					innerHTML: " "
 				})));
 			}else{
-				ver_element.appendChild(UIUtils.createHTMLElement("span", $H({ 
+				ver_element.appendChild(UIUtils.createHTMLElement("span", $H({
 					innerHTML: ((i<(versions.length-1))?", ":"")
 				})));
 			}
 		}
 	}
-	
+
 	var _deleteGadget = function(parent){
 		var addedBy = state.getAddedBy();
 		parent.innerHTML = '';
@@ -938,18 +949,18 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 			parent.appendChild(submit_link);
     	}
 	}
-	
+
 	var _slots = function(parent){
 		parent.innerHMTL = '';
 		var slotsAux = state.getSlots();
-		
+
 		for (var i=0; i<slotsAux.length; i++)
 		{
-			var tag = UIUtils.createHTMLElement("span", $H({ 
+			var tag = UIUtils.createHTMLElement("span", $H({
 				class_name: 'multiple_size_tag'
 			}));
 			parent.appendChild(tag);
-			var tag_link = UIUtils.createHTMLElement("a", $H({ 
+			var tag_link = UIUtils.createHTMLElement("a", $H({
 				title: gettext('Search by ') + slotsAux[i],
 				innerHTML: slotsAux[i]
 			}));
@@ -957,7 +968,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 				UIUtils.searchByConnectivity(URIs.GET_RESOURCES_SIMPLE_SEARCH, 'connectSlot', this.innerHTML);
 			});
 			tag.appendChild(tag_link);
-			tag.appendChild(UIUtils.createHTMLElement("span", $H({ 
+			tag.appendChild(UIUtils.createHTMLElement("span", $H({
 				innerHTML: ((i<(slotsAux.length-1))?",":"")
 			})));
 		}
@@ -967,15 +978,15 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 		parent.innerHTML = "";
 		var tagsAux = state.getTags();
 		var option = arguments[2] || {tags:'all'};
-			
+
 		switch(option.tags) {
 			case 'all':
 				for (var i=0; i<tagsAux.length; i++) {
-					var tag = UIUtils.createHTMLElement("span", $H({ 
+					var tag = UIUtils.createHTMLElement("span", $H({
 						class_name: 'multiple_size_tag'
 					}));
 					tag.appendChild(tagsAux[i].tagToTypedHTML());
-					tag.appendChild(UIUtils.createHTMLElement("span", $H({ 
+					tag.appendChild(UIUtils.createHTMLElement("span", $H({
 						innerHTML: ((i<(tagsAux.length-1))?",":"")
 					})));
 					parent.appendChild(tag);
@@ -992,11 +1003,11 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 					}
 				}
 				for (var i=0; i<tags.length; i++) {
-					var tag = UIUtils.createHTMLElement("span", $H({ 
+					var tag = UIUtils.createHTMLElement("span", $H({
 						class_name: 'multiple_size_tag'
 					}));
 					tag.appendChild(tags[i].tagToTypedHTML(option));
-					var tag_link = UIUtils.createHTMLElement("a", $H({ 
+					var tag_link = UIUtils.createHTMLElement("a", $H({
 						title: gettext('Delete tag')
 					}));
 					tag_link.observe("click", function(event){
@@ -1016,7 +1027,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 						this.src='/ezweb/images/cancel_gray.png';
 					});
 					tag_link.appendChild(tag_img);
-					tag.appendChild(UIUtils.createHTMLElement("span", $H({ 
+					tag.appendChild(UIUtils.createHTMLElement("span", $H({
 						innerHTML: ((i<(tags.length-1))?",":"")
 					})));
 					parent.appendChild(tag);
@@ -1034,11 +1045,11 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 					}
 				}
 				for (var i=0; i<tags.length; i++) {
-					var tag = UIUtils.createHTMLElement("span", $H({ 
+					var tag = UIUtils.createHTMLElement("span", $H({
 						class_name: 'multiple_size_tag'
 					}));
 					tag.appendChild(tags[i].tagToTypedHTML());
-					tag.appendChild(UIUtils.createHTMLElement("span", $H({ 
+					tag.appendChild(UIUtils.createHTMLElement("span", $H({
 						innerHTML: ((i<(tags.length-1))?",":"")
 					})));
 					parent.appendChild(tag);
@@ -1080,30 +1091,30 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 
 
 	var _createResource = function(urlTemplate_) {
-		
+
 		// ******************
-		//  CALLBACK METHODS 
+		//  CALLBACK METHODS
 		// ******************
-	
+
 		// Not like the remaining methods. This is a callback function to process AJAX requests, so must be public.
-		
+
 		onError = function(transport) {
 			msg = interpolate(gettext("Error creating the resource: %(errorMsg)s."), {errorMsg: transport.status}, true);
 			LogManagerFactory.getInstance().log(msg);
 			// Process
 		}
-		
+
 		loadResource = function(transport) {
 			var response = transport.responseXML;
 			state = new ResourceState(response);
 			this.paint();
 		}
-		
+
 		var persistenceEngine = PersistenceEngineFactory.getInstance();
 		// Post Resource to PersistenceEngine. Asyncrhonous call!
 		persistenceEngine.send_post(url_Server, url_, this, loadResource, onError);
 	}
-	
+
 	// *******************
 	//  PRIVATE VARIABLES
 	// *******************
@@ -1112,7 +1123,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 	var id = id_;
 	var tagger = new Tagger();
 	var versionSelected = null;
-	
+
 	if (urlTemplate_ != null) {
 		_createResource(urlTemplate_);
 	}
@@ -1125,13 +1136,13 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
   //////////////////////////////////////////////
   //       RESOURCESTATE (State Object)       //
   //////////////////////////////////////////////
-  
+
 	function ResourceState(resourceJSON_) {
 
 	// *******************
 	//  PRIVATE VARIABLES
 	// *******************
-	
+
 	var vendor = null;
 	var name = null;
 	var version = null;
@@ -1153,7 +1164,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 	// ******************
 	//  PUBLIC FUNCTIONS
 	// ******************
-	
+
 	this.getVendor = function() { return vendor;}
 	this.getName = function() { return name;}
 	this.getVersion = function() { return version;}
@@ -1162,7 +1173,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 	this.getUriImage = function() { return uriImage;}
 	this.getUriTemplate = function() { return uriTemplate;}
 	this.getUriWiki = function() { return uriWiki;}
-	this.getMashupId = function() { return mashupId;}	
+	this.getMashupId = function() { return mashupId;}
 	this.getAddedBy = function() { return addedBy;}
 
 	this.setTags = function(tagsJSON_) {
@@ -1172,11 +1183,11 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 			tags.push(new Tag(tagsJSON_[i]));
 		}
 	}
-	
-	this.addTag = function(tag) { 
-		tags.push(new Tag(tag)); 
+
+	this.addTag = function(tag) {
+		tags.push(new Tag(tag));
 	}
-	
+
 	this.setSlots = function(slotsJSON_) {
 		slots.clear();
 		for (var i=0; i<slotsJSON_.length; i++)
@@ -1184,7 +1195,7 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 			slots.push(slotsJSON_[i].friendcode);
 		}
 	}
-	
+
 	this.setEvents = function(eventsJSON_) {
 		events.clear();
 		for (var i=0; i<eventsJSON_.length; i++)
@@ -1199,18 +1210,18 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 		popularity = voteDataJSON_.voteData[0].popularity;
 	}
 
-	
+
 	this.getTags = function() { return tags;}
 	this.getSlots = function() { return slots;}
 	this.getEvents = function() { return events;}
 	this.getVotes = function() {return votes;}
 	this.getUserVote = function() {return userVote;}
 	this.getPopularity = function() {return popularity;}
-	this.getCapabilities = function() {return capabilities; } 
+	this.getCapabilities = function() {return capabilities; }
 
 	// Parsing JSON Resource
 	// Constructing the structure
-	
+
 	vendor = resourceJSON_.vendor;
 	name = resourceJSON_.name;
 	version = resourceJSON_.version;
@@ -1226,6 +1237,6 @@ function Resource( id_, resourceJSON_, urlTemplate_) {
 	this.setTags(resourceJSON_.tags);
 	votes = resourceJSON_.votes[0].votes_number;
 	userVote = resourceJSON_.votes[0].user_vote;
-	popularity = resourceJSON_.votes[0].popularity;	
+	popularity = resourceJSON_.votes[0].popularity;
 	capabilities = resourceJSON_.capabilities;
 }
