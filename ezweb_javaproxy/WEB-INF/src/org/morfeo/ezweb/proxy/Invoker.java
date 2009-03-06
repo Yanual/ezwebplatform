@@ -351,13 +351,13 @@ public final class Invoker {
     	HttpMethod httpRequestMethod = null;
         URI uri = new URI(url, false);
         if (method.equalsIgnoreCase("GET")) {
-           	httpRequestMethod = new GetMethod(uri.getEscapedURI());
+           	httpRequestMethod = new GetMethod(uri.getURI());
         } else if (method.equalsIgnoreCase("POST")) {
-           	httpRequestMethod = new PostMethod(uri.getEscapedURI());
+           	httpRequestMethod = new PostMethod(uri.getURI());
         } else if (method.equalsIgnoreCase("PUT")) {
-           	httpRequestMethod = new PutMethod(uri.getEscapedURI());
+           	httpRequestMethod = new PutMethod(uri.getURI());
         } else if (method.equalsIgnoreCase("DELETE")) {
-           	httpRequestMethod = new DeleteMethod(uri.getEscapedURI());
+           	httpRequestMethod = new DeleteMethod(uri.getURI());
         } 
         
         if (method.equalsIgnoreCase("POST") || method.equalsIgnoreCase("PUT")) {

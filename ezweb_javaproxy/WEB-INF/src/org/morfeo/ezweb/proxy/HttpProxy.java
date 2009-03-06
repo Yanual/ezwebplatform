@@ -25,6 +25,8 @@ import org.apache.log4j.Logger;
 
 public class HttpProxy extends HttpServlet {
 	
+	private static final int REQ_TIMEOUT = 60000;
+
 	/**
 	 * Generated serialVersionUID
 	 */
@@ -76,15 +78,16 @@ public class HttpProxy extends HttpServlet {
 			// If there are no request headers params copy the request headers
 			while (reqHeaders.hasMoreElements()) {
 				String head = reqHeaders.nextElement();
-				if (!head.equalsIgnoreCase("cache-control") 
+				if (!head.equalsIgnoreCase("cache-control") // NOTE:do not copy the CACHE_CONTROL header in order to allow 301 redirection
 						&& !head.equalsIgnoreCase("content-type") 
 						&& !head.equalsIgnoreCase("content-length")
 						&& !head.equalsIgnoreCase("x-forwarded-for")
 						&& !head.equalsIgnoreCase("x-forwarded-proto")
 						&& !head.equalsIgnoreCase("x-bluecoat-via")
 						&& !head.equalsIgnoreCase("x-requested-with")
-						&& !head.equalsIgnoreCase("x-prototype-version")) {
-					// NOTE:do not copy the CACHE_CONTROL header in order to allow 301 redirection
+						&& !head.equalsIgnoreCase("x-prototype-version")
+						&& !head.equalsIgnoreCase("referer")) {
+					
 					String value = request.getHeader(head);
 					_req.add(new NameValuePair (head, value));
 				}
@@ -118,17 +121,17 @@ public class HttpProxy extends HttpServlet {
 			
 			if (method != null) {
 				if (method.equalsIgnoreCase("GET")) {
-					responseMethod = Invoker.getInstance().invokeGET(url, method, requestHeaderNameValuePairs, null, null, contentType, 60000, responseHeaders);
+					responseMethod = Invoker.getInstance().invokeGET(url, method, requestHeaderNameValuePairs, null, null, contentType, REQ_TIMEOUT, responseHeaders);
 				} else if (method.equalsIgnoreCase("POST")) {
 					responseMethod = Invoker.getInstance().invokePOST(url, method, postNameValuePairs,
 							requestHeaderNameValuePairs, null, null, null,
-				        	contentType, 60000, responseHeaders);
+				        	contentType, REQ_TIMEOUT, responseHeaders);
 				} else if (method.equalsIgnoreCase("PUT")) {
 					responseMethod = Invoker.getInstance().invokePUT(url, method, postNameValuePairs,
 							requestHeaderNameValuePairs, null, null, null,
-				        	contentType, 60000, responseHeaders);
+				        	contentType, REQ_TIMEOUT, responseHeaders);
 				} else if (method.equalsIgnoreCase("DELETE")) {
-					responseMethod = Invoker.getInstance().invokeDELETE(url, method, requestHeaderNameValuePairs, null, null, contentType, 60000, responseHeaders);
+					responseMethod = Invoker.getInstance().invokeDELETE(url, method, requestHeaderNameValuePairs, null, null, contentType, REQ_TIMEOUT, responseHeaders);
 				} else {
 					response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Method: " + method + " is not allowed");
 					return;
