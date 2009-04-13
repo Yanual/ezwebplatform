@@ -1,3 +1,20 @@
+ezweb-platform (0.4~svn1828-1) unstable; urgency=low
+
+  * New upstream snapshot:
+     - Initial support for themes.
+     - Many bug fixes.
+
+ -- Alvaro Arranz <aarranz@pegaso.ls.fi.upm.es>  Wed, 18 Mar 2009 10:02:41 +0100
+
+ezweb-platform (0.4~svn1655-1) unstable; urgency=low
+
+  * New upstream snapshot.
+  * Now "/resources" is the reserved URI for resources served by
+    apache2/lighttpd. And is recommended to use "/resources/gadgets" for
+    gadget codes.
+
+ -- Alvaro Arranz <aarranz@pegaso.ls.fi.upm.es>  Tue, 24 Feb 2009 10:41:34 +0100
+
 ezweb-platform (0.4~svn1604-1) unstable; urgency=low
 
   * New upstream snapshot.

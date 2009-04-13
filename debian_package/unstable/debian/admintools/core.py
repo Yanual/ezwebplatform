@@ -260,8 +260,16 @@ class MainEzWebAdminTool:
     template.replace("LOG_PATH", log_path)
     self.resources.makedirs(log_path)
     os.chown(log_path, -1, grp.getgrnam("www-data").gr_gid)
-    os.chmod(log_path, 0660)
+    os.chmod(log_path, 0775)
 
+    # Theme
+    theme = 'default'
+    if site_cfg.has_key('theme'):
+      theme = site_cfg['theme']
+    elif schema.has_key('theme'):
+      theme = schema('theme')
+
+    template.replace("THEME", theme)
 
     # Proxy
     proxy_server = ""
@@ -350,6 +358,8 @@ class MainEzWebAdminTool:
                                dest="allow_anonymous_access", help=_("Allow/Deny anonymous users in this instance")),
                    make_option("-d", "--debug-mode", action="store",
                                dest="debug", help=_("Enables/Disables the debug mode")),
+                   make_option("--theme", action="store",
+                               dest="theme", help=_("Theme to use with this instance")),
                    make_option("--proxy", action="store",
                                dest="proxy", help=_("The proxy to use")),
                    make_option("--force-syncdb", action="store_true",
@@ -432,6 +442,12 @@ class MainEzWebAdminTool:
         self.resources.printlnMsg("Using \"%s\" as auth methods for this instance." % options.auth_methods)
         site_cfg['auth_methods'] = options.auth_methods
         auth_methods = options.auth_methods
+
+      # Theme
+      if options.theme != None:
+        changed = True
+        self.resources.printlnMsg("Assigning \"%s\" as theme for this instance." % options.theme)
+        site_cfg['theme'] = options.theme
 
       # Proxy
       if options.proxy != None:
@@ -932,8 +948,10 @@ class MainEzWebAdminTool:
           print auth_method
 
   class SetDefaultsCommand(Command):
-    option_list = [make_option("--proxy", action="store",
-                               dest="proxy", help=_("The default proxy to use")),
+    option_list = [make_option("--theme", action="store",
+                               dest="theme", help=_("default theme to use")),
+                   make_option("--proxy", action="store",
+                               dest="proxy", help=_("default proxy to use")),
                    make_option("-a", "--allow-anonymous-access", action="store",
                                dest="allow_anonymous_access", help=_("Allow/Disallows anonymous accesses by default")),
                    make_option("-d", "--debug-mode", action="store",
@@ -962,6 +980,10 @@ class MainEzWebAdminTool:
       else:
         schema_settings[schema_name] = {}
         cfg = schema_settings[schema_name]
+
+      # Theme
+      if options.theme != None:
+        cfg["theme"] = options.theme
 
       # Proxy
       if options.proxy != None:
@@ -1002,6 +1024,12 @@ class MainEzWebAdminTool:
         cfg = schema_settings[schema_name]
       else:
         cfg = {}
+
+      # Theme
+      if cfg.has_key("theme"):
+        print "THEME=" + cfg["theme"]
+      else:
+        print "THEME="
 
       # Proxy
       if cfg.has_key("proxy"):

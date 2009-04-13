@@ -38,6 +38,15 @@ NameVirtualHost *@:PORT@
   Alias /media /usr/share/python-support/python-django/django/contrib/admin/media
   Alias /site-media /usr/share/ezweb-platform/media
 
+  <Location /resources>
+    RewriteEngine off
+
+    Options Indexes FollowSymLinks MultiViews
+    AllowOverride None
+    Order allow,deny
+    allow from all
+  </Location>
+
   LogLevel warn
 
   ErrorLog @LOG_BASE_PATH@/error.log

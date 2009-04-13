@@ -5,7 +5,7 @@ $SERVER["socket"] == "0.0.0.0@PORT@" {
     server.document-root = "@DOCUMENT_ROOT@"
 
     fastcgi.server = (
-        "/mysite.fcgi" => (
+        "/@CONF_NAME@.fcgi" => (
             "main" => (
                 "socket" => "/var/run/ezweb-platform/@CONF_NAME@.socket",
                 "check-local" => "disable",
@@ -14,13 +14,14 @@ $SERVER["socket"] == "0.0.0.0@PORT@" {
     )
 
     alias.url = (
-        "/media/" => "/usr/share/python-support/python-django/django/contrib/admin/media",
+        "/media/" => "/usr/share/python-support/python-django/django/contrib/admin/media/",
     )
 
     url.rewrite-once = (
-        "^(/media.*)$" => "$1",
+        "^(/resources(|/.*))$" => "$1",
+        "^(/media(|/.*))$" => "$1",
         "^/favicon\.ico$" => "/media/favicon.ico",
-        "^(/.*)$" => "/mysite.fcgi$1",
+        "^(/.*)$" => "/@CONF_NAME@.fcgi$1",
     )
 
     server.errorlog            = "@LOG_BASE_PATH@/error.log"

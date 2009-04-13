@@ -30,12 +30,14 @@ NameVirtualHost *@:PORT@
     SetHandler None
   </Location>
 
-  <Directory @DOCUMENT_ROOT@/gadgets>
+  <Location /resources>
+    SetHandler None
+
     Options Indexes FollowSymLinks MultiViews
     AllowOverride None
     Order allow,deny
     allow from all
-  </Directory>
+  </Location>
 
   LogLevel warn
 
