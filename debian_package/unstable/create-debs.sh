@@ -124,6 +124,12 @@ build() {
 
   cd $1
   dpkg-buildpackage
+  RET=$?
+  if [ "$RET" != "0" -a "$RET" != 1 ]; then
+    cd ..
+    echo "  Error: Debian packages build failed."
+    exit -2
+  fi
   cd ..
 }
 
