@@ -155,7 +155,7 @@ binary-indep: build install
 	cp debian/admintools/auth_backends/ldap.py \
 	      debian/ezweb-platform-ldap/usr/share/ezweb-platform/admintools/auth_backends
 	mkdir -p debian/ezweb-platform-ldap/usr/share/ezweb-platform/authentication
-	cp debian/ezweb-platform-common/usr/share/ezweb-platform/authentication/ldapaccess.py \
+	mv debian/ezweb-platform-common/usr/share/ezweb-platform/authentication/ldapaccess.py \
 	   debian/ezweb-platform-ldap/usr/share/ezweb-platform/authentication/ldapaccess.py
 	
 	: ###
@@ -165,7 +165,7 @@ binary-indep: build install
 	cp -p debian/admintools/auth_backends/ezsteroids.py \
 	      debian/ezweb-platform-ezsteroids/usr/share/ezweb-platform/admintools/auth_backends
 	mkdir -p debian/ezweb-platform-ezsteroids/usr/share/ezweb-platform/authentication
-	cp debian/ezweb-platform-common/usr/share/ezweb-platform/authentication/ezsteroidsaccess.py \
+	mv debian/ezweb-platform-common/usr/share/ezweb-platform/authentication/ezsteroidsaccess.py \
 	   debian/ezweb-platform-ezsteroids/usr/share/ezweb-platform/authentication/ezsteroidsaccess.py
 	
 	dh_installdocs -i
