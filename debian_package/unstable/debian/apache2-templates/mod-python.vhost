@@ -12,8 +12,9 @@ NameVirtualHost *@:PORT@
   DocumentRoot @DOCUMENT_ROOT@
 
   <Location />
-    SetHandler python-program
+    SetHandler mod_python
     PythonHandler django.core.handlers.modpython
+    PythonInterpreter ezweb-@CONF_NAME@
     SetEnv DJANGO_SETTINGS_MODULE settings
 
     PythonPath "['/etc/ezweb-platform/sites/@CONF_NAME@'] + ['/usr/share/ezweb-platform'] + sys.path"

@@ -57,7 +57,7 @@ ezweb_fcgi_stop() {
 ezweb_fcgi_stop_all() {
   log_daemon_msg "Stopping fastcgi EzWeb servers"
 
-  for pidfile in "/var/run/ezweb-platform/*.pid"; do
+  for pidfile in `ls /var/run/ezweb-platform/*.pid 2> /dev/null`; do
     conf_name=`basename $pidfile .pid`
     ezweb_fcgi_stop "$conf_name"
   done
