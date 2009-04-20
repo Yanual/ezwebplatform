@@ -121,17 +121,19 @@ public class HttpProxy extends HttpServlet {
 			
 			if (method != null) {
 				if (method.equalsIgnoreCase("GET")) {
-					responseMethod = Invoker.getInstance().invokeGET(url, method, requestHeaderNameValuePairs, null, null, contentType, REQ_TIMEOUT, responseHeaders);
+					responseMethod = Invoker.getInstance().invokeGET(url, requestHeaderNameValuePairs,
+							null, null, contentType, REQ_TIMEOUT, responseHeaders);
 				} else if (method.equalsIgnoreCase("POST")) {
-					responseMethod = Invoker.getInstance().invokePOST(url, method, postNameValuePairs,
+					responseMethod = Invoker.getInstance().invokePOST(url, postNameValuePairs,
 							requestHeaderNameValuePairs, null, null, null,
 				        	contentType, REQ_TIMEOUT, responseHeaders);
 				} else if (method.equalsIgnoreCase("PUT")) {
-					responseMethod = Invoker.getInstance().invokePUT(url, method, postNameValuePairs,
+					responseMethod = Invoker.getInstance().invokePUT(url, postNameValuePairs,
 							requestHeaderNameValuePairs, null, null, null,
 				        	contentType, REQ_TIMEOUT, responseHeaders);
 				} else if (method.equalsIgnoreCase("DELETE")) {
-					responseMethod = Invoker.getInstance().invokeDELETE(url, method, requestHeaderNameValuePairs, null, null, contentType, REQ_TIMEOUT, responseHeaders);
+					responseMethod = Invoker.getInstance().invokeDELETE(url, requestHeaderNameValuePairs,
+							null, null, contentType, REQ_TIMEOUT, responseHeaders);
 				} else {
 					response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Method: " + method + " is not allowed");
 					return;

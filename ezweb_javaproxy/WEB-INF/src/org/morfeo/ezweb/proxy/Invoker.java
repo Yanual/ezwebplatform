@@ -5,11 +5,10 @@ package org.morfeo.ezweb.proxy;
  * CVS info:
  * $Id: Invoker.java 4 2009-01-22 12:30:30Z pjm $
  */
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.httpclient.Credentials;
@@ -55,8 +54,23 @@ public final class Invoker {
     /** Variable <code>client</code> */
     private HttpClient client = null;
 
-    /** Variable <code>client</code> */
+    /** Variable <code>invoker</code> */
     private static Invoker invoker = null;
+    
+    /** Variable <code>hostConfigWithProxy</code> */
+    private static HostConfiguration hostConfigWithProxy = null;
+    
+    /** Variable <code>httpStateWithProxy</code> */
+    private static HttpState httpStateWithProxy = null;
+    
+    /** Variable <code>proxyAuthScope</code> */
+    private static AuthScope proxyAuthScope = null;
+    
+    /** Variable <code>hostconfig</code> */
+    private static HostConfiguration hostConfig = null;
+    
+    /** Variable <code>nonProxyHosts</code> */
+    private static List<String> nonProxyHosts = null;
     
     protected Logger log=Logger.getLogger(this.getClass());
 
@@ -64,26 +78,27 @@ public final class Invoker {
      * Constructor privado
      */
     private Invoker() {
-        MultiThreadedHttpConnectionManager connectionManager
-            = new MultiThreadedHttpConnectionManager();
-        connectionManager.getParams().setDefaultMaxConnectionsPerHost(
-                Integer.parseInt(MAX_CONNECTIONS_PER_HOST_DEF));
-        connectionManager.getParams().setMaxTotalConnections(
-                Integer.parseInt(MAX_TOTAL_CONNECTIONS_DEF));
+        MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
+        connectionManager.getParams().setDefaultMaxConnectionsPerHost(Integer.parseInt(MAX_CONNECTIONS_PER_HOST_DEF));
+        connectionManager.getParams().setMaxTotalConnections(Integer.parseInt(MAX_TOTAL_CONNECTIONS_DEF));
         client = new HttpClient(connectionManager);
         Protocol easyhttps = new Protocol("https",
                 (ProtocolSocketFactory) new EasySSLProtocolSocketFactory(),
                 Integer.parseInt(DEF_SSL_PORT_DEF));
         Protocol.registerProtocol("https", easyhttps);
-        // Set optional proxy
         
+        // Global non-proxy HostConfiguration
+        hostConfig = client.getHostConfiguration();
+        
+     // Set optional proxy
         try {
 			Properties proxyProp = PropertiesUtils.instanceFromClasspath("proxy.properties",log);
 		
 			String proxyHost = proxyProp.getProperty("proxy.host");
 			if (proxyHost != null && !proxyHost.equals("")) {
 				int proxyPort = Integer.parseInt(proxyProp.getProperty("proxy.port","8080"));
-				client.getHostConfiguration().setProxy(proxyHost, proxyPort);
+				hostConfigWithProxy = new HostConfiguration();
+				hostConfigWithProxy.setProxy(proxyHost, proxyPort);
 				
 				// Check if is an Authenticated Proxy
 				String proxyUser = proxyProp.getProperty("proxy.user");
@@ -91,6 +106,13 @@ public final class Invoker {
 				String proxyAuthType = proxyProp.getProperty("proxy.authentication_type");
 				String proxyNtmlHost = proxyProp.getProperty("proxy.ntlm.host");
 				String proxyNtmlDomain = proxyProp.getProperty("proxy.ntlm.domain");
+				
+				String _nonProxyHosts = proxyProp.getProperty("proxy.nonProxyHosts");
+				if (_nonProxyHosts != null) {
+					// Remove white spaces and split hosts list into an array 
+					String [] nonProxyHostsArray = _nonProxyHosts.replaceAll(" ", "").split(",");
+					nonProxyHosts = Arrays.asList(nonProxyHostsArray);
+				}
 							
 				if (proxyUser != null && proxyPass != null) {
 					UsernamePasswordCredentials usernamePasswordCredentials = null;
@@ -99,9 +121,9 @@ public final class Invoker {
 					} else {
 						usernamePasswordCredentials = new UsernamePasswordCredentials(proxyUser, proxyPass);
 					}
-					client.getState().setProxyCredentials(
-							new AuthScope(proxyHost, proxyPort),
-							usernamePasswordCredentials);
+					httpStateWithProxy = new HttpState();
+					proxyAuthScope = new AuthScope(proxyHost, proxyPort);
+					httpStateWithProxy.setProxyCredentials(proxyAuthScope, usernamePasswordCredentials);
 				} 
 			}
         } catch (Exception e) {
@@ -129,20 +151,11 @@ public final class Invoker {
     }
 
     /**
-     * @param url
-     *            Url a invocar
-     * @param params
-     *            Parametros de la Url
-     * @param headers
-     *            Headers de la request
-     * @param user
-     *            Usuario (si null, sin definir autenticacion)
-     * @param password
-     *            Clave
-     * @param data
-     *            Datos al inputStream de la request
-     * @param content
-     * 		      Content Type
+     * @param url Url a invocar
+     * @param headers Headers de la request
+     * @param user Usuario (si null, sin definir autenticacion)
+     * @param password Clave
+     * @param content Content Type de la request
      * @param timeout
      *            Tiempo de espera en milisegundos:
      *              - < 0: espera definida por omision
@@ -152,150 +165,35 @@ public final class Invoker {
      * @throws IOException
      *             IOException
      */
-    public String invokeForString(String url, NameValuePair[] params,
-        	NameValuePair[] headers, String user, String password,  RequestEntity requestEntityData,
-        	String content, int timeout, HashMap<String, Header> responseHeaders) throws IOException {
-
-        PostMethod postM = invoke(url, params,
-            	headers, user, password, requestEntityData,
-            	content, timeout, responseHeaders);
-        try {
-        	InputStream in = postM.getResponseBodyAsStream();
-
-            StringBuffer buff = new StringBuffer();
-            if (in != null) {
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(in));
-
-                int r = 0;
-                while ((r = reader.read()) != -1) {
-                    buff.append((char) r);
-                }
-                reader.close();
-                return buff.toString();
-            }
-            return null;
-        } finally {
-            if (postM != null) {
-                postM.releaseConnection();
-            }
-        }
-    }
-
-    /**
-     * @param url
-     *            Url a invocar, si null se utiliza el grupo como nombre de
-     *            servicio del repositorio
-     * @param params
-     *            Parametros de la Url
-     * @param headers
-     *            Headers de la request
-     * @param prop
-     *            Properties Properties con la configuracion, soporta:
-     *            invoker.{grupo}.timeout - < 0: espera definida por omision - =
-     *            0: espera indefinida - > 0: valor indicado
-     *            invoker.{grupo}.user invoker.{grupo}.passwd
-     *            invoker.{grupo}.content-type
-     * @param grupo
-     *            String Clave de las properties Normalmente en nombre del
-     *            respositorio
-     * @param data
-     *            Datos al inputStream de la request Si hay parametros debe ir a
-     *            null
-     * @return Respuesta de la invocacion (sera necesario liberar la conexion
-     *         con releaseConnection())
-     * @throws IOException
-     *             IOException
-     */
-    public PostMethod invoke(String url, NameValuePair[] params,
-    	NameValuePair[] headers, String user, String password, RequestEntity requestEntityData,
-    	String content, int timeout, HashMap<String, Header> responseHeaders)
-            throws IOException {
-
-        PostMethod httpost = null;
-        URI uri = new URI(url, false);
-        httpost = new PostMethod(uri.getEscapedURI());
-        httpost.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
-
-        if (params != null) {
-            httpost.addParameters(params);
-        }
-
-        if (content.length() > 0) {
-            httpost.setRequestHeader("Content-type", content);
-        }
-
-        if (headers != null) {
-            for (int i = 0; i < headers.length; i++) {
-                httpost.setRequestHeader(headers[i].getName(), headers[i]
-                        .getValue());
-            }
-        }
-
-        HttpState state = client.getState();
-        if (user != null && !user.equalsIgnoreCase("")) {
-             Credentials defaultcreds = new UsernamePasswordCredentials(user,
-                    password);
-            state.setCredentials(
-                    new AuthScope(uri.getHost(), uri.getPort(),
-                            AuthScope.ANY_REALM), defaultcreds);
-            client.getParams().setAuthenticationPreemptive(true);
-        }
-
-        HostConfiguration hostconfig = client.getHostConfiguration();
-        hostconfig.setHost(uri.getHost(),
-                uri.getPort());
-        
-        if (timeout >= 0) {
-            httpost.getParams().setSoTimeout(timeout);
-        }
-
-        if (requestEntityData != null) {
-             httpost.setRequestEntity(requestEntityData);
-            //httpost.setRequestContentLength(data.length());
-        }
-
-        client.executeMethod(hostconfig, httpost, state);
-        
-        Header[] respHeaders = httpost.getResponseHeaders();
-		for (int i = 0; i < respHeaders.length; i++) {
-        	responseHeaders.put(respHeaders[i].getName(), respHeaders[i]);
-		}
-        
-		log.debug("\"" + url + "\" " + httpost.getStatusLine());
-		
-        return httpost;
-    }
-    
-    public GetMethod invokeGET(String url, String method,
+    public GetMethod invokeGET(String url,
         	NameValuePair[] headers, String user, String password,
         	String content, int timeout, HashMap<String, Header> responseHeaders) throws IOException {
     
-    	return (GetMethod) invokeForAjaxProxy (url, method, null, headers, user, password, null, content, timeout, responseHeaders);
+    	return (GetMethod) invokeForAjaxProxy (url, "GET", null, headers, user, password, null, content, timeout, responseHeaders);
     	
 	}
     
-    public PostMethod invokePOST(String url, String method, NameValuePair[] params,
+    public PostMethod invokePOST(String url, NameValuePair[] params,
         	NameValuePair[] headers, String user, String password, RequestEntity requestEntityData,
         	String content, int timeout, HashMap<String, Header> responseHeaders) throws IOException {
     
-    	return (PostMethod) invokeForAjaxProxy (url, method, params, headers, user, password, requestEntityData, content, timeout, responseHeaders);
+    	return (PostMethod) invokeForAjaxProxy (url, "POST", params, headers, user, password, requestEntityData, content, timeout, responseHeaders);
     	
 	}
     
-    public PostMethod invokePUT(String url, String method, NameValuePair[] params,
+    public PostMethod invokePUT(String url, NameValuePair[] params,
         	NameValuePair[] headers, String user, String password, RequestEntity requestEntityData,
         	String content, int timeout, HashMap<String, Header> responseHeaders) throws IOException {
     
-    	return (PostMethod) invokeForAjaxProxy (url, method, params, headers, user, password, requestEntityData, content, timeout, responseHeaders);
+    	return (PostMethod) invokeForAjaxProxy (url, "PUT", params, headers, user, password, requestEntityData, content, timeout, responseHeaders);
     	
 	}
     
-    public GetMethod invokeDELETE(String url, String method,
+    public GetMethod invokeDELETE(String url,
         	NameValuePair[] headers, String user, String password,
         	String content, int timeout, HashMap<String, Header> responseHeaders) throws IOException {
     
-    	return (GetMethod) invokeForAjaxProxy (url, method, null, headers, user, password, null, content, timeout, responseHeaders);
+    	return (GetMethod) invokeForAjaxProxy (url, "DELETE", null, headers, user, password, null, content, timeout, responseHeaders);
     	
 	}
         
@@ -304,48 +202,68 @@ public final class Invoker {
         	String content, int timeout, HashMap<String, Header> responseHeaders)
                 throws IOException {
 
-    		HttpMethod httpRequestMethod = getHttpMethod(url, method, params, requestEntityData);
+		HttpMethod requestHttpMethod = getHttpMethod(url, method, params, requestEntityData);
 
-    		URI uri = new URI(url, false);
-            httpRequestMethod.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
+		URI uri = new URI(url, false);
+        requestHttpMethod.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
 
-            if (content.length() > 0) {
-                httpRequestMethod.setRequestHeader("Content-type", content);
-            }
-
-            if (headers != null) {
-                for (int i = 0; i < headers.length; i++) {
-                    httpRequestMethod.setRequestHeader(headers[i].getName(), headers[i].getValue());
-                }
-            }
-
-            HttpState state = client.getState();
-            if (user != null && !user.equalsIgnoreCase("")) {
-            	Credentials defaultcreds = new UsernamePasswordCredentials(user, password);
-                state.setCredentials(new AuthScope(uri.getHost(), uri.getPort(),
-                                AuthScope.ANY_REALM), defaultcreds);
-                client.getParams().setAuthenticationPreemptive(true);
-            }
-
-            HostConfiguration hostconfig = client.getHostConfiguration();
-            hostconfig.setHost(uri.getHost(),
-                    uri.getPort());
-            
-            if (timeout >= 0) {
-                httpRequestMethod.getParams().setSoTimeout(timeout);
-            }
-
-            client.executeMethod(hostconfig, httpRequestMethod, state);
-            
-            Header[] respHeaders = httpRequestMethod.getResponseHeaders();
-    		for (int i = 0; i < respHeaders.length; i++) {
-            	responseHeaders.put(respHeaders[i].getName(), respHeaders[i]);
-    		}
-            
-    		log.debug("\"" + url + "\" " + httpRequestMethod.getStatusLine());
-    		
-            return httpRequestMethod;
+        if (content.length() > 0) {
+            requestHttpMethod.setRequestHeader("Content-type", content);
         }
+
+        if (headers != null) {
+            for (int i = 0; i < headers.length; i++) {
+                requestHttpMethod.setRequestHeader(headers[i].getName(), headers[i].getValue());
+            }
+        }
+
+        
+        HttpState requestState = null; //client.getState();
+        HostConfiguration requestHostConfig = null;
+        Credentials requestCredentials = null;
+        if (user != null && !user.equalsIgnoreCase("")) {
+        	requestCredentials = new UsernamePasswordCredentials(user, password);
+        }
+        if (hostConfigWithProxy == null || nonProxyHosts.contains(uri.getHost())) {
+        	// NO Proxy or host in nonProxyHosts list
+        	requestState = new HttpState();
+        	requestHostConfig = (HostConfiguration) hostConfig.clone();
+        } else {
+        	// Proxy
+        	requestState = new HttpState();
+        	requestHostConfig = (HostConfiguration) hostConfigWithProxy.clone();
+        	if (httpStateWithProxy != null && proxyAuthScope != null) {
+        		// Authenticated Proxy
+        		requestState.setProxyCredentials(proxyAuthScope, httpStateWithProxy.getProxyCredentials(proxyAuthScope));
+        	}
+        }
+        
+        if (requestCredentials != null) {
+    		// Set Request Authentication
+    		requestState.setCredentials(
+    				new AuthScope(uri.getHost(), uri.getPort(), AuthScope.ANY_REALM),
+    				requestCredentials);
+    		client.getParams().setAuthenticationPreemptive(true);
+    	}            
+
+        //HostConfiguration hostconfig = client.getHostConfiguration();
+        requestHostConfig.setHost(uri.getHost(), uri.getPort());
+        
+        if (timeout >= 0) {
+            requestHttpMethod.getParams().setSoTimeout(timeout);
+        }
+
+        client.executeMethod(requestHostConfig, requestHttpMethod, requestState);
+        
+        Header[] respHeaders = requestHttpMethod.getResponseHeaders();
+		for (int i = 0; i < respHeaders.length; i++) {
+        	responseHeaders.put(respHeaders[i].getName(), respHeaders[i]);
+		}
+        
+		log.debug("\"" + url + "\" " + requestHttpMethod.getStatusLine());
+		
+        return requestHttpMethod;
+    }
     
     private HttpMethod getHttpMethod (String url, String method, NameValuePair[] params, RequestEntity requestEntityData) throws URIException, NullPointerException {
     	HttpMethod httpRequestMethod = null;
