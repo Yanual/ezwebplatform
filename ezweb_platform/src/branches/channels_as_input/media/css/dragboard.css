@@ -1,0 +1,215 @@
+div.dragboard {
+  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+div.dragboard.fixed {
+}
+
+div.gadget_window {
+  position: absolute;
+}
+
+div.gadget_window_locked {
+}
+
+div.gadget_window_transparent {
+  background: transparent;
+}
+
+div.gadget_menu {
+  cursor: move;
+  overflow: hidden;
+}
+
+div.dragboard.fixed div.gadget_menu {
+  cursor: default;
+}
+
+div.dragboard.fixed div.gadget_menu input[type="button"] {
+  display: none;
+}
+
+div.gadget_window div.gadget_menu input[type="button"] {
+  float: right;
+  display: inline;
+  margin: 0 0 0 5px;
+  padding: 0px;
+  width: 16px;
+  height: 16px;
+  border: 0px none;
+  outline: 0px none;
+  cursor: pointer;
+}
+
+div.gadget_window div.gadget_wrapper {
+  width: 100%;
+}
+
+div.gadget_window_locked div.gadget_wrapper {
+  border: none;
+}
+
+div.gadget_window div.gadget_wrapper object {
+  width: 100%;
+}
+
+div.row {
+  white-space: nowrap;
+}
+
+div.color_button {
+  float: left;
+  cursor: pointer;
+  border: 1px solid #888;
+  -moz-border-radius: 4px;
+  margin: 3px;
+  width: 16px;
+  height: 16px;
+}
+
+div.floatclearer {
+  clear: both;
+}
+
+div.gadget_window div.snapButton {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  bottom: 0px;
+  right: 33px;
+  cursor: pointer;
+}
+
+div.gadget_window div.extractButton {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  bottom: 0px;
+  right: 33px;
+  cursor: pointer;
+}
+
+div.gadget_window div.leftResizeHandle {
+  position: absolute;
+  width: 32px;
+  height: 16px;
+  bottom: -1px;
+  left: -1px;
+  cursor: sw-resize;
+}
+
+div.gadget_window div.leftResizeHandle.inUse {
+  right: 0px;
+  top: 0px;
+  width: auto;
+  height: auto;
+}
+
+div.gadget_window div.rightResizeHandle {
+  position: absolute;
+  width: 32px;
+  height: 16px;
+  bottom: -1px;
+  right: -1px;
+  cursor: se-resize;
+}
+
+div.gadget_window div.resizeHandle.inUse {
+  left: 0px;
+  top: 0px;
+  width: auto;
+  height: auto;
+}
+
+div.dragboard.fixed div.gadget_window div.leftResizeHandle,
+  div.dragboard.fixed div.gadget_window div.rightResizeHandle,
+  div.dragboard.fixed div.gadget_window div.extractButton
+{
+  display: none;
+}
+
+.gadget_menu span {
+  cursor: pointer;
+}
+
+.gadget_menu .igadget_name {
+  float:left;
+  background:transparent none repeat scroll 0%;
+  display:inline;
+}
+
+div.gadget_window div.statusBar {
+  height: 16px;
+}
+
+/*****
+ * config_interface
+ */
+
+div.gadget_window div.config_interface,
+div.gadget_window_locked div.config_interface {
+  background: #DDD;
+  border-bottom: 1px solid #4c5054;
+  display: none;
+  padding: 1px 1ex;
+  margin: 0px;
+}
+
+div.config_interface div.buttons {
+  margin: 1ex 0px;
+  float: right;
+}
+
+div.config_interface table {
+  width: 100%;
+}
+
+div.config_interface label {
+  margin: 1ex;
+  display: block;
+}
+
+div.config_interface input, div.config_interface select {
+  border: 1px solid #4c5054;
+  margin: 0px 1ex;
+}
+
+div.config_interface table input {
+  width: 90%;
+  max-width: 100ex;
+  padding: 0px 0.5ex;
+}
+
+div.config_interface table input[type="checkbox"] {
+  width: auto;
+}
+
+div.config_interface select {
+  padding: 0px;
+}
+
+div.config_interface label.invalid {
+  color: red;
+}
+
+div.config_interface label.invalid input {
+  border: 1px solid red;
+}
+
+/***
+ *
+ */
+.floatleft {
+  float: left;
+}
+
+.floatright {
+  float: right;
+}
+
+#dragboardcursor {
+  position: absolute;
+  z-index: 1;
+}
