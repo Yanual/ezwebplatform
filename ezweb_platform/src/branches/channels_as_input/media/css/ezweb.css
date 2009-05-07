@@ -15,6 +15,10 @@ a:hover{
     color:red;
 }
 
+td {
+  padding: 0;
+}
+
 /* header ------------------------------------------------------------------------------------------ */
 /* testing from codesyntax */
 #header {
@@ -451,10 +455,7 @@ a:hover{
 }
 
 button {
-  background: transparent url(/ezweb/images/button.gif) no-repeat;
-  border: medium none;
-  color: white;
-  margin: 3px;
+  cursor: pointer;
 }
 
 

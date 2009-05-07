@@ -1143,7 +1143,7 @@ IGadget.prototype._recomputeWrapper = function(contentHeight) {
  * @private
  */
 IGadget.prototype._computeExtraWidthPixels = function () {
-	var windowStyle = window.getComputedStyle(this.element, null);
+	var windowStyle = document.defaultView.getComputedStyle(this.element, null);
 
 	var pixels = windowStyle.getPropertyCSSValue("border-left-width").
 	             getFloatValue(CSSPrimitiveValue.CSS_PX);
@@ -1157,20 +1157,20 @@ IGadget.prototype._computeExtraWidthPixels = function () {
  * @private
  */
 IGadget.prototype._computeExtraHeightPixels = function () {
-	var windowStyle = window.getComputedStyle(this.element, null);
+	var windowStyle = document.defaultView.getComputedStyle(this.element, null);
 
 	var pixels = windowStyle.getPropertyCSSValue("border-bottom-width").
 	             getFloatValue(CSSPrimitiveValue.CSS_PX);
 	pixels += windowStyle.getPropertyCSSValue("border-top-width").
 	          getFloatValue(CSSPrimitiveValue.CSS_PX);
 
-	var menubarStyle = window.getComputedStyle(this.gadgetMenu, null);
+	var menubarStyle = document.defaultView.getComputedStyle(this.gadgetMenu, null);
 	pixels += menubarStyle.getPropertyCSSValue("border-bottom-width").
 	          getFloatValue(CSSPrimitiveValue.CSS_PX);
 	pixels += menubarStyle.getPropertyCSSValue("border-top-width").
 	          getFloatValue(CSSPrimitiveValue.CSS_PX);
 
-	var statusbarStyle = window.getComputedStyle(this.statusBar, null);
+	var statusbarStyle = document.defaultView.getComputedStyle(this.statusBar, null);
 	pixels += statusbarStyle.getPropertyCSSValue("border-bottom-width").
 	          getFloatValue(CSSPrimitiveValue.CSS_PX);
 	pixels += statusbarStyle.getPropertyCSSValue("border-top-width").

@@ -2,7 +2,10 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{{ LANGUAGE_CODE }}" lang="{{ LANGUAGE_CODE }}">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:svg="http://www.w3.org/2000/svg"
+      xml:lang="{{ LANGUAGE_CODE }}"
+      lang="{{ LANGUAGE_CODE }}">
 <head>
 <title>{% trans "EzWeb Platform" %}</title>
 
@@ -30,90 +33,8 @@
   <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/ie.css" />
 <![endif]-->
 
-<script type="text/javascript" src="{{ MEDIA_URL }}js/lib/prototype/prototype.js"></script>
-<script type="text/javascript" src="{{ MEDIA_URL }}js/lib/prototype/prototype.improvements.js"></script>
-<script type="text/javascript" src="{{ MEDIA_URL }}js/lib/scriptaculous/scriptaculous.js"></script>
-
-<script type="text/javascript">
-_URIConstants = function(){}
-_URIConstants.prototype.EZSTEROIDS_API = '{{ AUTHENTICATION_SERVER_URL }}/api';
-_URIConstants.prototype.USER = '/user/{{ user.username }}';
-_URIConstants.prototype.GET_IGADGET = new Template ('/workspace/#{workspaceId}/tab/#{tabId}/igadgets/#{iGadgetId}');
-_URIConstants.prototype.GET_IGADGETS = new Template ('/workspace/#{workspaceId}/tab/#{tabId}/igadgets/');
-_URIConstants.prototype.GET_GADGET = new Template ('/user/{{ user.username }}/gadgets/#{vendor}/#{name}/#{version}');
-_URIConstants.prototype.GET_GADGETS = '/user/{{ user.username }}/gadgets';
-_URIConstants.prototype.GET_CONTEXT = '/user/{{ user.username }}/context';
-_URIConstants.prototype.GET_CONTEXT_VALUE = new Template ('/user/{{ user.username }}/context/#{concept}/value');
-_URIConstants.prototype.GET_POST_RESOURCES = '/user/{{ user.username }}/catalogue/resource';
-_URIConstants.prototype.GET_RESOURCES_SIMPLE_SEARCH = '/user/{{ user.username }}/catalogue/search';
-_URIConstants.prototype.GET_RESOURCES_GLOBAL_SEARCH = '/user/{{ user.username }}/catalogue/globalsearch';
-_URIConstants.prototype.DELETE_TAG = '/user/{{ user.username }}/catalogue/tag';
-_URIConstants.prototype.POST_RESOURCE_TAGS = '/user/{{ user.username }}/catalogue/tag';
-_URIConstants.prototype.POST_RESOURCE_VOTES = '/user/{{ user.username }}/catalogue/voting';
-_URIConstants.prototype.POST_IGADGET = new Template ('/workspace/#{workspaceId}/tab/#{tabId}/igadgets');
-_URIConstants.prototype.PROXY = '/proxy';
-_URIConstants.prototype.GET_IGADGET_VARIABLES = new Template ('/user/{{ user.username }}/igadgets/#{iGadgetId}/variables');
-_URIConstants.prototype.GET_POST_GADGET_VARIABLE = new Template ('/user/{{ user.username }}/igadgets/#{iGadgetId}/variables/#{varName}');
-_URIConstants.prototype.PUT_VARIABLES = new Template ('/workspace/#{workspaceId}/variables');
-_URIConstants.prototype.GET_POST_WORKSPACES = '/workspaces';
-_URIConstants.prototype.GET_POST_WIRING = new Template ('/workspaces/#{id}/wiring');
-_URIConstants.prototype.GET_POST_WORKSPACE = new Template ('/workspaces/#{id}');
-_URIConstants.prototype.GET_POST_TABS = new Template('/workspace/#{workspace_id}/tabs');
-_URIConstants.prototype.TAB = new Template('/workspace/#{workspace_id}/tab/#{tab_id}');
-_URIConstants.prototype.POST_PUBLISH_WORKSPACE = new Template('/workspace/#{workspace_id}/publish');
-_URIConstants.prototype.GET_ADD_WORKSPACE = new Template('/workspace/#{workspace_id}/add');
-_URIConstants.prototype.GET_MERGE_WORKSPACE = new Template('/workspace/#{from_ws_id}/merge/#{to_ws_id}');
-
-{% if home_gateway_dispatcher_url %}
-    _URIConstants.prototype.HOME_GATEWAY_DISPATCHER_URL = '{{ home_gateway_dispatcher_url }}serviceGadgets?user={{ user.username }}';
-    _URIConstants.prototype.HOME_GATEWAY_DISPATCHER_UNSUBSCRIBE_URL = '{{ home_gateway_dispatcher_url }}unsubscribeServices';
-    _URIConstants.prototype.HOME_GATEWAY_DISPATCHER_CANCEL_URL = '{{ home_gateway_dispatcher_url }}cancelServices';
-{% else %}
-    _URIConstants.prototype.HOME_GATEWAY_DISPATCHER_URL = null;
-{% endif%}
-
-
-var URIs = new _URIConstants();
-
-var ezweb_user_name = '{{ user.username }}'
-
-</script>
-
-{% if only_one_js_file %}
-  <script type="text/javascript" src="{{ MEDIA_URL }}js/ezweb.js"></script>
-{% else %}
-   {% include "js_includes.js" %}
-{% endif %}
-
-<script type="text/javascript" src="{{ MEDIA_URL }}js/wiring/wz_jsgraphics.js"></script>
-<script type="text/javascript" src="/jsi18n/?language={{ LANGUAGE_CODE }}"></script>
-
-{% if AUTHENTICATION_SERVER_URL %}
-<script type="text/javascript" src="{{ AUTHENTICATION_SERVER_URL }}/ezweb/js/js_library.js"></script>
-<script type="text/javascript" src="{{ MEDIA_URL }}js/EzSteroidsAPI/EzSteroidsAPI.js"></script>
-{% endif %}
-
-<!-- Initialization code -->
-<script type="text/javascript">
-	function setLanguage(language) {
-		var onSuccess = function() {
-			window.location.reload();
-		}
-		
-		var onError = function() {}
-		
-		var persistenceEngine = PersistenceEngineFactory.getInstance();
-		var params = {language: language};
-		persistenceEngine.send_post("/i18n/setlang/", params, this, onSuccess, onError);
-		return false;
-	}
-
-	var opManager = OpManagerFactory.getInstance();
-</script>
-
-
 </head>
-<body onload="OpManagerFactory.getInstance().loadEnviroment()">
+<body>
 
 <!-- Loading indicator -->
 <div id="loading-indicator"></div>
@@ -281,4 +202,86 @@ var ezweb_user_name = '{{ user.username }}'
 	<!-- LOGS LAYER -->
 </div>
 </body>
+
+<!-- JavaScript Code -->
+<script type="text/javascript" src="{{ MEDIA_URL }}js/lib/prototype/prototype.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/lib/prototype/prototype.improvements.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/lib/scriptaculous/scriptaculous.js"></script>
+
+<script type="text/javascript">
+_URIConstants = function(){}
+_URIConstants.prototype.EZSTEROIDS_API = '{{ AUTHENTICATION_SERVER_URL }}/api';
+_URIConstants.prototype.USER = '/user/{{ user.username }}';
+_URIConstants.prototype.GET_IGADGET = new Template ('/workspace/#{workspaceId}/tab/#{tabId}/igadgets/#{iGadgetId}');
+_URIConstants.prototype.GET_IGADGETS = new Template ('/workspace/#{workspaceId}/tab/#{tabId}/igadgets/');
+_URIConstants.prototype.GET_GADGET = new Template ('/user/{{ user.username }}/gadgets/#{vendor}/#{name}/#{version}');
+_URIConstants.prototype.GET_GADGETS = '/user/{{ user.username }}/gadgets';
+_URIConstants.prototype.GET_CONTEXT = '/user/{{ user.username }}/context';
+_URIConstants.prototype.GET_CONTEXT_VALUE = new Template ('/user/{{ user.username }}/context/#{concept}/value');
+_URIConstants.prototype.GET_POST_RESOURCES = '/user/{{ user.username }}/catalogue/resource';
+_URIConstants.prototype.GET_RESOURCES_SIMPLE_SEARCH = '/user/{{ user.username }}/catalogue/search';
+_URIConstants.prototype.GET_RESOURCES_GLOBAL_SEARCH = '/user/{{ user.username }}/catalogue/globalsearch';
+_URIConstants.prototype.DELETE_TAG = '/user/{{ user.username }}/catalogue/tag';
+_URIConstants.prototype.POST_RESOURCE_TAGS = '/user/{{ user.username }}/catalogue/tag';
+_URIConstants.prototype.POST_RESOURCE_VOTES = '/user/{{ user.username }}/catalogue/voting';
+_URIConstants.prototype.POST_IGADGET = new Template ('/workspace/#{workspaceId}/tab/#{tabId}/igadgets');
+_URIConstants.prototype.PROXY = '/proxy';
+_URIConstants.prototype.GET_IGADGET_VARIABLES = new Template ('/user/{{ user.username }}/igadgets/#{iGadgetId}/variables');
+_URIConstants.prototype.GET_POST_GADGET_VARIABLE = new Template ('/user/{{ user.username }}/igadgets/#{iGadgetId}/variables/#{varName}');
+_URIConstants.prototype.PUT_VARIABLES = new Template ('/workspace/#{workspaceId}/variables');
+_URIConstants.prototype.GET_POST_WORKSPACES = '/workspaces';
+_URIConstants.prototype.GET_POST_WIRING = new Template ('/workspaces/#{id}/wiring');
+_URIConstants.prototype.GET_POST_WORKSPACE = new Template ('/workspaces/#{id}');
+_URIConstants.prototype.GET_POST_TABS = new Template('/workspace/#{workspace_id}/tabs');
+_URIConstants.prototype.TAB = new Template('/workspace/#{workspace_id}/tab/#{tab_id}');
+_URIConstants.prototype.POST_PUBLISH_WORKSPACE = new Template('/workspace/#{workspace_id}/publish');
+_URIConstants.prototype.GET_ADD_WORKSPACE = new Template('/workspace/#{workspace_id}/add');
+_URIConstants.prototype.GET_MERGE_WORKSPACE = new Template('/workspace/#{from_ws_id}/merge/#{to_ws_id}');
+
+{% if home_gateway_dispatcher_url %}
+    _URIConstants.prototype.HOME_GATEWAY_DISPATCHER_URL = '{{ home_gateway_dispatcher_url }}serviceGadgets?user={{ user.username }}';
+    _URIConstants.prototype.HOME_GATEWAY_DISPATCHER_UNSUBSCRIBE_URL = '{{ home_gateway_dispatcher_url }}unsubscribeServices';
+    _URIConstants.prototype.HOME_GATEWAY_DISPATCHER_CANCEL_URL = '{{ home_gateway_dispatcher_url }}cancelServices';
+{% else %}
+    _URIConstants.prototype.HOME_GATEWAY_DISPATCHER_URL = null;
+{% endif%}
+
+
+var URIs = new _URIConstants();
+
+var ezweb_user_name = '{{ user.username }}'
+
+</script>
+
+{% if only_one_js_file %}
+  <script type="text/javascript" src="{{ MEDIA_URL }}js/ezweb.js"></script>
+{% else %}
+   {% include "js_includes.js" %}
+{% endif %}
+
+<script type="text/javascript" src="{{ MEDIA_URL }}js/wiring/wz_jsgraphics.js"></script>
+<script type="text/javascript" src="/jsi18n/?language={{ LANGUAGE_CODE }}"></script>
+
+{% if AUTHENTICATION_SERVER_URL %}
+<script type="text/javascript" src="{{ AUTHENTICATION_SERVER_URL }}/ezweb/js/js_library.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/EzSteroidsAPI/EzSteroidsAPI.js"></script>
+{% endif %}
+
+<!-- Initialization code -->
+<script type="text/javascript">
+	function setLanguage(language) {
+		var onSuccess = function() {
+			window.location.reload();
+		}
+		
+		var onError = function() {}
+		
+		var persistenceEngine = PersistenceEngineFactory.getInstance();
+		var params = {language: language};
+		persistenceEngine.send_post("/i18n/setlang/", params, this, onSuccess, onError);
+		return false;
+	}
+
+	OpManagerFactory.getInstance().loadEnviroment();
+</script>
 </html>

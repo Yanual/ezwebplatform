@@ -29,38 +29,33 @@
 // The other connectable classes from the wiring module will inherit from this class            //
 //////////////////////////////////////////////////////////////////////////////////////////////////
 function wConnectable (name, type, friendCode, id) {
-  this.id = id;
-  this._name = name;
-  this._type = type;
-  this._friendCode = friendCode;
-  this.connectableType = null;
-  this.view = null;
+	this.id = id;
+	this._name = name;
+	this._type = type;
+	this._friendCode = friendCode;
+	this.connectableType = null;
 }
 
 wConnectable.prototype.annotate = function() {}
 
 wConnectable.prototype.getType = function() {
-  return this.type;
+	return this.type;
 }
 
 wConnectable.prototype.getValue = function() {
-  throw new Exception("Unimplemented function"); // TODO
+	throw new Error("Unimplemented function"); // TODO
 }
 
 wConnectable.prototype.getName = function() {
-  return this._name;
+	return this._name;
 }
 
 wConnectable.prototype.getId = function() {
-  return this.id;
+	return this.id;
 }
 
 wConnectable.prototype.getFriendCode = function() {
-  return this._friendCode;
-}
-
-wConnectable.prototype.setInterface = function(view) {
-	this.view=view;
+	return this._friendCode;
 }
 
 /**
@@ -70,35 +65,47 @@ wConnectable.prototype.destroy = function () {
 	this.fullDisconnect();
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// This class represents every object which may be placed in the middle of a connection between a In object and wOut object //
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+// This class represents every object in which the transmission is ended      //
+////////////////////////////////////////////////////////////////////////////////
 function wOut(name, type, friendCode, id) {
-   wConnectable.call(this, name, type, friendCode, id);
-   this.connectableType = "out";
-   this.inouts = new Array();
+	wConnectable.call(this, name, type, friendCode, id);
+	this.connectableType = "out";
+	this.inouts = new Array();
 }
 
 wOut.prototype = new wConnectable();
 
 wOut.prototype.annotate = function(value) {
-    this.variable.annotate(value);
+	this.variable.annotate(value);
 }
 
-wOut.prototype.addInOut = function(inout) {
+/**
+ * @private
+ * This method must be used only by the connectables code. If you like to
+ * connect an wOut to an wInOut, you should call to the connect method of the
+ * wInOut intance.
+ */
+wOut.prototype._addInput = function(inout) {
 	this.inouts.push(inout);
 }
 
-wOut.prototype.disconnect = function(inout) {
+/**
+ * @private
+ * This method must be used only by connectables code. If you like to disconnect
+ * an wOut from an wInOut, you should call to the disconnect method of the wInOut
+ * intance.
+ */
+wOut.prototype._removeInput = function(inout) {
 	inout._removeOutput(this);
-    this.inouts.remove(inout);
+	this.inouts.remove(inout);
 }
 
 wOut.prototype.fullDisconnect = function() {
-  // Disconnecting inouts
-  var inouts = this.inouts.clone();
-  for (var i = 0; i < inouts.length; ++i)
-    this.disconnect(inouts[i]);
+	// Disconnecting inouts
+	var inouts = this.inouts.clone();
+	for (var i = 0; i < inouts.length; ++i)
+		inouts[i].disconnect(this);
 }
 
 wOut.prototype.refresh = function() {
@@ -116,9 +123,10 @@ function wIn(name, type, friendCode, id) {
 wIn.prototype = new wConnectable();
 
 wIn.prototype.connect = function(out) {
-  this.outputs.push(out);
-  if (out instanceof wInOut)
-    out._addInput(this);
+	this.outputs.push(out);
+
+	if (out instanceof wInOut)
+		out._addInput(this);
 }
 
 wIn.prototype.disconnect = function(out) {
@@ -152,32 +160,30 @@ wIn.prototype.refresh = function() {
 // This class represents every object which may transmit some data //
 /////////////////////////////////////////////////////////////////////
 function wInOut(name, type, friendCode, id) {
-  wIn.call(this, name, type, friendCode, id);
+	wIn.call(this, name, type, friendCode, id);
 
-  this.inputs = new Array();
-  this.connectableType = "inout";
+	this.inputs = new Array();
+	this.connectableType = "inout";
 }
 
 wInOut.prototype = new wIn();
 
 wInOut.prototype.annotate = function(value) {
-  for (var i = 0; i < this.outputs.length; ++i)
-      this.outputs[i].annotate();
-}	
+	for (var i = 0; i < this.outputs.length; ++i)
+		this.outputs[i].annotate();
+}
 
-wInOut.prototype.connect = function(out) {	
+wInOut.prototype.connect = function(out) {
 	wIn.prototype.connect.call(this, out);
-	
-	out.addInOut(this);
 }
 
 wInOut.prototype._addInput = function(wIn) {
-  this.inputs.push(wIn);
+	this.inputs.push(wIn);
 }
 
 wInOut.prototype._removeInput = function(wIn) {
   if (this.inputs.getElementById(wIn.getId()) == wIn)
-	    this.inputs.remove(wIn);
+    this.inputs.remove(wIn);
 }
 
 wInOut.prototype._removeOutput = function(wOut) {
@@ -240,13 +246,13 @@ wChannel.prototype = new wInOut();
 
 wChannel.prototype.getValue = function() {
   if (this.filter == null)
-	return this.variable.get();  	
+    return this.variable.get();
   else
- 	return this.filter.run(this.variable.get(), this.filterParams);
+    return this.filter.run(this.variable.get(), this.filterParams);
 }
 
 wChannel.prototype.getValueWithoutFilter = function() {
-	return this.variable.get();  	
+  return this.variable.get();
 }
 
 wChannel.prototype.getFilter = function() {
@@ -259,11 +265,11 @@ wChannel.prototype.setFilter = function(newFilter) {
 
 wChannel.prototype.processFilterParams = function(fParamsJson_) {
   this.filterParams = new Array();
-  if (fParamsJson_ != null){
-  	var fParams = eval (fParamsJson_);
-	for (var k = 0; k < fParams.length; k++) {
-		this.filterParams[fParams[k].index] = fParams[k].value; 
-  	}
+  if (fParamsJson_ != null) {
+    var fParams = eval (fParamsJson_);
+    for (var k = 0; k < fParams.length; k++) {
+      this.filterParams[fParams[k].index] = fParams[k].value; 
+    }
   }
 }
 
@@ -297,8 +303,8 @@ function wTab (variable, name, tab, id) {
 wTab.prototype = new wOut();
 
 wTab.prototype.propagate = function(newValue, initial) {
-  if(!initial){
-  	this.variable.set(newValue);
+  if(!initial) {
+    this.variable.set(newValue);
   }
 }
 
