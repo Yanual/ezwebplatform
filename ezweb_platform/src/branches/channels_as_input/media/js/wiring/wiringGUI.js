@@ -40,7 +40,6 @@ function WiringInterface(wiring, workspace, wiringContainer, wiringLink) {
 	this.connectablesByQName = {};
 	this.inputs = new Array(); // Input connections (events & inouts)
 	this.outputs = new Array(); // Output connections (slots & inouts)
-	this.currentProvisionalId = 1;
 	this.channels = new Array();
 	this.channelsByName = {};
 	this.channelsToRemove = [];
@@ -222,7 +221,10 @@ WiringInterface.prototype._showFilterParams = function (channel, filter, paramLa
  */
 WiringInterface.prototype._addTab = function (tab) {
 	var tabEvents = new EventTabInterface(tab, this);
+	this.event_list.appendChild(tabEvents.getHTMLElement());
+
 	var tabSlots = new SlotTabInterface(tab, this);
+	this.slot_list.appendChild(tabSlots.getHTMLElement());
 
 	// Igadgets
 	var igadgets = tab.dragboard.getIGadgets();
@@ -230,8 +232,10 @@ WiringInterface.prototype._addTab = function (tab) {
 		this._addIGadget(igadgets[i], tabEvents, tabSlots);
 	}
 
-	tabEvents.show();
-	tabSlots.show();
+	if (this.unfold_on_entering) {
+		tabEvents.unfold();
+		tabSlots.unfold();
+	}
 }
 
 /**
@@ -245,17 +249,6 @@ WiringInterface.prototype._addTab = function (tab) {
 WiringInterface.prototype._addIGadget = function (igadget, tabEvents, tabSlots) {
 	var igadgetEvents = new IGadgetEventsInterface(igadget, this, tabEvents);
 	var igadgetSlots = new IGadgetSlotsInterface(igadget, this, tabSlots);
-
-	// fold the igadget if the user hasn't specify not doing it.
-	if (!this.unfold_on_entering) {
-		igadgetEvents.forceToggle();
-		igadgetSlots.forceToggle();
-	} else {
-		igadgetEvents.openedByUser = true;
-		igadgetEvents.parentInterface.igadgetsOpenedByUser++;
-		igadgetSlots.openedByUser = true;
-		igadgetSlots.parentInterface.igadgetsOpenedByUser++;
-	}
 }
 
 /**
@@ -334,12 +327,10 @@ WiringInterface.prototype.toggleEventColumn = function (expand) {
 	var input = null;
 	for (var i = 0; i < this.inputs.length; i++) {
 		input = this.inputs[i];
-		if (!(input instanceof ChannelInterface)) { //we leave channels apart
 			if (expand)
 				input.parentInterface.massiveExpand();
 			else
 				input.parentInterface.massiveCollapse();
-		}
 	}
 	if (this.currentChannel) {
 		this._highlightChannelInputs(this.currentChannel)
@@ -379,7 +370,6 @@ WiringInterface.prototype._clear = function() {
 	this.canvas.clear();
 
 	// Clean data structures
-	this.currentProvisionalId = 1;
 	this.friend_codes_counter = 0;
 	this.friend_codes = {};
 	this.inputs.clear();
@@ -472,6 +462,13 @@ WiringInterface.prototype._changeConnectionStatus = function (anchor) {
 		if (connectable instanceof ChannelInterface)
 			connectable[disconnectMethod2](this.currentChannel);
 	} else {
+		if (connectable instanceof ChannelInterface) {
+			var sourceConnectable = sourceAnchor.getConnectableInterface();
+			var targetConnectable = targetAnchor.getConnectableInterface();
+			if (!sourceConnectable.isConnectable(targetConnectable))
+				return;
+		}
+
 		var arrow = this._drawArrow(sourceAnchor, targetAnchor);
 
 		this.currentChannel[connectMethod](connectable);
@@ -589,15 +586,6 @@ WiringInterface.prototype._highlight = function (chk, friendCode) {
 	}
 }
 
-
-/**
- * @private
- * Generates and returns a new provisional channel id.
- */
-WiringInterface.prototype._newProvisionalChannelId = function () {
-	return this.currentProvisionalId++;
-}
-
 /**
  * @private
  * 
@@ -625,15 +613,9 @@ WiringInterface.prototype._highlight_friend_code = function (friend_code, highli
  */
 WiringInterface.prototype._uncheckChannelInputs = function (channel) {
 	var anchor = channel.getInputAnchor();
-	var connections = anchor.getConnectionArrows().clone();
-	for (var i = 0; i < connections.length; i++) {
-		var arrow = connections[i];
-
-//		if (output.parentInterface && output.parentInterface.isAnyUnfolded()) //if the interface is unfolded unfold it
-//			output.parentInterface.toggle();
-
-		arrow.disconnect();
-	}
+	var connectionArrows = anchor.getConnectionArrows().clone();
+	for (var i = 0; i < connectionArrows.length; i++)
+		connectionArrows[i].disconnect();
 }
 
 /**
@@ -843,13 +825,10 @@ ConnectionAnchor.prototype.getHTMLElement = function() {
  *        connected to this anchor.
  */
 ConnectionAnchor.prototype._addConnectionArrow = function(connectionArrow) {
-	this.connectionArrows.push(connectionArrow);
-
-	if (this.isConnected()) {
+	if (!this.isConnected())
 		this.htmlElement.addClassName('checked');
-	} else {
-		this.htmlElement.removeClassName('checked');
-	}
+
+	this.connectionArrows.push(connectionArrow);
 }
 
 /**
@@ -861,11 +840,8 @@ ConnectionAnchor.prototype._addConnectionArrow = function(connectionArrow) {
 ConnectionAnchor.prototype._removeConnectionArrow = function(connectionArrow) {
 	this.connectionArrows.remove(connectionArrow);
 
-	if (this.isConnected()) {
-		this.htmlElement.addClassName('checked');
-	} else {
+	if (!this.isConnected())
 		this.htmlElement.removeClassName('checked');
-	}
 }
 
 function Coordinates(topLeftSquare, width, height) {

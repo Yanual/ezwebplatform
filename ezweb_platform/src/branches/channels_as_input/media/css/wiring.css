@@ -76,16 +76,6 @@
   padding: 2px;
 }
 
-.form-row input[type="submit"] {
-  background-image: url(/ezweb/images/kgpg.png);
-  background-repeat: no-repeat;
-  padding-left: 18px;
-}
-
-#wiring #newChannelForm {
-    text-align: center;
-}
-
 #wiring .igadget {
   background: #F7F7F7;
   margin:3px 2px;
@@ -97,83 +87,24 @@
   -webkit-border-radius: 4px;
 }
 
-#wiring .igadget .igadgetContent {
-  padding: 0px 0px 1px 0px;
-  font-weight: normal;
-}
-
-#wiring .eventColumn .igadget .igadgetContent div {
-  padding: 0px 14px 0px 0px;
-  text-align: right;
+#wiring .igadget .content div {
   position: relative;
-  margin: 6px 0px;
-}
-
-#wiring .slotColumn .igadget .igadgetContent div {
-  padding: 0px 0px 0px 14px;
-  text-align: left;
-  position: relative;
-  margin: 6px 0px;
-}
-
-#wiring .igadget.folded, #wiring .igadgetContent.folded{
-  display: none;
 }
 
 #wiring .tab {
-  border: 2px solid black;
-  margin: 5px 0px;
-  position: relative;
-  padding: 2px;
-  background: #97A0A8;
-  -moz-border-radius: 11px;
-  -webkit-border-radius: 11px;
-}
-
-#wiring .eventColumn .tabContent.bckgrnd_folder {
-  background: #97A0A8 url(/ezweb/js/wiring/tree.gif) no-repeat scroll left top;
-}
-
-#wiring .slotColumn .tabContent.bckgrnd_folder {
-  background: #97A0A8 url(/ezweb/js/wiring/tree.gif) no-repeat scroll right top;
-}
-
-#wiring .igadgetName {
-  padding-left: 20px;
-  cursor:pointer;
-  background: url(/ezweb/js/wiring/Lminus.png) no-repeat scroll left top;
-}
-#wiring .igadgetName.bckgrnd_folded {
-  background: url(/ezweb/js/wiring/Lplus.png) no-repeat scroll left top;
-}
-
-#wiring .tab .tabContent {
-  padding: 0px 0px 5px 0px;
-  color: white;
-  cursor:pointer;
-  font-weight: bold;
-  margin: 2px 0px;
-}
-
-#wiring .eventColumn .tab .tabContent {
-  padding: 0px 14px 0px 0px;
-  text-align: right;
   position: relative;
 }
 
-#wiring .slotColumn .tab .tabContent {
-  padding: 0px 0px 0px 14px;
-  text-align: left;
-  position: relative;
+#wiring .tab .content {
+  cursor: pointer;
 }
 
-#wiring #newChannelForm .addSubmit {
-  cursor: pointer; cursor: hand;
-  padding: 0px;
-  height: 16px;
-  width: 16px;
-  background: url(/ezweb/js/wiring/add.png);
-  border: 0px none;
+#wiring .tab.folded .content {
+  display: none;
+}
+
+#wiring .eventColumn .tab.empty {
+  display: none;
 }
 
 #wiring .newChannel, #wiring #unfold_all_link {

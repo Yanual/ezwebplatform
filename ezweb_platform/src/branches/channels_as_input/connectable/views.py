@@ -178,19 +178,20 @@ class ConnectableEntry(Resource):
                 # In connections
                 # InOut out connections will be created later
                 ins = new_channel_data['ins']
-                for input in ins:
-                    connectable = In.objects.get(id=input['id'])
+                for inputId in ins:
+                    connectable = In.objects.get(id=inputId)
                     connectable.inouts.add(channel);
                     connectable.save()
 
                 # Out connections
                 # InOut out connections will be created later
                 outs = new_channel_data['outs']
-                for output in outs:
-                    connectable = Out.objects.get(id=output['id'])
+                for outputId in outs:
+                    connectable = Out.objects.get(id=outputId)
                     connectable.inouts.add(channel);
                     connectable.save()
 
+            # Now it is time to recreate channel to channel connections
             for new_channel_data in new_channels:
                 inouts = new_channel_data['inouts']
                 for inout_to_add in inouts:
@@ -198,7 +199,7 @@ class ConnectableEntry(Resource):
 
                     # search final id if needed
                     if inout_to_add['provisional_id']:
-                        inout_id = id_mapping[inout_id]['cid']
+                        inout_id = id_mapping[inout_id]['new_id']
 
                     relationship = RelatedInOut(in_inout=channel, out_inout=InOut.objects.get(id=inout_id))
                     relationship.save()

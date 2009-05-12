@@ -93,41 +93,28 @@
   -webkit-border-radius: 4px;
 }
 
-#wiring .igadget .igadgetContent {
+#wiring .igadget .content {
   padding: 0px 0px 1px 0px;
   font-weight: normal;
+  position: relative;
+  margin: 6px 0px;
 }
 
-#wiring .eventColumn .igadget .igadgetContent div {
+#wiring .eventColumn .igadget .content div {
   padding: 0px 14px 0px 0px;
   text-align: right;
-  position: relative;
-  margin: 6px 0px;
 }
 
-#wiring .slotColumn .igadget .igadgetContent div {
+#wiring .slotColumn .igadget .content div {
   padding: 0px 0px 0px 14px;
   text-align: left;
-  position: relative;
-  margin: 6px 0px;
 }
 
-#wiring .igadget.folded, #wiring .igadgetContent.folded {
+#wiring .igadget.folded .content {
   display: none;
 }
 
-/*#wiring .igadget .igadgetContent div .anchor.checked {
-  position: absolute;
-  display: inline;
-  width: 18px;
-  height: 18px;
-  border: 0px;
-  background: url(/ezweb/js/wiring/checked.png);
-  padding: 0px;
-  top: -8px;
-}*/
-
-#wiring .igadget .igadgetContent div .anchor {
+#wiring .igadget .content div .anchor {
   position: absolute;
   display: inline;
   width: 24px;
@@ -137,12 +124,12 @@
   top: -9px;
 }
 
-#wiring .eventColumn .igadget .anchor {
+#wiring .eventColumn .igadget div .anchor {
   right: -24px;
   background: url(/ezweb/images/wiring/inAnchor.png);
 }
 
-#wiring .slotColumn .igadget .anchor {
+#wiring .slotColumn .igadget div .anchor {
   left: -24px;
   background: url(/ezweb/images/wiring/outAnchor.png);
 }
@@ -179,7 +166,42 @@
   right: -15px;
 }
 
-#wiring .tab .tabContent .anchor {
+#wiring .tab {
+  border: 2px solid black;
+  margin: 5px 0px;
+  position: relative;
+  padding: 2px;
+  background: #97A0A8;
+  -moz-border-radius: 11px;
+  -webkit-border-radius: 11px;
+}
+
+#wiring .eventColumn .tab > .header {
+  background: #97A0A8 url(/ezweb/js/wiring/tree.gif) no-repeat scroll left top;
+  padding: 0px 14px 0px 0px;
+  text-align: right;
+}
+
+#wiring .slotColumn .tab > .header {
+  background: #97A0A8 url(/ezweb/js/wiring/tree.gif) no-repeat scroll right top;
+  padding: 0px 0px 0px 14px;
+  text-align: left;
+}
+
+#wiring .tab > .header {
+  color:       white;
+  cursor:      pointer;
+  font-weight: bold;
+  margin:      2px 0px;
+  position:    relative;
+}
+
+#wiring .tab.empty > .header {
+  background: none;
+  cursor: default;
+}
+
+#wiring .tab > .header > .anchor {
   background: url(/ezweb/js/wiring/unchecked.png);
   position: absolute;
   left: -9px;
@@ -191,56 +213,20 @@
   padding: 0px;
 }
 
-#wiring .tab .tabContent .anchor.checked {
+#wiring .tab > .header > .anchor.checked {
   background: url(/ezweb/js/wiring/checkedtab.png);
 }
 
-#wiring .tab {
-  border: 2px solid black;
-  margin: 5px 0px;
-  position: relative;
-  padding: 2px;
-  background: #97A0A8;
-  -moz-border-radius: 11px;
-  -webkit-border-radius: 11px;
-}
-
-#wiring .eventColumn .tabContent.bckgrnd_folder {
-  background: #97A0A8 url(/ezweb/js/wiring/tree.gif) no-repeat scroll left top;
-}
-
-#wiring .slotColumn .tabContent.bckgrnd_folder {
-  background: #97A0A8 url(/ezweb/js/wiring/tree.gif) no-repeat scroll right top;
-}
-
-#wiring .igadgetName {
+#wiring .igadget > .header {
   padding-left: 20px;
   cursor:pointer;
   background: url(/ezweb/js/wiring/Lminus.png) no-repeat scroll left top;
 }
-#wiring .igadgetName.bckgrnd_folded {
+
+#wiring .igadget.folded > .header {
   background: url(/ezweb/js/wiring/Lplus.png) no-repeat scroll left top;
 }
 
-#wiring .tab .tabContent {
-  padding: 0px 0px 5px 0px;
-  color: white;
-  cursor:pointer;
-  font-weight: bold;
-  margin: 2px 0px;
-}
-
-#wiring .eventColumn .tab .tabContent {
-  padding: 0px 14px 0px 0px;
-  text-align: right;
-  position: relative;
-}
-
-#wiring .slotColumn .tab .tabContent {
-  padding: 0px 0px 0px 14px;
-  text-align: left;
-  position: relative;
-}
 
 #wiring #newChannelForm .addSubmit {
   cursor: pointer; cursor: hand;
@@ -303,7 +289,7 @@
 
 #wiring #channels_list .channel .channelPipe {
   border: 1px solid #2D6F9C;
-  background: #97A0A8;
+  background: #97A0A8 url(/ezweb/images/wiring/pipe.png);
   cursor: pointer; cursor: hand;
   height: 22px;
   padding: 0 8px;
@@ -329,7 +315,7 @@
 }
 
 #wiring #channels_list .channel.selected .channelPipe {
-  background: #2D6F9C;
+  background-color: #2D6F9C;
 }
 
 #wiring #channels_list .channel.selected .channelContent, #wiring .newChannel.selected .channelContent {
@@ -395,7 +381,7 @@
    border:0px;
    margin:0px 1ex;
    cursor:pointer;
-   background: #97A0A8;
+   background: transparent;
 }
 
 #wiring .selected .channelNameInput {
