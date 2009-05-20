@@ -38,7 +38,8 @@ function ConnectableGroupInterface (wiringGUI, parentInterface, headerText) {
 	this.folded = false;
 	this.connections = 0;
 	this.parentInterface = parentInterface;
-	this.openedByUser = 0;
+	this.openedByUser = false;
+	this.childConnectableGroups = new Array();
 
 	// Root HTML Element of this interface
 	this.htmlElement = document.createElement("div");
@@ -53,13 +54,7 @@ function ConnectableGroupInterface (wiringGUI, parentInterface, headerText) {
 	Event.observe(this.headerElement, "click",
 		function(e) {
 			Event.stop(e);
-
-			if (this.connections > 0)
-				return;
-
-			this.toggleOpenedByUser();
-			this.forceToggle();
-			this.repaintSiblings(); // repaint the arrows if needed
+			this.toggle(true);
 		}.bind(this));
 
 	// List of connectables
@@ -89,7 +84,7 @@ ConnectableGroupInterface.prototype._increaseConnections = function() {
  * ConnectableGroupInterface</code>.
  */
 ConnectableGroupInterface.prototype._decreaseConnections = function() {
-	if (this.connection >= 1) {
+	if (this.connections >= 1) {
 		this.connections--;
 		if (this.parentInterface) this.parentInterface._decreaseConnections();
 	} /* else {
@@ -98,100 +93,123 @@ ConnectableGroupInterface.prototype._decreaseConnections = function() {
 }
 
 /**
- *
+ * Returns the root HTML element of this <code>ConnectableGroupInterface</code>.
  */
-ConnectableGroupInterface.prototype.toggleOpenedByUser = function() {
-	if (this.folded || (!this.folded && this.openedByUser)) {
-		this.openedByUser = !this.openedByUser;
-		if (this.openedByUser)
-			this.parentInterface.igadgetsOpenedByUser++;
-		else
-			this.parentInterface.igadgetsOpenedByUser--;
-	}
-}
-
 ConnectableGroupInterface.prototype.getHTMLElement = function() {
 	return this.htmlElement;
 }
 
 /**
- * Toggles this <code>ConnectableGroupInterface</code> except in the case the user
+ * Toggles this <code>ConnectableGroupInterface</code>. except in the case the user
  * opened it manually.
  */
-ConnectableGroupInterface.prototype.toggle = function () {
-	//if the user hasn't touch the igadget, it can automatically toggle
-	if (!this.openedByUser)
-		this.forceToggle();
+ConnectableGroupInterface.prototype.toggle = function (userAction) {
+	// If the interface was opened by the user, only the user can fold it.
+	if (this.openedByUser && !userAction)
+		return;
 
-	if (this.folded != this.parentInterface.folded)
-		this.parentInterface.toggle();
+	if (!this.folded && this.connections > 0)
+		return;
+
+	this.forceToggle();
+	this.openedByUser = !this.fold && userAction;
 }
 
 /**
- * Toggles this <code>ConnectableGroupInterface</code>
+ * Folds or unfolds this <code>ConnectableGroupInterface</code> depending on the
+ * current interface status.
  */
 ConnectableGroupInterface.prototype.forceToggle = function () {
 	this.folded = !this.folded;
 
-	if (this.folded)
+	if (this.folded) {
 		this.htmlElement.addClassName('folded');
-	else
+		this.openedByUser = false;
+	} else {
 		this.htmlElement.removeClassName('folded');
+	}
+
+	this.repaintSiblings(); // repaint the arrows if needed
 }
 
 /**
- * Returns true if there are any unfolded interface.
+ * Returns true if there are any unfolded interfaces in this <code>
+ * ConnectableGroupInterface</code>.
  */
 ConnectableGroupInterface.prototype.isAnyFolded = function () {
-	return this.folded || this.parentInterface.folded;
+	for (var i = 0; i < this.childConnectableGroups.length; i++) {
+		var childGroup = this.childConnectableGroups[i];
+		if (childGroup.folded || childGroup.isAnyFolded())
+			return true;
+	}
+
+	return false;
 }
 
 /**
- * Returns true if there are any unfolded interface.
+ * @param {Boolean} userAction
  */
-ConnectableGroupInterface.prototype.isAnyUnfolded = function () {
-	return !this.folded || !this.parentInterface.folded;
+ConnectableGroupInterface.prototype.makeVisible = function (userAction) {
+	if (this.folded)
+		this.toggle(userAction);
+	else
+		this.openedByUser = userAction;
+
+	if (this.parentInterface)
+		this.parentInterface.makeVisible(false);
+}
+
+/**
+ *
+ */
+ConnectableGroupInterface.prototype.massiveToggle = function() {
+	if (this.isAnyFolded())
+		this.massiveExpand();
+	else
+		this.massiveFold();
 }
 
 /**
  * Expands this <code>ConnectableGroupInterface</code>.
  */
-ConnectableGroupInterface.prototype.massiveExpand = function () {
+ConnectableGroupInterface.prototype.massiveExpand = function (userAction) {
 	if (this.folded) {
-		// the igadget is folded
-		this.toggleOpenedByUser();
 		this.forceToggle();
-		if (this.folded != this.parentInterface.folded) {//if the parent is folded
-			this.parentInterface.toggle();
-		}
-	} else if (this.openedByUser && this.parentInterface.folded) {
-		// if the gadget is open by the user but the parent is folded
-		this.parentInterface.toggle();
-	} else if (!this.openedByUser) {
-		//the igadget is open because it is conected to an opened channel
-		this.openedByUser = true;
-		this.parentInterface.igadgetsOpenedByUser++;
+		this.openedByUser = !this.fold && userAction;
 	}
+
+	for (var i = 0; i < this.childConnectableGroups.length; i++)
+		this.childConnectableGroups[i].massiveExpand(userAction);
 }
 
 /**
- * Collapses all the connectables of this <code>
+ * Folds all connectable interface on this <code>
  * ConnectableGroupInterface</code>.
  */
-ConnectableGroupInterface.prototype.massiveCollapse = function () {
-	if (!this.folded && this.openedByUser) { //the igadget is folded
-		this.toggleOpenedByUser();
-		if (this.connections <= 0) { //collapse only if the gadget don't have any connections
-			this.forceToggle();
-		}
+ConnectableGroupInterface.prototype.massiveFold = function () {
+	if (!this.folded) {
+		this.forceToggle();
+		this.openedByUser = false;
 	}
-	if (this.folded != this.parentInterface.folded) {//if the parent isn't folded
-		if (this.parentInterface.connections <= 0) {
-			this.parentInterface.toggleOpenedByUser();
-			this.parentInterface.toggle();
-		}
-	}
+
+	for (var i = 0; i < this.childConnectableGroups.length; i++)
+		this.childConnectableGroups[i].massiveFold();
 }
+
+/**
+ * @private
+ *
+ * Adds a <code>ConnectableGroupInterface</code> as child of this <code>
+ * ConnectableGroupInterface</code>.
+ *
+ * @param {ConnectableGroupInterface} group
+ */
+ConnectableGroupInterface.prototype._addConnectableGroup = function (group) {
+	this.htmlElement.removeClassName("empty");
+	this.childConnectableGroups.push(group);
+	this.contentElement.appendChild(group.getHTMLElement());
+}
+
 
 /**
  * @abstract
@@ -210,51 +228,11 @@ function ConnectableTabInterface (wiringGUI, headerText) {
 	ConnectableGroupInterface.call(this, wiringGUI, null, headerText);
 
 	// atributes
-	this.childConnectableGroups = new Array();
 
 	this.htmlElement.addClassName("tab");
 	this.htmlElement.addClassName("empty");
 }
 ConnectableTabInterface.prototype = new ConnectableGroupInterface();
-
-ConnectableTabInterface.prototype.toggleOpenedByUser = function () {
-	if (this.folded ||(!this.folded && this.openedByUser)) {
-		this.openedByUser = !this.openedByUser;
-	}
-}
-
-/**
- *
- */
-//toggle ordered automatically, for instance, changing channels
-ConnectableTabInterface.prototype.toggle = function () {
-	//if the user hasn't touch the tab, it can automatically toggle
-	if (this.folded || (!this.folded && !this.openedByUser && this.igadgetsOpenedByUser <= 0)){
-		this.forceToggle();
-	}
-}
-
-/**
- * @private
- *
- * Adds a <code>ConnectableGroupInterface</code> as child of this <code>
- * ConnectableTabInterface</code>.
- *
- * @param {ConnectableGroupInterface} group
- */
-ConnectableTabInterface.prototype._addConnectableGroup = function (group) {
-	this.htmlElement.removeClassName("empty");
-	this.childConnectableGroups.push(group);
-	this.contentElement.appendChild(group.getHTMLElement());
-}
-
-/**
- *
- */
-ConnectableTabInterface.prototype.isAnyFolded = function () {
-	return this.folded;
-}
-
 
 /////////////////////////////////////////////////
 //    SLOT AND EVENT INTERFACE FOR THE TAB     //
@@ -596,7 +574,6 @@ ChannelInterface.prototype._checkLoop = function(channel, depth) {
 	}
 }
 
-
 /**
  * Returns the anchor that represents the input anchor for this channel. This
  * anchor is an <code>OutConnectionAnchor</code> as it really acts as a target
@@ -695,6 +672,7 @@ ChannelInterface.prototype.getValueWithoutFilter = function() {
  */
 ChannelInterface.prototype.commitChanges = function(wiring, phase) {
 	var i;
+
 	switch (phase) {
 	case 1: // Creation
 		if (this.connectable == null)
@@ -946,6 +924,10 @@ SimpleConnectableInterface.prototype._decreaseConnections = function() {
 	this.parentInterface._decreaseConnections();
 }
 
+SimpleConnectableInterface.prototype.makeVisible = function() {
+	this.parentInterface.makeVisible();
+}
+
 /**
  * This class corresponds with the interface to represent an Slot into the
  * wiring Interface.
@@ -1018,6 +1000,20 @@ IGadgetSlotsInterface.prototype.repaintSiblings = function() {
 	this.wiringGUI._highlightChannelOutputs(this.wiringGUI.currentChannel);
 }
 
+IGadgetSlotsInterface.prototype._increaseConnections = function() {
+	if (this.connections == 0)
+		this.htmlElement.addClassName("unfoldable");
+
+	ConnectableGroupInterface.prototype._increaseConnections.call(this);
+}
+
+IGadgetSlotsInterface.prototype._decreaseConnections = function() {
+	ConnectableGroupInterface.prototype._decreaseConnections.call(this);
+
+	if (this.connections == 0)
+		this.htmlElement.removeClassName("unfoldable");
+}
+
 /**
  * @class
  *
@@ -1050,4 +1046,43 @@ IGadgetEventsInterface.prototype.repaintSiblings = function() {
 
 	this.wiringGUI._uncheckChannelInputs(this.wiringGUI.currentChannel);
 	this.wiringGUI._highlightChannelInputs(this.wiringGUI.currentChannel);
+}
+
+IGadgetEventsInterface.prototype._increaseConnections = function() {
+	if (this.connections == 0)
+		this.htmlElement.addClassName("unfoldable");
+
+	ConnectableGroupInterface.prototype._increaseConnections.call(this);
+}
+
+IGadgetEventsInterface.prototype._decreaseConnections = function() {
+	ConnectableGroupInterface.prototype._decreaseConnections.call(this);
+
+	if (this.connections == 0)
+		this.htmlElement.removeClassName("unfoldable");
+}
+
+/**
+ *
+ */
+function ConnectableColumnInterface(htmlElement) {
+	this.childConnectableGroups = [];
+	this.htmlElement = htmlElement;
+}
+ConnectableColumnInterface.prototype.isAnyFolded = ConnectableGroupInterface.prototype.isAnyFolded;
+ConnectableColumnInterface.prototype.massiveToggle = ConnectableGroupInterface.prototype.massiveToggle;
+
+ConnectableColumnInterface.prototype.massiveExpand = function (userAction) {
+	for (var i = 0; i < this.childConnectableGroups.length; i++)
+		this.childConnectableGroups[i].massiveExpand(userAction);
+}
+
+ConnectableColumnInterface.prototype.massiveFold = function (userAction) {
+	for (var i = 0; i < this.childConnectableGroups.length; i++)
+		this.childConnectableGroups[i].massiveFold(userAction);
+}
+
+ConnectableColumnInterface.prototype.add = function(group) {
+	this.htmlElement.appendChild(group.getHTMLElement());
+	this.childConnectableGroups.push(group);
 }

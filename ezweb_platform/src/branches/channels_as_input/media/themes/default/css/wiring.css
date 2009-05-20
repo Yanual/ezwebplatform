@@ -5,6 +5,10 @@
   width: 100%;
 }
 
+#wiring #wiring_table {
+  margin-top: 10px;
+}
+
 #wiring #channels_list {
   margin: 2ex 0px;
   padding: 0px;
@@ -93,43 +97,48 @@
   -webkit-border-radius: 4px;
 }
 
-#wiring .igadget .content {
+#wiring .igadget > .content {
   padding: 0px 0px 1px 0px;
   font-weight: normal;
   position: relative;
   margin: 6px 0px;
 }
 
-#wiring .eventColumn .igadget .content div {
-  padding: 0px 14px 0px 0px;
-  text-align: right;
+#wiring .igadget > .content > div {
+  line-height: 24px;
 }
 
-#wiring .slotColumn .igadget .content div {
+#wiring .eventColumn .igadget > .content > div {
+  padding: 0px 14px 0px 0px;
+  text-align: right;
+  cursor: hand; cursor:pointer;
+}
+
+#wiring .slotColumn .igadget > .content > div {
   padding: 0px 0px 0px 14px;
   text-align: left;
 }
 
-#wiring .igadget.folded .content {
+#wiring .igadget.folded > .content {
   display: none;
 }
 
-#wiring .igadget .content div .anchor {
+#wiring .igadget > .content > div > .anchor {
   position: absolute;
   display: inline;
   width: 24px;
   height: 24px;
   border: 0px;
   padding: 0px;
-  top: -9px;
+  top: 0;
 }
 
-#wiring .eventColumn .igadget div .anchor {
+#wiring .eventColumn .igadget .anchor {
   right: -24px;
   background: url(/ezweb/images/wiring/inAnchor.png);
 }
 
-#wiring .slotColumn .igadget div .anchor {
+#wiring .slotColumn .igadget .anchor {
   left: -24px;
   background: url(/ezweb/images/wiring/outAnchor.png);
 }
@@ -167,37 +176,77 @@
 }
 
 #wiring .tab {
-  border: 2px solid black;
   margin: 5px 0px;
   position: relative;
   padding: 2px;
+}
+
+#wiring .tab > .header {
+  clear: both;
+  z-index: 1;
+}
+
+#wiring .tab.folded > .content, #wiring .tab.empty > .content {
+  height: 5px;
+  overflow: hidden;
+}
+
+#wiring .tab > .content {
+  padding: 2px;
+  clear: both;
   background: #97A0A8;
-  -moz-border-radius: 11px;
-  -webkit-border-radius: 11px;
+  border: 1px solid black;
+  z-index: 0;
+  position: relative;
+  top: -1px;
 }
 
 #wiring .eventColumn .tab > .header {
-  background: #97A0A8 url(/ezweb/js/wiring/tree.gif) no-repeat scroll left top;
-  padding: 0px 14px 0px 0px;
+  -moz-border-radius-topright: 10px;
+  -moz-border-radius-topleft: 4px;
+  -webkit-border-radius: 10px; /* TODO */
+  float: right;
+  border-width: 1px 1px 0 1px;
+  border-style: solid;
+  border-color: black;
+  padding: 2px 24px 2px 34px;
+  background: #97A0A8 url(/ezweb/js/wiring/tree.gif) no-repeat scroll 2px 2px;
   text-align: right;
 }
 
+#wiring .eventColumn .tab > .content {
+  -moz-border-radius-topleft: 10px;
+  -moz-border-radius-bottomright: 10px;
+  -moz-border-radius-bottomleft: 10px;
+}
+
 #wiring .slotColumn .tab > .header {
-  background: #97A0A8 url(/ezweb/js/wiring/tree.gif) no-repeat scroll right top;
-  padding: 0px 0px 0px 14px;
+  -moz-border-radius-topleft: 10px;
+  -moz-border-radius-topright: 4px;
+  float: left;
+  border-width: 1px 1px 0 1px;
+  border-style: solid;
+  border-color: black;
+  background: #97A0A8 url(/ezweb/js/wiring/tree.gif) no-repeat scroll right 2px;
+  padding: 2px 34px 2px 24px;
   text-align: left;
+}
+
+#wiring .slotColumn .tab > .content {
+  -moz-border-radius-topright: 10px;
+  -moz-border-radius-bottomright: 10px;
+  -moz-border-radius-bottomleft: 10px;
 }
 
 #wiring .tab > .header {
   color:       white;
   cursor:      pointer;
   font-weight: bold;
-  margin:      2px 0px;
   position:    relative;
 }
 
 #wiring .tab.empty > .header {
-  background: none;
+  background: #97A0A8;
   cursor: default;
 }
 
@@ -205,7 +254,7 @@
   background: url(/ezweb/js/wiring/unchecked.png);
   position: absolute;
   left: -9px;
-  top: -1px;
+  top: 1px;
   display: inline;
   width: 18px;
   height: 18px;
@@ -227,6 +276,9 @@
   background: url(/ezweb/js/wiring/Lplus.png) no-repeat scroll left top;
 }
 
+#wiring .igadget.unfoldable > .header {
+  background: url(/ezweb/images/wiring/LminusDisabled.png) no-repeat scroll left top;
+}
 
 #wiring #newChannelForm .addSubmit {
   cursor: pointer; cursor: hand;
@@ -244,16 +296,12 @@
 }
 
 #wiring .newChannel {
-  margin: 2ex 1ex;
+  margin:     2ex 1ex;
   text-align: center;
 }
 
 #wiring #wiring_options {
-  position:relative;
-  float:right;
-  top: 5px;
-  right: 5px;
-  color:#2D6F9C;
+  color:     #2D6F9C;
   font-size: 90%;
 }
 
@@ -348,11 +396,11 @@
 }
 
 #wiring #channels_list .channel.selected .channelContent .paramValueInput, #wiring .newChannel.selected .channelContent .paramValueInput {
-	background: #E0E0E0;
-	border:0px none;
-	margin: 0.05ex 0ex 0.05ex 0ex;
-	width:100%;
-	cursor: text;
+  background: #E0E0E0;
+  border:0px none;
+  margin: 0.05ex 0ex 0.05ex 0ex;
+  width:100%;
+  cursor: text;
 }
 
 #wiring #wiring_messages {
@@ -360,10 +408,9 @@
   background: lightyellow;
   margin: 1ex 20px;
   padding: 1ex 2ex;
-  display: none;
 }
 
-#wiring #newChannelForm .linkSubmit{
+#wiring #newChannelForm .linkSubmit {
    color: blue;
    background-color:#E0E0E0;
    border-style:none;

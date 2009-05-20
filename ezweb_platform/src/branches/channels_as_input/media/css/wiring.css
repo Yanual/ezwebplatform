@@ -5,8 +5,14 @@
   width: 100%;
 }
 
+#wiring #wiring_wrapper {
+  position: relative;
+}
+
 #wiring #wiring_table {
-  z-index: 1;
+  position: relative;
+  clear:    both;
+  z-index:  1;
 }
 
 #wiring #channels_list {
@@ -77,30 +83,19 @@
 }
 
 #wiring .igadget {
-  background: #F7F7F7;
-  margin:3px 2px;
   position: relative;
-  font-weight: bold;
-  padding: 3px 3px 0px;
-  color: black;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
 }
 
 #wiring .igadget .content div {
   position: relative;
 }
 
+#wiring .igadget.unfoldable > .header {
+  cursor: default;
+}
+
 #wiring .tab {
   position: relative;
-}
-
-#wiring .tab .content {
-  cursor: pointer;
-}
-
-#wiring .tab.folded .content {
-  display: none;
 }
 
 #wiring .eventColumn .tab.empty {
@@ -121,9 +116,8 @@
 #wiring #wiring_options {
   position: relative;
   float:    right;
-  top:      5px;
-  right:    5px;
   z-index:  1;
+  margin: 5px;
 }
 
 #wiring #unfold_all_link {
@@ -174,15 +168,8 @@
 }
 
 #wiring #channels_list .channel .channelContent {
-  border-top: 1px solid #525248;
   display: none;
-  background: #F7F7F7;
-  padding: 0.5ex 1ex 0.5ex 1ex;
   cursor: default;
-  -moz-border-radius-bottomleft: 9px;
-  -moz-border-radius-bottomright: 9px;
-  -webkit-border-top-left-radius: 9px;
-  -webkit-border-top-right-radius: 9px
 }
 
 #wiring #channels_list .channel.selected .channelContent {
@@ -223,10 +210,6 @@
 }
 
 #wiring #wiring_messages {
-  border: 1px solid orange;
-  background: lightyellow;
-  margin: 1ex 20px;
-  padding: 1ex 2ex;
   display: none;
 }
 

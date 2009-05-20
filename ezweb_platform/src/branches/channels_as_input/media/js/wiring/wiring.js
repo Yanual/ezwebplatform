@@ -188,7 +188,7 @@ function Wiring (workspace, workSpaceGlobalInfo) {
 	// ****************
 
 	Wiring.prototype.getConnectableId = function (variables, name, igadgetId) {
-		for (i = 0; i < variables.length; i++) {
+		for (var i = 0; i < variables.length; i++) {
 			var variable = variables[i];
 
 			if ((variable.name == name) && (variable.igadgetId == igadgetId)) {

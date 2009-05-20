@@ -59,7 +59,7 @@ function WorkSpace (workSpaceState) {
 			this.wiringInterface = new WiringInterface(this.wiring, this, $("wiring"), $("wiring_link"));
 
 			if (tabs.length > 0) {
-				for (i = 0; i < tabs.length; i++)
+				for (var i = 0; i < tabs.length; i++)
 					this.tabInstances[tabs[i].id].getDragboard().paint();
 			}
 
@@ -478,6 +478,7 @@ function WorkSpace (workSpaceState) {
 		// Unload Wiring Interface
 		// TODO Wiring Interface should be shared between Workspaces
 		if (this.wiringInterface !== null) {
+			this.wiringInterface.saveWiring();
 			this.wiringInterface.unload();
 			this.wiringInterface = null;
 		}
