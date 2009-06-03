@@ -98,7 +98,7 @@
   position: relative;
 }
 
-#wiring .eventColumn .tab.empty {
+#wiring .eventColumn .tab.empty, #wiring .tab .igadget.empty {
   display: none;
 }
 

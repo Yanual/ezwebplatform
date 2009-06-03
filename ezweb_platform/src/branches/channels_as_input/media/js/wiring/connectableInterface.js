@@ -34,6 +34,7 @@ function ConnectableGroupInterface (wiringGUI, parentInterface, headerText) {
 	if (arguments.length == 0)
 		return;
 
+	this.empty = true;
 	this.wiringGUI = wiringGUI;
 	this.folded = false;
 	this.connections = 0;
@@ -64,6 +65,8 @@ function ConnectableGroupInterface (wiringGUI, parentInterface, headerText) {
 
 	if (this.parentInterface)
 		this.parentInterface._addConnectableGroup(this);
+
+	this.htmlElement.addClassName("empty");
 }
 
 /**
@@ -100,8 +103,11 @@ ConnectableGroupInterface.prototype.getHTMLElement = function() {
 }
 
 /**
- * Toggles this <code>ConnectableGroupInterface</code>. except in the case the user
- * opened it manually.
+ * Toggles this <code>connectableGroupInterface</code> taking into account
+ * several aspects, which can leads to different actions (expand, expand
+ * massively, fold, fold massively, etc.) depending on these aspects.
+ *
+ * @param {Boolean} userAction
  */
 ConnectableGroupInterface.prototype.toggle = function (userAction) {
 	// If the interface was opened by the user, only the user can fold it.
@@ -109,7 +115,7 @@ ConnectableGroupInterface.prototype.toggle = function (userAction) {
 		return;
 
 	if (!this.folded && this.connections > 0)
-		return;
+		this.massiveToggle(userAction);
 
 	this.forceToggle();
 	this.openedByUser = !this.fold && userAction;
@@ -160,17 +166,24 @@ ConnectableGroupInterface.prototype.makeVisible = function (userAction) {
 }
 
 /**
+ * Expands of folds all the child connectables of this <code>
+ * ConnectableGroupInterface</code> according to the status of these
+ * connectables.
  *
+ * @param {Boolean} userAction
  */
-ConnectableGroupInterface.prototype.massiveToggle = function() {
+ConnectableGroupInterface.prototype.massiveToggle = function(userAction) {
 	if (this.isAnyFolded())
-		this.massiveExpand();
+		this.massiveExpand(userAction);
 	else
 		this.massiveFold();
 }
 
 /**
- * Expands this <code>ConnectableGroupInterface</code>.
+ * Expands all connectable interface on this <code>
+ * ConnectableGroupInterface</code>.
+ *
+ * @param {Boolean} userAction
  */
 ConnectableGroupInterface.prototype.massiveExpand = function (userAction) {
 	if (this.folded) {
@@ -185,6 +198,8 @@ ConnectableGroupInterface.prototype.massiveExpand = function (userAction) {
 /**
  * Folds all connectable interface on this <code>
  * ConnectableGroupInterface</code>.
+ *
+ * @param {Boolean} userAction
  */
 ConnectableGroupInterface.prototype.massiveFold = function () {
 	if (!this.folded) {
@@ -205,11 +220,35 @@ ConnectableGroupInterface.prototype.massiveFold = function () {
  * @param {ConnectableGroupInterface} group
  */
 ConnectableGroupInterface.prototype._addConnectableGroup = function (group) {
-	this.htmlElement.removeClassName("empty");
 	this.childConnectableGroups.push(group);
 	this.contentElement.appendChild(group.getHTMLElement());
+
+	this._notifyNewEmptyStatus(group, group.isEmpty());
 }
 
+/**
+ * @private
+ *
+ * This method allows to child connectable groups to notify about empty status
+ * changes.
+ *
+ * @param {ConnectableGroupInterface} group
+ * @param {Boolean} newEmptyStatus
+ */
+ConnectableGroupInterface.prototype._notifyNewEmptyStatus = function (group, newEmptyStatus) {
+	if (this.empty && !newEmptyStatus) {
+		this.empty = false;
+		this.htmlElement.removeClassName("empty");
+	}
+}
+
+/**
+ * Retuns whether this <code>ConnectableGroupInterface</code> can be considered
+ * empty.
+ */
+ConnectableGroupInterface.prototype.isEmpty = function() {
+	return this.empty;
+}
 
 /**
  * @abstract
@@ -227,15 +266,12 @@ function ConnectableTabInterface (wiringGUI, headerText) {
 
 	ConnectableGroupInterface.call(this, wiringGUI, null, headerText);
 
-	// atributes
-
 	this.htmlElement.addClassName("tab");
-	this.htmlElement.addClassName("empty");
 }
 ConnectableTabInterface.prototype = new ConnectableGroupInterface();
 
 /////////////////////////////////////////////////
-//    SLOT AND EVENT INTERFACE FOR THE TAB     //
+//    TAB INTERFACES FOR SLOTS AND EVENTS      //
 /////////////////////////////////////////////////
 
 /**
@@ -977,7 +1013,6 @@ function IGadgetSlotsInterface (igadget, wiringGUI, parentInterface) {
 	this.htmlElement.addClassName("igadget");
 
 	var connectables = wiringGUI.wiring.getIGadgetConnectables(igadget);
-
 	// Create Slot interfaces for the slots of this igadget
 	for (var i = 0; i < connectables.length; i++) {
 		var connectable = connectables[i];
@@ -988,6 +1023,12 @@ function IGadgetSlotsInterface (igadget, wiringGUI, parentInterface) {
 
 		// Insert the HTMLElement of the SlotInterface
 		this.contentElement.appendChild(interface.getHTMLElement());
+		this.empty = false;
+	}
+
+	if (this.empty == false) {
+		this.parentInterface._notifyNewEmptyStatus(this, false);
+		this.htmlElement.removeClassName("empty");
 	}
 }
 IGadgetSlotsInterface.prototype = new ConnectableGroupInterface();
@@ -1025,7 +1066,6 @@ function IGadgetEventsInterface (igadget, wiringGUI, parentInterface) {
 	this.htmlElement.addClassName("igadget");
 
 	var connectables = wiringGUI.wiring.getIGadgetConnectables(igadget);
-
 	// Create Event interfaces for the events of this igadget
 	for (var i = 0; i < connectables.length; i++) {
 		var connectable = connectables[i];
@@ -1036,6 +1076,12 @@ function IGadgetEventsInterface (igadget, wiringGUI, parentInterface) {
 
 		// Insert the HTMLElement of the Event Interface
 		this.contentElement.appendChild(interface.getHTMLElement());
+		this.empty = false;
+	}
+
+	if (this.empty == false) {
+		this.parentInterface._notifyNewEmptyStatus(this, false);
+		this.htmlElement.removeClassName("empty");
 	}
 }
 IGadgetEventsInterface.prototype = new ConnectableGroupInterface();
