@@ -1,0 +1,45 @@
+#!/bin/sh -e
+
+. /lib/lsb/init-functions
+
+[ -f /etc/default/rcS ] && . /etc/default/rcS
+
+REPO="/var/www/debian"
+BRANCH="unstable"
+PIDFILE="/var/run/repos.pid"
+LOGFILE="${REPO}/logs/i.log"
+QUEUE="${REPO}/incoming/${BRANCH}"
+URULE="update"
+CMD="reprepro -s -b ${REPO} --waitforlock 1000 processincoming ${URULE}"
+
+repos_start() {
+  if [ ! -f $PIDFILE ]; then
+    inoticoming --logfile ${LOGFILE} --pid-file $PIDFILE ${QUEUE} --stderr-to-log --stdout-to-log --suffix '.changes' --chdir ${REPO} ${CMD} \;
+  fi
+  log_end_msg 0
+}
+
+repos_stop() {
+  if [ -f $PIDFILE ]; then
+    PID=`cat $PIDFILE`
+    kill $PID
+    rm -f $PIDFILE $SOCKETFILE
+  fi
+}
+
+case $1 in
+  start)
+    repos_start
+    ;;
+  stop)
+    repos_stop
+    ;;
+  restart | force-reload)
+    repos_stop
+    repos_start
+    ;;
+  *)
+    log_success_msg "Usage: $0 {start|stop|restart}"
+    exit 1
+  ;;
+esac

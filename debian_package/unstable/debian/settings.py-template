@@ -2,9 +2,6 @@
 from os import path
 from django.utils.translation import ugettext_lazy as _
 
-#@ENABLE_DEBUG@DEBUG = True
-#@ENABLE_DEBUG@TEMPLATE_DEBUG = True
-
 BASEDIR = '/usr/share/ezweb-platform'
 APPEND_SLASH = False
 
@@ -21,8 +18,15 @@ DATABASE_PASSWORD = '@DATABASE_PASS@' # Not used with sqlite3.
 DATABASE_HOST = '@DATABASE_HOST@'     # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = '@DATABASE_PORT@'     # Set to empty string for default. Not used with sqlite3.
 
-# Theme to use for this installation.
-THEME = '@THEME@'
+#@ENABLE_DEBUG@DEBUG = True
+#@ENABLE_DEBUG@TEMPLATE_DEBUG = True
+# TODO toggle the following settings depending on the ENABLE_DEBUG value
+#ONLY_ONE_JS_FILE=True
+#ONLY_ONE_CSS_FILE=True
+#EZWEB_RELEASE='1237
+
+# Default theme to use for this installation.
+DEFAULT_THEME = '@THEME@'
 
 # Local time zone for this installation. Choices can be found here:
 # http://www.postgresql.org/docs/8.1/static/datetime-keywords.html#DATETIME-TIMEZONE-SET-TABLE
@@ -120,6 +124,11 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'processors.context_processors.home_gateway_url',
     'processors.context_processors.server_url',
     'processors.context_processors.is_anonymous',
+    'processors.context_processors.only_one_js_file',
+    'processors.context_processors.only_one_css_file',
+    'processors.context_processors.ezweb_release',
+    'processors.context_processors.tag_categories',
+    'processors.context_processors.theme_url',
 )
 
 SESSION_COOKIE_AGE = 5184000    #2 months
@@ -132,6 +141,8 @@ LOG_PATH='@LOG_PATH@'
 #@ENABLE_PROXY@PROXY_SERVER = '@PROXY_SERVER@'
 
 #@ENABLE_HOME_GATEWAY@HOME_GATEWAY_DISPATCHER_URL = '@HOME_GATEWAY_DISPATCHER'
+
+NOT_PROXY_FOR = ['localhost', '127.0.0.1']
 
 try:
     from clms.settings import *

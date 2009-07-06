@@ -20,8 +20,8 @@ NameVirtualHost *@:PORT@
     PythonPath "['/etc/ezweb-platform/sites/@CONF_NAME@'] + ['/usr/share/ezweb-platform'] + sys.path"
   </Location>
 
-  Alias /media /usr/share/python-support/python-django/django/contrib/admin/media
-  Alias /site-media /usr/share/ezweb-platform/media
+  Alias /media "/usr/share/pyshared/django/contrib/admin/media"
+  Alias /site-media "/usr/share/ezweb-platform/media"
 
   <Location /media>
     SetHandler None

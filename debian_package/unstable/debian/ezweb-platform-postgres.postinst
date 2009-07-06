@@ -89,26 +89,11 @@ if [ "$1" = "configure" -o "$1" = "reconfigure" ]; then
 
   $EZWEB_ADMIN_SCRIPT setdbmsdefaults postgres default --database-host "$SERVER_HOST" --admin-user "$ADMIN_USER" --admin-pass "$ADMIN_PASS"
 
-  ###
-  # Configure the instances
-  #
-  OLD_VAL=`$EZWEB_ADMIN_SCRIPT list database_engine postgres --debconf`
-  db_get ezweb-platform-postgres/instances
-
-  if [ "$RET" != "" -a "$RET" != "$OLD_VAL" ]; then
-    list=`echo $RET | sed -e 's/, /,/g'`
-
-    saved_IFS=$IFS
-    IFS=,
-    for conf in $list; do
-      echo
-      echo "Configuring \"$conf\" for using postgres as DBMS..."
-      update-ezweb-platform update $conf --database-engine postgres
-      echo "Done"
-    done
-    IFS=$saved_IFS
+  db_get shared/ezweb-platform-database-config
+  DB_CONFIG="$RET"
+  if [ "$DB_CONFIG" == 'postgres' ]; then
+    dpkg-trigger update-ezweb-platform
   fi
-
 fi
 
 #DEBHELPER#

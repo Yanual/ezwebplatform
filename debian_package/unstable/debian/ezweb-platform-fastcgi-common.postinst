@@ -7,10 +7,8 @@ set -e
 #
 . /usr/share/debconf/confmodule
 
-if [ "$1" = "configure" -o "$1" = "reconfigure" ]; then
-  chgrp www-data /var/run/ezweb-platform &> /dev/null
-  chmod 775      /var/run/ezweb-platform &> /dev/null
-fi
+#if [ "$1" = "configure" -o "$1" = "reconfigure" ]; then
+#fi
 
 #DEBHELPER#
 

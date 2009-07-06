@@ -1,10 +1,10 @@
-Template: ezweb-platform-common/configured
+Template: shared/ezweb-platform-common/configured
 Type: boolean
 Default: false
 Description: for internal use
 	.
 
-Template: ezweb-platform-common/abortupgrade
+Template: shared/ezweb-platform-common/abortupgrade
 Type: boolean
 Default: true
 _Description: Abort EzWeb upgrading?
@@ -34,15 +34,4 @@ _Description: Search DN pattern:
 	searching for users into the LDAP database. Use "%s" to indicate where
 	the user id must to go in the pattern. For example, you can use
 	something like "uid=%s,ou=people,dc=example,dc=com" as pattern.
-
-Template: ezweb-platform-ldap/instances
-Type: multiselect
-Default: default
-Choices: ${choices}
-_Description: Ezweb instances that will use LDAP:
-	The selected EzWeb instances will be configured to use LDAP as auth
-	method.
-	.
-	This will not enable the selected EzWeb instances, although they will
-	continue to be enabled if they are currently enabled.
 

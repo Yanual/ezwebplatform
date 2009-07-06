@@ -1,10 +1,10 @@
-Template: ezweb-platform-common/configured
+Template: shared/ezweb-platform-common/configured
 Type: boolean
 Default: false
 Description: for internal use
 	.
 
-Template: ezweb-platform-common/abortupgrade
+Template: shared/ezweb-platform-common/abortupgrade
 Type: boolean
 Default: true
 _Description: Abort EzWeb upgrading?

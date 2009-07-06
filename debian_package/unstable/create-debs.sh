@@ -3,6 +3,7 @@ DEFAULT_SVN_LOCATION="https://svn.forge.morfeo-project.org/svn/ezwebplatform/ezw
 REPO_DIR="/var/www/debian"
 BRANCH="unstable"
 BASE_VER="0.4"
+DUPLOAD_SERVER="europa"
 
 fetch() {
   if [ -n "$1" ]; then
@@ -80,7 +81,10 @@ debianize() {
     rm -rf $COPYDIR/debian
   fi
 
-  tar -c $COPYDIR | gzip > ezweb-platform_$FULLVER.orig.tar.gz
+  ORIG_FILE="ezweb-platform_$FULLVER.orig.tar.gz"
+  if [ ! -f $ORIG_FILE ]; then
+    tar -c $COPYDIR | gzip > $ORIG_FILE
+  fi
 
   # Check if the version of the changelog match with the version we are packaging
   parse_deb_fullver .
@@ -133,18 +137,29 @@ build() {
   cd ..
 }
 
-uninstallpkg() {
-  sudo reprepro -Vb $REPO_DIR removesrc $BRANCH "ezweb-platform" $1
-}
+if [ -z "$DUPLOAD_SERVER" ]; then
+  uninstallpkg() {
+    sudo reprepro -Vb $REPO_DIR removesrc $BRANCH "ezweb-platform" $1
+  }
 
-installpkg() {
-  DEB_FULLVER=$1
-  RET=`sudo reprepro -Vb $REPO_DIR listfilter $BRANCH "Source (== ezweb-platform), Version (== $DEB_FULLVER)"`
-  if [ "x$RET" != "x" ]; then
-    uninstallpkg $DEB_FULLVER
-  fi
-  sudo reprepro -Vb $REPO_DIR include $BRANCH ezweb-platform_${DEB_FULLVER}_*.changes
-}
+  installpkg() {
+    DEB_FULLVER=$1
+    RET=`sudo reprepro -Vb $REPO_DIR listfilter $BRANCH "Source (== ezweb-platform), Version (== $DEB_FULLVER)"`
+    if [ "x$RET" != "x" ]; then
+      uninstallpkg $DEB_FULLVER
+    fi
+    sudo reprepro -Vb $REPO_DIR include $BRANCH ezweb-platform_${DEB_FULLVER}_*.changes
+  }
+else
+  uninstallpkg() {
+    echo "Debian packages can not be uninstalled using dupload"
+  }
+
+  installpkg() {
+    DEB_FULLVER=$1
+    dupload -t $DUPLOAD_SERVER ezweb-platform_${DEB_FULLVER}_*.changes
+  }
+fi
 
 
 #
@@ -153,11 +168,23 @@ installpkg() {
 
 NEWVERSION=0
 PARSEDEBCONF=1
-case $1 in
+for ARG in "$@"; do
+  case $ARG in
   -n)
     NEWVERSION=1
     ;;
-esac
+  -i)
+    INSTALL=1
+    ;;
+  -b)
+    BUILD=1
+    ;;
+  esac
+done
+
+if [ -z "$BUILD" -a -z "$INSTALL" ]; then
+  BUILD=1
+fi
 
 if [ "$NEWVERSION" == 1 ]; then
   fetch
@@ -180,7 +207,11 @@ else
   exit -2
 fi
 
-debianize $DEB_VERSION
-build $COPYDIR
-#uninstallpkg $DEB_FULLVER
-installpkg $DEB_FULLVER
+if [ "$BUILD" = 1 ]; then
+  debianize $DEB_VERSION
+  build $COPYDIR
+fi
+
+if [ "$INSTALL" = 1 ]; then
+  installpkg $DEB_FULLVER
+fi

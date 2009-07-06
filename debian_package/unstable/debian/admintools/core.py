@@ -34,6 +34,7 @@ import sys
 import os
 import grp
 import shutil
+import copy
 
 import string
 from random import Random
@@ -44,7 +45,7 @@ from gettext import gettext as _
 from configobj import ConfigObj
 from optparse import make_option
 from django.core import management
-from admintools.common import EzWebAdminToolResources, MultiCommandOptionParser, Command, EzWebInstanceNotFound, Argument, ExtendedOption
+from admintools.common import EzWebAdminToolResources, MultiCommandOptionParser, Command, EzWebInstanceNotFound, Argument, ExtendedOption, ConfigCopy
 from admintools.conditions import AndCondition, NotCondition, AllValidCondition, EnabledCondition, NameCondition, ServerCondition, ConnectionTypeCondition, DatabaseEngineCondition, HasAuthMethodCondition, AuthMethodCondition
 
 
@@ -111,25 +112,67 @@ class MainEzWebAdminTool:
     directory = os.path.dirname(self.resources.get_config_file(site_cfg['name']))
     self.resources.rmdir(directory)
 
+  def fillConfig(self, config):
+    conf_name = config.get('name')
+
+    schema = config.getDefault('', 'schema')
+    if schema == '':
+      config.setAndUpdate('default', 'schema')
+      schema = "default"
+
+    general_settings = self.get_default_settings()
+    if general_settings.has_key(schema):
+      schema = general_settings[schema]
+    else:
+      schema = {}
+
+    # Database Engine
+    database_engine = config.getDefault('', 'database', 'database_engine')
+    if database_engine == '' and schema.has_key('database_engine'):
+      config.set(schema['database_engine'], 'database', 'database_engine')
+
+    # Server type
+    server_type = config.getDefault('', 'server', 'server_type')
+    if server_type == '' and schema.has_key('server_type'):
+      config.set(schema['server_type'], 'server', 'server_type')
+
+    # Connection type
+    connection_type = config.getDefault('', 'server', 'connection_type')
+    if connection_type == '' and schema.has_key('connection_type'):
+      config.set(schema['connection_type'], 'server', 'connection_type')
+
+
+    # Call Fill Config commands of the database engine and the server type
+    database_engine = config.getDefault('', 'database', 'database_engine')
+    server_type = config.getDefault('', 'server', 'server_type')
+
+    if server_type != "" :
+      server_command = self.resources.get_server_admin_command(server_type, "FillConfig")
+      server_command.execute(config)
+
+    if database_engine != "" :
+      dbms_command = self.resources.get_dbms_admin_command(database_engine, "FillConfig")
+      dbms_command.execute(config)
+
+
   def isEnableable(self, site_cfg):
-    enableable = site_cfg['server'].has_key('server_type') and site_cfg['server'].has_key('connection_type') and site_cfg['database'].has_key('database_engine')
-    if enableable:
-      enableable = site_cfg['server']['server_type'] != "" and site_cfg['server']['connection_type'] != "" and site_cfg['database']['database_engine'] != ""
+    server_type = site_cfg.getDefault('', 'server', 'server_type')
+    connection_type = site_cfg.getDefault('', 'server', 'connection_type')
+    database_engine = site_cfg.getDefault('', 'database', 'database_engine')
+    enableable = server_type != "" and connection_type != "" and database_engine != ""
 
     if enableable:
       try:
-        server_command = self.resources.get_server_admin_command(site_cfg['server']['server_type'], "Process")
-        dbms_command = self.resources.get_dbms_admin_command(site_cfg['database']['database_engine'], "Process")
+        server_command = self.resources.get_server_admin_command(server_type, "Process")
+        dbms_command = self.resources.get_dbms_admin_command(database_engine, "Process")
       except:
         enableable = False
 
     return enableable
 
   def enable(self, site_cfg, options):
-    server_cfg = site_cfg['server']
-
     options.force_syncdb = True
-    site_cfg["enabled"] = True
+    site_cfg.setAndUpdate(True, 'enabled')
     self.process_cfg(site_cfg, options)
 
     # Config saved at process_cfg
@@ -140,29 +183,30 @@ class MainEzWebAdminTool:
     if not self.isEnableable(site_cfg):
       return;
 
+    self.fillConfig(site_cfg)
+
     data_dir = os.path.join(self.resources.DATA_PATH, site_cfg['name'])
     self.resources.makedirs(data_dir)
     os.chown(data_dir, -1, grp.getgrnam("www-data").gr_gid)
     os.chmod(data_dir, 0775)
 
     # Ensure this instance has assigned a secret key
-    if not site_cfg.has_key('secret_key') or site_cfg['secret_key'] == "":
+    if site_cfg.getDefault('', 'secret_key') == '':
       validchars = string.letters + string.digits
       validchars += string.punctuation.replace("'", "")
-      site_cfg["secret_key"] = ''.join(Random().sample(validchars, 50))
+      site_cfg.setAndUpdate(''.join(Random().sample(validchars, 50)), "secret_key")
 
     # Ensure this instance has a document root
-    server_cfg = site_cfg['server']
-    if not server_cfg.has_key('document_root') or server_cfg['document_root'] == "":
-      newDocumentRoot = self.resources.get_default_document_root(site_cfg['name'])
+    if site_cfg.getDefault('', 'server', 'document_root') == '':
+      newDocumentRoot = self.resources.get_default_document_root(site_cfg.get('name'))
       self.resources.printlnMsg("Assigning \"" + newDocumentRoot + "\" as document root.")
-      server_cfg['document_root'] = newDocumentRoot
+      site_cfg.setAndUpdate(newDocumentRoot, 'server', 'document_root')
 
     # Update settings.py
     settings_template = self.update_settings_py(site_cfg)
 
     # Update server settings
-    server_type = site_cfg['server']['server_type']
+    server_type = site_cfg.get('server', 'server_type')
     self.resources.printlnMsg()
     self.resources.printlnMsg("Processing server settings (using " + server_type + " as server)... ")
     self.resources.incPrintNestingLevel()
@@ -173,7 +217,7 @@ class MainEzWebAdminTool:
     self.resources.printlnMsg("Done")
 
     # Update database settings
-    database_engine = site_cfg['database']['database_engine']
+    database_engine = site_cfg.get('database', 'database_engine')
     self.resources.printlnMsg()
     self.resources.printlnMsg("Processing database config (using " + database_engine + " as DBMS)... ")
     self.resources.incPrintNestingLevel()
@@ -183,7 +227,7 @@ class MainEzWebAdminTool:
     self.resources.printlnMsg("Done")
 
     # Save django settings
-    self.resources.save_django_settings(site_cfg['name'], settings_template)
+    self.resources.save_django_settings(site_cfg.get('name'), settings_template)
 
     # Save EzWeb config
     self.resources.printlnMsg()
@@ -213,7 +257,7 @@ class MainEzWebAdminTool:
       self.resources.printlnMsg("Done")
 
     self.resources.printlnMsg()
-    if site_cfg['server']['connection_type'] == 'fastcgi':
+    if site_cfg.get('server', 'connection_type') == 'fastcgi':
       os.system("invoke-rc.d ezweb-platform-fastcgi restart")
 
     server_command = self.resources.get_server_admin_command(server_type, "Apply")
@@ -221,41 +265,32 @@ class MainEzWebAdminTool:
 
   def update_settings_py(self, site_cfg):
     template = self.resources.get_settings_template()
-
-    # get schema options
-    if site_cfg.has_key('schema'):
-      schema = site_cfg['schema']
-    else:
-      schema = "default"
-
-    default_settings = self.get_default_settings()
-    if default_settings.has_key(schema):
-      schema = default_settings[schema]
-    else:
-      schema = {}
+    conf_name = site_cfg.get('name')
 
     # Fill the template
 
     # Instance name
-    template.replace("CONF_NAME", site_cfg['name'])
+    template.replace("CONF_NAME", conf_name)
 
 
     # Admin email
-    if site_cfg.has_key('admin_user_email') and site_cfg['admin_user_email']:
-      template.replace("SERVER_ADMIN_EMAIL", site_cfg['admin_user_email'])
+    admin_email = site_cfg.getDefault('', 'admin_user_email')
+    if admin_email != '':
+      template.replace("SERVER_ADMIN_EMAIL", admin_email)
     else:
       template.replace("SERVER_ADMIN_EMAIL", self.resources.get_default_admin_email(site_cfg))
 
 
     # Secret key
-    template.replace("SECRET_KEY", site_cfg['secret_key'])
+    template.replace("SECRET_KEY", site_cfg.get('secret_key'))
 
 
     # Log path
-    if site_cfg.has_key('log_path') and site_cfg['log_path'] != "":
-      log_path = site_cfg['log_path']
+    log_path = site_cfg.getDefault('', 'log_path')
+    if log_path != "":
+      log_path = log_path
     else:
-      log_path = self.resources.get_default_log_path(site_cfg['name'])
+      log_path = self.resources.get_default_log_path(conf_name)
 
     template.replace("LOG_PATH", log_path)
     self.resources.makedirs(log_path)
@@ -263,20 +298,11 @@ class MainEzWebAdminTool:
     os.chmod(log_path, 0775)
 
     # Theme
-    theme = 'default'
-    if site_cfg.has_key('theme'):
-      theme = site_cfg['theme']
-    elif schema.has_key('theme'):
-      theme = schema('theme')
-
+    theme = site_cfg.getDefault('default', 'theme')
     template.replace("THEME", theme)
 
     # Proxy
-    proxy_server = ""
-    if site_cfg.has_key("proxy"):
-      proxy_server = site_cfg['proxy']
-    elif schema.has_key("proxy"):
-      proxy_server = schema['proxy']
+    proxy_server = site_cfg.getDefault('', 'proxy')
 
     if proxy_server == "":
       template.replaceEnableOption("ENABLE_PROXY", False)
@@ -285,21 +311,11 @@ class MainEzWebAdminTool:
       template.replace("PROXY_SERVER", proxy_server)
 
     # Debug
-    if site_cfg.has_key("debug"):
-      debug = site_cfg.as_bool("debug")
-    elif schema.has_key("debug"):
-      debug = schema.as_bool("debug")
-    else:
-      debug = True
+    debug = site_cfg.getDefault(True, "debug")
     template.replaceEnableOption("ENABLE_DEBUG", debug)
 
     # Allow anonymous access
-    if site_cfg.has_key("allow_anonymous_access"):
-      allow_anonymous_access = site_cfg.as_bool("allow_anonymous_access")
-    elif schema.has_key("allow_anonymous_access"):
-      allow_anonymous_access = schema.as_bool("allow_anonymous_access")
-    else:
-      allow_anonymous_access = True
+    allow_anonymous_access = site_cfg.getDefault(True, "allow_anonymous_access")
 
     # Auth backends
     auth_backends = "\n"
@@ -312,12 +328,7 @@ class MainEzWebAdminTool:
     else:
       auth_middleware_classes += "    'django.contrib.auth.middleware.AuthenticationMiddleware',\n"
 
-    if site_cfg.has_key("auth_methods"):
-      auth_methods = site_cfg["auth_methods"]
-    elif site_cfg.has_key("auth_methods"):
-      auth_methods = schema["auth_methods"]
-    else:
-      auth_methods = []
+    auth_methods = site_cfg.getDefault([], "auth_methods")
 
     for auth_method in auth_methods:
       auth_method = self.resources.get_auth_method(auth_method)
@@ -373,15 +384,11 @@ class MainEzWebAdminTool:
       self.resources = resources
       self.admintool = admintool
 
-    def execute(self, parser, options, args):
+    def execute(self, parser, options, args, old_config = None):
       if len(args) < 1:
         return -1
 
       conf_name = args[0]
-      site_cfg = self.resources.get_site_config(conf_name)
-      reenable = False
-      changed = False # TODO not used yet
-      enabled = site_cfg.as_bool('enabled')
 
       self.resources.printlnMsg()
       self.resources.printlnMsg("Updating \"%s\" instance" % conf_name)
@@ -392,139 +399,106 @@ class MainEzWebAdminTool:
       self.resources.printlnMsg("Updating general config... ")
       self.resources.incPrintNestingLevel()
 
+      if old_config == None:
+        # make a copy of the config
+        config = self.resources.get_site_config(conf_name, False, False)
+        old_config = ConfigCopy(config)
+        # fill it
+        self.admintool.fillConfig(old_config)
+
+      enabled = old_config.getDefault(False, 'enabled')
+
+      # make a new copy of the config for tracking the changes
+      config = self.resources.get_site_config(conf_name)
+      new_config = ConfigCopy(config)
+
       # Server type
-      if site_cfg['server'].has_key("server_type"):
-        server_type = site_cfg['server']['server_type']
-      else:
-        server_type = None
-
-      if options.server_type != None and server_type != options.server_type:
-        changed = True
-        if enabled:
-          self.admintool.purgeserver(site_cfg, options)
-          reenable = True
-
+      if options.server_type != None:
         self.resources.printlnMsg("Assigning \"%s\" as server for this instance." % options.server_type)
-        site_cfg['server']['server_type'] = options.server_type
-        server_type = options.server_type
+        new_config.setAndUpdate(options.server_type, 'server', 'server_type')
 
       # Connection type
       if options.connection_type != None:
-        changed = True
         self.resources.printlnMsg("Using \"%s\" for connecting with the server." % options.connection_type)
-        site_cfg['server']['connection_type'] = options.connection_type
+        new_config.setAndUpdate(options.connection_type, 'server', 'connection_type')
 
       # Database engine
-      if site_cfg['database'].has_key("database_engine"):
-        database_engine = site_cfg['database']['database_engine']
-      else:
-        database_engine = None
-
-      if options.database_engine != None and database_engine != options.database_engine:
-        changed = True
-        if enabled:
-          self.admintool.purgedb(site_cfg, options)
-          reenable = True
-          options.force_syncdb = True
-
+      if options.database_engine != None:
         self.resources.printlnMsg("Assigning \"%s\" as dbms for this instance." % options.database_engine)
-        site_cfg['database']['database_engine'] = options.database_engine
-        database_engine = options.database_engine
+        new_config.setAndUpdate(options.database_engine, 'database', 'database_engine')
 
       # Auth methods
-      if site_cfg.has_key("auth_methods"):
-        auth_methods = site_cfg["auth_methods"]
-      else:
-        auth_methods = []
-
-      if options.auth_methods != None and auth_methods != options.auth_methods:
-        changed = True
+      if options.auth_methods != None:
         self.resources.printlnMsg("Using \"%s\" as auth methods for this instance." % options.auth_methods)
-        site_cfg['auth_methods'] = options.auth_methods
-        auth_methods = options.auth_methods
+        new_config.setAndUpdate(options.auth_methods, 'auth_methods')
 
       # Theme
       if options.theme != None:
-        changed = True
         self.resources.printlnMsg("Assigning \"%s\" as theme for this instance." % options.theme)
-        site_cfg['theme'] = options.theme
+        new_config.setAndUpdate(options.theme, 'theme')
 
       # Proxy
       if options.proxy != None:
         changed = True
         self.resources.printlnMsg("Assigning \"%s\" as Proxy for this instance." % options.proxy)
-        site_cfg['proxy'] = options.proxy
+        new_config.setAndUpdate(options.proxy, 'proxy')
 
       # Allow anonymous access
       if options.allow_anonymous_access != None:
-        changed = True
         a = options.allow_anonymous_access
         if a == "True" or a == "true" or a == "1":
           self.resources.printlnMsg("Enabling anonymous accesses to this instance.")
-          site_cfg['allow_anonymous_access'] = True
+          new_config.setAndUpdate(True, 'allow_anonymous_access')
         else:
           self.resources.printlnMsg("Disabling anonymous accesses to this instance.")
-          site_cfg['allow_anonymous_access'] = False
+          new_config.setAndUpdate(False, 'allow_anonymous_access')
 
       # Debug mode
       if options.debug != None:
-        changed = True
         a = options.debug
         if a == "True" or a == "true" or a == "1":
           self.resources.printlnMsg("Configuring this instance in debug mode.")
-          site_cfg['debug'] = True
+          new_config.setAndUpdate(True, 'debug')
         else:
           self.resources.printlnMsg("Configuring this instance in normal mode (debug=off).")
-          site_cfg['debug'] = False
+          new_config.setAndUpdate(False, 'debug')
 
       # general schema
       if options.schema != None:
-        if options.server_schema == "":
-          options.server_schema = "default"
-
-        if not site_cfg.has_key('schema') or options.schema != site_cfg['schema']:
-          changed = True
-          self.resources.printlnMsg("Using \"%s\" as schema for the general settings." % options.schema)
-          site_cfg['schema'] = options.schema
+        self.resources.printlnMsg("Using \"%s\" as schema for the general settings." % options.schema)
+        new_config.setAndUpdate(options.schema, 'schema')
 
       # server schema
       if options.server_schema != None:
-        if options.server_schema == "":
-          options.server_schema = "default"
-
-        if not site_cfg['server'].has_key('schema') or options.server_schema != site_cfg['server']['schema']:
-          changed = True
-          self.resources.printlnMsg("Using \"%s\" as schema for the server settings." % options.server_schema)
-          site_cfg['server']['schema'] = options.server_schema
+        self.resources.printlnMsg("Using \"%s\" as schema for the server settings." % options.server_schema)
+        new_config.setAndUpdate(options.server_schema, 'server', 'schema')
 
       # database schema
       if options.database_schema != None:
-        if options.database_schema == "":
-          options.database_schema = "default"
-
-        if not site_cfg['database'].has_key('schema') or options.server_schema != site_cfg['database']['schema']:
-          changed = True
-          self.resources.printlnMsg("Using \"%s\" as schema for the database settings." % options.database_schema)
-          site_cfg['database']['schema'] = options.database_schema
+        self.resources.printlnMsg("Using \"%s\" as schema for the database settings." % options.database_schema)
+        new_config.setAndUpdate(options.database_schema, 'database', 'schema')
 
       self.resources.decPrintNestingLevel()
       self.resources.printlnMsg("Done")
       self.resources.printlnMsg()
 
+
       # Specific server & datatabase option updating
-      update_server = server_type != None and server_type != ""
-      update_database = database_engine != None and database_engine != ""
+      self.admintool.fillConfig(new_config)
+      server_type = new_config.getDefault('', 'server_type')
+      database_engine = new_config.getDefault('', 'database_engine')
+      auth_methods = new_config.getDefault([], 'auth_methods')
 
       if len(auth_methods) > 0:
         for auth_method in auth_methods:
           auth_command = self.resources.get_auth_admin_command(auth_method, "Update")
           parser.add_options(auth_command.option_list)
 
-      if update_server:
+      if server_type != '':
         server_command = self.resources.get_server_admin_command(server_type, "Update")
         parser.add_options(server_command.option_list)
 
-      if update_database:
+      if database_engine != '':
         dbms_command = self.resources.get_dbms_admin_command(database_engine, "Update")
         parser.add_options(dbms_command.option_list)
 
@@ -535,32 +509,58 @@ class MainEzWebAdminTool:
         for auth_method in auth_methods:
           self.resources.printMsg("Updating auth backend config (%s)... " % auth_method)
           auth_command = self.resources.get_auth_admin_command(auth_method, "Update")
-          auth_command.execute(site_cfg, parser.get_current_options())
+          auth_command.execute(new_config, parser.get_current_options())
           self.resources.printlnMsgNP("Done")
 
-      if update_server:
+      if server_type != '':
         self.resources.printMsg("Updating server config (%s)... " % server_type)
-        server_command.execute(site_cfg, parser.get_current_options())
+        server_command.execute(new_config, parser.get_current_options())
         self.resources.printlnMsgNP("Done")
 
-      if update_database:
+      if database_engine != '':
         self.resources.printMsg("Updating database config (%s)... " % database_engine)
-        dbms_command.execute(site_cfg, parser.get_current_options())
+        dbms_command.execute(new_config, parser.get_current_options())
         self.resources.printlnMsgNP("Done")
 
-      if reenable:
-        self.admintool.enable(site_cfg, options)
-      elif enabled:
-        self.admintool.process_cfg(site_cfg, options)
-      elif site_cfg.has_key("schedule_enable") and site_cfg.as_bool("schedule_enable") and self.admintool.isEnableable(site_cfg):
-        del site_cfg["schedule_enable"]
-        self.admintool.enable(site_cfg, options)
-      else:
-        # EzWeb config is saved only if enable or process_cfg is called
-        self.resources.save_site_config(site_cfg, options.backup)
+      # Check for server/connection type and database engine changes
+      reenable = False
+      old_server_type = old_config.getDefault('', 'server', 'server_type')
+      new_server_type = new_config.getDefault('', 'server', 'server_type')
+      if old_server_type != new_server_type:
+        reenable = enabled
+        if old_server_type != '':
+          self.resources.printMsg("Purging previous server (%s) configuration... " % old_server_type)
+          self.admintool.purgeserver(old_config, options)
+          self.resources.printlnMsgNP("Done")
+
+      if old_config.getDefault('', 'server', 'connection_type') != new_config.getDefault('', 'server', 'connection_type'):
+        reenable = True
+
+      old_database = old_config.getDefault('', 'database', 'database_engine')
+      new_database = new_config.getDefault('', 'database', 'database_engine')
+      if old_database != new_database:
+        reenable = True
+        if old_database != '':
+          self.resources.printMsg("Purging previous database (%s) configuration... " % old_server_type)
+          self.admintool.purgedb(old_config, options)
+          self.resources.printlnMsgNP("Done")
+
+
+      if new_config.changed:
+        if reenable:
+          self.admintool.enable(new_config, options)
+        elif enabled:
+          self.admintool.process_cfg(new_config, options)
+        elif site_cfg.getDefault(False, "schedule_enable") and self.admintool.isEnableable(site_cfg):
+          site_cfg.remove("schedule_enable")
+          self.admintool.enable(new_config, options)
+        else:
+          # EzWeb config is saved only if enable or process_cfg is called
+          self.resources.save_site_config(new_config, options.backup)
+
+        self.resources.printlnMsg()
 
       self.resources.decPrintNestingLevel()
-      self.resources.printlnMsg()
       self.resources.printlnMsg("EzWeb instance updated sucessfully.")
 
 
@@ -581,7 +581,8 @@ class MainEzWebAdminTool:
         return -1
 
       conf_name = args[0]
-      site_cfg = self.resources.get_site_config(conf_name)
+      site_cfg = ConfigCopy(self.resources.get_site_config(conf_name))
+      self.admintool.fillConfig(site_cfg)
 
       enableable = self.admintool.isEnableable(site_cfg)
 
@@ -601,7 +602,7 @@ class MainEzWebAdminTool:
         sys.exit(-1)
 
       self.resources.printlnMsg()
-      if not site_cfg.as_bool("enabled") or options.force:
+      if not site_cfg.getDefault(False, "enabled") or options.force:
         self.resources.printlnMsg("Enabling \"%s\" EzWeb instance..." % site_cfg['name'])
         self.resources.incPrintNestingLevel()
 
@@ -627,10 +628,11 @@ class MainEzWebAdminTool:
         return -1
 
       conf_name = args[0]
-      site_cfg = self.resources.get_site_config(conf_name)
+      site_cfg = ConfigCopy(self.resources.get_site_config(conf_name))
+      self.admintool.fillConfig(site_cfg)
 
       self.resources.printlnMsg()
-      if site_cfg.as_bool("enabled"):
+      if site_cfg.getDefault(False, "enabled"):
         self.resources.printlnMsg("Disabling \"%s\" EzWeb instance..." % site_cfg['name'])
         self.resources.incPrintNestingLevel()
 
@@ -684,7 +686,8 @@ class MainEzWebAdminTool:
       self.resources.printlnMsg()
       self.resources.incPrintNestingLevel()
 
-      site_cfg = self.resources.get_site_config(conf_name)
+      site_cfg = ConfigCopy(self.resources.get_site_config(conf_name))
+      self.admintool.fillConfig(site_cfg)
 
       if site_cfg['server'].has_key("server_type"):
         server_type = site_cfg['server']['server_type']
@@ -715,7 +718,7 @@ class MainEzWebAdminTool:
         self.resources.decPrintNestingLevel()
         self.resources.printlnMsg("Done")
 
-      if site_cfg.as_bool('enabled'):
+      if site_cfg.getDefault(False, 'enabled'):
         options.force_syncdb = True
         self.admintool.process_cfg(site_cfg, options)
 
@@ -738,7 +741,8 @@ class MainEzWebAdminTool:
         return -1
 
       conf_name = args[0]
-      site_cfg = self.resources.get_site_config(conf_name)
+      site_cfg = ConfigCopy(self.resources.get_site_config(conf_name))
+      self.admintool.fillConfig(site_cfg)
 
       self.resources.printlnMsg()
       self.resources.printlnMsg("Purging \"%s\" EzWeb instance..." % site_cfg['name'])
@@ -948,7 +952,13 @@ class MainEzWebAdminTool:
           print auth_method
 
   class SetDefaultsCommand(Command):
-    option_list = [make_option("--theme", action="store",
+    option_list = [make_option("--database-engine", action="store",
+                               dest="database_engine", help=_("default database engine to use")),
+                   make_option("--server-type", action="store",
+                               dest="server_type", help=_("default server to use")),
+                   make_option("--connection-type", action="store",
+                               dest="connection_type", help=_("default connection type to use")),
+                   make_option("--theme", action="store",
                                dest="theme", help=_("default theme to use")),
                    make_option("--proxy", action="store",
                                dest="proxy", help=_("default proxy to use")),
@@ -980,6 +990,18 @@ class MainEzWebAdminTool:
       else:
         schema_settings[schema_name] = {}
         cfg = schema_settings[schema_name]
+
+      # Database engine
+      if options.database_engine != None:
+        cfg["database_engine"] = options.database_engine
+
+      # Server type
+      if options.server_type != None:
+        cfg["server_type"] = options.server_type
+
+      # Connection type
+      if options.connection_type != None:
+        cfg["connection_type"] = options.connection_type
 
       # Theme
       if options.theme != None:
@@ -1024,6 +1046,24 @@ class MainEzWebAdminTool:
         cfg = schema_settings[schema_name]
       else:
         cfg = {}
+
+      # Database engine
+      if cfg.has_key("database_engine"):
+        print "DATABASE_ENGINE=" + cfg["database_engine"]
+      else:
+        print "DATABASE_ENGINE="
+
+      # Server type
+      if cfg.has_key("server_type"):
+        print "SERVER_TYPE=" + cfg["server_type"]
+      else:
+        print "SERVER_TYPE="
+
+      # Connection type
+      if cfg.has_key("connection_type"):
+        print "CONNECTION_TYPE=" + cfg["connection_type"]
+      else:
+        print "CONNECTION_TYPE="
 
       # Theme
       if cfg.has_key("theme"):
@@ -1221,6 +1261,7 @@ class MainEzWebAdminTool:
       conf_name = args[0]
       try:
         newconfig = self.resources.get_site_config(conf_name, True)
+        newconfig = ConfigCopy(newconfig)
       except Exception, e:
         self.resources.printlnMsg(unicode(e))
         return -2

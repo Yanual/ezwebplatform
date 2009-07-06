@@ -2,35 +2,43 @@
 
 set -e
 
+# ignore triggers
+if [ "$1" = "configure" -a "$2" = "update-ezweb-platform" ]; then
+
+  #DEBHELPER#
+  exit 0
+
+fi
+
 ###
 # Include debconf module
 #
 . /usr/share/debconf/confmodule
 
 if [ "$1" = "configure" -a -n "$2" ]; then
-  # FIXME  this is needed to act only the first time we are called
-  db_get ezweb-platform-common/configured
+  # this is needed only the first time when we are upgrading
+  db_get shared/ezweb-platform-common/configured
 
   if [ "$RET" != "true" ]; then
-
-    db_set ezweb-platform-common/configured true
+    db_set shared/ezweb-platform-common/configured true
 
     newversion=`echo $2 | cut -f1 -d"-"`
 
     if `dpkg --compare-versions "$newversion" ne "CURRENTVERSION"`; then
-      db_set ezweb-platform-common/abortupgrade true
-      db_fset ezweb-platform-common/abortupgrade seen false
+      db_set shared/ezweb-platform-common/abortupgrade true
+      db_fset shared/ezweb-platform-common/abortupgrade seen false
 
-      db_input high ezweb-platform-common/abortupgrade || true
+      db_input high shared/ezweb-platform-common/abortupgrade || true
       db_go || true
     else
-      db_set ezweb-platform-common/abortupgrade false
-      db_fset ezweb-platform-common/abortupgrade seen true
+      db_set shared/ezweb-platform-common/abortupgrade false
+      db_fset shared/ezweb-platform-common/abortupgrade seen true
     fi
   fi
 
-  db_get  ezweb-platform-common/abortupgrade
+  db_get shared/ezweb-platform-common/abortupgrade
   if [ "$RET" = true ]; then
+    # EzWeb installation will be aborted on the prerm script
     exit 0
   fi
 fi

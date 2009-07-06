@@ -1,10 +1,21 @@
+ezweb-platform (0.4~svn2321-5) unstable; urgency=low
+
+  * New upstream snapshot:
+    - New look & feel.
+    - Better theme support.
+    - Now channels can be connected to other channels.
+    - Web browser and feed reader gadget generator.
+    - Many bug fixes.
+
+ -- Álvaro Arranz García <aarranz@pegaso.ls.fi.upm.es>  Fri, 05 Jun 2009 16:40:48 +0200
+
 ezweb-platform (0.4~svn1833-1) unstable; urgency=low
 
   * New upstream snapshot:
      - Initial support for themes.
      - Many bug fixes.
 
- -- Alvaro Arranz <aarranz@pegaso.ls.fi.upm.es>  Wed, 18 Mar 2009 10:02:41 +0100
+ -- Álvaro Arranz García <aarranz@pegaso.ls.fi.upm.es>  Wed, 18 Mar 2009 10:02:41 +0100
 
 ezweb-platform (0.4~svn1655-1) unstable; urgency=low
 
@@ -13,7 +24,7 @@ ezweb-platform (0.4~svn1655-1) unstable; urgency=low
     apache2/lighttpd. And is recommended to use "/resources/gadgets" for
     gadget codes.
 
- -- Alvaro Arranz <aarranz@pegaso.ls.fi.upm.es>  Tue, 24 Feb 2009 10:41:34 +0100
+ -- Álvaro Arranz García <aarranz@pegaso.ls.fi.upm.es>  Tue, 24 Feb 2009 10:41:34 +0100
 
 ezweb-platform (0.4~svn1604-1) unstable; urgency=low
 

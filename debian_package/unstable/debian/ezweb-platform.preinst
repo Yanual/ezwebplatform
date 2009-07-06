@@ -11,11 +11,11 @@ set -e
 # Needed as the old package don't handles this case correctly in prerm
 #
 if [ "$1" = "upgrade" ]; then
-  db_get ezweb-platform-common/abortupgrade
+  db_get shared/ezweb-platform-common/abortupgrade
   ABORT="$RET"
 
   if [ "$ABORT" == "true" ]; then
-    db_set ezweb-platform-common/configured false
+    db_set shared/ezweb-platform-common/configured false
     echo "Aborting EzWeb upgrade by user request"
     exit -1;
   fi

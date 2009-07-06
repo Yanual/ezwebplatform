@@ -20,7 +20,7 @@ añade distintos comentarios en el fichero changelog si el que crea el paquete e
 un "maintainer" o "uploader" que si no es uno de estos [mirar el fichero
 debian/control para más información]).
 
-Los parametros más importante se configuran mediante las variables de entorno
+Los parámetros más importante se configuran mediante las variables de entorno
 DEBFULLNAME y DEBEMAIL (en caso de no establecerse estas variables de entorno,
 dch intenta usar las variables de entono NAME y EMAIL respectivamente, aunque
 estas últimas son más genéricas y no son usadas solamente por dch).
@@ -65,6 +65,36 @@ como añadir/borrar paquetes, etc:
 ==========
 
 Lintian es un programa que permite comprobar que los paquetes debian están
-construidos de forma correcta, además de que alerta de posibles fallos mediate
+construidos de forma correcta, además de que alerta de posibles fallos mediante
 "warnings". Además muestra información sobre los errores y los warnings así
 como consejos de como solucionarlos.
+
+
+
+
+
+
+
+ Recursos disponibles en este directorio
+==========================================
+
+ * repos: init script para lanzar los demonios necesarios para que cuando se
+   realice una subida a la cola de paquetes se ejecuten los comandos necesarios
+   para que se añadan los paquetes al repositorio.
+
+
+ * create-debs.sh: facilita la creación de los paquetes debian. Flags
+   soportados:
+     -n: Busca cambios en el repositorio svn de EzWeb, y dependiendo de si los
+        encuentra o no, crea una nueva revisión o una nueva versión de los
+        paquetes debian. El script se encarga de descargar la nueva versión de
+        EzWeb de los repositorios svn y abre un editor para modificar el
+        fichero changelog.
+
+     -b: Indica que lo que se quiere es crear los paquetes debian.
+     -i: Indica que lo que se quiere hacer es instalar los paquetes debian en
+        los repositorios.
+
+   En caso de no indicar ninguno de los flags -b o -i. Se asume que se ha
+   utilizado el flag -b.
+

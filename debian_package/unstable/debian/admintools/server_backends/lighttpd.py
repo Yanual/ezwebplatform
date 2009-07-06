@@ -113,12 +113,14 @@ class LighttpdResources:
     self.resources.printlnMsg("Done")
 
   def update_vhost(self, cfg, backup):
-    templatepath = self.get_vhost_template(cfg['server']['connection_type'])
+    conf_name = cfg.get('name')
+    connection_type = cfg.get('server', 'connection_type')
+    templatepath = self.get_vhost_template(connection_type)
     try:
       templatefile = open(templatepath, "r")
     except IOError, e:
       if e.errno == 2:
-        self.resources.printlnMsg("Unknow connection method \"" + cfg['server']['connection_type'] + "\". May be you need to install support for it.")
+        self.resources.printlnMsg("Unknow connection method \"%s\". May be you need to install support for it." % connection_type)
         sys.exit(1)
       else:
         raise e
@@ -127,52 +129,62 @@ class LighttpdResources:
     templatefile.close()
     template = Template(template)
 
-    lighttpd_settings = self.get_lighttpd_settings()
-    schema_cfg = lighttpd_settings['default']
-    server_cfg = cfg['server']
-
     # Fill the template
 
-    # servername
-    template.replace("CONF_NAME", cfg['name'])
-    template.replace("DOCUMENT_ROOT", server_cfg['document_root'])
+    template.replace("CONF_NAME", conf_name)
+    template.replace("DOCUMENT_ROOT", cfg.get('server', 'document_root'))
+    template.replace("SERVER_NAME", cfg.get('server', 'name'))
+    template.replace("PORT", ":" + cfg.get('server', 'port')) # TODO read config to know whether to use ports
+    template.replace("SERVER_ADMIN_EMAIL", cfg.get('server', 'admin_user_email'))
+    template.replace("LOG_BASE_PATH", self.get_log_path(conf_name))
 
-    if server_cfg.has_key('name') and server_cfg['name'] != "":
-      servername = server_cfg['name']
-    elif schema_cfg.has_key('server_name') and schema_cfg['server_name'] != "":
-      servername = schema_cfg['server_name']
-    else:
-      servername = "localhost"
-
-    template.replace("SERVER_NAME", servername)
-
-    # port
-    if server_cfg.has_key('port') and server_cfg['port'] != "":
-      port = server_cfg['port']
-    elif schema_cfg.has_key('server_port') and schema_cfg['server_port'] != "":
-      port = schema_cfg['server_port']
-    else:
-      port = "8001"
-
-    template.replace("PORT", ":" + port) # TODO read config to know whether to use ports
-
-    # admin user email
-    if server_cfg.has_key('admin_user_email') and server_cfg['admin_user_email']:
-      template.replace("SERVER_ADMIN_EMAIL", server_cfg['admin_user_email'])
-    else:
-      template.replace("SERVER_ADMIN_EMAIL", self.get_default_admin_email(cfg))
-
-    template.replace("LOG_BASE_PATH", self.get_log_path(cfg['name']))
-
-    filepath = self.get_vhost_path(cfg['name'])
+    filepath = self.get_vhost_path(conf_name)
     if backup and os.path.exists(filepath):
       self.resources.printMsg("Backing up \"%s\"... " % filepath)
       shutil.copyfile(filepath, filepath + "~")
       self.resources.printlnMsgNP("Done")
 
-    self.resources.printMsg("Updating lighttpd vhost (" + filepath + ")... ")
+    self.resources.printMsg("Updating lighttpd vhost (%s)... " % filepath)
     template.save(filepath)
     self.resources.printlnMsg("Done")
+
+class FillConfigCommand(Command):
+  option_list = []
+
+  def __init__(self, resources):
+    self.lighttpdResources = LighttpdResources(resources)
+    self.resources = resources
+
+  def execute(self, site_cfg):
+    schema = site_cfg.getDefault('', 'server', 'schema')
+    if schema == '':
+      site_cfg.set("default", 'server', 'schema')
+      schema = "default"
+
+    lighttpd_settings = self.lighttpdResources.get_lighttpd_settings()
+
+    if lighttpd_settings.has_key(schema):
+      schema = lighttpd_settings[schema]
+    else:
+      schema = {}
+
+    # Server name
+    if site_cfg.getDefault('', 'server', 'name') == "":
+      if schema.has_key('server_name') and schema['server_name'] != "":
+        site_cfg.set(schema['server_name'], 'server', 'name')
+      else:
+        site_cfg.set("localhost", 'server', 'name')
+
+    # Server port
+    if site_cfg.getDefault('', 'server', 'port') == "":
+      if schema.has_key('server_port') and schema['server_port'] != "":
+        site_cfg.set(schema['server_port'], 'server', 'port')
+      else:
+        site_cfg.set("8000", 'server', 'port')
+
+    # Admin user email
+    if site_cfg.getDefault('', 'server', 'admin_user_email') == "":
+      site_cfg.set(self.resources.get_default_admin_email(site_cfg), 'server', 'admin_user_email')
 
 class UpdateCommand(Command):
 
@@ -189,16 +201,15 @@ class UpdateCommand(Command):
     self.resources = resources
 
   def execute(self, site_cfg, options):
-    server_cfg = site_cfg['server']
 
     if options.document_root != None:
-      server_cfg["document_root"] = options.document_root
+      site_cfg.setAndUpdate(options.document_root, 'server', 'document_root')
 
     if options.server_name != None:
-      server_cfg["name"] = options.server_name
+      site_cfg.setAndUpdate(options.server_name, 'server', 'name')
 
     if options.server_port != None:
-      server_cfg["port"] = options.server_port
+      site_cfg.setAndUpdate(options.server_port, 'server', 'port')
 
 class ApplyCommand(Command):
   option_list = []
@@ -223,13 +234,15 @@ class ProcessCommand(Command):
     self.resources = resources
 
   def execute(self, options, site_cfg, settings_template):
+    conf_name = site_cfg.get('name')
+
     self.lighttpdResources.update_vhost(site_cfg, options.backup)
 
     # Creating document root
-    self.resources.makedirs(site_cfg['server']['document_root'])
+    self.resources.makedirs(site_cfg.get('server', 'document_root'))
 
     # Creating log path and files
-    log_path = self.lighttpdResources.get_log_path(site_cfg['name'])
+    log_path = self.lighttpdResources.get_log_path(conf_name)
     self.resources.makedirs(log_path)
 
     www_group = grp.getgrnam("www-data").gr_gid
@@ -244,8 +257,6 @@ class ProcessCommand(Command):
     file.close()
     os.chown(filepath, -1, www_group)
     os.chmod(filepath, 0660)
-
-    conf_name = site_cfg['name']
 
     # vhost links
     self.resources.link(self.lighttpdResources.get_vhost_path(conf_name),

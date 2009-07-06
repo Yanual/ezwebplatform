@@ -51,17 +51,17 @@ class MySQLResources:
     self.resources = resources
 
   def get_ezweb_connection(self, cfg):
-    conn = MySQLdb.connect (host   = cfg['host'],
-                            user   = cfg['admin_user'],
-                            passwd = cfg['admin_pass'],
+    conn = MySQLdb.connect (host   = cfg.get('database', 'host'),
+                            user   = cfg.get('database', 'admin_user'),
+                            passwd = cfg.get('database', 'admin_pass'),
                             db     = 'mysql')
     return conn
 
   def connect(self, cfg):
-    conn = MySQLdb.connect (host   = cfg['host'],
-                            user   = cfg['user'],
-                            passwd = cfg['pass'],
-                            db     = cfg['name'])
+    conn = MySQLdb.connect (host   = cfg.get('database', 'host'),
+                            user   = cfg.get('database', 'user'),
+                            passwd = cfg.get('database', 'pass'),
+                            db     = cfg.get('database', 'name'))
     return conn
 
   def get_mysql_settings_path(self):
@@ -98,9 +98,39 @@ class MySQLResources:
     os.chmod(cfg.filename, 0600)
     self.resources.printlnMsgNP("Done")
 
+  def update_settings_py(self, template, site_cfg):
 
-  def fill_settings(self, site_cfg):
-    site_cfg = ConfigCopy(site_cfg)
+    # Fill the template
+    template.replace("DATABASE_ENGINE", "mysql")
+    template.replace("DATABASE_USER", site_cfg['database']['user'])
+    if site_cfg['database'].has_key('pass'):
+      template.replace("DATABASE_PASS", site_cfg['database']['pass'])
+    else:
+      template.replace("DATABASE_PASS", "")
+
+    template.replace("DATABASE_NAME", site_cfg['database']['name'])
+    template.replace("DATABASE_OPTIONS", "'init_command': 'SET storage_engine=InnoDB'")
+
+    if site_cfg['database'].has_key('host'):
+      template.replace("DATABASE_HOST", site_cfg['database']['host'])
+    else:
+      template.replace("DATABASE_HOST", "")
+
+    if site_cfg['database'].has_key('port'):
+      template.replace("DATABASE_PORT", site_cfg['database']['port'])
+    else:
+      template.replace("DATABASE_PORT", "")
+
+
+class FillConfigCommand(Command):
+  option_list = []
+
+  def __init__(self, resources):
+    self.mysqlResources = MySQLResources(resources)
+    self.resources = resources
+
+  def execute(self, site_cfg):
+
     conf_name = site_cfg["name"]
 
     schema = site_cfg.getDefault('', 'database', 'schema')
@@ -108,7 +138,7 @@ class MySQLResources:
       site_cfg.set("default", 'database', 'schema')
       schema = "default"
 
-    mysql_settings = self.get_mysql_settings()
+    mysql_settings = self.mysqlResources.get_mysql_settings()
     if mysql_settings.has_key(schema):
       schema = mysql_settings[schema]
     else:
@@ -143,32 +173,6 @@ class MySQLResources:
     if not site_cfg['database'].has_key("pass"):
       site_cfg.setAndUpdate(''.join(Random().sample(string.letters+string.digits, 12)), 'database', 'pass')
 
-    return site_cfg
-
-  def update_settings_py(self, template, site_cfg):
-
-    # Fill the template
-    template.replace("DATABASE_ENGINE", "mysql")
-    template.replace("DATABASE_USER", site_cfg['database']['user'])
-    if site_cfg['database'].has_key('pass'):
-      template.replace("DATABASE_PASS", site_cfg['database']['pass'])
-    else:
-      template.replace("DATABASE_PASS", "")
-
-    template.replace("DATABASE_NAME", site_cfg['database']['name'])
-    template.replace("DATABASE_OPTIONS", "'init_command': 'SET storage_engine=InnoDB'")
-
-    if site_cfg['database'].has_key('host'):
-      template.replace("DATABASE_HOST", site_cfg['database']['host'])
-    else:
-      template.replace("DATABASE_HOST", "")
-
-    if site_cfg['database'].has_key('port'):
-      template.replace("DATABASE_PORT", site_cfg['database']['port'])
-    else:
-      template.replace("DATABASE_PORT", "")
-
-
 
 class UpdateCommand(Command):
   option_list = [make_option("--database-user", action="store",
@@ -187,18 +191,17 @@ class UpdateCommand(Command):
 
   def execute(self, site_cfg, options):
 
-    database_cfg = site_cfg['database']
     if options.database_host != None:
-      database_cfg['host'] = options.database_host
+      site_cfg.setAndUpdate(options.database_host, 'database', 'host')
 
     if options.database_name != None:
-      database_cfg['name'] = options.database_name
+      site_cfg.setAndUpdate(options.database_name, 'database', 'name')
 
     if options.database_user != None:
-      database_cfg['user'] = options.database_user
+      site_cfg.setAndUpdate(options.database_user, 'database', 'user')
 
     if options.database_pass != None:
-      database_cfg['pass'] = options.database_pass
+      site_cfg.setAndUpdate(options.database_pass, 'database', 'pass')
 
 
 
@@ -210,25 +213,22 @@ class ProcessCommand(Command):
 
   def execute(self, options, site_cfg, settings_template):
 
-    site_cfg = self.mysqlResources.fill_settings(site_cfg)
-    cfg = site_cfg['database']
-
     self.mysqlResources.update_settings_py(settings_template, site_cfg)
 
-    conn = self.mysqlResources.get_ezweb_connection(cfg)
+    conn = self.mysqlResources.get_ezweb_connection(site_cfg)
     cursor = conn.cursor()
 
-    cursor.execute("SELECT 1 FROM `user` where `user` = '" + cfg['user'] + "';")
+    cursor.execute("SELECT 1 FROM `user` where `user` = '" + site_cfg.get('database', 'user') + "';")
     if cursor.rowcount == 0:
-      self.resources.printMsg("User %s doesn't exists ... " % cfg['user'])
-      cursor.execute("CREATE USER '%s'@'%s' IDENTIFIED BY '%s';" % (cfg['user'], "localhost", cfg['pass']))
+      self.resources.printMsg("User %s doesn't exists ... " % site_cfg.get('database', 'user'))
+      cursor.execute("CREATE USER '%s'@'%s' IDENTIFIED BY '%s';" % (site_cfg.get('database', 'user'), "localhost", site_cfg.get('database', 'pass')))
       self.resources.printlnMsgNP("created.")
 
     warnings.filterwarnings("ignore", "Can't create database .* database exists")
-    self.resources.printlnMsg("Ensuring database existence (%s)..." % cfg['name'])
-    cursor.execute("CREATE DATABASE IF NOT EXISTS `%s`;" % cfg['name'])
-    self.resources.printlnMsg("Ensuring enough privileges to the user \"%s\"." % cfg['user'])
-    cursor.execute("GRANT ALL PRIVILEGES ON `%s`.* TO '%s'@'localhost' IDENTIFIED BY '%s';" % (cfg['name'], cfg['user'], cfg['pass']))
+    self.resources.printlnMsg("Ensuring database existence (%s)..." % site_cfg.get('database', 'name'))
+    cursor.execute("CREATE DATABASE IF NOT EXISTS `%s`;" % site_cfg.get('database', 'name'))
+    self.resources.printlnMsg("Ensuring enough privileges to the user \"%s\"." % site_cfg.get('database', 'user'))
+    cursor.execute("GRANT ALL PRIVILEGES ON `%s`.* TO '%s'@'localhost' IDENTIFIED BY '%s';" % (site_cfg.get('database', 'name'), site_cfg.get('database', 'user'), site_cfg.get('database', 'pass')))
 
 
 class GetDefaultsCommand(Command):
@@ -304,20 +304,18 @@ class PurgeCommand(Command):
     self.mysqlResources = MySQLResources(resources)
 
   def execute(self, site_cfg, options):
-    site_cfg = self.mysqlResources.fill_settings(site_cfg)
-    cfg = site_cfg['database']
-    conn = self.mysqlResources.get_ezweb_connection(cfg)
+    conn = self.mysqlResources.get_ezweb_connection(site_cfg)
 
     cursor = conn.cursor()
     warnings.filterwarnings("ignore", "Can't drop database .* database doesn't exist")
-    self.resources.printMsg("Droping database \"" + cfg['name'] + "\"... ")
-    cursor.execute("DROP DATABASE IF EXISTS `" + cfg['name'] + "`;")
+    self.resources.printMsg("Droping database \"" + site_cfg.get('database', 'name') + "\"... ")
+    cursor.execute("DROP DATABASE IF EXISTS `" + site_cfg.get('database', 'name') + "`;")
     self.resources.printlnMsgNP("Done")
 
-    cursor.execute("SELECT 1 FROM `user` where `User` = '%s' AND `Host` = '%s';" % (cfg['user'], "localhost"))
+    cursor.execute("SELECT 1 FROM `user` where `User` = '%s' AND `Host` = '%s';" % (site_cfg.get('database', 'user'), "localhost"))
     if cursor.rowcount == 1:
-      self.resources.printMsg("Droping user \"" + cfg['user'] + "\"... ")
-      cursor.execute("DROP USER '%s'@'%s';" % (cfg['user'], "localhost"))
+      self.resources.printMsg("Droping user \"" + site_cfg.get('database', 'user') + "\"... ")
+      cursor.execute("DROP USER '%s'@'%s';" % (site_cfg.get('database', 'user'), "localhost"))
       self.resources.printlnMsgNP("Done")
 
 class CleanCommand(Command):
@@ -328,11 +326,9 @@ class CleanCommand(Command):
     self.mysqlResources = MySQLResources(resources)
 
   def execute(self, site_cfg, options):
-    cfg = self.mysqlResources.fill_settings(site_cfg)
-    cfg = cfg['database']
-    conn = self.mysqlResources.get_ezweb_connection(cfg)
+    conn = self.mysqlResources.get_ezweb_connection(site_cfg)
     cursor = conn.cursor()
     warnings.filterwarnings("ignore", "Can't drop database .* database doesn't exist")
-    cursor.execute("DROP DATABASE IF EXISTS `" + cfg['name'] + "`;")
-    cursor.execute("CREATE DATABASE `" + cfg['name'] + "`;")
+    cursor.execute("DROP DATABASE IF EXISTS `" + site_cfg.get('database', 'name') + "`;")
+    cursor.execute("CREATE DATABASE `" + site_cfg.get('database', 'name') + "`;")
 

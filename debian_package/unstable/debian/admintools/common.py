@@ -77,8 +77,8 @@ class EzWebAdminToolResources:
   def get_config_file(self, conf_name):
     return self.SITE_CONFIG_BASE_PATH + conf_name + "/config"
 
-  def get_site_config(self, conf_name, create = False):
-    if self.site_cfgs.has_key(conf_name):
+  def get_site_config(self, conf_name, create = False, use_cache = True):
+    if use_cache and self.site_cfgs.has_key(conf_name):
       return self.site_cfgs[conf_name]
 
     filename = self.get_config_file(conf_name)
@@ -111,7 +111,9 @@ class EzWebAdminToolResources:
     if not isinstance(cfg['database'], dict):
       raise Exception() # TODO
 
-    self.site_cfgs[conf_name] = cfg
+    if use_cache:
+      self.site_cfgs[conf_name] = cfg
+
     return cfg
 
   def get_settings_template(self):
@@ -220,7 +222,12 @@ class EzWebAdminToolResources:
 
     return getattr(mod, command_name + "Command")(self)
 
-  def save_site_config(self, cfg, backup = False):
+  def save_site_config(self, config, backup = False):
+    if not config.changed:
+      return
+
+    cfg = config.refConfig
+
     if backup and os.path.exists(cfg.filename):
       self.printMsg("Backing up \"" + cfg.filename + "\"... ")
       shutil.copyfile(cfg.filename, cfg.filename + "~")
@@ -246,13 +253,11 @@ class EzWebAdminToolResources:
   def unlink(self, target, linkpath):
     if os.path.lexists(linkpath):
       if not os.path.islink(linkpath):
-        self.resources.printlnMsg()
-        self.resources.println("Warning: " + linkpath + " exists, but was not created by the EzWeb admin scripts.")
+        self.printlnMsg("Warning: " + linkpath + " exists, but was not created by the EzWeb admin scripts.")
 
       linkedFile = os.readlink(linkpath)
       if linkedFile != target:
-        self.resources.printlnMsg()
-        self.resources.println("Warning: " + linkpath + " exists, but was not created by the EzWeb admin scripts.")
+        self.printlnMsg("Warning: " + linkpath + " exists, but was not created by the EzWeb admin scripts.")
 
       os.unlink(linkpath)
     else:
@@ -261,13 +266,11 @@ class EzWebAdminToolResources:
   def link(self, target, linkpath):
     if os.path.lexists(linkpath):
       if not os.path.islink(linkpath):
-        self.resources.printlnMsg()
-        self.resources.println("Warning: " + linkpath + " exists, but was not created by the EzWeb admin scripts.")
+        self.printlnMsg("Warning: " + linkpath + " exists, but was not created by the EzWeb admin scripts.")
 
       linkedFile = os.readlink(linkpath)
       if linkedFile != target:
-        self.resources.printlnMsg()
-        self.resources.println("Warning: " + linkpath + " exists, but was not created by the EzWeb admin scripts.")
+        self.printlnMsg("Warning: " + linkpath + " exists, but was not created by the EzWeb admin scripts.")
 
     else:
       os.symlink(target, linkpath)
@@ -542,6 +545,7 @@ class ConfigCopy:
   def __init__(self, config):
     self.refConfig = config
     self.copyConfig = config.dict()
+    self.changed = False
 
   def setAndUpdate(self, value, root, *entries):
     tmp = self.copyConfig
@@ -555,10 +559,15 @@ class ConfigCopy:
         tmp = tmp[argument]
         tmp2 = tmp2[argument]
 
-      tmp[entries[length - 1]] = value
-      tmp2[entries[length - 1]] = value
+      lastEntry = entries[length - 1]
+      tmp[lastEntry] = value
+      if not tmp2.has_key(lastEntry) or tmp2[lastEntry] != value:
+        self.changed = True
+      tmp2[lastEntry] = value
     else:
       tmp[root] = value
+      if not tmp2.has_key(root) or tmp2[root] != value:
+        self.changed = True
       tmp2[root] = value
 
   def set(self, value, root, *entries):
@@ -573,6 +582,30 @@ class ConfigCopy:
       tmp[entries[length - 1]] = value
     else:
       tmp[root] = value
+
+  def remove(self, root, *entries):
+    tmp = self.copyConfig
+    tmp2 = self.refConfig
+
+    length = len(entries)
+    if length > 0:
+      tmp = tmp[root]
+      tmp2 = tmp2[root]
+      for argument in entries[:-1]:
+        tmp = tmp[argument]
+        tmp2 = tmp2[argument]
+
+      lastEntry = entries[length - 1]
+      del tmp[lastEntry]
+      if tmp2.has_key(lastEntry):
+        del tmp2[lastEntry]
+        self.changed = True
+    else:
+      del tmp[root]
+      if tmp2.has_key(root):
+        del tmp2[root]
+        self.changed = True
+
 
   def get(self, root, *entries):
     tmp = self.copyConfig

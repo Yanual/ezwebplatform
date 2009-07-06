@@ -8,7 +8,7 @@ set -e
 . /usr/share/debconf/confmodule
 
 if [ -n "$DEBCONF_RECONFIGURE" ]; then
-  db_set ezweb-platform-common/abortupgrade false
+  db_set shared/ezweb-platform-common/abortupgrade false
   exit 0
 fi
 
@@ -18,7 +18,7 @@ case "${1}" in
     ;;
 
   upgrade)
-    db_get ezweb-platform-common/abortupgrade
+    db_get shared/ezweb-platform-common/abortupgrade
     if [ "$RET" == true ]; then
       echo "Aborting EzWeb upgrade by user request"
       exit 1
@@ -26,6 +26,25 @@ case "${1}" in
     ;;
 
   remove)
+    # Check if we are the default database engine
+    db_unregister shared/ezweb-platform-database-config
+
+    # See if the shared question still exists.
+    if db_get shared/ezweb-platform-database-config; then
+      db_metaget shared/ezweb-platform-database-config owners
+      OWNERS="$RET"
+      OWNERS=`echo "$OWNERS" | sed -e 's/\(, ezweb-platform-common\|ezweb-platform-common, \)//g'`
+      OWNERS=`echo "$OWNERS" | sed -e 's/ezweb-platform-//g'`
+      db_subst shared/ezweb-platform-database-config choices $OWNERS
+      db_metaget shared/ezweb-platform-database-config value
+      if [ "mysql" = "$RET" ]; then
+        db_fset shared/ezweb-platform-database-config seen false
+        db_input high shared/ezweb-platform-database-config || true
+        db_go || true
+        dpkg-trigger update-ezweb-platform
+      fi
+    fi
+
     # Disable all the EzWeb instances using postgres as DBMS
     INSTANCES=`update-ezweb-platform list enabled database_engine postgres`
 

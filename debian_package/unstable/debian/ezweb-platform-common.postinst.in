@@ -13,67 +13,94 @@ fi
 
 EZWEB_ADMIN_SCRIPT="update-ezweb-platform"
 
-db_set ezweb-platform-common/configured false
+case $1 in
+  configure | reconfigure)
+    db_set shared/ezweb-platform-common/configured false
 
-if [ "$1" = "configure" -a -n "$2" ]; then
-  newversion=`echo $2 | cut -f1 -d"-"`
-
-  if `dpkg --compare-versions "$newversion" ne "CURRENTVERSION"`; then
-    RET=`$EZWEB_ADMIN_SCRIPT list all --debconf`
-    if [ "$RET" != "" ]; then
-      list=`echo $RET | sed -e 's/, /,/g'`
-
-      saved_IFS=$IFS
-      IFS=,
-      for conf in $list; do
-        $EZWEB_ADMIN_SCRIPT clean $conf
-      done
-      IFS=$saved_IFS
-    fi
-  fi
-fi
-
-if [ "$1" = "configure" -o "$1" = "reconfigure" ]; then
-  if [ -z "$2" -a ! -f "/etc/ezweb-platform/sites/default/config" ]; then
-    # If we are installing (not upgrading) and there is not a default config
-    # yet, then create a default EzWeb instance config
-    $EZWEB_ADMIN_SCRIPT create default
-    $EZWEB_ADMIN_SCRIPT enable default --schedule
-  elif [ "x$2" != "x" ]; then
-    VER=`expr match "$2" '\([0-9]*\.[0-9]*\)~svn[0-9]*'`
-    if `dpkg --compare-versions "$VER" "lt" "0.4"` ; then
-      # If we are upgrading from the old package style, then create a
-      # default EzWeb instance config that will use the oldconfig
+    if [ -z "$2" -a ! -f "/etc/ezweb-platform/sites/default/config" ]; then
+      # If we are installing (not upgrading) and there is not a default config
+      # yet, then create a default EzWeb instance config
       $EZWEB_ADMIN_SCRIPT create default
+      $EZWEB_ADMIN_SCRIPT enable default --schedule
+    elif [ "x$2" != "x" ]; then
+      VER=`expr match "$2" '\([0-9]*\.[0-9]*\)~svn[0-9]*'`
+      if `dpkg --compare-versions "$VER" "lt" "0.4"` ; then
+        # If we are upgrading from the old package style, then create a
+        # default EzWeb instance config that will use the oldconfig
+        $EZWEB_ADMIN_SCRIPT create default
 
-      touch /usr/share/ezweb-platform/.update-server
-      touch /usr/share/ezweb-platform/.update-db
+        touch /usr/share/ezweb-platform/.update-server
+        touch /usr/share/ezweb-platform/.update-db
+      else
+        db_set shared/ezweb-platform-common/clean true
+      fi
     fi
-  fi
 
-  db_get ezweb-platform-common/proxy
-  PROXY="$RET"
+    db_get ezweb-platform-common/proxy
+    PROXY="$RET"
 
-  db_get ezweb-platform-common/allow-anonymous-access
-  ALLOW_ANONYMOUS_ACCESS="$RET"
+    db_get ezweb-platform-common/allow-anonymous-access
+    ALLOW_ANONYMOUS_ACCESS="$RET"
 
-  db_get ezweb-platform-common/debug
-  DEBUG_MODE="$RET"
+    db_get ezweb-platform-common/debug
+    DEBUG_MODE="$RET"
 
-  # Save the config
-  $EZWEB_ADMIN_SCRIPT setdefaults default --proxy "$PROXY" \
-                                          --allow-anonymous-access "$ALLOW_ANONYMOUS_ACCESS" \
-                                          --debug-mode "$DEBUG_MODE"
+    # Save the config
+    $EZWEB_ADMIN_SCRIPT setdefaults default --proxy "$PROXY" \
+                                            --allow-anonymous-access "$ALLOW_ANONYMOUS_ACCESS" \
+                                            --debug-mode "$DEBUG_MODE"
 
-  # fix ownership and permissions
-  chgrp www-data /var/lib/ezweb-platform
-  chmod 775      /var/lib/ezweb-platform
+    db_set shared/ezweb-platform-common/abortupgrade false
 
-  chgrp www-data /var/log/ezweb-platform
-  chmod 775      /var/log/ezweb-platform
-fi
+    # fix ownership and permissions
+    chown root:root /var/spool/ezweb-platform
+    chmod 750      /var/spool/ezweb-platform
 
+    chgrp www-data /var/lib/ezweb-platform
+    chmod 775      /var/lib/ezweb-platform
+
+    chgrp www-data /var/log/ezweb-platform
+    chmod 775      /var/log/ezweb-platform
+  ;;
+
+  triggered)
+
+    # Clean all ezweb instances if needed (ezweb upgrades)
+    db_get shared/ezweb-platform-common/clean
+    if [ "$RET" == true ]; then
+      RET=`$EZWEB_ADMIN_SCRIPT list all --debconf`
+      if [ "$RET" != "" ]; then
+        list=`echo $RET | sed -e 's/, /,/g'`
+
+        saved_IFS=$IFS
+        IFS=,
+        for conf in $list; do
+          $EZWEB_ADMIN_SCRIPT clean $conf || true
+        done
+        IFS=$saved_IFS
+      fi
+    fi
+
+    # Changes to the default server config
+    db_get shared/ezweb-platform-server-config
+
+    SERVER_CONFIG="$RET"
+    NEW_SERVER=`expr match "$2" '\([^-]*\)-.*'`
+    NEW_CONNECTION_TYPE=`expr match "$2" '[^-]*-\(.*\)'`
+
+    db_get shared/ezweb-platform-database-config
+    NEW_DATABASE_ENGINE="$RET"
+
+    $EZWEB_ADMIN_SCRIPT setdefaults default --server-type "$NEW_SERVER" \
+                                            --connection-type "$NEW_CONNECTION_TYPE" \
+                                            --database-engine "$NEW_DATABASE_ENGINE"
+
+    #bash /var/spool/ezweb-platform/cmds
+    #rm -f /var/spool/ezweb-platform/cmds
+  ;;
+esac
 
 #DEBHELPER#
 
+db_stop
 exit 0

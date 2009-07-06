@@ -35,8 +35,8 @@ NameVirtualHost *@:PORT@
   </Directory>
 
   Alias /ezweb.fcgi "/usr/lib/cgi-bin/ezweb-platform-@CONF_NAME@.fcgi"
-  Alias /media /usr/share/python-support/python-django/django/contrib/admin/media
-  Alias /site-media /usr/share/ezweb-platform/media
+  Alias /media "/usr/share/pyshared/django/contrib/admin/media"
+  Alias /site-media "/usr/share/ezweb-platform/media"
 
   <Location /resources>
     RewriteEngine off

@@ -17,6 +17,12 @@
 # TODO use a better way to know if we are installed
 [ -d /usr/share/doc/ezweb-platform-fastcgi-common ] || exit 0
 
+ezweb_run_dir() {
+  mkdir -p       /var/run/ezweb-platform &> /dev/null
+  chgrp www-data /var/run/ezweb-platform &> /dev/null
+  chmod 775      /var/run/ezweb-platform &> /dev/null
+}
+
 ezweb_fcgi_start() {
   CONF_NAME=$1
   export PYTHONPATH="/etc/ezweb-platform/sites/$CONF_NAME:/usr/share/ezweb-platform"
@@ -68,12 +74,15 @@ ezweb_fcgi_stop_all() {
 # Stupid hack to keep lintian happy. (Warrk! Stupidhack!).
 case $1 in
   start)
+    ezweb_run_dir
     ezweb_fcgi_start_all
     ;;
   stop)
+    ezweb_run_dir
     ezweb_fcgi_stop_all
     ;;
   restart | force-reload)
+    ezweb_run_dir
     ezweb_fcgi_stop_all
     ezweb_fcgi_start_all
     ;;

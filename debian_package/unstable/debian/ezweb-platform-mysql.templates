@@ -1,10 +1,10 @@
-Template: ezweb-platform-common/configured
+Template: shared/ezweb-platform-common/configured
 Type: boolean
 Default: false
 Description: for internal use
 	.
 
-Template: ezweb-platform-common/abortupgrade
+Template: shared/ezweb-platform-common/abortupgrade
 Type: boolean
 Default: true
 _Description: Abort EzWeb upgrading?
@@ -36,13 +36,13 @@ _Description: MySQL admin password:
 	Please enter the password of the admin user for connecting to the MySQL
 	server.
 
-Template: ezweb-platform-mysql/instances
-Type: multiselect
-Default: default
+Template: shared/ezweb-platform-database-config
+Type: select
 Choices: ${choices}
-_Description: Ezweb instances that will use MySQL:
-	The selected EzWeb instances will be configured to use MySQL as DBMS.
+Description: Default Database Engine for EzWeb:
+	EzWeb Platform is a web application based on Django, thus it can use
+	several database engines to store the EzWeb data.
 	.
-	This will not enable the selected EzWeb instances, although they will
-	continue to be enabled if they are currently enabled.
+	Each EzWeb instance can only be attached to one database engine. Please
+	select which database engine should be used by default.
 

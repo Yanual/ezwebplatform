@@ -1,10 +1,16 @@
-Template: ezweb-platform-common/configured
+Template: shared/ezweb-platform-common/clean
 Type: boolean
 Default: false
 Description: for internal use
 	.
 
-Template: ezweb-platform-common/abortupgrade
+Template: shared/ezweb-platform-common/configured
+Type: boolean
+Default: false
+Description: for internal use
+	.
+
+Template: shared/ezweb-platform-common/abortupgrade
 Type: boolean
 Default: true
 _Description: Abort EzWeb upgrading?
@@ -48,3 +54,25 @@ _Description: Use EzWeb in debug mode by default?
 	EzWeb Platform is currently in heavy development, this means you are
 	going to find some bug. Therefore, it is very recomended to set up your
 	EzWeb instances to run in debug mode.
+
+Template: shared/ezweb-platform-server-config
+Type: select
+Choices: ${choices}
+Description: Default Server for EzWeb:
+	EzWeb Platform is a web application based on Django, thus it can be
+	served using different technologies as Apache2 or Lighttpd. Also,
+	several of they, can be configured 
+	.
+	Each EzWeb instance can only be attached to one server. Please
+	select which server and connection type should be used by default.
+
+Template: shared/ezweb-platform-database-config
+Type: select
+Choices: ${choices}
+Description: Default Database Engine for EzWeb:
+	EzWeb Platform is a web application based on Django, thus it can use
+	several database engines to store the EzWeb data.
+	.
+	Each EzWeb instance can only be attached to one database engine. Please
+	select which database engine should be used by default.
+

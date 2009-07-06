@@ -14,7 +14,7 @@ $SERVER["socket"] == "0.0.0.0@PORT@" {
     )
 
     alias.url = (
-        "/media/" => "/usr/share/python-support/python-django/django/contrib/admin/media/",
+        "/media/" => "/usr/share/pyshared/django/contrib/admin/media/",
     )
 
     url.rewrite-once = (

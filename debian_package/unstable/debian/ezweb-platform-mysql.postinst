@@ -7,7 +7,7 @@ set -e
 #
 . /usr/share/debconf/confmodule
 
-if [ "$1" = "configure" ]; then
+if [ "$1" = "configure" -o "$1" = "reconfigure" ]; then
 
   EZWEB_ADMIN_SCRIPT="update-ezweb-platform"
 
@@ -22,25 +22,11 @@ if [ "$1" = "configure" ]; then
 
   $EZWEB_ADMIN_SCRIPT setdbmsdefaults mysql default --database-host "$SERVER_HOST" --admin-user "$ADMIN_USER" --admin-pass "$ADMIN_PASS"
 
-  ###
-  # Configure the instances
-  #
-  OLD_VAL=`$EZWEB_ADMIN_SCRIPT list database_engine mysql --debconf`
-  db_get ezweb-platform-mysql/instances
-
-  if [ "$RET" != "" -a "$RET" != "$OLD_VAL" ]; then
-    list=`echo $RET | sed -e 's/, /,/g'`
-
-    saved_IFS=$IFS
-    IFS=,
-    for conf in $list; do
-      echo
-      echo "Configuring \"$conf\" for using mysql as DBMS..."
-      $EZWEB_ADMIN_SCRIPT update $conf --database-engine mysql
-    done
-    IFS=$saved_IFS
+  db_get shared/ezweb-platform-database-config
+  DB_CONFIG="$RET"
+  if [ "$DB_CONFIG" == 'mysql' ]; then
+    dpkg-trigger update-ezweb-platform
   fi
-
 fi
 
 #DEBHELPER#

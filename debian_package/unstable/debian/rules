@@ -47,8 +47,9 @@ binary-indep: build install
 	    cp -a $$f debian/ezweb-platform-common/usr/share/ezweb-platform; \
 	  fi; \
 	done
-	sed -e 's/CURRENTVERSION/$(VERSION)/' < debian/ezweb-platform-common.config.in > debian/ezweb-platform-common.config
-	sed -e 's/CURRENTVERSION/$(VERSION)/' < debian/ezweb-platform-common.postinst.in > debian/ezweb-platform-common.postinst
+	sed -e 's/CURRENTVERSION/$(VERSION)/g' < debian/ezweb-platform-common.config.in > debian/ezweb-platform-common.config
+	sed -e 's/CURRENTVERSION/$(VERSION)/g' < debian/ezweb-platform-common.prerm.in > debian/ezweb-platform-common.prerm
+	sed -e 's/CURRENTVERSION/$(VERSION)/g' < debian/ezweb-platform-common.postinst.in > debian/ezweb-platform-common.postinst
 	
 	mkdir -p debian/ezweb-platform-common/usr/sbin
 	cp -p debian/update-ezweb-platform debian/ezweb-platform-common/usr/sbin
@@ -62,6 +63,10 @@ binary-indep: build install
 	echo -n > debian/ezweb-platform-common/usr/share/ezweb-platform/admintools/auth_backends/__init__.py
 	echo -n > debian/ezweb-platform-common/usr/share/ezweb-platform/admintools/server_backends/__init__.py
 	echo -n > debian/ezweb-platform-common/usr/share/ezweb-platform/admintools/database_backends/__init__.py
+	
+	: # TODO this is a temporal workaround
+	cp -r debian/ezweb-platform-common/usr/share/ezweb-platform/locale -t debian/ezweb-platform-common/usr/share/ezweb-platform/ezweb
+	rm -rf debian/ezweb-platform-common/usr/share/ezweb-platform/locale
 	
 	mkdir -p debian/ezweb-platform-common/etc/bash_completion.d
 	install -m644 debian/bash_completion \
@@ -82,13 +87,13 @@ binary-indep: build install
 	mkdir -p debian/ezweb-platform-common/etc/ezweb-platform/sites
 	cp -p debian/settings.py-template debian/ezweb-platform-common/etc/ezweb-platform
 	
+	mkdir -p debian/ezweb-platform-common/var/spool/ezweb-platform
 	mkdir -p debian/ezweb-platform-common/var/lib/ezweb-platform
 	mkdir -p debian/ezweb-platform-common/var/log/ezweb-platform
 	
 	: ###
 	: # ezweb-platform-fastcgi-common
 	: #
-	mkdir -p debian/ezweb-platform-fastcgi-common/var/run/ezweb-platform
 	
 	: ###
 	: # ezweb-platform-apache2-common

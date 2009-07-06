@@ -20,40 +20,10 @@ reload_apache() {
 
 if [ "$1" = "configure" -o "$1" = "reconfigure" ]; then
 
-  OLD_VAL=`$EZWEB_ADMIN_SCRIPT list server apache2 connection_type fastcgi --debconf`
-
-  db_get ezweb-platform-apache2-fastcgi/instances
-
-  if [ "$RET" != "" -a "$RET" != "$OLD_VAL" ]; then
-    list=`echo $RET | sed -e 's/, /,/g'`
-
-#    Not needed now
-#    invoke-rc.d ezweb-platform-fastcgi stop
-
-    saved_IFS=$IFS
-    IFS=,
-    for conf in $list; do
-      RET=`$EZWEB_ADMIN_SCRIPT list name $conf server apache2 connection_type fastcgi --debconf`
-      if [ -n "$RET" ]; then
-        continue
-      fi
-#      Not needed now
-#      RET=`$EZWEB_ADMIN_SCRIPT list name $conf enabled --debconf`
-#      if [ -n "$RET" ]; then
-#        RELOAD=1
-#      fi
-
-      echo
-      echo "Configuring \"$conf\" for using apache2 with fastcgi..."
-      $EZWEB_ADMIN_SCRIPT update $conf --server-type apache2 --connection-type fastcgi
-    done
-    IFS=$saved_IFS
-
-#    Not needed now
-#    if [ "$RELOAD" == 1 ]; then
-#      invoke-rc.d ezweb-platform-fastcgi start
-#      reload_apache
-#    fi
+  db_get shared/ezweb-platform-server-config
+  SERVER_CONFIG="$RET"
+  if [ "$SERVER_CONFIG" == 'apache2-fastcgi' ]; then
+    dpkg-trigger update-ezweb-platform
   fi
 fi
 

@@ -25,6 +25,8 @@ if [ "$1" = "configure" -a -n "$2" -a -f "/usr/share/ezweb-platform/.update-db" 
   fi
 
   #DEBHELPER#
+
+  db_stop
   exit 0
 
 fi
@@ -32,26 +34,15 @@ fi
 
 if [ "$1" = "configure" -o "$1" = "reconfigure" ]; then
 
-  ###
-  # Configure the instances
-  #
-  OLD_VAL=`$EZWEB_ADMIN_SCRIPT list database_engine sqlite3 --debconf`
-  db_get ezweb-platform-sqlite3/instances
-
-  if [ "$RET" != "" -a "$RET" != "$OLD_VAL" ]; then
-    list=`echo $RET | sed -e 's/, /,/g'`
-
-    saved_IFS=$IFS
-    IFS=,
-    for conf in $list; do
-      echo
-      echo "Configuring \"$conf\" for using sqlite3 as DBMS..."
-      $EZWEB_ADMIN_SCRIPT update $conf --database-engine sqlite3
-    done
-    IFS=$saved_IFS
+  db_get shared/ezweb-platform-database-config
+  DB_CONFIG="$RET"
+  if [ "$DB_CONFIG" == 'sqlite3' ]; then
+    dpkg-trigger update-ezweb-platform
   fi
 
 fi
+
+#DEBHELPER#
 
 db_stop
 exit 0

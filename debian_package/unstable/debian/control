@@ -7,7 +7,7 @@ Build-Depends-Indep: debconf, lsb-release
 Homepage: http://ezweb.morfeo-project.org/
 XS-Vcs-Svn: https://svn.forge.morfeo-project.org/svn/ezwebplatform/debian_package
 XS-Vcs-Browser: http://trac.morfeo-project.org/trac/ezwebplatform/browser/debian_package
-Standards-Version: 3.8.0
+Standards-Version: 3.8.1
 
 Package: ezweb-platform
 Section: web
@@ -28,7 +28,7 @@ Section: web
 Priority: optional
 Architecture: all
 Pre-Depends: debconf
-Depends: ${misc:Depends}, python (>= 2.4), python-django (>=1.0), python-libxml2, python-imaging, python-configobj
+Depends: ${misc:Depends}, python (>= 2.4), python-django (>=1.0.2-7), python-libxml2, python-imaging, python-configobj
 Description: Web mashup platform - shared files
  EzWeb Platform, the MORFEO Open Source Community Mashup Platform, provides you
  a framework for building modern enterprise and personal mashups following the
@@ -40,9 +40,9 @@ Package: ezweb-platform-fastcgi-common
 Section: web
 Priority: optional
 Architecture: all
-Depends: debconf
+Depends: ${misc:Depends}, debconf
 Pre-Depends: ezweb-platform-common (= ${binary:Version})
-Suggests: ${misc:Depends}, ezweb-platform-apache2-fastcgi, ezweb-platform-lighttpd-fastcgi
+Suggests: ezweb-platform-apache2-fastcgi, ezweb-platform-lighttpd-fastcgi
 Description: Fastcgi support for EzWeb Platform - shared files
  EzWeb Platform, the MORFEO Open Source Community Mashup Platform, provides you
  a framework for building modern enterprise and personal mashups following the
