@@ -89,19 +89,19 @@ class MainEzWebAdminTool:
     self.resources.printlnMsgNP("Done")
 
   def purgeserver(self, site_cfg, options):
-    server_type = site_cfg['server']['server_type']
+    server_type = site_cfg.get('server', 'server_type')
     server_command = self.resources.get_server_admin_command(server_type, "Purge")
     server_command.execute(site_cfg, options)
 
   def purgedb(self, site_cfg, options):
-    database_engine = site_cfg['database']['database_engine']
+    database_engine = site_cfg.get('database', 'database_engine')
     dbms_command = self.resources.get_dbms_admin_command(database_engine, "Purge")
     dbms_command.execute(site_cfg, options)
-    site_cfg['database'] = {}
+    # FIXME site_cfg['database'] = {}
 
   def purge(self, site_cfg, options):
-    database_engine = site_cfg['database']['database_engine']
-    server_type = site_cfg['server']['server_type']
+    database_engine = site_cfg.get('database', 'database_engine')
+    server_type = site_cfg.get('server', 'server_type')
 
     server_command = self.resources.get_server_admin_command(server_type, "Purge")
     dbms_command = self.resources.get_dbms_admin_command(database_engine, "Purge")
@@ -109,7 +109,7 @@ class MainEzWebAdminTool:
     server_command.execute(site_cfg, options)
     dbms_command.execute(site_cfg, options)
 
-    directory = os.path.dirname(self.resources.get_config_file(site_cfg['name']))
+    directory = os.path.dirname(self.resources.get_config_file(site_cfg.get('name')))
     self.resources.rmdir(directory)
 
   def fillConfig(self, config):
@@ -153,6 +153,13 @@ class MainEzWebAdminTool:
     if database_engine != "" :
       dbms_command = self.resources.get_dbms_admin_command(database_engine, "FillConfig")
       dbms_command.execute(config)
+
+    # Call Fill Config commands of the auth method used
+    auth_methods = config.getDefault([], "auth_methods")
+
+    for auth_method in auth_methods:
+      auth_command = self.resources.get_auth_admin_command(auth_method, "FillConfig")
+      auth_command.execute(config)
 
 
   def isEnableable(self, site_cfg):
@@ -305,17 +312,17 @@ class MainEzWebAdminTool:
     proxy_server = site_cfg.getDefault('', 'proxy')
 
     if proxy_server == "":
-      template.replaceEnableOption("ENABLE_PROXY", False)
+      template.replaceEnableOption("PROXY", False)
     else:
-      template.replaceEnableOption("ENABLE_PROXY", True)
+      template.replaceEnableOption("PROXY", True)
       template.replace("PROXY_SERVER", proxy_server)
 
     # Debug
-    debug = site_cfg.getDefault(True, "debug")
-    template.replaceEnableOption("ENABLE_DEBUG", debug)
+    debug = site_cfg.getDefaultAsBool(True, "debug")
+    template.replaceEnableOption("DEBUG", debug)
 
     # Allow anonymous access
-    allow_anonymous_access = site_cfg.getDefault(True, "allow_anonymous_access")
+    allow_anonymous_access = site_cfg.getDefaultAsBool(True, "allow_anonymous_access")
 
     # Auth backends
     auth_backends = "\n"
@@ -406,7 +413,7 @@ class MainEzWebAdminTool:
         # fill it
         self.admintool.fillConfig(old_config)
 
-      enabled = old_config.getDefault(False, 'enabled')
+      enabled = old_config.getDefaultAsBool(False, 'enabled')
 
       # make a new copy of the config for tracking the changes
       config = self.resources.get_site_config(conf_name)
@@ -551,7 +558,7 @@ class MainEzWebAdminTool:
           self.admintool.enable(new_config, options)
         elif enabled:
           self.admintool.process_cfg(new_config, options)
-        elif site_cfg.getDefault(False, "schedule_enable") and self.admintool.isEnableable(site_cfg):
+        elif site_cfg.getDefaultAsBool(False, "schedule_enable") and self.admintool.isEnableable(site_cfg):
           site_cfg.remove("schedule_enable")
           self.admintool.enable(new_config, options)
         else:
@@ -587,10 +594,10 @@ class MainEzWebAdminTool:
       enableable = self.admintool.isEnableable(site_cfg)
 
       if options.schedule and not enableable:
-        self.resources.printlnMsg("Scheduling the enabling of the \"%s\" EzWeb instance..." % site_cfg['name'])
+        self.resources.printlnMsg("Scheduling the enabling of the \"%s\" EzWeb instance..." % conf_name)
         self.resources.incPrintNestingLevel()
 
-        site_cfg['schedule_enable'] = True
+        site_cfg.setAndUpdate(True, 'schedule_enable')
         self.resources.save_site_config(site_cfg, options.backup)
 
         self.resources.decPrintNestingLevel()
@@ -602,8 +609,8 @@ class MainEzWebAdminTool:
         sys.exit(-1)
 
       self.resources.printlnMsg()
-      if not site_cfg.getDefault(False, "enabled") or options.force:
-        self.resources.printlnMsg("Enabling \"%s\" EzWeb instance..." % site_cfg['name'])
+      if not site_cfg.getDefaultAsBool(False, "enabled") or options.force:
+        self.resources.printlnMsg("Enabling \"%s\" EzWeb instance..." % conf_name)
         self.resources.incPrintNestingLevel()
 
         self.admintool.enable(site_cfg, options)
@@ -611,7 +618,7 @@ class MainEzWebAdminTool:
         self.resources.decPrintNestingLevel()
         self.resources.printlnMsg("Done")
       else:
-        self.resources.printlnMsg("\"%s\" EzWeb instance is not going to be enabled as it is already enabled." % site_cfg['name'])
+        self.resources.printlnMsg("\"%s\" EzWeb instance is not going to be enabled as it is already enabled." % conf_name)
 
 
   class DisableCommand(Command):
@@ -632,38 +639,38 @@ class MainEzWebAdminTool:
       self.admintool.fillConfig(site_cfg)
 
       self.resources.printlnMsg()
-      if site_cfg.getDefault(False, "enabled"):
-        self.resources.printlnMsg("Disabling \"%s\" EzWeb instance..." % site_cfg['name'])
+      if site_cfg.getDefaultAsBool(False, "enabled"):
+        self.resources.printlnMsg("Disabling \"%s\" EzWeb instance..." % conf_name)
         self.resources.incPrintNestingLevel()
 
-        site_cfg["enabled"] = False
-        site_cfg["schedule_enabled"] = False
+        site_cfg.setAndUpdate(False, "enabled")
+        site_cfg.setAndUpdate(False, "schedule_enabled")
         self.resources.save_site_config(site_cfg, options.backup)
 
-        self.resources.printlnMsg("Disabling %s server instance... " % site_cfg['name'])
+        self.resources.printlnMsg("Disabling %s server instance... " % conf_name)
         self.admintool.purgeserver(site_cfg, options)
         self.resources.printlnMsg("Done")
 
         self.resources.printlnMsg()
-        if site_cfg['server']['connection_type'] == 'fastcgi':
+        if site_cfg.get('server', 'connection_type') == 'fastcgi':
           os.system("invoke-rc.d ezweb-platform-fastcgi restart")
 
-        server_command = self.resources.get_server_admin_command(site_cfg['server']['server_type'], "Apply")
+        server_command = self.resources.get_server_admin_command(site_cfg.get('server', 'server_type'), "Apply")
         server_command.execute(options)
 
         self.resources.decPrintNestingLevel()
         self.resources.printlnMsg("Done")
-      elif site_cfg.has_key("schedule_enable") and site_cfg.as_bool('schedule_enable'):
-        self.resources.printlnMsg("Aborting planed activation of the \"%s\" EzWeb instance..." % site_cfg['name'])
+      elif site_cfg.getDefaultAsBool(False, 'schedule_enable'):
+        self.resources.printlnMsg("Aborting planed activation of the \"%s\" EzWeb instance..." % conf_name)
         self.resources.incPrintNestingLevel()
 
-        site_cfg["schedule_enabled"] = False
+        site_cfg.setAndUpdate(False, "schedule_enabled")
         self.resources.save_site_config(site_cfg, options.backup)
 
         self.resources.decPrintNestingLevel()
         self.resources.printlnMsg("Done")
       else:
-        self.resources.printlnMsg("\"%s\" EzWeb instance is not going to be disabled as it is already disabled." % site_cfg['name'])
+        self.resources.printlnMsg("\"%s\" EzWeb instance is not going to be disabled as it is already disabled." % conf_name)
 
   class CleanCommand(Command):
     option_list = []
@@ -689,15 +696,8 @@ class MainEzWebAdminTool:
       site_cfg = ConfigCopy(self.resources.get_site_config(conf_name))
       self.admintool.fillConfig(site_cfg)
 
-      if site_cfg['server'].has_key("server_type"):
-        server_type = site_cfg['server']['server_type']
-      else:
-        server_type = None
-
-      if site_cfg['database'].has_key("database_engine"):
-        database_engine = site_cfg['database']['database_engine']
-      else:
-        database_engine = None
+      server_type = site_cfg.getDefault(None, 'server', "server_type")
+      database_engine = site_cfg.getDefault(None, 'database', "database_engine")
 
       clean_server = server_type != None and server_type != ""
       clean_database = database_engine != None and database_engine != ""
@@ -718,7 +718,7 @@ class MainEzWebAdminTool:
         self.resources.decPrintNestingLevel()
         self.resources.printlnMsg("Done")
 
-      if site_cfg.getDefault(False, 'enabled'):
+      if site_cfg.getDefaultAsBool(False, 'enabled'):
         options.force_syncdb = True
         self.admintool.process_cfg(site_cfg, options)
 
@@ -745,7 +745,7 @@ class MainEzWebAdminTool:
       self.admintool.fillConfig(site_cfg)
 
       self.resources.printlnMsg()
-      self.resources.printlnMsg("Purging \"%s\" EzWeb instance..." % site_cfg['name'])
+      self.resources.printlnMsg("Purging \"%s\" EzWeb instance..." % conf_name)
       self.resources.incPrintNestingLevel()
 
       self.admintool.purge(site_cfg, options)

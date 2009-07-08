@@ -1,4 +1,4 @@
-ezweb-platform (0.4~svn2321-5) unstable; urgency=low
+ezweb-platform (0.4~svn2361-1) unstable; urgency=low
 
   * New upstream snapshot:
     - New look & feel.
@@ -6,6 +6,7 @@ ezweb-platform (0.4~svn2321-5) unstable; urgency=low
     - Now channels can be connected to other channels.
     - Web browser and feed reader gadget generator.
     - Many bug fixes.
+    - Support for serving ezweb javascript code in only one file.
 
  -- Álvaro Arranz García <aarranz@pegaso.ls.fi.upm.es>  Fri, 05 Jun 2009 16:40:48 +0200
 

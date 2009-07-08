@@ -4,6 +4,7 @@
 #export DH_VERBOSE=1
 
 VERSION := $(shell dpkg-parsechangelog | sed -n 's/^Version: *\([^-]\+\)-.\+/\1/p')
+REVISION := $(shell dpkg-parsechangelog | sed -n 's/^Version: *\([^-]\+\)-.\+/\1/p')
 
 # Include dpatch stuff.
 include /usr/share/dpatch/dpatch.make
@@ -41,6 +42,8 @@ binary-indep: build install
 	: ###
 	: # ezweb-platform-common
 	: #
+	./generate_ezweb_js_file.py
+	
 	mkdir -p debian/ezweb-platform-common/usr/share/ezweb-platform
 	for f in *; do \
 	  if [ $$f != debian ]; then \
@@ -80,8 +83,12 @@ binary-indep: build install
 	rm -f debian/ezweb-platform-common/usr/share/ezweb-platform/config.conf
 	rm -f debian/ezweb-platform-common/usr/share/ezweb-platform/rebuild_db.sh
 	rm -f debian/ezweb-platform-common/usr/share/ezweb-platform/manage.py
+	rm -f debian/ezweb-platform-common/usr/share/ezweb-platform/generate_ezweb_css_file.py
+	rm -f debian/ezweb-platform-common/usr/share/ezweb-platform/generate_ezweb_js_file.py
+	rm -f debian/ezweb-platform-common/usr/share/ezweb-platform/media/js/compressor.jar
 	rm -f debian/ezweb-platform-common/usr/share/ezweb-platform/save_fixtures.sh
 	rm -f debian/ezweb-platform-common/usr/share/ezweb-platform/*-stamp
+	rm -f debian/ezweb-platform-common/usr/share/ezweb-platform/*.bat
 	rm -f debian/ezweb-platform-common/usr/share/ezweb-platform/settings.py
 	
 	mkdir -p debian/ezweb-platform-common/etc/ezweb-platform/sites

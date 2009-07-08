@@ -5,51 +5,64 @@ BRANCH="unstable"
 BASE_VER="0.4"
 DUPLOAD_SERVER="europa"
 
+BASE_DIR=`pwd`
+
 fetch() {
   if [ -n "$1" ]; then
     REVISION=$1
     FULLVER=$BASE_VER"~svn$REVISION"
-    COPYDIR="ezweb-platform-$FULLVER"
+    ORIG_FILE="$BASE_DIR/ezweb-platform_$FULLVER.orig.tar.gz"
 
-    if [ -d $COPYDIR ]; then
-#      LOCAL_REVISION=`LC_ALL=C svn info $COPYDIR | grep "Revision: " | awk '{print $2}'`
-#      if [ "$LOCAL_REVISION" != "$REVISION" ]; then
-#        echo "  Error: $COPYDIR is not usable. Move or delete it and re-run this script."
-#        exit -2
-#      fi
-      echo "  Warning: using existing directory \"$COPYDIR\""
+    if [ -f $ORIG_FILE ]; then
+      echo "  Using existing file \"$ORIG_FILE\""
       return
-    elif [ -e $COPYDIR ]; then
-      echo "  Error: $COPYDIR already exists."
+    elif [ -e $ORIG_FILE ]; then
+      echo "  Error: $ORIG_FILE already exists, but it is not usable. Delete or move it an rerun this script."
       exit -2
     else
+      TMP_DIR=`mktemp -d`
+      COPYDIR="ezweb-platform-$FULLVER"
+
+      cd "$TMP_DIR"
+
       svn export -r "$REVISION" $DEFAULT_SVN_LOCATION $COPYDIR
       if [ "$?" != "0" ]; then
         echo "  Error: SVN checkout failed."
         exit -2
       fi
+      tar -c $COPYDIR | gzip > "$ORIG_FILE"
+
+      cd "$BASE_DIR"
+
+      rm -rf $TMP_DIR
     fi
   else
     REVISION=`LC_ALL=C svn info $DEFAULT_SVN_LOCATION | grep "Revision: " | awk '{print $2}'`
     FULLVER=$BASE_VER"~svn$REVISION"
-    COPYDIR="ezweb-platform-$FULLVER"
-    if [ -d $COPYDIR ]; then
-#      LOCAL_REVISION=`LC_ALL=C svn info $COPYDIR | grep "Revision: " | awk '{print $2}'`
-#      if [ "$LOCAL_REVISION" != "$REVISION" ]; then
-#        echo "  Error: $COPYDIR is not usable. Move or delete it and re-run this script."
-#        exit -2
-#      fi
-      echo "  Warning: using existing directory \"$COPYDIR\""
+    ORIG_FILE="ezweb-platform_$FULLVER.orig.tar.gz"
+
+    if [ -f $ORIG_FILE ]; then
+      echo "  Using existing file \"$ORIG_FILE\""
       return
-    elif [ -e $COPYDIR ]; then
-      echo "  Error: $COPYDIR already exists."
+    elif [ -e $ORIG_FILE ]; then
+      echo "  Error: $ORIG_FILE already exists, but it is not usable. Delete or move it an rerun this script."
       exit -2
     else
+      TMP_DIR=`mktemp -d`
+      COPYDIR="ezweb-platform-$FULLVER"
+
+      cd "$TMP_DIR"
+
       svn export $DEFAULT_SVN_LOCATION $COPYDIR
       if [ "$?" != "0" ]; then
         echo "  Error: SVN checkout failed."
         exit -2
       fi
+      tar -c $COPYDIR | gzip > "$ORIG_FILE"
+
+      cd "$BASE_DIR"
+
+      rm -rf $TMP_DIR
     fi
   fi
 }
@@ -61,7 +74,7 @@ parse_deb_fullver() {
   DEB_SVNREV=`echo $DEB_VERSION | cut -f2 -dn`
 }
 
-debianize() {
+prepare() {
   if [ -z "$1" ]; then
     exit -2
   fi
@@ -70,21 +83,10 @@ debianize() {
 
   FULLVER="$1"
   COPYDIR="ezweb-platform-$FULLVER"
+  rm -rf $COPYDIR
 
-  if [ -d $COPYDIR/debian ]; then
-    LASTDIR=`pwd`
-
-    cd "$COPYDIR"
-    fakeroot make -f debian/rules clean
-    cd "$LASTDIR"
-
-    rm -rf $COPYDIR/debian
-  fi
-
-  ORIG_FILE="ezweb-platform_$FULLVER.orig.tar.gz"
-  if [ ! -f $ORIG_FILE ]; then
-    tar -c $COPYDIR | gzip > $ORIG_FILE
-  fi
+  ORIG_FILE="$BASE_DIR/ezweb-platform_$FULLVER.orig.tar.gz"
+  tar xfz $ORIG_FILE
 
   # Check if the version of the changelog match with the version we are packaging
   parse_deb_fullver .
@@ -134,7 +136,7 @@ build() {
     echo "  Error: Debian packages build failed."
     exit -2
   fi
-  cd ..
+  cd $BASE_DIR
 }
 
 if [ -z "$DUPLOAD_SERVER" ]; then
@@ -193,22 +195,14 @@ if [ "$NEWVERSION" == 1 ]; then
 elif [ "$PARSEDEBCONF" == 1 ]; then
   parse_deb_fullver .
   COPYDIR="ezweb-platform-$DEB_VERSION"
-
-  if [ -e $COPYDIR ]; then
-    if [ ! -d $COPYDIR ]; then
-      echo "ERROR: \"$COPYDIR\" exists, but it is not a directory."
-      exit -2
-    fi
-  else
-    fetch $DEB_SVNREV
-  fi
+  fetch $DEB_SVNREV
 else
   echo "ERROR: Unsupported operation."
   exit -2
 fi
 
 if [ "$BUILD" = 1 ]; then
-  debianize $DEB_VERSION
+  prepare $DEB_VERSION
   build $COPYDIR
 fi
 

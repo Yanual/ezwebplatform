@@ -18,10 +18,11 @@ DATABASE_PASSWORD = '@DATABASE_PASS@' # Not used with sqlite3.
 DATABASE_HOST = '@DATABASE_HOST@'     # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = '@DATABASE_PORT@'     # Set to empty string for default. Not used with sqlite3.
 
-#@ENABLE_DEBUG@DEBUG = True
-#@ENABLE_DEBUG@TEMPLATE_DEBUG = True
-# TODO toggle the following settings depending on the ENABLE_DEBUG value
-#ONLY_ONE_JS_FILE=True
+#@DEBUG_ENABLED@DEBUG = True
+#@DEBUG_ENABLED@TEMPLATE_DEBUG = True
+#@DEBUG_DISABLED@ONLY_ONE_JS_FILE=True
+
+# TODO
 #ONLY_ONE_CSS_FILE=True
 #EZWEB_RELEASE='1237
 

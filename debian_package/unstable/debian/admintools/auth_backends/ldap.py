@@ -92,15 +92,24 @@ class AuthMethod(AuthMethod):
 
   def processConf(self, site_cfg):
 
-    if not site_cfg.has_key("ldap"):
-      site_cfg["ldap"] = {}
+    ldap_url = site_cfg.get('ldap', 'server')
+    ldap_search_dn = site_cfg.get('ldap', 'search-dn')
 
-    ldap_cfg = site_cfg["ldap"]
 
-    if ldap_cfg.has_key("schema"):
-      schema_name = ldap_cfg["schema"]
-    else:
-      schema_name = "default"
+    conf  = "# LDAP Auth Backend conf\n"
+    conf += "AD_LDAP_URL = '" + ldap_url + "'\n"
+    conf += "AD_SEARCH_DN = '" + ldap_search_dn + "'\n"
+    return conf
+
+class FillConfigCommand(Command):
+
+  def __init__(self, resources):
+    self.ldapResources = LDAPResources(resources)
+    self.resources = resources
+
+  def execute(self, site_cfg):
+
+    schema_name = site_cfg.getDefault('default', 'ldap' , 'schema')
 
     schema = self.ldapResources.get_ldap_settings()
 
@@ -110,26 +119,18 @@ class AuthMethod(AuthMethod):
       schema = {}
 
     # LDAP url
-    if ldap_cfg.has_key("server"):
-      ldap_url = ldap_cfg["server"]
-    elif schema.has_key("server"):
-      ldap_url = schema["server"]
-    else:
-      ldap_url = ""
+    if site_cfg.getDefault('', 'ldap', 'server') == '':
+      if schema.has_key("server") and schema["server"] != '':
+        site_cfg.set(schema["server"], 'ldap', 'server')
+      else:
+        site_cfg.set('localhost', 'ldap', 'server')
 
     # LDAP search DN
-    if ldap_cfg.has_key("search-dn"):
-      ldap_search_dn = ldap_cfg["search-dn"]
-    elif schema.has_key("search-dn"):
-      ldap_search_dn = schema["search-dn"]
-    else:
-      ldap_search_dn = ""
-
-    conf  = "# LDAP Auth Backend conf\n"
-    conf += "AD_LDAP_URL = '" + ldap_url + "'\n"
-    conf += "AD_SEARCH_DN = '" + ldap_search_dn + "'\n"
-    return conf
-
+    if site_cfg.getDefault('', 'ldap', 'search-dn') == '':
+      if schema.has_key("search-dn") and schema["search-dn"] != '':
+        site_cfg.set(schema["search-dn"], 'ldap', 'search-dn')
+      else:
+        site_cfg.set('localhost', 'ldap', 'search-dn')
 
 class UpdateCommand(Command):
 
@@ -144,16 +145,11 @@ class UpdateCommand(Command):
 
   def execute(self, site_cfg, options):
 
-    if not site_cfg.has_key("ldap"):
-      site_cfg["ldap"] = {}
-
-    ldap_cfg = site_cfg["ldap"]
-
     if options.ldap_server != None:
-      ldap_cfg['server'] = options.ldap_server
+      site_cfg.setAndUpdate(options.ldap_server, 'ldap', 'server')
 
     if options.ldap_search_dn != None:
-      ldap_cfg['search-dn'] = options.ldap_search_dn
+      site_cfg.setAndUpdate(options.ldap_search_dn, 'ldap', 'search-dn')
 
 
 class GetDefaultsCommand(Command):

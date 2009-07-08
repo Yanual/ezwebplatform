@@ -31,8 +31,6 @@ case $1 in
 
         touch /usr/share/ezweb-platform/.update-server
         touch /usr/share/ezweb-platform/.update-db
-      else
-        db_set shared/ezweb-platform-common/clean true
       fi
     fi
 
@@ -67,7 +65,9 @@ case $1 in
 
     # Clean all ezweb instances if needed (ezweb upgrades)
     db_get shared/ezweb-platform-common/clean
-    if [ "$RET" == true ]; then
+    if [ "$RET" == "true" ]; then
+      db_set shared/ezweb-platform-common/clean false
+
       RET=`$EZWEB_ADMIN_SCRIPT list all --debconf`
       if [ "$RET" != "" ]; then
         list=`echo $RET | sed -e 's/, /,/g'`
@@ -85,8 +85,8 @@ case $1 in
     db_get shared/ezweb-platform-server-config
 
     SERVER_CONFIG="$RET"
-    NEW_SERVER=`expr match "$2" '\([^-]*\)-.*'`
-    NEW_CONNECTION_TYPE=`expr match "$2" '[^-]*-\(.*\)'`
+    NEW_SERVER=`expr match "$SERVER_CONFIG" '\([^-]*\)-.*'`
+    NEW_CONNECTION_TYPE=`expr match "$SERVER_CONFIG" '[^-]*-\(.*\)'`
 
     db_get shared/ezweb-platform-database-config
     NEW_DATABASE_ENGINE="$RET"

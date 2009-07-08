@@ -92,15 +92,21 @@ class AuthMethod(AuthMethod):
 
   def processConf(self, site_cfg):
 
-    if not site_cfg.has_key("ezsteroids"):
-      site_cfg["ezsteroids"] = {}
+    ezsteroids_url = site_cfg.get('ezsteroids', 'server')
 
-    ezsteroids_cfg = site_cfg["ezsteroids"]
+    conf  = "# EzSteroids Auth Backend conf\n"
+    conf += "AUTHENTICATION_SERVER_URL = '%s'\n" % ezsteroids_url
+    return conf
 
-    if ezsteroids_cfg.has_key("schema"):
-      schema_name = ezsteroids_cfg["schema"]
-    else:
-      schema_name = "default"
+class FillConfigCommand(Command):
+
+  def __init__(self, resources):
+    self.ezsteroidsResources = EzSteroidsResources(resources)
+    self.resources = resources
+
+  def execute(self, site_cfg):
+
+    schema_name = site_cfg.getDefault('default', 'ezsteroids' , 'schema')
 
     schema = self.ezsteroidsResources.get_ezsteroids_settings()
 
@@ -110,17 +116,11 @@ class AuthMethod(AuthMethod):
       schema = {}
 
     # EzSteroids url
-    if ezsteroids_cfg.has_key("server"):
-      ezsteroids_url = ezsteroids_cfg["server"]
-    elif schema.has_key("server"):
-      ezsteroids_url = schema["server"]
-    else:
-      ezsteroids_url = ""
-
-    conf  = "# EzSteroids Auth Backend conf\n"
-    conf += "AUTHENTICATION_SERVER_URL = '%s'\n" % ezsteroids_url
-    return conf
-
+    if site_cfg.getDefault('', 'ezsteroids', 'server') == '':
+      if schema.has_key("server") and schema["server"] != '':
+        site_cfg.set(schema["server"], 'ezsteroids', 'server')
+      else:
+        site_cfg.set('localhost', 'ezsteroids', 'server')
 
 class UpdateCommand(Command):
 
@@ -133,13 +133,8 @@ class UpdateCommand(Command):
 
   def execute(self, site_cfg, options):
 
-    if not site_cfg.has_key("ezsteroids"):
-      site_cfg["ezsteroids"] = {}
-
-    ezsteroids_cfg = site_cfg["ezsteroids"]
-
     if options.ezsteroids_server != None:
-      ezsteroids_cfg['server'] = options.ezsteroids_server
+      site_cfg.setAndUpdate(options.ezsteroids_server, 'ezsteroids', 'server')
 
 
 class GetDefaultsCommand(Command):
