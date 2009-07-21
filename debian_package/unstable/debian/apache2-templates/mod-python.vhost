@@ -12,6 +12,10 @@ NameVirtualHost *@:PORT@
   DocumentRoot @DOCUMENT_ROOT@
 
   <Location />
+    <ifModule mod_dir.c>
+       DirectorySlash Off
+    </ifModule>
+
     SetHandler mod_python
     PythonHandler django.core.handlers.modpython
     PythonInterpreter ezweb-@CONF_NAME@
@@ -20,7 +24,7 @@ NameVirtualHost *@:PORT@
     PythonPath "['/etc/ezweb-platform/sites/@CONF_NAME@'] + ['/usr/share/ezweb-platform'] + sys.path"
   </Location>
 
-  Alias /media "/usr/share/pyshared/django/contrib/admin/media"
+  Alias /media "@DJANGO_SHARED_DATA@/contrib/admin/media"
   Alias /site-media "/usr/share/ezweb-platform/media"
 
   <Location /media>

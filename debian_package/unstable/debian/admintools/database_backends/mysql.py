@@ -51,9 +51,9 @@ class MySQLResources:
     self.resources = resources
 
   def get_ezweb_connection(self, cfg):
-    conn = MySQLdb.connect (host   = cfg.get('database', 'host'),
-                            user   = cfg.get('database', 'admin_user'),
-                            passwd = cfg.get('database', 'admin_pass'),
+    conn = MySQLdb.connect (host   = cfg.getDefault('localhost', 'database', 'host'),
+                            user   = cfg.getDefault('', 'database', 'admin_user'),
+                            passwd = cfg.getDefault('', 'database', 'admin_pass'),
                             db     = 'mysql')
     return conn
 
@@ -111,15 +111,8 @@ class MySQLResources:
     template.replace("DATABASE_NAME", site_cfg['database']['name'])
     template.replace("DATABASE_OPTIONS", "'init_command': 'SET storage_engine=InnoDB'")
 
-    if site_cfg['database'].has_key('host'):
-      template.replace("DATABASE_HOST", site_cfg['database']['host'])
-    else:
-      template.replace("DATABASE_HOST", "")
-
-    if site_cfg['database'].has_key('port'):
-      template.replace("DATABASE_PORT", site_cfg['database']['port'])
-    else:
-      template.replace("DATABASE_PORT", "")
+    template.replace("DATABASE_HOST", site_cfg.getDefault('', 'database', 'host'))
+    template.replace("DATABASE_PORT", site_cfg.getDefault('', 'database', 'port'))
 
 
 class FillConfigCommand(Command):
@@ -164,15 +157,16 @@ class FillConfigCommand(Command):
         site_cfg.set(schema['admin_pass'], 'database', 'admin_pass')
 
     # Database user
-    if not site_cfg['database'].has_key("user"):
+    if site_cfg.getDefault('', 'database', 'user') == '':
       site_cfg.setAndUpdate("ezweb-" + conf_name, 'database', 'user')
 
-    if not site_cfg['database'].has_key("name"):
+    # Database name
+    if site_cfg.getDefault('', 'database', 'name') == '':
       site_cfg.setAndUpdate("ezweb-" + conf_name, 'database', 'name')
 
-    if not site_cfg['database'].has_key("pass"):
+    # Database password
+    if site_cfg.getDefault('', 'database', 'pass') == '':
       site_cfg.setAndUpdate(''.join(Random().sample(string.letters+string.digits, 12)), 'database', 'pass')
-
 
 class UpdateCommand(Command):
   option_list = [make_option("--database-user", action="store",

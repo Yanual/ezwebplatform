@@ -129,6 +129,7 @@ class Apache2Resources:
     # Fill the template
     template.replace("CONF_NAME", conf_name)
     template.replace("DOCUMENT_ROOT", site_cfg.get('server', 'document_root'))
+    template.replace("DJANGO_SHARED_DATA", self.resources.get_django_shared_data_path())
 
     servername = site_cfg.get('server', 'name');
     port = site_cfg.get('server', 'port');

@@ -106,11 +106,6 @@ class SQLite3Resources:
     #else:
     #  schema = {}
 
-    # Database path
-    if options.path != None:
-      site_cfg['database']['path'] = options.path
-    elif not site_cfg['database'].has_key("path"):
-      site_cfg['database']['path'] = os.path.join(self.DB_BASE_PATH, site_cfg['name'], site_cfg['name'] + ".sqlite3")
 
     return site_cfg
 
@@ -129,6 +124,33 @@ class SQLite3Resources:
       self.resources = resources
     else:
       self.resources = EzWebAdminToolResources()
+
+class FillConfigCommand(Command):
+  option_list = []
+
+  def __init__(self, resources):
+    self.sqlite3Resources = MySQLResources(resources)
+    self.resources = resources
+
+  def execute(self, site_cfg):
+
+    conf_name = site_cfg["name"]
+
+    #schema = site_cfg.getDefault('', 'database', 'schema')
+    #if schema == '':
+    #  site_cfg.set("default", 'database', 'schema')
+    #  schema = "default"
+
+    #sqlite3_settings = self.sqlite3Resources.get_sqlite3_settings()
+    #if sqlite3_settings.has_key(schema):
+    #  schema = sqlite3_settings[schema]
+    #else:
+    #  schema = {}
+
+    # Database path
+    path = site_cfg.getDefault('', 'database', 'path')
+    if path == '':
+      site_cfg.set(os.path.join(self.DB_BASE_PATH, site_cfg['name'], site_cfg['name'] + ".sqlite3"), 'database', 'path')
 
 class CleanCommand(Command):
 
@@ -205,7 +227,8 @@ class UpdateCommand(Command):
     self.sqlite3Resources = SQLite3Resources(resources)
 
   def execute(self, site_cfg, options):
-    self.sqlite3Resources.fill_config(site_cfg, options)
+    if options.path != None:
+      site_cfg.setAndUpdate(options.path, 'database', 'path')
 
 class ProcessCommand(Command):
 

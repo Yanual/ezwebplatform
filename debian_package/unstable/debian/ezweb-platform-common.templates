@@ -4,6 +4,12 @@ Default: false
 Description: for internal use
 	.
 
+Template: shared/ezweb-platform-common/configchanged
+Type: boolean
+Default: false
+Description: for internal use
+	.
+
 Template: shared/ezweb-platform-common/configured
 Type: boolean
 Default: false

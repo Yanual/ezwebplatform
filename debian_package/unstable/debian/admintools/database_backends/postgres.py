@@ -41,7 +41,7 @@ import gettext
 from gettext import gettext as _
 
 import psycopg2
-from admintools.common import Command, EzWebAdminToolResources, ConfigCopy
+from admintools.common import Command, EzWebAdminToolResources, ConfigCopy, AuthException
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from optparse import OptionParser, make_option
 from configobj import ConfigObj
@@ -53,17 +53,17 @@ class PostgreSQLResources:
     self.resources = resources
 
   def get_ezweb_connection(self, cfg):
-    conn = psycopg2.connect (host = cfg["host"],
-                             user = cfg["admin_user"],
-                             password = cfg['admin_pass'])
+    conn = psycopg2.connect (host = cfg.getDefault('localhost', 'database', "host"),
+                             user = cfg.getDefault('', 'database', "admin_user"),
+                             password = cfg.getDefault('', 'database', 'admin_pass'))
     conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
     return conn
 
   def connect(self, cfg):
-    conn = psycopg2.connect (host     = cfg['host'],
-                             user     = cfg['user'],
-                             password = cfg['pass'],
-                             database = cfg['name'])
+    conn = psycopg2.connect (host     = cfg.get('database', 'host'),
+                             user     = cfg.get('database', 'user'),
+                             password = cfg.get('database', 'pass'),
+                             database = cfg.get('database', 'name'))
     return conn
 
   def get_postgres_settings_path(self):
@@ -100,16 +100,56 @@ class PostgreSQLResources:
     os.chmod(cfg.filename, 0600)
     self.resources.printlnMsgNP("Done")
 
-  def fill_settings(self, site_cfg):
-    site_cfg = ConfigCopy(site_cfg)
-    conf_name = site_cfg.get('name')
+  def update_settings_py(self, template, site_cfg):
+
+    # Fill the template
+    template.replace("DATABASE_ENGINE", "postgresql_psycopg2")
+    template.replace("DATABASE_USER", site_cfg.get('database', 'user'))
+    template.replace("DATABASE_PASS", site_cfg.get('database', 'pass'))
+
+    template.replace("DATABASE_NAME", site_cfg.get('database', 'name'))
+    template.replace("DATABASE_OPTIONS", "")
+
+    template.replace("DATABASE_HOST", site_cfg.getDefault('', 'database', 'host'))
+    template.replace("DATABASE_PORT", site_cfg.getDefault('', 'database', 'port'))
+
+  def drop_db_if_exists(self, cursor, settings):
+    databaseName = settings.get('database', 'name')
+    cursor.execute("SELECT 1 FROM pg_database WHERE datname='" + databaseName + "';")
+    if cursor.rowcount == 1:
+      self.resources.printMsg("Droping database \"%s\"... " % databaseName)
+      cursor.execute("DROP DATABASE \"" + databaseName + "\";")
+      self.resources.printlnMsgNP("Done")
+
+  def drop_user_if_exists(self, cursor, settings):
+    user = settings.get('database', 'user')
+    cursor.execute("SELECT 1 FROM pg_user WHERE usename = '" + user + "';")
+    if cursor.rowcount == 1:
+      self.resources.printMsg("Droping user \"%s\"... " % user)
+      cursor.execute("DROP USER \"" + user + "\";")
+      self.resources.printlnMsgNP("Done")
+
+  def create_db(self, cursor, settings):
+    cursor.execute("CREATE DATABASE \"" + settings.get('database', 'name') + "\" OWNER \"" + settings.get('database', 'user') + "\";")
+
+
+class FillConfigCommand(Command):
+  option_list = []
+
+  def __init__(self, resources):
+    self.psqlResources = PostgreSQLResources(resources)
+    self.resources = resources
+
+  def execute(self, site_cfg):
+
+    conf_name = site_cfg["name"]
 
     schema = site_cfg.getDefault('', 'database', 'schema')
     if schema == '':
-      site_cfg.set('default', 'database', 'schema')
+      site_cfg.set("default", 'database', 'schema')
       schema = "default"
 
-    postgres_settings = self.get_postgres_settings()
+    postgres_settings = self.psqlResources.get_postgres_settings()
     if postgres_settings.has_key(schema):
       schema = postgres_settings[schema]
     else:
@@ -135,56 +175,16 @@ class PostgreSQLResources:
         site_cfg.set(schema['admin_pass'], 'database', 'admin_pass')
 
     # Database user
-    if not site_cfg['database'].has_key("user"):
+    if site_cfg.getDefault('', 'database', 'user') == '':
       site_cfg.setAndUpdate("ezweb-" + conf_name, 'database', 'user')
 
-    if not site_cfg['database'].has_key("name"):
+    # Database name
+    if site_cfg.getDefault('', 'database', 'name') == '':
       site_cfg.setAndUpdate("ezweb-" + conf_name, 'database', 'name')
 
-    if not site_cfg['database'].has_key("pass"):
+    # Database password
+    if site_cfg.getDefault('', 'database', 'pass') == '':
       site_cfg.setAndUpdate(''.join(Random().sample(string.letters+string.digits, 12)), 'database', 'pass')
-
-    return site_cfg
-
-  def update_settings_py(self, template, site_cfg):
-
-    # Fill the template
-    template.replace("DATABASE_ENGINE", "postgresql_psycopg2")
-    template.replace("DATABASE_USER", site_cfg['database']['user'])
-    if site_cfg['database'].has_key('pass'):
-      template.replace("DATABASE_PASS", site_cfg['database']['pass'])
-    else:
-      template.replace("DATABASE_PASS", "")
-
-    template.replace("DATABASE_NAME", site_cfg['database']['name'])
-    template.replace("DATABASE_OPTIONS", "")
-
-    if site_cfg['database'].has_key('host'):
-      template.replace("DATABASE_HOST", site_cfg['database']['host'])
-    else:
-      template.replace("DATABASE_HOST", "")
-
-    if site_cfg['database'].has_key('port'):
-      template.replace("DATABASE_PORT", site_cfg['database']['port'])
-    else:
-      template.replace("DATABASE_PORT", "")
-
-  def drop_db_if_exists(self, cursor, settings):
-    cursor.execute("SELECT 1 FROM pg_database WHERE datname='" + settings['name'] + "';")
-    if cursor.rowcount == 1:
-      self.resources.printMsg("Droping database \"%s\"... " % settings['name'])
-      cursor.execute("DROP DATABASE \"" + settings['name'] + "\";")
-      self.resources.printlnMsgNP("Done")
-
-  def drop_user_if_exists(self, cursor, settings):
-    cursor.execute("SELECT 1 FROM pg_user WHERE usename = '" + settings['user'] + "';")
-    if cursor.rowcount == 1:
-      self.resources.printMsg("Droping user \"%s\"... " % settings['user'])
-      cursor.execute("DROP USER \"" + settings['user'] + "\";")
-      self.resources.printlnMsgNP("Done")
-
-  def create_db(self, cursor, settings):
-    cursor.execute("CREATE DATABASE \"" + settings['name'] + "\" OWNER \"" + settings['user'] + "\";")
 
 
 class UpdateCommand(Command):
@@ -203,16 +203,16 @@ class UpdateCommand(Command):
 
   def execute(self, site_cfg, options):
     if options.database_host != None:
-      site_cfg['database']['host'] = options.database_host
+      site_cfg.setAndUpdate(options.database_host, 'database', 'host')
 
     if options.database_user != None:
-      site_cfg['database']['user'] = options.database_user
+      site_cfg.setAndUpdate(options.database_user, 'database', 'user')
 
     if options.database_name != None:
-      site_cfg['database']['name'] = options.database_name
+      site_cfg.setAndUpdate(options.database_name, 'database', 'name')
 
     if options.database_pass != None:
-      site_cfg['database']['pass'] = options.database_pass
+      site_cfg.setAndUpdate(options.database_pass, 'database', 'pass')
 
 class ProcessCommand(Command):
   option_list = []
@@ -221,28 +221,31 @@ class ProcessCommand(Command):
     self.psqlResources = PostgreSQLResources(resources)
     self.resources = resources
 
-  def execute(self, options, site_cfg, settings_template):
-    site_cfg = self.psqlResources.fill_settings(site_cfg)
+  def execute(self, options, cfg, settings_template):
 
-    cfg = site_cfg['database']
+    try:
+      self.psqlResources.update_settings_py(settings_template, cfg)
 
-    self.psqlResources.update_settings_py(settings_template, site_cfg)
+      conn = self.psqlResources.get_ezweb_connection(cfg)
+      cursor = conn.cursor()
 
-    conn = self.psqlResources.get_ezweb_connection(cfg)
-    cursor = conn.cursor()
+      user = cfg.get('database', 'user')
+      passwd = cfg.get('database', 'pass')
+      databaseName = cfg.get('database', 'name')
+      cursor.execute("SELECT 1 FROM pg_user WHERE usename = '" + user + "';")
+      if cursor.rowcount == 0:
+        self.resources.printMsg("User " + user + " doesn't exists... ")
+        cursor.execute("CREATE USER \"" + user + "\" PASSWORD '" + passwd + "';")
+        self.resources.printlnMsgNP("created")
 
-    cursor.execute("SELECT 1 FROM pg_user WHERE usename = '" + cfg['user'] + "';")
-    if cursor.rowcount == 0:
-      self.resources.printMsg("User " + cfg['user'] + " doesn't exists... ")
-      cursor.execute("CREATE USER \"" + cfg['user'] + "\" PASSWORD '" + cfg['pass'] + "';")
-      self.resources.printlnMsgNP("created")
 
-
-    cursor.execute("SELECT 1 FROM pg_database WHERE datname='" + cfg['name'] + "';")
-    if cursor.rowcount == 0:
-      self.resources.printMsg("Database %s doesn't exists... " % cfg['name'])
-      self.psqlResources.create_db(cursor, cfg)
-      self.resources.printlnMsgNP("created");
+      cursor.execute("SELECT 1 FROM pg_database WHERE datname='" + databaseName + "';")
+      if cursor.rowcount == 0:
+        self.resources.printMsg("Database %s doesn't exists... " % databaseName)
+        self.psqlResources.create_db(cursor, cfg)
+        self.resources.printlnMsgNP("created");
+    except psycopg2.OperationalError, e:
+      raise AuthException()
 
 class PurgeCommand(Command):
   option_list = []
@@ -250,10 +253,7 @@ class PurgeCommand(Command):
   def __init__(self, resources):
     self.psqlResources = PostgreSQLResources(resources)
 
-  def execute(self, site_cfg, options):
-    site_cfg = self.psqlResources.fill_settings(site_cfg);
-    cfg = site_cfg['database']
-
+  def execute(self, cfg, options):
     conn = self.psqlResources.get_ezweb_connection(cfg)
     cursor = conn.cursor()
     self.psqlResources.drop_db_if_exists(cursor, cfg)
@@ -265,10 +265,7 @@ class CleanCommand(Command):
   def __init__(self, resources):
     self.psqlResources = PostgreSQLResources(resources)
 
-  def execute(self, site_cfg, options):
-    site_cfg = self.psqlResources.fill_settings(site_cfg);
-    cfg = site_cfg['database']
-
+  def execute(self, cfg, options):
     conn = self.psqlResources.get_ezweb_connection(cfg)
     cursor = conn.cursor()
     self.psqlResources.drop_db_if_exists(cursor, cfg)

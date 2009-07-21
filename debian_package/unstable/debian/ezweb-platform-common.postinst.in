@@ -34,20 +34,6 @@ case $1 in
       fi
     fi
 
-    db_get ezweb-platform-common/proxy
-    PROXY="$RET"
-
-    db_get ezweb-platform-common/allow-anonymous-access
-    ALLOW_ANONYMOUS_ACCESS="$RET"
-
-    db_get ezweb-platform-common/debug
-    DEBUG_MODE="$RET"
-
-    # Save the config
-    $EZWEB_ADMIN_SCRIPT setdefaults default --proxy "$PROXY" \
-                                            --allow-anonymous-access "$ALLOW_ANONYMOUS_ACCESS" \
-                                            --debug-mode "$DEBUG_MODE"
-
     db_set shared/ezweb-platform-common/abortupgrade false
 
     # fix ownership and permissions
@@ -95,8 +81,26 @@ case $1 in
                                             --connection-type "$NEW_CONNECTION_TYPE" \
                                             --database-engine "$NEW_DATABASE_ENGINE"
 
-    #bash /var/spool/ezweb-platform/cmds
-    #rm -f /var/spool/ezweb-platform/cmds
+    # Default settings
+    db_get shared/ezweb-platform-common/configchanged
+    if [ "$RET" == "true" ]; then
+      db_set shared/ezweb-platform-common/configchanged false
+
+      db_get ezweb-platform-common/proxy
+      PROXY="$RET"
+
+      db_get ezweb-platform-common/allow-anonymous-access
+      ALLOW_ANONYMOUS_ACCESS="$RET"
+
+      db_get ezweb-platform-common/debug
+      DEBUG_MODE="$RET"
+
+      # Save the config
+      $EZWEB_ADMIN_SCRIPT setdefaults default --proxy "$PROXY" \
+                                            --allow-anonymous-access "$ALLOW_ANONYMOUS_ACCESS" \
+                                            --debug-mode "$DEBUG_MODE"
+    fi
+
   ;;
 esac
 

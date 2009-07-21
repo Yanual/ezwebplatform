@@ -65,7 +65,7 @@ class EnabledCondition:
     self.compareStatus = compareStatus
 
   def pass_check(self, site_cfg):
-    return site_cfg.as_bool('enabled') == self.compareStatus
+    return site_cfg.getDefaultAsBool(False, 'enabled') == self.compareStatus
 
 class NameCondition:
 
@@ -75,16 +75,21 @@ class NameCondition:
   def pass_check(self, site_cfg):
     return site_cfg['name'] == self.compareStatus
 
+class SchemaCondition:
+
+  def __init__(self, compareStatus):
+    self.compareStatus = compareStatus
+
+  def pass_check(self, site_cfg):
+    return site_cfg.getDefault('', 'schema') == self.compareStatus
+
 class ServerCondition:
 
   def __init__(self, compareStatus):
     self.compareStatus = compareStatus
 
   def pass_check(self, site_cfg):
-    if site_cfg['server'].has_key("server_type"):
-      return site_cfg['server']['server_type'] == self.compareStatus
-    else:
-      return self.compareStatus == ""
+    return site_cfg.getDefault('', 'server', 'server_type') == self.compareStatus
 
 class ConnectionTypeCondition:
 
@@ -92,10 +97,7 @@ class ConnectionTypeCondition:
     self.compareStatus = compareStatus
 
   def pass_check(self, site_cfg):
-    if site_cfg['server'].has_key("connection_type"):
-      return site_cfg['server']['connection_type'] == self.compareStatus
-    else:
-      return self.compareStatus == ""
+    return site_cfg.getDefault('', 'server', 'connection_type') == self.compareStatus
 
 class DatabaseEngineCondition:
 
@@ -103,10 +105,7 @@ class DatabaseEngineCondition:
     self.compareStatus = compareStatus
 
   def pass_check(self, site_cfg):
-    if site_cfg['database'].has_key("database_engine"):
-      return site_cfg['database']['database_engine'] == self.compareStatus
-    else:
-      return self.compareStatus == ""
+    return site_cfg.getDefault('', 'database', 'database_engine') == self.compareStatus
 
 class HasAuthMethodCondition:
 
@@ -114,10 +113,7 @@ class HasAuthMethodCondition:
     self.compareStatus = compareStatus
 
   def pass_check(self, site_cfg):
-    if site_cfg.has_key("auth_methods"):
-      return self.compareStatus in site_cfg['auth_methods']
-    else:
-      return False
+    return self.compareStatus in site_cfg.getDefault([], 'auth_methods')
 
 class AuthMethodCondition:
 
@@ -125,7 +121,4 @@ class AuthMethodCondition:
     self.compareStatus = compareStatus
 
   def pass_check(self, site_cfg):
-    if site_cfg.has_key("auth_methods"):
-      return site_cfg['auth_methods'] == self.compareStatus
-    else:
-      return [] == self.compareStatus
+    return site_cfg.getDefault([], 'auth_methods') == self.compareStatus

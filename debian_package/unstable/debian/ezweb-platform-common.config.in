@@ -45,7 +45,7 @@ if [ "$1" = "configure" -a -n "$2" ]; then
 
   if `dpkg --compare-versions "$newversion" ne "CURRENTVERSION"`; then
     db_set shared/ezweb-platform-common/clean true
-    dpkg-trigger update-ezweb-platform
+    dpkg-trigger --by-package ezweb-platform-common update-ezweb-platform
   fi
 fi
 
@@ -68,6 +68,9 @@ if [ "$1" = "configure" -o "$1" = "reconfigure" ]; then
 
   db_input low ezweb-platform-common/debug || true
   db_go || true
+
+  db_set shared/ezweb-platform-common/configchanged true
+  dpkg-trigger --by-package ezweb-platform-common update-ezweb-platform
 fi
 
 #DEBHELPER#

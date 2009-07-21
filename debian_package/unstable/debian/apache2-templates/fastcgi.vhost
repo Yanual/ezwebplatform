@@ -35,7 +35,7 @@ NameVirtualHost *@:PORT@
   </Directory>
 
   Alias /ezweb.fcgi "/usr/lib/cgi-bin/ezweb-platform-@CONF_NAME@.fcgi"
-  Alias /media "/usr/share/pyshared/django/contrib/admin/media"
+  Alias /media "@DJANGO_SHARED_DATA@/contrib/admin/media"
   Alias /site-media "/usr/share/ezweb-platform/media"
 
   <Location /resources>

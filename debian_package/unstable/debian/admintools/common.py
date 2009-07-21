@@ -77,6 +77,12 @@ class EzWebAdminToolResources:
   def get_config_file(self, conf_name):
     return self.SITE_CONFIG_BASE_PATH + conf_name + "/config"
 
+  def get_django_shared_data_path(self):
+    if os.path.isdir('/usr/share/pyshared/django'):
+      return '/usr/share/pyshared/django'
+    elif os.path.exists('/usr/share/python-support/python-django/django'):
+      return '/usr/share/python-support/python-django/django'
+
   def get_site_config(self, conf_name, create = False, use_cache = True):
     if use_cache and self.site_cfgs.has_key(conf_name):
       return self.site_cfgs[conf_name]
@@ -517,6 +523,9 @@ class Command:
   def __init__(resources):
     self.resources = resources
 
+
+class AuthException(Exception):
+  pass
 
 class AuthMethod:
   pass

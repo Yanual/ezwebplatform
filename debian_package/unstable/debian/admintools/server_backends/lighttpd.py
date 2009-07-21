@@ -133,6 +133,8 @@ class LighttpdResources:
 
     template.replace("CONF_NAME", conf_name)
     template.replace("DOCUMENT_ROOT", cfg.get('server', 'document_root'))
+    template.replace("DJANGO_SHARED_DATA", self.resources.get_django_shared_data_path())
+
     template.replace("SERVER_NAME", cfg.get('server', 'name'))
     template.replace("PORT", ":" + cfg.get('server', 'port')) # TODO read config to know whether to use ports
     template.replace("SERVER_ADMIN_EMAIL", cfg.get('server', 'admin_user_email'))
