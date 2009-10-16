@@ -1,0 +1,45 @@
+.toolbar_section > input[type=button] {
+  width: 135px !important;
+}
+
+.drop_down_menu, .window_menu{
+  position:absolute;
+}
+
+* html .window_menu .window_multiple_select{
+  height: 200px;
+}
+
+body{
+  height: 100%;
+  width: 100%;
+}
+
+#wiring_wrapper {
+  height: 800px;
+}
+
+.canvas {
+  height: 100%;
+  width: 100%;
+}
+
+#catalogue .head{
+	float:left;
+}
+
+/* WIRING HACKS  to gain layout and paint the arrows properly*/
+
+#event_list, 
+#slot_list,
+#channels_list{
+	width: 100%;
+}
+
+#wiring .tab, 
+#wiring .content, 
+#wiring .igadget,
+#wiring .connectable_row,
+#wiring .channel{
+	height: 1%;
+}
