@@ -139,7 +139,7 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
-    "django.contrib.auth",
+    'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
@@ -157,6 +157,9 @@ INSTALLED_APPS = (
     'resourceSubscription',
     'externalChannels',
 #    'clms',
+    'marketplace',
+    'marketplace.payment',
+    'marketplace.payment.paypal',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -232,7 +235,7 @@ try:
     from clms.settings import *
 except ImportError:
     pass
-
+    
 try:
     from local_settings import *
 except ImportError:
