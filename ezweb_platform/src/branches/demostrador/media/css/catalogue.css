@@ -867,3 +867,20 @@
 #catalogue .resource.selected > .bottom {
 	background-image: url(/ezweb/images/resource-left-bottom-tagmode.png)
 }
+
+#catalogue .head .header_always .wallet_options {
+	display: inline;
+}
+
+#catalogue table.pricing {
+
+}
+
+#wallet_balance_text {
+	float: left;
+}
+
+#wallet_balance_amount {
+	float: right;
+        font-weight:bold;
+}

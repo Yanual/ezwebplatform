@@ -126,6 +126,7 @@ var OpManagerFactory = function () {
 		this.showcaseModule = null;
 		this.contextManagerModule = null;
 		this.catalogue = null;
+		this.marketplace = null;
 		this.logs = null;
 		this.platformPreferences = null;
 		this.persistenceEngine = PersistenceEngineFactory.getInstance();
@@ -162,6 +163,7 @@ var OpManagerFactory = function () {
 			// Load catalogue data!
 			if (this.firstAccessToTheCatalogue || this.catalogueIsCurrentTab)
 			{
+				this.marketplace.initMarketplace();
 				this.catalogue.initCatalogue();
 				this.firstAccessToTheCatalogue = false;
 				this.catalogueIsCurrentTab = false;
@@ -429,6 +431,7 @@ var OpManagerFactory = function () {
 
 			case Modules.prototype.SHOWCASE:
 				this.catalogue = CatalogueFactory.getInstance();
+				this.marketplace = MarketplaceFactory.getInstance();
 				break;
 
 			case Modules.prototype.CATALOGUE:

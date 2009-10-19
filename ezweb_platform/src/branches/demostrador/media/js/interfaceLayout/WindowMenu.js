@@ -454,9 +454,7 @@ InfoWindowMenu.prototype = new WindowMenu();
 
 InfoWindowMenu.prototype._dontShowAnymore = function(e) {
 	var layoutManager = LayoutManagerFactory.getInstance();
-	var changes = {};
-	changes['tip-' + this.type] = {value: false};
-	PreferencesManagerFactory.getInstance().getPlatformPreferences().set(changes);
+	PreferencesManagerFactory.getInstance().getPlatformPreferences().set('tip-' + this.type, false);
 
 	layoutManager.hideCover();
 }
@@ -496,7 +494,6 @@ function FormWindowMenu (fields, title) {
 	table_.setAttribute('cellpadding', '0');
 	var table = document.createElement('tbody'); // IE6 and IE7 needs a tbody to display dynamic tables
 	table_.appendChild(table);
-
 	for (var fieldId in this.fields) {
 		var field = this.fields[fieldId];
 		var row = table.insertRow(-1);
@@ -741,14 +738,14 @@ ShareWindowMenu.prototype.setFocus = function() {
 }
 
 ShareWindowMenu.prototype.extraValidation = function(form) {
-	if (this.fields['group_sharing'].inputInterface.getValue() && this.fields['groups'].inputInterface.inputElement.selectedIndex == -1){
+	if (this.fields['group_sharing'].inputInterface.getValue() && this.fields['groups'].input.selectedIndex == -1){
 		return gettext('You must select a group');
 	}
 	return null
 }
 
 ShareWindowMenu.prototype.executeOperation = function(form) {
-	var groups = this.fields['groups'].inputInterface.getValue();
+	var groups = this.fields['group_sharing'].inputInterface.getValue();
 	OpManagerFactory.getInstance().activeWorkSpace.shareWorkspace(true, groups);
 }
 
@@ -867,10 +864,7 @@ function SharedWorkSpaceMenu() {
 
 	// Extra HTML Elements (url and html_code)
 	// Table
-	this.addElement('mainTable', 'table', 'windowContent');
-	
-	//IE6 and IE7 need a tbody for dynamic tables
-	this.addElement('tableElement', 'tbody', 'mainTable');
+	this.addElement('tableElement', 'table', 'windowContent');
 
 	// TR1
 	this.addElement('tr1Element', 'tr', 'tableElement');
@@ -912,7 +906,6 @@ SharedWorkSpaceMenu.prototype = new WindowMenu();
 
 SharedWorkSpaceMenu.prototype.addElement = function(element_name, html_tag, father_name) {
 	this[element_name] = document.createElement(html_tag);
-	Element.extend(this[element_name]);
 	this[father_name].appendChild(this[element_name]);
 }
 
@@ -929,8 +922,8 @@ SharedWorkSpaceMenu.prototype.setHTML = function(url) {
 }
 
 SharedWorkSpaceMenu.prototype.hide = function(url) {
-	this.urlElement.value = "";
-	this.html_codeElement.value = "";
+	this.urlElement.update();
+	this.html_codeElement.update();
 	this.tr1Element.style.display='none';
 	this.tr2Element.style.display='none';
 	WindowMenu.prototype.hide.call(this);
@@ -995,3 +988,114 @@ PreferencesWindowMenu.prototype.show = function () {
 	this.manager.resetInterface('platform');
 	WindowMenu.prototype.show.call(this);
 }
+
+
+
+
+
+
+//Especific class for Purchase Gadget windows
+function PurchaseWindowMenu (element) {
+
+	//constructor
+	this.htmlElement = $('purchase_window');		//create-window HTML element
+	this.titleElement = $('purchase_window_title');	//title gap
+	this.msgElement = $('purchase_window_msg');	//error message gap
+	this.element = element;				//workspace or tab
+	this.button = $('purchase_btn1');
+	this.button2 = $('purchase_btn2');
+
+	this.operationHandler = null;
+	this.operationHandler2 = null;
+
+	this.title = gettext('Purchase Gadget');
+
+	PurchaseWindowMenu.prototype.setHandler = function(handlerYesButton, handlerNoButton){
+		this.operationHandler = handlerYesButton;
+
+		if (!handlerNoButton)
+			this.operationHandler2 = function () { LayoutManagerFactory.getInstance().hideCover(); }
+		else
+			this.operationHandler2 = handlerNoButton;
+	}
+
+	PurchaseWindowMenu.prototype.initObserving = function(){
+        Event.observe(this.button, "click", this.operationHandler);
+        Event.observe(this.button2, "click", this.operationHandler2);
+		}
+
+	PurchaseWindowMenu.prototype.stopObserving = function(){
+        Event.stopObserving(this.button, "click", this.operationHandler);
+        Event.stopObserving(this.button2, "click", this.operationHandler2);
+	}
+
+	PurchaseWindowMenu.prototype.setFocus = function(){
+		this.button.focus();
+	}
+
+	//hides the window and clears all the inputs
+	PurchaseWindowMenu.prototype.hide = function (){
+		this.msgElement.update();
+		this.stopObserving();
+		this.htmlElement.style.display = "none";
+	}
+
+}
+
+PurchaseWindowMenu.prototype = new WindowMenu;
+
+
+
+
+
+
+
+//Especific class for Recharging Wallet windows
+function WalletRechargeWindowMenu (element) {
+
+	//constructor
+	this.htmlElement = $('wallet_recharge_window');		//create-window HTML element
+	this.titleElement = $('wallet_recharge_window_title');	//title gap
+	this.msgElement = $('wallet_recharge_window_msg');	//error message gap
+	this.element = element;				//workspace or tab
+	this.button = $('wallet_recharge_btn1');
+	this.button2 = $('wallet_recharge_btn2');
+
+	this.operationHandler = null;
+	this.operationHandler2 = null;
+
+	this.title = gettext('Recharging Wallet');
+
+	WalletRechargeWindowMenu.prototype.setHandler = function(handlerYesButton, handlerNoButton){
+		this.operationHandler = handlerYesButton;
+
+		if (!handlerNoButton)
+			this.operationHandler2 = function () { LayoutManagerFactory.getInstance().hideCover(); }
+		else
+			this.operationHandler2 = handlerNoButton;
+	}
+
+	WalletRechargeWindowMenu.prototype.initObserving = function(){
+        Event.observe(this.button, "click", this.operationHandler);
+        Event.observe(this.button2, "click", this.operationHandler2);
+		}
+
+	WalletRechargeWindowMenu.prototype.stopObserving = function(){
+        Event.stopObserving(this.button, "click", this.operationHandler);
+        Event.stopObserving(this.button2, "click", this.operationHandler2);
+	}
+
+	WalletRechargeWindowMenu.prototype.setFocus = function(){
+		this.button.focus();
+	}
+
+	//hides the window and clears all the inputs
+	WalletRechargeWindowMenu.prototype.hide = function (){
+		this.msgElement.update();
+		this.stopObserving();
+		this.htmlElement.style.display = "none";
+	}
+
+}
+
+WalletRechargeWindowMenu.prototype = new WindowMenu;

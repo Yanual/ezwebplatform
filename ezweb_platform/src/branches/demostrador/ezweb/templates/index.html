@@ -150,14 +150,69 @@
 	</div>
 	<!-- LOGS LAYER -->
 </div>
+
+
+
+
+
+
+<div id="wallet_recharge_window" class="window_menu" style="display:none">
+    <div class="window_top">
+		<label id="wallet_recharge_window_title" class="window_title"></label>
+		<input type="button" class="closebutton button" onclick="LayoutManagerFactory.getInstance().hideCover();" />
+	</div>
+	<div class="window_content">
+		<div id="wallet_recharge_window_msg" class="window_msg">
+        </div>
+        <div id="wallet_recharge_content">
+        </div>
+	</div>
+	<div class="window_bottom">
+        <button id="wallet_recharge_btn1" style="display:none;">{% trans "Purchase"%}</button>
+        <button id="wallet_recharge_btn2" onclick="LayoutManagerFactory.getInstance().hideCover();">{% trans "Cancel"%}</button>
+	</div>
+</div>
+
+
+
+
+
+<div id="purchase_window" class="window_menu" style="display:none">
+	<div class="window_top">
+		<label id="purchase_window_title" class="window_title"></label>
+		<input type="button" class="closebutton button" onclick="LayoutManagerFactory.getInstance().hideCover();" />
+	</div>
+	<div class="window_content">
+		<div id="purchase_window_msg" class="window_msg">
+        </div>
+        <table id="purchase_window_pricing" class="pricing" style="width:100%;">
+            <thead>
+                <tr>
+                    <th>{% trans "Duration"%}</th>
+                    <th>{% trans "Price"%}</th>
+                    <th>{% trans "Action"%}</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+	</div>
+	<div class="window_bottom">
+        <button id="purchase_btn1" style="display:none;">{% trans "Purchase"%}</button>
+        <button id="purchase_btn2" onclick="LayoutManagerFactory.getInstance().hideCover();">{% trans "Cancel"%}</button>
+	</div>
+</div>
 </body>
 
 <!-- JavaScript code -->
 
 <script type="text/javascript" src="{{ MEDIA_URL }}js/lib/json2.js"></script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/lib/prototype/prototype.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/lib/prototype/prototype.improvements.js"></script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/lib/scriptaculous/scriptaculous.js"></script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/catalogue/301a.js"></script>
+
+<script type="text/javascript" src="{{ MEDIA_URL }}js/marketplace/Marketplace.js"></script>
 
 <script type="text/javascript">
 _URIConstants = function(){}
@@ -197,6 +252,15 @@ _URIConstants.prototype.GADGET_TEMPLATE_GENERATOR = new Template('{{GADGET_GENER
 _URIConstants.prototype.GET_MERGE_PUBLISHED_WORKSPACE = new Template('/workspace/published_workspace/#{published_ws}/merge/#{to_ws}');
 _URIConstants.prototype.POST_CREATE_EXTERNAL_CHANNEL = '/channel/external';
 
+// Marketplace URIConstants
+_URIConstants.prototype.GET_PURCHASED_RESOURCES = new Template('/marketplace/purchased/user/{{ user.username }}');
+_URIConstants.prototype.GET_EXPIRATIONS = new Template('/marketplace/expirations/user/{{ user.username }}');
+_URIConstants.prototype.GET_GADGET_PRICING = new Template('/marketplace/pricing/resource/#{vendor}/#{name}/#{version}');
+_URIConstants.prototype.POST_PURCHASE_GADGET = new Template('/marketplace/purchased/user/{{ user.username }}');
+_URIConstants.prototype.GET_WALLET_BALANCE = new Template('/marketplace/wallet/user/{{ user.username }}');
+_URIConstants.prototype.GET_PAYMENT_ACCOUNTS = new Template('/marketplace/payment/accounts/user/{{ user.username }}');
+
+
 
 {% if home_gateway_dispatcher_url %}
     _URIConstants.prototype.HOME_GATEWAY_DISPATCHER_URL = '{{ home_gateway_dispatcher_url }}serviceGadgets?user={{ user.username }}';
@@ -223,25 +287,23 @@ var _INITIAL_THEME = '{{ INITIAL_THEME }}';
 var _ONLY_ONE_CSS_FILE = '{{ only_one_css_file }}' == 'True';
 var _EzWeb_RELEASE = '{{ ezweb_release }}';
 
-var installed_apps = {{ installed_apps|safe }};
 </script>
 
 {% block includes %}
-
-    {% if AUTHENTICATION_SERVER_URL %}
-    <script type="text/javascript" src="{{ AUTHENTICATION_SERVER_URL }}/ezweb/js/js_library.js"></script>
-    <script type="text/javascript" src="{{ MEDIA_URL }}js/EzSteroidsAPI/EzSteroidsAPI.js"></script>
-    {% endif %}
-
-    <script type="text/javascript" src="{{ MEDIA_URL }}js/lib/prototype/prototype.improvements.js"></script>
 
     {% if only_one_js_file %}
       <script type="text/javascript" src="{{ MEDIA_URL }}js/ezweb_{{ ezweb_release }}.js"></script>
     {% else %}
        {% include "js_includes.js" %}
     {% endif %}
-
+    
     <script type="text/javascript" src="/jsi18n/?language={{ LANGUAGE_CODE }}"></script>
+
+    {% if AUTHENTICATION_SERVER_URL %}
+    <script type="text/javascript" src="{{ AUTHENTICATION_SERVER_URL }}/ezweb/js/js_library.js"></script>
+    <script type="text/javascript" src="{{ MEDIA_URL }}js/EzSteroidsAPI/EzSteroidsAPI.js"></script>
+    {% endif %}
+
 
 {% endblock %}
 

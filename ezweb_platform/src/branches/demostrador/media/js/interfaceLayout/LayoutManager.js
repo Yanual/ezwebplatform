@@ -127,6 +127,7 @@ var LayoutManagerFactory = function () {
 				subtaskpercentage = 100;
 
 			msg = gettext("%(task)s %(percentage)s%");
+			percentage = Math.round((this.currentSubTask * 100) / this.totalSubTasks);
 			msg = interpolate(msg, {task: this.task, percentage: taskpercentage}, true);
 			$("loading-task-title").setTextContent(msg);
 
@@ -489,6 +490,7 @@ var LayoutManagerFactory = function () {
 
 			if (!this.catalogue) {
 				this.catalogue = CatalogueFactory.getInstance();
+				this.marketplace = MarketplaceFactory.getInstance();
 			}
 
 			this.currentView = this.catalogue;
@@ -789,6 +791,25 @@ var LayoutManagerFactory = function () {
 				}
 				this.currentMenu.setHandler(function(){UIUtils.deleteGadget(UIUtils.selectedResource);}, handlerNoButton);
 				break;
+			case 'purchaseResource':
+				if(!this.menus['purchaseMenu']){
+					this.menus['purchaseMenu'] = new PurchaseWindowMenu(null);
+				}
+				this.currentMenu = this.menus['purchaseMenu'];
+				this.currentMenu.setMsg(gettext('Do you really want to purchase this gadget?'));
+				this.currentMenu.setHandler(function(){}, handlerNoButton);
+				this.currentMenu.show();
+				break;
+			case 'walletRecharge':
+				if(!this.menus['walletRechargeMenu']){
+					this.menus['walletRechargeMenu'] = new WalletRechargeWindowMenu(null);
+				}
+				this.currentMenu = this.menus['walletRechargeMenu'];
+				//this.currentMenu.setMsg(gettext('Select a method to recharge your wallet'));
+                                this.currentMenu.setMsg(gettext('Seleccione un m&eacute;todo para recargar su monedero'));
+				this.currentMenu.setHandler(function(){}, handlerNoButton);
+				this.currentMenu.show();
+				break;
 			case 'addFeed':
 				if (!this.menus['addFeedMenu']) {
 					this.menus['addFeedMenu'] = new AddFeedMenu();
@@ -977,6 +998,7 @@ var LayoutManagerFactory = function () {
 		LayoutManager.prototype.FADE_TAB_END = "#97A0A8";
 
 		LayoutManager.prototype.goTab = function(tab_object){
+			this.markTab(tab_object);
 
 			var tab = tab_object.tabHTMLElement;
 

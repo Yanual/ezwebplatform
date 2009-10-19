@@ -128,21 +128,43 @@ Resource.prototype.paint = function() {
 	if (this._state.getMashupId() == null) {
 		//Gadget
 
-		var button_class = '';
+                var bottom_message = gettext('Add Gadget');
+                var bottom_class = '';
+                var bottom_function = function(event) { 
+                    CatalogueFactory.getInstance().addResourceToShowCase(this._id);
+                    }
 
-		if (this.isContratable() && (! this.hasContract())) {
-			button_message = gettext('Purchase');
-			button_class = 'contratable';
-		}
+                if (this.isContratable(this._state.getCapabilities())) {
+                    if(!MarketplaceFactory.getInstance().purchaseManager.isGadgetPurchased(this._state.getName(), this._state.getVendor(), this._state.getVersion())) {
+                        bottom_message = gettext('Purchase');
+                        bottom_class = 'contratable';
+                        bottom_function = function(event) { 
+                            MarketplaceFactory.getInstance().purchaseResource(this._state.getName(), this._state.getVendor(), this._state.getVersion());
+                            }
+                        }
+		    }
 
-		var button = UIUtils.createHTMLElement("button", $H({
-			innerHTML: button_message,
-			class_name: button_class
-		}));
+                var button = UIUtils.createHTMLElement("button", $H({
+		        innerHTML: bottom_message,
+                        class_name: bottom_class,
+                        related: this
+                        }));
+                button.observe("click", bottom_function.bind(this), false, "instance_gadget");
+		// var button_class = '';
 
-		button.observe("click", function(event) {
-			CatalogueFactory.getInstance().addResourceToShowCase(this._id);
-		}.bind(this), false, "instance_gadget");
+		// if (this.isContratable() && (! this.hasContract())) {
+		// 	button_message = gettext('Purchase');
+		// 	button_class = 'contratable';
+		// }
+
+		// var button = UIUtils.createHTMLElement("button", $H({
+		// 	innerHTML: button_message,
+		// 	class_name: button_class
+		// }));
+
+		// button.observe("click", function(event) {
+		// 	CatalogueFactory.getInstance().addResourceToShowCase(this._id);
+		// }.bind(this), false, "instance_gadget");
 	} else {
 		//Mashup
 

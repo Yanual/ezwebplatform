@@ -1709,3 +1709,145 @@ msgstr ""
 
 #~ msgid "iGadgets cannot be saved: "
 #~ msgstr "IGadgets não podem ser salvos:"
+
+# Marketplace module messages
+msgid "periodicity_P"
+msgstr "Permanent"
+
+msgid "periodicity_D"
+msgstr "Days"
+
+msgid "periodicity_W"
+msgstr "Weeks"
+
+msgid "periodicity_M"
+msgstr "Months"
+
+msgid "periodicity_Y"
+msgstr "Years"
+
+msgid "duration_unit_D"
+msgstr "Days"
+
+msgid "duration_unit_W"
+msgstr "Weeks"
+
+msgid "duration_unit_M"
+msgstr "Months"
+
+msgid "duration_unit_Y"
+msgstr "Years"
+
+msgid "Duration"
+msgstr "Duration"
+
+msgid "Duration Type"
+msgstr "Duration Type"
+
+msgid "Price"
+msgstr "Price"
+
+msgid "Permanent Contract"
+msgstr "PERMANENT Contract of %s"
+
+msgid "Periodic Contract"
+msgstr "Contract of %s next %d %s"
+
+msgid "Current Balance"
+msgstr "Current Balance"
+
+msgid "Outstanding Balance"
+msgstr "Outstanding Balance"
+
+msgid "Recharge"
+msgstr "Recharge"
+
+msgid "Purchase"
+msgstr "Purchase"
+
+msgid "Refund"
+msgstr "Refund"
+
+msgid "Pending"
+msgstr "Pending"
+
+msgid "Completed"
+msgstr "Completed"
+
+msgid "Creation Date"
+msgstr "Creation Date"
+
+msgid "Transaction Type"
+msgstr "Transaction Type"
+
+msgid "Concept"
+msgstr "Concept"
+
+msgid "Amount"
+msgstr "Amount"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Finish Date"
+msgstr "Finish Date"
+
+msgid "Extended Info"
+msgstr "Extended Info"
+
+msgid "Error retrieving gadgets pricing"
+msgstr "Error retrieving gadgets pricing"
+
+msgid "Gadget is currently purchased"
+msgstr "Gadget is currently purchased"
+
+msgid "There is not enough balance"
+msgstr "There is not enough balance. Try recharging your wallet"
+
+msgid "Gadget purchasing"
+msgstr "Gadget purchasing"
+
+msgid "account_types_I"
+msgstr "Instant Payment Notification"
+
+msgid "account_types_P"
+msgstr "Payment Data Transfer"
+
+msgid "Title"
+msgstr "Title"
+
+msgid "Payment Account Type"
+msgstr "Payment Account Type"
+
+msgid "Validation Method"
+msgstr "Validation Method"
+
+msgid "Identity Token"
+msgstr "Identity Token (Supplied by the payment platform)"
+
+msgid "Form Element HTML"
+msgstr "Form Element HTML"
+
+msgid "No Payment Accounts"
+msgstr "There is NO Payment Accounts"
+
+msgid "Error getting objects"
+msgstr "Error getting objects"
+
+msgid "Wallet Recharge"
+msgstr "Wallet Recharge"
+
+msgid "Error creating transaction"
+msgstr "Error creating transaction"
+
+msgid "Error creating transaction extended info"
+msgstr "Error creating transaction extended info"
+
+msgid "Error updating balance"
+msgstr "Error updating the wallet balance"
+
+msgid "Wallet"
+msgstr "Wallet"
+
+msgid "Current Balance"
+msgstr "Current Balance"

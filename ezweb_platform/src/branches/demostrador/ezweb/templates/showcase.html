@@ -26,8 +26,35 @@
 				<span id="add_site_link" class="link">{% trans "Add new site" %}</span>
 			</div>
 		</div>
-		
-	</div>
+                <div id="wallet_options" class="bar_widget">
+                    <span class="widget_title"><img src="{{ MEDIA_URL }}images/wallet.png" class="header_link"> {% trans 'Wallet' %}</span>
+                    <div class="widget_content">
+                        <span id="add_feed_link" class="link"><span id="wallet_balance_text">{% trans  "Current Balance" %}</span><span id="wallet_balance_amount"><a id="wallet_current_balance" class="header_link" onclick="MarketplaceFactory.getInstance().walletManager.getBalance();">0.00</a></span></span>
+                        <span id="add_feed_link" class="link"><a id="wallet_recharge" class="header_link" href="#" onclick="MarketplaceFactory.getInstance().walletManager.recharge();">{% trans  "Wallet Recharge" %}</a></span>
+                    </div>
+                </div>
+                <div id="purchases_options" class="bar_widget">
+                    <span class="widget_title"><img src="{{ MEDIA_URL }}images/products.png" class="header_link"> <!--{% trans 'My products' %}-->{% trans 'Mis productos' %}</span>
+                    <div class="widget_content">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <!--<th>{% trans 'Gadget' %}</th>
+                                    <th>{% trans 'Expiration' %}</th>-->
+                                    <th>{% trans 'Gadget' %}</th>
+                                    <th>{% trans 'Vencimiento' %}</th>
+                                </tr>
+                            </thead>
+                            <tbody id="purchased_gadgets">
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
 	<div id="catalogue_content">
 	<div id="head" class="head">
 		<div id="header_always" class="header_always">
