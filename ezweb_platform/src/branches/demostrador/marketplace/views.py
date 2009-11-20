@@ -31,12 +31,26 @@
 from commons.authentication import get_user_authentication
 from commons.resource import Resource
 from commons.utils import get_xml_error, json_encode
-from marketplace.models import Wallet, Transaction, GadgetPricing
+from marketplace.models import Wallet, Transaction, GadgetPricing, GadgetSpecialPricing
 
+from clients.python import ezsteroids_api
+
+from django.conf import settings
 from django.http import HttpResponse, HttpResponseServerError
 from django.utils.translation import ugettext as _
 
 from datetime import datetime, timedelta
+
+
+
+def _user_categories_tuple(user):
+    categories = ezsteroids_api.API().get_categories(user.username)
+
+    result = []
+    for category in categories:
+        result.append((category.id, category.name))
+
+    return result
 
 
 
@@ -64,7 +78,23 @@ class PricingCollection(Resource):
         """
         gadget_pricing = None
         try:
+            # Gets the standard pricing method
             gadget_pricing = GadgetPricing.objects.filter(gadget__short_name=name, gadget__vendor=vendor, gadget__version=version)
+            if hasattr(settings,'AUTHENTICATION_SERVER_URL'):
+                user = get_user_authentication(request)
+                # Gets the current user categories via ezsteroids API
+                user_categories = _user_categories_tuple(user)
+
+                gadget_special_pricings = GadgetSpecialPricing.objects.filter(pricing__gadget__short_name=name, pricing__gadget__vendor=vendor, pricing__gadget__version=version)
+                # Refines the special pricing
+                for gadget_special_pricing in gadget_special_pricings:
+                    for user_category in user_categories:
+                        if user_category[0] == gadget_special_pricing.user_category :
+                            for index, gadget_pricing_item in enumerate(gadget_pricing) :
+                                if(gadget_pricing_item.id == gadget_special_pricing.pricing.id) and \
+                                    (gadget_pricing_item.price > gadget_special_pricing.price) :
+                                    gadget_pricing[index].price = gadget_special_pricing.price
+
         except Exception:
             return HttpResponseServerError(get_xml_error(_("Error retrieving gadgets pricing")), mimetype='application/xml; charset=UTF-8')
         return HttpResponse(json_encode(gadget_pricing), mimetype='application/json; charset=UTF-8')
@@ -113,6 +143,19 @@ class PurchasedCollection(Resource):
         active_transaction = self._check_purchased_gadget(user_wallet, pricing.gadget.short_name, pricing.gadget.vendor, pricing.gadget.version)
         if active_transaction == True:
             return HttpResponseServerError(get_xml_error(_("Gadget is currently purchased")), mimetype='application/xml; charset=UTF-8')
+
+        if hasattr(settings,'AUTHENTICATION_SERVER_URL'):
+            user = get_user_authentication(request)
+            # Gets the current user categories via ezsteroids API
+            user_categories = _user_categories_tuple(user)
+
+            gadget_special_pricings = GadgetSpecialPricing.objects.filter(pricing__id=pricing.id)
+            # Refines the special pricing
+            for gadget_special_pricing in gadget_special_pricings:
+                for user_category in user_categories:
+                    if user_category[0] == gadget_special_pricing.user_category :
+                        if(pricing.price > gadget_special_pricing.price) :
+                            pricing.price = gadget_special_pricing.price
 
         # Second check: Is there enough balance
         if pricing.price > user_wallet.current_balance:

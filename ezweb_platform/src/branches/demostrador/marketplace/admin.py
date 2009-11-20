@@ -31,7 +31,7 @@
 #
 
 from django.contrib import admin
-from marketplace.models import GadgetPricing, Wallet, Transaction
+from marketplace.models import GadgetPricing, GadgetSpecialPricing, Wallet, Transaction
 
 # Class to manage the gadget pricing via admin
 class GadgetPricingAdmin(admin.ModelAdmin):
@@ -41,6 +41,34 @@ class GadgetPricingAdmin(admin.ModelAdmin):
             }),
         )
     list_display = ('gadget', 'duration', 'periodicity', 'price')
+
+
+# Class to manage the gadget special pricing via admin
+class GadgetSpecialPricingInline(admin.TabularInline):
+    model = GadgetSpecialPricing
+
+class GadgetSpecialPricingAdmin(admin.ModelAdmin):
+    field_sets = (
+        (None, {
+            'fields': ('gadget', ('duration', 'periodicity'))
+            }),
+        )
+    list_display = ('gadget', 'duration', 'periodicity')
+    list_filter = ('gadget', )
+    inlines = [GadgetSpecialPricingInline, ]
+
+
+
+# Class to manage the categories special pricing via admin
+class CategorizedSpecialPricingAdmin(admin.ModelAdmin):
+    field_sets = (
+        (None, {
+            'fields': ('user_category', 'pricing', 'price')
+            }),
+        )
+    list_display = ('user_category', 'pricing', 'price')
+    list_filter = ('user_category', 'pricing')
+
 
 
 # Class to manage manually the transactions (Wallet recharges and gadget purchases)
@@ -53,6 +81,8 @@ class TransactionAdmin(admin.ModelAdmin):
     list_display = ('creation_date', 'transaction_type', 'status', 'amount')
 
 # Management modules registation
-admin.site.register(GadgetPricing, GadgetPricingAdmin)
+# admin.site.register(GadgetPricing, GadgetPricingAdmin)
+admin.site.register(GadgetPricing, GadgetSpecialPricingAdmin)
+admin.site.register(GadgetSpecialPricing, CategorizedSpecialPricingAdmin)
 admin.site.register(Transaction, TransactionAdmin)
 admin.site.register(Wallet)
