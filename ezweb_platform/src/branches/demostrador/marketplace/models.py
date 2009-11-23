@@ -34,6 +34,7 @@ from marketplace.payment.models import Account
 
 from clients.python import ezsteroids_api
 
+from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User as AuthUser
@@ -70,25 +71,14 @@ class GadgetPricing(models.Model):
 
 
 
-# Gadget Special Pricing
-#class GadgetSpecialPricing(models.Model):
-#    gadget = models.ForeignKey(GadgetResource)
-#    duration = models.SmallIntegerField(_('Duration'), null=False)
-#    periodicity = models.CharField(_('Duration Type'), max_length=1, choices=DURATION_TYPES, null=False)
-#
-#    def __unicode__(self):
-#        if(self.periodicity=='P'):
-#            return _('Permanent Contract') % self.gadget.short_name
-#        else:
-#            return _('Periodic Contract') % (self.gadget.short_name, self.duration, DURATION_UNITS[self.periodicity])
-
 def _categories_tuple(result):
-    categories = ezsteroids_api.API().get_all_categories()
+    if hasattr(settings,'AUTHENTICATION_SERVER_URL'):
+        categories = ezsteroids_api.API().get_all_categories()
 
-    del result[:]
-    # result.append((-1, _('All users')))
-    for category in categories:
-        result.append((category.id, category.name))
+        del result[:]
+        # result.append((-1, _('All users')))
+        for category in categories:
+            result.append((category.id, category.name))
 
     return result
 
@@ -100,12 +90,6 @@ class GadgetSpecialPricing(models.Model):
     def __init__(self, *args, **kwargs):
         models.Model.__init__(self, *args, **kwargs)
         _categories_tuple(self._meta.fields[2].choices)
-        #print(self._meta.fields)
-        #lista =
-        #print(getattr(getattr(self, '_meta'), 'choices'))
-        #setattr(getattr(self, '_meta'), 'choices', _categories_tuple())
-        #setattr(getattr(self, '_meta'), '_choices', _categories_tuple())
-        #getattr(self, 'user_category') 
 
     def __unicode__(self):
         return _('%s for %s users') % (self.pricing.__unicode__(), self._meta.fields[2].choices[self.user_category])
