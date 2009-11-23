@@ -33,7 +33,7 @@ from commons.resource import Resource
 from commons.utils import get_xml_error, json_encode
 from marketplace.models import Wallet, Transaction, GadgetPricing, GadgetSpecialPricing
 
-from clients.python import ezsteroids_api
+from clients.python.ezsteroids_real_api import get_user_category_list
 
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseServerError
@@ -45,7 +45,7 @@ from datetime import datetime, timedelta
 
 def _user_categories_tuple(user):
     try:
-        categories = ezsteroids_api.API().get_categories(user.username)
+        categories = get_user_category_list(user.username)
 
         result = []
         for category in categories:

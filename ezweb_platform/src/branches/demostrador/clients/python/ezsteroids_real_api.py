@@ -12,6 +12,12 @@ def get_category_list():
     return api.get_all_categories()
 
 
+#Consigue las categorias del usuario
+def get_user_category_list(user):
+    api = ezsteroids_api.API()
+    return api.get_categories(user)
+
+
 #Obtener una categoria
 def get_category(category_id):
     category_list = get_category_list()

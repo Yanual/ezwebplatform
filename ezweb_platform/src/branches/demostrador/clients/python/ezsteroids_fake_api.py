@@ -11,6 +11,11 @@ def get_category_list():
     return Category.objects.all()
 
 
+#Consigue las categorias del usuario
+def get_user_category_list(user):
+    return []
+
+
 #Obtener una categoria
 def get_category(category_id):
     return Category.objects.get(pk=category_id)

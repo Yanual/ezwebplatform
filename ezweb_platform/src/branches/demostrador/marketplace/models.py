@@ -32,7 +32,7 @@
 from catalogue.models import GadgetResource
 from marketplace.payment.models import Account
 
-from clients.python import ezsteroids_api
+from clients.python.ezsteroids_real_api import get_category_list
 
 from django.conf import settings
 from django.db import models
@@ -74,7 +74,7 @@ class GadgetPricing(models.Model):
 def _categories_tuple(result):
     if hasattr(settings,'AUTHENTICATION_SERVER_URL'):
         try:
-            categories = ezsteroids_api.API().get_all_categories()
+            categories = get_category_list()
 
             del result[:]
             for category in categories:
@@ -94,7 +94,10 @@ class GadgetSpecialPricing(models.Model):
         _categories_tuple(self._meta.fields[2].choices)
 
     def __unicode__(self):
-        return _('%s for %s users') % (self.pricing.__unicode__(), self._meta.fields[2].choices[self.user_category])
+        try:
+            return _('%s for %s users') % (self.pricing.__unicode__(), self._meta.fields[2].choices[self.user_category])
+        except:
+            return _('%s for unknow kind of users') % (self.pricing.__unicode__())
     
     class Meta:
         verbose_name = _('Categorized Special Pricing')
