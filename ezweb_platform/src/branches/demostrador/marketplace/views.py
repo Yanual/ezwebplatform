@@ -44,11 +44,14 @@ from datetime import datetime, timedelta
 
 
 def _user_categories_tuple(user):
-    categories = ezsteroids_api.API().get_categories(user.username)
+    try:
+        categories = ezsteroids_api.API().get_categories(user.username)
 
-    result = []
-    for category in categories:
-        result.append((category.id, category.name))
+        result = []
+        for category in categories:
+            result.append((category.id, category.name))
+    except:
+        result = []
 
     return result
 

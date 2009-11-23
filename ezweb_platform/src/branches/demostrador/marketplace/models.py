@@ -73,12 +73,14 @@ class GadgetPricing(models.Model):
 
 def _categories_tuple(result):
     if hasattr(settings,'AUTHENTICATION_SERVER_URL'):
-        categories = ezsteroids_api.API().get_all_categories()
+        try:
+            categories = ezsteroids_api.API().get_all_categories()
 
-        del result[:]
-        # result.append((-1, _('All users')))
-        for category in categories:
-            result.append((category.id, category.name))
+            del result[:]
+            for category in categories:
+                result.append((category.id, category.name))
+        except:
+            pass
 
     return result
 
