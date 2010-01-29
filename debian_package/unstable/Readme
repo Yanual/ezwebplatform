@@ -1,29 +1,13 @@
- Paquetes necesarios para crear paquetes EzWeb
-================================================
+************************************************
+* Simplificar el manejo de repositorios debian *
+************************************************
 
-  * dpkg-dev
-  * dch
+ Paquetes debian usados
+=========================
+
   * reprepro
+  * inoticoming
 
- dch
-======
-
-Este programa sirve para manejar los ficheros changelog de los paquetes debian y
-se utiliza en los scripts de creación de los paquetes para asegurar que la
-última versión indicada en este fichero coincide con la versión indicada en el
-nombre del paquete, dado que esto es un requisito de los paquetes debian.
-
-Lo más importante de cara a crear los paquetes debian, es tener bien configurado
-el dch para el usuario que va a crear los paquetes, dado que este programa
-realiza distintas operaciones dependiendo de la configuración (por ejemplo,
-añade distintos comentarios en el fichero changelog si el que crea el paquete es
-un "maintainer" o "uploader" que si no es uno de estos [mirar el fichero
-debian/control para más información]).
-
-Los parámetros más importante se configuran mediante las variables de entorno
-DEBFULLNAME y DEBEMAIL (en caso de no establecerse estas variables de entorno,
-dch intenta usar las variables de entono NAME y EMAIL respectivamente, aunque
-estas últimas son más genéricas y no son usadas solamente por dch).
 
  Reprepro
 ============
@@ -61,6 +45,52 @@ como añadir/borrar paquetes, etc:
 
    http://www.debian-administration.org/articles/286
 
+
+ Inoticoming
+==============
+
+Este programa permite ejecutar un determinado comando en el caso de que se
+produzcan cambios en un directorio dado. Esto permite usarlo conjuntamente con
+reprepro para, mediante la subida de ficheros a un directorio, subir paquetes
+al repositorio.
+
+
+
+
+*************************************
+* Creación de los paquetes de EzWeb *
+*************************************
+
+ Paquetes debian necesarios
+=============================
+
+  * dpkg-dev
+  * devscripts
+  * devhelper
+  * po-debconf
+  * dpatch
+  * dput
+
+ dch (incluido en el paquete devscripts)
+==========================================
+
+Este programa sirve para manejar los ficheros changelog de los paquetes debian y
+se utiliza en los scripts de creación de los paquetes para asegurar que la
+última versión indicada en este fichero coincide con la versión indicada en el
+nombre del paquete, dado que esto es un requisito de los paquetes debian.
+
+Lo más importante de cara a crear los paquetes debian, es tener bien configurado
+el dch para el usuario que va a crear los paquetes, dado que este programa
+realiza distintas operaciones dependiendo de la configuración (por ejemplo,
+añade distintos comentarios en el fichero changelog si el que crea el paquete es
+un "maintainer" o "uploader" que si no es uno de estos [mirar el fichero
+debian/control para más información]).
+
+Los parámetros más importante se configuran mediante las variables de entorno
+DEBFULLNAME y DEBEMAIL (en caso de no establecerse estas variables de entorno,
+dch intenta usar las variables de entono NAME y EMAIL respectivamente, aunque
+estas últimas son más genéricas y no son usadas solamente por dch).
+
  Lintian
 ==========
 
@@ -69,18 +99,29 @@ construidos de forma correcta, además de que alerta de posibles fallos mediante
 "warnings". Además muestra información sobre los errores y los warnings así
 como consejos de como solucionarlos.
 
+Uso:
+
+ lintian fichero.changes
+
+ dput
+=======
+
+dput es un programa que facilita la subida de paquetes a repostiorios debian
+que usen una cola de subida de paquetes.
+
+Hay que editar el fichero de configuración ~/.dput.cf (la sintaxis es la misma
+que la del fichero /etc/dput.cf).
 
 
+*******************************************
+* Recursos disponibles en este directorio *
+*******************************************
 
+ * repo.skeleton: Esqueleto de repositorio Debian/Ubuntu.
 
-
-
- Recursos disponibles en este directorio
-==========================================
-
- * repos: init script para lanzar los demonios necesarios para que cuando se
-   realice una subida a la cola de paquetes se ejecuten los comandos necesarios
-   para que se añadan los paquetes al repositorio.
+ * repos: init script para lanzar los demonios "inoticoming" necesarios para que
+   cuando se suban paquetes nuevos a los directorios adecuados se llame a
+   reprepro y se añadan los paquetes al repositorio.
 
 
  * create-debs.sh: facilita la creación de los paquetes debian. Flags
@@ -91,9 +132,16 @@ como consejos de como solucionarlos.
         EzWeb de los repositorios svn y abre un editor para modificar el
         fichero changelog.
 
-     -b: Indica que lo que se quiere es crear los paquetes debian.
+     -t: Permite forzar a que rama se asociaran los paquetes creados.
+
+     -b: Indica que lo que se quiere es crear los paquetes debian. Los paquetes
+        se generan incluso si ya extán creados.
+
      -i: Indica que lo que se quiere hacer es instalar los paquetes debian en
-        los repositorios.
+        los repositorios. Este comando intenta instalar los paquetes generados
+        previamente mediante el uso del flag -b, pero en caso de no existir, se
+        asumirá que se ha pasado el flag -b y se construirán para poder
+        instalarlos.
 
    En caso de no indicar ninguno de los flags -b o -i. Se asume que se ha
    utilizado el flag -b.

@@ -63,9 +63,9 @@ case "${1}" in
       update-ezweb-platform disable $conf_name
     done
 
-    if [ "$RELOAD" == 1 ]; then
-      reload_apache
-    fi
+    #if [ "$RELOAD" == 1 ]; then
+    #  reload_apache
+    #fi
     ;;
 
   abort-install|abort-upgrade|dissappear)

@@ -147,11 +147,11 @@ binary-indep: build install
 	      debian/ezweb-platform-mysql/usr/share/ezweb-platform/admintools/database_backends
 	
 	: ###
-	: # ezweb-platform-postgres
+	: # ezweb-platform-pgsql
 	: #
-	mkdir -p debian/ezweb-platform-postgres/usr/share/ezweb-platform/admintools/database_backends
+	mkdir -p debian/ezweb-platform-pgsql/usr/share/ezweb-platform/admintools/database_backends
 	cp -p debian/admintools/database_backends/postgres.py \
-	      debian/ezweb-platform-postgres/usr/share/ezweb-platform/admintools/database_backends
+	      debian/ezweb-platform-pgsql/usr/share/ezweb-platform/admintools/database_backends
 	
 	: ###
 	: # ezweb-platform-sqlite3

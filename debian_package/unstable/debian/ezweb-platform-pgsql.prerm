@@ -35,6 +35,7 @@ case "${1}" in
       OWNERS="$RET"
       OWNERS=`echo "$OWNERS" | sed -e 's/\(, ezweb-platform-common\|ezweb-platform-common, \)//g'`
       OWNERS=`echo "$OWNERS" | sed -e 's/ezweb-platform-//g'`
+      OWNERS=`echo "$OWNERS" | sed -e 's/pgsql/postgres/g'`
       db_subst shared/ezweb-platform-database-config choices $OWNERS
       db_metaget shared/ezweb-platform-database-config value
       if [ "mysql" = "$RET" ]; then

@@ -1,0 +1,43 @@
+#!/bin/bash
+
+set -e
+
+###
+# Include debconf module
+#
+. /usr/share/debconf/confmodule
+
+if [ -n "$DEBCONF_RECONFIGURE" ]; then
+  db_set shared/ezweb-platform-common/abortupgrade false
+  exit 0
+fi
+
+case "${1}" in
+  failed-upgrade)
+    exit -1
+    ;;
+
+  upgrade)
+    db_get shared/ezweb-platform-common/abortupgrade
+    if [ "$RET" == true ]; then
+      echo "Aborting EzWeb upgrade by user request"
+      exit 1
+    fi
+    ;;
+
+  remove)
+    ;;
+
+  abort-install|abort-upgrade|dissappear)
+    ;;
+
+  *)
+    echo "prerm called with unknown argument \"${1}\"" >&2
+    exit 1
+    ;;
+
+esac
+
+#DEBHELPER#
+
+exit 0

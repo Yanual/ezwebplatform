@@ -67,19 +67,22 @@ case $1 in
       fi
     fi
 
-    # Changes to the default server config
+    PARAMS=""
+    # Changes to the default server/database config
     db_get shared/ezweb-platform-server-config
 
     SERVER_CONFIG="$RET"
-    NEW_SERVER=`expr match "$SERVER_CONFIG" '\([^-]*\)-.*'`
-    NEW_CONNECTION_TYPE=`expr match "$SERVER_CONFIG" '[^-]*-\(.*\)'`
+    if [ -n "$SERVER_CONFIG" ]; then
+      NEW_SERVER=`expr match "$SERVER_CONFIG" '\([^-]*\)-.*'`
+      NEW_CONNECTION_TYPE=`expr match "$SERVER_CONFIG" '[^-]*-\(.*\)'`
 
-    db_get shared/ezweb-platform-database-config
-    NEW_DATABASE_ENGINE="$RET"
+      db_get shared/ezweb-platform-database-config
+      NEW_DATABASE_ENGINE="$RET"
 
-    $EZWEB_ADMIN_SCRIPT setdefaults default --server-type "$NEW_SERVER" \
-                                            --connection-type "$NEW_CONNECTION_TYPE" \
-                                            --database-engine "$NEW_DATABASE_ENGINE"
+      PARAMS="--server-type \"$NEW_SERVER\" \
+              --connection-type \"$NEW_CONNECTION_TYPE\" \
+              --database-engine \"$NEW_DATABASE_ENGINE\""
+    fi
 
     # Default settings
     db_get shared/ezweb-platform-common/configchanged
@@ -96,9 +99,15 @@ case $1 in
       DEBUG_MODE="$RET"
 
       # Save the config
-      $EZWEB_ADMIN_SCRIPT setdefaults default --proxy "$PROXY" \
-                                            --allow-anonymous-access "$ALLOW_ANONYMOUS_ACCESS" \
-                                            --debug-mode "$DEBUG_MODE"
+      PARAMS="$PARAMS \
+              --proxy \"$PROXY\" \
+              --allow-anonymous-access \"$ALLOW_ANONYMOUS_ACCESS\" \
+              --debug-mode \"$DEBUG_MODE\""
+    fi
+
+    PARAMS=`echo "${PARAMS}" | sed 's/^[[:space:]]*\(.*\)[[:space:]]*$/\1/'`
+    if [ -n "$PARAMS" ]; then
+      eval "$EZWEB_ADMIN_SCRIPT setdefaults default $PARAMS"
     fi
 
   ;;

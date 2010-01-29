@@ -44,8 +44,7 @@ from gettext import gettext as _
 
 from configobj import ConfigObj
 from optparse import make_option
-from django.core import management
-from admintools.common import EzWebAdminToolResources, MultiCommandOptionParser, Command, EzWebInstanceNotFound, Argument, ExtendedOption, ConfigCopy, AuthException
+from admintools.common import EzWebAdminToolResources, MultiCommandOptionParser, Command, EzWebInstanceNotFound, Argument, ExtendedOption, ConfigCopy, AbortException, AuthException, EzWebModuleNotFound
 from admintools.conditions import AndCondition, NotCondition, AllValidCondition, EnabledCondition, NameCondition, SchemaCondition, ServerCondition, ConnectionTypeCondition, DatabaseEngineCondition, HasAuthMethodCondition, AuthMethodCondition
 
 
@@ -150,15 +149,15 @@ class MainEzWebAdminTool:
       try:
         server_command = self.resources.get_server_admin_command(server_type, "FillConfig")
         server_command.execute(config)
-      except:
-        config.set('', 'server', 'server_type')
+      except EzWebModuleNotFound:
+        pass
 
     if database_engine != "" :
       try:
         dbms_command = self.resources.get_dbms_admin_command(database_engine, "FillConfig")
         dbms_command.execute(config)
-      except:
-        config.set('', 'database', 'database_engine')
+      except EzWebModuleNotFound:
+        pass
 
 
     # Call Fill Config commands of the auth method used
@@ -267,7 +266,10 @@ class MainEzWebAdminTool:
           from django.db import connection
           cursor = connection.cursor()
           cursor.execute("SET FOREIGN_KEY_CHECKS = 0");
+
+        from django.core import management
         management.call_command("syncdb", interactive= False, verbosity= 0)
+
         if database_engine == "mysql":
           cursor = connection.cursor()
           cursor.execute("SET FOREIGN_KEY_CHECKS = 1");
@@ -281,8 +283,15 @@ class MainEzWebAdminTool:
     if site_cfg.get('server', 'connection_type') == 'fastcgi':
       os.system("invoke-rc.d ezweb-platform-fastcgi restart")
 
+    if not hasattr(options, 'verbose'):
+      options.verbose = False
+
+    self.resources.startTask("Reloading web server", options.verbose)
+
     server_command = self.resources.get_server_admin_command(server_type, "Apply")
     server_command.execute(options)
+
+    self.resources.endTask()
 
   def update_settings_py(self, site_cfg):
     template = self.resources.get_settings_template()
@@ -370,47 +379,70 @@ class MainEzWebAdminTool:
 
   def _update_instance(self, old_config, new_config, options, force = False):
     # Check for server/connection type and database engine changes
-    enabled = new_config.getDefaultAsBool(False, 'enabled')
+    enabled = old_config.getDefaultAsBool(False, 'enabled')
     reenable = False
     old_server_type = old_config.getDefault('', 'server', 'server_type')
     new_server_type = new_config.getDefault('', 'server', 'server_type')
     if old_server_type != new_server_type:
       reenable = enabled
       if old_server_type != '':
-        self.resources.printMsg("Purging previous server (%s) configuration... " % old_server_type)
-        self.admintool.purgeserver(old_config, options)
-        self.resources.printlnMsgNP("Done")
+        self.resources.startTask("Purging previous server (%s) configuration" % old_server_type, True)
+        try:
+          self.purgeserver(old_config, options)
+          self.resources.endTask()
+        except EzWebModuleNotFound, e:
+          self.resources.printlnMsg(unicode(e))
+          if not force:
+            self.resources.printlnMsg("If you like to continue, try using the --force flag.")
+          self.resources.endTask(True)
+          if not force:
+            raise AbortException
+
 
     if old_config.getDefault('', 'server', 'connection_type') != new_config.getDefault('', 'server', 'connection_type'):
-      reenable = True
+      reenable = enabled
 
     old_database = old_config.getDefault('', 'database', 'database_engine')
     new_database = new_config.getDefault('', 'database', 'database_engine')
     if old_database != new_database:
-      reenable = True
+      reenable = enabled
       options.force_syncdb = True
       if old_database != '':
-        self.resources.printlnMsg("Purging previous database (%s) configuration... " % old_database)
-        self.resources.incPrintNestingLevel()
-        self.purgedb(old_config, options)
-        self.resources.decPrintNestingLevel()
-        self.resources.printlnMsg("Done")
-
+        self.resources.startTask("Purging previous database (%s) configuration" % old_database, True)
+        try:
+          self.purgedb(old_config, options)
+          self.resources.endTask()
+        except EzWebModuleNotFound, e:
+          self.resources.printlnMsg(unicode(e))
+          if not force:
+            self.resources.printlnMsg("If you like to continue, try using the --force flag.")
+          self.resources.endTask(True)
+          if not force:
+            raise AbortException
 
     if new_config.changed or force:
       if reenable:
-        self.enable(new_config, options)
-        self.resources.printlnMsg()
+        if self.isEnableable(new_config):
+          self.enable(new_config, options)
+          self.resources.printlnMsg()
+        else:
+          # FIXME
+          new_config.setAndUpdate(False, "enabled")
+          new_config.setAndUpdate(False, "schedule_enable")
+          self.resources.save_site_config(new_config, options.backup)
+
       elif enabled:
         self.process_cfg(new_config, options)
         self.resources.printlnMsg()
       elif new_config.getDefaultAsBool(False, "schedule_enable") and self.isEnableable(new_config):
-        self.resources.printlnMsg('Trying to enable the instance')
+        self.resources.save_site_config(new_config, options.backup)
+        self.resources.startTask('Trying to enable the instance', True)
         try:
           new_config.remove("schedule_enable")
           self.enable(new_config, options)
+          self.resources.endTask()
         except:
-          self.resources.printlnMsg('Error enabling the instance')
+          self.resources.endTask(True)
       else:
         # EzWeb config is saved only if enable or process_cfg is called
         self.resources.save_site_config(new_config, options.backup)
@@ -534,6 +566,8 @@ class MainEzWebAdminTool:
                                dest="theme", help=_("Theme to use with this instance")),
                    make_option("--proxy", action="store",
                                dest="proxy", help=_("The proxy to use")),
+                   make_option("--force", action="store_true",
+                               dest="force", help=_("Force all operations."), default=False),
                    make_option("--force-syncdb", action="store_true",
                                dest="force_syncdb", help=_("Force a syncdb operation (only if the instance is already enabled)"), default=False),
                   ]
@@ -552,13 +586,11 @@ class MainEzWebAdminTool:
       conf_name = args[0]
 
       self.resources.printlnMsg()
-      self.resources.printlnMsg("Updating \"%s\" instance" % conf_name)
+      self.resources.startTask("Updating \"%s\" instance" % conf_name, True)
       self.resources.printlnMsg()
-      self.resources.incPrintNestingLevel()
 
       # Update general config
-      self.resources.printlnMsg("Updating general config... ")
-      self.resources.incPrintNestingLevel()
+      self.resources.startTask("Updating general config", True)
 
       if old_config == None:
         # make a copy of the config
@@ -568,6 +600,7 @@ class MainEzWebAdminTool:
         self.admintool.fillConfig(old_config)
 
       enabled = old_config.getDefaultAsBool(False, 'enabled')
+      disable = False
 
       # make a new copy of the config for tracking the changes
       config = self.resources.get_site_config(conf_name)
@@ -575,18 +608,38 @@ class MainEzWebAdminTool:
 
       # Server type
       if options.server_type != None:
-        self.resources.printlnMsg("Assigning \"%s\" as server for this instance." % options.server_type)
-        new_config.setAndUpdate(options.server_type, 'server', 'server_type')
+        try:
+          self.resources.get_server_admin_command(options.server_type, "FillConfig")
+          self.resources.printlnMsg("Assigning \"%s\" as server for this instance." % options.server_type)
+          new_config.setAndUpdate(options.server_type, 'server', 'server_type')
+        except EzWebModuleNotFound, e:
+          self.resources.printlnMsg(unicode(e))
+
+          if options.force:
+            new_config.setAndUpdate(options.server_type, 'server', 'server_type')
+          else:
+            self.resources.printlnMsg("If you like to assign it, try using the --force flag.")
+
 
       # Connection type
       if options.connection_type != None:
+        # TODO check connection type
         self.resources.printlnMsg("Using \"%s\" for connecting with the server." % options.connection_type)
         new_config.setAndUpdate(options.connection_type, 'server', 'connection_type')
 
       # Database engine
       if options.database_engine != None:
-        self.resources.printlnMsg("Assigning \"%s\" as dbms for this instance." % options.database_engine)
-        new_config.setAndUpdate(options.database_engine, 'database', 'database_engine')
+        try:
+          self.resources.get_dbms_admin_command(options.server_type, "FillConfig")
+          self.resources.printlnMsg("Assigning \"%s\" as dbms for this instance." % options.database_engine)
+          new_config.setAndUpdate(options.database_engine, 'database', 'database_engine')
+        except EzWebModuleNotFound, e:
+          self.resources.printlnMsg(unicode(e))
+
+          if options.force:
+            new_config.setAndUpdate(options.database_engine, 'database', 'database_engine')
+          else:
+            self.resources.printlnMsg("If you like to assign it, try using the --force flag.")
 
       # Auth methods
       if options.auth_methods != None:
@@ -639,54 +692,76 @@ class MainEzWebAdminTool:
         self.resources.printlnMsg("Using \"%s\" as schema for the database settings." % options.database_schema)
         new_config.setAndUpdate(options.database_schema, 'database', 'schema')
 
-      self.resources.decPrintNestingLevel()
-      self.resources.printlnMsg("Done")
+      self.resources.endTask()
       self.resources.printlnMsg()
 
 
       # Specific server & datatabase option updating
       self.admintool.fillConfig(new_config)
-      server_type = new_config.getDefault('', 'server_type')
-      database_engine = new_config.getDefault('', 'database_engine')
+      server_type = new_config.getDefault('', 'server', 'server_type')
+      database_engine = new_config.getDefault('', 'database', 'database_engine')
       auth_methods = new_config.getDefault([], 'auth_methods')
 
       if len(auth_methods) > 0:
         for auth_method in auth_methods:
-          auth_command = self.resources.get_auth_admin_command(auth_method, "Update")
-          parser.add_options(auth_command.option_list)
+          try:
+            auth_command = self.resources.get_auth_admin_command(auth_method, "Update")
+            parser.add_options(auth_command.option_list)
+          except EzWebModuleNotFound, e:
+            disable = True
 
+      server_command = None
       if server_type != '':
-        server_command = self.resources.get_server_admin_command(server_type, "Update")
-        parser.add_options(server_command.option_list)
+        try:
+          server_command = self.resources.get_server_admin_command(server_type, "Update")
+          parser.add_options(server_command.option_list)
+        except EzWebModuleNotFound, e:
+          disable = True
 
+      dbms_command = None
       if database_engine != '':
-        dbms_command = self.resources.get_dbms_admin_command(database_engine, "Update")
-        parser.add_options(dbms_command.option_list)
+        try:
+          dbms_command = self.resources.get_dbms_admin_command(database_engine, "Update")
+          parser.add_options(dbms_command.option_list)
+        except EzWebModuleNotFound, e:
+          disable = True
+
 
       # Check command line args
       parser.parse_args(False)
 
       if len(auth_methods) > 0:
         for auth_method in auth_methods:
-          self.resources.printMsg("Updating auth backend config (%s)... " % auth_method)
-          auth_command = self.resources.get_auth_admin_command(auth_method, "Update")
-          auth_command.execute(new_config, parser.get_current_options())
-          self.resources.printlnMsgNP("Done")
+          self.resources.startTask("Updating auth backend config (%s)" % auth_method, True)
 
-      if server_type != '':
-        self.resources.printMsg("Updating server config (%s)... " % server_type)
+          try:
+            auth_command = self.resources.get_auth_admin_command(auth_method, "Update")
+            auth_command.execute(new_config, parser.get_current_options())
+          except EzWebModuleNotFound, e:
+            self.resources.printlnMsg(unicode(e))
+
+          self.resources.endTask()
+
+      if server_command != None:
+        self.resources.startTask("Updating server config (%s)" % server_type, True)
         server_command.execute(new_config, parser.get_current_options())
-        self.resources.printlnMsgNP("Done")
+        self.resources.endTask()
 
-      if database_engine != '':
-        self.resources.printMsg("Updating database config (%s)... " % database_engine)
+      if dbms_command != None:
+        self.resources.startTask("Updating database config (%s)" % database_engine, True)
         dbms_command.execute(new_config, parser.get_current_options())
-        self.resources.printlnMsgNP("Done")
+        self.resources.endTask()
 
-      self.admintool._update_instance(old_config, new_config, options)
+      try:
+        self.admintool._update_instance(old_config, new_config, options, options.force)
+        self.resources.endTask()
+        self.resources.printlnMsg()
+        self.resources.printlnMsg("EzWeb instance updated sucessfully.")
+      except AbortException:
+        self.resources.endTask(True)
+        self.resources.printlnMsg()
+        self.resources.printlnMsg("EzWeb instance update aborted.")
 
-      self.resources.decPrintNestingLevel()
-      self.resources.printlnMsg("EzWeb instance updated sucessfully.")
 
 
   class EnableCommand(Command):
@@ -762,19 +837,32 @@ class MainEzWebAdminTool:
         self.resources.incPrintNestingLevel()
 
         site_cfg.setAndUpdate(False, "enabled")
-        site_cfg.setAndUpdate(False, "schedule_enabled")
+        site_cfg.setAndUpdate(False, "schedule_enable")
         self.resources.save_site_config(site_cfg, options.backup)
 
-        self.resources.printlnMsg("Disabling %s server instance... " % conf_name)
-        self.admintool.purgeserver(site_cfg, options)
-        self.resources.printlnMsg("Done")
+        server_type = site_cfg.getDefault('', 'server', 'server_type')
+        self.resources.printlnMsg()
+        try:
+          self.resources.get_server_admin_command(server_type, "Apply")
+          self.resources.printlnMsg("Purging server (%s) resources... " % server_type)
+          self.admintool.purgeserver(site_cfg, options)
+          self.resources.printlnMsg("Done")
+        except EzWebModuleNotFound:
+          self.resources.printlnMsg("Unkwon server type: %s. Server resources will not be purged." % server_type)
+          server_type = ''
+
 
         self.resources.printlnMsg()
         if site_cfg.get('server', 'connection_type') == 'fastcgi':
           os.system("invoke-rc.d ezweb-platform-fastcgi restart")
 
-        server_command = self.resources.get_server_admin_command(site_cfg.get('server', 'server_type'), "Apply")
-        server_command.execute(options)
+        if server_type != '':
+          self.resources.startTask("Reloading web server", options.verbose)
+
+          server_command = self.resources.get_server_admin_command(server_type, "Apply")
+          server_command.execute(options)
+
+          self.resources.endTask()
 
         self.resources.decPrintNestingLevel()
         self.resources.printlnMsg("Done")
@@ -782,7 +870,7 @@ class MainEzWebAdminTool:
         self.resources.printlnMsg("Aborting planed activation of the \"%s\" EzWeb instance..." % conf_name)
         self.resources.incPrintNestingLevel()
 
-        site_cfg.setAndUpdate(False, "schedule_enabled")
+        site_cfg.setAndUpdate(False, "schedule_enable")
         self.resources.save_site_config(site_cfg, options.backup)
 
         self.resources.decPrintNestingLevel()
@@ -1017,8 +1105,7 @@ class MainEzWebAdminTool:
       else:
         schema_name = args[0]
 
-      self.resources.printlnMsg("Updating \"%s\" schema..." % schema_name)
-      self.resources.incPrintNestingLevel()
+      self.resources.startTask("Updating \"%s\" schema" % schema_name, True)
 
       # Retreive the list of the instances using this schema
       affectedInstances = self.admintool.get_filtered_instances(["schema", schema_name])
@@ -1038,6 +1125,7 @@ class MainEzWebAdminTool:
 
       # Server type
       if options.server_type != None:
+        self.resources.printlnMsg("Assigning %s as server" % options.server_type)
         cfg["server_type"] = options.server_type
 
       # Connection type
@@ -1065,8 +1153,7 @@ class MainEzWebAdminTool:
       self.resources.printlnMsg("")
       # Update all affected instances
       for instance in affectedInstances:
-        self.resources.printlnMsg("Updating \"%s\" instance" % instance.get('name'))
-        self.resources.incPrintNestingLevel()
+        self.resources.startTask("Updating \"%s\" instance" % instance.get('name'), True)
 
         newconf = self.resources.get_site_config(instance.get('name'), False, False)
         newconf = ConfigCopy(newconf)
@@ -1075,12 +1162,10 @@ class MainEzWebAdminTool:
 
         self.admintool._update_instance(instance, newconf, options, True)
 
-        self.resources.decPrintNestingLevel()
-        self.resources.printlnMsg("Done")
+        self.resources.endTask()
         self.resources.printlnMsg("")
 
-      self.resources.decPrintNestingLevel()
-      self.resources.printlnMsg("Done")
+      self.resources.endTask()
       self.resources.printlnMsg()
 
   class GetDefaultsCommand(Command):
@@ -1340,7 +1425,9 @@ class MainEzWebAdminTool:
       os.SEEK_SET, os.SEEK_CUR, os.SEEK_END = range(3)
 
     option_list = [make_option("--no-backup", action="store_false",
-                               dest="backup", default=True, help=_("Do not backup files before modify it."))
+                               dest="backup", default=True, help=_("Do not backup files before modify it.")),
+                   make_option("--verbose", action="store_true",
+                               dest="verbose", default=False, help=_("Give more explanations about what is being done."))
                   ]
     parser = MultiCommandOptionParser(option_list = option_list)
 

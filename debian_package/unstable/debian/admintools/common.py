@@ -55,6 +55,7 @@ class EzWebAdminToolResources:
     self.dbms_modules = {}
     self.server_modules = {}
     self.auth_modules = {}
+    self.taskVerbosity = []
 
   def incPrintNestingLevel(self):
     self.printPrefix += "  "
@@ -73,6 +74,28 @@ class EzWebAdminToolResources:
 
   def decPrintNestingLevel(self):
     self.printPrefix = self.printPrefix[0:-2]
+
+  def startTask(self, msg, verbose):
+    self.taskVerbosity.append(verbose)
+    if verbose:
+      self.printlnMsg("%(msg)s..." % {'msg': msg})
+      self.incPrintNestingLevel()
+    else:
+      self.printMsg("%(msg)s... " % {'msg': msg})
+
+  def endTask(self, error = False):
+    verbose = self.taskVerbosity.pop()
+    if error:
+      msg = "Error"
+    else:
+      msg = "Done"
+
+    if verbose:
+      self.decPrintNestingLevel()
+      self.printlnMsg(msg)
+    else:
+      self.printlnMsgNP(msg)
+
 
   def get_config_file(self, conf_name):
     return self.SITE_CONFIG_BASE_PATH + conf_name + "/config"
@@ -158,11 +181,10 @@ class EzWebAdminToolResources:
         mod = __import__("admintools.auth_backends.%s" % auth_method, {}, {}, ["AuthMethod"])
       except ImportError, errormsg:
         msg = "Unknown auth method \"%s\". May be you need to install other ezweb-platform packages." % auth_method
-        self.printlnMsg(msg)
-        sys.exit(-1)
+        raise EzWebModuleNotFound(msg)
       except Exception, errormsg:
         self.printlnMsg("Error loading \"%s\" module: %s" % (auth_method, errormsg))
-        sys.exit(-1)
+        raise EzWebModuleException(msg)
 
       self.auth_modules[auth_method] = mod
 
@@ -177,11 +199,10 @@ class EzWebAdminToolResources:
         mod = __import__("admintools.auth_backends.%s" % auth_method, {}, {}, ["AuthMethod"])
       except ImportError, errormsg:
         msg = "Unknown auth method \"%s\". May be you need to install other ezweb-platform packages." % auth_method
-        self.printlnMsg(msg)
-        sys.exit(-1)
+        raise EzWebModuleNotFound(msg)
       except Exception, errormsg:
         self.printlnMsg("Error loading \"%s\" module: %s" % (auth_method, errormsg))
-        sys.exit(-1)
+        raise EzWebModuleException(msg)
 
       self.auth_modules[auth_method] = mod
 
@@ -193,14 +214,16 @@ class EzWebAdminToolResources:
   def get_server_admin_command(self, server_type, command_name):
     if not self.server_modules.has_key(server_type):
       try:
+        if server_type == '':
+          raise ImportError
+
         mod = __import__("admintools.server_backends.%s" % server_type, {}, {}, ["Command"])
       except ImportError, errormsg:
         msg = "Unknown server type \"%s\". May be you need to install other ezweb-platform packages." % server_type
-        self.printlnMsg(msg)
-        sys.exit(-1)
+        raise EzWebModuleNotFound(msg)
       except Exception, errormsg:
         self.printlnMsg("Error loading \"%s\" module: %s" % (server_type, errormsg))
-        sys.exit(-1)
+        raise EzWebModuleException(msg)
 
       self.server_modules[server_type] = mod
 
@@ -215,11 +238,10 @@ class EzWebAdminToolResources:
         mod = __import__("admintools.database_backends.%s" % database_engine, {}, {}, ["Command"])
       except ImportError, errormsg:
         msg = "Unknown DBMS type \"%s\". May be you need to install other ezweb-platform packages." % database_engine
-        self.printlnMsg(msg)
-        sys.exit(-1)
+        raise EzWebModuleNotFound(msg)
       except Exception, errormsg:
         self.printlnMsg("Error loading \"%s\" module: %s" % (database_engine, errormsg))
-        sys.exit(-1)
+        raise EzWebModuleException(msg)
 
       self.dbms_modules[database_engine] = mod
 
@@ -524,6 +546,9 @@ class Command:
     self.resources = resources
 
 
+class AbortException(Exception):
+  pass
+
 class AuthException(Exception):
   pass
 
@@ -565,9 +590,21 @@ class ConfigCopy:
 
     length = len(entries)
     if length > 0:
+      if not tmp.has_key(root):
+        tmp[root] = {}
+
+      if not tmp2.has_key(root):
+        tmp2[root] = {}
+
       tmp = tmp[root]
       tmp2 = tmp2[root]
       for argument in entries[:-1]:
+        if not tmp.has_key(argument):
+          tmp[argument] = {}
+
+        if not tmp2.has_key(argument):
+          tmp2[argument] = {}
+
         tmp = tmp[argument]
         tmp2 = tmp2[argument]
 
@@ -587,8 +624,14 @@ class ConfigCopy:
 
     length = len(entries)
     if length > 0:
+      if not tmp.has_key(root):
+        tmp[root] = {}
+
       tmp = tmp[root]
       for argument in entries[:-1]:
+        if not tmp.has_key(argument):
+          tmp[argument] = {}
+
         tmp = tmp[argument]
 
       tmp[entries[length - 1]] = value
@@ -641,6 +684,10 @@ class ConfigCopy:
 
   def getDefaultAsBool(self, defaultValue, root, *entries):
     value = self.getDefault(defaultValue, root, *entries)
+
+    if type(value).__name__ == 'bool':
+      return value
+
     if value == "True" or value == "true":
       return True
     else:
@@ -648,6 +695,12 @@ class ConfigCopy:
 
   def __getitem__(self, entry):
     return self.copyConfig[entry]
+
+class EzWebModuleException(Exception):
+  None
+
+class EzWebModuleNotFound(Exception):
+  None
 
 class EzWebInstanceNotFound(Exception):
   None

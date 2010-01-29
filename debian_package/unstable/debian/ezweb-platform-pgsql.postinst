@@ -1,0 +1,56 @@
+#!/bin/bash
+
+set -e
+
+###
+# Include debconf module
+#
+. /usr/share/debconf/confmodule
+
+EZWEB_ADMIN_SCRIPT="update-ezweb-platform"
+
+if [ "$1" = "configure" -a -n "$2" ]; then
+
+  # If we are upgrading from the old package style, then configure the default instance
+  # to use old configuration
+  VER=`expr match "$2" '\([0-9]*\.[0-9]*\)~svn[0-9]*'`
+  #SVNREV=`expr match "$2" '[0-9]*\.[0-9]*~svn\([0-9]*\)'`
+  if `dpkg --compare-versions "$VER" lt "0.4"`; then
+
+    db_get ezweb-platform-postgres/olduser
+    DBUSER="$RET"
+
+    db_get ezweb-platform-postgres/oldpass
+    DBPASSWD="$RET"
+
+    $EZWEB_ADMIN_SCRIPT update default --database-engine postgres \
+                                       --database-user "$DBUSER" \
+                                       --database-pass "$DBPASSWD"
+  fi
+fi
+
+if [ "$1" = "configure" -o "$1" = "reconfigure" ]; then
+
+  db_get ezweb-platform-postgres/serveraddress
+  SERVER_HOST="$RET"
+
+  db_get ezweb-platform-postgres/adminuser
+  ADMIN_USER="$RET"
+
+  db_get ezweb-platform-postgres/adminpass
+  ADMIN_PASS="$RET"
+
+
+  $EZWEB_ADMIN_SCRIPT setdbmsdefaults postgres default --database-host "$SERVER_HOST" --admin-user "$ADMIN_USER" --admin-pass "$ADMIN_PASS"
+
+  db_get shared/ezweb-platform-database-config
+  DB_CONFIG="$RET"
+  if [ "$DB_CONFIG" == 'postgres' ]; then
+    dpkg-trigger update-ezweb-platform
+  fi
+fi
+
+#DEBHELPER#
+
+db_stop
+exit 0

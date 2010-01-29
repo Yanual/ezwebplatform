@@ -222,8 +222,12 @@ class ApplyCommand(Command):
   def execute(self, options):
     ret = os.system("lighttpd -t -f /etc/lighttpd/lighttpd.conf &>/dev/null")
     if ret == 0:
-      os.system("invoke-rc.d lighttpd force-reload")
-      self.resources.printlnMsg()
+      if options.verbose:
+        self.resources.printlnMsg()
+        os.system("invoke-rc.d lighttpd force-reload")
+        self.resources.printlnMsg()
+      else:
+        os.system("invoke-rc.d lighttpd force-reload 2&> /dev/null")
     else:
       self.resources.printlnMsg("Your lighttpd configuration is broken, so we're not restarting it for you.")
 

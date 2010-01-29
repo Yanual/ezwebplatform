@@ -13,9 +13,9 @@ Package: ezweb-platform
 Section: web
 Priority: optional
 Architecture: all
-Depends: ${misc:Depends}
-Pre-Depends: debconf, ezweb-platform-postgres | ezweb-platform-database-backend, ezweb-platform-apache2-mod-python | ezweb-platform-server-backend
-Recommends: ezweb-platform-postgres | ezweb-platform-mysql | ezweb-platform-sqlite3, ezweb-platform-apache2-mod-python | ezweb-platform-apache2-fastcgi | ezweb-platform-lighttpd-fastcgi
+Depends: ${misc:Depends}, ezweb-platform-pgsql-local | ezweb-platform-database-backend, ezweb-platform-apache2-mod-python | ezweb-platform-server-backend
+Pre-Depends: debconf, ezweb-platform-common (= ${binary:Version})
+Recommends: ezweb-platform-pgsql | ezweb-platform-mysql | ezweb-platform-sqlite3, ezweb-platform-apache2-mod-python | ezweb-platform-apache2-fastcgi | ezweb-platform-lighttpd-fastcgi
 Description: Web mashup platform - metapackage
  EzWeb Platform, the MORFEO Open Source Community Mashup Platform, provides you
  a framework for building modern enterprise and personal mashups following the
@@ -27,8 +27,8 @@ Package: ezweb-platform-common
 Section: web
 Priority: optional
 Architecture: all
-Pre-Depends: debconf
-Depends: ${misc:Depends}, python (>= 2.4), python-django (>=1.0), python-libxml2, python-imaging, python-configobj
+Pre-Depends: debconf, python-django (>=1.0)
+Depends: ${misc:Depends}, python (>= 2.4), python-libxml2, python-imaging, python-configobj
 Description: Web mashup platform - shared files
  EzWeb Platform, the MORFEO Open Source Community Mashup Platform, provides you
  a framework for building modern enterprise and personal mashups following the
@@ -132,13 +132,12 @@ Description: Lighttpd using fastcgi support for EzWeb Platform
  This package provides support for managing EzWeb Platform instances
  using lighttpd and fastcgi.
 
-Package: ezweb-platform-postgres
+Package: ezweb-platform-pgsql
 Section: web
 Priority: optional
 Architecture: all
 Depends: ${misc:Depends}, python-psycopg2
 Pre-Depends: debconf, ezweb-platform-common (= ${binary:Version})
-Recommends: postgresql | postgresql-7.4 | postgresql-8.3
 Provides: ezweb-platform-database-backend
 Description: PostgreSQL support for EzWeb Platform
  EzWeb Platform, the MORFEO Open Source Community Mashup Platform, provides you
@@ -148,13 +147,27 @@ Description: PostgreSQL support for EzWeb Platform
  This package provides common files for supporting EzWeb Platform instances
  using PostgreSQL as DBMS.
 
+Package: ezweb-platform-pgsql-local
+Section: web
+Priority: optional
+Architecture: all
+Depends: ${misc:Depends}, ezweb-platform-pgsql (= ${binary:Version}), postgresql | postgresql-8.4 | postgresql-8.3 | postgresql-7.4
+Pre-Depends: debconf, ezweb-platform-common (= ${binary:Version})
+Replaces: ezweb-platform-postgres
+Description: Local PostgreSQL support for EzWeb Platform
+ EzWeb Platform, the MORFEO Open Source Community Mashup Platform, provides you
+ a framework for building modern enterprise and personal mashups following the
+ main Web 2.0 ideas.
+ .
+ This meta-package installs all needed packages for supporting EzWeb Platform
+ instances using a local PostgreSQL database.
+
 Package: ezweb-platform-mysql
 Section: web
 Priority: optional
 Architecture: all
 Depends: ${misc:Depends}, debconf, python-mysqldb
 Pre-Depends: ezweb-platform-common (= ${binary:Version})
-Recommends: mysql-server | mysql-server-5.0 | mysql-server-5.1
 Provides: ezweb-platform-database-backend
 Description: MySQL support for EzWeb Platform
  EzWeb Platform, the MORFEO Open Source Community Mashup Platform, provides you
@@ -164,7 +177,22 @@ Description: MySQL support for EzWeb Platform
  This package provides common files for supporting EzWeb Platform instances
  using MySQL as DBMS.
 
-Package: ezweb-platform-sqlite3
+Package: ezweb-platform-mysql-local
+Section: web
+Priority: optional
+Architecture: all
+Depends: ${misc:Depends}, debconf, ezweb-platform-mysql (= ${binary:Version}), mysql-server | mysql-server-5.0 | mysql-server-5.1
+Pre-Depends: ezweb-platform-common (= ${binary:Version})
+Replaces: ezweb-platform-mysql (< 0.4~svn2394)
+Description: Local MySQL support for EzWeb Platform
+ EzWeb Platform, the MORFEO Open Source Community Mashup Platform, provides you
+ a framework for building modern enterprise and personal mashups following the
+ main Web 2.0 ideas.
+ .
+ This meta-package installs all needed packages for supporting EzWeb Platform
+ instances using a local PostgreSQL database.
+
+Package: ezweb-platform-db-sqlite3
 Section: web
 Priority: optional
 Architecture: all
@@ -172,6 +200,21 @@ Depends: ${misc:Depends}, python (>= 2.5) | python-pysqlite2
 Pre-Depends: debconf, ezweb-platform-common (= ${binary:Version})
 Provides: ezweb-platform-database-backend
 Description: SQLite3 support for EzWeb Platform
+ EzWeb Platform, the MORFEO Open Source Community Mashup Platform, provides you
+ a framework for building modern enterprise and personal mashups following the
+ main Web 2.0 ideas.
+ .
+ This package provides common files for supporting EzWeb Platform instances
+ using SQLite3 as database engine.
+
+Package: ezweb-platform-sqlite3
+Section: web
+Priority: optional
+Architecture: all
+Depends: ${misc:Depends}, ezweb-platform-sqlite3-support
+Pre-Depends: debconf, ezweb-platform-common (= ${binary:Version})
+Provides: ezweb-platform-database-backend
+Description: SQLite3 support for EzWeb Platform (transitional package)
  EzWeb Platform, the MORFEO Open Source Community Mashup Platform, provides you
  a framework for building modern enterprise and personal mashups following the
  main Web 2.0 ideas.

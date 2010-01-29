@@ -226,13 +226,13 @@ class UpdateCommand(Command):
   def execute(self, site_cfg, options):
 
     if options.document_root != None:
-      server_cfg.setAndUpdate(options.document_root, "document_root")
+      site_cfg.setAndUpdate(options.document_root, "document_root")
 
     if options.server_name != None:
-      server_cfg.setAndUpdate(options.server_name, "server", "name")
+      site_cfg.setAndUpdate(options.server_name, "server", "name")
 
     if options.server_port != None:
-      server_cfg.setAndUpdate(options.server_port, "server", "port")
+      site_cfg.setAndUpdate(options.server_port, "server", "port")
 
 class ApplyCommand(Command):
   option_list = []
@@ -241,10 +241,15 @@ class ApplyCommand(Command):
     self.resources = resources
 
   def execute(self, options):
-    ret = os.system("apache2ctl configtest 2> /dev/null")
+    ret = os.system("apache2ctl -t 2> /dev/null")
     if ret == 0:
-      os.system("invoke-rc.d apache2 force-reload")
-      self.resources.printlnMsg()
+      serviceCommand = os.system("service") == 0 ? 'service' : 'invoke-rc.d'
+      if options.verbose == True:
+        self.resources.printlnMsg()
+        os.system(serviceCommand + " apache2 force-reload")
+        self.resources.printlnMsg()
+      else:
+        os.system(serviceCommand + " apache2 force-reload 2&> /dev/null")
     else:
       self.resources.printlnMsg("Your apache2 configuration is broken, so we're not restarting it for you.")
 
@@ -264,7 +269,7 @@ class ProcessCommand(Command):
     if site_cfg.getDefault('', 'server', 'document_root') == "":
       newDocumentRoot = self.resources.get_default_document_root(conf_name)
       self.resources.printlnMsg("Assigning \"" + newDocumentRoot + "\" as document root for \"" + conf_name + "\"")
-      server_cfg.setAndUpdate(newDocumentRoot, 'server', 'document_root')
+      site_cfg.setAndUpdate(newDocumentRoot, 'server', 'document_root')
 
     self.resources.makedirs(site_cfg.get('server', 'document_root'))
 

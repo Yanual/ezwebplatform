@@ -1,4 +1,33 @@
-ezweb-platform (0.4~svn2393-17) unstable; urgency=low
+ezweb-platform (0.4~svn2743-1) experimental; urgency=low
+
+  * New upstream snapshot:
+    - Support for packaged gadgets.
+    - Improved look & feel on IE.
+    - Many bug fixes.
+
+ -- Álvaro Arranz García <aarranz@pegaso.ls.fi.upm.es>  Fri, 08 Jan 2010 11:56:31 +0100
+
+ezweb-platform (0.4~svn2725-1) experimental; urgency=low
+
+  * New upstream snapshot:
+    - Fulldragboard iGadgets
+    - Many bug fixes.
+
+ -- Álvaro Arranz García <aarranz@pegaso.ls.fi.upm.es>  Thu, 10 Dec 2009 15:12:51 +0100
+
+ezweb-platform (0.4~svn2669-1) experimental; urgency=low
+
+  * New upstream snapshot:
+    - Preferences.
+    - Better theme support.
+    - Now tabs can be ordered.
+    - Now gadgets can be iconified.
+    - Support for django 1.1
+    - Many bug fixes.
+
+ -- Álvaro Arranz García <aarranz@pegaso.ls.fi.upm.es>  Tue, 20 Oct 2009 15:20:01 +0200
+
+ezweb-platform (0.4~svn2413-4) experimental; urgency=low
 
   * New upstream snapshot:
     - New look & feel.
