@@ -19,7 +19,6 @@ EZWEB_TRUNK = 'https://svn.forge.morfeo-project.org/svn/ezwebplatform/ezweb_plat
 
 def ask_data_to_user():
   #Getting from user installation data
-  
   data = {}
 
   print "Input installation directory for EzWeb:"
@@ -50,7 +49,7 @@ def normalize_path(path, filename=''):
     os.makedirs(dir)
 
   os.chdir(dir)
-  
+
   return full_path
 
 
@@ -63,11 +62,19 @@ def download_file(url, filename, path):
 
   file = open(full_path, 'wb')
   file.write(response)
-  file.close() 
+  file.close()
 
   return full_path
 
+def print_step(text):
+  print ""
+  print "#####################"
+  print "# " + text
+  print "#####################"
+
 def install_pip(ezweb_path):
+  print_step('Installing pip');
+
   #Downloading 'easy_install'
   download_file(EASY_INSTALL_URL, EASY_INSTALL_FILENAME, ezweb_path)
 
@@ -78,33 +85,56 @@ def install_pip(ezweb_path):
 
   os.system('easy_install pip')
 
-def load_data_model():
-  os.system('python manage.py syncdb')
+def install_virtualenv():
+  print_step('Installing virtualenv')
 
-def install_dependencies():
-  #Installing django
+  os.system('pip install -U virtualenv')
 
-  os.system('pip install "django==1.0.4"')
+def create_virtual_env(name):
+  print_step('Creating a virtual env for EzWeb')
+
+  os.system('virtualenv --no-site-packages %s' % name)
+
+def install_dependencies(venv):
+
+  print_step('Installing EzWeb dependencies')
+
+  # Installing django
+
+  os.system('pip install -E %s "django==1.0.4"' % venv)
+
+  os.system('pip install -E %s -U flup' % venv)
 
 def download_ezweb(ezweb_path):
+
+  print_step('Donwloading EzWeb code')
+
   #Downloading EzWeb source code.
   #Running svn command line tool must be available
-  os.system('svn co %s %s' % (EZWEB_TRUNK, ezweb_path))
+  os.system('svn co -q %s %s' % (EZWEB_TRUNK, ezweb_path))
 
-def start_server(ezweb_path, server_name='', server_port=8000):
-  #Running WSGI server
-  from wsgiref.simple_server import make_server
-  from django.core.handlers.wsgi import WSGIHandler
-  from django.core.servers.basehttp import AdminMediaHandler
+def load_data(ezweb_path):
+  print_step('Initializing EzWeb db')
 
-  os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+  if sys.platform == 'win32':
+    python_interpreter = os.path.join(ezweb_path, 'python-env', 'bin', 'python.exe')
+  else:
+    python_interpreter = os.path.join(ezweb_path, 'python-env', 'bin', 'python')
 
-  sys.path.append(ezweb_path)
-  
-  httpd = make_server(server_name, server_port, AdminMediaHandler(WSGIHandler()))
-  httpd.serve_forever()
+  script = os.path.join(ezweb_path, 'bin', 'update.py')
+  os.system('%s %s --only-db' % (python_interpreter, script))
 
-def detect_platform(): 
+def escape(text):
+  return text.replace("'", "\\'").replace("\n", "\\\n")
+
+def save_config(fileName, server_name, server_port):
+  cfg  = "SERVER_NAME = '%s'\n" % escape(server_name)
+  cfg += "SERVER_PORT = %d\n" % server_port
+  file = open(fileName, 'wb')
+  file.write(cfg)
+  file.close()
+
+def detect_platform():
   return sys.platform
 
 def configure_path(platform):
@@ -126,17 +156,23 @@ def main():
   ezweb_path = data['EZWEB_ROOT']
   server_name = data['SERVER_NAME']
   server_port = data['SERVER_PORT']
+  env_path = os.path.join(ezweb_path, 'python-env')
 
   configure_path(platform)
   install_pip(ezweb_path)
+  install_virtualenv()
+  create_virtual_env(env_path)
 
-  install_dependencies()
+  install_dependencies(env_path)
 
   download_ezweb(ezweb_path)
 
-  load_data_model()
+  save_config(os.path.join(ezweb_path, 'config.py'), server_name, server_port)
 
-  start_server(ezweb_path, server_name, server_port)
+  load_data(ezweb_path)
+
+  print_step('EzWeb installed sucessfully')
+
   exit()
 
 ##############################################
