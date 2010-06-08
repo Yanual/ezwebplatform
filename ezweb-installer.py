@@ -103,7 +103,7 @@ def install_dependencies(venv):
 
   os.system('pip install -E %s "django==1.0.4"' % venv)
 
-  os.system('pip install -E %s -U flup' % venv)
+  os.system('pip install -E %s -U tornado' % venv)
 
 def download_ezweb(ezweb_path):
 
