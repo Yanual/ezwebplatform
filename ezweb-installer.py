@@ -103,11 +103,11 @@ def install_dependencies(venv):
 
   os.system('pip install -E %s https://svn.forge.morfeo-project.org/svn/ezwebplatform/ezweb_platform/lib/Django-1.0.4.tar.gz' % venv)
 
-  os.system('pip install -E %s -U tornado' % venv)
+  os.system('pip install -E %s https://svn.forge.morfeo-project.org/svn/ezwebplatform/ezweb_platform/lib/facebook-tornado.tar.gz' % venv)
 
 def download_ezweb(ezweb_path):
 
-  print_step('Donwloading EzWeb code')
+  print_step('Downloading EzWeb source code from SVN (this may take some time)')
 
   #Downloading EzWeb source code.
   #Running svn command line tool must be available
