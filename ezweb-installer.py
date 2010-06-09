@@ -117,7 +117,7 @@ def load_data(ezweb_path):
   print_step('Initializing EzWeb db')
 
   if sys.platform == 'win32':
-    python_interpreter = os.path.join(ezweb_path, 'python-env', 'bin', 'python.exe')
+    python_interpreter = os.path.join(ezweb_path, 'python-env', 'Scripts', 'python.exe')
   else:
     python_interpreter = os.path.join(ezweb_path, 'python-env', 'bin', 'python')
 
