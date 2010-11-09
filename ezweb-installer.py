@@ -101,7 +101,7 @@ def install_dependencies(venv):
 
   # Installing django
 
-  os.system('pip install -E %s https://svn.forge.morfeo-project.org/svn/ezwebplatform/ezweb_platform/lib/Django-1.0.4.tar.gz' % venv)
+  os.system('pip install -E %s https://svn.forge.morfeo-project.org/svn/ezwebplatform/ezweb_platform/lib/Django-1.2.3.tar.gz' % venv)
 
   os.system('pip install -E %s https://svn.forge.morfeo-project.org/svn/ezwebplatform/ezweb_platform/lib/facebook-tornado.tar.gz' % venv)
 
